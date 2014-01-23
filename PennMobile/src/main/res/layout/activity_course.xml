@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        style="@style/InfoText"
+        android:textStyle="bold"
+        android:textSize="30sp"
+        android:text="CIS 110" />
+
+    <TextView
+        style="@style/InfoText"
+        android:textSize="20sp"
+        android:layout_marginBottom="10dip"
+        android:text="Intro to Comp Prog" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="30dip"
+            android:paddingTop="30dip"
+            android:background="#499">
+
+            <TextView
+                style="@style/RatingFont"
+                android:textSize="40sp"
+                android:text="2.7" />
+
+            <TextView
+                style="@style/RatingFont"
+                android:text="Course" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="30dip"
+            android:paddingTop="30dip"
+            android:background="#1DDDDD">
+
+            <TextView
+                style="@style/RatingFont"
+                android:textSize="40sp"
+                android:text="2.5" />
+
+            <TextView
+                style="@style/RatingFont"
+                android:text="Instructor" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="30dip"
+            android:paddingTop="30dip"
+            android:background="#1333DD">
+
+            <TextView
+                style="@style/RatingFont"
+                android:textSize="40sp"
+                android:text="2.8" />
+
+            <TextView
+                style="@style/RatingFont"
+                android:text="Difficulty" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
