@@ -1,0 +1,17 @@
+/.idea/workspace.xml
+.DS_Store
+
+# generated files
+bin/
+gen/
+
+# gradle files
+.gradle/
+build/
+
+# local configuration file
+local.properties
+
+# android studio
+.idea/
+/*/local.properties
