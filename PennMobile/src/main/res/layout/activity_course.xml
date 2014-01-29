@@ -6,15 +6,15 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/course_code"
         style="@style/InfoText"
-        android:textSize="30sp"
-        android:text="CIS 110" />
+        android:textSize="30sp" />
 
     <TextView
+        android:id="@+id/course_name"
         style="@style/InfoText"
         android:textSize="30sp"
-        android:layout_marginBottom="10dip"
-        android:text="Intro to Comp Prog" />
+        android:layout_marginBottom="10dip" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -31,9 +31,9 @@
             android:background="#6DCFF6">
 
             <TextView
+                android:id="@+id/course_avg_course"
                 style="@style/RatingFont"
-                android:textSize="40sp"
-                android:text="2.7" />
+                android:textSize="40sp" />
 
             <TextView
                 style="@style/RatingFont"
@@ -51,9 +51,9 @@
             android:background="#9DDCF9">
 
             <TextView
+                android:id="@+id/course_avg_instr"
                 style="@style/RatingFont"
-                android:textSize="40sp"
-                android:text="2.5" />
+                android:textSize="40sp" />
 
             <TextView
                 style="@style/RatingFont"
@@ -71,9 +71,9 @@
             android:background="#A2B7DF">
 
             <TextView
+                android:id="@+id/course_avg_diff"
                 style="@style/RatingFont"
-                android:textSize="40sp"
-                android:text="2.8" />
+                android:textSize="40sp" />
 
             <TextView
                 style="@style/RatingFont"
