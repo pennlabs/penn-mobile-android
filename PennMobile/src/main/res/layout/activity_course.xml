@@ -7,13 +7,12 @@
 
     <TextView
         style="@style/InfoText"
-        android:textStyle="bold"
         android:textSize="30sp"
         android:text="CIS 110" />
 
     <TextView
         style="@style/InfoText"
-        android:textSize="20sp"
+        android:textSize="30sp"
         android:layout_marginBottom="10dip"
         android:text="Intro to Comp Prog" />
 
@@ -29,7 +28,7 @@
             android:layout_weight="1"
             android:paddingBottom="30dip"
             android:paddingTop="30dip"
-            android:background="#499">
+            android:background="#6DCFF6">
 
             <TextView
                 style="@style/RatingFont"
@@ -49,7 +48,7 @@
             android:layout_weight="1"
             android:paddingBottom="30dip"
             android:paddingTop="30dip"
-            android:background="#1DDDDD">
+            android:background="#9DDCF9">
 
             <TextView
                 style="@style/RatingFont"
@@ -69,7 +68,7 @@
             android:layout_weight="1"
             android:paddingBottom="30dip"
             android:paddingTop="30dip"
-            android:background="#1333DD">
+            android:background="#A2B7DF">
 
             <TextView
                 style="@style/RatingFont"
