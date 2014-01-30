@@ -11,11 +11,11 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 
-public class ExpandableListFragment extends Fragment {
+public class PCRExpListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_exp, null);
+        View v = inflater.inflate(R.layout.fragment_pcr_exp, null);
         ExpandableListView expLV = (ExpandableListView) v.findViewById(R.id.list);
         expLV.setAdapter(new NewExpListViewAdapter());
         return v;
@@ -90,14 +90,14 @@ public class ExpandableListFragment extends Fragment {
 
         @Override
         public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-            TextView textView = new TextView(ExpandableListFragment.this.getActivity());
+            TextView textView = new TextView(PCRExpListFragment.this.getActivity());
             textView.setText(getGroup(groupPosition).toString());
             return textView;
         }
 
         @Override
         public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-            TextView textView = new TextView(ExpandableListFragment.this.getActivity());
+            TextView textView = new TextView(PCRExpListFragment.this.getActivity());
             textView.setText(getChild(groupPosition, childPosition).toString());
             return textView;
         }

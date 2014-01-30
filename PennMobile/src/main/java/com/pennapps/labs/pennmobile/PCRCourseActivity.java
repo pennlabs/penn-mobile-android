@@ -7,11 +7,11 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class CourseActivity extends ActionBarActivity {
+public class PCRCourseActivity extends ActionBarActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_course);
+        setContentView(R.layout.activity_pcr_course);
         setCourseInfo();
     }
 

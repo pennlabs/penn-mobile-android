@@ -18,14 +18,23 @@
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".CourseActivity"
+            android:name="com.pennapps.labs.pennmobile.PCRCourseActivity"
             android:theme="@style/Theme.AppCompat.Light" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ExpandableListFragment" />
+        <activity
+            android:name="com.pennapps.labs.pennmobile.RegistrarActivity"
+            android:label="@string/title_activity_registrar" >
+            <!--
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            -->
+        </activity>
     </application>
 
 </manifest>
