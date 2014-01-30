@@ -83,4 +83,9 @@
 
     </LinearLayout>
 
+    <fragment android:name="com.pennapps.labs.pennmobile.ExpandableListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1" />
+
 </LinearLayout>
