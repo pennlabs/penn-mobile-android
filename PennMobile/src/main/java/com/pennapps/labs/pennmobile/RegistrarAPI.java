@@ -9,6 +9,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,8 +52,13 @@ public class RegistrarAPI {
         Log.v("vivlabs", "url now " + url);
         HttpGet httpGet = new HttpGet(url);
 
+        httpGet.addHeader(new BasicHeader("Authorization-Bearer", ID));
+        httpGet.addHeader(new BasicHeader("Authorization-Token", PASSWORD));
+        httpGet.addHeader(new BasicHeader("Content-Type", "application/json; charset=utf-8"));
+        /*
         httpGet.addHeader("Authorization-Bearer", ID);
         httpGet.addHeader("Authorization-Token", PASSWORD);
+        */
 
         try {
             HttpResponse response = httpClient.execute(httpGet);
