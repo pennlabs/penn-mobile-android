@@ -5,28 +5,34 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
-import android.support.v7.widget.SearchView;
+import android.widget.SearchView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RegistrarActivity extends Activity {
 
     private RegistrarAPI mAPI;
+    private TextView mTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrar);
         mAPI = new RegistrarAPI();
-        setEditText();
+        mTextView = (TextView) findViewById(R.id.temp);
+        new GetRequestTask("").execute();
+        // setEditText();
     }
 
     private void setEditText() {
+        /*
         TextView tv = (TextView) findViewById(R.id.search_edit_text);
         tv.addTextChangedListener(new TextWatcher() {
             @Override
@@ -46,12 +52,13 @@ public class RegistrarActivity extends Activity {
                 new GetRequestTask(s.toString()).execute();
             }
         });
+        */
     }
 
     private class GetRequestTask extends AsyncTask<Void, Void, Void> {
 
         private String input;
-        private JSONObject response;
+        private JSONObject resp;
 
         GetRequestTask(String s) {
             input = s;
@@ -59,13 +66,43 @@ public class RegistrarActivity extends Activity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            response = mAPI.getCourse(input);
-            return null;
+            try {
+                JSONArray responseArr = (JSONArray) ((JSONObject) mAPI.getCourse(input)).get("result_data");
+                resp = (JSONObject) responseArr.get(0);
+                return null;
+            } catch(JSONException e) {
+                return null;
+            }
         }
 
         @Override
         protected void onPostExecute(Void v) {
-            Log.v("vivlabs", response.toString());
+            try {
+                JSONObject meetings = (JSONObject) ((JSONArray) resp.get("meetings")).get(0);
+                JSONArray instrJSON = (JSONArray) resp.get("instructors");
+                String[] instrArr = new String[instrJSON.length()];
+                for (int i = 0; i < instrJSON.length(); i++) {
+                    instrArr[i] = ((JSONObject) instrJSON.get(i)).get("name").toString();
+                }
+
+                RegCourse course = new RegCourse.Builder(resp.get("activity").toString(),
+                                        resp.get("course_department").toString(),
+                                        resp.get("course_number").toString()).
+                                        course_description(resp.get("course_description").toString()).
+                                        course_title(resp.get("course_title").toString()).
+                                        instructors(instrArr).
+                                        building_code(meetings.get("building_code").toString()).
+                                        building_name(meetings.get("building_name").toString()).
+                                        start_time(meetings.get("start_time").toString()).
+                                        end_time(meetings.get("end_time").toString()).
+                                        section_id(meetings.get("section_id_normalized").toString()).
+                                        build();
+
+                // Log.v("vivlabs", course.getCourseDept() + " " + course.getCourseNumber());
+                mTextView.setText(course.getCourseDept() + " " + course.getCourseNumber());
+            } catch (JSONException e) {
+                Log.v("vivlabs", e.toString());
+            }
         }
     }
 
