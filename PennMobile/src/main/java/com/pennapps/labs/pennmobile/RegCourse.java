@@ -10,9 +10,10 @@ public class RegCourse {
     private String course_title;           // Intro to...
     private String building_code;          // TOWN
     private String building_name;          // Towne Building
+    private String room_number;            // 100
     private String start_time;             // 10:00 AM
     private String end_time;               // 11:00 AM
-    private String section_id;  // CIS -110-001
+    private String section_id;             // CIS -110-001
     private String[] instructors;          // [{name: }]
 
     public static class Builder {
@@ -26,6 +27,7 @@ public class RegCourse {
         private String course_title = "";           // Intro to...
         private String building_code = "";          // TOWN
         private String building_name = "";          // Towne Building
+        private String room_number = "";            // 100
         private String start_time = "";             // 10:00 AM
         private String end_time = "";               // 11:00 AM
         private String section_id = "";             // 'normalized' CIS -110-001
@@ -54,6 +56,11 @@ public class RegCourse {
 
         public Builder building_name(String input) {
             building_name = input;
+            return this;
+        }
+
+        public Builder room_number(String input) {
+            room_number = input;
             return this;
         }
 
@@ -90,6 +97,7 @@ public class RegCourse {
         course_title       = builder.course_title;
         building_code      = builder.building_code;
         building_name      = builder.building_name;
+        room_number        = builder.room_number;
         start_time         = builder.start_time;
         end_time           = builder.end_time;
         section_id         = builder.section_id;
@@ -122,6 +130,10 @@ public class RegCourse {
 
     public String getBuildingName() {
         return building_name;
+    }
+
+    public String getRoomNumber() {
+        return room_number;
     }
 
     public String getStartTime() {

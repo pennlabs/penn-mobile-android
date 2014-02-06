@@ -56,7 +56,6 @@ public class RegistrarActivity extends Activity {
     }
 
     private class GetRequestTask extends AsyncTask<Void, Void, Void> {
-
         private String input;
         private JSONObject resp;
 
@@ -93,13 +92,23 @@ public class RegistrarActivity extends Activity {
                                         instructors(instrArr).
                                         building_code(meetings.get("building_code").toString()).
                                         building_name(meetings.get("building_name").toString()).
+                                        room_number(meetings.get("room_number").toString()).
                                         start_time(meetings.get("start_time").toString()).
                                         end_time(meetings.get("end_time").toString()).
                                         section_id(meetings.get("section_id_normalized").toString()).
                                         build();
 
-                // Log.v("vivlabs", course.getCourseDept() + " " + course.getCourseNumber());
-                mTextView.setText(course.getCourseDept() + " " + course.getCourseNumber());
+                String displayText = course.getCourseDept() + " " + course.getCourseNumber() + "\n" +
+                                     course.getCourseTitle() + "\n";
+
+                for (int i = 0; i < course.getInstructors().length; i++) {
+                    displayText += course.getInstructors()[i] + "\n";
+                }
+
+                displayText += course.getActivity() + "\n" +
+                               course.getBuildingCode() + " " + course.getRoomNumber() + "\n";
+
+                mTextView.setText(displayText);
             } catch (JSONException e) {
                 Log.v("vivlabs", e.toString());
             }
