@@ -1,6 +1,10 @@
 /.idea/workspace.xml
 .DS_Store
 
+# android
+*.apk
+*.ap_
+
 # generated files
 bin/
 gen/
