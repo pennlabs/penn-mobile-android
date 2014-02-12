@@ -32,6 +32,8 @@
         android:name="com.google.android.maps"
         android:required="false" />
 
+    <!-- end maps API ish -->
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"

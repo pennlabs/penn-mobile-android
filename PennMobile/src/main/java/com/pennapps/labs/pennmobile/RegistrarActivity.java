@@ -29,33 +29,7 @@ public class RegistrarActivity extends Activity {
         setContentView(R.layout.activity_registrar);
         mAPI = new RegistrarAPI();
         mTextView = (TextView) findViewById(R.id.temp);
-        // Log.v("vivlabs", "" + GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext()));
-        new GetRequestTask("").execute();
-        // setEditText();
-    }
-
-    private void setEditText() {
-        /*
-        TextView tv = (TextView) findViewById(R.id.search_edit_text);
-        tv.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                // JSONObject jsonRes = mAPI.getCourse(s.toString());
-                // Log.v("vivlabs", jsonRes.toString());
-                new GetRequestTask(s.toString()).execute();
-            }
-        });
-        */
+        new GetRequestTask("CIS110").execute();
     }
 
     private class GetRequestTask extends AsyncTask<Void, Void, Void> {

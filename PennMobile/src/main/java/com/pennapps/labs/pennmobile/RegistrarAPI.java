@@ -34,36 +34,11 @@ public class RegistrarAPI {
          httpClient = new DefaultHttpClient();
     }
 
-    public JSONObject getCourse(String courseInput) {
-        Map<String, Object> params = new HashMap<String, Object>();
-        // params.put("course_id", courseInput);
-        return executeRequest(params, BASE_URL + "course_info/" + courseInput);
-    }
-
-
-    private JSONObject executeRequest(Map<String, Object> params, String url) {
-        if (params != null && params.size() > 0) {
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-            for (String key : params.keySet()) {
-                nameValuePairs.add(new BasicNameValuePair(key, (String)params.get(key)));
-            }
-            String paramString = URLEncodedUtils.format(nameValuePairs, "utf-8");
-            url += paramString;
-        }
-        Log.v("vivlabs", "url now " + url);
-        // HttpGet httpGet = new HttpGet(url);
-        // HttpGet httpGet = new HttpGet(BASE_URL + "course_info/CIS/110");
-        HttpGet httpGet = new HttpGet(BASE_URL + "course_section_search?course_id=CIS110");
-
-
+    public JSONObject getCourse(String courseId) {
+        HttpGet httpGet = new HttpGet(BASE_URL + "course_section_search?course_id=" + courseId);
         httpGet.addHeader(new BasicHeader("Authorization-Bearer", ID));
         httpGet.addHeader(new BasicHeader("Authorization-Token", PASSWORD));
         httpGet.addHeader(new BasicHeader("Content-Type", "application/json; charset=utf-8"));
-
-        // httpGet.addHeader("Authorization-Bearer", ID);
-        // httpGet.addHeader("Authorization-Token", PASSWORD);
-
-
 
         try {
             HttpResponse response = httpClient.execute(httpGet);
