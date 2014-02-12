@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.widget.TextView;
 
+import com.google.android.gms.common.GooglePlayServicesUtil;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +29,7 @@ public class RegistrarActivity extends Activity {
         setContentView(R.layout.activity_registrar);
         mAPI = new RegistrarAPI();
         mTextView = (TextView) findViewById(R.id.temp);
+        // Log.v("vivlabs", "" + GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext()));
         new GetRequestTask("").execute();
         // setEditText();
     }
