@@ -29,7 +29,7 @@ public class RegistrarActivity extends Activity {
         setContentView(R.layout.activity_registrar);
         mAPI = new RegistrarAPI();
         mTextView = (TextView) findViewById(R.id.temp);
-        new GetRequestTask("CIS110").execute();
+        // new GetRequestTask("CIS110").execute();
     }
 
     private class GetRequestTask extends AsyncTask<Void, Void, Void> {
@@ -92,9 +92,9 @@ public class RegistrarActivity extends Activity {
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.v("vivlabs", "creating options menu?");
         getMenuInflater().inflate(R.menu.registrar, menu);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -103,5 +103,4 @@ public class RegistrarActivity extends Activity {
 
         return true;
     }
-    
 }

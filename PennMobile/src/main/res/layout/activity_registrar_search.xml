@@ -6,7 +6,7 @@
     tools:context=".RegistrarSearchActivity">
 
     <ListView
-        android:id="@+id/search_listview"
+        android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

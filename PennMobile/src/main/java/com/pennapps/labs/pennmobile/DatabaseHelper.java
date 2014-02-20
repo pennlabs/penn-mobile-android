@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -15,8 +16,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //The Android's default system path of your application database.
 
-    private static String DB_PATH = "/res/db/registrar.db";
-    private static String DB_NAME = "registrarDB";
+    private static String DB_PATH = "";
+    private static String DB_NAME = "registrar.db";
     private SQLiteDatabase mDB;
     private final Context myContext;
 
@@ -27,9 +28,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param context
      */
     public DatabaseHelper(Context context) {
-
         super(context, DB_NAME, null, 1);
         this.myContext = context;
+        DB_PATH = "/data/data/" + context.getPackageName() + "/databases/";
     }
 
     /**
@@ -102,6 +103,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void openDatabase() throws SQLException {
         String myPath = DB_PATH + DB_NAME;
+        Log.v("vivlabs", myPath);
         mDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
     }
 
