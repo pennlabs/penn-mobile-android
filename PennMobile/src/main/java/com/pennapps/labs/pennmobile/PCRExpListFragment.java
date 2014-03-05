@@ -16,7 +16,7 @@ public class PCRExpListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_pcr_exp, null);
-        ExpandableListView expLV = (ExpandableListView) v.findViewById(R.id.list);
+        ExpandableListView expLV = (ExpandableListView) v.findViewById(R.id.listView);
         expLV.setAdapter(new NewExpListViewAdapter());
         return v;
     }
