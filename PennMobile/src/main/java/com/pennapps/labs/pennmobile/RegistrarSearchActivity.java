@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -20,8 +22,9 @@ import android.widget.TextView;
 public class RegistrarSearchActivity extends ListActivity {
 
     CustomAdapter mAdapter;
-    SQLiteDatabase sqLiteDatabase;
-    DatabaseHelper sqLiteOpenHelper;
+    // SQLiteDatabase sqLiteDatabase;
+    // DatabaseHelper sqLiteOpenHelper;
+    CourseDatabase courseDatabase;
     String query;
 
     @Override
@@ -29,19 +32,22 @@ public class RegistrarSearchActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrar_search);
 
+        courseDatabase = new CourseDatabase(this);
+        /*
         sqLiteOpenHelper = new DatabaseHelper(this);
-        // sqLiteDatabase = sqLiteOpenHelper.getReadableDatabase();
         try {
+
             Log.v("vivlabs", "creating db");
             sqLiteOpenHelper.createDatabase();
             sqLiteOpenHelper.openDatabase();
-            // sqLiteOpenHelper.closeDatabase();
             sqLiteDatabase = sqLiteOpenHelper.getReadableDatabase();
+
         } catch (SQLException e) {
 
         } catch (IOException e) {
 
         }
+        */
         handleIntent(getIntent());
     }
 
@@ -58,8 +64,10 @@ public class RegistrarSearchActivity extends ListActivity {
         Log.v("vivlabs", intent.getAction());
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             query = intent.getStringExtra(SearchManager.QUERY);
-            Log.v("vivlabs", query);
-            Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+            // Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+            Cursor cursor = courseDatabase.getWordMatches(query, null);
+
+
             mAdapter = new CustomAdapter(this, R.layout.search_entry, cursor, 0);
             this.setListAdapter(mAdapter);
         }
@@ -98,14 +106,19 @@ public class RegistrarSearchActivity extends ListActivity {
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
+            Log.v("adel", "" + cursor.getCount());
+            Log.v("adel", "" + cursor.getColumnCount());
+
+            Log.v("adel", Arrays.toString(cursor.getColumnNames()));
+
             TextView courseId = (TextView) view.findViewById(R.id.course_id_text);
-            courseId.setText(cursor.getString(cursor.getColumnIndex("id")));
+            courseId.setText(cursor.getString(cursor.getColumnIndex("course_id")));
 
             TextView courseInstr = (TextView) view.findViewById(R.id.course_instr_text);
-            courseInstr.setText(cursor.getString(cursor.getColumnIndex("instr")));
+            courseInstr.setText(cursor.getString(cursor.getColumnIndex("instructor")));
 
             TextView courseTitle = (TextView) view.findViewById(R.id.course_title_text);
-            courseTitle.setText(cursor.getString(cursor.getColumnIndex("title")));
+            courseTitle.setText(cursor.getString(cursor.getColumnIndex("course_title")));
         }
     }
 }
