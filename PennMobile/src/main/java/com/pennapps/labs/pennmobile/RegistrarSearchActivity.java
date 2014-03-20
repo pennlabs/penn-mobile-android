@@ -1,15 +1,21 @@
 package com.pennapps.labs.pennmobile;
 
+import android.app.Activity;
 import android.app.ListActivity;
+import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -25,6 +31,7 @@ public class RegistrarSearchActivity extends ListActivity
     private String query;
     private SearchView mSearchView;
     private ListView mListView;
+    private ListActivity mListActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +40,7 @@ public class RegistrarSearchActivity extends ListActivity
         mListView = getListView();
         mListView.setTextFilterEnabled(true);
         courseDatabase = new CourseDatabase(this);
+        mListActivity = this;
         handleIntent(getIntent());
     }
 
@@ -63,6 +71,31 @@ public class RegistrarSearchActivity extends ListActivity
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setSubmitButtonEnabled(false);
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        int id = mSearchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+        EditText editText = (EditText) mSearchView.findViewById(id);
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged( CharSequence arg0, int arg1, int arg2, int arg3) {
+                Log.v("vivlabs", "onTextChanged");
+            }
+
+            @Override
+            public void beforeTextChanged( CharSequence arg0, int arg1, int arg2, int arg3) {
+                Log.v("vivlabs", "beforeTextChanged");
+            }
+
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                Log.v("vivlabs", arg0.toString());
+                Cursor cursor = courseDatabase.getWordMatches(arg0.toString(), null);
+                mAdapter = new CustomAdapter(mListActivity, R.layout.search_entry, cursor, 0);
+                mListActivity.setListAdapter(mAdapter);
+                Log.v("vivlabs", "afterTextChanged");
+            }
+        });
+
         return true;
     }
 
@@ -79,6 +112,7 @@ public class RegistrarSearchActivity extends ListActivity
         } else {
             mListView.setFilterText(newText.toString());
             // mSearchView.setQuery(newText, false);
+
         }
         return true;
         // return false;

@@ -63,7 +63,7 @@ public class CourseDatabase {
                 "course_id" + " LIKE ?" + " OR " +
                 "course_title" + " LIKE ?" + " OR " +
                 "instructor" + " LIKE ?";
-        String[] selectionArgs = new String[] {query+"%", "%"+query+"%", "%"+query+"%"};
+        String[] selectionArgs = new String[] {query+"%", query+"%", query+"%"};
         return query(selection, selectionArgs, columns);
     }
 
