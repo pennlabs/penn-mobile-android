@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
@@ -29,7 +30,9 @@ public class RegistrarActivity extends Activity {
         setContentView(R.layout.activity_registrar);
         mAPI = new RegistrarAPI();
         mTextView = (TextView) findViewById(R.id.temp);
-        // new GetRequestTask("CIS110").execute();
+
+        Intent intent = getIntent();
+        new GetRequestTask(intent.getStringExtra(RegistrarSearchActivity.COURSE_ID_EXTRA)).execute();
     }
 
     private class GetRequestTask extends AsyncTask<Void, Void, Void> {
@@ -47,6 +50,7 @@ public class RegistrarActivity extends Activity {
                 resp = (JSONObject) responseArr.get(0);
                 return null;
             } catch(JSONException e) {
+                Log.v("vivlabs", "JSONEXCEPTION EWAH" + e);
                 return null;
             }
         }
@@ -54,6 +58,7 @@ public class RegistrarActivity extends Activity {
         @Override
         protected void onPostExecute(Void v) {
             try {
+                Log.v("vivlabs", resp.toString());
                 JSONObject meetings = (JSONObject) ((JSONArray) resp.get("meetings")).get(0);
                 JSONArray instrJSON = (JSONArray) resp.get("instructors");
                 String[] instrArr = new String[instrJSON.length()];

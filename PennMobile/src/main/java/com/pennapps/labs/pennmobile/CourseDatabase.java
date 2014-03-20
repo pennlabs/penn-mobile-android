@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;

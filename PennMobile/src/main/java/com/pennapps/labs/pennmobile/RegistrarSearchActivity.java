@@ -26,6 +26,8 @@ import android.widget.TextView;
 public class RegistrarSearchActivity extends ListActivity
         implements SearchView.OnQueryTextListener {
 
+
+    public static final String COURSE_ID_EXTRA = "COURSE_ID";
     private CustomAdapter mAdapter;
     private CourseDatabase courseDatabase;
     private String query;
@@ -118,6 +120,15 @@ public class RegistrarSearchActivity extends ListActivity
         // return false;
     }
 
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        Log.v("vivlabs", "position " + position + " id " + id);
+        Intent intent = new Intent(this, RegistrarActivity.class);
+        intent.putExtra(COURSE_ID_EXTRA, v.getTag().toString());
+        Log.v("vivlabs", "tag " + v.getTag());
+        startActivity(intent);
+    }
+
     class CustomAdapter extends ResourceCursorAdapter {
 
         public CustomAdapter(Context context, int layout, Cursor c, int flags) {
@@ -140,6 +151,8 @@ public class RegistrarSearchActivity extends ListActivity
 
             TextView courseTitle = (TextView) view.findViewById(R.id.course_title_text);
             courseTitle.setText(cursor.getString(cursor.getColumnIndex("course_title")));
+
+            view.setTag(cursor.getString(cursor.getColumnIndex("course_id")));
         }
     }
 }

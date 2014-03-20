@@ -46,10 +46,10 @@ public class RegistrarAPI {
                     (response.getEntity().getContent()).toString());
             return new JSONObject(tokener);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.v("vivlabs", "" + e);
             return null;
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.v("vivlabs", "" + e);
             return null;
         }
     }
