@@ -1,12 +1,9 @@
 package com.pennapps.labs.pennmobile;
 
-import android.app.Activity;
 import android.app.ListActivity;
-import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
 
 import android.os.Bundle;
@@ -15,13 +12,14 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.SearchView;
 import android.widget.TextView;
+
+import java.util.Arrays;
 
 public class RegistrarSearchActivity extends ListActivity
         implements SearchView.OnQueryTextListener {
@@ -80,21 +78,21 @@ public class RegistrarSearchActivity extends ListActivity
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged( CharSequence arg0, int arg1, int arg2, int arg3) {
-                Log.v("vivlabs", "onTextChanged");
+                // Log.v("vivlabs", "onTextChanged");
             }
 
             @Override
             public void beforeTextChanged( CharSequence arg0, int arg1, int arg2, int arg3) {
-                Log.v("vivlabs", "beforeTextChanged");
+                // Log.v("vivlabs", "beforeTextChanged");
             }
 
             @Override
             public void afterTextChanged(Editable arg0) {
-                Log.v("vivlabs", arg0.toString());
+                // Log.v("vivlabs", arg0.toString());
                 Cursor cursor = courseDatabase.getWordMatches(arg0.toString(), null);
                 mAdapter = new CustomAdapter(mListActivity, R.layout.search_entry, cursor, 0);
                 mListActivity.setListAdapter(mAdapter);
-                Log.v("vivlabs", "afterTextChanged");
+                // Log.v("vivlabs", "afterTextChanged");
             }
         });
 
@@ -122,10 +120,10 @@ public class RegistrarSearchActivity extends ListActivity
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        Log.v("vivlabs", "position " + position + " id " + id);
+        // Log.v("vivlabs", "position " + position + " id " + id);
         Intent intent = new Intent(this, RegistrarActivity.class);
         intent.putExtra(COURSE_ID_EXTRA, v.getTag().toString());
-        Log.v("vivlabs", "tag " + v.getTag());
+        // Log.v("vivlabs", "tag " + v.getTag());
         startActivity(intent);
     }
 
@@ -140,8 +138,9 @@ public class RegistrarSearchActivity extends ListActivity
             /*
             Log.v("adel", "" + cursor.getCount());
             Log.v("adel", "" + cursor.getColumnCount());
-            Log.v("adel", Arrays.toString(cursor.getColumnNames()));
             */
+
+            // Log.v("vivlabs", Arrays.toString(cursor.getColumnNames()));
 
             TextView courseId = (TextView) view.findViewById(R.id.course_id_text);
             courseId.setText(cursor.getString(cursor.getColumnIndex("course_id")));

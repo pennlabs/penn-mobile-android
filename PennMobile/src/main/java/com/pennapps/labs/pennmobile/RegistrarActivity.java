@@ -47,13 +47,13 @@ public class RegistrarActivity extends Activity {
             try {
                 JSONObject resultObj = mAPI.getCourse(input);
                 JSONArray responseArr = (JSONArray) resultObj.get("result_data");
+                // Log.v("vivlabs", resultObj.toString());
                 if (responseArr.length() == 0) {
                     return false;
                 }
                 resp = (JSONObject) responseArr.get(0);
                 return true;
             } catch(JSONException e) {
-                Log.v("vivlabs", "JSONEXCEPTION EWAH" + e);
                 return false;
             }
         }
@@ -68,7 +68,7 @@ public class RegistrarActivity extends Activity {
                 return;
             }
             try {
-                Log.v("vivlabs", resp.toString());
+                // Log.v("vivlabs", resp.toString());
                 JSONObject meetings = (JSONObject) ((JSONArray) resp.get("meetings")).get(0);
                 JSONArray instrJSON = (JSONArray) resp.get("instructors");
                 String[] instrArr = new String[instrJSON.length()];
@@ -102,14 +102,13 @@ public class RegistrarActivity extends Activity {
 
                 mTextView.setText(displayText);
             } catch (JSONException e) {
-                Log.v("vivlabs", e.toString());
+                // Log.v("vivlabs", e.toString());
             }
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.v("vivlabs", "creating options menu?");
         getMenuInflater().inflate(R.menu.registrar, menu);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
