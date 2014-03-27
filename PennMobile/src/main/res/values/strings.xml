@@ -6,5 +6,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_registrar">RegistrarActivity</string>
     <string name="title_activity_registrar_search">RegistrarSearchActivity</string>
+    <string name="title_activity_directory_search">Penn Directory</string>
+    <string name="title_activity_main">MainActivity</string>
 
 </resources>
