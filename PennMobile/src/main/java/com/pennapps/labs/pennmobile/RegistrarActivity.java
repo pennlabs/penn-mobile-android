@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
+import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -7,13 +8,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.widget.SearchView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.TextView;
-
-import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,6 +20,7 @@ public class RegistrarActivity extends Activity {
 
     private RegistrarAPI mAPI;
     private TextView mTextView;
+    private FragmentManager mFragmentMgr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,12 +28,13 @@ public class RegistrarActivity extends Activity {
         setContentView(R.layout.activity_registrar);
         mAPI = new RegistrarAPI();
         mTextView = (TextView) findViewById(R.id.temp);
+        mFragmentMgr = getFragmentManager();
 
         Intent intent = getIntent();
         new GetRequestTask(intent.getStringExtra(RegistrarSearchActivity.COURSE_ID_EXTRA)).execute();
     }
 
-    private class GetRequestTask extends AsyncTask<Void, Void, Void> {
+    private class GetRequestTask extends AsyncTask<Void, Void, Boolean> {
         private String input;
         private JSONObject resp;
 
@@ -44,19 +43,30 @@ public class RegistrarActivity extends Activity {
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Boolean doInBackground(Void... voids) {
             try {
-                JSONArray responseArr = (JSONArray) ((JSONObject) mAPI.getCourse(input)).get("result_data");
+                JSONObject resultObj = mAPI.getCourse(input);
+                JSONArray responseArr = (JSONArray) resultObj.get("result_data");
+                if (responseArr.length() == 0) {
+                    return false;
+                }
                 resp = (JSONObject) responseArr.get(0);
-                return null;
+                return true;
             } catch(JSONException e) {
                 Log.v("vivlabs", "JSONEXCEPTION EWAH" + e);
-                return null;
+                return false;
             }
         }
 
         @Override
-        protected void onPostExecute(Void v) {
+        protected void onPostExecute(Boolean valid) {
+            if (!valid) {
+                mFragmentMgr.beginTransaction().
+                        hide(mFragmentMgr.findFragmentById(R.id.map)).commit();
+                mTextView.setText(input + " is not currently offered.");
+                // sort of sloppy :/
+                return;
+            }
             try {
                 Log.v("vivlabs", resp.toString());
                 JSONObject meetings = (JSONObject) ((JSONArray) resp.get("meetings")).get(0);
