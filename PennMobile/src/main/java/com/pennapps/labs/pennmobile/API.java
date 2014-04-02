@@ -27,6 +27,10 @@ public class API {
         httpClient = new DefaultHttpClient();
     }
 
+    protected void setUrlPath(String urlPath) {
+        this.urlPath = urlPath;
+    }
+
     public JSONObject getCourse(String courseId) {
         HttpGet httpGet = new HttpGet(BASE_URL + urlPath + courseId);
         httpGet.addHeader(new BasicHeader("Authorization-Bearer", ID));

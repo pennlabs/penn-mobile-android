@@ -77,6 +77,10 @@
             android:label="@string/title_activity_directory_search" >
         </activity>
         <activity
+            android:name="com.pennapps.labs.pennmobile.DirectoryActivity"
+            android:label="@string/title_activity_directory_search" >
+        </activity>
+        <activity
             android:name="com.pennapps.labs.pennmobile.MainActivity"
             android:label="@string/title_activity_main" >
             <intent-filter>

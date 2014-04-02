@@ -11,8 +11,8 @@ public class DirectorySearchActivity extends Activity {
 
     private EditText mFirstName;
     private EditText mLastName;
-    public final String FIRST_NAME_INTENT_EXTRA = "FIRST_NAME";
-    public final String LAST_NAME_INTENT_EXTRA = "LAST_NAME";
+    public static final String FIRST_NAME_INTENT_EXTRA = "FIRST_NAME";
+    public static final String LAST_NAME_INTENT_EXTRA = "LAST_NAME";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

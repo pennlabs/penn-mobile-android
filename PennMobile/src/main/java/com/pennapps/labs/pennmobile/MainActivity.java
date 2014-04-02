@@ -23,7 +23,10 @@ public class MainActivity extends Activity {
     }
 
     public void startDirectory(View v) {
-        Intent intent = new Intent(this, DirectorySearchActivity.class);
+        // Intent intent = new Intent(this, DirectorySearchActivity.class);
+        Intent intent = new Intent(this, DirectoryActivity.class);
+        intent.putExtra(DirectorySearchActivity.FIRST_NAME_INTENT_EXTRA, "Vivian");
+        intent.putExtra(DirectorySearchActivity.LAST_NAME_INTENT_EXTRA, "Huang");
         startActivity(intent);
     }
 

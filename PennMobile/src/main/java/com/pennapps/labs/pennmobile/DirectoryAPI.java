@@ -6,6 +6,7 @@ public class DirectoryAPI extends API{
     private final String DIRECTORY_PASSWORD = "nhk6g02gkjr9ckk57soc4artkd";
 
     DirectoryAPI() {
+        super();
         ID = DIRECTORY_ID;
         PASSWORD = DIRECTORY_PASSWORD;
     }
