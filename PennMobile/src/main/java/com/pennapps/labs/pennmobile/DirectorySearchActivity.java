@@ -31,9 +31,9 @@ public class DirectorySearchActivity extends Activity {
 
     public void searchDirectory(View view) {
         // TODO: error check for filled in fields
-        Intent intent = new Intent();
-        intent.putExtra(FIRST_NAME_INTENT_EXTRA, mFirstName.getText());
-        intent.putExtra(LAST_NAME_INTENT_EXTRA, mLastName.getText());
+        Intent intent = new Intent(this, DirectoryActivity.class);
+        intent.putExtra(FIRST_NAME_INTENT_EXTRA, mFirstName.getText().toString());
+        intent.putExtra(LAST_NAME_INTENT_EXTRA, mLastName.getText().toString());
         startActivity(intent);
     }
 }
