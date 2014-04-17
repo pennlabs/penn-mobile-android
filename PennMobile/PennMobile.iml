@@ -72,6 +72,7 @@
     <orderEntry type="library" exported="" name="support-v4-18.0.0" level="project" />
     <orderEntry type="library" exported="" name="ComAndroidSupportAppcompatV71800.aar" level="project" />
     <orderEntry type="library" exported="" name="ComGoogleAndroidGmsPlayServices4030.aar" level="project" />
+    <orderEntry type="library" exported="" name="commons-lang3-3.3.2" level="project" />
   </component>
 </module>
 

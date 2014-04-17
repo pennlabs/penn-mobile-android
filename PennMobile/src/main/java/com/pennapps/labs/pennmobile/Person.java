@@ -1,18 +1,26 @@
 package com.pennapps.labs.pennmobile;
 
 
+import android.util.Log;
+
+import org.apache.commons.lang3.text.WordUtils;
+
 public class Person {
 
     private String affiliation;
     private String email;
-    private String name;
+    // private String name;
+    private String first_name;
+    private String last_name;
     private String phone;
     private String organization;
     private String title_or_major;
 
     public static class Builder {
         // required
-        private String name;
+        // private String name;
+        private String first_name;
+        private String last_name;
         private String affiliation;
 
         // optional
@@ -22,7 +30,10 @@ public class Person {
         private String title_or_major = "";
 
         public Builder(String name, String affiliation) {
-            this.name = name;
+            int firstComma = name.indexOf(",");
+            if (name.contains("Dr")) Log.v("vivlabs", "name");
+            this.first_name = WordUtils.capitalizeFully(name.substring(firstComma + 1).trim());
+            this.last_name = WordUtils.capitalizeFully(name.substring(0, firstComma).trim());
             this.affiliation = affiliation;
         }
 
@@ -43,7 +54,9 @@ public class Person {
     }
 
     private Person(Builder builder) {
-        name           = builder.name;
+        // name           = builder.name;
+        first_name     = builder.first_name;
+        last_name      = builder.last_name;
         phone          = builder.phone;
         email          = builder.email;
         affiliation    = builder.affiliation;
@@ -51,8 +64,13 @@ public class Person {
         title_or_major = builder.title_or_major;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        // return name;
+        return first_name;
+    }
+
+    public String getLastName() {
+        return last_name;
     }
 
     public String getPhone() {

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -90,19 +91,6 @@ public class DirectoryActivity extends ListActivity {
 
                 }
 
-                /*
-                String displayText = person.getName() + "\n" +
-                                     person.getAffiliation() + "\n" +
-                                     person.getEmail() + "\n" +
-                                     person.getPhone();
-
-                mTextView.setText(displayText);
-                */
-
-                for (int i = 0; i < personArr.size(); i++) {
-                    Log.v("vivlabs", "in array " + i + " " + personArr.get(i).getName());
-                }
-
                 mAdapter = new DirectoryAdapter(mContext, personArr);
                 mListView.setAdapter(mAdapter);
             } catch (JSONException e) {
@@ -132,10 +120,20 @@ public class DirectoryActivity extends ListActivity {
             TextView tvEmail = (TextView) view.findViewById(R.id.tv_person_email);
             TextView tvPhone = (TextView) view.findViewById(R.id.tv_person_phone);
 
-            tvName.setText(person.getName());
+            tvName.setText(person.getFirstName() + " " + person.getLastName());
             tvAffiliation.setText(person.getAffiliation());
-            tvEmail.setText(person.getEmail());
-            tvPhone.setText(person.getPhone());
+
+            if (person.getEmail().length() == 0) {
+                ((ViewManager)view).removeView(tvEmail);
+            } else {
+                tvEmail.setText(person.getEmail());
+            }
+
+            if (person.getPhone().length() == 0) {
+                ((ViewManager)view).removeView(tvPhone);
+            } else {
+                tvPhone.setText(person.getPhone());
+            }
 
             return view;
         }
