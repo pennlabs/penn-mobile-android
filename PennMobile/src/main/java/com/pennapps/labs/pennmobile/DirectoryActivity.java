@@ -93,5 +93,4 @@ public class DirectoryActivity extends ListActivity {
             }
         }
     }
-
 }
