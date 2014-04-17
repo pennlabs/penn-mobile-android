@@ -1,6 +1,8 @@
 package com.pennapps.labs.pennmobile.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +47,18 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
             ((ViewGroup) view).removeView(tvPhone);
         } else {
             tvPhone.setText(person.getPhone());
+            final Person currentPerson = person;
+            tvPhone.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    String uri = "tel:" + currentPerson.getPhone();
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse(uri));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    v.getContext().startActivity(intent);
+                    return true;
+                }
+            });
         }
 
         return view;
