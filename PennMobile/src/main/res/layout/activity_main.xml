@@ -13,7 +13,6 @@
         android:text="Directory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:onClick="startDirectory" />
 
     <Button
@@ -21,5 +20,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="startCourseSearch" />
+
+    <Button
+        android:text="Transit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="startTransit" />
 
 </LinearLayout>

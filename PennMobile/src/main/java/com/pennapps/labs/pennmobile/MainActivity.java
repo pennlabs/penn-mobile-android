@@ -36,4 +36,9 @@ public class MainActivity extends Activity {
         Intent intent = new Intent(this, RegistrarSearchActivity.class);
         startActivity(intent);
     }
+
+    public void startTransit(View v) {
+        Intent intent = new Intent(this, TransitActivity.class);
+        startActivity(intent);
+    }
 }

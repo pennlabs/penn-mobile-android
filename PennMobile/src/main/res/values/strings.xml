@@ -8,5 +8,6 @@
     <string name="title_activity_registrar_search">RegistrarSearchActivity</string>
     <string name="title_activity_directory_search">Penn Directory</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_transit">TransitActivity</string>
 
 </resources>
