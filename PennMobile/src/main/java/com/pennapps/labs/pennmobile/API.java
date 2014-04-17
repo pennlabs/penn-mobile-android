@@ -17,7 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class API {
-    protected final String BASE_URL = "https://esb.isc-seo.upenn.edu/8091/open_data/";
+    protected String BASE_URL = "https://esb.isc-seo.upenn.edu/8091/open_data/";
     protected HttpClient httpClient;
     protected String ID;
     protected String PASSWORD;

@@ -14,24 +14,33 @@
         android:id="@+id/tv_person_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="2dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
         android:textColor="#000000" />
 
     <TextView
         android:id="@+id/tv_person_affiliation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="2dp"
+        android:textSize="16sp"
+        android:textStyle="italic"
         android:textColor="#000000" />
 
     <TextView
         android:id="@+id/tv_person_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="2dp"
+        android:textSize="16sp"
         android:textColor="#000000" />
 
     <TextView
         android:id="@+id/tv_person_phone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#000000" />
+        android:textSize="16sp"
+        android:textColor="#002C77" />
 
 </LinearLayout>

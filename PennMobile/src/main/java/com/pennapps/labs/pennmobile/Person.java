@@ -84,4 +84,9 @@ public class Person {
     public String getAffiliation() {
         return affiliation;
     }
+
+    @Override
+    public String toString() {
+        return first_name + " " + last_name;
+    }
 }
