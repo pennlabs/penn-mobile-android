@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -40,7 +39,6 @@ public class DirectorySearchFragment extends Fragment implements View.OnClickLis
         Bundle args = new Bundle();
         args.putString(FIRST_NAME_INTENT_EXTRA, mFirstName.getText().toString());
         args.putString(LAST_NAME_INTENT_EXTRA, mLastName.getText().toString());
-        // startActivity(intent);
         fragment.setArguments(args);
 
         FragmentManager fragmentManager = getFragmentManager();

@@ -1,12 +1,9 @@
 package com.pennapps.labs.pennmobile;
 
-import android.app.ListActivity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,26 +40,17 @@ public class DirectoryFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.v("vivlabs", "onCreate 1");
-        // setContentView(R.layout.activity_directory);
-
         mContext = getActivity().getApplicationContext();
-
-        // Intent intent = getIntent();
         mAPI = new DirectoryAPI();
         mAPI.setUrlPath("directory?");
         mFirstName = getArguments().getString(DirectorySearchFragment.FIRST_NAME_INTENT_EXTRA);
         mLastName = getArguments().getString(DirectorySearchFragment.LAST_NAME_INTENT_EXTRA);
-        Log.v("vivlabs", "onCreate 2");
         new GetRequestTask(mFirstName, mLastName).execute();
-        // Log.v("vivlabs", "in directory, " + mFirstName + " " + mLastName);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.activity_directory, container, false);
-        Log.v("vivlabs", "onCreateView");
         return v;
     }
 
@@ -71,7 +59,6 @@ public class DirectoryFragment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
         mListView = getListView();
     }
-
 
     private class GetRequestTask extends AsyncTask<Void, Void, Boolean> {
         private String urlParameter;
