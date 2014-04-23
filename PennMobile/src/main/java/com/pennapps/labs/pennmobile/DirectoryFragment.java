@@ -5,7 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.pennapps.labs.pennmobile.adapters.DirectoryAdapter;
@@ -16,28 +20,48 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class DirectoryActivity extends ListActivity {
+public class DirectoryFragment extends ListFragment {
 
     private DirectoryAPI mAPI;
     private ListView mListView;
     private DirectoryAdapter mAdapter;
     private Context mContext;
+    private String mFirstName;
+    private String mLastName;
+
+    public static DirectoryFragment newInstance(String firstName, String lastName) {
+        DirectoryFragment f = new DirectoryFragment();
+
+        Bundle args = new Bundle();
+        args.putString(DirectorySearchFragment.FIRST_NAME_INTENT_EXTRA, firstName);
+        args.putString(DirectorySearchFragment.LAST_NAME_INTENT_EXTRA, lastName);
+        f.setArguments(args);
+
+        return f;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_directory);
+        // setContentView(R.layout.activity_directory);
 
-        mContext = getApplicationContext();
+        // mContext = getApplicationContext();
         mListView = getListView();
 
-        Intent intent = getIntent();
+        // Intent intent = getIntent();
         mAPI = new DirectoryAPI();
         mAPI.setUrlPath("directory?");
-        String mFirstName = intent.getStringExtra(DirectorySearchActivity.FIRST_NAME_INTENT_EXTRA);
-        String mLastName = intent.getStringExtra(DirectorySearchActivity.LAST_NAME_INTENT_EXTRA);
+        mFirstName = getArguments().getString(DirectorySearchFragment.FIRST_NAME_INTENT_EXTRA);
+        mLastName = getArguments().getString(DirectorySearchFragment.LAST_NAME_INTENT_EXTRA);
         // Log.v("vivlabs", "in directory, " + mFirstName + " " + mLastName);
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.activity_directory, container, false);
         new GetRequestTask(mFirstName, mLastName).execute();
+        return v;
     }
 
     private class GetRequestTask extends AsyncTask<Void, Void, Boolean> {

@@ -2,12 +2,15 @@ package com.pennapps.labs.pennmobile;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.Activity;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 
-public class DirectorySearchActivity extends Activity {
+public class DirectorySearchFragment extends Fragment {
 
     private EditText mFirstName;
     private EditText mLastName;
@@ -15,20 +18,20 @@ public class DirectorySearchActivity extends Activity {
     public static final String LAST_NAME_INTENT_EXTRA = "LAST_NAME";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_directory_search);
-        mFirstName = (EditText) findViewById(R.id.directory_first_name);
-        mLastName = (EditText) findViewById(R.id.directory_last_name);
+        // setContentView(R.layout.activity_directory_search);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.directory_search, menu);
-        return true;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.activity_directory_search, container, false);
+        mFirstName = (EditText) v.findViewById(R.id.directory_first_name);
+        mLastName = (EditText) v.findViewById(R.id.directory_last_name);
+        return v;
     }
 
+    /*
     public void searchDirectory(View view) {
         // TODO: error check for filled in fields
         Intent intent = new Intent(this, DirectoryActivity.class);
@@ -36,4 +39,5 @@ public class DirectorySearchActivity extends Activity {
         intent.putExtra(LAST_NAME_INTENT_EXTRA, mLastName.getText().toString());
         startActivity(intent);
     }
+    */
 }
