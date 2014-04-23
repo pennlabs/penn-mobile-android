@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -50,7 +51,8 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void selectItem(int position) {
-        Fragment fragment = new DirectorySearchFragment();
+        // Fragment fragment = new DirectorySearchFragment();
+        Fragment fragment = new RegistrarSearchFragment();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -71,6 +73,7 @@ public class MainActivity extends FragmentActivity {
         Intent intent = new Intent(this, DirectorySearchActivity.class);
         startActivity(intent);
     }
+
 
     public void startCourseSearch(View v) {
         Intent intent = new Intent(this, RegistrarSearchActivity.class);

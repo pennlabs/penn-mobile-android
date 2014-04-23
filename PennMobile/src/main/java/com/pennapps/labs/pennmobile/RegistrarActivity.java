@@ -31,7 +31,7 @@ public class RegistrarActivity extends Activity {
         mFragmentMgr = getFragmentManager();
 
         Intent intent = getIntent();
-        new GetRequestTask(intent.getStringExtra(RegistrarSearchActivity.COURSE_ID_EXTRA)).execute();
+        new GetRequestTask(intent.getStringExtra(RegistrarSearchFragment.COURSE_ID_EXTRA)).execute();
     }
 
     private class GetRequestTask extends AsyncTask<Void, Void, Boolean> {

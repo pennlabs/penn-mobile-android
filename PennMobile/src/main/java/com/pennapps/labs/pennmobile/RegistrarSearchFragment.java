@@ -7,12 +7,16 @@ import android.content.Intent;
 import android.database.Cursor;
 
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ResourceCursorAdapter;
@@ -21,7 +25,7 @@ import android.widget.TextView;
 
 import java.util.Arrays;
 
-public class RegistrarSearchActivity extends ListActivity
+public class RegistrarSearchFragment extends ListFragment
         implements SearchView.OnQueryTextListener {
 
 
@@ -31,46 +35,55 @@ public class RegistrarSearchActivity extends ListActivity
     private String query;
     private SearchView mSearchView;
     private ListView mListView;
-    private ListActivity mListActivity;
+    private ListFragment mListFragment;
+    // private ListActivity mListActivity;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registrar_search);
+        // setContentView(R.layout.activity_registrar_search);
+        courseDatabase = new CourseDatabase(this.getActivity().getApplicationContext());
+        mListFragment = this;
+        // mContext = getActivity().getApplicationContext();
+        // handleIntent(getIntent());
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.activity_directory, container, false);
+        return v;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
         mListView = getListView();
         mListView.setTextFilterEnabled(true);
-        courseDatabase = new CourseDatabase(this);
-        mListActivity = this;
-        handleIntent(getIntent());
     }
-
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        handleIntent(intent);
-    }
-
 
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             query = intent.getStringExtra(SearchManager.QUERY);
             Cursor cursor = courseDatabase.getWordMatches(query, null);
 
-            mAdapter = new CustomAdapter(this, R.layout.search_entry, cursor, 0);
+            mAdapter = new CustomAdapter(mListFragment.getActivity().getApplicationContext(),
+                    R.layout.search_entry, cursor, 0);
             this.setListAdapter(mAdapter);
         }
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.registrar, menu);
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.registrar, menu);
 
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchManager searchManager = (SearchManager) mListFragment.getActivity().
+                getSystemService(Context.SEARCH_SERVICE);
         mSearchView = (SearchView) menu.findItem(R.id.registrar_search).getActionView();
         mSearchView.setIconifiedByDefault(true);
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setSubmitButtonEnabled(false);
-        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(mListFragment.getActivity().getComponentName()));
 
         int id = mSearchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
         EditText editText = (EditText) mSearchView.findViewById(id);
@@ -90,13 +103,12 @@ public class RegistrarSearchActivity extends ListActivity
             public void afterTextChanged(Editable arg0) {
                 // Log.v("vivlabs", arg0.toString());
                 Cursor cursor = courseDatabase.getWordMatches(arg0.toString(), null);
-                mAdapter = new CustomAdapter(mListActivity, R.layout.search_entry, cursor, 0);
-                mListActivity.setListAdapter(mAdapter);
+                mAdapter = new CustomAdapter(mListFragment.getActivity().getApplicationContext(),
+                        R.layout.search_entry, cursor, 0);
+                mListFragment.setListAdapter(mAdapter);
                 // Log.v("vivlabs", "afterTextChanged");
             }
         });
-
-        return true;
     }
 
     @Override
@@ -119,12 +131,12 @@ public class RegistrarSearchActivity extends ListActivity
     }
 
     @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        // Log.v("vivlabs", "position " + position + " id " + id);
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        /*
         Intent intent = new Intent(this, RegistrarActivity.class);
         intent.putExtra(COURSE_ID_EXTRA, v.getTag().toString());
-        // Log.v("vivlabs", "tag " + v.getTag());
         startActivity(intent);
+        */
     }
 
     class CustomAdapter extends ResourceCursorAdapter {
