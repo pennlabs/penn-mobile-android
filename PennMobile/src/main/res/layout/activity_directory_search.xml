@@ -23,8 +23,8 @@
         android:hint="Huang" />
 
     <Button
+        android:id="@+id/directory_search_button"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="searchDirectory" />
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

@@ -43,16 +43,18 @@ public class DirectoryFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.v("vivlabs", "onCreate 1");
         // setContentView(R.layout.activity_directory);
 
-        // mContext = getApplicationContext();
-        mListView = getListView();
+        mContext = getActivity().getApplicationContext();
 
         // Intent intent = getIntent();
         mAPI = new DirectoryAPI();
         mAPI.setUrlPath("directory?");
         mFirstName = getArguments().getString(DirectorySearchFragment.FIRST_NAME_INTENT_EXTRA);
         mLastName = getArguments().getString(DirectorySearchFragment.LAST_NAME_INTENT_EXTRA);
+        Log.v("vivlabs", "onCreate 2");
+        new GetRequestTask(mFirstName, mLastName).execute();
         // Log.v("vivlabs", "in directory, " + mFirstName + " " + mLastName);
 
     }
@@ -60,9 +62,16 @@ public class DirectoryFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.activity_directory, container, false);
-        new GetRequestTask(mFirstName, mLastName).execute();
+        Log.v("vivlabs", "onCreateView");
         return v;
     }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mListView = getListView();
+    }
+
 
     private class GetRequestTask extends AsyncTask<Void, Void, Boolean> {
         private String urlParameter;
