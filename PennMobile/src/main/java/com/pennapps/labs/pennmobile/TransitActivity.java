@@ -22,8 +22,6 @@ public class TransitActivity extends Activity {
 
     private TransitAPI mAPI;
     private ArrayList<BusStop> mTransitArr;
-    private double mLatitude;
-    private double mLongitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +40,11 @@ public class TransitActivity extends Activity {
         mAPI = new TransitAPI();
         mAPI.setUrlPath("transit/stopinventory");
 
-        // Log.v("vivlabs", service.getLastKnownLocation(LocationManager.GPS_PROVIDER).toString());
+        Log.v("vivlabs", service.getLastKnownLocation(LocationManager.GPS_PROVIDER).toString());
         Location mLocation = service.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        mLatitude = mLocation.getLatitude();
-        mLongitude = mLocation.getLongitude();
+        // 39.952960, -75.201339
+        // new GetRequestTask(mLocation.getLatitude(), mLocation.getLongitude()).execute();
+        new GetRequestTask(39.952960, -75.201339).execute();
     }
 
 
@@ -59,6 +58,13 @@ public class TransitActivity extends Activity {
     private class GetRequestTask extends AsyncTask<Void, Void, Boolean> {
 
         private JSONArray responseArr;
+        private double latitude;
+        private double longitude;
+
+        GetRequestTask(double latitude, double longitude) {
+            this.latitude = latitude;
+            this.longitude = longitude;
+        }
 
         @Override
         protected Boolean doInBackground(Void... params) {
@@ -67,7 +73,7 @@ public class TransitActivity extends Activity {
                 responseArr = (JSONArray) resultObj.get("result_data");
                 if (responseArr.length() == 0) return false;
                 return true;
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 return false;
             }
         }
@@ -75,27 +81,30 @@ public class TransitActivity extends Activity {
         @Override
         protected void onPostExecute(Boolean valid) {
             if (!valid) {
+                Log.v("vivlabs", "Invalid?");
                 return;
             }
 
             try {
                 mTransitArr = new ArrayList<BusStop>();
-                JSONObject resp;
 
                 for (int i = 0; i < responseArr.length(); i++) {
-                    resp = (JSONObject) responseArr.get(i);
-                    BusStop stop = new BusStop(resp.get("BusStopId").toString(),
-                                               resp.get("BusStopName").toString(),
-                                               resp.get("Latitude").toString(),
-                                               resp.get("Longitude").toString());
-                    mTransitArr.add(stop);
+                    JSONObject resp = (JSONObject) responseArr.get(i);
+                    if (resp.has("BusStopName")) {
+                        Log.v("vivlabs", resp.toString());
+                        BusStop stop = new BusStop(resp.get("BusStopId").toString(),
+                                                   resp.get("BusStopName").toString(),
+                                                   resp.get("Latitude").toString(),
+                                                   resp.get("Longitude").toString());
+                        mTransitArr.add(stop);
+                    }
                 }
 
                 ArrayList<BusStop> distanceArr = new ArrayList<BusStop>();
                 for (int i = 0; i < mTransitArr.size(); i++) {
                     BusStop currentStop = mTransitArr.get(i);
-                    double x = currentStop.getLatitude() - mLatitude;
-                    double y = currentStop.getLongitude() - mLongitude;
+                    double x = Math.abs(currentStop.getLatitude() - latitude);
+                    double y = Math.abs(currentStop.getLongitude() - longitude);
                     double distance = Math.sqrt(x * x + y * y);
                     distanceArr.add(new BusStop(currentStop.getName(), distance));
                 }
@@ -106,7 +115,7 @@ public class TransitActivity extends Activity {
                     Log.v("vivlabs", distanceArr.get(i).getName() + " " + distanceArr.get(i).getDistance());
                 }
             } catch (JSONException e) {
-
+                Log.v("vivlabs", "" + e);
             }
         }
     }
