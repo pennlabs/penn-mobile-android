@@ -16,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class TransitActivity extends Activity {
 
@@ -90,12 +91,19 @@ public class TransitActivity extends Activity {
                     mTransitArr.add(stop);
                 }
 
-                ArrayList<String> sortedArr = new ArrayList<String>();
+                ArrayList<BusStop> distanceArr = new ArrayList<BusStop>();
                 for (int i = 0; i < mTransitArr.size(); i++) {
                     BusStop currentStop = mTransitArr.get(i);
-                    for (int j = 0; j < mTransitArr.size(); j++) {
-                        
-                    }
+                    double x = currentStop.getLatitude() - mLatitude;
+                    double y = currentStop.getLongitude() - mLongitude;
+                    double distance = Math.sqrt(x * x + y * y);
+                    distanceArr.add(new BusStop(currentStop.getName(), distance));
+                }
+
+                Collections.sort(distanceArr);
+
+                for (int i = 0; i < distanceArr.size(); i++) {
+                    Log.v("vivlabs", distanceArr.get(i).getName() + " " + distanceArr.get(i).getDistance());
                 }
             } catch (JSONException e) {
 
