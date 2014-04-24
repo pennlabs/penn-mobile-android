@@ -23,7 +23,7 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mFeatureTitles = new String[] {"Transit", "Directory"};
+        mFeatureTitles = new String[] {"Registrar", "Directory"};
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -52,7 +52,14 @@ public class MainActivity extends FragmentActivity {
 
     private void selectItem(int position) {
         // Fragment fragment = new DirectorySearchFragment();
-        Fragment fragment = new RegistrarSearchFragment();
+        Fragment fragment = null;
+        // Fragment fragment = new RegistrarSearchFragment();
+
+        if (position == 0) {
+            fragment = new RegistrarSearchFragment();
+        } else if (position == 1) {
+            fragment = new DirectorySearchFragment();
+        }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()

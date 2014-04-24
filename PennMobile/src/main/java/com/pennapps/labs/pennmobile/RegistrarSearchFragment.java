@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.database.Cursor;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -103,6 +105,9 @@ public class RegistrarSearchFragment extends ListFragment
             public void afterTextChanged(Editable arg0) {
                 // Log.v("vivlabs", arg0.toString());
                 Cursor cursor = courseDatabase.getWordMatches(arg0.toString(), null);
+                Log.v("vivlabs", "list fragment" + (mListFragment.getActivity() == null));
+                Log.v("vivlabs", "" + R.layout.search_entry );
+                Log.v("vivlabs", "" + (cursor == null));
                 mAdapter = new CustomAdapter(mListFragment.getActivity().getApplicationContext(),
                         R.layout.search_entry, cursor, 0);
                 mListFragment.setListAdapter(mAdapter);
@@ -137,6 +142,17 @@ public class RegistrarSearchFragment extends ListFragment
         intent.putExtra(COURSE_ID_EXTRA, v.getTag().toString());
         startActivity(intent);
         */
+        Fragment fragment = new RegistrarFragment();
+
+        Bundle args = new Bundle();
+        args.putString(RegistrarSearchFragment.COURSE_ID_EXTRA, v.getTag().toString());
+        fragment.setArguments(args);
+
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .commit();
+
     }
 
     class CustomAdapter extends ResourceCursorAdapter {

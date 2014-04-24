@@ -3,12 +3,14 @@ package com.pennapps.labs.pennmobile;
 import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Activity;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.SearchView;
-import android.util.Log;
 import android.view.Menu;
 import android.widget.TextView;
 
@@ -16,22 +18,29 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class RegistrarActivity extends Activity {
+public class RegistrarFragment extends Fragment {
 
     private RegistrarAPI mAPI;
     private TextView mTextView;
-    private FragmentManager mFragmentMgr;
+    // private FragmentManager mFragmentMgr;
+    // private Fragment mFragment;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registrar);
+        // setContentView(R.layout.activity_registrar);
         mAPI = new RegistrarAPI();
-        mTextView = (TextView) findViewById(R.id.temp);
-        mFragmentMgr = getFragmentManager();
+        // mTextView = (TextView) findViewById(R.id.temp);
+        // mFragmentMgr = getFragmentManager();
+        // Intent intent = getIntent();
+        new GetRequestTask(getArguments().getString(RegistrarSearchFragment.COURSE_ID_EXTRA)).execute();
+    }
 
-        Intent intent = getIntent();
-        new GetRequestTask(intent.getStringExtra(RegistrarSearchFragment.COURSE_ID_EXTRA)).execute();
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.activity_registrar, container, false);
+        mTextView = (TextView) v.findViewById(R.id.temp);
+        return v;
     }
 
     private class GetRequestTask extends AsyncTask<Void, Void, Boolean> {
@@ -61,8 +70,8 @@ public class RegistrarActivity extends Activity {
         @Override
         protected void onPostExecute(Boolean valid) {
             if (!valid) {
-                mFragmentMgr.beginTransaction().
-                        hide(mFragmentMgr.findFragmentById(R.id.map)).commit();
+                // mFragmentMgr.beginTransaction().
+                //         hide(mFragmentMgr.findFragmentById(R.id.map)).commit();
                 mTextView.setText(input + " is not currently offered.");
                 // sort of sloppy :/
                 return;
@@ -108,13 +117,11 @@ public class RegistrarActivity extends Activity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.registrar, menu);
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.registrar, menu);
 
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.registrar_search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
-        return true;
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
     }
 }

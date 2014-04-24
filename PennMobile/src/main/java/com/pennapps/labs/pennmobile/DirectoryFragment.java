@@ -26,17 +26,6 @@ public class DirectoryFragment extends ListFragment {
     private String mFirstName;
     private String mLastName;
 
-    public static DirectoryFragment newInstance(String firstName, String lastName) {
-        DirectoryFragment f = new DirectoryFragment();
-
-        Bundle args = new Bundle();
-        args.putString(DirectorySearchFragment.FIRST_NAME_INTENT_EXTRA, firstName);
-        args.putString(DirectorySearchFragment.LAST_NAME_INTENT_EXTRA, lastName);
-        f.setArguments(args);
-
-        return f;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
