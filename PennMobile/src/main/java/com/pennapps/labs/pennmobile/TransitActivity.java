@@ -44,7 +44,7 @@ public class TransitActivity extends Activity {
         Location mLocation = service.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         // 39.952960, -75.201339
         // new GetRequestTask(mLocation.getLatitude(), mLocation.getLongitude()).execute();
-        new GetRequestTask(39.952960, -75.201339).execute();
+        new GetStopsTask(39.952960, -75.201339).execute();
     }
 
 
@@ -55,13 +55,13 @@ public class TransitActivity extends Activity {
         return true;
     }
 
-    private class GetRequestTask extends AsyncTask<Void, Void, Boolean> {
+    private class GetStopsTask extends AsyncTask<Void, Void, Boolean> {
 
         private JSONArray responseArr;
         private double latitude;
         private double longitude;
 
-        GetRequestTask(double latitude, double longitude) {
+        GetStopsTask(double latitude, double longitude) {
             this.latitude = latitude;
             this.longitude = longitude;
         }
@@ -120,4 +120,26 @@ public class TransitActivity extends Activity {
         }
     }
 
+
+    private class GetRoutesTask extends AsyncTask<Void, Void, Boolean> {
+
+        JSONArray responseArr;
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            try {
+                JSONObject resultObj = mAPI.getCourse("transit/511/Configuration");
+                responseArr = (JSONArray) resultObj.get("result_data");
+                if (responseArr.length() == 0) return false;
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean valid) {
+
+        }
+    }
 }
