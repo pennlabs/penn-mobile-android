@@ -22,9 +22,11 @@
     <!-- for Directory Phone #'s -->
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
+    <!--
     <permission
         android:name="com.pennapps.labs.pennmobile.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
+    -->
 
     <uses-permission android:name="com.pennapps.labs.pennmobile.permission.MAPS_RECEIVE" />
 
