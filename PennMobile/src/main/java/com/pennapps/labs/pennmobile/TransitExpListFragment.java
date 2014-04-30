@@ -3,7 +3,6 @@ package com.pennapps.labs.pennmobile;
 import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,6 +15,11 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
 import com.pennapps.labs.pennmobile.adapters.NewExpListViewAdapter;
+import com.pennapps.labs.pennmobile.api.TransitAPI;
+import com.pennapps.labs.pennmobile.classes.BusRoute;
+import com.pennapps.labs.pennmobile.classes.BusRouteStop;
+import com.pennapps.labs.pennmobile.classes.BusStop;
+import com.pennapps.labs.pennmobile.classes.BusStopDist;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -160,6 +164,7 @@ public class TransitExpListFragment extends Fragment {
         @Override
         protected void onPostExecute(Boolean valid) {
             try {
+                int count = 0;
                 for (int i = 0; i < responseArr.length(); i++) {
                     JSONObject responseObj = (JSONObject) responseArr.get(i);
 
@@ -182,7 +187,8 @@ public class TransitExpListFragment extends Fragment {
                             tempList = routesByStop.get(stopTitle);
                         }
                         tempList.add(new BusRoute(routeTitle, routeDescription));
-                        // Log.v("vivlabs", "stop title: " + stopTitle);
+                        Log.v("vivlabs", count + " stop title: " + stopTitle);
+                        count++;
                         routesByStop.put(stopTitle.trim(), tempList);
                     }
 

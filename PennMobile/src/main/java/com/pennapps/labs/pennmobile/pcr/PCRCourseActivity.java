@@ -1,9 +1,11 @@
-package com.pennapps.labs.pennmobile;
+package com.pennapps.labs.pennmobile.pcr;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.widget.TextView;
+
+import com.pennapps.labs.pennmobile.R;
 
 import java.util.ArrayList;
 

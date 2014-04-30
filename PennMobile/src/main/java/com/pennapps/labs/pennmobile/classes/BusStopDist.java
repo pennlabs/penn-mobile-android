@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile;
+package com.pennapps.labs.pennmobile.classes;
 
 public class BusStopDist implements Comparable<BusStopDist> {
 

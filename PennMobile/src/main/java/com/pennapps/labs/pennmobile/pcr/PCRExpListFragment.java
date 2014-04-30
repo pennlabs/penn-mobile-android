@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile;
+package com.pennapps.labs.pennmobile.pcr;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
+
+import com.pennapps.labs.pennmobile.R;
 
 
 public class PCRExpListFragment extends Fragment {

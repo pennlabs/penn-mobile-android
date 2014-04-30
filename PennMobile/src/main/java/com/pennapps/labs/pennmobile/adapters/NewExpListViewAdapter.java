@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
-import com.pennapps.labs.pennmobile.BusRoute;
-import com.pennapps.labs.pennmobile.BusStopDist;
+import com.pennapps.labs.pennmobile.classes.BusRoute;
+import com.pennapps.labs.pennmobile.classes.BusStopDist;
 import com.pennapps.labs.pennmobile.R;
 
 import java.util.ArrayList;

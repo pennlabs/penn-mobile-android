@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile;
 
-import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -13,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.view.Menu;
 import android.widget.TextView;
+
+import com.pennapps.labs.pennmobile.api.RegistrarAPI;
+import com.pennapps.labs.pennmobile.pcr.RegCourse;
 
 import org.json.JSONArray;
 import org.json.JSONException;

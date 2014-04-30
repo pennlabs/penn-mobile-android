@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.pennapps.labs.pennmobile.adapters.DirectoryAdapter;
+import com.pennapps.labs.pennmobile.api.DirectoryAPI;
+import com.pennapps.labs.pennmobile.classes.Person;
 
 import org.json.JSONArray;
 import org.json.JSONException;

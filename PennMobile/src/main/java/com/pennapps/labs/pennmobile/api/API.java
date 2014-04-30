@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile;
+package com.pennapps.labs.pennmobile.api;
 
 import android.util.Log;
 
@@ -27,7 +27,7 @@ public class API {
         httpClient = new DefaultHttpClient();
     }
 
-    protected void setUrlPath(String urlPath) {
+    public void setUrlPath(String urlPath) {
         this.urlPath = urlPath;
     }
 

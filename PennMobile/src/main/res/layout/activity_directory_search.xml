@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -11,20 +12,29 @@
 
     <EditText
         android:id="@+id/directory_first_name"
-        android:layout_width="match_parent"
+        android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:imeOptions="actionNext"
+        android:layout_marginBottom="10dp"
+        android:textSize="20sp"
         android:hint="Vivian" />
 
     <EditText
         android:id="@+id/directory_last_name"
-        android:layout_width="match_parent"
+        android:layout_width="240dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:textSize="20sp"
         android:hint="Huang" />
 
     <Button
         android:id="@+id/directory_search_button"
-        android:layout_width="match_parent"
+        android:text="Search"
+        android:textSize="20sp"
+        android:background="@drawable/directory_button_selector"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="10dp"
+        android:layout_width="240dp"
         android:layout_height="wrap_content" />
 
 </LinearLayout>
