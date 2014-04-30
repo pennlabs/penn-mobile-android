@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
@@ -118,7 +119,9 @@ public class TransitExpListFragment extends Fragment {
                 }
 
                 Collections.sort(distanceArr);
-                mExpLV.setAdapter(new NewExpListViewAdapter(distanceArr, getActivity()));
+                NewExpListViewAdapter mAdapter = new NewExpListViewAdapter(distanceArr, mActivity);
+                mAdapter.setInflater((LayoutInflater) mActivity.getSystemService(mActivity.LAYOUT_INFLATER_SERVICE), mActivity);
+                mExpLV.setAdapter(mAdapter);
 
                 /*
                 for (int i = 0; i < distanceArr.size(); i++) {
@@ -226,9 +229,15 @@ public class TransitExpListFragment extends Fragment {
 
         @Override
         public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-            TextView textView = new TextView(mActivity);
-            textView.setText(getGroup(groupPosition).getName());
-            return textView;
+            if (convertView == null) {
+                convertView = mInflater.inflate(R.layout.transit_list_item, null);
+            }
+
+            BusStop currentStop = getGroup(groupPosition);
+            TextView transitStopName = (TextView) convertView.findViewById(R.id.transit_stop_name);
+            transitStopName.setText(currentStop.getName());
+
+            return convertView;
         }
 
         @Override
