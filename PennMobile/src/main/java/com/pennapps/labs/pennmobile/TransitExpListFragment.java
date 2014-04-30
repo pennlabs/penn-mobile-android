@@ -181,7 +181,7 @@ public class TransitExpListFragment extends Fragment {
                         } else {
                             tempList = routesByStop.get(stopTitle);
                         }
-                        tempList.add(new BusRoute(routeDescription, routeTitle));
+                        tempList.add(new BusRoute(routeTitle, routeDescription));
                         // Log.v("vivlabs", "stop title: " + stopTitle);
                         routesByStop.put(stopTitle.trim(), tempList);
                     }

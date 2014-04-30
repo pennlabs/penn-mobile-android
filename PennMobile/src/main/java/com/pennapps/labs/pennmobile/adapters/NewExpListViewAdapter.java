@@ -9,7 +9,6 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.BusRoute;
-import com.pennapps.labs.pennmobile.BusStop;
 import com.pennapps.labs.pennmobile.BusStopDist;
 import com.pennapps.labs.pennmobile.R;
 
@@ -107,9 +106,15 @@ public class NewExpListViewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        TextView textView = new TextView(mActivity);
-        textView.setText(getChild(groupPosition, childPosition).getTitle());
-        return textView;
+        if (convertView == null) {
+            convertView = mInflater.inflate(R.layout.transit_child_item, null);
+        }
+
+        BusRoute currentRoute = getChild(groupPosition, childPosition);
+        TextView transitStopName = (TextView) convertView.findViewById(R.id.transit_route_name);
+        transitStopName.setText(currentRoute.getTitle());
+
+        return convertView;
     }
 
     @Override
