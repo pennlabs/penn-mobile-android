@@ -7,6 +7,7 @@ public class TransitAPI extends API{
 
     TransitAPI() {
         super();
+        setUrlPath("transit/");
         ID = TRANSIT_ID;
         PASSWORD = TRANSIT_PASSWORD;
     }

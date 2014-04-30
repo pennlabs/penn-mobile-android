@@ -13,10 +13,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.TextView;
+
+import com.pennapps.labs.pennmobile.adapters.NewExpListViewAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,6 +23,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class TransitExpListFragment extends Fragment {
 
@@ -31,6 +31,9 @@ public class TransitExpListFragment extends Fragment {
     private ArrayList<BusStop> mTransitArr;
     private ExpandableListView mExpLV;
     private Activity mActivity;
+    private ArrayList<BusRoute> mRoutes;
+    private NewExpListViewAdapter mAdapter;
+    private ArrayList<BusStopDist> mDistanceArr;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,6 +48,8 @@ public class TransitExpListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mActivity = getActivity();
+        mRoutes = new ArrayList<BusRoute>();
+        mDistanceArr = new ArrayList<BusStopDist>();
         LocationManager service = (LocationManager) mActivity.getSystemService(mActivity.LOCATION_SERVICE);
         boolean enabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
@@ -55,13 +60,14 @@ public class TransitExpListFragment extends Fragment {
         }
 
         mAPI = new TransitAPI();
-        mAPI.setUrlPath("transit/stopinventory");
+        // mAPI.setUrlPath("stopinventory");
 
         Log.v("vivlabs", service.getLastKnownLocation(LocationManager.GPS_PROVIDER).toString());
         Location mLocation = service.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         // 39.952960, -75.201339
         // new GetRequestTask(mLocation.getLatitude(), mLocation.getLongitude()).execute();
         new GetStopsTask(39.952960, -75.201339).execute();
+        new GetRoutesTask().execute();
     }
 
     private class GetStopsTask extends AsyncTask<Void, Void, Boolean> {
@@ -78,7 +84,7 @@ public class TransitExpListFragment extends Fragment {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                JSONObject resultObj = mAPI.getCourse("");
+                JSONObject resultObj = mAPI.getCourse("stopinventory");
                 responseArr = (JSONArray) resultObj.get("result_data");
                 if (responseArr.length() == 0) return false;
                 return true;
@@ -109,19 +115,15 @@ public class TransitExpListFragment extends Fragment {
                     }
                 }
 
-                ArrayList<BusStop> distanceArr = new ArrayList<BusStop>();
                 for (int i = 0; i < mTransitArr.size(); i++) {
                     BusStop currentStop = mTransitArr.get(i);
                     double x = Math.abs(currentStop.getLatitude() - latitude);
                     double y = Math.abs(currentStop.getLongitude() - longitude);
                     double distance = Math.sqrt(x * x + y * y);
-                    distanceArr.add(new BusStop(currentStop.getName(), distance));
+                    mDistanceArr.add(new BusStopDist(currentStop.getName(), distance));
                 }
 
-                Collections.sort(distanceArr);
-                NewExpListViewAdapter mAdapter = new NewExpListViewAdapter(distanceArr, mActivity);
-                mAdapter.setInflater((LayoutInflater) mActivity.getSystemService(mActivity.LAYOUT_INFLATER_SERVICE), mActivity);
-                mExpLV.setAdapter(mAdapter);
+                Collections.sort(mDistanceArr);
 
                 /*
                 for (int i = 0; i < distanceArr.size(); i++) {
@@ -139,117 +141,60 @@ public class TransitExpListFragment extends Fragment {
     private class GetRoutesTask extends AsyncTask<Void, Void, Boolean> {
 
         JSONArray responseArr;
+        // go through routes, sort by stop name --> route name
+        HashMap<String, ArrayList<BusRoute>> routesByStop = new HashMap<String, ArrayList<BusRoute>>();
 
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                JSONObject resultObj = mAPI.getCourse("transit/511/Configuration");
-                responseArr = (JSONArray) resultObj.get("result_data");
+                JSONObject resultObj = mAPI.getCourse("511/Configuration");
+                responseArr = (JSONArray) ((JSONObject) ((JSONObject) resultObj.get("result_data")).get("ConfigurationData")).get("Route");
                 if (responseArr.length() == 0) return false;
                 return true;
             } catch (Exception e) {
+                Log.v("vivlabs", "" + e);
                 return false;
             }
         }
 
         @Override
         protected void onPostExecute(Boolean valid) {
+            try {
+                for (int i = 0; i < responseArr.length(); i++) {
+                    JSONObject responseObj = (JSONObject) responseArr.get(i);
 
-        }
-    }
+                    String routeDescription = responseObj.get("title").toString();
+                    String routeTitle       = responseObj.get("key").toString();
+                    ArrayList<BusRouteStop> routeStops = new ArrayList<BusRouteStop>();
 
-    public class NewExpListViewAdapter extends BaseExpandableListAdapter {
+                    JSONArray stopsOnRoute = (JSONArray) (((JSONObject) ((JSONArray) responseObj.get("Direction")).get(0)).get("Stop"));
 
-        private LayoutInflater mInflater;
-        private Activity mActivity;
-        private ArrayList<BusStop> mStopsList;
+                    for (int j = 0; j < stopsOnRoute.length(); j++) {
+                        JSONObject currentStop = (JSONObject) stopsOnRoute.get(j);
+                        String stopTitle = currentStop.get("title").toString();
+                        routeStops.add(new BusRouteStop(currentStop.get("key").toString(),
+                                                        currentStop.get("stopOrder").toString(),
+                                                        stopTitle));
+                        ArrayList<BusRoute> tempList;
+                        if (!routesByStop.containsKey(stopTitle)) {
+                            tempList = new ArrayList<BusRoute>();
+                        } else {
+                            tempList = routesByStop.get(stopTitle);
+                        }
+                        tempList.add(new BusRoute(routeDescription, routeTitle));
+                        // Log.v("vivlabs", "stop title: " + stopTitle);
+                        routesByStop.put(stopTitle.trim(), tempList);
+                    }
 
-        /*
-        private Course[] instructors = {
-                new Course("CIS 110", "Intro to Comp Prog", "Benedict Brown", "2.69", "2.40", "3.31"),
-                new Course("CIS 110", "Intro to Comp Prog", "Peter-Michael Osera", "2.95", "3.09", "2.90")
-        };
-        */
-
-        private String[] instructors = {"Benedict Brown", "Peter-Michael Osera"};
-
-        private String[][] children = {
-                {"1", "2", "3"},
-                {"4", "5", "6"}
-        };
-
-        NewExpListViewAdapter(ArrayList<BusStop> stops, Activity activity) {
-            mStopsList = stops;
-            mActivity = activity;
-        }
-
-        public void setInflater(LayoutInflater inflater, Activity act) {
-            this.mInflater = inflater;
-            mActivity = act;
-        }
-
-        @Override
-        public int getGroupCount() {
-            return mStopsList.size();
-        }
-
-        @Override
-        public int getChildrenCount(int groupPosition) {
-            return 2;
-            // return children[groupPosition].length;
-            // return mStopsList.get(groupPosition).size();
-        }
-
-        @Override
-        public BusStop getGroup(int groupPosition) {
-            // return instructors[groupPosition];
-            return mStopsList.get(groupPosition);
-        }
-
-        @Override
-        public Object getChild(int groupPosition, int childPosition) {
-            // return children[groupPosition][childPosition];
-            return children[0][childPosition];
-        }
-
-        @Override
-        public long getGroupId(int groupPosition) {
-            return groupPosition;
-        }
-
-        @Override
-        public long getChildId(int groupPosition, int childPosition) {
-            return childPosition;
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return true;
-        }
-
-        @Override
-        public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = mInflater.inflate(R.layout.transit_list_item, null);
+                    mRoutes.add(new BusRoute(routeTitle, routeDescription, routeStops));
+                }
+            } catch (JSONException e) {
+                Log.v("vivlabs", "" + e);
             }
 
-            BusStop currentStop = getGroup(groupPosition);
-            TextView transitStopName = (TextView) convertView.findViewById(R.id.transit_stop_name);
-            transitStopName.setText(currentStop.getName());
-
-            return convertView;
-        }
-
-        @Override
-        public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-            TextView textView = new TextView(mActivity);
-            textView.setText(getChild(groupPosition, childPosition).toString());
-            return textView;
-        }
-
-        @Override
-        public boolean isChildSelectable(int groupPosition, int childPosition) {
-            return true;
+            mAdapter = new NewExpListViewAdapter(mDistanceArr, routesByStop, mActivity);
+            mAdapter.setInflater((LayoutInflater) mActivity.getSystemService(mActivity.LAYOUT_INFLATER_SERVICE), mActivity);
+            mExpLV.setAdapter(mAdapter);
         }
     }
 }
