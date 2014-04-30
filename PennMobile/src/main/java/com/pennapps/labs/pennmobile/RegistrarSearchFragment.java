@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Context;
@@ -38,16 +39,21 @@ public class RegistrarSearchFragment extends ListFragment
     private SearchView mSearchView;
     private ListView mListView;
     private ListFragment mListFragment;
+    private Activity mActivity;
     // private ListActivity mListActivity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mActivity = getActivity();
         // setContentView(R.layout.activity_registrar_search);
         courseDatabase = new CourseDatabase(this.getActivity().getApplicationContext());
         mListFragment = this;
         // mContext = getActivity().getApplicationContext();
         // handleIntent(getIntent());
+        mAdapter = new CustomAdapter(mListFragment.getActivity().getApplicationContext(),
+                R.layout.search_entry, null, 0);
+        mListFragment.setListAdapter(mAdapter);
     }
 
     @Override
@@ -62,17 +68,6 @@ public class RegistrarSearchFragment extends ListFragment
         setHasOptionsMenu(true);
         mListView = getListView();
         mListView.setTextFilterEnabled(true);
-    }
-
-    private void handleIntent(Intent intent) {
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            query = intent.getStringExtra(SearchManager.QUERY);
-            Cursor cursor = courseDatabase.getWordMatches(query, null);
-
-            mAdapter = new CustomAdapter(mListFragment.getActivity().getApplicationContext(),
-                    R.layout.search_entry, cursor, 0);
-            this.setListAdapter(mAdapter);
-        }
     }
 
     @Override
@@ -105,10 +100,7 @@ public class RegistrarSearchFragment extends ListFragment
             public void afterTextChanged(Editable arg0) {
                 // Log.v("vivlabs", arg0.toString());
                 Cursor cursor = courseDatabase.getWordMatches(arg0.toString(), null);
-                Log.v("vivlabs", "list fragment" + (mListFragment.getActivity() == null));
-                Log.v("vivlabs", "" + R.layout.search_entry );
-                Log.v("vivlabs", "" + (cursor == null));
-                mAdapter = new CustomAdapter(mListFragment.getActivity().getApplicationContext(),
+                mAdapter = new CustomAdapter(mActivity.getApplicationContext(),
                         R.layout.search_entry, cursor, 0);
                 mListFragment.setListAdapter(mAdapter);
                 // Log.v("vivlabs", "afterTextChanged");

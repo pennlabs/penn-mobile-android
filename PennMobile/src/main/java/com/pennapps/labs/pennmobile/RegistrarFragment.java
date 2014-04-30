@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
@@ -57,6 +58,7 @@ public class RegistrarFragment extends Fragment {
         protected Boolean doInBackground(Void... voids) {
             try {
                 JSONObject resultObj = mAPI.getCourse(input);
+                // Log.v("vivlabs", resultObj == null);
                 JSONArray responseArr = (JSONArray) resultObj.get("result_data");
                 // Log.v("vivlabs", resultObj.toString());
                 if (responseArr.length() == 0) {
@@ -65,6 +67,10 @@ public class RegistrarFragment extends Fragment {
                 resp = (JSONObject) responseArr.get(0);
                 return true;
             } catch(JSONException e) {
+                Log.v("vivlabs", "yo " + e);
+                return false;
+            } catch(Exception e) {
+                Log.v("vivlabs", "cry " + e);
                 return false;
             }
         }
