@@ -75,7 +75,7 @@
 
         <activity
             android:name="com.pennapps.labs.pennmobile.MainActivity"
-            android:label="@string/title_activity_main" >
+            android:label="PennMobile" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
