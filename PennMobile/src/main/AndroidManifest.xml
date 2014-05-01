@@ -56,29 +56,12 @@
             android:name="com.pennapps.labs.pennmobile.RegistrarActivity"
             android:label="@string/title_activity_registrar" >
         </activity>
-        <activity
-            android:name="com.pennapps.labs.pennmobile.RegistrarSearchActivity"
-            android:label="@string/title_activity_registrar_search"
-            android:launchMode="singleTop" >
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
-        </activity>
-
-        <meta-data
-            android:name="android.app.default_searchable"
-            android:value=".RegistrarSearchActivity" />
 
         <activity
             android:name="com.pennapps.labs.pennmobile.MainActivity"
             android:label="PennMobile" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

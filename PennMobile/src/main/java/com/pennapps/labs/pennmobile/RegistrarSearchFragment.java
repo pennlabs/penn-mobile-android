@@ -76,11 +76,6 @@ public class RegistrarSearchFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        /*
-        Intent intent = new Intent(this, RegistrarActivity.class);
-        intent.putExtra(COURSE_ID_EXTRA, v.getTag().toString());
-        startActivity(intent);
-        */
         Fragment fragment = new RegistrarFragment();
 
         Bundle args = new Bundle();
