@@ -38,7 +38,8 @@ public class RegistrarListFragment extends ListFragment {
         args.putString(RegistrarSearchFragment.COURSE_ID_EXTRA, v.getTag().toString());
         fragment.setArguments(args);
 
-        FragmentManager fragmentManager = getParentFragment().getFragmentManager();
+        // FragmentManager fragmentManager = getParentFragment().getFragmentManager();
+        FragmentManager fragmentManager = RegistrarSearchFragment.mFragment.getChildFragmentManager();
         fragmentManager.beginTransaction()
                        .replace(R.id.registrar_fragment, fragment)
                        .commit();

@@ -22,7 +22,7 @@ public class RegistrarSearchFragment extends Fragment {
 
     public static final String COURSE_ID_EXTRA = "COURSE_ID";
     private CourseDatabase courseDatabase;
-    private Fragment mFragment;
+    public static Fragment mFragment;
     private Activity mActivity;
     private EditText mHeader;
     private RegistrarAdapter mAdapter;
