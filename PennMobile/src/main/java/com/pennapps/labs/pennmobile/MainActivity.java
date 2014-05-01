@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile;
 
-import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -36,7 +35,6 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -51,10 +49,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void selectItem(int position) {
-        // Fragment fragment = new DirectorySearchFragment();
         Fragment fragment = null;
-        // Fragment fragment = new RegistrarSearchFragment();
-
         if (position == 0) {
             fragment = new RegistrarSearchFragment();
         } else if (position == 1) {
@@ -76,24 +71,6 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void setTitle(CharSequence title) {
-        getActionBar().setTitle(title);
+        getActionBar().setTitle("PennMobile: " + title);
     }
-
-    /*
-    public void startDirectory(View v) {
-        Intent intent = new Intent(this, DirectorySearchActivity.class);
-        startActivity(intent);
-    }
-
-
-    public void startCourseSearch(View v) {
-        Intent intent = new Intent(this, RegistrarSearchActivity.class);
-        startActivity(intent);
-    }
-
-    public void startTransit(View v) {
-        Intent intent = new Intent(this, TransitActivity.class);
-        startActivity(intent);
-    }
-    */
 }
