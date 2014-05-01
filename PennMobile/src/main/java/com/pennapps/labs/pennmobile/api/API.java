@@ -51,6 +51,25 @@ public class API {
         }
     }
 
+    public JSONObject getDiningInfo(String courseId) {
+        HttpGet httpGet = new HttpGet(BASE_URL + courseId);
+        httpGet.addHeader(new BasicHeader("Content-Type", "application/json; charset=utf-8"));
+
+        try {
+            HttpResponse response = httpClient.execute(httpGet);
+            JSONTokener tokener = new JSONTokener(inputStreamToString
+                    (response.getEntity().getContent()).toString());
+            Log.v("vivlabs", tokener.toString());
+            return new JSONObject(tokener);
+        } catch (IOException e) {
+            Log.v("vivlabs", "yo1" + e);
+            return null;
+        } catch (JSONException e) {
+            Log.v("vivlabs", "yo2" + e);
+            return null;
+        }
+    }
+
 
     protected StringBuilder inputStreamToString(InputStream is) {
         String line;

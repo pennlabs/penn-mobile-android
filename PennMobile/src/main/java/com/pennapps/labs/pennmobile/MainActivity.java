@@ -23,7 +23,7 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mFeatureTitles = new String[] {"Registrar", "Directory", "Transit"};
+        mFeatureTitles = new String[] {"Registrar", "Directory", "Transit", "Dining"};
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -61,6 +61,8 @@ public class MainActivity extends FragmentActivity {
             fragment = new DirectorySearchFragment();
         } else if (position == 2) {
             fragment = new TransitExpListFragment();
+        } else if (position == 3) {
+            fragment = new DiningFragment();
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
