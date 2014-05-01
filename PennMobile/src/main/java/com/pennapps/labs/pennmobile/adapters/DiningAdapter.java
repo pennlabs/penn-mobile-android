@@ -13,6 +13,8 @@ import com.pennapps.labs.pennmobile.R;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
 
 public class DiningAdapter extends ArrayAdapter<DiningHall> {
 
@@ -32,12 +34,18 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
         TextView dinnerMenuTV = (TextView) view.findViewById(R.id.dining_hall_dinner);
         TextView lunchMenuTV = (TextView) view.findViewById(R.id.dining_hall_lunch);
 
-        // String dinnerText = "";
-
         String open = diningHall.isOpen() ? "Open" : "Closed";
         hallNameTV.setText(WordUtils.capitalizeFully(diningHall.getName() + ": " + open));
         dinnerMenuTV.setText("DINNER");
         lunchMenuTV.setText("LUNCH");
+
+        if (diningHall.getDinnerMenu() != null) {
+            String dinnerText = "";
+            for (String key : diningHall.getDinnerMenu().keySet()) {
+                dinnerText += key + ": " + diningHall.getDinnerMenu().get(key) + "\n";
+            }
+            dinnerMenuTV.setText(dinnerText);
+        }
 
         return view;
     }

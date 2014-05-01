@@ -87,7 +87,8 @@ public class DiningFragment extends ListFragment {
                         Iterator<String> keys = dinnerObj.keys();
                         while(keys.hasNext()) {
                             String key = keys.next();
-                            currentMenu.put(key, dinnerObj.get(key).toString());
+                            currentMenu.put(key, dinnerObj.get(key).toString()
+                                            .replace("[", "").replace("]", "").replace("\"", ""));
                         }
 
                         mDiningHalls.get(i).setDinnerMenu(currentMenu);

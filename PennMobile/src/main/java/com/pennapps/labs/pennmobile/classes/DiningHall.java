@@ -29,4 +29,12 @@ public class DiningHall {
     public void setLunchMenu(HashMap<String, String> lunchMenu) {
         this.lunchMenu = lunchMenu;
     }
+
+    public HashMap<String, String> getDinnerMenu() {
+        return dinnerMenu;
+    }
+
+    public HashMap<String, String> getLunchMenu() {
+        return lunchMenu;
+    }
 }
