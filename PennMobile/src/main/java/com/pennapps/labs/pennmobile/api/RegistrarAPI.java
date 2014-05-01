@@ -8,7 +8,7 @@ public class RegistrarAPI extends API {
         super();
         ID = REGISTRAR_ID;
         PASSWORD = REGISTRAR_PASSWORD;
-        BASE_URL = "http://58ddab82.ngrok.com/";
+        // BASE_URL = "http://58ddab82.ngrok.com/";
         urlPath = "course_section_search?course_id=";
     }
 

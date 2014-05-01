@@ -60,6 +60,7 @@ public class RegistrarSearchFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable arg0) {
+                Log.v("vivlabs", "aftertextchanged: " + arg0.toString());
                 Cursor cursor = courseDatabase.getWordMatches(arg0.toString(), null);
                 /*
                 Fragment listFragment = getFragmentManager().findFragmentByTag("LIST");
