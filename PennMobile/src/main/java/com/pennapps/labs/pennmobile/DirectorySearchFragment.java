@@ -23,7 +23,7 @@ public class DirectorySearchFragment extends Fragment implements View.OnClickLis
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.activity_directory_search, container, false);
+        View v = inflater.inflate(R.layout.fragment_directory_search, container, false);
         mFirstName = (EditText) v.findViewById(R.id.directory_first_name);
         mLastName = (EditText) v.findViewById(R.id.directory_last_name);
         Button b = (Button) v.findViewById(R.id.directory_search_button);
@@ -32,7 +32,6 @@ public class DirectorySearchFragment extends Fragment implements View.OnClickLis
     }
 
     @Override
-    // public void searchDirectory(View view) {
     public void onClick(View view) {
         // TODO: error check for filled in fields
         Fragment fragment = new DirectoryFragment();
@@ -45,7 +44,6 @@ public class DirectorySearchFragment extends Fragment implements View.OnClickLis
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)
                 .commit();
-
     }
 
 }

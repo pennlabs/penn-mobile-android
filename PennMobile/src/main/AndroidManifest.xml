@@ -53,11 +53,6 @@
             android:value="AIzaSyAemxlp0iO3p2CMEn7n6FO3CkljTkxZP-w" />
 
         <activity
-            android:name="com.pennapps.labs.pennmobile.RegistrarActivity"
-            android:label="@string/title_activity_registrar" >
-        </activity>
-
-        <activity
             android:name="com.pennapps.labs.pennmobile.MainActivity"
             android:label="PennMobile" >
             <intent-filter>

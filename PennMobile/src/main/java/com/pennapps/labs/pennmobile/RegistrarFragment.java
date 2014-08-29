@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -14,6 +16,11 @@ import android.widget.SearchView;
 import android.view.Menu;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.pennapps.labs.pennmobile.api.RegistrarAPI;
 import com.pennapps.labs.pennmobile.pcr.RegCourse;
 
@@ -25,25 +32,43 @@ public class RegistrarFragment extends Fragment {
 
     private RegistrarAPI mAPI;
     private TextView mTextView;
-    // private FragmentManager mFragmentMgr;
-    // private Fragment mFragment;
+    private GoogleMap map;
+    private SupportMapFragment mapFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // setContentView(R.layout.activity_registrar);
         mAPI = new RegistrarAPI();
-        // mTextView = (TextView) findViewById(R.id.temp);
-        // mFragmentMgr = getFragmentManager();
-        // Intent intent = getIntent();
         new GetRequestTask(getArguments().getString(RegistrarSearchFragment.COURSE_ID_EXTRA)).execute();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.activity_registrar, container, false);
+        View v = inflater.inflate(R.layout.fragment_registrar, container, false);
         mTextView = (TextView) v.findViewById(R.id.temp);
         return v;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        FragmentManager fm = getChildFragmentManager();
+        if (mapFragment == null) {
+            mapFragment = SupportMapFragment.newInstance();
+            fm.beginTransaction().add(R.id.fragment_container, mapFragment).commit();
+            fm.executePendingTransactions();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (map == null) {
+            map = mapFragment.getMap();
+            if (map != null) {
+                map.addMarker(new MarkerOptions().position(new LatLng(0, 0)));
+            }
+        }
     }
 
     private class GetRequestTask extends AsyncTask<Void, Void, Boolean> {
@@ -58,19 +83,15 @@ public class RegistrarFragment extends Fragment {
         protected Boolean doInBackground(Void... voids) {
             try {
                 JSONObject resultObj = mAPI.getCourse(input);
-                // Log.v("vivlabs", resultObj == null);
                 JSONArray responseArr = (JSONArray) resultObj.get("result_data");
-                // Log.v("vivlabs", resultObj.toString());
                 if (responseArr.length() == 0) {
                     return false;
                 }
                 resp = (JSONObject) responseArr.get(0);
                 return true;
             } catch(JSONException e) {
-                Log.v("vivlabs", "yo " + e);
                 return false;
             } catch(Exception e) {
-                Log.v("vivlabs", "cry " + e);
                 return false;
             }
         }
@@ -78,14 +99,11 @@ public class RegistrarFragment extends Fragment {
         @Override
         protected void onPostExecute(Boolean valid) {
             if (!valid) {
-                // mFragmentMgr.beginTransaction().
-                //         hide(mFragmentMgr.findFragmentById(R.id.map)).commit();
-                mTextView.setText(input + " is not currently offered.");
                 // sort of sloppy :/
+                mTextView.setText(input + " is not currently offered.");
                 return;
             }
             try {
-                // Log.v("vivlabs", resp.toString());
                 JSONObject meetings = (JSONObject) ((JSONArray) resp.get("meetings")).get(0);
                 JSONArray instrJSON = (JSONArray) resp.get("instructors");
                 String[] instrArr = new String[instrJSON.length()];
@@ -107,6 +125,12 @@ public class RegistrarFragment extends Fragment {
                                         section_id(meetings.get("section_id_normalized").toString()).
                                         build();
 
+                // TODO: replace this with course.getBuildingCode.etc
+                LatLng courseLatLng = new LatLng(39.952960, -75.201339);
+                if (map != null) {
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 15));
+                }
+
                 String displayText = course.getCourseDept() + " " + course.getCourseNumber() + "\n" +
                                      course.getCourseTitle() + "\n";
 
@@ -119,7 +143,7 @@ public class RegistrarFragment extends Fragment {
 
                 mTextView.setText(displayText);
             } catch (JSONException e) {
-                // Log.v("vivlabs", e.toString());
+
             }
         }
     }

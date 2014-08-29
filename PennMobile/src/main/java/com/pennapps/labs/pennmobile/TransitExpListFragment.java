@@ -43,7 +43,7 @@ public class TransitExpListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_transit_exp, null);
         mExpLV = (ExpandableListView) v.findViewById(R.id.listView);
-        // mExpLV.setAdapter(new NewExpListViewAdapter());
+
         return v;
     }
 

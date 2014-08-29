@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.database.Cursor;
 
 import android.os.Bundle;
@@ -13,9 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 
 import com.pennapps.labs.pennmobile.adapters.RegistrarAdapter;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class RegistrarSearchFragment extends Fragment {
@@ -38,7 +42,7 @@ public class RegistrarSearchFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View v = inflater.inflate(R.layout.activity_registrar_search, container, false);
+        View v = inflater.inflate(R.layout.fragment_registrar_search, container, false);
         mHeader = (EditText) v.findViewById(R.id.header);
 
         return v;
@@ -60,22 +64,12 @@ public class RegistrarSearchFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable arg0) {
-                Log.v("vivlabs", "aftertextchanged: " + arg0.toString());
                 Cursor cursor = courseDatabase.getWordMatches(arg0.toString(), null);
-                /*
-                Fragment listFragment = getFragmentManager().findFragmentByTag("LIST");
-
-                if(listFragment != null && listFragment instanceof RegistrarListFragment) {
-                    Log.v("vivlabs", "list if");
-                    RegistrarAdapter mAdapter = new RegistrarAdapter(mActivity.getApplicationContext(),
-                            R.layout.search_entry, cursor, 0);
-                    ((RegistrarListFragment) listFragment).setListAdapter(mAdapter);
-                } else {
-                */
-                // Log.v("vivlabs", "list else");
                 RegistrarListFragment listFragment = new RegistrarListFragment();
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                transaction.replace(R.id.registrar_fragment, listFragment, "LIST").commit();
+                transaction.replace(R.id.registrar_fragment, listFragment, "LIST")
+                           .addToBackStack(null)
+                           .commit();
                 mAdapter = new RegistrarAdapter(mActivity.getApplicationContext(),
                         R.layout.search_entry, cursor, 0);
                 listFragment.setListAdapter(mAdapter);

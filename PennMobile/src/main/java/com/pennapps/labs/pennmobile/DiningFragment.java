@@ -64,6 +64,8 @@ public class DiningFragment extends ListFragment {
                 }
             } catch (JSONException e) {
 
+            } catch (NullPointerException e) {
+
             }
             return null;
         }
