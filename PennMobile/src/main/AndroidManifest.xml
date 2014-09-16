@@ -34,17 +34,17 @@
         android:glEsVersion="0x00020000"
         android:required="true" />
 
-    <uses-library
-        android:name="com.google.android.maps"
-        android:required="false" />
-
-    <!-- end maps API ish -->
-
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
+
+        <uses-library
+            android:name="com.google.android.maps"
+            android:required="false" />
+        <!-- end maps API ish -->
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
