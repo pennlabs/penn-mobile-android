@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
@@ -54,7 +55,7 @@ public class TransitExpListFragment extends Fragment {
         mActivity = getActivity();
         mRoutes = new ArrayList<BusRoute>();
         mDistanceArr = new ArrayList<BusStopDist>();
-        LocationManager service = (LocationManager) mActivity.getSystemService(mActivity.LOCATION_SERVICE);
+        LocationManager service = (LocationManager) mActivity.getSystemService(Context.LOCATION_SERVICE);
         boolean enabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (!enabled) {
@@ -196,7 +197,7 @@ public class TransitExpListFragment extends Fragment {
             }
 
             mAdapter = new NewExpListViewAdapter(mDistanceArr, routesByStop, mActivity);
-            mAdapter.setInflater((LayoutInflater) mActivity.getSystemService(mActivity.LAYOUT_INFLATER_SERVICE), mActivity);
+            mAdapter.setInflater((LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE), mActivity);
             mExpLV.setAdapter(mAdapter);
         }
     }
