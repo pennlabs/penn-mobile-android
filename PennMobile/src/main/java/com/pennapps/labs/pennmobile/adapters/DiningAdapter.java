@@ -23,9 +23,7 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         DiningHall diningHall = getItem(position);
-        View view = convertView;
-
-        view = LayoutInflater.from(getContext())
+        View view = LayoutInflater.from(getContext())
                 .inflate(R.layout.dining_list_item, null);
 
         TextView hallNameTV = (TextView) view.findViewById(R.id.dining_hall_name);

@@ -67,7 +67,6 @@ public class TransitExpListFragment extends Fragment {
         // mAPI.setUrlPath("stopinventory");
 
         Log.v("vivlabs", service.getLastKnownLocation(LocationManager.GPS_PROVIDER).toString());
-        Location mLocation = service.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         // 39.952960, -75.201339
         // new GetRequestTask(mLocation.getLatitude(), mLocation.getLongitude()).execute();
         new GetStopsTask(39.952960, -75.201339).execute();
