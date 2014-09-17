@@ -13,8 +13,6 @@ import com.pennapps.labs.pennmobile.R;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Set;
 
 public class DiningAdapter extends ArrayAdapter<DiningHall> {
 
