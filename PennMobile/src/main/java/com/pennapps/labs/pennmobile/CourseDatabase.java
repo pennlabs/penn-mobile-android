@@ -122,7 +122,7 @@ public class CourseDatabase {
                 String myPath = DB_PATH + DB_NAME;
                 checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
             } catch (SQLiteException e) {
-                //database does't exist yet.
+                // database doesn't exist yet.
             }
 
             if (checkDB != null) {
