@@ -119,8 +119,7 @@ public class TransitExpListFragment extends Fragment {
                     }
                 }
 
-                for (int i = 0; i < mTransitArr.size(); i++) {
-                    BusStop currentStop = mTransitArr.get(i);
+                for (BusStop currentStop : mTransitArr) {
                     double x = Math.abs(currentStop.getLatitude() - latitude);
                     double y = Math.abs(currentStop.getLongitude() - longitude);
                     double distance = Math.sqrt(x * x + y * y);
