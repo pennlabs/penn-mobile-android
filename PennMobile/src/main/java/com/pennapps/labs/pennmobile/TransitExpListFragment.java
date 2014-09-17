@@ -90,8 +90,7 @@ public class TransitExpListFragment extends Fragment {
             try {
                 JSONObject resultObj = mAPI.getCourse("stopinventory");
                 responseArr = (JSONArray) resultObj.get("result_data");
-                if (responseArr.length() == 0) return false;
-                return true;
+                return responseArr.length() != 0;
             } catch (Exception e) {
                 return false;
             }
@@ -152,8 +151,7 @@ public class TransitExpListFragment extends Fragment {
             try {
                 JSONObject resultObj = mAPI.getCourse("511/Configuration");
                 responseArr = (JSONArray) ((JSONObject) ((JSONObject) resultObj.get("result_data")).get("ConfigurationData")).get("Route");
-                if (responseArr.length() == 0) return false;
-                return true;
+                return responseArr.length() != 0;
             } catch (Exception e) {
                 Log.v("vivlabs", "" + e);
                 return false;
