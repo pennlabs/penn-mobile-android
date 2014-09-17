@@ -17,11 +17,6 @@ public class DirectorySearchFragment extends Fragment implements View.OnClickLis
     public static final String LAST_NAME_INTENT_EXTRA = "LAST_NAME";
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_directory_search, container, false);
         mFirstName = (EditText) v.findViewById(R.id.directory_first_name);
