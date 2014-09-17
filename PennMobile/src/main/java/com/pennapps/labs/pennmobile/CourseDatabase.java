@@ -101,9 +101,7 @@ public class CourseDatabase {
         public void createDatabase() throws IOException {
             boolean dbExist = checkDatabase();
 
-            if (dbExist) {
-                // do nothing - database already exists
-            } else {
+            if (!dbExist) {
                 this.getReadableDatabase();
 
                 try {
