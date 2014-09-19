@@ -22,6 +22,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.pennapps.labs.pennmobile.api.RegistrarAPI;
 import com.pennapps.labs.pennmobile.pcr.RegCourse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,6 +31,10 @@ public class RegistrarFragment extends Fragment {
 
     private RegistrarAPI mAPI;
     private TextView mTextView;
+    private TextView courseCodeTextView;
+    private TextView courseTitleTextView;
+    private TextView instructorTextView;
+    private TextView locationTextView;
     private GoogleMap map;
     private SupportMapFragment mapFragment;
 
@@ -44,6 +49,10 @@ public class RegistrarFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_registrar, container, false);
         mTextView = (TextView) v.findViewById(R.id.temp);
+        courseCodeTextView = (TextView) v.findViewById(R.id.course_code);
+        courseTitleTextView = (TextView) v.findViewById(R.id.course_title);
+        instructorTextView = (TextView) v.findViewById(R.id.instructor);
+        locationTextView = (TextView) v.findViewById(R.id.location);
         return v;
     }
 
@@ -129,17 +138,17 @@ public class RegistrarFragment extends Fragment {
                     map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 15));
                 }
 
-                String displayText = course.getCourseDept() + " " + course.getCourseNumber() + "\n" +
-                                     course.getCourseTitle() + "\n";
+                String courseCodeText = course.getCourseDept() + " " + course.getCourseNumber();
+                courseCodeTextView.setText(courseCodeText);
 
-                for (int i = 0; i < course.getInstructors().length; i++) {
-                    displayText += course.getInstructors()[i] + "\n";
-                }
+                String courseTitleText = course.getCourseTitle();
+                courseTitleTextView.setText(courseTitleText);
 
-                displayText += course.getActivity() + "\n" +
-                               course.getBuildingCode() + " " + course.getRoomNumber() + "\n";
+                String instructorsText = StringUtils.join(course.getInstructors(), ", ");
+                instructorTextView.setText(instructorsText);
 
-                mTextView.setText(displayText);
+                String locationText = course.getBuildingCode() + " " + course.getRoomNumber();
+                locationTextView.setText(locationText);
             } catch (JSONException e) {
 
             }
