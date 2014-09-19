@@ -3,7 +3,6 @@
 
     <string name="app_name">PennMobile</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
     <string name="title_activity_registrar">RegistrarActivity</string>
     <string name="title_activity_registrar_search">RegistrarSearchActivity</string>
     <string name="title_activity_directory_search">Penn Directory</string>

@@ -10,8 +10,38 @@
     android:paddingBottom="@dimen/activity_vertical_margin">
 
     <TextView
+        android:id="@+id/course_code"
+        android:textSize="50sp"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/course_title"
+        android:textSize="20sp"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/instructor"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/location"
+        android:textSize="25sp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
         android:id="@+id/temp"
-        android:textSize="30sp"
+        android:textSize="20sp"
         android:fontFamily="sans-serif-light"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
