@@ -120,6 +120,6 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void setTitle(CharSequence title) {
-        getActionBar().setTitle("PennMobile: " + title);
+        getActionBar().setTitle(title);
     }
 }
