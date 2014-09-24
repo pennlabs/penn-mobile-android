@@ -46,7 +46,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyAemxlp0iO3p2CMEn7n6FO3CkljTkxZP-w" />
+            android:value="AIzaSyDFOB7fgIQubKyOjjrmsgNoDt-xRvlBDrk" />
 
         <activity
             android:name="com.pennapps.labs.pennmobile.MainActivity"
