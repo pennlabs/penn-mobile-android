@@ -1,0 +1,58 @@
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/button_table"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context="com.pennapps.labs.pennmobile.MainFragment">
+
+    <TableRow
+        android:layout_weight="1"
+        android:layout_gravity="center">
+
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
+            android:layout_gravity="center">
+
+            <TextView
+                android:id="@+id/registrar_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textSize="50sp"
+                android:onClick="onClick"
+                android:clickable="true"
+                android:text="Registrar"/>
+
+        </RelativeLayout>
+
+    </TableRow>
+
+    <TableRow
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:layout_width="fill_parent"
+        android:baselineAligned="true">
+
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
+            android:layout_gravity="center">
+
+            <TextView
+                android:id="@+id/directory_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textSize="50sp"
+                android:onClick="onClick"
+                android:clickable="true"
+                android:text="Directory"/>
+
+        </RelativeLayout>
+
+    </TableRow>
+
+</TableLayout>

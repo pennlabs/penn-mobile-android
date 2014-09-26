@@ -4,6 +4,7 @@ import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.view.Menu;
@@ -14,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.content.res.Configuration;
 import android.R.id;
+import android.widget.TextView;
 
 public class MainActivity extends FragmentActivity {
 
@@ -58,6 +60,11 @@ public class MainActivity extends FragmentActivity {
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item, mFeatureTitles));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+        // Set default fragment to MainFragment
+        FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+        tx.replace(R.id.content_frame, new MainFragment());
+        tx.commit();
     }
 
     @Override
@@ -117,6 +124,16 @@ public class MainActivity extends FragmentActivity {
         mDrawerList.setItemChecked(position, true);
         setTitle(mFeatureTitles[position]);
         mDrawerLayout.closeDrawer(mDrawerList);
+    }
+
+    public void onClick(View v) {
+        // Click event handler for the main menu on first open
+        CharSequence viewText = ((TextView) v).getText();
+        if (viewText.equals("Registrar")) {
+            selectItem(0);
+        } else if (viewText.equals("Directory")) {
+            selectItem(1);
+        }
     }
 
     public void setTitle(CharSequence title) {
