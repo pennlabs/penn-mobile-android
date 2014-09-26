@@ -29,7 +29,7 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mFeatureTitles = new String[] {"Registrar", "Directory"};
+        mFeatureTitles = new String[] {"Home", "Registrar", "Directory"};
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -110,8 +110,10 @@ public class MainActivity extends FragmentActivity {
     private void selectItem(int position) {
         Fragment fragment = null;
         if (position == 0) {
+            fragment = new MainFragment();
+        } if (position == 1) {
             fragment = new RegistrarSearchFragment();
-        } else if (position == 1) {
+        } else if (position == 2) {
             fragment = new DirectorySearchFragment();
         }
 
@@ -130,9 +132,9 @@ public class MainActivity extends FragmentActivity {
         // Click event handler for the main menu on first open
         CharSequence viewText = ((TextView) v).getText();
         if (viewText.equals("Registrar")) {
-            selectItem(0);
-        } else if (viewText.equals("Directory")) {
             selectItem(1);
+        } else if (viewText.equals("Directory")) {
+            selectItem(2);
         }
     }
 
