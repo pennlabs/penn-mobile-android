@@ -1,17 +1,26 @@
 package com.pennapps.labs.pennmobile;
 
 import android.app.Activity;
+import android.app.SearchManager;
+import android.content.Context;
 import android.database.Cursor;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.adapters.RegistrarAdapter;
 
@@ -22,8 +31,10 @@ public class RegistrarSearchFragment extends Fragment {
     private CourseDatabase courseDatabase;
     public static Fragment mFragment;
     private Activity mActivity;
-    private EditText mHeader;
     private RegistrarAdapter mAdapter;
+    private TextView textView;
+    private SearchView searchView;
+    private String search_currentQuery = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,7 +48,6 @@ public class RegistrarSearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_registrar_search, container, false);
-        mHeader = (EditText) v.findViewById(R.id.header);
 
         return v;
     }
@@ -46,29 +56,53 @@ public class RegistrarSearchFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
+    }
 
-        mHeader.addTextChangedListener(new TextWatcher() {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.registrar_search:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.registrar, menu);
+
+        searchView = (SearchView) menu.findItem(R.id.registrar_search).getActionView();
+        final SearchView.OnQueryTextListener queryListener = new SearchView.OnQueryTextListener() {
+
             @Override
-            public void onTextChanged( CharSequence arg0, int arg1, int arg2, int arg3) {
+            public boolean onQueryTextChange(String arg0) {
+                return true;
             }
 
             @Override
-            public void beforeTextChanged( CharSequence arg0, int arg1, int arg2, int arg3) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                Cursor cursor = courseDatabase.getWordMatches(arg0.toString(), null);
+            public boolean onQueryTextSubmit(String arg0) {
+                Cursor cursor = courseDatabase.getWordMatches(arg0, null);
                 RegistrarListFragment listFragment = new RegistrarListFragment();
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                 transaction.replace(R.id.registrar_fragment, listFragment, "LIST")
-                           .addToBackStack(null)
-                           .commit();
+                        .addToBackStack(null)
+                        .commit();
                 mAdapter = new RegistrarAdapter(mActivity.getApplicationContext(),
                         R.layout.search_entry, cursor, 0);
                 listFragment.setListAdapter(mAdapter);
+                textView.setText(arg0);
+                searchView.setQuery(arg0, false);
+                return true;
             }
-        });
+        };
+        int id = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+        textView = (TextView) searchView.findViewById(id);
+        textView.setTextColor(Color.WHITE);
+        searchView.setOnQueryTextListener(queryListener);
     }
 
 }
