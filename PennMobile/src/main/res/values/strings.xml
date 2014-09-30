@@ -11,5 +11,6 @@
     <string name="drawer_open">Open drawer</string>
     <string name="drawer_close">Close drawer</string>
     <string name="registrar_search">Search for courses</string>
+    <string name="directory_search">Search for people</string>
 
 </resources>
