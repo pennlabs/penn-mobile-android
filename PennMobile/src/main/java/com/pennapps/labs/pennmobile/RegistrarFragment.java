@@ -87,7 +87,11 @@ public class RegistrarFragment extends Fragment {
         Geocoder geocoder = new Geocoder(getActivity().getApplicationContext());
         try {
             List<Address> locationList = geocoder.getFromLocationName(course.getBuildingName(), 1);
-            return new LatLng(locationList.get(0).getLatitude(), locationList.get(0).getLongitude());
+            try {
+                return new LatLng(locationList.get(0).getLatitude(), locationList.get(0).getLongitude());
+            } catch (IndexOutOfBoundsException e) {
+                return new LatLng(39.95198, -75.19368);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
