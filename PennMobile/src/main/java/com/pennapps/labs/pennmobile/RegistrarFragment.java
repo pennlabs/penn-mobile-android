@@ -2,6 +2,8 @@ package com.pennapps.labs.pennmobile;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -27,6 +29,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.List;
 
 public class RegistrarFragment extends Fragment {
 
@@ -77,6 +82,16 @@ public class RegistrarFragment extends Fragment {
                 map.addMarker(new MarkerOptions().position(new LatLng(39.952960, -75.201339)));
             }
         }
+    }
+    public LatLng getBuildingLatLng(RegCourse course) {
+        Geocoder geocoder = new Geocoder(getActivity().getApplicationContext());
+        try {
+            List<Address> locationList = geocoder.getFromLocationName(course.getBuildingName(), 1);
+            return new LatLng(locationList.get(0).getLatitude(), locationList.get(0).getLongitude());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new LatLng(39.952960, -75.201339);
     }
 
     private class GetRequestTask extends AsyncTask<Void, Void, Boolean> {
@@ -133,10 +148,10 @@ public class RegistrarFragment extends Fragment {
                                         section_id(meetings.get("section_id_normalized").toString()).
                                         build();
 
-                // TODO: replace this with course.getBuildingCode.etc
-                LatLng courseLatLng = new LatLng(39.952960, -75.201339);
+                LatLng courseLatLng = getBuildingLatLng(course);
+
                 if (map != null) {
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 15));
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 17));
                 }
 
                 String courseCodeText = course.getCourseDept() + " " + course.getCourseNumber();
