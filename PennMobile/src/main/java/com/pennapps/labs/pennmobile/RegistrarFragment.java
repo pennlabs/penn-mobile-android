@@ -79,7 +79,7 @@ public class RegistrarFragment extends Fragment {
         if (map == null) {
             map = mapFragment.getMap();
             if (map != null) {
-                map.addMarker(new MarkerOptions().position(new LatLng(39.952960, -75.201339)));
+                map.addMarker(new MarkerOptions().position(new LatLng(39.95198, -75.19368)));
             }
         }
     }
@@ -91,7 +91,7 @@ public class RegistrarFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new LatLng(39.952960, -75.201339);
+        return new LatLng(39.95198, -75.19368);
     }
 
     private class GetRequestTask extends AsyncTask<Void, Void, Boolean> {
