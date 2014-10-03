@@ -14,6 +14,7 @@ import com.pennapps.labs.pennmobile.adapters.DiningAdapter;
 import com.pennapps.labs.pennmobile.api.DiningAPI;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -54,13 +55,14 @@ public class DiningFragment extends ListFragment {
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                JSONObject resultObj = mAPI.getDiningInfo("open");
-                Iterator<String> keys = resultObj.keys();
-                while(keys.hasNext()) {
-                    String key = keys.next();
-                    int id = Integer.parseInt(resultObj.get(key).toString());
-                    boolean open = resultObj.get(key).toString().equals("true");
-                    mDiningHalls.add(new DiningHall(id, key, open));
+                JSONObject resultObj = mAPI.getVenues();
+                JSONArray venues = resultObj.getJSONArray("venue");
+                for (int i = 0; i < venues.length(); i++) {
+                    JSONObject venue = venues.getJSONObject(i);
+                    int id = venue.getInt("id");
+                    String name = venue.getString("name");
+                    boolean isResidential = venue.getString("venueType").equals("residential");
+                    mDiningHalls.add(new DiningHall(id, name, isResidential));
                 }
             } catch (JSONException e) {
 
