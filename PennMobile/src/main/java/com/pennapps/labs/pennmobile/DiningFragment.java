@@ -56,7 +56,7 @@ public class DiningFragment extends ListFragment {
         protected Void doInBackground(Void... params) {
             try {
                 JSONObject resultObj = mAPI.getVenues();
-                JSONArray venues = resultObj.getJSONArray("venue");
+                JSONArray venues = resultObj.getJSONObject("document").getJSONArray("venue");
                 for (int i = 0; i < venues.length(); i++) {
                     JSONObject venue = venues.getJSONObject(i);
                     int id = venue.getInt("id");
