@@ -55,4 +55,30 @@
 
     </TableRow>
 
+    <TableRow
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:layout_width="fill_parent"
+        android:baselineAligned="true">
+
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
+            android:layout_gravity="center">
+
+            <TextView
+                android:id="@+id/dining_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textSize="50sp"
+                android:onClick="onClick"
+                android:clickable="true"
+                android:text="Dining"/>
+
+        </RelativeLayout>
+
+    </TableRow>
+
 </TableLayout>
