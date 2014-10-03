@@ -12,8 +12,8 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
     <!-- for Penn Transit API -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <!-- for Directory Phone #'s -->
     <uses-permission android:name="android.permission.CALL_PHONE" />
@@ -34,8 +34,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
-
+        android:theme="@style/AppTheme" >
         <uses-library
             android:name="com.google.android.maps"
             android:required="false" />
@@ -49,12 +48,17 @@
             android:value="AIzaSyDFOB7fgIQubKyOjjrmsgNoDt-xRvlBDrk" />
 
         <activity
-            android:name="com.pennapps.labs.pennmobile.MainActivity"
+            android:name=".MainActivity"
             android:label="PennMobile" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".DiningActivity"
+            android:label="@string/title_activity_dining" >
         </activity>
     </application>
 
