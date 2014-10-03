@@ -81,38 +81,38 @@ public class DiningFragment extends ListFragment {
     private class GetMenusTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            try {
-                for (DiningHall mDiningHall : mDiningHalls) {
-                    JSONObject resultObj = mAPI.getDiningInfo("scrape/" + mDiningHall.getName());
-
-                    if (resultObj.has("dinner")) {
-                        JSONObject dinnerObj = (JSONObject) resultObj.get("dinner");
-                        HashMap<String, String> currentMenu = new HashMap<String, String>();
-                        Iterator<String> keys = dinnerObj.keys();
-                        while (keys.hasNext()) {
-                            String key = keys.next();
-                            currentMenu.put(key, dinnerObj.get(key).toString()
-                                    .replace("[", "").replace("]", "").replace("\"", ""));
-                        }
-
-                        mDiningHall.setDinnerMenu(currentMenu);
-                    }
-
-                    if (resultObj.has("lunch")) {
-                        JSONObject lunchObj = (JSONObject) resultObj.get("lunch");
-                        HashMap<String, String> currentMenu = new HashMap<String, String>();
-                        Iterator<String> keys = lunchObj.keys();
-                        while (keys.hasNext()) {
-                            String key = keys.next();
-                            currentMenu.put(key, lunchObj.get(key).toString());
-                        }
-
-                        mDiningHall.setLunchMenu(currentMenu);
-                    }
-                }
-            } catch (JSONException e) {
-
-            }
+//            try {
+//                for (DiningHall mDiningHall : mDiningHalls) {
+//                    JSONObject resultObj = mAPI.getDiningInfo("scrape/" + mDiningHall.getName());
+//
+//                    if (resultObj.has("dinner")) {
+//                        JSONObject dinnerObj = (JSONObject) resultObj.get("dinner");
+//                        HashMap<String, String> currentMenu = new HashMap<String, String>();
+//                        Iterator<String> keys = dinnerObj.keys();
+//                        while (keys.hasNext()) {
+//                            String key = keys.next();
+//                            currentMenu.put(key, dinnerObj.get(key).toString()
+//                                    .replace("[", "").replace("]", "").replace("\"", ""));
+//                        }
+//
+//                        mDiningHall.setDinnerMenu(currentMenu);
+//                    }
+//
+//                    if (resultObj.has("lunch")) {
+//                        JSONObject lunchObj = (JSONObject) resultObj.get("lunch");
+//                        HashMap<String, String> currentMenu = new HashMap<String, String>();
+//                        Iterator<String> keys = lunchObj.keys();
+//                        while (keys.hasNext()) {
+//                            String key = keys.next();
+//                            currentMenu.put(key, lunchObj.get(key).toString());
+//                        }
+//
+//                        mDiningHall.setLunchMenu(currentMenu);
+//                    }
+//                }
+//            } catch (JSONException e) {
+//
+//            }
             return null;
         }
 
