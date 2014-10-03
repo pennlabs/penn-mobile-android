@@ -17,6 +17,10 @@ public class DiningHall {
         this.residential = residential;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
@@ -42,5 +46,10 @@ public class DiningHall {
 
     public HashMap<String, String> getLunchMenu() {
         return lunchMenu;
+    }
+
+    public class Meal {
+        public String name;
+        public HashMap<String, String> menu;
     }
 }

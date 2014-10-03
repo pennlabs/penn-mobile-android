@@ -81,38 +81,45 @@ public class DiningFragment extends ListFragment {
     private class GetMenusTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-//            try {
-//                for (DiningHall mDiningHall : mDiningHalls) {
-//                    JSONObject resultObj = mAPI.getDiningInfo("scrape/" + mDiningHall.getName());
-//
-//                    if (resultObj.has("dinner")) {
-//                        JSONObject dinnerObj = (JSONObject) resultObj.get("dinner");
-//                        HashMap<String, String> currentMenu = new HashMap<String, String>();
-//                        Iterator<String> keys = dinnerObj.keys();
-//                        while (keys.hasNext()) {
-//                            String key = keys.next();
-//                            currentMenu.put(key, dinnerObj.get(key).toString()
-//                                    .replace("[", "").replace("]", "").replace("\"", ""));
-//                        }
-//
-//                        mDiningHall.setDinnerMenu(currentMenu);
-//                    }
-//
-//                    if (resultObj.has("lunch")) {
-//                        JSONObject lunchObj = (JSONObject) resultObj.get("lunch");
-//                        HashMap<String, String> currentMenu = new HashMap<String, String>();
-//                        Iterator<String> keys = lunchObj.keys();
-//                        while (keys.hasNext()) {
-//                            String key = keys.next();
-//                            currentMenu.put(key, lunchObj.get(key).toString());
-//                        }
-//
-//                        mDiningHall.setLunchMenu(currentMenu);
-//                    }
-//                }
-//            } catch (JSONException e) {
-//
-//            }
+            try {
+                for (DiningHall mDiningHall : mDiningHalls) {
+                    if (mDiningHall.isResidential()) {
+                        JSONObject resultObj = mAPI.getDailyMenu(mDiningHall.getId());
+
+                        JSONArray meals = resultObj.getJSONObject("Document")
+                                .getJSONObject("tblMenu")
+                                .getJSONArray("tblDayPart");
+
+                        for (int i = 0; i < meals.length(); i++) {
+                            JSONObject meal = meals.getJSONObject(i);
+
+                            String mealName = meal.getString("txtDayPartDescription");
+
+                            JSONArray stations = meal.getJSONArray("tblStation");
+                            HashMap<String, String> currentMenu = new HashMap<String, String>();
+                            for (int j = 0; j < stations.length(); j++) {
+                                JSONObject station = stations.getJSONObject(j);
+
+                                String stationName = station.getString("txtStationDescription");
+                                JSONArray stationItems = station.getJSONArray("tblItem");
+                                for (int k = 0; k < stationItems.length(); k++) {
+                                    JSONObject foodItem = stationItems.getJSONObject(k);
+                                    String foodName = foodItem.getString("txtTitle");
+                                    currentMenu.put(stationName, foodName);
+                                }
+                            }
+
+                            if (mealName.equals("Lunch")) {
+                                mDiningHall.setLunchMenu(currentMenu);
+                            } else if (mealName.equals("Dinner")) {
+                                mDiningHall.setDinnerMenu(currentMenu);
+                            }
+                        }
+                    }
+                }
+            } catch (JSONException e) {
+
+            }
             return null;
         }
 

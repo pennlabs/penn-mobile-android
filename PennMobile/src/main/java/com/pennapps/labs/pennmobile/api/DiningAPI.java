@@ -54,7 +54,7 @@ public class DiningAPI extends API {
         }
     }
 
-    public JSONObject getDailyMenu(String hallID) {
+    public JSONObject getDailyMenu(int hallID) {
         HttpGet httpGet = new HttpGet(BASE_URL + "daily_menu/" + hallID);
         try {
             HttpResponse response = httpClient.execute(httpGet);
