@@ -32,8 +32,7 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
         TextView dinnerMenuTV = (TextView) view.findViewById(R.id.dining_hall_dinner);
         TextView lunchMenuTV = (TextView) view.findViewById(R.id.dining_hall_lunch);
 
-        String open = diningHall.isOpen() ? "Open" : "Closed";
-        hallNameTV.setText(WordUtils.capitalizeFully(diningHall.getName() + ": " + open));
+        hallNameTV.setText(WordUtils.capitalizeFully(diningHall.getName()));
         dinnerMenuTV.setText("DINNER");
         lunchMenuTV.setText("LUNCH");
 

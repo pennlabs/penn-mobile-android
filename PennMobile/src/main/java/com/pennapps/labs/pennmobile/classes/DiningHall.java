@@ -6,22 +6,26 @@ public class DiningHall {
 
     private int id;
     private String name;
-    private boolean open;
+    // Refers to whether the dining hall is residential or retail
+    private boolean residential;
     private HashMap<String, String> dinnerMenu;
     private HashMap<String, String> lunchMenu;
 
-    public DiningHall(String name, boolean open) {
+    public DiningHall(int id, String name, boolean residential) {
         this.id = id;
         this.name = name;
-        this.open = open;
+        this.residential = residential;
     }
 
     public String getName() {
         return name;
     }
 
-    public boolean isOpen() {
-        return open;
+    public boolean isResidential() {
+        return residential;
+    }
+    public boolean isRetail() {
+        return !residential;
     }
 
     public void setDinnerMenu(HashMap<String, String> dinnerMenu) {

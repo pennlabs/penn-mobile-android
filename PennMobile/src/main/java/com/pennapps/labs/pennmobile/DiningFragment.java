@@ -58,8 +58,9 @@ public class DiningFragment extends ListFragment {
                 Iterator<String> keys = resultObj.keys();
                 while(keys.hasNext()) {
                     String key = keys.next();
+                    int id = Integer.parseInt(resultObj.get(key).toString());
                     boolean open = resultObj.get(key).toString().equals("true");
-                    mDiningHalls.add(new DiningHall(key, open));
+                    mDiningHalls.add(new DiningHall(id, key, open));
                 }
             } catch (JSONException e) {
 
