@@ -4,12 +4,14 @@ import java.util.HashMap;
 
 public class DiningHall {
 
+    private int id;
     private String name;
     private boolean open;
     private HashMap<String, String> dinnerMenu;
     private HashMap<String, String> lunchMenu;
 
     public DiningHall(String name, boolean open) {
+        this.id = id;
         this.name = name;
         this.open = open;
     }

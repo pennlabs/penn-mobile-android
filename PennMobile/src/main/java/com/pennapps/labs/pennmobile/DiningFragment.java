@@ -79,32 +79,32 @@ public class DiningFragment extends ListFragment {
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                for (int i = 0; i < mDiningHalls.size(); i++) {
-                    JSONObject resultObj = mAPI.getDiningInfo("scrape/" + mDiningHalls.get(i).getName());
+                for (DiningHall mDiningHall : mDiningHalls) {
+                    JSONObject resultObj = mAPI.getDiningInfo("scrape/" + mDiningHall.getName());
 
                     if (resultObj.has("dinner")) {
                         JSONObject dinnerObj = (JSONObject) resultObj.get("dinner");
                         HashMap<String, String> currentMenu = new HashMap<String, String>();
                         Iterator<String> keys = dinnerObj.keys();
-                        while(keys.hasNext()) {
+                        while (keys.hasNext()) {
                             String key = keys.next();
                             currentMenu.put(key, dinnerObj.get(key).toString()
-                                            .replace("[", "").replace("]", "").replace("\"", ""));
+                                    .replace("[", "").replace("]", "").replace("\"", ""));
                         }
 
-                        mDiningHalls.get(i).setDinnerMenu(currentMenu);
+                        mDiningHall.setDinnerMenu(currentMenu);
                     }
 
                     if (resultObj.has("lunch")) {
                         JSONObject lunchObj = (JSONObject) resultObj.get("lunch");
                         HashMap<String, String> currentMenu = new HashMap<String, String>();
-                        Iterator<String>keys = lunchObj.keys();
-                        while(keys.hasNext()) {
+                        Iterator<String> keys = lunchObj.keys();
+                        while (keys.hasNext()) {
                             String key = keys.next();
                             currentMenu.put(key, lunchObj.get(key).toString());
                         }
 
-                        mDiningHalls.get(i).setLunchMenu(currentMenu);
+                        mDiningHall.setLunchMenu(currentMenu);
                     }
                 }
             } catch (JSONException e) {
