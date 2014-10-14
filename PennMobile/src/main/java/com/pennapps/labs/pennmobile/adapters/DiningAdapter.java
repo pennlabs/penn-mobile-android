@@ -36,6 +36,14 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
         dinnerMenuTV.setText("DINNER");
         lunchMenuTV.setText("LUNCH");
 
+        if (diningHall.getLunchMenu() != null) {
+            String lunchText = "";
+            for (String key : diningHall.getLunchMenu().keySet()) {
+                lunchText += key + ": " + diningHall.getLunchMenu().get(key) + "\n";
+            }
+            lunchMenuTV.setText(lunchText);
+        }
+
         if (diningHall.getDinnerMenu() != null) {
             String dinnerText = "";
             for (String key : diningHall.getDinnerMenu().keySet()) {

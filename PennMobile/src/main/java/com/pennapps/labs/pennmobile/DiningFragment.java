@@ -62,7 +62,8 @@ public class DiningFragment extends ListFragment {
                     int id = venue.getInt("id");
                     String name = venue.getString("name");
                     boolean isResidential = venue.getString("venueType").equals("residential");
-                    mDiningHalls.add(new DiningHall(id, name, isResidential));
+                    boolean hasMenu = !venue.getString("dailyMenuURL").isEmpty();
+                    mDiningHalls.add(new DiningHall(id, name, isResidential, hasMenu));
                 }
             } catch (JSONException e) {
 
@@ -83,7 +84,7 @@ public class DiningFragment extends ListFragment {
         protected Void doInBackground(Void... params) {
             try {
                 for (DiningHall mDiningHall : mDiningHalls) {
-                    if (mDiningHall.isResidential()) {
+                    if (mDiningHall.isResidential() && mDiningHall.hasMenu()) {
                         JSONObject resultObj = mAPI.getDailyMenu(mDiningHall.getId());
 
                         JSONArray meals = resultObj.getJSONObject("Document")
@@ -95,13 +96,25 @@ public class DiningFragment extends ListFragment {
 
                             String mealName = meal.getString("txtDayPartDescription");
 
-                            JSONArray stations = meal.getJSONArray("tblStation");
+                            JSONArray stations = new JSONArray();
+                            try {
+                                stations = meal.getJSONArray("tblStation");
+                            } catch (JSONException e) {
+                                JSONObject stationsObject = meal.getJSONObject("tblStation");
+                                stations.put(stationsObject);
+                            }
                             HashMap<String, String> currentMenu = new HashMap<String, String>();
                             for (int j = 0; j < stations.length(); j++) {
                                 JSONObject station = stations.getJSONObject(j);
 
                                 String stationName = station.getString("txtStationDescription");
-                                JSONArray stationItems = station.getJSONArray("tblItem");
+                                JSONArray stationItems = new JSONArray();
+                                try {
+                                    stationItems = station.getJSONArray("tblItem");
+                                } catch (JSONException e) {
+                                    JSONObject stationItem = station.getJSONObject("tblItem");
+                                    stationItems.put(stationItem);
+                                }
                                 for (int k = 0; k < stationItems.length(); k++) {
                                     JSONObject foodItem = stationItems.getJSONObject(k);
                                     String foodName = foodItem.getString("txtTitle");
