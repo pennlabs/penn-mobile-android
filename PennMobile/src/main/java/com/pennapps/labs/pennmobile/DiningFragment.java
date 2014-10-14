@@ -93,40 +93,7 @@ public class DiningFragment extends ListFragment {
 
                         for (int i = 0; i < meals.length(); i++) {
                             JSONObject meal = meals.getJSONObject(i);
-
-                            String mealName = meal.getString("txtDayPartDescription");
-
-                            JSONArray stations = new JSONArray();
-                            try {
-                                stations = meal.getJSONArray("tblStation");
-                            } catch (JSONException e) {
-                                JSONObject stationsObject = meal.getJSONObject("tblStation");
-                                stations.put(stationsObject);
-                            }
-                            HashMap<String, String> currentMenu = new HashMap<String, String>();
-                            for (int j = 0; j < stations.length(); j++) {
-                                JSONObject station = stations.getJSONObject(j);
-
-                                String stationName = station.getString("txtStationDescription");
-                                JSONArray stationItems = new JSONArray();
-                                try {
-                                    stationItems = station.getJSONArray("tblItem");
-                                } catch (JSONException e) {
-                                    JSONObject stationItem = station.getJSONObject("tblItem");
-                                    stationItems.put(stationItem);
-                                }
-                                for (int k = 0; k < stationItems.length(); k++) {
-                                    JSONObject foodItem = stationItems.getJSONObject(k);
-                                    String foodName = foodItem.getString("txtTitle");
-                                    currentMenu.put(stationName, foodName);
-                                }
-                            }
-
-                            if (mealName.equals("Lunch")) {
-                                mDiningHall.setLunchMenu(currentMenu);
-                            } else if (mealName.equals("Dinner")) {
-                                mDiningHall.setDinnerMenu(currentMenu);
-                            }
+                            parseMeal(meal, mDiningHall);
                         }
                     }
                 }
@@ -134,6 +101,53 @@ public class DiningFragment extends ListFragment {
 
             }
             return null;
+        }
+
+        private void parseMeal(JSONObject meal, DiningHall diningHall) {
+            try {
+                String mealName = meal.getString("txtDayPartDescription");
+
+                JSONArray stations = new JSONArray();
+                try {
+                    stations = meal.getJSONArray("tblStation");
+                } catch (JSONException e) {
+                    JSONObject stationsObject = meal.getJSONObject("tblStation");
+                    stations.put(stationsObject);
+                }
+                HashMap<String, String> currentMenu = new HashMap<String, String>();
+                for (int j = 0; j < stations.length(); j++) {
+                    JSONObject station = stations.getJSONObject(j);
+                    parseStation(station, currentMenu);
+                }
+
+                if (mealName.equals("Lunch")) {
+                    diningHall.setLunchMenu(currentMenu);
+                } else if (mealName.equals("Dinner")) {
+                    diningHall.setDinnerMenu(currentMenu);
+                }
+            } catch (JSONException e) {
+
+            }
+        }
+
+        private void parseStation(JSONObject station, HashMap<String, String> menu) {
+            try {
+                String stationName = station.getString("txtStationDescription");
+                JSONArray stationItems = new JSONArray();
+                try {
+                    stationItems = station.getJSONArray("tblItem");
+                } catch (JSONException e) {
+                    JSONObject stationItem = station.getJSONObject("tblItem");
+                    stationItems.put(stationItem);
+                }
+                for (int k = 0; k < stationItems.length(); k++) {
+                    JSONObject foodItem = stationItems.getJSONObject(k);
+                    String foodName = foodItem.getString("txtTitle");
+                    menu.put(stationName, foodName);
+                }
+            } catch (JSONException e) {
+
+            }
         }
 
         @Override
