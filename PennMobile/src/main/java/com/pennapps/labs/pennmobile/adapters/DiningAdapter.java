@@ -13,6 +13,7 @@ import com.pennapps.labs.pennmobile.R;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class DiningAdapter extends ArrayAdapter<DiningHall> {
 
@@ -38,16 +39,20 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
 
         if (diningHall.getLunchMenu() != null) {
             String lunchText = "";
-            for (String key : diningHall.getLunchMenu().keySet()) {
-                lunchText += key + ": " + diningHall.getLunchMenu().get(key) + "\n";
+            for (Map.Entry<String, String> menuItem : diningHall.getLunchMenu().entrySet()) {
+                String key = menuItem.getKey();
+                String value = menuItem.getValue();
+                lunchText += key + ": " + value + "\n";
             }
             lunchMenuTV.setText(lunchText);
         }
 
         if (diningHall.getDinnerMenu() != null) {
             String dinnerText = "";
-            for (String key : diningHall.getDinnerMenu().keySet()) {
-                dinnerText += key + ": " + diningHall.getDinnerMenu().get(key) + "\n";
+            for (Map.Entry<String, String> menuItem : diningHall.getDinnerMenu().entrySet()) {
+                String key = menuItem.getKey();
+                String value = menuItem.getValue();
+                dinnerText += key + ": " + value + "\n";
             }
             dinnerMenuTV.setText(dinnerText);
         }
