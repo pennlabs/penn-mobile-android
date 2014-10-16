@@ -18,7 +18,7 @@ public class DiningHall {
     // Refers to whether the dining hall is residential or retail
     private boolean residential;
     private boolean hasMenu;
-    public HashMap<String, Interval> openHours;
+    private HashMap<String, Interval> openHours;
     private HashMap<String, String> dinnerMenu;
     private HashMap<String, String> lunchMenu;
 
