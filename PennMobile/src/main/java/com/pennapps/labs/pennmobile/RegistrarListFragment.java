@@ -14,8 +14,8 @@ public class RegistrarListFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View v = inflater.inflate(R.layout.fragment_registrar_list, container, false);
-        return v;
+
+        return inflater.inflate(R.layout.fragment_registrar_list, container, false);
     }
 
     @Override

@@ -46,8 +46,7 @@ public class DiningFragment extends ListFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_dining, container, false);
-        return v;
+        return inflater.inflate(R.layout.fragment_dining, container, false);
     }
 
     private class GetOpenTask extends AsyncTask<Void, Void, Void> {
