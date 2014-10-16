@@ -149,7 +149,7 @@ public class MainActivity extends FragmentActivity {
         try {
             getActionBar().setTitle(title);
         } catch (NullPointerException e) {
-            getActionBar().setTitle("");
+            getActionBar().setTitle("PennMobile");
         }
     }
 }
