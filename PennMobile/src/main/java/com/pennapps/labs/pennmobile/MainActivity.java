@@ -29,7 +29,7 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mFeatureTitles = new String[] {"Home", "Registrar", "Directory", "Dining"};
+        mFeatureTitles = new String[] {"Home", "Registrar", "Directory", "Dining", "Transit"};
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -117,6 +117,8 @@ public class MainActivity extends FragmentActivity {
             fragment = new DirectorySearchFragment();
         } else if (position == 3) {
             fragment = new DiningFragment();
+        } else if (position == 4) {
+            fragment = new TransitFragment();
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -139,6 +141,8 @@ public class MainActivity extends FragmentActivity {
             selectItem(2);
         } else if (viewText.equals("Dining")) {
             selectItem(3);
+        } else if (viewText.equals("Transit")) {
+            selectItem(4);
         }
     }
 
