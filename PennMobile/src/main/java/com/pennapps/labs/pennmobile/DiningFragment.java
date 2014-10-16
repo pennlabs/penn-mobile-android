@@ -14,6 +14,7 @@ import com.pennapps.labs.pennmobile.adapters.DiningAdapter;
 import com.pennapps.labs.pennmobile.api.DiningAPI;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -54,12 +55,15 @@ public class DiningFragment extends ListFragment {
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                JSONObject resultObj = mAPI.getDiningInfo("open");
-                Iterator<String> keys = resultObj.keys();
-                while(keys.hasNext()) {
-                    String key = keys.next();
-                    boolean open = resultObj.get(key).toString().equals("true");
-                    mDiningHalls.add(new DiningHall(key, open));
+                JSONObject resultObj = mAPI.getVenues();
+                JSONArray venues = resultObj.getJSONObject("document").getJSONArray("venue");
+                for (int i = 0; i < venues.length(); i++) {
+                    JSONObject venue = venues.getJSONObject(i);
+                    int id = venue.getInt("id");
+                    String name = venue.getString("name");
+                    boolean isResidential = venue.getString("venueType").equals("residential");
+                    boolean hasMenu = !venue.getString("dailyMenuURL").isEmpty();
+                    mDiningHalls.add(new DiningHall(id, name, isResidential, hasMenu));
                 }
             } catch (JSONException e) {
 
@@ -80,37 +84,70 @@ public class DiningFragment extends ListFragment {
         protected Void doInBackground(Void... params) {
             try {
                 for (DiningHall mDiningHall : mDiningHalls) {
-                    JSONObject resultObj = mAPI.getDiningInfo("scrape/" + mDiningHall.getName());
+                    if (mDiningHall.isResidential() && mDiningHall.hasMenu()) {
+                        JSONObject resultObj = mAPI.getDailyMenu(mDiningHall.getId());
 
-                    if (resultObj.has("dinner")) {
-                        JSONObject dinnerObj = (JSONObject) resultObj.get("dinner");
-                        HashMap<String, String> currentMenu = new HashMap<String, String>();
-                        Iterator<String> keys = dinnerObj.keys();
-                        while (keys.hasNext()) {
-                            String key = keys.next();
-                            currentMenu.put(key, dinnerObj.get(key).toString()
-                                    .replace("[", "").replace("]", "").replace("\"", ""));
+                        JSONArray meals = resultObj.getJSONObject("Document")
+                                .getJSONObject("tblMenu")
+                                .getJSONArray("tblDayPart");
+
+                        for (int i = 0; i < meals.length(); i++) {
+                            JSONObject meal = meals.getJSONObject(i);
+                            parseMeal(meal, mDiningHall);
                         }
-
-                        mDiningHall.setDinnerMenu(currentMenu);
-                    }
-
-                    if (resultObj.has("lunch")) {
-                        JSONObject lunchObj = (JSONObject) resultObj.get("lunch");
-                        HashMap<String, String> currentMenu = new HashMap<String, String>();
-                        Iterator<String> keys = lunchObj.keys();
-                        while (keys.hasNext()) {
-                            String key = keys.next();
-                            currentMenu.put(key, lunchObj.get(key).toString());
-                        }
-
-                        mDiningHall.setLunchMenu(currentMenu);
                     }
                 }
             } catch (JSONException e) {
 
             }
             return null;
+        }
+
+        private void parseMeal(JSONObject meal, DiningHall diningHall) {
+            try {
+                String mealName = meal.getString("txtDayPartDescription");
+
+                JSONArray stations = new JSONArray();
+                try {
+                    stations = meal.getJSONArray("tblStation");
+                } catch (JSONException e) {
+                    JSONObject stationsObject = meal.getJSONObject("tblStation");
+                    stations.put(stationsObject);
+                }
+                HashMap<String, String> currentMenu = new HashMap<String, String>();
+                for (int j = 0; j < stations.length(); j++) {
+                    JSONObject station = stations.getJSONObject(j);
+                    parseStation(station, currentMenu);
+                }
+
+                if (mealName.equals("Lunch")) {
+                    diningHall.setLunchMenu(currentMenu);
+                } else if (mealName.equals("Dinner")) {
+                    diningHall.setDinnerMenu(currentMenu);
+                }
+            } catch (JSONException e) {
+
+            }
+        }
+
+        private void parseStation(JSONObject station, HashMap<String, String> menu) {
+            try {
+                String stationName = station.getString("txtStationDescription");
+                JSONArray stationItems = new JSONArray();
+                try {
+                    stationItems = station.getJSONArray("tblItem");
+                } catch (JSONException e) {
+                    JSONObject stationItem = station.getJSONObject("tblItem");
+                    stationItems.put(stationItem);
+                }
+                for (int k = 0; k < stationItems.length(); k++) {
+                    JSONObject foodItem = stationItems.getJSONObject(k);
+                    String foodName = foodItem.getString("txtTitle");
+                    menu.put(stationName, foodName);
+                }
+            } catch (JSONException e) {
+
+            }
         }
 
         @Override

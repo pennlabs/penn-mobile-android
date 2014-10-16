@@ -13,6 +13,7 @@ import com.pennapps.labs.pennmobile.R;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class DiningAdapter extends ArrayAdapter<DiningHall> {
 
@@ -32,15 +33,26 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
         TextView dinnerMenuTV = (TextView) view.findViewById(R.id.dining_hall_dinner);
         TextView lunchMenuTV = (TextView) view.findViewById(R.id.dining_hall_lunch);
 
-        String open = diningHall.isOpen() ? "Open" : "Closed";
-        hallNameTV.setText(WordUtils.capitalizeFully(diningHall.getName() + ": " + open));
+        hallNameTV.setText(WordUtils.capitalizeFully(diningHall.getName()));
         dinnerMenuTV.setText("DINNER");
         lunchMenuTV.setText("LUNCH");
 
+        if (diningHall.getLunchMenu() != null) {
+            String lunchText = "";
+            for (Map.Entry<String, String> menuItem : diningHall.getLunchMenu().entrySet()) {
+                String key = menuItem.getKey();
+                String value = menuItem.getValue();
+                lunchText += key + ": " + value + "\n";
+            }
+            lunchMenuTV.setText(lunchText);
+        }
+
         if (diningHall.getDinnerMenu() != null) {
             String dinnerText = "";
-            for (String key : diningHall.getDinnerMenu().keySet()) {
-                dinnerText += key + ": " + diningHall.getDinnerMenu().get(key) + "\n";
+            for (Map.Entry<String, String> menuItem : diningHall.getDinnerMenu().entrySet()) {
+                String key = menuItem.getKey();
+                String value = menuItem.getValue();
+                dinnerText += key + ": " + value + "\n";
             }
             dinnerMenuTV.setText(dinnerText);
         }

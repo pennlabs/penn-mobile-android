@@ -135,7 +135,7 @@ public class DirectoryFragment extends ListFragment {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                JSONObject resultObj = mAPI.getCourse(urlParameter);
+                JSONObject resultObj = mAPI.getAPIData(urlParameter);
                 responseArr = (JSONArray) resultObj.get("result_data");
                 if (responseArr.length() == 0) {
                     return false;

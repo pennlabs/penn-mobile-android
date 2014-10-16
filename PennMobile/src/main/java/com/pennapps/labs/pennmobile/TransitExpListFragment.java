@@ -89,7 +89,7 @@ public class TransitExpListFragment extends Fragment {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                JSONObject resultObj = mAPI.getCourse("stopinventory");
+                JSONObject resultObj = mAPI.getStops();
                 responseArr = (JSONArray) resultObj.get("result_data");
                 return responseArr.length() != 0;
             } catch (Exception e) {
@@ -150,7 +150,7 @@ public class TransitExpListFragment extends Fragment {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                JSONObject resultObj = mAPI.getCourse("511/Configuration");
+                JSONObject resultObj = mAPI.getStop(511);
                 responseArr = (JSONArray) ((JSONObject) ((JSONObject) resultObj.get("result_data")).get("ConfigurationData")).get("Route");
                 return responseArr.length() != 0;
             } catch (Exception e) {
