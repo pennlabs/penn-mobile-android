@@ -12,5 +12,16 @@
     <string name="drawer_close">Close drawer</string>
     <string name="registrar_search">Search for courses</string>
     <string name="directory_search">Search for people</string>
+    <string name="search_title">Search</string>
+    <string name="no_results">No results.</string>
+    <string name="registrar">Registrar</string>
+    <string name="dining">Dining</string>
+    <string name="transit">Transit</string>
+    <string name="directory">Directory</string>
+    <string name="lunch">LUNCH</string>
+    <string name="dinner">DINNER</string>
+    <string name="course">Course</string>
+    <string name="instructor">Instructor</string>
+    <string name="difficulty">Difficulty</string>
 
 </resources>
