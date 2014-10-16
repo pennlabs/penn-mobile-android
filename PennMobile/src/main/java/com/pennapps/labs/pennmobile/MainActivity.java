@@ -146,6 +146,10 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void setTitle(CharSequence title) {
-        getActionBar().setTitle(title);
+        try {
+            getActionBar().setTitle(title);
+        } catch (NullPointerException e) {
+            getActionBar().setTitle("");
+        }
     }
 }

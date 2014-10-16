@@ -3,7 +3,8 @@
         android:icon="@drawable/ic_action_search"
         android:hint="@string/directory_search"
         android:actionViewClass="android.widget.SearchView"
-        android:showAsAction="collapseActionView|ifRoom" />
+        android:showAsAction="collapseActionView|ifRoom"
+        android:title="@string/search_title"/>
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"

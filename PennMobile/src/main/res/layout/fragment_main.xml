@@ -23,7 +23,7 @@
                 android:textSize="50sp"
                 android:onClick="onClick"
                 android:clickable="true"
-                android:text="Registrar"/>
+                android:text="@string/registrar"/>
 
         </RelativeLayout>
 
@@ -49,7 +49,7 @@
                 android:textSize="50sp"
                 android:onClick="onClick"
                 android:clickable="true"
-                android:text="Directory"/>
+                android:text="@string/directory"/>
 
         </RelativeLayout>
 
@@ -73,7 +73,7 @@
                 android:textSize="50sp"
                 android:onClick="onClick"
                 android:clickable="true"
-                android:text="Dining"/>
+                android:text="@string/dining"/>
         </RelativeLayout>
     </TableRow>
 
@@ -95,7 +95,7 @@
                 android:textSize="50sp"
                 android:onClick="onClick"
                 android:clickable="true"
-                android:text="Transit"/>
+                android:text="@string/transit"/>
         </RelativeLayout>
     </TableRow>
 

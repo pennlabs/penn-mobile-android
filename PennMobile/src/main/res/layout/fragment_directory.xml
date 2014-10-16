@@ -17,6 +17,6 @@
         android:padding="10dp"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:text="No results." />
+        android:text="@string/no_results"/>
 
 </LinearLayout>
