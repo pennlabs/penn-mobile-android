@@ -63,7 +63,8 @@ public class DiningFragment extends ListFragment {
                     String name = venue.getString("name");
                     boolean isResidential = venue.getString("venueType").equals("residential");
                     boolean hasMenu = !venue.getString("dailyMenuURL").isEmpty();
-                    mDiningHalls.add(new DiningHall(id, name, isResidential, hasMenu));
+                    JSONArray hours = venue.getJSONArray("dateHours");
+                    mDiningHalls.add(new DiningHall(id, name, isResidential, hasMenu, hours));
                 }
             } catch (JSONException e) {
 
