@@ -1,7 +1,5 @@
 package com.pennapps.labs.pennmobile;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
@@ -9,12 +7,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SearchView;
-import android.view.Menu;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
