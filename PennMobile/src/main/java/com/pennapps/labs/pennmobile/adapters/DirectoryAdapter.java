@@ -23,9 +23,7 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Person person = getItem(position);
-        View view = convertView;
-
-        view = LayoutInflater.from(getContext())
+        View view = LayoutInflater.from(getContext())
                 .inflate(R.layout.directory_list_item, null);
 
         TextView tvName = (TextView) view.findViewById(R.id.tv_person_name);
