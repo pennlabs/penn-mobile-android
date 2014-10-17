@@ -158,6 +158,8 @@ public class MainActivity extends FragmentActivity {
             selectItem(3);
         } else if (v.getId() == R.id.transit_img || v.getId() == R.id.transit_cont) {
             selectItem(4);
+        } else if (v.getId() == R.id.news_img || v.getId() == R.id.transit_cont) {
+            selectItem(5);
         }
     }
 
