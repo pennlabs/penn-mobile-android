@@ -145,6 +145,18 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    public void onHomeButtonClick(View v) {
+        if (v.getId() == R.id.registrar_img || v.getId() == R.id.registrar_cont) {
+            selectItem(1);
+        } else if (v.getId() == R.id.directory_img || v.getId() == R.id.directory_cont) {
+            selectItem(2);
+        } else if (v.getId() == R.id.dining_img || v.getId() == R.id.dining_cont) {
+            selectItem(3);
+        } else if (v.getId() == R.id.transit_img || v.getId() == R.id.transit_cont) {
+            selectItem(4);
+        }
+    }
+
     public void setTitle(CharSequence title) {
         try {
             getActionBar().setTitle(title);
