@@ -10,6 +10,8 @@
         android:layout_gravity="center">
 
         <RelativeLayout
+            android:id="@+id/registrar_cont"
+            android:onClick="onHomeButtonClick"
             android:layout_weight="1"
             android:layout_height="fill_parent"
             android:layout_width="fill_parent"
@@ -17,6 +19,7 @@
 
             <ImageButton
                 android:id="@+id/registrar_img"
+                android:onClick="onHomeButtonClick"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -33,11 +36,14 @@
                 android:textSize="30sp"
                 android:onClick="onClick"
                 android:clickable="true"
-                android:text="@string/registrar"/>
+                android:text="@string/registrar" />
 
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/directory_cont"
+            android:onClick="onHomeButtonClick"
+            android:text="@string/directory"
             android:layout_weight="1"
             android:layout_height="fill_parent"
             android:layout_width="fill_parent"
@@ -46,6 +52,7 @@
 
             <ImageButton
                 android:id="@+id/directory_img"
+                android:onClick="onHomeButtonClick"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -62,7 +69,7 @@
                 android:textSize="30sp"
                 android:onClick="onClick"
                 android:clickable="true"
-                android:text="@string/directory"/>
+                android:text="@string/directory" />
 
         </RelativeLayout>
 
@@ -75,6 +82,8 @@
         android:baselineAligned="true">
 
         <RelativeLayout
+            android:id="@+id/dining_cont"
+            android:onClick="onHomeButtonClick"
             android:layout_weight="1"
             android:layout_height="fill_parent"
             android:layout_width="fill_parent"
@@ -82,6 +91,7 @@
 
             <ImageButton
                 android:id="@+id/dining_img"
+                android:onClick="onHomeButtonClick"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -98,10 +108,12 @@
                 android:textSize="30sp"
                 android:onClick="onClick"
                 android:clickable="true"
-                android:text="@string/dining"/>
+                android:text="@string/dining" />
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/transit_cont"
+            android:onClick="onHomeButtonClick"
             android:layout_weight="1"
             android:layout_height="fill_parent"
             android:layout_width="fill_parent"
@@ -109,6 +121,7 @@
 
             <ImageButton
                 android:id="@+id/transit_img"
+                android:onClick="onHomeButtonClick"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
