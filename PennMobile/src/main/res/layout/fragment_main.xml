@@ -33,7 +33,7 @@
                 android:layout_below="@+id/registrar_img"
                 android:layout_centerHorizontal="true"
                 android:gravity="center"
-                android:textSize="30sp"
+                android:textSize="25sp"
                 android:onClick="onClick"
                 android:clickable="true"
                 android:text="@string/registrar" />
@@ -66,7 +66,7 @@
                 android:layout_below="@id/directory_img"
                 android:layout_centerHorizontal="true"
                 android:gravity="center"
-                android:textSize="30sp"
+                android:textSize="25sp"
                 android:onClick="onClick"
                 android:clickable="true"
                 android:text="@string/directory" />
@@ -105,7 +105,7 @@
                 android:layout_below="@+id/dining_img"
                 android:layout_centerHorizontal="true"
                 android:gravity="center"
-                android:textSize="30sp"
+                android:textSize="25sp"
                 android:onClick="onClick"
                 android:clickable="true"
                 android:text="@string/dining" />
@@ -135,11 +135,49 @@
                 android:layout_below="@+id/transit_img"
                 android:layout_centerHorizontal="true"
                 android:gravity="center"
-                android:textSize="30sp"
+                android:textSize="25sp"
                 android:onClick="onClick"
                 android:clickable="true"
                 android:text="@string/transit"/>
         </RelativeLayout>
+    </TableRow>
+
+    <TableRow
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:layout_width="fill_parent"
+        android:baselineAligned="true">
+
+        <RelativeLayout
+            android:id="@+id/news_cont"
+            android:onClick="onHomeButtonClick"
+            android:layout_weight="1"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
+            android:layout_gravity="center">
+
+            <ImageButton
+                android:id="@+id/news_img"
+                android:onClick="onHomeButtonClick"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/news"
+                android:background="@android:color/transparent" />
+
+            <TextView
+                android:id="@+id/news_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/news_img"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:textSize="25sp"
+                android:onClick="onClick"
+                android:clickable="true"
+                android:text="@string/news" />
+        </RelativeLayout>
+
     </TableRow>
 
 </TableLayout>

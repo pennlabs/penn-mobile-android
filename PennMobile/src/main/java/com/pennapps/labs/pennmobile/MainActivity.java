@@ -28,7 +28,7 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mFeatureTitles = new String[] {"Home", "Registrar", "Directory", "Dining", "Transit"};
+        mFeatureTitles = new String[] {"Home", "Registrar", "Directory", "Dining", "Transit", "News"};
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -118,6 +118,8 @@ public class MainActivity extends FragmentActivity {
             fragment = new DiningFragment();
         } else if (position == 4) {
             fragment = new TransitFragment();
+        } else if (position == 5) {
+            fragment = new EventsFragment();
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -142,6 +144,8 @@ public class MainActivity extends FragmentActivity {
             selectItem(3);
         } else if (viewText.equals("Transit")) {
             selectItem(4);
+        } else if (viewText.equals("News")) {
+            selectItem(5);
         }
     }
 
@@ -154,6 +158,8 @@ public class MainActivity extends FragmentActivity {
             selectItem(3);
         } else if (v.getId() == R.id.transit_img || v.getId() == R.id.transit_cont) {
             selectItem(4);
+        } else if (v.getId() == R.id.news_img || v.getId() == R.id.transit_cont) {
+            selectItem(5);
         }
     }
 
