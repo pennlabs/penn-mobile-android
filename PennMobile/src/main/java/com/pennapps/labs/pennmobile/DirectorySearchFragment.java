@@ -33,23 +33,6 @@ public class DirectorySearchFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
-    public void showLoadingDialog() {
-
-        if (progress == null) {
-            progress = new ProgressDialog(this.getActivity());
-            progress.setTitle("");
-            progress.setMessage("Loading");
-        }
-        progress.show();
-    }
-
-    public void dismissLoadingDialog() {
-
-        if (progress != null && progress.isShowing()) {
-            progress.dismiss();
-        }
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
