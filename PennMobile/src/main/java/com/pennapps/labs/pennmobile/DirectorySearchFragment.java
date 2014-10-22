@@ -59,15 +59,6 @@ public class DirectorySearchFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String arg0) {
                 progress = ProgressDialog.show(getActivity(), "", "Loading...");
-                new Thread() {
-                    public void run() {
-                        try {
-                            sleep(1000);
-                        } catch (Exception e) {
-                        }
-                        progress.dismiss();
-                    }
-                }.start();
 
                 // TODO: error check for filled in fields
                 Fragment fragment = new DirectoryFragment();
@@ -89,6 +80,15 @@ public class DirectorySearchFragment extends Fragment {
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_frame, fragment)
                         .commit();
+                new Thread() {
+                    public void run() {
+                        try {
+                            sleep(1000);
+                        } catch (Exception e) {
+                        }
+                        progress.dismiss();
+                    }
+                }.start();
                 return true;
             }
         };

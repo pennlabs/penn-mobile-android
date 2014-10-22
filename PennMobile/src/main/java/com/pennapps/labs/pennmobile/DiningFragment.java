@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -28,6 +29,7 @@ public class DiningFragment extends ListFragment {
     private ArrayList<DiningHall> mDiningHalls;
     private DiningAdapter mAdapter;
     private Activity mActivity;
+    private ProgressDialog progress;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,7 +37,17 @@ public class DiningFragment extends ListFragment {
         mAPI = new DiningAPI();
         mActivity = getActivity();
         mDiningHalls = new ArrayList<DiningHall>();
+        progress = ProgressDialog.show(getActivity(), "", "Loading...");
         new GetOpenTask().execute();
+        new Thread() {
+            public void run() {
+                try {
+                    sleep(1000);
+                } catch (Exception e) {
+                }
+                progress.dismiss();
+            }
+        }.start();
     }
 
     @Override
@@ -50,8 +62,10 @@ public class DiningFragment extends ListFragment {
     }
 
     private class GetOpenTask extends AsyncTask<Void, Void, Void> {
+
         @Override
         protected Void doInBackground(Void... params) {
+
             try {
                 JSONObject resultObj = mAPI.getVenues();
                 JSONArray venues = resultObj.getJSONObject("document").getJSONArray("venue");
