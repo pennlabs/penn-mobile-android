@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,7 @@ public class DirectorySearchFragment extends Fragment {
     public static final String LAST_NAME_INTENT_EXTRA = "LAST_NAME";
     private SearchView searchView;
     private TextView textView;
+    private ProgressDialog progress;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -29,6 +31,23 @@ public class DirectorySearchFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    public void showLoadingDialog() {
+
+        if (progress == null) {
+            progress = new ProgressDialog(this.getActivity());
+            progress.setTitle("");
+            progress.setMessage("Loading");
+        }
+        progress.show();
+    }
+
+    public void dismissLoadingDialog() {
+
+        if (progress != null && progress.isShowing()) {
+            progress.dismiss();
+        }
     }
 
     @Override
@@ -56,6 +75,17 @@ public class DirectorySearchFragment extends Fragment {
 
             @Override
             public boolean onQueryTextSubmit(String arg0) {
+                progress = ProgressDialog.show(getActivity(), "", "Loading...");
+                new Thread() {
+                    public void run() {
+                        try {
+                            sleep(1000);
+                        } catch (Exception e) {
+                        }
+                        progress.dismiss();
+                    }
+                }.start();
+
                 // TODO: error check for filled in fields
                 Fragment fragment = new DirectoryFragment();
                 Bundle args = new Bundle();
