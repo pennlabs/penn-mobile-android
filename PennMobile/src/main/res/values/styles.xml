@@ -45,4 +45,29 @@
         <item name="android:typeface">normal</item>
     </style>
 
+    <style name="MainText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:onClick">onClick</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="MainIcon">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:onClick">onHomeButtonClick</item>
+    </style>
+
+    <style name="MainRelativeLayout">
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
 </resources>

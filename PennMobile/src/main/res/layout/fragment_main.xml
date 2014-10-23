@@ -12,30 +12,17 @@
         <RelativeLayout
             android:id="@+id/registrar_cont"
             android:onClick="onHomeButtonClick"
-            android:layout_weight="1"
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent"
-            android:layout_gravity="center">
+            style="@style/MainRelativeLayout">
 
             <ImageButton
                 android:id="@+id/registrar_img"
-                android:onClick="onHomeButtonClick"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
                 android:src="@drawable/registrar"
-                android:background="@android:color/transparent" />
+                style="@style/MainIcon" />
 
             <TextView
                 android:id="@+id/registrar_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_below="@+id/registrar_img"
-                android:layout_centerHorizontal="true"
-                android:gravity="center"
-                android:textSize="25sp"
-                android:onClick="onClick"
-                android:clickable="true"
+                style="@style/MainText"
                 android:text="@string/registrar" />
 
         </RelativeLayout>
@@ -44,31 +31,18 @@
             android:id="@+id/directory_cont"
             android:onClick="onHomeButtonClick"
             android:text="@string/directory"
-            android:layout_weight="1"
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent"
-            android:layout_gravity="center">
+            style="@style/MainRelativeLayout">
 
 
             <ImageButton
                 android:id="@+id/directory_img"
-                android:onClick="onHomeButtonClick"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
                 android:src="@drawable/directory"
-                android:background="@android:color/transparent" />
+                style="@style/MainIcon" />
 
             <TextView
                 android:id="@+id/directory_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_below="@id/directory_img"
-                android:layout_centerHorizontal="true"
-                android:gravity="center"
-                android:textSize="25sp"
-                android:onClick="onClick"
-                android:clickable="true"
+                style="@style/MainText"
                 android:text="@string/directory" />
 
         </RelativeLayout>
@@ -84,60 +58,34 @@
         <RelativeLayout
             android:id="@+id/dining_cont"
             android:onClick="onHomeButtonClick"
-            android:layout_weight="1"
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent"
-            android:layout_gravity="center">
+            style="@style/MainRelativeLayout">
 
             <ImageButton
                 android:id="@+id/dining_img"
-                android:onClick="onHomeButtonClick"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
                 android:src="@drawable/dining"
-                android:background="@android:color/transparent" />
+                style="@style/MainIcon" />
 
             <TextView
                 android:id="@+id/dining_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_below="@+id/dining_img"
-                android:layout_centerHorizontal="true"
-                android:gravity="center"
-                android:textSize="25sp"
-                android:onClick="onClick"
-                android:clickable="true"
+                style="@style/MainText"
                 android:text="@string/dining" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/transit_cont"
             android:onClick="onHomeButtonClick"
-            android:layout_weight="1"
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent"
-            android:layout_gravity="center">
+            style="@style/MainRelativeLayout">
 
             <ImageButton
                 android:id="@+id/transit_img"
-                android:onClick="onHomeButtonClick"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
                 android:src="@drawable/transit"
-                android:background="@android:color/transparent" />
+                style="@style/MainIcon" />
 
             <TextView
                 android:id="@+id/transit_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_below="@+id/transit_img"
-                android:layout_centerHorizontal="true"
-                android:gravity="center"
-                android:textSize="25sp"
-                android:onClick="onClick"
-                android:clickable="true"
+                style="@style/MainText"
                 android:text="@string/transit"/>
         </RelativeLayout>
     </TableRow>
@@ -151,30 +99,17 @@
         <RelativeLayout
             android:id="@+id/news_cont"
             android:onClick="onHomeButtonClick"
-            android:layout_weight="1"
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent"
-            android:layout_gravity="center">
+            style="@style/MainRelativeLayout">
 
             <ImageButton
                 android:id="@+id/news_img"
-                android:onClick="onHomeButtonClick"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
                 android:src="@drawable/news"
-                android:background="@android:color/transparent" />
+                style="@style/MainIcon" />
 
             <TextView
                 android:id="@+id/news_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_below="@+id/news_img"
-                android:layout_centerHorizontal="true"
-                android:gravity="center"
-                android:textSize="25sp"
-                android:onClick="onClick"
-                android:clickable="true"
+                style="@style/MainText"
                 android:text="@string/news" />
         </RelativeLayout>
 
