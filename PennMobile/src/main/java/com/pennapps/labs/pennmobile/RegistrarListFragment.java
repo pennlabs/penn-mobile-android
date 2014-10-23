@@ -37,6 +37,7 @@ public class RegistrarListFragment extends ListFragment {
                        .replace(R.id.registrar_fragment, fragment)
                        .addToBackStack(null)
                        .commit();
+        getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
         onResume();
     }
 

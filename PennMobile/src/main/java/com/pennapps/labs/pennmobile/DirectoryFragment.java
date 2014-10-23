@@ -166,11 +166,12 @@ public class DirectoryFragment extends ListFragment {
                             email(resp.get("list_email").toString()).
                             build();
                     personArr.add(person);
-
                 }
 
                 mAdapter = new DirectoryAdapter(mContext, personArr);
                 mListView.setAdapter(mAdapter);
+                getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                getActivity().findViewById(android.R.id.list).setVisibility(View.VISIBLE);
             } catch (JSONException e) {
                 // Log.v("vivlabs", e.toString());
             }
