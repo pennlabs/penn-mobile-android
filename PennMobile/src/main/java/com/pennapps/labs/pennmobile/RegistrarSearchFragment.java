@@ -67,6 +67,7 @@ public class RegistrarSearchFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.registrar, menu);
+        getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
 
         searchView = (SearchView) menu.findItem(R.id.registrar_search).getActionView();
         final SearchView.OnQueryTextListener queryListener = new SearchView.OnQueryTextListener() {
@@ -78,6 +79,7 @@ public class RegistrarSearchFragment extends Fragment {
 
             @Override
             public boolean onQueryTextSubmit(String arg0) {
+                getActivity().findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
                 Cursor cursor = courseDatabase.getWordMatches(arg0, null);
                 RegistrarListFragment listFragment = new RegistrarListFragment();
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();

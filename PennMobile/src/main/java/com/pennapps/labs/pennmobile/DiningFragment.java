@@ -50,8 +50,10 @@ public class DiningFragment extends ListFragment {
     }
 
     private class GetOpenTask extends AsyncTask<Void, Void, Void> {
+
         @Override
         protected Void doInBackground(Void... params) {
+
             try {
                 JSONObject resultObj = mAPI.getVenues();
                 JSONArray venues = resultObj.getJSONObject("document").getJSONArray("venue");
@@ -153,6 +155,7 @@ public class DiningFragment extends ListFragment {
         protected void onPostExecute(Void params) {
             mAdapter = new DiningAdapter(mActivity, mDiningHalls);
             mListView.setAdapter(mAdapter);
+            getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,7 @@ public class DirectorySearchFragment extends Fragment {
     public static final String LAST_NAME_INTENT_EXTRA = "LAST_NAME";
     private SearchView searchView;
     private TextView textView;
+    private ProgressDialog progress;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,6 +47,7 @@ public class DirectorySearchFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.directory, menu);
+        getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
 
         searchView = (SearchView) menu.findItem(R.id.directory_search).getActionView();
         final SearchView.OnQueryTextListener queryListener = new SearchView.OnQueryTextListener() {
@@ -57,6 +60,7 @@ public class DirectorySearchFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String arg0) {
                 // TODO: error check for filled in fields
+                getActivity().findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
                 Fragment fragment = new DirectoryFragment();
                 Bundle args = new Bundle();
                 String[] query = arg0.split("\\s+");
