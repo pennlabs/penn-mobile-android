@@ -99,6 +99,7 @@
         <RelativeLayout
             android:id="@+id/news_cont"
             android:onClick="onHomeButtonClick"
+            android:layout_marginBottom="15dp"
             style="@style/MainRelativeLayout">
 
             <ImageButton

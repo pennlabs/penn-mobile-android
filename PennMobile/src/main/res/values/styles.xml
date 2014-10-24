@@ -53,11 +53,12 @@
         <item name="android:textSize">20sp</item>
         <item name="android:onClick">onClick</item>
         <item name="android:clickable">true</item>
+        <item name="android:layout_marginTop">2dp</item>
     </style>
 
     <style name="MainIcon">
-        <item name="android:layout_width">100dp</item>
-        <item name="android:layout_height">100dp</item>
+        <item name="android:layout_width">110dp</item>
+        <item name="android:layout_height">110dp</item>
         <item name="android:scaleType">centerInside</item>
         <item name="android:layout_centerInParent">true</item>
         <item name="android:background">@android:color/transparent</item>
