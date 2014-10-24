@@ -13,7 +13,8 @@
         android:layout_marginLeft="50dp"
         android:layout_marginTop="75dp"
         android:gravity="center_vertical|center_horizontal"
-        android:textSize="26sp"
+        android:textSize="20sp"
+        android:textColor="@android:color/darker_gray"
         android:text="@string/directory_instructions" />
 
     <RelativeLayout
