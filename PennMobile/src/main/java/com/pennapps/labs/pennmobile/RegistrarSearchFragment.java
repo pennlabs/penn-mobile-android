@@ -85,6 +85,7 @@ public class RegistrarSearchFragment extends Fragment {
 
             @Override
             public boolean onQueryTextSubmit(String arg0) {
+                getActivity().findViewById(R.id.registrar_instructions).setVisibility(View.GONE);
                 getActivity().findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
                 Cursor cursor = courseDatabase.getWordMatches(arg0, null);
                 RegistrarListFragment listFragment = new RegistrarListFragment();

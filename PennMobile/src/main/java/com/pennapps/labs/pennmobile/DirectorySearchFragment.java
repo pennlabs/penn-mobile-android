@@ -67,6 +67,7 @@ public class DirectorySearchFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String arg0) {
                 // TODO: error check for filled in fields
+                getActivity().findViewById(R.id.directory_instructions).setVisibility(View.GONE);
                 getActivity().findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
                 Fragment fragment = new DirectoryFragment();
                 Bundle args = new Bundle();

@@ -5,6 +5,17 @@
     android:orientation="vertical"
     tools:context=".DirectoryActivity">
 
+    <TextView
+        android:id="@+id/directory_instructions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="75dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:textSize="26sp"
+        android:text="@string/directory_instructions" />
+
     <RelativeLayout
         android:id="@+id/loadingPanel"
         android:layout_width="match_parent"

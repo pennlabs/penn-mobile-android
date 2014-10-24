@@ -76,6 +76,11 @@ public class DirectoryFragment extends ListFragment {
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        getActivity().findViewById(R.id.directory_instructions).setVisibility(View.GONE);
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.directory, menu);
 
