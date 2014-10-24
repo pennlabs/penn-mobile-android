@@ -24,5 +24,7 @@
     <string name="course">Course</string>
     <string name="instructor">Instructor</string>
     <string name="difficulty">Difficulty</string>
+    <string name="directory_instructions">Search for Penn students and faculty</string>
+    <string name="registrar_instructions">Search for courses</string>
 
 </resources>

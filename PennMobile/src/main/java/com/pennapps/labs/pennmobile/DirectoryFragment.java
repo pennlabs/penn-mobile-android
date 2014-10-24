@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -72,6 +73,11 @@ public class DirectoryFragment extends ListFragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        getActivity().findViewById(R.id.directory_instructions).setVisibility(View.GONE);
     }
 
     @Override

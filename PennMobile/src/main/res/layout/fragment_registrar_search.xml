@@ -4,6 +4,18 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/registrar_instructions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="75dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:textSize="20sp"
+        android:textColor="@android:color/darker_gray"
+        android:text="@string/registrar_instructions" />
+
     <RelativeLayout
         android:id="@+id/loadingPanel"
         android:layout_width="match_parent"
