@@ -1,0 +1,119 @@
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/button_table"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context="com.pennapps.labs.pennmobile.MainFragment">
+
+    <TableRow
+        android:layout_weight="1"
+        android:layout_gravity="center">
+
+        <RelativeLayout
+            android:id="@+id/registrar_cont"
+            android:onClick="onHomeButtonClick"
+            style="@style/MainRelativeLayout">
+
+            <ImageButton
+                android:id="@+id/registrar_img"
+                android:src="@drawable/registrar"
+                style="@style/MainIconLand" />
+
+            <TextView
+                android:id="@+id/registrar_button"
+                android:layout_below="@+id/registrar_img"
+                style="@style/MainText"
+                android:text="@string/registrar" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/directory_cont"
+            android:onClick="onHomeButtonClick"
+            android:text="@string/directory"
+            style="@style/MainRelativeLayout">
+
+
+            <ImageButton
+                android:id="@+id/directory_img"
+                android:src="@drawable/directory"
+                style="@style/MainIconLand" />
+
+            <TextView
+                android:id="@+id/directory_button"
+                android:layout_below="@id/directory_img"
+                style="@style/MainText"
+                android:text="@string/directory" />
+
+        </RelativeLayout>
+
+    </TableRow>
+
+    <TableRow
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:layout_width="fill_parent"
+        android:baselineAligned="true">
+
+        <RelativeLayout
+            android:id="@+id/dining_cont"
+            android:onClick="onHomeButtonClick"
+            style="@style/MainRelativeLayout">
+
+            <ImageButton
+                android:id="@+id/dining_img"
+                android:src="@drawable/dining"
+                style="@style/MainIconLand" />
+
+            <TextView
+                android:id="@+id/dining_button"
+                android:layout_below="@+id/dining_img"
+                style="@style/MainText"
+                android:text="@string/dining" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/transit_cont"
+            android:onClick="onHomeButtonClick"
+            style="@style/MainRelativeLayout">
+
+            <ImageButton
+                android:id="@+id/transit_img"
+                android:src="@drawable/transit"
+                style="@style/MainIconLand" />
+
+            <TextView
+                android:id="@+id/transit_button"
+                android:layout_below="@+id/transit_img"
+                style="@style/MainText"
+                android:text="@string/transit"/>
+        </RelativeLayout>
+    </TableRow>
+
+    <TableRow
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:layout_width="fill_parent"
+        android:baselineAligned="true">
+
+        <RelativeLayout
+            android:id="@+id/news_cont"
+            android:onClick="onHomeButtonClick"
+            android:layout_marginBottom="15dp"
+            style="@style/MainRelativeLayout">
+
+            <ImageButton
+                android:id="@+id/news_img"
+                android:src="@drawable/news"
+                style="@style/MainIconLand" />
+
+            <TextView
+                android:id="@+id/news_button"
+                android:layout_below="@+id/news_img"
+                style="@style/MainText"
+                android:text="@string/news" />
+        </RelativeLayout>
+
+    </TableRow>
+
+</TableLayout>
