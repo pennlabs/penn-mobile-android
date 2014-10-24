@@ -45,6 +45,13 @@ public class DirectorySearchFragment extends Fragment {
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem searchMenuItem = menu.findItem(R.id.directory_search);
+        searchView = (SearchView) menu.findItem(R.id.directory_search).getActionView();
+        searchMenuItem.expandActionView();
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.directory, menu);
         getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);

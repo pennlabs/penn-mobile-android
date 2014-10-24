@@ -62,6 +62,12 @@ public class RegistrarSearchFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem searchMenuItem = menu.findItem(R.id.registrar_search);
+        searchView = (SearchView) menu.findItem(R.id.registrar_search).getActionView();
+        searchMenuItem.expandActionView();
+    }
 
 
     @Override
