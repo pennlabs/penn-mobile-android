@@ -135,7 +135,11 @@ public class DirectoryFragment extends ListFragment {
         protected Boolean doInBackground(Void... params) {
             try {
                 JSONObject resultObj = mAPI.getAPIData(urlParameter);
-                responseArr = (JSONArray) resultObj.get("result_data");
+                try {
+                    responseArr = (JSONArray) resultObj.get("result_data");
+                } catch (NullPointerException e) {
+                    return false;
+                }
                 if (responseArr.length() == 0) {
                     return false;
                 }
