@@ -17,7 +17,7 @@
             <ImageButton
                 android:id="@+id/registrar_img"
                 android:src="@drawable/registrar"
-                style="@style/MainIcon" />
+                style="@style/MainIconLarge" />
 
             <TextView
                 android:id="@+id/registrar_button"
@@ -37,7 +37,7 @@
             <ImageButton
                 android:id="@+id/directory_img"
                 android:src="@drawable/directory"
-                style="@style/MainIcon" />
+                style="@style/MainIconLarge" />
 
             <TextView
                 android:id="@+id/directory_button"
@@ -63,7 +63,7 @@
             <ImageButton
                 android:id="@+id/dining_img"
                 android:src="@drawable/dining"
-                style="@style/MainIcon" />
+                style="@style/MainIconLarge" />
 
             <TextView
                 android:id="@+id/dining_button"
@@ -80,7 +80,7 @@
             <ImageButton
                 android:id="@+id/transit_img"
                 android:src="@drawable/transit"
-                style="@style/MainIcon" />
+                style="@style/MainIconLarge" />
 
             <TextView
                 android:id="@+id/transit_button"
@@ -105,7 +105,7 @@
             <ImageButton
                 android:id="@+id/news_img"
                 android:src="@drawable/news"
-                style="@style/MainIcon" />
+                style="@style/MainIconLarge" />
 
             <TextView
                 android:id="@+id/news_button"
