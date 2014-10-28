@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.content.res.Configuration;
 import android.widget.TextView;
+import com.crashlytics.android.Crashlytics;
 
 public class MainActivity extends FragmentActivity {
 
@@ -26,6 +27,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Crashlytics.start(this);
         setContentView(R.layout.activity_main);
 
         mFeatureTitles = new String[] {"Home", "Registrar", "Directory", "Dining", "Transit", "News"};
