@@ -4,7 +4,7 @@ buildscript {
         maven { url 'http://download.crashlytics.com/maven' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.+'
+        classpath 'com.android.tools.build:gradle:0.12.2'
         classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
     }
 }
@@ -17,12 +17,12 @@ repositories {
 }
 
 android {
-    compileSdkVersion 20
+    compileSdkVersion 21
     buildToolsVersion "19.1.0"
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 20
+        targetSdkVersion 21
     }
 
     packagingOptions {
@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-	compile 'com.android.support:appcompat-v7:20.0.0'
+	compile 'com.android.support:appcompat-v7:21.0.0'
 	compile 'com.google.android.gms:play-services:4.0.30'
     compile 'joda-time:joda-time:2.5'
     compile files ('libs/commons-lang3-3.3.2.jar')
