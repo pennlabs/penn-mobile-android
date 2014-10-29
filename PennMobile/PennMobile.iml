@@ -84,7 +84,7 @@
     <orderEntry type="library" exported="" name="crashlytics-1.1.13" level="project" />
     <orderEntry type="library" exported="" name="support-v4-21.0.0" level="project" />
     <orderEntry type="library" exported="" name="joda-time-2.5" level="project" />
-    <orderEntry type="library" exported="" name="play-services-4.0.30" level="project" />
+    <orderEntry type="library" exported="" name="play-services-6.1.71" level="project" />
     <orderEntry type="library" exported="" name="commons-lang3-3.3.2" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-21.0.0" level="project" />
   </component>
