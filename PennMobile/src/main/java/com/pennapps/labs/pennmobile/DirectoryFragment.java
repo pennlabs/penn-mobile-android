@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
