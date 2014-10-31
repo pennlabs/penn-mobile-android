@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile;
 
-import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
