@@ -20,7 +20,6 @@ public class DirectorySearchFragment extends Fragment {
     public static final String LAST_NAME_INTENT_EXTRA = "LAST_NAME";
     private SearchView searchView;
     private TextView textView;
-    private ProgressDialog progress;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

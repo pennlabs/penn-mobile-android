@@ -28,7 +28,6 @@ public class RegistrarSearchFragment extends Fragment {
     private RegistrarAdapter mAdapter;
     private TextView textView;
     private SearchView searchView;
-    private String search_currentQuery = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -96,8 +95,6 @@ public class RegistrarSearchFragment extends Fragment {
                 mAdapter = new RegistrarAdapter(mActivity.getApplicationContext(),
                         R.layout.search_entry, cursor, 0);
                 listFragment.setListAdapter(mAdapter);
-                textView.setText(arg0);
-                searchView.setQuery(arg0, false);
                 return true;
             }
         };
