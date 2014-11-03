@@ -184,6 +184,8 @@ public class DirectoryFragment extends ListFragment {
                 getActivity().findViewById(android.R.id.list).setVisibility(View.VISIBLE);
             } catch (JSONException e) {
                 // Log.v("vivlabs", e.toString());
+            } catch (NullPointerException e) {
+
             }
         }
     }
