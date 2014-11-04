@@ -153,9 +153,13 @@ public class DiningFragment extends ListFragment {
 
         @Override
         protected void onPostExecute(Void params) {
-            mAdapter = new DiningAdapter(mActivity, mDiningHalls);
-            mListView.setAdapter(mAdapter);
-            getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+            try {
+                mAdapter = new DiningAdapter(mActivity, mDiningHalls);
+                mListView.setAdapter(mAdapter);
+                getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+            } catch (NullPointerException e) {
+
+            }
         }
     }
 }

@@ -165,6 +165,8 @@ public class RegistrarFragment extends Fragment {
                 locationTextView.setText(locationText);
             } catch (JSONException e) {
 
+            } catch (NullPointerException e) {
+
             }
         }
     }
