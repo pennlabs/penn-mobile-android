@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile;
 
-import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,7 +19,6 @@ public class DirectorySearchFragment extends Fragment {
     public static final String LAST_NAME_INTENT_EXTRA = "LAST_NAME";
     private SearchView searchView;
     private TextView textView;
-    private ProgressDialog progress;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,6 +46,8 @@ public class DirectorySearchFragment extends Fragment {
     public void onPrepareOptionsMenu(Menu menu) {
         MenuItem searchMenuItem = menu.findItem(R.id.directory_search);
         searchView = (SearchView) menu.findItem(R.id.directory_search).getActionView();
+        searchView.setIconifiedByDefault(false);
+        searchView.setIconified(false);
         searchMenuItem.expandActionView();
     }
 

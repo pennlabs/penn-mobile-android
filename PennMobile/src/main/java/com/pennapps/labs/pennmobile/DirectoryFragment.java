@@ -78,6 +78,11 @@ public class DirectoryFragment extends ListFragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         getActivity().findViewById(R.id.directory_instructions).setVisibility(View.GONE);
+        MenuItem searchMenuItem = menu.findItem(R.id.directory_search);
+        searchView = (SearchView) menu.findItem(R.id.directory_search).getActionView();
+        searchView.setIconifiedByDefault(false);
+        searchView.setIconified(false);
+        searchMenuItem.expandActionView();
     }
 
     @Override
