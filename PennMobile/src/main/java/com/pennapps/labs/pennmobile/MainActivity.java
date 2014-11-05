@@ -6,7 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,7 +18,7 @@ import android.content.res.Configuration;
 import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends ActionBarActivity {
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -37,7 +38,7 @@ public class MainActivity extends FragmentActivity {
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
+                // R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
                 R.string.drawer_open,  /* "open drawer" description */
                 R.string.drawer_close  /* "close drawer" description */
         ) {
@@ -55,8 +56,8 @@ public class MainActivity extends FragmentActivity {
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item, mFeatureTitles));
@@ -160,16 +161,16 @@ public class MainActivity extends FragmentActivity {
             selectItem(3);
         } else if (v.getId() == R.id.transit_img || v.getId() == R.id.transit_cont) {
             selectItem(4);
-        } else if (v.getId() == R.id.news_img || v.getId() == R.id.transit_cont) {
+        } else if (v.getId() == R.id.news_img || v.getId() == R.id.news_cont) {
             selectItem(5);
         }
     }
 
     public void setTitle(CharSequence title) {
         try {
-            getActionBar().setTitle(title);
+            getSupportActionBar().setTitle(title);
         } catch (NullPointerException e) {
-            getActionBar().setTitle("PennMobile");
+            getSupportActionBar().setTitle("PennMobile");
         }
     }
 }

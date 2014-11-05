@@ -1,8 +1,10 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/registrar_search"
         android:icon="@drawable/ic_action_search"
         android:hint="@string/registrar_search"
+        app:actionViewClass="android.widget.SearchView"
         android:actionViewClass="android.widget.SearchView"
-        android:showAsAction="collapseActionView|ifRoom"
+        app:showAsAction="always"
         android:title="@string/search_title"/>
 </menu>

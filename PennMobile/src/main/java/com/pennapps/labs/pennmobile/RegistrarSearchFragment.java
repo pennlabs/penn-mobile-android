@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,7 +29,6 @@ public class RegistrarSearchFragment extends Fragment {
     private RegistrarAdapter mAdapter;
     private TextView textView;
     private SearchView searchView;
-    private String search_currentQuery = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,6 +66,8 @@ public class RegistrarSearchFragment extends Fragment {
     public void onPrepareOptionsMenu(Menu menu) {
         MenuItem searchMenuItem = menu.findItem(R.id.registrar_search);
         searchView = (SearchView) menu.findItem(R.id.registrar_search).getActionView();
+        searchView.setIconifiedByDefault(false);
+        searchView.setIconified(false);
         searchMenuItem.expandActionView();
     }
 
@@ -74,8 +76,9 @@ public class RegistrarSearchFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.registrar, menu);
         getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+        MenuItem searchMenuItem = menu.findItem(R.id.registrar_search);
 
-        searchView = (SearchView) menu.findItem(R.id.registrar_search).getActionView();
+        searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
         final SearchView.OnQueryTextListener queryListener = new SearchView.OnQueryTextListener() {
 
             @Override

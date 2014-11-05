@@ -74,6 +74,7 @@ public class RegistrarFragment extends Fragment {
             map = mapFragment.getMap();
             if (map != null) {
                 map.addMarker(new MarkerOptions().position(new LatLng(39.95198, -75.19368)));
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(39.95198, -75.19368), 17));
             }
         }
     }
