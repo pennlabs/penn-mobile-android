@@ -18,7 +18,7 @@ public class TransitFragment extends Fragment {
 
     WebView mWebView;
     private boolean mIsWebViewAvailable;
-    private String mUrl = "http://www.pennrides.com/map?showHeader=0";
+    private String mUrl = "http://www.pennrides.com/map?showHeader=0&route=229,230&silent_disable_timeout=1";
 
     public TransitFragment() {
         super();
@@ -56,19 +56,6 @@ public class TransitFragment extends Fragment {
 
     /* To ensure links open within the application */
     private class InnerWebViewClient extends WebViewClient {
-        @Override
-        public void onPageFinished(WebView view, String url) {
-            // String javascript = "javascript:alert();";
-            // String javascript = "javascript:document.getElementById('main_menu').remove();";
-            String javascript = "javascript:setTimeout(" +
-                    "function(){document.getElementById('welcome').style.display = 'None';" +
-                    "document.getElementById('main_menu').style.display = 'None';" +
-                    "document.cookie = 'Routes_10=;expires=Thu, 01 Jan 1970 00:00:00 GMT';" +
-                    "if ($('.markerLabels').length === 0) {" +
-                    "$('.route-menu-item:contains(\"PennBUS\")').trigger('click');}" +
-                    "},10)";
-            view.loadUrl(javascript);
-        }
     }
 
     @Override
