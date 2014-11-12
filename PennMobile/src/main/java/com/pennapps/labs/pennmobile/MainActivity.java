@@ -31,7 +31,7 @@ public class MainActivity extends ActionBarActivity {
         Crashlytics.start(this);
         setContentView(R.layout.activity_main);
 
-        mFeatureTitles = new String[] {"Home", "Registrar", "Directory", "Dining", "Transit", "News"};
+        mFeatureTitles = new String[] {"Home", "Registrar", "Directory", "Dining", "Transit", "News", "About"};
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -123,6 +123,8 @@ public class MainActivity extends ActionBarActivity {
             fragment = new TransitFragment();
         } else if (position == 5) {
             fragment = new EventsFragment();
+        } else if (position == 6) {
+            fragment = new AboutFragment();
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -149,6 +151,8 @@ public class MainActivity extends ActionBarActivity {
             selectItem(4);
         } else if (viewText.equals("News")) {
             selectItem(5);
+        } else if (viewText.equals("About")) {
+            selectItem(6);
         }
     }
 

@@ -25,5 +25,6 @@
     <string name="difficulty">Difficulty</string>
     <string name="directory_instructions">Search for Penn students and faculty</string>
     <string name="registrar_instructions">Search for courses</string>
+    <string name="labs_icon">Penn Labs</string>
 
 </resources>
