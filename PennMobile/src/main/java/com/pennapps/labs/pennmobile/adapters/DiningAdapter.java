@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,12 +32,20 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
                 .inflate(R.layout.dining_list_item, null);
 
         TextView hallNameTV = (TextView) view.findViewById(R.id.dining_hall_name);
+        TextView hallStatus = (TextView) view.findViewById(R.id.dining_hall_status);
         TextView breakfastMenuTV = (TextView) view.findViewById(R.id.dining_hall_breakfast);
         TextView brunchMenuTV = (TextView) view.findViewById(R.id.dining_hall_brunch);
         TextView lunchMenuTV = (TextView) view.findViewById(R.id.dining_hall_lunch);
         TextView dinnerMenuTV = (TextView) view.findViewById(R.id.dining_hall_dinner);
 
         hallNameTV.setText(WordUtils.capitalizeFully(diningHall.getName()));
+        if (diningHall.isOpen()) {
+            hallStatus.setText("Open");
+            hallStatus.setBackground(getContext().getResources().getDrawable(R.drawable.label_green));
+        } else {
+            hallStatus.setText("Closed");
+            hallStatus.setBackground(getContext().getResources().getDrawable(R.drawable.label_red));
+        }
 
         for (Map.Entry<String, HashMap<String, String>> menu : diningHall.menus.entrySet()) {
             String mealName = StringUtils.capitalize(menu.getKey());
