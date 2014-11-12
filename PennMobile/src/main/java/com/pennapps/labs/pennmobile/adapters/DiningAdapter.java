@@ -10,9 +10,11 @@ import android.widget.TextView;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.R;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class DiningAdapter extends ArrayAdapter<DiningHall> {
@@ -28,31 +30,40 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
                 .inflate(R.layout.dining_list_item, null);
 
         TextView hallNameTV = (TextView) view.findViewById(R.id.dining_hall_name);
-        TextView dinnerMenuTV = (TextView) view.findViewById(R.id.dining_hall_dinner);
+        TextView breakfastMenuTV = (TextView) view.findViewById(R.id.dining_hall_breakfast);
+        TextView brunchMenuTV = (TextView) view.findViewById(R.id.dining_hall_brunch);
         TextView lunchMenuTV = (TextView) view.findViewById(R.id.dining_hall_lunch);
+        TextView dinnerMenuTV = (TextView) view.findViewById(R.id.dining_hall_dinner);
 
         hallNameTV.setText(WordUtils.capitalizeFully(diningHall.getName()));
         dinnerMenuTV.setText("DINNER");
         lunchMenuTV.setText("LUNCH");
 
-        if (diningHall.getLunchMenu() != null) {
-            String lunchText = "";
-            for (Map.Entry<String, String> menuItem : diningHall.getLunchMenu().entrySet()) {
+        for (Map.Entry<String, HashMap<String, String>> menu : diningHall.menus.entrySet()) {
+            String mealName = StringUtils.capitalize(menu.getKey());
+            String menuText = "";
+            for (Map.Entry<String, String> menuItem : menu.getValue().entrySet()) {
                 String key = menuItem.getKey();
                 String value = menuItem.getValue();
-                lunchText += key + ": " + value + "\n";
+                menuText += key + ": " + value + "\n";
             }
-            lunchMenuTV.setText(lunchText);
-        }
-
-        if (diningHall.getDinnerMenu() != null) {
-            String dinnerText = "";
-            for (Map.Entry<String, String> menuItem : diningHall.getDinnerMenu().entrySet()) {
-                String key = menuItem.getKey();
-                String value = menuItem.getValue();
-                dinnerText += key + ": " + value + "\n";
+            if (mealName.equals("Breakfast")) {
+                view.findViewById(R.id.dining_hall_breakfast_title).setVisibility(view.VISIBLE);
+                breakfastMenuTV.setVisibility(View.VISIBLE);
+                breakfastMenuTV.setText(menuText);
+            } else if (mealName.equals("Brunch")) {
+                view.findViewById(R.id.dining_hall_brunch_title).setVisibility(view.VISIBLE);
+                brunchMenuTV.setVisibility(View.VISIBLE);
+                brunchMenuTV.setText(menuText);
+            } else if (mealName.equals("Lunch")) {
+                view.findViewById(R.id.dining_hall_lunch_title).setVisibility(view.VISIBLE);
+                lunchMenuTV.setVisibility(View.VISIBLE);
+                lunchMenuTV.setText(menuText);
+            } else if (mealName.equals("Dinner")) {
+                view.findViewById(R.id.dining_hall_dinner_title).setVisibility(view.VISIBLE);
+                dinnerMenuTV.setVisibility(View.VISIBLE);
+                dinnerMenuTV.setText(menuText);
             }
-            dinnerMenuTV.setText(dinnerText);
         }
 
         return view;

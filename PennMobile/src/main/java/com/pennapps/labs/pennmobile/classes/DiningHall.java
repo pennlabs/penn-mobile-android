@@ -18,8 +18,7 @@ public class DiningHall {
     private boolean residential;
     private boolean hasMenu;
     private HashMap<String, Interval> openHours;
-    private HashMap<String, String> dinnerMenu;
-    private HashMap<String, String> lunchMenu;
+    public HashMap<String, HashMap<String, String>> menus;
 
     public DiningHall(int id, String name, boolean residential, boolean hasMenu, JSONArray hours) {
         this.id = id;
@@ -27,6 +26,7 @@ public class DiningHall {
         this.residential = residential;
         this.hasMenu = hasMenu;
         this.openHours = parseHours(hours);
+        this.menus = new HashMap<String, HashMap<String, String>>();
     }
 
     private HashMap<String, Interval> parseHours(JSONArray hours) {
@@ -74,22 +74,6 @@ public class DiningHall {
     }
     public boolean hasMenu() {
         return hasMenu;
-    }
-
-    public void setDinnerMenu(HashMap<String, String> dinnerMenu) {
-        this.dinnerMenu = dinnerMenu;
-    }
-
-    public void setLunchMenu(HashMap<String, String> lunchMenu) {
-        this.lunchMenu = lunchMenu;
-    }
-
-    public HashMap<String, String> getDinnerMenu() {
-        return dinnerMenu;
-    }
-
-    public HashMap<String, String> getLunchMenu() {
-        return lunchMenu;
     }
 
     public boolean isOpen() {

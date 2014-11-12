@@ -121,10 +121,8 @@ public class DiningFragment extends ListFragment {
                     parseStation(station, currentMenu);
                 }
 
-                if (mealName.equals("Lunch")) {
-                    diningHall.setLunchMenu(currentMenu);
-                } else if (mealName.equals("Dinner")) {
-                    diningHall.setDinnerMenu(currentMenu);
+                if (mealName != null) {
+                    diningHall.menus.put(mealName, currentMenu);
                 }
             } catch (JSONException e) {
 
