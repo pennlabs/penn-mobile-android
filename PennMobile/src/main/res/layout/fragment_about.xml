@@ -17,7 +17,6 @@
 
     <TextView
         android:id="@+id/about_desc"
-        android:layout_below="@id/labs_icon"
         android:paddingLeft="40dp"
         android:paddingRight="40dp"
         android:paddingBottom="20dp"
