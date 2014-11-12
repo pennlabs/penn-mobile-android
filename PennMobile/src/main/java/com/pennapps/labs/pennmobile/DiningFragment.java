@@ -71,7 +71,7 @@ public class DiningFragment extends ListFragment {
                     JSONObject venue = venues.getJSONObject(i);
                     int id = venue.getInt("id");
                     String name = venue.getString("name");
-                    boolean isResidential = venue.getString("venueType").equals("residential");
+                    boolean isResidential = venue.getString("venueType").equals("residential") && !name.equals("Cafe at McClelland");
                     boolean hasMenu = !venue.getString("dailyMenuURL").isEmpty();
                     JSONArray hours = venue.getJSONArray("dateHours");
                     mDiningHalls.add(new DiningHall(id, name, isResidential, hasMenu, hours));
@@ -131,10 +131,8 @@ public class DiningFragment extends ListFragment {
                     parseStation(station, currentMenu);
                 }
 
-                if (mealName.equals("Lunch")) {
-                    diningHall.setLunchMenu(currentMenu);
-                } else if (mealName.equals("Dinner")) {
-                    diningHall.setDinnerMenu(currentMenu);
+                if (mealName != null) {
+                    diningHall.menus.put(mealName, currentMenu);
                 }
             } catch (JSONException e) {
 

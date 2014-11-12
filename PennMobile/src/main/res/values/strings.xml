@@ -18,8 +18,10 @@
     <string name="transit">Transit</string>
     <string name="directory">Directory</string>
     <string name="news">News</string>
-    <string name="lunch">LUNCH</string>
-    <string name="dinner">DINNER</string>
+    <string name="breakfast">Breakfast</string>
+    <string name="brunch">Brunch</string>
+    <string name="lunch">Lunch</string>
+    <string name="dinner">Dinner</string>
     <string name="course">Course</string>
     <string name="instructor">Instructor</string>
     <string name="difficulty">Difficulty</string>
