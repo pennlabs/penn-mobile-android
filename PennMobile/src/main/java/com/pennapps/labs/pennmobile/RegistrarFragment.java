@@ -165,9 +165,9 @@ public class RegistrarFragment extends Fragment {
 
                 String locationText = course.getBuildingCode() + " " + course.getRoomNumber();
                 locationTextView.setText(locationText);
-            } catch (JSONException e) {
+            } catch (JSONException ignored) {
 
-            } catch (NullPointerException e) {
+            } catch (NullPointerException ignored) {
 
             }
         }

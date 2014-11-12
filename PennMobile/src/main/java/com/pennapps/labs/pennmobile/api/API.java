@@ -39,7 +39,7 @@ public class API {
             while ((line = rd.readLine()) != null) {
                 total.append(line);
             }
-        } catch (IOException e) {}
+        } catch (IOException ignored) {}
         return total;
     }
 
