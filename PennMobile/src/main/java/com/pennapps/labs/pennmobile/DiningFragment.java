@@ -2,12 +2,15 @@ package com.pennapps.labs.pennmobile;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 
 import com.pennapps.labs.pennmobile.adapters.DiningAdapter;
@@ -35,6 +38,13 @@ public class DiningFragment extends ListFragment {
         mAPI = new DiningAPI();
         mActivity = getActivity();
         mDiningHalls = new ArrayList<DiningHall>();
+        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+
         new GetOpenTask().execute();
     }
 

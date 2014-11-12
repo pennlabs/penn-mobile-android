@@ -48,6 +48,7 @@ public class RegistrarSearchFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         setHasOptionsMenu(true);
     }
 
@@ -99,6 +100,7 @@ public class RegistrarSearchFragment extends Fragment {
                 mAdapter = new RegistrarAdapter(mActivity.getApplicationContext(),
                         R.layout.search_entry, cursor, 0);
                 listFragment.setListAdapter(mAdapter);
+
                 return true;
             }
         };
@@ -110,6 +112,7 @@ public class RegistrarSearchFragment extends Fragment {
         } catch (NullPointerException e ) {
 
         }
+
     }
 
 }
