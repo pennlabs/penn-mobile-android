@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,8 +37,6 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
         TextView dinnerMenuTV = (TextView) view.findViewById(R.id.dining_hall_dinner);
 
         hallNameTV.setText(WordUtils.capitalizeFully(diningHall.getName()));
-        dinnerMenuTV.setText("DINNER");
-        lunchMenuTV.setText("LUNCH");
 
         for (Map.Entry<String, HashMap<String, String>> menu : diningHall.menus.entrySet()) {
             String mealName = StringUtils.capitalize(menu.getKey());
@@ -65,8 +64,20 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
                 dinnerMenuTV.setText(menuText);
             }
         }
-
+        this.sort(new MenuComparator());
         return view;
     }
 
+    private class MenuComparator implements Comparator<DiningHall> {
+        @Override
+        public int compare(DiningHall diningHall, DiningHall diningHall2) {
+            if (diningHall.isResidential() && !diningHall2.isResidential()) {
+                return -1;
+            } else if (diningHall2.isResidential() && !diningHall.isResidential()) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
 }
