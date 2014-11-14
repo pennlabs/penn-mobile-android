@@ -17,6 +17,7 @@ import com.pennapps.labs.pennmobile.adapters.DiningAdapter;
 import com.pennapps.labs.pennmobile.api.DiningAPI;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -152,7 +153,12 @@ public class DiningFragment extends ListFragment {
                 for (int k = 0; k < stationItems.length(); k++) {
                     JSONObject foodItem = stationItems.getJSONObject(k);
                     String foodName = foodItem.getString("txtTitle");
-                    menu.put(stationName, foodName);
+                    foodName = StringEscapeUtils.unescapeHtml4(foodName);
+                    if (menu.containsKey(stationName)) {
+                        menu.put(stationName, menu.get(stationName) + ", " + foodName);
+                    } else {
+                        menu.put(stationName, foodName);
+                    }
                 }
             } catch (JSONException e) {
 
