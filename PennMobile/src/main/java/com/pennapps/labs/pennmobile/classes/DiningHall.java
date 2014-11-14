@@ -35,6 +35,14 @@ public class DiningHall {
         try {
             JSONObject hoursToday = hours.getJSONObject(0);
             String date = hoursToday.getString("date");
+            DateTime currentTime = new DateTime();
+            int dayOfWeek = 0;
+            // Split by T gets the Y-M-D format to compare against the date in JSON
+            while (!hoursToday.getString("date").equals(currentTime.toString().split("T")[0])) {
+                hoursToday = hours.getJSONObject(dayOfWeek);
+                date = hoursToday.getString("date");
+                dayOfWeek++;
+            }
 
             JSONArray meals = hoursToday.getJSONArray("meal");
             for (int i = 0; i < meals.length(); i++) {
