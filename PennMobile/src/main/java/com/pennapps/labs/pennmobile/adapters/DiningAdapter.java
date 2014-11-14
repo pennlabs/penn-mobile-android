@@ -51,7 +51,7 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
             String mealName = StringUtils.capitalize(menu.getKey());
             String menuText = "";
             for (Map.Entry<String, String> menuItem : menu.getValue().entrySet()) {
-                String key = menuItem.getKey();
+                String key = StringUtils.capitalize(menuItem.getKey());
                 String value = menuItem.getValue();
                 menuText += key + ": " + value + "\n";
             }

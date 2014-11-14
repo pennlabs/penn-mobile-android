@@ -16,13 +16,7 @@
 
         <TextView
             android:id="@+id/dining_hall_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="80dp"
-            android:paddingBottom="2dp"
-            android:textSize="30sp"
-            android:textStyle="bold"
-            android:textColor="#000000" />
+            style="@style/HallName" />
 
         <TextView
             android:id="@+id/dining_hall_status"
