@@ -16,7 +16,7 @@ public class DiningAPI extends API {
 
     public DiningAPI() {
         super();
-        BASE_URL = "http://api.pennlabs.org:5000/dining/";
+        BASE_URL = "http://api.pennlabs.org/dining/";
     }
 
     public JSONObject getDiningInfo(String courseId) {
