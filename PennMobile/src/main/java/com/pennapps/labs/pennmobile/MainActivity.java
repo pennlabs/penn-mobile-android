@@ -3,20 +3,18 @@ package com.pennapps.labs.pennmobile;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.content.res.Configuration;
-import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
+
+import java.util.ArrayList;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -31,14 +29,17 @@ public class MainActivity extends ActionBarActivity {
         Crashlytics.start(this);
         setContentView(R.layout.activity_main);
 
-        mFeatureTitles = new String[] {"Home", "Registrar", "Directory", "Dining", "Transit", "News", "About"};
+        mFeatureTitles = new String[]{"Home", "Registrar", "Directory", "Dining", "Transit", "News", "About"};
+        int[] icons = new int[]{R.drawable.ic_home, R.drawable.ic_book, R.drawable.ic_contacts,
+                R.drawable.ic_restaurant, R.drawable.ic_directions_bus, R.drawable.ic_announcement,
+                R.drawable.ic_info
+        };
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
-                // R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
                 R.string.drawer_open,  /* "open drawer" description */
                 R.string.drawer_close  /* "close drawer" description */
         ) {
@@ -59,8 +60,8 @@ public class MainActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mFeatureTitles));
+        ArrayList<NavDrawerItem> mFeatureList = createNavDrawerItems(mFeatureTitles, icons);
+        mDrawerList.setAdapter(new NavDrawerListAdapter(this, mFeatureList));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         // Set default fragment to MainFragment
@@ -103,6 +104,14 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    private ArrayList<NavDrawerItem> createNavDrawerItems(String[] navbarItems, int[] icons) {
+        ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<NavDrawerItem>();
+        for (int i = 0; i < navbarItems.length; i++) {
+            navDrawerItems.add(new NavDrawerItem(navbarItems[i], icons[i]));
+        }
+        return navDrawerItems;
+    }
+
     private void selectItem(int position) {
         Fragment fragment = null;
         if (position == 0) {
@@ -130,24 +139,6 @@ public class MainActivity extends ActionBarActivity {
         mDrawerList.setItemChecked(position, true);
         setTitle(mFeatureTitles[position]);
         mDrawerLayout.closeDrawer(mDrawerList);
-    }
-
-    public void onClick(View v) {
-        // Click event handler for the main menu on first open
-        CharSequence viewText = ((TextView) v).getText();
-        if (viewText.equals("Registrar")) {
-            selectItem(1);
-        } else if (viewText.equals("Directory")) {
-            selectItem(2);
-        } else if (viewText.equals("Dining")) {
-            selectItem(3);
-        } else if (viewText.equals("Transit")) {
-            selectItem(4);
-        } else if (viewText.equals("News")) {
-            selectItem(5);
-        } else if (viewText.equals("About")) {
-            selectItem(6);
-        }
     }
 
     public void onHomeButtonClick(View v) {
