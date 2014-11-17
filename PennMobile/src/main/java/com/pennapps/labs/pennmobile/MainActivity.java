@@ -18,6 +18,9 @@ import android.content.res.Configuration;
 import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class MainActivity extends ActionBarActivity {
 
     private DrawerLayout mDrawerLayout;
@@ -31,7 +34,7 @@ public class MainActivity extends ActionBarActivity {
         Crashlytics.start(this);
         setContentView(R.layout.activity_main);
 
-        mFeatureTitles = new String[] {"Home", "Registrar", "Directory", "Dining", "Transit", "News", "About"};
+        mFeatureTitles = new String[]{"Home", "Registrar", "Directory", "Dining", "Transit", "News", "About"};
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -59,8 +62,10 @@ public class MainActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mFeatureTitles));
+        ArrayList<NavDrawerItem> mFeatureList = createNavDrawerItems(mFeatureTitles);
+        mDrawerList.setAdapter(new NavDrawerListAdapter(this, mFeatureList));
+//        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+//                R.layout.drawer_list_item, mFeatureTitles));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         // Set default fragment to MainFragment
@@ -101,6 +106,14 @@ public class MainActivity extends ActionBarActivity {
             selectItem(position);
         }
 
+    }
+
+    private ArrayList<NavDrawerItem> createNavDrawerItems(String[] navbarItems) {
+        ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<NavDrawerItem>();
+        for (int i = 0; i < navbarItems.length; i++) {
+            navDrawerItems.add(new NavDrawerItem(navbarItems[i]));
+        }
+        return navDrawerItems;
     }
 
     private void selectItem(int position) {
