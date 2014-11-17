@@ -35,6 +35,10 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         mFeatureTitles = new String[]{"Home", "Registrar", "Directory", "Dining", "Transit", "News", "About"};
+        int[] icons = new int[]{R.drawable.ic_home, R.drawable.ic_book, R.drawable.ic_contacts,
+                R.drawable.ic_restaurant, R.drawable.ic_directions_bus, R.drawable.ic_announcement,
+                R.drawable.ic_info
+        };
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -61,7 +65,7 @@ public class MainActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        ArrayList<NavDrawerItem> mFeatureList = createNavDrawerItems(mFeatureTitles);
+        ArrayList<NavDrawerItem> mFeatureList = createNavDrawerItems(mFeatureTitles, icons);
         mDrawerList.setAdapter(new NavDrawerListAdapter(this, mFeatureList));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
@@ -105,10 +109,10 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    private ArrayList<NavDrawerItem> createNavDrawerItems(String[] navbarItems) {
+    private ArrayList<NavDrawerItem> createNavDrawerItems(String[] navbarItems, int[] icons) {
         ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<NavDrawerItem>();
         for (int i = 0; i < navbarItems.length; i++) {
-            navDrawerItems.add(new NavDrawerItem(navbarItems[i], R.drawable.ic_one));
+            navDrawerItems.add(new NavDrawerItem(navbarItems[i], icons[i]));
         }
         return navDrawerItems;
     }
