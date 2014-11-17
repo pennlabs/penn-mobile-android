@@ -142,24 +142,6 @@ public class MainActivity extends ActionBarActivity {
         mDrawerLayout.closeDrawer(mDrawerList);
     }
 
-    public void onClick(View v) {
-        // Click event handler for the main menu on first open
-        CharSequence viewText = ((TextView) v).getText();
-        if (viewText.equals("Registrar")) {
-            selectItem(1);
-        } else if (viewText.equals("Directory")) {
-            selectItem(2);
-        } else if (viewText.equals("Dining")) {
-            selectItem(3);
-        } else if (viewText.equals("Transit")) {
-            selectItem(4);
-        } else if (viewText.equals("News")) {
-            selectItem(5);
-        } else if (viewText.equals("About")) {
-            selectItem(6);
-        }
-    }
-
     public void onHomeButtonClick(View v) {
         if (v.getId() == R.id.registrar_img || v.getId() == R.id.registrar_cont) {
             selectItem(1);
