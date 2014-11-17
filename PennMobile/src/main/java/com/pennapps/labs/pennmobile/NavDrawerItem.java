@@ -5,8 +5,10 @@ package com.pennapps.labs.pennmobile;
  */
 public class NavDrawerItem {
     String mTitle;
+    int mIcon;
 
-    public NavDrawerItem(String title) {
+    public NavDrawerItem(String title, int icon) {
         this.mTitle = title;
+        this.mIcon = icon;
     }
 }

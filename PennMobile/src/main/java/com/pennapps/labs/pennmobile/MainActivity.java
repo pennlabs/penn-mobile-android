@@ -41,7 +41,6 @@ public class MainActivity extends ActionBarActivity {
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
-                // R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
                 R.string.drawer_open,  /* "open drawer" description */
                 R.string.drawer_close  /* "close drawer" description */
         ) {
@@ -64,8 +63,6 @@ public class MainActivity extends ActionBarActivity {
 
         ArrayList<NavDrawerItem> mFeatureList = createNavDrawerItems(mFeatureTitles);
         mDrawerList.setAdapter(new NavDrawerListAdapter(this, mFeatureList));
-//        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-//                R.layout.drawer_list_item, mFeatureTitles));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         // Set default fragment to MainFragment
@@ -111,7 +108,7 @@ public class MainActivity extends ActionBarActivity {
     private ArrayList<NavDrawerItem> createNavDrawerItems(String[] navbarItems) {
         ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<NavDrawerItem>();
         for (int i = 0; i < navbarItems.length; i++) {
-            navDrawerItems.add(new NavDrawerItem(navbarItems[i]));
+            navDrawerItems.add(new NavDrawerItem(navbarItems[i], R.drawable.ic_one));
         }
         return navDrawerItems;
     }
