@@ -9,7 +9,6 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 
@@ -77,9 +76,9 @@ public class DiningFragment extends ListFragment {
                     JSONArray hours = venue.getJSONArray("dateHours");
                     mDiningHalls.add(new DiningHall(id, name, isResidential, hasMenu, hours));
                 }
-            } catch (JSONException e) {
+            } catch (JSONException ignored) {
 
-            } catch (NullPointerException e) {
+            } catch (NullPointerException ignored) {
 
             }
             return null;
@@ -109,7 +108,7 @@ public class DiningFragment extends ListFragment {
                         }
                     }
                 }
-            } catch (JSONException e) {
+            } catch (JSONException ignored) {
 
             }
             return null;
@@ -135,7 +134,7 @@ public class DiningFragment extends ListFragment {
                 if (mealName != null) {
                     diningHall.menus.put(mealName, currentMenu);
                 }
-            } catch (JSONException e) {
+            } catch (JSONException ignored) {
 
             }
         }
@@ -160,7 +159,7 @@ public class DiningFragment extends ListFragment {
                         menu.put(stationName, foodName);
                     }
                 }
-            } catch (JSONException e) {
+            } catch (JSONException ignored) {
 
             }
         }
@@ -171,7 +170,7 @@ public class DiningFragment extends ListFragment {
                 mAdapter = new DiningAdapter(mActivity, mDiningHalls);
                 mListView.setAdapter(mAdapter);
                 getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-            } catch (NullPointerException e) {
+            } catch (NullPointerException ignored) {
 
             }
         }

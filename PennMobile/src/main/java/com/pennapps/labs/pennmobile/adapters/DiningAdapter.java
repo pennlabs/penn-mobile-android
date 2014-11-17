@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,19 +55,19 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
                 menuText += key + ": " + value + "\n";
             }
             if (mealName.equals("Breakfast")) {
-                view.findViewById(R.id.dining_hall_breakfast_title).setVisibility(view.VISIBLE);
+                view.findViewById(R.id.dining_hall_breakfast_title).setVisibility(View.VISIBLE);
                 breakfastMenuTV.setVisibility(View.VISIBLE);
                 breakfastMenuTV.setText(menuText);
             } else if (mealName.equals("Brunch")) {
-                view.findViewById(R.id.dining_hall_brunch_title).setVisibility(view.VISIBLE);
+                view.findViewById(R.id.dining_hall_brunch_title).setVisibility(View.VISIBLE);
                 brunchMenuTV.setVisibility(View.VISIBLE);
                 brunchMenuTV.setText(menuText);
             } else if (mealName.equals("Lunch")) {
-                view.findViewById(R.id.dining_hall_lunch_title).setVisibility(view.VISIBLE);
+                view.findViewById(R.id.dining_hall_lunch_title).setVisibility(View.VISIBLE);
                 lunchMenuTV.setVisibility(View.VISIBLE);
                 lunchMenuTV.setText(menuText);
             } else if (mealName.equals("Dinner")) {
-                view.findViewById(R.id.dining_hall_dinner_title).setVisibility(view.VISIBLE);
+                view.findViewById(R.id.dining_hall_dinner_title).setVisibility(View.VISIBLE);
                 dinnerMenuTV.setVisibility(View.VISIBLE);
                 dinnerMenuTV.setText(menuText);
             }

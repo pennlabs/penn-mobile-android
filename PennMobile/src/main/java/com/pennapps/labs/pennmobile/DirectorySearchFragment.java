@@ -96,7 +96,7 @@ public class DirectorySearchFragment extends Fragment {
             textView = (TextView) searchView.findViewById(id);
             textView.setTextColor(Color.WHITE);
             searchView.setOnQueryTextListener(queryListener);
-        } catch (NullPointerException e) {
+        } catch (NullPointerException ignored) {
 
         }
     }

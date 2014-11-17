@@ -60,7 +60,7 @@ public class DiningHall {
                 Interval mealOpenInterval = new Interval(openInstant, closeInstant);
                 openHours.put(mealName, mealOpenInterval);
             }
-        } catch (JSONException e) {
+        } catch (JSONException ignored) {
 
         }
         return openHours;
