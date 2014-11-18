@@ -33,7 +33,11 @@ public class AboutFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_about, container, false);
         TextView featureRequest = (TextView) v.findViewById(R.id.about_desc);
-        featureRequest.setClickable(true);
+        featureRequest.setOnClickListener(new View.OnClickListener() {
+              @Override
+              public void onClick(View view) {
+              }
+        });
         featureRequest.setMovementMethod(LinkMovementMethod.getInstance());
         String text = "PennMobile was developed by Penn Labs, with funding<br>" +
                 "and support from the Undergraduate Assembly. <br><br> &copy; 2014 Penn Labs <br><br>" +
