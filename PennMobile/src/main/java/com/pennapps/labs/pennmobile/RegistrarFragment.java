@@ -42,7 +42,6 @@ public class RegistrarFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAPI = new RegistrarAPI();
-
         new GetRequestTask(getArguments().getString(RegistrarSearchFragment.COURSE_ID_EXTRA)).execute();
     }
 
@@ -63,7 +62,7 @@ public class RegistrarFragment extends Fragment {
         FragmentManager fm = getChildFragmentManager();
         if (mapFragment == null) {
             mapFragment = SupportMapFragment.newInstance();
-            fm.beginTransaction().add(R.id.fragment_container, mapFragment).commit();
+            fm.beginTransaction().add(R.id.registrar_map_container, mapFragment).commit();
             fm.executePendingTransactions();
         }
     }
@@ -76,6 +75,7 @@ public class RegistrarFragment extends Fragment {
             if (map != null) {
                 map.addMarker(new MarkerOptions().position(new LatLng(39.95198, -75.19368)));
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(39.95198, -75.19368), 17));
+                map.getUiSettings().setZoomControlsEnabled(false);
             }
         }
     }
