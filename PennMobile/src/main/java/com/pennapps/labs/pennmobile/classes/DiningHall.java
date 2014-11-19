@@ -20,6 +20,8 @@ public class DiningHall {
     private HashMap<String, Interval> openHours;
     public HashMap<String, HashMap<String, String>> menus;
 
+    DateTimeFormatter DATEFORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+
     public DiningHall(int id, String name, boolean residential, boolean hasMenu, JSONArray hours) {
         this.id = id;
         this.name = name;
@@ -31,8 +33,9 @@ public class DiningHall {
 
     private HashMap<String, Interval> parseHours(JSONArray hours) {
         HashMap<String, Interval> openHours = new HashMap<String, Interval>();
-        DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+
         try {
+
             JSONObject hoursToday = hours.getJSONObject(0);
             String date = hoursToday.getString("date");
             DateTime currentTime = new DateTime();
@@ -44,20 +47,18 @@ public class DiningHall {
                 dayOfWeek++;
             }
 
-            JSONArray meals = hoursToday.getJSONArray("meal");
-            for (int i = 0; i < meals.length(); i++) {
-                JSONObject meal = meals.getJSONObject(i);
-                String mealName = meal.getString("type");
-
-                String openTime = date + " " + meal.getString("open");
-                String closeTime = date + " " + meal.getString("close");
-                if (meal.getString("close").equals("00:00:00")) {
-                    closeTime = date + " " + "23:59:59";
+            try {
+                JSONArray meals = hoursToday.getJSONArray("meal");
+                for (int i = 0; i < meals.length(); i++) {
+                    JSONObject meal = meals.getJSONObject(i);
+                    String mealName = meal.getString("type");
+                    Interval mealOpenInterval = parseMealHours(meal, date);
+                    openHours.put(mealName, mealOpenInterval);
                 }
-                DateTime openInstant = DateTime.parse(openTime, dateFormat);
-                DateTime closeInstant = DateTime.parse(closeTime, dateFormat);
-
-                Interval mealOpenInterval = new Interval(openInstant, closeInstant);
+            } catch (JSONException e) {
+                JSONObject meal = hoursToday.getJSONObject("meal");
+                String mealName = meal.getString("type");
+                Interval mealOpenInterval = parseMealHours(meal, date);
                 openHours.put(mealName, mealOpenInterval);
             }
         } catch (JSONException ignored) {
@@ -93,6 +94,27 @@ public class DiningHall {
             }
         }
         return false;
+    }
+
+    private Interval parseMealHours(JSONObject meal, String date) {
+        try {
+            String openTime = date + " " + meal.getString("open");
+            String closeTime = date + " " + meal.getString("close");
+            if (meal.getString("close").equals("00:00:00") ||
+                    meal.getString("close").equals("24:00:00")) {
+                closeTime = date + " " + "23:59:59";
+            }
+            DateTime openInstant = DateTime.parse(openTime, DATEFORMAT);
+            DateTime closeInstant = DateTime.parse(closeTime, DATEFORMAT);
+
+            if (closeInstant.getHourOfDay() < 6) {
+                closeInstant = closeInstant.plusDays(1);
+            }
+
+            return new Interval(openInstant, closeInstant);
+        } catch (JSONException ignored) {
+            return null;
+        }
     }
 
     public String openMeal() {
