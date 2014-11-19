@@ -1,0 +1,13 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" tools:context="com.pennapps.labs.pennmobile.MenuFragment">
+    <TextView
+        android:id="@+id/dining_hall_name"
+        android:textSize="40sp"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:background="@color/white"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:text="Dining hall name"/>
+</FrameLayout>
