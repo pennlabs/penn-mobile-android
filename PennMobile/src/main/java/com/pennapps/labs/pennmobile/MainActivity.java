@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
+import android.os.StrictMode;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -29,6 +30,9 @@ public class MainActivity extends ActionBarActivity {
         Crashlytics.start(this);
         setContentView(R.layout.activity_main);
 
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        
         mFeatureTitles = new String[]{"Home", "Registrar", "Directory", "Dining", "Transit", "News", "About"};
         int[] icons = new int[]{R.drawable.ic_home, R.drawable.ic_book, R.drawable.ic_contacts,
                 R.drawable.ic_restaurant, R.drawable.ic_directions_bus, R.drawable.ic_announcement,

@@ -1,13 +1,61 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" tools:context="com.pennapps.labs.pennmobile.MenuFragment">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/dining_hall_name"
+            style="@style/HallName" />
+
+        <TextView
+            android:id="@+id/dining_hall_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="4dp"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp" />
+
+    </RelativeLayout>
+
     <TextView
-        android:id="@+id/dining_hall_name"
-        android:textSize="40sp"
-        android:fontFamily="sans-serif-light"
-        android:gravity="center"
-        android:background="@color/white"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:text="Dining hall name"/>
+        android:id="@+id/dining_hall_breakfast_title"
+        style="@style/MealName"
+        android:text="@string/breakfast" />
+
+    <TextView
+        android:id="@+id/dining_hall_breakfast"
+        style="@style/Menu" />
+
+    <TextView
+        android:id="@+id/dining_hall_brunch_title"
+        style="@style/MealName"
+        android:text="@string/brunch" />
+
+    <TextView
+        android:id="@+id/dining_hall_brunch"
+        style="@style/Menu" />
+
+    <TextView
+        android:id="@+id/dining_hall_lunch_title"
+        style="@style/MealName"
+        android:text="@string/lunch" />
+
+    <TextView
+        android:id="@+id/dining_hall_lunch"
+        style="@style/Menu" />
+
+    <TextView
+        android:id="@+id/dining_hall_dinner_title"
+        style="@style/MealName"
+        android:text="@string/dinner" />
+
+    <TextView
+        android:id="@+id/dining_hall_dinner"
+        style="@style/Menu" />
 </FrameLayout>
