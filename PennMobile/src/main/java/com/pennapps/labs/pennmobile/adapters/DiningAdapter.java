@@ -38,7 +38,7 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
         TextView dinnerMenuTV = (TextView) view.findViewById(R.id.dining_hall_dinner);
 
         hallNameTV.setText(WordUtils.capitalizeFully(diningHall.getName()));
-        view.setTag(WordUtils.capitalizeFully(diningHall.getName()));
+        view.setTag(diningHall);
         if (diningHall.isOpen()) {
             hallStatus.setText("Open");
             hallStatus.setBackground(getContext().getResources().getDrawable(R.drawable.label_green));

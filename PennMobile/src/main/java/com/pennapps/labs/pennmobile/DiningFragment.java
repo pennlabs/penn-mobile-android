@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
@@ -68,7 +70,7 @@ public class DiningFragment extends ListFragment {
         Fragment fragment = new MenuFragment();
 
         Bundle args = new Bundle();
-        args.putString("HallName", v.getTag().toString());
+        args.putParcelable("DiningHall", (Parcelable) v.getTag());
         fragment.setArguments(args);
 
         FragmentManager fragmentManager = this.getFragmentManager();

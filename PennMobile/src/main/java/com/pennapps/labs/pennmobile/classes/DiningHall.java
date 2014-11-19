@@ -1,5 +1,8 @@
 package com.pennapps.labs.pennmobile.classes;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.format.DateTimeFormat;
@@ -10,7 +13,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
-public class DiningHall {
+public class DiningHall implements Parcelable {
 
     private int id;
     private String name;
@@ -29,6 +32,19 @@ public class DiningHall {
         this.hasMenu = hasMenu;
         this.openHours = parseHours(hours);
         this.menus = new HashMap<String, HashMap<String, String>>();
+    }
+
+    public int describeContents(){
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeBooleanArray(new boolean[] {residential, hasMenu});
+        dest.writeMap(openHours);
+        dest.writeMap(menus);
+        dest.writeInt(id);
+        dest.writeString(name);
     }
 
     private HashMap<String, Interval> parseHours(JSONArray hours) {

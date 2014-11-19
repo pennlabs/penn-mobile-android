@@ -17,6 +17,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.pennapps.labs.pennmobile.api.RegistrarAPI;
+import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.pcr.RegCourse;
 
 import org.apache.commons.lang3.StringUtils;
@@ -30,19 +31,19 @@ import java.util.List;
 public class MenuFragment extends Fragment {
 
     private TextView diningHallNameTextView;
-    private String hallName;
+    private DiningHall diningHall;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        hallName = getArguments().getString("HallName");
+        diningHall = getArguments().getParcelable("DiningHall");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_menu, container, false);
         diningHallNameTextView = (TextView) v.findViewById(R.id.dining_hall_name);
-        diningHallNameTextView.setText(hallName);
+        diningHallNameTextView.setText(diningHall.getName());
         return v;
     }
 
