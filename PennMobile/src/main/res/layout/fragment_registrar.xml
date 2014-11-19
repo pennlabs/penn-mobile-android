@@ -21,11 +21,13 @@
 
     <TextView
         android:id="@+id/course_code"
-        android:textSize="50sp"
-        android:fontFamily="sans-serif-light"
         android:gravity="center"
+        android:fontFamily="sans-serif-light"
+        android:textColor="#212121"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        style="@style/Base.TextAppearance.AppCompat.Display3"
+        />
 
     <TextView
         android:id="@+id/course_title"
