@@ -32,10 +32,6 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
 
         TextView hallNameTV = (TextView) view.findViewById(R.id.dining_hall_name);
         TextView hallStatus = (TextView) view.findViewById(R.id.dining_hall_status);
-        TextView breakfastMenuTV = (TextView) view.findViewById(R.id.dining_hall_breakfast);
-        TextView brunchMenuTV = (TextView) view.findViewById(R.id.dining_hall_brunch);
-        TextView lunchMenuTV = (TextView) view.findViewById(R.id.dining_hall_lunch);
-        TextView dinnerMenuTV = (TextView) view.findViewById(R.id.dining_hall_dinner);
 
         hallNameTV.setText(WordUtils.capitalizeFully(diningHall.getName()));
         view.setTag(diningHall);
@@ -47,32 +43,6 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
             hallStatus.setBackground(getContext().getResources().getDrawable(R.drawable.label_red));
         }
 
-        for (Map.Entry<String, HashMap<String, String>> menu : diningHall.menus.entrySet()) {
-            String mealName = StringUtils.capitalize(menu.getKey());
-            String menuText = "";
-            for (Map.Entry<String, String> menuItem : menu.getValue().entrySet()) {
-                String key = StringUtils.capitalize(menuItem.getKey());
-                String value = menuItem.getValue();
-                menuText += key + ": " + value + "\n";
-            }
-            if (mealName.equals("Breakfast")) {
-                view.findViewById(R.id.dining_hall_breakfast_title).setVisibility(View.VISIBLE);
-                breakfastMenuTV.setVisibility(View.VISIBLE);
-                breakfastMenuTV.setText(menuText);
-            } else if (mealName.equals("Brunch")) {
-                view.findViewById(R.id.dining_hall_brunch_title).setVisibility(View.VISIBLE);
-                brunchMenuTV.setVisibility(View.VISIBLE);
-                brunchMenuTV.setText(menuText);
-            } else if (mealName.equals("Lunch")) {
-                view.findViewById(R.id.dining_hall_lunch_title).setVisibility(View.VISIBLE);
-                lunchMenuTV.setVisibility(View.VISIBLE);
-                lunchMenuTV.setText(menuText);
-            } else if (mealName.equals("Dinner")) {
-                view.findViewById(R.id.dining_hall_dinner_title).setVisibility(View.VISIBLE);
-                dinnerMenuTV.setVisibility(View.VISIBLE);
-                dinnerMenuTV.setText(menuText);
-            }
-        }
         this.sort(new MenuComparator());
         return view;
     }

@@ -31,40 +31,4 @@
 
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/dining_hall_breakfast_title"
-        style="@style/MealName"
-        android:text="@string/breakfast" />
-
-    <TextView
-        android:id="@+id/dining_hall_breakfast"
-        style="@style/Menu" />
-
-    <TextView
-        android:id="@+id/dining_hall_brunch_title"
-        style="@style/MealName"
-        android:text="@string/brunch" />
-
-    <TextView
-        android:id="@+id/dining_hall_brunch"
-        style="@style/Menu" />
-
-    <TextView
-        android:id="@+id/dining_hall_lunch_title"
-        style="@style/MealName"
-        android:text="@string/lunch" />
-
-    <TextView
-        android:id="@+id/dining_hall_lunch"
-        style="@style/Menu" />
-
-    <TextView
-        android:id="@+id/dining_hall_dinner_title"
-        style="@style/MealName"
-        android:text="@string/dinner" />
-
-    <TextView
-        android:id="@+id/dining_hall_dinner"
-        style="@style/Menu" />
-
 </LinearLayout>
