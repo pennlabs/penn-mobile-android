@@ -29,6 +29,12 @@
             android:paddingRight="10dp"
             android:paddingLeft="10dp" />
 
+        <TextView
+            android:id="@+id/dining_hall_open_meal"
+            android:layout_below="@+id/dining_hall_name"
+            style="@style/MealName"
+            android:text="@string/dinner" />
+
     </RelativeLayout>
 
 </LinearLayout>

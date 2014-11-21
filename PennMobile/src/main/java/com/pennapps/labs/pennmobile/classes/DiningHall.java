@@ -11,7 +11,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class DiningHall implements Parcelable {
 
@@ -141,6 +148,28 @@ public class DiningHall implements Parcelable {
                 return mealName;
             }
         }
+        return null;
+    }
+
+    public String nextMeal() {
+        List<Map.Entry<String, Interval>> list = new ArrayList<Map.Entry<String, Interval>>(openHours.entrySet());
+        Collections.sort( list, new Comparator<Map.Entry<String, Interval>>() {
+            public int compare( Map.Entry<String, Interval> x, Map.Entry<String, Interval> y )
+            {
+                return x.getValue().getStart().compareTo(y.getValue().getStart());
+            }
+        });
+
+        DateTime currentTime = new DateTime();
+
+        for (int i = 0; i < list.size(); i++) {
+            Interval openInterval = list.get(i).getValue();
+            if (openInterval.contains(currentTime)) {
+                String mealName = list.get(i).getKey();
+                return mealName;
+            }
+        }
+
         return null;
     }
 
