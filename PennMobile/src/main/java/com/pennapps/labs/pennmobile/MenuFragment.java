@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
@@ -50,6 +51,7 @@ public class MenuFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_menu, container, false);
+        v.setBackgroundColor(Color.WHITE);
         diningHallNameTV = (TextView) v.findViewById(R.id.dining_hall_name);
         diningHallNameTV.setText(mDiningHall.getName());
         diningHallNameTV.setGravity(Gravity.CENTER_HORIZONTAL);
