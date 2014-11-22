@@ -35,23 +35,20 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
         TextView openMeal = (TextView) view.findViewById(R.id.dining_hall_open_meal);
         view.findViewById(R.id.dining_hall_open_meal).setVisibility(View.VISIBLE);
 
-        String meal;
-
         hallNameTV.setText(WordUtils.capitalizeFully(diningHall.getName()));
         view.setTag(diningHall);
         if (diningHall.isOpen()) {
             hallStatus.setText("Open");
             hallStatus.setBackground(getContext().getResources().getDrawable(R.drawable.label_green));
-            meal = diningHall.openMeal();
-            openMeal.setText("Currently serving: " + meal);
+            openMeal.setText("Currently serving: " + diningHall.openMeal());
         } else {
             hallStatus.setText("Closed");
             hallStatus.setBackground(getContext().getResources().getDrawable(R.drawable.label_red));
-            meal = diningHall.nextMeal();
-            if (meal == null) {
-                openMeal.setText("Next serving: " + meal);
+            String meal = diningHall.nextMeal();
+            if (meal.equals("")) {
+                view.findViewById(R.id.dining_hall_open_meal).setVisibility(View.GONE);
             } else {
-                openMeal.setText("Next serving: ");
+                openMeal.setText("Next serving: " + meal);
             }
         }
 

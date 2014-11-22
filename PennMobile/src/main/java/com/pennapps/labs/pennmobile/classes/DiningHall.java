@@ -160,17 +160,17 @@ public class DiningHall implements Parcelable {
             }
         });
 
-        DateTime currentTime = new DateTime();
+        String nextMeal = "";
 
         for (int i = 0; i < list.size(); i++) {
             Interval openInterval = list.get(i).getValue();
-            if (openInterval.contains(currentTime)) {
-                String mealName = list.get(i).getKey();
-                return mealName;
+            if (openInterval.isAfterNow()) {
+                nextMeal = list.get(i).getKey();
+                return nextMeal;
             }
         }
 
-        return null;
+        return nextMeal;
     }
 
     public class Meal {
