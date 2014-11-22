@@ -32,8 +32,12 @@
         <TextView
             android:id="@+id/dining_hall_open_meal"
             android:layout_below="@+id/dining_hall_name"
-            style="@style/MealName"
-            android:text="@string/dinner" />
+            style="@style/MealName"/>
+
+        <TextView
+            android:id="@+id/dining_hall_open_close"
+            android:layout_below="@+id/dining_hall_open_meal"
+            style="@style/Menu"/>
 
     </RelativeLayout>
 

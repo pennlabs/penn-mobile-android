@@ -108,6 +108,41 @@ public class DiningHall implements Parcelable {
         return hasMenu;
     }
 
+    public String closingTime() {
+        String closingTime = "";
+        for (String mealName : openHours.keySet()) {
+            Interval openInterval = openHours.get(mealName);
+            DateTime currentTime = new DateTime();
+            if (openInterval.contains(currentTime)) {
+                closingTime = openInterval.getEnd().toString("h:mma");
+                return closingTime;
+            }
+        }
+        return closingTime;
+    }
+
+    public String openingTime() {
+        List<Map.Entry<String, Interval>> list = new ArrayList<Map.Entry<String, Interval>>(openHours.entrySet());
+        Collections.sort( list, new Comparator<Map.Entry<String, Interval>>() {
+            public int compare( Map.Entry<String, Interval> x, Map.Entry<String, Interval> y )
+            {
+                return x.getValue().getStart().compareTo(y.getValue().getStart());
+            }
+        });
+
+        String openingTime = "";
+
+        for (int i = 0; i < list.size(); i++) {
+            Interval openInterval = list.get(i).getValue();
+            if (openInterval.isAfterNow()) {
+                openingTime = openInterval.getStart().toString("h:mma");
+                return openingTime;
+            }
+        }
+
+        return openingTime;
+    }
+
     public boolean isOpen() {
         for (String mealName : openHours.keySet()) {
             Interval openInterval = openHours.get(mealName);

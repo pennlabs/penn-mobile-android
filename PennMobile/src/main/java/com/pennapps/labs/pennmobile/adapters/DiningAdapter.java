@@ -33,7 +33,9 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
         TextView hallNameTV = (TextView) view.findViewById(R.id.dining_hall_name);
         TextView hallStatus = (TextView) view.findViewById(R.id.dining_hall_status);
         TextView openMeal = (TextView) view.findViewById(R.id.dining_hall_open_meal);
+        TextView openClose = (TextView) view.findViewById(R.id.dining_hall_open_close);
         view.findViewById(R.id.dining_hall_open_meal).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.dining_hall_open_close).setVisibility(View.VISIBLE);
 
         hallNameTV.setText(WordUtils.capitalizeFully(diningHall.getName()));
         view.setTag(diningHall);
@@ -41,6 +43,7 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
             hallStatus.setText("Open");
             hallStatus.setBackground(getContext().getResources().getDrawable(R.drawable.label_green));
             openMeal.setText("Currently serving: " + diningHall.openMeal());
+            openClose.setText("Closes at: " + diningHall.closingTime());
         } else {
             hallStatus.setText("Closed");
             hallStatus.setBackground(getContext().getResources().getDrawable(R.drawable.label_red));
@@ -49,6 +52,12 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
                 view.findViewById(R.id.dining_hall_open_meal).setVisibility(View.GONE);
             } else {
                 openMeal.setText("Next serving: " + meal);
+            }
+            String openingTime = diningHall.openingTime();
+            if (openingTime.equals("")) {
+                view.findViewById(R.id.dining_hall_open_close).setVisibility(View.GONE);
+            } else {
+                openClose.setText("Opens at: " + diningHall.openingTime());
             }
         }
 
