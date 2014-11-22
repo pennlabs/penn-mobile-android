@@ -35,10 +35,8 @@ public class RegistrarAPI extends API {
                     (response.getEntity().getContent()).toString());
             return new JSONObject(tokener);
         } catch (IOException e) {
-            Log.v("vivlabs", "" + e);
             return null;
         } catch (JSONException e) {
-            Log.v("vivlabs", "" + e);
             return null;
         }
     }

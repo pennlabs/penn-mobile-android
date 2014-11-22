@@ -16,11 +16,6 @@ public class RegistrarAdapter extends ResourceCursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-            /*
-            Log.v("adel", "" + cursor.getCount());
-            Log.v("adel", "" + cursor.getColumnCount());
-            */
-
         // Log.v("vivlabs", Arrays.toString(cursor.getColumnNames()));
 
         TextView courseId = (TextView) view.findViewById(R.id.course_id_text);
