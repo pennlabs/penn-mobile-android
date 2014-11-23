@@ -31,7 +31,6 @@ public class Person {
 
         public Builder(String name, String affiliation) {
             int firstComma = name.indexOf(",");
-            if (name.contains("Dr")) Log.v("vivlabs", "name");
             this.first_name = WordUtils.capitalizeFully(name.substring(firstComma + 1).trim());
             this.last_name = WordUtils.capitalizeFully(name.substring(0, firstComma).trim());
             this.affiliation = affiliation;

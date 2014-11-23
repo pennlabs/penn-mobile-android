@@ -27,13 +27,10 @@ public class DiningAPI extends API {
             HttpResponse response = httpClient.execute(httpGet);
             JSONTokener tokener = new JSONTokener(inputStreamToString
                     (response.getEntity().getContent()).toString());
-            Log.v("vivlabs", tokener.toString());
             return new JSONObject(tokener);
         } catch (IOException e) {
-            Log.v("vivlabs", "yo1" + e);
             return null;
         } catch (JSONException e) {
-            Log.v("vivlabs", "yo2" + e);
             return null;
         }
     }
@@ -46,10 +43,8 @@ public class DiningAPI extends API {
                     (response.getEntity().getContent()).toString());
             return new JSONObject(tokener);
         } catch (IOException e) {
-            Log.v("vivlabs", "" + e);
             return null;
         } catch (JSONException e) {
-            Log.v("vivlabs", "" + e);
             return null;
         }
     }
@@ -62,10 +57,8 @@ public class DiningAPI extends API {
                     (response.getEntity().getContent()).toString());
             return new JSONObject(tokener);
         } catch (IOException e) {
-            Log.v("vivlabs", "" + e);
             return null;
         } catch (JSONException e) {
-            Log.v("vivlabs", "" + e);
             return null;
         }
     }
@@ -78,10 +71,8 @@ public class DiningAPI extends API {
                     (response.getEntity().getContent()).toString());
             return new JSONObject(tokener);
         } catch (IOException e) {
-            Log.v("vivlabs", "" + e);
             return null;
         } catch (JSONException e) {
-            Log.v("vivlabs", "" + e);
             return null;
         }
     }

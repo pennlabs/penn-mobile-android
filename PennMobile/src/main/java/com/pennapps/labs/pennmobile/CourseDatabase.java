@@ -25,7 +25,6 @@ public class CourseDatabase {
         mDatabaseOpenHelper = new DatabaseHelper(context);
 
         try {
-            Log.v("vivlabs", "creating db");
             mDatabaseOpenHelper.createDatabase();
             mDatabaseOpenHelper.openDatabase();
             // sqLiteDatabase = mDatabaseOpenHelper.getReadableDatabase();

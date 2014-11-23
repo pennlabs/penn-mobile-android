@@ -153,7 +153,6 @@ public class DirectoryFragment extends ListFragment {
                 if (responseArr.length() == 0) {
                     return false;
                 }
-                // Log.v("vivlabs", "LOL " + responseArr.toString());
                 return true;
             } catch(JSONException e) {
                 return false;
@@ -172,7 +171,6 @@ public class DirectoryFragment extends ListFragment {
 
                 for (int i = 0; i < responseArr.length(); i++) {
                     resp = (JSONObject) responseArr.get(i);
-                    // Log.v("vivlabs", resp.toString());
 
                     Person person = new Person.Builder(resp.get("list_name").toString(),
                             resp.get("list_affiliation").toString()).
@@ -186,8 +184,8 @@ public class DirectoryFragment extends ListFragment {
                 mListView.setAdapter(mAdapter);
                 getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                 getActivity().findViewById(android.R.id.list).setVisibility(View.VISIBLE);
-            } catch (JSONException e) {
-                // Log.v("vivlabs", e.toString());
+            } catch (JSONException ignored) {
+
             } catch (NullPointerException ignored) {
 
             }

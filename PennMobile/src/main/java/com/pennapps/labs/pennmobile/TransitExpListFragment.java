@@ -67,9 +67,7 @@ public class TransitExpListFragment extends Fragment {
         mAPI = new TransitAPI();
         // mAPI.setUrlPath("stopinventory");
 
-        Log.v("vivlabs", service.getLastKnownLocation(LocationManager.GPS_PROVIDER).toString());
         Location mLocation = service.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        // 39.952960, -75.201339
         // new GetRequestTask(mLocation.getLatitude(), mLocation.getLongitude()).execute();
         new GetStopsTask(39.952960, -75.201339).execute();
         new GetRoutesTask().execute();
@@ -100,7 +98,6 @@ public class TransitExpListFragment extends Fragment {
         @Override
         protected void onPostExecute(Boolean valid) {
             if (!valid) {
-                Log.v("vivlabs", "Invalid?");
                 return;
             }
 
@@ -110,7 +107,6 @@ public class TransitExpListFragment extends Fragment {
                 for (int i = 0; i < responseArr.length(); i++) {
                     JSONObject resp = (JSONObject) responseArr.get(i);
                     if (resp.has("BusStopName")) {
-                        Log.v("vivlabs", resp.toString());
                         BusStop stop = new BusStop(resp.get("BusStopId").toString(),
                                                    resp.get("BusStopName").toString(),
                                                    resp.get("Latitude").toString(),
@@ -135,8 +131,8 @@ public class TransitExpListFragment extends Fragment {
                 */
 
 
-            } catch (JSONException e) {
-                Log.v("vivlabs", "" + e);
+            } catch (JSONException ignored) {
+
             }
         }
     }
@@ -154,7 +150,6 @@ public class TransitExpListFragment extends Fragment {
                 responseArr = (JSONArray) ((JSONObject) ((JSONObject) resultObj.get("result_data")).get("ConfigurationData")).get("Route");
                 return responseArr.length() != 0;
             } catch (Exception e) {
-                Log.v("vivlabs", "" + e);
                 return false;
             }
         }
@@ -185,15 +180,14 @@ public class TransitExpListFragment extends Fragment {
                             tempList = routesByStop.get(stopTitle);
                         }
                         tempList.add(new BusRoute(routeTitle, routeDescription));
-                        Log.v("vivlabs", count + " stop title: " + stopTitle);
                         count++;
                         routesByStop.put(stopTitle.trim(), tempList);
                     }
 
                     mRoutes.add(new BusRoute(routeTitle, routeDescription, routeStops));
                 }
-            } catch (JSONException e) {
-                Log.v("vivlabs", "" + e);
+            } catch (JSONException ignored) {
+
             }
 
             mAdapter = new NewExpListViewAdapter(mDistanceArr, routesByStop, mActivity);
