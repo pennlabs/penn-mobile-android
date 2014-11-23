@@ -42,14 +42,8 @@ public class MenuFragment extends Fragment {
         v.setBackgroundColor(Color.WHITE);
         diningHallNameTV = (TextView) v.findViewById(R.id.dining_hall_name);
         diningHallNameTV.setText(mDiningHall.getName());
-        diningHallNameTV.setGravity(Gravity.CENTER_HORIZONTAL);
+        diningHallNameTV.setGravity(Gravity.LEFT);
         LinearLayout menu_layout = (LinearLayout) v.findViewById(R.id.main_menu_layout);
-        menu_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().onBackPressed();
-            }
-        });
         fillDescriptions(v);
         try {
             if (mDiningHall.isResidential() && mDiningHall.hasMenu()) {
