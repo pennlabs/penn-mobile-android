@@ -67,18 +67,21 @@ public class DiningFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        Fragment fragment = new MenuFragment();
+        DiningHall diningHall = (DiningHall) v.getTag();
+        if (diningHall.hasMenu()) {
+            Fragment fragment = new MenuFragment();
 
-        Bundle args = new Bundle();
-        args.putParcelable("DiningHall", (Parcelable) v.getTag());
-        fragment.setArguments(args);
+            Bundle args = new Bundle();
+            args.putParcelable("DiningHall", (Parcelable) v.getTag());
+            fragment.setArguments(args);
 
-        FragmentManager fragmentManager = this.getFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.dining_fragment, fragment)
-                .addToBackStack(null)
-                .commit();
-        onResume();
+            FragmentManager fragmentManager = this.getFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.dining_fragment, fragment)
+                    .addToBackStack(null)
+                    .commit();
+            onResume();
+        }
     }
     private class GetOpenTask extends AsyncTask<Void, Void, Void> {
 
