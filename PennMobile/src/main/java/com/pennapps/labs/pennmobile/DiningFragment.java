@@ -95,7 +95,7 @@ public class DiningFragment extends ListFragment {
                     int id = venue.getInt("id");
                     String name = venue.getString("name");
                     boolean isResidential = venue.getString("venueType").equals("residential") && !name.equals("Cafe at McClelland");
-                    boolean hasMenu = !venue.getString("dailyMenuURL").isEmpty();
+                    boolean hasMenu = hasMenu(venue);
                     JSONArray hours = venue.getJSONArray("dateHours");
                     mDiningHalls.add(new DiningHall(id, name, isResidential, hasMenu, hours));
                 }
@@ -111,6 +111,25 @@ public class DiningFragment extends ListFragment {
         protected void onPostExecute(Void params) {
             new GetMenusTask().execute();
         }
+    }
+
+    private boolean hasMenu(JSONObject venue) {
+        try {
+            if (venue.getString("dailyMenuURL").isEmpty()) {
+                return false;
+            } else {
+                JSONObject meals = mAPI.getDailyMenu(venue.getInt("id")).getJSONObject("Document")
+                        .getJSONObject("tblMenu");
+                if (meals.length() == 0) {
+                    return false;
+                }
+            }
+        } catch (JSONException ignored) {
+            return false;
+        } catch (NullPointerException ignored) {
+            return false;
+        }
+        return true;
     }
 
     private class GetMenusTask extends AsyncTask<Void, Void, Void> {
