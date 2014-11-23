@@ -1,12 +1,8 @@
 package com.pennapps.labs.pennmobile;
 
 import android.graphics.Color;
-import android.location.Address;
-import android.location.Geocoder;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,15 +10,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.pennapps.labs.pennmobile.api.DiningAPI;
-import com.pennapps.labs.pennmobile.api.RegistrarAPI;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
-import com.pennapps.labs.pennmobile.pcr.RegCourse;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -31,9 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MenuFragment extends Fragment {
