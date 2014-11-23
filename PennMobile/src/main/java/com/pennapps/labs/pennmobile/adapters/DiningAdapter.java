@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.classes.DiningHall;
@@ -31,11 +32,14 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
         TextView hallStatus = (TextView) view.findViewById(R.id.dining_hall_status);
         TextView openMeal = (TextView) view.findViewById(R.id.dining_hall_open_meal);
         TextView openClose = (TextView) view.findViewById(R.id.dining_hall_open_close);
+        ImageView menuArrow = (ImageView) view.findViewById(R.id.dining_hall_menu_indicator);
+        menuArrow.setVisibility(View.GONE);
         view.findViewById(R.id.dining_hall_open_meal).setVisibility(View.VISIBLE);
         view.findViewById(R.id.dining_hall_open_close).setVisibility(View.VISIBLE);
 
         hallNameTV.setText(WordUtils.capitalizeFully(diningHall.getName()));
         view.setTag(diningHall);
+
         if (diningHall.isOpen()) {
             hallStatus.setText("Open");
             hallStatus.setBackground(getContext().getResources().getDrawable(R.drawable.label_green));
@@ -60,6 +64,10 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
             } else {
                 openClose.setText("Opens at " + diningHall.openingTime());
             }
+        }
+
+        if (diningHall.hasMenu()) {
+            menuArrow.setVisibility(View.VISIBLE);
         }
 
         this.sort(new MenuComparator());

@@ -39,6 +39,15 @@
             android:layout_below="@+id/dining_hall_open_meal"
             style="@style/Menu"/>
 
+        <ImageView
+            android:id="@+id/dining_hall_menu_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/dining_hall_status"
+            android:layout_below="@id/dining_hall_status"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ic_chevron_right_black_36dp"/>
+
     </RelativeLayout>
 
 </LinearLayout>
