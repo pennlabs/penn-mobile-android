@@ -5,6 +5,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +34,7 @@ public class DiningFragment extends ListFragment {
     private ArrayList<DiningHall> mDiningHalls;
     private DiningAdapter mAdapter;
     private Activity mActivity;
+    public static Fragment mFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,6 +42,7 @@ public class DiningFragment extends ListFragment {
         mAPI = new DiningAPI();
         mActivity = getActivity();
         mDiningHalls = new ArrayList<DiningHall>();
+        mFragment = this;
         InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         View view = getActivity().getCurrentFocus();
@@ -59,6 +64,24 @@ public class DiningFragment extends ListFragment {
         return inflater.inflate(R.layout.fragment_dining, container, false);
     }
 
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        DiningHall diningHall = (DiningHall) v.getTag();
+        if (diningHall.hasMenu()) {
+            Fragment fragment = new MenuFragment();
+
+            Bundle args = new Bundle();
+            args.putParcelable("DiningHall", (Parcelable) v.getTag());
+            fragment.setArguments(args);
+
+            FragmentManager fragmentManager = this.getFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.dining_fragment, fragment)
+                    .addToBackStack(null)
+                    .commit();
+            onResume();
+        }
+    }
     private class GetOpenTask extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -72,7 +95,7 @@ public class DiningFragment extends ListFragment {
                     int id = venue.getInt("id");
                     String name = venue.getString("name");
                     boolean isResidential = venue.getString("venueType").equals("residential") && !name.equals("Cafe at McClelland");
-                    boolean hasMenu = !venue.getString("dailyMenuURL").isEmpty();
+                    boolean hasMenu = hasMenu(venue);
                     JSONArray hours = venue.getJSONArray("dateHours");
                     mDiningHalls.add(new DiningHall(id, name, isResidential, hasMenu, hours));
                 }
@@ -88,6 +111,25 @@ public class DiningFragment extends ListFragment {
         protected void onPostExecute(Void params) {
             new GetMenusTask().execute();
         }
+    }
+
+    private boolean hasMenu(JSONObject venue) {
+        try {
+            if (venue.getString("dailyMenuURL").isEmpty()) {
+                return false;
+            } else {
+                JSONObject meals = mAPI.getDailyMenu(venue.getInt("id")).getJSONObject("Document")
+                        .getJSONObject("tblMenu");
+                if (meals.length() == 0) {
+                    return false;
+                }
+            }
+        } catch (JSONException ignored) {
+            return false;
+        } catch (NullPointerException ignored) {
+            return false;
+        }
+        return true;
     }
 
     private class GetMenusTask extends AsyncTask<Void, Void, Void> {
