@@ -44,6 +44,7 @@
 
         <activity
             android:name="com.pennapps.labs.pennmobile.MainActivity"
+            android:screenOrientation="portrait"
             android:label="PennMobile" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
