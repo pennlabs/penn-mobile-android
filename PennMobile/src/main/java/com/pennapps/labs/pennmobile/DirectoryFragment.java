@@ -33,10 +33,8 @@ public class DirectoryFragment extends ListFragment {
     private ListView mListView;
     private DirectoryAdapter mAdapter;
     private Context mContext;
-    private String mFirstName;
-    private String mLastName;
-    public static final String FIRST_NAME_INTENT_EXTRA = "FIRST_NAME";
-    public static final String LAST_NAME_INTENT_EXTRA = "LAST_NAME";
+    private String mName;
+    public static final String NAME_INTENT_EXTRA = "";
     private SearchView searchView;
     private TextView textView;
 
@@ -45,10 +43,8 @@ public class DirectoryFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         mContext = getActivity().getApplicationContext();
         mAPI = new DirectoryAPI();
-        mAPI.setUrlPath("directory?");
-        mFirstName = getArguments().getString(DirectorySearchFragment.FIRST_NAME_INTENT_EXTRA);
-        mLastName = getArguments().getString(DirectorySearchFragment.LAST_NAME_INTENT_EXTRA);
-        new GetRequestTask(mFirstName, mLastName).execute();
+        mName = getArguments().getString(DirectorySearchFragment.NAME_INTENT_EXTRA);
+        new GetRequestTask().execute();
     }
 
     @Override
@@ -101,17 +97,7 @@ public class DirectoryFragment extends ListFragment {
                 // TODO: error check for filled in fields
                 Fragment fragment = new DirectoryFragment();
                 Bundle args = new Bundle();
-                String[] query = arg0.split("\\s+");
-                if (query.length == 0) {
-                    args.putString(FIRST_NAME_INTENT_EXTRA, "");
-                    args.putString(FIRST_NAME_INTENT_EXTRA, "");
-                } else if (query.length == 1) {
-                    args.putString(FIRST_NAME_INTENT_EXTRA, query[0].replaceAll("\\s+",""));
-                    args.putString(LAST_NAME_INTENT_EXTRA, "");
-                } else {
-                    args.putString(FIRST_NAME_INTENT_EXTRA, query[0].replaceAll("\\s+",""));
-                    args.putString(LAST_NAME_INTENT_EXTRA, query[1].replaceAll("\\s+",""));
-                }
+                args.putString(NAME_INTENT_EXTRA, arg0);
                 fragment.setArguments(args);
 
                 FragmentManager fragmentManager = getFragmentManager();
@@ -128,23 +114,12 @@ public class DirectoryFragment extends ListFragment {
     }
 
     private class GetRequestTask extends AsyncTask<Void, Void, Boolean> {
-        private String urlParameter;
         private JSONArray responseArr;
-
-        GetRequestTask(String firstName, String lastName) {
-            if (firstName.equals("") && lastName.equals("")) {
-                urlParameter = "";
-            } else if (lastName.equals("")) {
-                urlParameter = "first_name=" + firstName;
-            } else {
-                urlParameter = "first_name=" + firstName + "&last_name=" + lastName;
-            }
-        }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                JSONObject resultObj = mAPI.getAPIData(urlParameter);
+                JSONObject resultObj = mAPI.search(mName);
                 try {
                     responseArr = (JSONArray) resultObj.get("result_data");
                 } catch (NullPointerException e) {
