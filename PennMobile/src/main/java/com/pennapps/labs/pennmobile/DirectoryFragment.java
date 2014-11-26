@@ -107,8 +107,7 @@ public class DirectoryFragment extends ListFragment {
                 return true;
             }
         };
-        int id = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
-        textView = (TextView) searchView.findViewById(id);
+        textView = (TextView) searchView.findViewById(R.id.search_src_text);
         textView.setTextColor(Color.WHITE);
         searchView.setOnQueryTextListener(queryListener);
     }
@@ -125,10 +124,7 @@ public class DirectoryFragment extends ListFragment {
                 } catch (NullPointerException e) {
                     return false;
                 }
-                if (responseArr.length() == 0) {
-                    return false;
-                }
-                return true;
+                return responseArr.length() != 0;
             } catch(JSONException e) {
                 return false;
             }
