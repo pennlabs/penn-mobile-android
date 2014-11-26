@@ -15,8 +15,7 @@ import android.widget.TextView;
 
 public class DirectorySearchFragment extends Fragment {
 
-    public static final String FIRST_NAME_INTENT_EXTRA = "FIRST_NAME";
-    public static final String LAST_NAME_INTENT_EXTRA = "LAST_NAME";
+    public static final String NAME_INTENT_EXTRA = "";
     private SearchView searchView;
     private TextView textView;
 
@@ -71,17 +70,7 @@ public class DirectorySearchFragment extends Fragment {
                 getActivity().findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
                 Fragment fragment = new DirectoryFragment();
                 Bundle args = new Bundle();
-                String[] query = arg0.split("\\s+");
-                if (query.length == 0) {
-                    args.putString(FIRST_NAME_INTENT_EXTRA, "");
-                    args.putString(FIRST_NAME_INTENT_EXTRA, "");
-                } else if (query.length == 1) {
-                    args.putString(FIRST_NAME_INTENT_EXTRA, query[0].replaceAll("\\s+",""));
-                    args.putString(LAST_NAME_INTENT_EXTRA, "");
-                } else {
-                    args.putString(FIRST_NAME_INTENT_EXTRA, query[0].replaceAll("\\s+",""));
-                    args.putString(LAST_NAME_INTENT_EXTRA, query[1].replaceAll("\\s+",""));
-                }
+                args.putString(NAME_INTENT_EXTRA, arg0);
                 fragment.setArguments(args);
 
                 FragmentManager fragmentManager = getFragmentManager();
@@ -92,8 +81,7 @@ public class DirectorySearchFragment extends Fragment {
             }
         };
         try {
-            int id = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
-            textView = (TextView) searchView.findViewById(id);
+            textView = (TextView) searchView.findViewById(R.id.search_src_text);
             textView.setTextColor(Color.WHITE);
             searchView.setOnQueryTextListener(queryListener);
         } catch (NullPointerException ignored) {
