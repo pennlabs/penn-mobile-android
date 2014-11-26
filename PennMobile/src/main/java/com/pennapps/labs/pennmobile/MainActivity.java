@@ -33,7 +33,7 @@ public class MainActivity extends ActionBarActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         
-        mFeatureTitles = new String[]{"Home", "Registrar", "Directory", "Dining", "Transit", "News", "About"};
+        mFeatureTitles = new String[]{"Home", "Courses", "Directory", "Dining", "Transit", "News", "About"};
         int[] icons = new int[]{R.drawable.ic_home, R.drawable.ic_book, R.drawable.ic_contacts,
                 R.drawable.ic_restaurant, R.drawable.ic_directions_bus, R.drawable.ic_announcement,
                 R.drawable.ic_info
