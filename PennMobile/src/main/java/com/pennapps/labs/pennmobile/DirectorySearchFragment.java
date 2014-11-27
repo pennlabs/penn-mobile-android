@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,14 +9,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SearchView;
-import android.widget.TextView;
+import android.support.v7.widget.SearchView;
 
 public class DirectorySearchFragment extends Fragment {
 
     public static final String NAME_INTENT_EXTRA = "";
     private SearchView searchView;
-    private TextView textView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -80,14 +77,7 @@ public class DirectorySearchFragment extends Fragment {
                 return true;
             }
         };
-        try {
-            int id = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
-            textView = (TextView) searchView.findViewById(id);
-            textView.setTextColor(Color.WHITE);
-            searchView.setOnQueryTextListener(queryListener);
-        } catch (NullPointerException ignored) {
-
-        }
+        searchView.setOnQueryTextListener(queryListener);
     }
 
 }
