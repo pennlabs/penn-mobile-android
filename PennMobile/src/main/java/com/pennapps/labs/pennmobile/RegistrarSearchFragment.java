@@ -3,7 +3,6 @@ package com.pennapps.labs.pennmobile;
 import android.app.Activity;
 import android.database.Cursor;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -14,8 +13,7 @@ import android.view.MenuItem;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SearchView;
-import android.widget.TextView;
+import android.support.v7.widget.SearchView;
 
 import com.pennapps.labs.pennmobile.adapters.RegistrarAdapter;
 
@@ -27,7 +25,6 @@ public class RegistrarSearchFragment extends Fragment {
     public static Fragment mFragment;
     private Activity mActivity;
     private RegistrarAdapter mAdapter;
-    private TextView textView;
     private SearchView searchView;
 
     @Override
@@ -104,15 +101,7 @@ public class RegistrarSearchFragment extends Fragment {
                 return true;
             }
         };
-        try {
-            int id = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
-            textView = (TextView) searchView.findViewById(id);
-            textView.setTextColor(Color.WHITE);
-            searchView.setOnQueryTextListener(queryListener);
-        } catch (NullPointerException ignored) {
-
-        }
-
+        searchView.setOnQueryTextListener(queryListener);
     }
 
 }
