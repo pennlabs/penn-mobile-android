@@ -81,7 +81,8 @@ public class DirectorySearchFragment extends Fragment {
             }
         };
         try {
-            textView = (TextView) searchView.findViewById(R.id.search_src_text);
+            int id = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+            textView = (TextView) searchView.findViewById(id);
             textView.setTextColor(Color.WHITE);
             searchView.setOnQueryTextListener(queryListener);
         } catch (NullPointerException ignored) {
