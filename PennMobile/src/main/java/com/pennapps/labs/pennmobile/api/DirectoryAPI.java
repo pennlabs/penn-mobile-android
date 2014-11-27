@@ -4,8 +4,6 @@ package com.pennapps.labs.pennmobile.api;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.message.BasicHeader;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -19,6 +17,7 @@ public class DirectoryAPI extends API{
         super();
         BASE_URL = "http://api.pennlabs.org/directory/";
     }
+
     public JSONObject search(String name) {
         try {
             name = URLEncoder.encode(name, "UTF-8");

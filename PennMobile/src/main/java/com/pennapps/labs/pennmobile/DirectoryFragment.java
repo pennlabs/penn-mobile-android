@@ -125,10 +125,7 @@ public class DirectoryFragment extends ListFragment {
                 } catch (NullPointerException e) {
                     return false;
                 }
-                if (responseArr.length() == 0) {
-                    return false;
-                }
-                return true;
+                return responseArr.length() != 0;
             } catch(JSONException e) {
                 return false;
             }
