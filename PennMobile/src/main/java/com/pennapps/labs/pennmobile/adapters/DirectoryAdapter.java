@@ -57,7 +57,7 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
         tvAffiliation.setText(person.getAffiliation());
 
         if (person.getEmail().length() == 0) {
-            ((ViewGroup) view).removeView(tvEmail);
+            tvEmail.setVisibility(View.GONE);
         } else {
             tvEmail.setText(person.getEmail());
             tvEmail.setPaintFlags(tvEmail.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
@@ -74,7 +74,7 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
         }
 
         if (person.getPhone().length() == 0) {
-            ((ViewGroup) view).removeView(tvPhone);
+            tvPhone.setVisibility(View.GONE);
         } else {
             tvPhone.setText(person.getPhone());
             tvPhone.setOnClickListener(new View.OnClickListener() {
