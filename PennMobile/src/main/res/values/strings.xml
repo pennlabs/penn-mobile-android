@@ -29,5 +29,6 @@
     <string name="registrar_instructions">Search for courses</string>
     <string name="labs_icon">Penn Labs</string>
     <string name="course_desc_title">Description</string>
+    <string name="add_contact">Add contact</string>
 
 </resources>

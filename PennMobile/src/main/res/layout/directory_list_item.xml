@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -19,8 +19,19 @@
         android:textStyle="bold"
         android:textColor="#000000" />
 
+    <ImageView
+        android:id="@+id/contact_icon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignRight="@id/tv_person_name"
+        android:contentDescription="@string/add_contact"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_person_add_black_36dp" />
+
     <TextView
         android:id="@+id/tv_person_affiliation"
+        android:layout_below="@+id/tv_person_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="2dp"
@@ -30,6 +41,7 @@
 
     <TextView
         android:id="@+id/tv_person_email"
+        android:layout_below="@+id/tv_person_affiliation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="2dp"
@@ -38,9 +50,10 @@
 
     <TextView
         android:id="@+id/tv_person_phone"
+        android:layout_below="@+id/tv_person_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:textColor="#002C77" />
 
-</LinearLayout>
+</RelativeLayout>
