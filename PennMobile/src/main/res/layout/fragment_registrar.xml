@@ -19,30 +19,41 @@
             android:background="@drawable/gradient" ></View>
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/course_code"
-        android:gravity="center"
-        android:fontFamily="sans-serif-light"
-        android:textColor="#212121"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Base.TextAppearance.AppCompat.Display3"
-        />
+        android:orientation="vertical"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:paddingStart="15dp"
+        android:paddingLeft="15dp"
+        android:paddingEnd="15dp"
+        android:paddingRight="20dp"
+        android:layout_marginBottom="15dp"
+        android:background="@color/color_primary_dark">
 
-    <TextView
-        android:id="@+id/course_title"
-        android:textSize="20sp"
-        android:fontFamily="sans-serif-light"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/course_code"
+            android:textColor="#FFFFFF"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Base.TextAppearance.AppCompat.Display2"
+            />
 
-    <TextView
-        android:id="@+id/instructor"
-        android:textSize="15sp"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/course_title"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
+            android:textColor="#FFFFFF"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/instructor"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:textColor="#FFFFFF"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/location"
@@ -50,6 +61,35 @@
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="20dp">
+            <TextView
+                android:id="@+id/course_desc_title"
+                android:visibility="gone"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                android:textStyle="bold"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:text="@string/course_desc_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/course_desc"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </ScrollView>
 
     <TextView
         android:id="@+id/temp"

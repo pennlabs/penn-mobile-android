@@ -35,6 +35,8 @@ public class RegistrarFragment extends Fragment {
     private TextView courseTitleTextView;
     private TextView instructorTextView;
     private TextView locationTextView;
+    private TextView descriptionTitle;
+    private TextView descriptionTextView;
     private GoogleMap map;
     private SupportMapFragment mapFragment;
 
@@ -53,6 +55,8 @@ public class RegistrarFragment extends Fragment {
         courseTitleTextView = (TextView) v.findViewById(R.id.course_title);
         instructorTextView = (TextView) v.findViewById(R.id.instructor);
         locationTextView = (TextView) v.findViewById(R.id.location);
+        descriptionTitle = (TextView) v.findViewById(R.id.course_desc_title);
+        descriptionTextView = (TextView) v.findViewById(R.id.course_desc);
         return v;
     }
 
@@ -160,11 +164,25 @@ public class RegistrarFragment extends Fragment {
                 String courseTitleText = course.getCourseTitle();
                 courseTitleTextView.setText(courseTitleText);
 
-                String instructorsText = StringUtils.join(course.getInstructors(), ", ");
+                String instructorsText = course.getInstructors()[0];
                 instructorTextView.setText(instructorsText);
 
-                String locationText = course.getBuildingCode() + " " + course.getRoomNumber();
-                locationTextView.setText(locationText);
+                if (course.getBuildingName().equals("")) {
+                    locationTextView.setVisibility(View.GONE);
+                } else {
+                    String locationText = course.getBuildingCode() + " " + course.getRoomNumber();
+                    locationTextView.setText(locationText);
+                }
+
+                String courseDescription = course.getCourseDesc();
+                if (courseDescription.equals("")) {
+                    descriptionTitle.setVisibility(View.GONE);
+                    descriptionTextView.setVisibility(View.GONE);
+                } else {
+                    descriptionTitle.setVisibility(View.VISIBLE);
+                    descriptionTextView.setVisibility(View.VISIBLE);
+                    descriptionTextView.setText(courseDescription);
+                }
             } catch (JSONException ignored) {
 
             } catch (NullPointerException ignored) {
