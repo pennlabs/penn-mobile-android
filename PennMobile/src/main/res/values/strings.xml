@@ -28,5 +28,6 @@
     <string name="directory_instructions">Search for Penn students and faculty</string>
     <string name="registrar_instructions">Search for courses</string>
     <string name="labs_icon">Penn Labs</string>
+    <string name="add_contact">Add contact</string>
 
 </resources>
