@@ -106,7 +106,7 @@ public class RegistrarFragment extends Fragment {
         protected Boolean doInBackground(Void... voids) {
             try {
                 JSONObject resultObj = mAPI.getCourse(input);
-                JSONArray responseArr = (JSONArray) resultObj.get("result_data");
+                JSONArray responseArr = (JSONArray) resultObj.get("courses");
                 if (responseArr.length() == 0) {
                     return false;
                 }
