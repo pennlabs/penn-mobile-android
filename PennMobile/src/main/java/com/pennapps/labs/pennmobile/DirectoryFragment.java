@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,8 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.SearchView;
-import android.widget.TextView;
+import android.support.v7.widget.SearchView;
 
 import com.pennapps.labs.pennmobile.adapters.DirectoryAdapter;
 import com.pennapps.labs.pennmobile.api.DirectoryAPI;
@@ -36,7 +34,6 @@ public class DirectoryFragment extends ListFragment {
     private String mName;
     public static final String NAME_INTENT_EXTRA = "";
     private SearchView searchView;
-    private TextView textView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -107,8 +104,6 @@ public class DirectoryFragment extends ListFragment {
                 return true;
             }
         };
-        textView = (TextView) searchView.findViewById(R.id.search_src_text);
-        textView.setTextColor(Color.WHITE);
         searchView.setOnQueryTextListener(queryListener);
     }
 
