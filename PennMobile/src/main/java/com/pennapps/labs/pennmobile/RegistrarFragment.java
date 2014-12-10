@@ -37,6 +37,7 @@ public class RegistrarFragment extends Fragment {
     private TextView locationTextView;
     private TextView descriptionTitle;
     private TextView descriptionTextView;
+    private View mapFrame;
     private GoogleMap map;
     private SupportMapFragment mapFragment;
 
@@ -57,6 +58,7 @@ public class RegistrarFragment extends Fragment {
         locationTextView = (TextView) v.findViewById(R.id.location);
         descriptionTitle = (TextView) v.findViewById(R.id.course_desc_title);
         descriptionTextView = (TextView) v.findViewById(R.id.course_desc);
+        mapFrame = v.findViewById(R.id.registrar_map_frame);
         return v;
     }
 
@@ -90,12 +92,12 @@ public class RegistrarFragment extends Fragment {
             try {
                 return new LatLng(locationList.get(0).getLatitude(), locationList.get(0).getLongitude());
             } catch (IndexOutOfBoundsException e) {
-                return new LatLng(39.95198, -75.19368);
+                return null;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new LatLng(39.95198, -75.19368);
+        return null;
     }
 
     private class GetRequestTask extends AsyncTask<Void, Void, Boolean> {
@@ -155,7 +157,10 @@ public class RegistrarFragment extends Fragment {
                 LatLng courseLatLng = getBuildingLatLng(course);
 
                 if (map != null) {
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 17));
+                    if (courseLatLng != null) {
+                        mapFrame.setVisibility(View.VISIBLE);
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 17));
+                    }
                 }
 
                 String courseCodeText = course.getCourseDept() + " " + course.getCourseNumber();
