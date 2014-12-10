@@ -6,6 +6,8 @@
     android:layout_height="match_parent">
 
     <FrameLayout
+        android:id="@+id/registrar_map_frame"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="180dp">
         <FrameLayout
