@@ -32,7 +32,6 @@ public class DiningFragment extends ListFragment {
     private DiningAPI mAPI;
     private ListView mListView;
     private ArrayList<DiningHall> mDiningHalls;
-    private DiningAdapter mAdapter;
     private Activity mActivity;
     public static Fragment mFragment;
 
@@ -209,7 +208,7 @@ public class DiningFragment extends ListFragment {
         @Override
         protected void onPostExecute(Void params) {
             try {
-                mAdapter = new DiningAdapter(mActivity, mDiningHalls);
+                DiningAdapter mAdapter = new DiningAdapter(mActivity, mDiningHalls);
                 mListView.setAdapter(mAdapter);
                 getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
             } catch (NullPointerException ignored) {

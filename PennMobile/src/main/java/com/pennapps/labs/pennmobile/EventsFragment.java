@@ -18,7 +18,6 @@ public class EventsFragment extends Fragment {
 
     WebView mWebView;
     private boolean mIsWebViewAvailable;
-    private String mUrl = "http://www.thedp.com/";
 
     public EventsFragment() {
         super();
@@ -54,6 +53,7 @@ public class EventsFragment extends Fragment {
         webSettings.setJavaScriptEnabled(true);
         mWebView.setWebChromeClient(new WebChromeClient());
         mWebView.setWebViewClient(new InnerWebViewClient()); // forces it to open in app
+        String mUrl = "http://www.thedp.com/";
         mWebView.loadUrl(mUrl);
         return mWebView;
     }

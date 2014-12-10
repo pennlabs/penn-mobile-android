@@ -29,7 +29,6 @@ public class DirectoryFragment extends ListFragment {
 
     private DirectoryAPI mAPI;
     private ListView mListView;
-    private DirectoryAdapter mAdapter;
     private Context mContext;
     private String mName;
     public static final String NAME_INTENT_EXTRA = "";
@@ -146,7 +145,7 @@ public class DirectoryFragment extends ListFragment {
                     personArr.add(person);
                 }
 
-                mAdapter = new DirectoryAdapter(mContext, personArr);
+                DirectoryAdapter mAdapter = new DirectoryAdapter(mContext, personArr);
                 mListView.setAdapter(mAdapter);
                 getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                 getActivity().findViewById(android.R.id.list).setVisibility(View.VISIBLE);
