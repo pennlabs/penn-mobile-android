@@ -91,7 +91,7 @@ public class CourseDatabase {
         public DatabaseHelper(Context context) {
             super(context, "registrar.db", null, 1);
             mContext = context;
-            DB_PATH = "/data/data/" + context.getPackageName() + "/databases/";
+            DB_PATH = context.getDatabasePath(DB_NAME).getPath();
         }
 
 
