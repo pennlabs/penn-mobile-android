@@ -14,15 +14,11 @@ import android.view.inputmethod.InputMethodManager;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link MainFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
  * Use the {@link MainFragment#newInstance} factory method to
  * create an instance of this fragment.
  *
  */
 public class MainFragment extends Fragment {
-
-    private OnFragmentInteractionListener mListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -67,21 +63,6 @@ public class MainFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction(Uri uri);
     }
 
 }

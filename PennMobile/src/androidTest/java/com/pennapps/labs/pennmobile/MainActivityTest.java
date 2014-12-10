@@ -1,11 +1,12 @@
 package com.pennapps.labs.pennmobile;
 
 import android.content.Intent;
-import android.support.v4.widget.DrawerLayout;
 import android.test.ActivityUnitTestCase;
 import android.view.ContextThemeWrapper;
+import android.widget.ListView;
 
 /**
+ * Unit testing for MainActivity
  * Created by Adel on 12/9/14.
  */
 public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
@@ -30,7 +31,7 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
         assertNotNull(activity.findViewById(R.id.left_drawer));
     }
 
-    public void testMainFrameLayout() {
-        assertTrue(activity.findViewById(R.id.left_drawer) instanceof DrawerLayout);
+    public void testMainDrawerLayout() {
+        assertTrue(activity.findViewById(R.id.left_drawer) instanceof ListView);
     }
 }

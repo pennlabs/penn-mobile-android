@@ -29,7 +29,6 @@ public class DirectoryFragment extends ListFragment {
 
     private DirectoryAPI mAPI;
     private ListView mListView;
-    private DirectoryAdapter mAdapter;
     private Context mContext;
     private String mName;
     public static final String NAME_INTENT_EXTRA = "";
@@ -132,7 +131,7 @@ public class DirectoryFragment extends ListFragment {
                 return;
             }
             try {
-                ArrayList<Person> personArr = new ArrayList<Person>();
+                ArrayList<Person> personArr = new ArrayList<>();
                 JSONObject resp;
 
                 for (int i = 0; i < responseArr.length(); i++) {
@@ -146,13 +145,11 @@ public class DirectoryFragment extends ListFragment {
                     personArr.add(person);
                 }
 
-                mAdapter = new DirectoryAdapter(mContext, personArr);
+                DirectoryAdapter mAdapter = new DirectoryAdapter(mContext, personArr);
                 mListView.setAdapter(mAdapter);
                 getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                 getActivity().findViewById(android.R.id.list).setVisibility(View.VISIBLE);
-            } catch (JSONException ignored) {
-
-            } catch (NullPointerException ignored) {
+            } catch (JSONException | NullPointerException ignored) {
 
             }
         }

@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.provider.BaseColumns;
-import android.util.Log;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,15 +27,13 @@ public class CourseDatabase {
             mDatabaseOpenHelper.createDatabase();
             mDatabaseOpenHelper.openDatabase();
             // sqLiteDatabase = mDatabaseOpenHelper.getReadableDatabase();
-        } catch (SQLException ignored) {
-
-        } catch (IOException ignored) {
+        } catch (SQLException | IOException ignored) {
 
         }
     }
 
     private static HashMap<String, String> buildColumnMap() {
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
         map.put(BaseColumns._ID, "rowid AS " + BaseColumns._ID);
         map.put("course_id", "course_id");
         map.put("course_title", "course_title");
@@ -92,7 +89,7 @@ public class CourseDatabase {
         public DatabaseHelper(Context context) {
             super(context, "registrar.db", null, 1);
             mContext = context;
-            DB_PATH = "/data/data/" + context.getPackageName() + "/databases/";
+            DB_PATH = context.getDatabasePath(DB_NAME).getPath();
         }
 
 

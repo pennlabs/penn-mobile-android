@@ -1,8 +1,6 @@
 package com.pennapps.labs.pennmobile.classes;
 
 
-import android.util.Log;
-
 import org.apache.commons.lang3.text.WordUtils;
 
 public class Person {

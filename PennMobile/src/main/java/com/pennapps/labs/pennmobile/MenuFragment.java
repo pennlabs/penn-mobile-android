@@ -58,7 +58,7 @@ public class MenuFragment extends Fragment {
                     parseMeal(meal, mDiningHall);
                 }
             }
-        } catch (JSONException e) {
+        } catch (JSONException ignored) {
         }
         return v;
     }
@@ -74,7 +74,7 @@ public class MenuFragment extends Fragment {
                 JSONObject stationsObject = meal.getJSONObject("tblStation");
                 stations.put(stationsObject);
             }
-            HashMap<String, String> currentMenu = new HashMap<String, String>();
+            HashMap<String, String> currentMenu = new HashMap<>();
             for (int j = 0; j < stations.length(); j++) {
                 JSONObject station = stations.getJSONObject(j);
                 parseStation(station, currentMenu);
@@ -140,22 +140,27 @@ public class MenuFragment extends Fragment {
                 String value = menuItem.getValue();
                 menuText += key + ": " + value + "\n";
             }
-            if (mealName.equals("Breakfast")) {
-                view.findViewById(R.id.dining_hall_breakfast_title).setVisibility(View.VISIBLE);
-                breakfastMenuTV.setVisibility(View.VISIBLE);
-                breakfastMenuTV.setText(menuText);
-            } else if (mealName.equals("Brunch")) {
-                view.findViewById(R.id.dining_hall_brunch_title).setVisibility(View.VISIBLE);
-                brunchMenuTV.setVisibility(View.VISIBLE);
-                brunchMenuTV.setText(menuText);
-            } else if (mealName.equals("Lunch")) {
-                view.findViewById(R.id.dining_hall_lunch_title).setVisibility(View.VISIBLE);
-                lunchMenuTV.setVisibility(View.VISIBLE);
-                lunchMenuTV.setText(menuText);
-            } else if (mealName.equals("Dinner")) {
-                view.findViewById(R.id.dining_hall_dinner_title).setVisibility(View.VISIBLE);
-                dinnerMenuTV.setVisibility(View.VISIBLE);
-                dinnerMenuTV.setText(menuText);
+            switch (mealName) {
+                case "Breakfast":
+                    view.findViewById(R.id.dining_hall_breakfast_title).setVisibility(View.VISIBLE);
+                    breakfastMenuTV.setVisibility(View.VISIBLE);
+                    breakfastMenuTV.setText(menuText);
+                    break;
+                case "Brunch":
+                    view.findViewById(R.id.dining_hall_brunch_title).setVisibility(View.VISIBLE);
+                    brunchMenuTV.setVisibility(View.VISIBLE);
+                    brunchMenuTV.setText(menuText);
+                    break;
+                case "Lunch":
+                    view.findViewById(R.id.dining_hall_lunch_title).setVisibility(View.VISIBLE);
+                    lunchMenuTV.setVisibility(View.VISIBLE);
+                    lunchMenuTV.setText(menuText);
+                    break;
+                case "Dinner":
+                    view.findViewById(R.id.dining_hall_dinner_title).setVisibility(View.VISIBLE);
+                    dinnerMenuTV.setVisibility(View.VISIBLE);
+                    dinnerMenuTV.setText(menuText);
+                    break;
             }
         }
     }

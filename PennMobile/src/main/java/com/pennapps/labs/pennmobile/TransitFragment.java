@@ -18,7 +18,6 @@ public class TransitFragment extends Fragment {
 
     WebView mWebView;
     private boolean mIsWebViewAvailable;
-    private String mUrl = "http://www.pennrides.com/map?showHeader=0&route=229,230&silent_disable_timeout=1";
 
     public TransitFragment() {
         super();
@@ -57,6 +56,7 @@ public class TransitFragment extends Fragment {
         webSettings.setJavaScriptEnabled(true);
         mWebView.setWebChromeClient(new WebChromeClient());
         mWebView.setWebViewClient(new InnerWebViewClient()); // forces it to open in app
+        String mUrl = "http://www.pennrides.com/map?showHeader=0&route=229,230&silent_disable_timeout=1";
         mWebView.loadUrl(mUrl);
         return mWebView;
     }

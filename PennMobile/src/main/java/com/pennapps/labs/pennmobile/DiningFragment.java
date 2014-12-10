@@ -32,7 +32,6 @@ public class DiningFragment extends ListFragment {
     private DiningAPI mAPI;
     private ListView mListView;
     private ArrayList<DiningHall> mDiningHalls;
-    private DiningAdapter mAdapter;
     private Activity mActivity;
     public static Fragment mFragment;
 
@@ -41,7 +40,7 @@ public class DiningFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         mAPI = new DiningAPI();
         mActivity = getActivity();
-        mDiningHalls = new ArrayList<DiningHall>();
+        mDiningHalls = new ArrayList<>();
         mFragment = this;
         InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -99,9 +98,7 @@ public class DiningFragment extends ListFragment {
                     JSONArray hours = venue.getJSONArray("dateHours");
                     mDiningHalls.add(new DiningHall(id, name, isResidential, hasMenu, hours));
                 }
-            } catch (JSONException ignored) {
-
-            } catch (NullPointerException ignored) {
+            } catch (JSONException | NullPointerException ignored) {
 
             }
             return null;
@@ -167,7 +164,7 @@ public class DiningFragment extends ListFragment {
                     JSONObject stationsObject = meal.getJSONObject("tblStation");
                     stations.put(stationsObject);
                 }
-                HashMap<String, String> currentMenu = new HashMap<String, String>();
+                HashMap<String, String> currentMenu = new HashMap<>();
                 for (int j = 0; j < stations.length(); j++) {
                     JSONObject station = stations.getJSONObject(j);
                     parseStation(station, currentMenu);
@@ -209,7 +206,7 @@ public class DiningFragment extends ListFragment {
         @Override
         protected void onPostExecute(Void params) {
             try {
-                mAdapter = new DiningAdapter(mActivity, mDiningHalls);
+                DiningAdapter mAdapter = new DiningAdapter(mActivity, mDiningHalls);
                 mListView.setAdapter(mAdapter);
                 getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
             } catch (NullPointerException ignored) {
