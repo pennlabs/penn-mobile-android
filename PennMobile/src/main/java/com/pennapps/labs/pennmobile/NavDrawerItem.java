@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile;
 
 /**
+ * Class for a single drawer item
  * Created by Adel Qalieh on 11/16/14.
  */
 public class NavDrawerItem {

@@ -6,6 +6,7 @@ import android.view.ContextThemeWrapper;
 import android.widget.ListView;
 
 /**
+ * Unit testing for MainActivity
  * Created by Adel on 12/9/14.
  */
 public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {

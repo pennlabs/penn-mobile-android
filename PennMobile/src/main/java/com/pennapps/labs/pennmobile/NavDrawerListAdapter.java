@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
+ * List adapter for drawer items
  * Created by Adel Qalieh on 11/16/14.
  */
 public class NavDrawerListAdapter extends BaseAdapter {
