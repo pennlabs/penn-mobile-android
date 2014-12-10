@@ -1,9 +1,9 @@
 package com.pennapps.labs.pennmobile;
 
-import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -17,10 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EventsFragment extends Fragment {
-    
-    private MyTabAdapter pageAdapter  = null;
-    private ViewPager pager            = null;
-    
+
+    private MyTabAdapter pageAdapter = null;
+    private ViewPager pager = null;
+
     public EventsFragment() {
         super();
     }
@@ -32,7 +32,7 @@ public class EventsFragment extends Fragment {
         public MyTabAdapter(FragmentManager fm) {
             super(fm);
             this.fragments = new ArrayList<Fragment>();
-            this.titles    = new ArrayList<String>();
+            this.titles = new ArrayList<String>();
         }
 
         public void addItem(String url, String title) {
