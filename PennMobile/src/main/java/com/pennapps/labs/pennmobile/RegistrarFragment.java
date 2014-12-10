@@ -19,7 +19,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.pennapps.labs.pennmobile.api.RegistrarAPI;
 import com.pennapps.labs.pennmobile.pcr.RegCourse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

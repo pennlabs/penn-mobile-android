@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.provider.BaseColumns;
-import android.util.Log;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
