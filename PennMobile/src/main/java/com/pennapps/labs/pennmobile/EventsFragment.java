@@ -3,25 +3,60 @@ package com.pennapps.labs.pennmobile;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.KeyEvent;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+
+import com.astuetz.PagerSlidingTabStrip;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class EventsFragment extends Fragment {
 
-    WebView mWebView;
-    private boolean mIsWebViewAvailable;
-    private String mUrl = "http://www.thedp.com/";
+    private MyTabAdapter pageAdapter = null;
+    private ViewPager pager = null;
 
     public EventsFragment() {
         super();
+    }
+
+    class MyTabAdapter extends FragmentPagerAdapter {
+        private List<Fragment> fragments;
+        private List<String> titles;
+
+        public MyTabAdapter(FragmentManager fm) {
+            super(fm);
+            this.fragments = new ArrayList<Fragment>();
+            this.titles = new ArrayList<String>();
+        }
+
+        public void addItem(String url, String title) {
+            Fragment myFragment = new NewsTab();
+            Bundle args = new Bundle();
+            args.putString("url", url);
+            myFragment.setArguments(args);
+            this.fragments.add(myFragment);
+            this.titles.add(title);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return this.fragments.get(position);
+        }
+
+        public CharSequence getPageTitle(int position) {
+            return this.titles.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return this.fragments.size();
+        }
     }
 
     @Override
@@ -38,88 +73,24 @@ public class EventsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mIsWebViewAvailable = true;
-        mWebView = new WebView(getActivity());
-        mWebView.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if ((keyCode == KeyEvent.KEYCODE_BACK) && mWebView.canGoBack()) {
-                    mWebView.goBack();
-                    return true;
-                }
-                return false;
-            }
-        });
-        WebSettings webSettings = mWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        mWebView.setWebChromeClient(new WebChromeClient());
-        mWebView.setWebViewClient(new InnerWebViewClient()); // forces it to open in app
-        mWebView.loadUrl(mUrl);
-        return mWebView;
-    }
+        View v = inflater.inflate(R.layout.fragment_news, container, false);
 
-    /* To ensure links open within the application */
-    private class InnerWebViewClient extends WebViewClient {
-        @Override
-        public void onPageFinished(WebView view, String url) {
-        }
-    }
+        pageAdapter = new MyTabAdapter(getActivity().getSupportFragmentManager());
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
+        pageAdapter.addItem("http://www.thedp.com/", "The DP");
+        pageAdapter.addItem("http://www.34st.com/", "34th Street");
+        pageAdapter.addItem("http://www.thedp.com/blog/under-the-button/", "Under the Button");
+        pageAdapter.addItem("http://eventsatpenn.com/", "Events");
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        setRetainInstance(true);
-    }
+        pager = (ViewPager) v.findViewById(R.id.pager);
+        // This gives the number of Fragments loaded outside the view.
+        // Here set to the number of Fragments minus one, i.e., all Fragments loaded.
+        // This might not be a good idea if there are many Fragments.
+        pager.setOffscreenPageLimit(pageAdapter.getCount() - 1);
+        pager.setAdapter(pageAdapter);
 
-    /**
-     * Called when the fragment is visible to the user and actively running. Resumes the WebView.
-     */
-    @Override
-    public void onPause() {
-        super.onPause();
-        mWebView.onPause();
-    }
-
-    /**
-     * Called when the fragment is no longer resumed. Pauses the WebView.
-     */
-    @Override
-    public void onResume() {
-        mWebView.onResume();
-        super.onResume();
-    }
-
-    /**
-     * Called when the WebView has been detached from the fragment.
-     * The WebView is no longer available after this time.
-     */
-    @Override
-    public void onDestroyView() {
-        mIsWebViewAvailable = false;
-        super.onDestroyView();
-    }
-
-    /**
-     * Called when the fragment is no longer in use. Destroys the internal state of the WebView.
-     */
-    @Override
-    public void onDestroy() {
-        if (mWebView != null) {
-            mWebView.destroy();
-            mWebView = null;
-        }
-        super.onDestroy();
-    }
-
-    /**
-     * Gets the WebView.
-     */
-    public WebView getWebView() {
-        return mIsWebViewAvailable ? mWebView : null;
+        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) v.findViewById(R.id.tabs);
+        tabs.setViewPager(pager);
+        return v;
     }
 }
