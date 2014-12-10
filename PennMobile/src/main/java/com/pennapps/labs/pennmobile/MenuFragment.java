@@ -58,7 +58,7 @@ public class MenuFragment extends Fragment {
                     parseMeal(meal, mDiningHall);
                 }
             }
-        } catch (JSONException e) {
+        } catch (JSONException ignored) {
         }
         return v;
     }
