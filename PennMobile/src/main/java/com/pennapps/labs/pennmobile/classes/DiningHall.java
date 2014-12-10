@@ -36,7 +36,7 @@ public class DiningHall implements Parcelable {
         this.residential = residential;
         this.hasMenu = hasMenu;
         this.openHours = parseHours(hours);
-        this.menus = new HashMap<String, HashMap<String, String>>();
+        this.menus = new HashMap<>();
     }
 
     public int describeContents(){
@@ -53,7 +53,7 @@ public class DiningHall implements Parcelable {
     }
 
     private HashMap<String, Interval> parseHours(JSONArray hours) {
-        HashMap<String, Interval> openHours = new HashMap<String, Interval>();
+        HashMap<String, Interval> openHours = new HashMap<>();
 
         try {
 
@@ -120,7 +120,7 @@ public class DiningHall implements Parcelable {
     }
 
     public String openingTime() {
-        List<Map.Entry<String, Interval>> list = new ArrayList<Map.Entry<String, Interval>>(openHours.entrySet());
+        List<Map.Entry<String, Interval>> list = new ArrayList<>(openHours.entrySet());
         Collections.sort( list, new Comparator<Map.Entry<String, Interval>>() {
             public int compare( Map.Entry<String, Interval> x, Map.Entry<String, Interval> y )
             {
@@ -185,7 +185,7 @@ public class DiningHall implements Parcelable {
     }
 
     public String nextMeal() {
-        List<Map.Entry<String, Interval>> list = new ArrayList<Map.Entry<String, Interval>>(openHours.entrySet());
+        List<Map.Entry<String, Interval>> list = new ArrayList<>(openHours.entrySet());
         Collections.sort( list, new Comparator<Map.Entry<String, Interval>>() {
             public int compare( Map.Entry<String, Interval> x, Map.Entry<String, Interval> y )
             {

@@ -109,7 +109,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private ArrayList<NavDrawerItem> createNavDrawerItems(String[] navbarItems, int[] icons) {
-        ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<NavDrawerItem>();
+        ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<>();
         for (int i = 0; i < navbarItems.length; i++) {
             navDrawerItems.add(new NavDrawerItem(navbarItems[i], icons[i]));
         }

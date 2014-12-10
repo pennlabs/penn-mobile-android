@@ -40,7 +40,7 @@ public class DiningFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         mAPI = new DiningAPI();
         mActivity = getActivity();
-        mDiningHalls = new ArrayList<DiningHall>();
+        mDiningHalls = new ArrayList<>();
         mFragment = this;
         InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -164,7 +164,7 @@ public class DiningFragment extends ListFragment {
                     JSONObject stationsObject = meal.getJSONObject("tblStation");
                     stations.put(stationsObject);
                 }
-                HashMap<String, String> currentMenu = new HashMap<String, String>();
+                HashMap<String, String> currentMenu = new HashMap<>();
                 for (int j = 0; j < stations.length(); j++) {
                     JSONObject station = stations.getJSONObject(j);
                     parseStation(station, currentMenu);

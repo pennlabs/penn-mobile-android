@@ -33,7 +33,7 @@ public class CourseDatabase {
     }
 
     private static HashMap<String, String> buildColumnMap() {
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
         map.put(BaseColumns._ID, "rowid AS " + BaseColumns._ID);
         map.put("course_id", "course_id");
         map.put("course_title", "course_title");

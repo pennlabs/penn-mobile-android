@@ -52,8 +52,8 @@ public class TransitExpListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mActivity = getActivity();
-        mRoutes = new ArrayList<BusRoute>();
-        mDistanceArr = new ArrayList<BusStopDist>();
+        mRoutes = new ArrayList<>();
+        mDistanceArr = new ArrayList<>();
         LocationManager service = (LocationManager) mActivity.getSystemService(Context.LOCATION_SERVICE);
         boolean enabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
@@ -140,7 +140,7 @@ public class TransitExpListFragment extends Fragment {
 
         JSONArray responseArr;
         // go through routes, sort by stop name --> route name
-        HashMap<String, ArrayList<BusRoute>> routesByStop = new HashMap<String, ArrayList<BusRoute>>();
+        HashMap<String, ArrayList<BusRoute>> routesByStop = new HashMap<>();
 
         @Override
         protected Boolean doInBackground(Void... params) {
@@ -162,7 +162,7 @@ public class TransitExpListFragment extends Fragment {
 
                     String routeDescription = responseObj.get("title").toString();
                     String routeTitle       = responseObj.get("key").toString();
-                    ArrayList<BusRouteStop> routeStops = new ArrayList<BusRouteStop>();
+                    ArrayList<BusRouteStop> routeStops = new ArrayList<>();
 
                     JSONArray stopsOnRoute = (JSONArray) (((JSONObject) ((JSONArray) responseObj.get("Direction")).get(0)).get("Stop"));
 
@@ -174,7 +174,7 @@ public class TransitExpListFragment extends Fragment {
                                                         stopTitle));
                         ArrayList<BusRoute> tempList;
                         if (!routesByStop.containsKey(stopTitle)) {
-                            tempList = new ArrayList<BusRoute>();
+                            tempList = new ArrayList<>();
                         } else {
                             tempList = routesByStop.get(stopTitle);
                         }

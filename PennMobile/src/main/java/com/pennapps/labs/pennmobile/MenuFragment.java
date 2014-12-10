@@ -74,7 +74,7 @@ public class MenuFragment extends Fragment {
                 JSONObject stationsObject = meal.getJSONObject("tblStation");
                 stations.put(stationsObject);
             }
-            HashMap<String, String> currentMenu = new HashMap<String, String>();
+            HashMap<String, String> currentMenu = new HashMap<>();
             for (int j = 0; j < stations.length(); j++) {
                 JSONObject station = stations.getJSONObject(j);
                 parseStation(station, currentMenu);

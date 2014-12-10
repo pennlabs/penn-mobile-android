@@ -131,7 +131,7 @@ public class DirectoryFragment extends ListFragment {
                 return;
             }
             try {
-                ArrayList<Person> personArr = new ArrayList<Person>();
+                ArrayList<Person> personArr = new ArrayList<>();
                 JSONObject resp;
 
                 for (int i = 0; i < responseArr.length(); i++) {
