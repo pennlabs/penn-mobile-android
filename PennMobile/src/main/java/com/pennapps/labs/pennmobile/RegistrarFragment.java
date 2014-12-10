@@ -187,9 +187,7 @@ public class RegistrarFragment extends Fragment {
                     descriptionTextView.setVisibility(View.VISIBLE);
                     descriptionTextView.setText(courseDescription);
                 }
-            } catch (JSONException ignored) {
-
-            } catch (NullPointerException ignored) {
+            } catch (JSONException | NullPointerException ignored) {
 
             }
         }

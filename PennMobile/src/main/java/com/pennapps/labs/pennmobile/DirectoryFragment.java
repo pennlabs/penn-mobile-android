@@ -149,9 +149,7 @@ public class DirectoryFragment extends ListFragment {
                 mListView.setAdapter(mAdapter);
                 getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                 getActivity().findViewById(android.R.id.list).setVisibility(View.VISIBLE);
-            } catch (JSONException ignored) {
-
-            } catch (NullPointerException ignored) {
+            } catch (JSONException | NullPointerException ignored) {
 
             }
         }

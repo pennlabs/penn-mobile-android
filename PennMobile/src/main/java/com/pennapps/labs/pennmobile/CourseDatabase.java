@@ -27,9 +27,7 @@ public class CourseDatabase {
             mDatabaseOpenHelper.createDatabase();
             mDatabaseOpenHelper.openDatabase();
             // sqLiteDatabase = mDatabaseOpenHelper.getReadableDatabase();
-        } catch (SQLException ignored) {
-
-        } catch (IOException ignored) {
+        } catch (SQLException | IOException ignored) {
 
         }
     }

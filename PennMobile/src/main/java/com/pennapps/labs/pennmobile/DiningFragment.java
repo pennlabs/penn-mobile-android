@@ -98,9 +98,7 @@ public class DiningFragment extends ListFragment {
                     JSONArray hours = venue.getJSONArray("dateHours");
                     mDiningHalls.add(new DiningHall(id, name, isResidential, hasMenu, hours));
                 }
-            } catch (JSONException ignored) {
-
-            } catch (NullPointerException ignored) {
+            } catch (JSONException | NullPointerException ignored) {
 
             }
             return null;
