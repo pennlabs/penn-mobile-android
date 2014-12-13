@@ -26,7 +26,6 @@ import java.util.Map;
 public class MenuFragment extends Fragment {
 
     private DiningAPI mAPI;
-    private TextView diningHallNameTV;
     private DiningHall mDiningHall;
 
     @Override
@@ -40,10 +39,9 @@ public class MenuFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_menu, container, false);
         v.setBackgroundColor(Color.WHITE);
-        diningHallNameTV = (TextView) v.findViewById(R.id.dining_hall_name);
+        TextView diningHallNameTV = (TextView) v.findViewById(R.id.dining_hall_name);
         diningHallNameTV.setText(mDiningHall.getName());
         diningHallNameTV.setGravity(Gravity.LEFT);
-        LinearLayout menu_layout = (LinearLayout) v.findViewById(R.id.main_menu_layout);
         fillDescriptions(v);
         try {
             if (mDiningHall.isResidential() && mDiningHall.hasMenu()) {
