@@ -26,17 +26,21 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class RegistrarFragment extends Fragment {
 
     private RegistrarAPI mAPI;
-    private TextView courseCodeTextView;
-    private TextView courseTitleTextView;
-    private TextView instructorTextView;
-    private TextView descriptionTitle;
-    private TextView descriptionTextView;
-    private View mapFrame;
     private GoogleMap map;
     private SupportMapFragment mapFragment;
+
+    @InjectView(R.id.course_code) TextView courseCodeTextView;
+    @InjectView(R.id.course_title) TextView courseTitleTextView;
+    @InjectView(R.id.instructor) TextView instructorTextView;
+    @InjectView(R.id.course_desc_title) TextView descriptionTitle;
+    @InjectView(R.id.course_desc) TextView descriptionTextView;
+    @InjectView(R.id.registrar_map_frame) View mapFrame;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,12 +52,7 @@ public class RegistrarFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_registrar, container, false);
-        courseCodeTextView = (TextView) v.findViewById(R.id.course_code);
-        courseTitleTextView = (TextView) v.findViewById(R.id.course_title);
-        instructorTextView = (TextView) v.findViewById(R.id.instructor);
-        descriptionTitle = (TextView) v.findViewById(R.id.course_desc_title);
-        descriptionTextView = (TextView) v.findViewById(R.id.course_desc);
-        mapFrame = v.findViewById(R.id.registrar_map_frame);
+        ButterKnife.inject(this, v);
         return v;
     }
 

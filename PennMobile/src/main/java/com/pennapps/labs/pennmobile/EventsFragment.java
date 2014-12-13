@@ -31,8 +31,8 @@ public class EventsFragment extends Fragment {
 
         public MyTabAdapter(FragmentManager fm) {
             super(fm);
-            this.fragments = new ArrayList<Fragment>();
-            this.titles = new ArrayList<String>();
+            this.fragments = new ArrayList<>();
+            this.titles = new ArrayList<>();
         }
 
         public void addItem(String url, String title) {

@@ -39,4 +39,5 @@ dependencies {
     compile 'org.apache.commons:commons-lang3:3.3.2'
     compile 'com.crashlytics.android:crashlytics:1.+'
     compile 'com.jpardogo.materialtabstrip:library:1.0.6'
+    compile 'com.jakewharton:butterknife:6.0.0'
 }
