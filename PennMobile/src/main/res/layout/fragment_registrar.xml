@@ -57,13 +57,6 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/location"
-        android:textSize="25sp"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -92,12 +85,5 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
     </ScrollView>
-
-    <TextView
-        android:id="@+id/temp"
-        android:textSize="20sp"
-        android:fontFamily="sans-serif-light"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
 </LinearLayout>

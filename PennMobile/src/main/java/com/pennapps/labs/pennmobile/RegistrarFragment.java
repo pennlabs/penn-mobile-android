@@ -29,11 +29,9 @@ import java.util.List;
 public class RegistrarFragment extends Fragment {
 
     private RegistrarAPI mAPI;
-    private TextView mTextView;
     private TextView courseCodeTextView;
     private TextView courseTitleTextView;
     private TextView instructorTextView;
-    private TextView locationTextView;
     private TextView descriptionTitle;
     private TextView descriptionTextView;
     private View mapFrame;
@@ -50,11 +48,9 @@ public class RegistrarFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_registrar, container, false);
-        mTextView = (TextView) v.findViewById(R.id.temp);
         courseCodeTextView = (TextView) v.findViewById(R.id.course_code);
         courseTitleTextView = (TextView) v.findViewById(R.id.course_title);
         instructorTextView = (TextView) v.findViewById(R.id.instructor);
-        locationTextView = (TextView) v.findViewById(R.id.location);
         descriptionTitle = (TextView) v.findViewById(R.id.course_desc_title);
         descriptionTextView = (TextView) v.findViewById(R.id.course_desc);
         mapFrame = v.findViewById(R.id.registrar_map_frame);
@@ -127,8 +123,8 @@ public class RegistrarFragment extends Fragment {
         @Override
         protected void onPostExecute(Boolean valid) {
             if (!valid) {
-                // sort of sloppy :/
-                mTextView.setText(input + " is not currently offered.");
+                courseCodeTextView.setText(input);
+                courseTitleTextView.setText(input + " is not currently offered.");
                 return;
             }
             try {
@@ -155,28 +151,29 @@ public class RegistrarFragment extends Fragment {
 
                 LatLng courseLatLng = getBuildingLatLng(course);
 
-                if (map != null) {
-                    if (courseLatLng != null) {
-                        mapFrame.setVisibility(View.VISIBLE);
-                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 17));
-                    }
-                }
-
                 String courseCodeText = course.getCourseDept() + " " + course.getCourseNumber();
                 courseCodeTextView.setText(courseCodeText);
+
+                String locationText;
+                if (course.getBuildingName().equals("")) {
+                    locationText = courseCodeText;
+                } else {
+                    locationText = courseCodeText + " - " + course.getBuildingCode() + " " + course.getRoomNumber();
+                }
+
+                if (map != null && courseLatLng != null) {
+                    mapFrame.setVisibility(View.VISIBLE);
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 17));
+                    map.addMarker(new MarkerOptions()
+                        .position(courseLatLng)
+                        .title(locationText));
+                }
 
                 String courseTitleText = course.getCourseTitle();
                 courseTitleTextView.setText(courseTitleText);
 
                 String instructorsText = course.getInstructors()[0];
                 instructorTextView.setText(instructorsText);
-
-                if (course.getBuildingName().equals("")) {
-                    locationTextView.setVisibility(View.GONE);
-                } else {
-                    String locationText = course.getBuildingCode() + " " + course.getRoomNumber();
-                    locationTextView.setText(locationText);
-                }
 
                 String courseDescription = course.getCourseDesc();
                 if (courseDescription.equals("")) {
