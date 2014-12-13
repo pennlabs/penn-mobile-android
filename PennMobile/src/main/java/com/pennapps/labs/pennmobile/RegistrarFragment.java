@@ -151,15 +151,23 @@ public class RegistrarFragment extends Fragment {
 
                 LatLng courseLatLng = getBuildingLatLng(course);
 
-                if (map != null) {
-                    if (courseLatLng != null) {
-                        mapFrame.setVisibility(View.VISIBLE);
-                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 17));
-                    }
-                }
-
                 String courseCodeText = course.getCourseDept() + " " + course.getCourseNumber();
                 courseCodeTextView.setText(courseCodeText);
+
+                String locationText;
+                if (course.getBuildingName().equals("")) {
+                    locationText = courseCodeText;
+                } else {
+                    locationText = courseCodeText + " - " + course.getBuildingCode() + " " + course.getRoomNumber();
+                }
+
+                if (map != null && courseLatLng != null) {
+                    mapFrame.setVisibility(View.VISIBLE);
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 17));
+                    map.addMarker(new MarkerOptions()
+                        .position(courseLatLng)
+                        .title(locationText));
+                }
 
                 String courseTitleText = course.getCourseTitle();
                 courseTitleTextView.setText(courseTitleText);
