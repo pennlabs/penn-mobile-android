@@ -1,8 +1,8 @@
 package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
