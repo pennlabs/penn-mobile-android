@@ -10,4 +10,5 @@ public class Course {
     public String course_title;
     public String course_description;
     public List<Instructor> instructors = new ArrayList<>();
+    public List<Meeting> meetings = new ArrayList<>();
 }

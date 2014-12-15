@@ -51,4 +51,10 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
         List<Course> courses = mLabs.courses("CIS 110");
         assertEquals("Eric Eaton", courses.get(0).instructors.get(0).name);
     }
+
+    public void testCourseMeetings() {
+        Labs mLabs = activity.getLabsInstance();
+        List<Course> courses = mLabs.courses("CIS 110");
+        assertEquals("Towne Building", courses.get(0).meetings.get(0).building_name);
+    }
 }

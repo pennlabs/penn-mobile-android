@@ -79,10 +79,10 @@ public class RegistrarFragment extends Fragment {
             }
         }
     }
-    public LatLng getBuildingLatLng(RegCourse course) {
+    public LatLng getBuildingLatLng(Course course) {
         Geocoder geocoder = new Geocoder(getActivity().getApplicationContext());
         try {
-            List<Address> locationList = geocoder.getFromLocationName(course.getBuildingName(), 1);
+            List<Address> locationList = geocoder.getFromLocationName(course.meetings.get(0).building_name, 1);
             try {
                 return new LatLng(locationList.get(0).getLatitude(), locationList.get(0).getLongitude());
             } catch (IndexOutOfBoundsException e) {
@@ -114,7 +114,7 @@ public class RegistrarFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Boolean valid) {
-            if (!valid) {
+            if (!valid || courses.size() == 0) {
                 courseCodeTextView.setText(input);
                 courseTitleTextView.setText(input + " is not currently offered.");
                 return;
@@ -122,25 +122,19 @@ public class RegistrarFragment extends Fragment {
             try {
                 Course course = courses.get(0);
 
-//                LatLng courseLatLng = getBuildingLatLng(course);
+                LatLng courseLatLng = getBuildingLatLng(course);
 
                 String courseCodeText = course.course_department + " " + course.course_number;
                 courseCodeTextView.setText(courseCodeText);
 
-//                String locationText;
-//                if (course.getBuildingName().equals("")) {
-//                    locationText = courseCodeText;
-//                } else {
-//                    locationText = courseCodeText + " - " + course.getBuildingCode() + " " + course.getRoomNumber();
-//                }
-
-//                if (map != null && courseLatLng != null) {
-//                    mapFrame.setVisibility(View.VISIBLE);
-//                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 17));
-//                    map.addMarker(new MarkerOptions()
-//                        .position(courseLatLng)
-//                        .title(locationText));
-//                }
+                String locationText = courseCodeText + " - " + course.meetings.get(0).building_code + " " + course.meetings.get(0).room_number;
+                if (map != null && courseLatLng != null) {
+                    mapFrame.setVisibility(View.VISIBLE);
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 17));
+                    map.addMarker(new MarkerOptions()
+                        .position(courseLatLng)
+                        .title(locationText));
+                }
 
                 String courseTitleText = course.course_title;
                 courseTitleTextView.setText(courseTitleText);
