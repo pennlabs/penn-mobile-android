@@ -40,9 +40,15 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
         assertTrue(activity.findViewById(R.id.left_drawer) instanceof ListView);
     }
 
-    public void testLabsAPI() {
+    public void testLabsCoursesAPI() {
         Labs mLabs = activity.getLabsInstance();
         List<Course> courses = mLabs.courses("CIS 110");
         assertEquals(110, courses.get(0).course_number);
+    }
+
+    public void testLabsCoursesInstructors() {
+        Labs mLabs = activity.getLabsInstance();
+        List<Course> courses = mLabs.courses("CIS 110");
+        assertEquals("Eric Eaton", courses.get(0).instructors.get(0).name);
     }
 }
