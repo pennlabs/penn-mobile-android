@@ -14,8 +14,18 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.content.res.Configuration;
 import com.crashlytics.android.Crashlytics;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.pennapps.labs.pennmobile.api.Labs;
+import com.pennapps.labs.pennmobile.api.Serializer;
+import com.pennapps.labs.pennmobile.classes.Course;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit.RestAdapter;
+import retrofit.converter.GsonConverter;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -23,6 +33,7 @@ public class MainActivity extends ActionBarActivity {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private String[] mFeatureTitles;
+    private Labs mLabs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,5 +176,19 @@ public class MainActivity extends ActionBarActivity {
         } catch (NullPointerException e) {
             getSupportActionBar().setTitle("PennMobile");
         }
+    }
+
+    public Labs getLabsInstance() {
+        if (mLabs == null) {
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            gsonBuilder.registerTypeAdapter(new TypeToken<List<Course>>(){}.getType(), new Serializer.CourseSerializer());
+            Gson gson = gsonBuilder.create();
+            RestAdapter restAdapter = new RestAdapter.Builder()
+                    .setConverter(new GsonConverter(gson))
+                    .setEndpoint("http://api.pennlabs.org")
+                    .build();
+            mLabs = restAdapter.create(Labs.class);
+        }
+        return mLabs;
     }
 }
