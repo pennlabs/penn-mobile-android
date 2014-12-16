@@ -64,4 +64,10 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
         List<DirectoryPerson> people = mLabs.people("adel");
         assertEquals("ADELEKE, VICTOR O", people.get(0).name);
     }
+
+    public void testDirectorySearchGetName() {
+        Labs mLabs = activity.getLabsInstance();
+        List<DirectoryPerson> people = mLabs.people("adel");
+        assertEquals("Victor O Adeleke", people.get(0).getName());
+    }
 }
