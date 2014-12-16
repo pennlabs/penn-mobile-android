@@ -21,7 +21,7 @@ import com.google.gson.reflect.TypeToken;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.api.Serializer;
 import com.pennapps.labs.pennmobile.classes.Course;
-import com.pennapps.labs.pennmobile.classes.DirectoryPerson;
+import com.pennapps.labs.pennmobile.classes.Person;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -184,7 +184,7 @@ public class MainActivity extends ActionBarActivity {
         if (mLabs == null) {
             GsonBuilder gsonBuilder = new GsonBuilder();
             gsonBuilder.registerTypeAdapter(new TypeToken<List<Course>>(){}.getType(), new Serializer.CourseSerializer());
-            gsonBuilder.registerTypeAdapter(new TypeToken<List<DirectoryPerson>>(){}.getType(), new Serializer.DataSerializer());
+            gsonBuilder.registerTypeAdapter(new TypeToken<List<Person>>(){}.getType(), new Serializer.DataSerializer());
             Gson gson = gsonBuilder.create();
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setConverter(new GsonConverter(gson))

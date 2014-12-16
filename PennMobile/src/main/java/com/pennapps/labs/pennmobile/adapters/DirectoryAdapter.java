@@ -13,20 +13,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.R;
-import com.pennapps.labs.pennmobile.classes.DirectoryPerson;
+import com.pennapps.labs.pennmobile.classes.Person;
 
 import java.util.List;
 
-public class DirectoryAdapter extends ArrayAdapter<DirectoryPerson> {
+public class DirectoryAdapter extends ArrayAdapter<Person> {
 
-    public DirectoryAdapter(Context context, List<DirectoryPerson> persons) {
+    public DirectoryAdapter(Context context, List<Person> persons) {
         super(context, R.layout.directory_list_item, persons);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        DirectoryPerson person = getItem(position);
-        final DirectoryPerson currentPerson = person;
+        Person person = getItem(position);
+        final Person currentPerson = person;
         View view = LayoutInflater.from(getContext())
                 .inflate(R.layout.directory_list_item, null);
 

@@ -16,16 +16,9 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.pennapps.labs.pennmobile.adapters.DirectoryAdapter;
-import com.pennapps.labs.pennmobile.api.DirectoryAPI;
 import com.pennapps.labs.pennmobile.api.Labs;
-import com.pennapps.labs.pennmobile.classes.DirectoryPerson;
 import com.pennapps.labs.pennmobile.classes.Person;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class DirectoryFragment extends ListFragment {
@@ -110,7 +103,7 @@ public class DirectoryFragment extends ListFragment {
     }
 
     private class GetRequestTask extends AsyncTask<Void, Void, Boolean> {
-        private List<DirectoryPerson> people;
+        private List<Person> people;
 
         @Override
         protected Boolean doInBackground(Void... params) {

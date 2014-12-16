@@ -1,7 +1,7 @@
 package com.pennapps.labs.pennmobile.api;
 
 import com.pennapps.labs.pennmobile.classes.Course;
-import com.pennapps.labs.pennmobile.classes.DirectoryPerson;
+import com.pennapps.labs.pennmobile.classes.Person;
 
 import java.util.List;
 
@@ -18,6 +18,6 @@ public interface Labs {
         @Query("q") String name);
 
     @GET("/directory/search")
-    List<DirectoryPerson> people(
+    List<Person> people(
         @Query("name") String name);
 }
