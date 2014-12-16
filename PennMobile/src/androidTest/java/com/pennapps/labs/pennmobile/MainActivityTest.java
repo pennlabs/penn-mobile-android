@@ -7,6 +7,7 @@ import android.widget.ListView;
 
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Course;
+import com.pennapps.labs.pennmobile.classes.DirectoryPerson;
 
 import java.util.List;
 
@@ -56,5 +57,11 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
         Labs mLabs = activity.getLabsInstance();
         List<Course> courses = mLabs.courses("CIS 110");
         assertEquals("Towne Building", courses.get(0).meetings.get(0).building_name);
+    }
+
+    public void testDirectorySearch() {
+        Labs mLabs = activity.getLabsInstance();
+        List<DirectoryPerson> people = mLabs.people("adel");
+        assertEquals("ADELEKE, VICTOR O", people.get(0).name);
     }
 }

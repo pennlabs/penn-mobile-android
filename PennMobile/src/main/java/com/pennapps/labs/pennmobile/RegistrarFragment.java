@@ -17,9 +17,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.pennapps.labs.pennmobile.api.Labs;
-import com.pennapps.labs.pennmobile.api.RegistrarAPI;
 import com.pennapps.labs.pennmobile.classes.Course;
-import com.pennapps.labs.pennmobile.pcr.RegCourse;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,7 +27,6 @@ import butterknife.InjectView;
 
 public class RegistrarFragment extends Fragment {
 
-    private RegistrarAPI mAPI;
     private Labs mLabs;
     private GoogleMap map;
     private SupportMapFragment mapFragment;
@@ -44,7 +41,6 @@ public class RegistrarFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAPI = new RegistrarAPI();
         mLabs = ((MainActivity) getActivity()).getLabsInstance();
         new GetRequestTask(getArguments().getString(RegistrarSearchFragment.COURSE_ID_EXTRA)).execute();
     }

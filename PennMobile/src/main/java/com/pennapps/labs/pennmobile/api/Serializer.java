@@ -24,4 +24,13 @@ public class Serializer {
             return new Gson().fromJson(content, new TypeToken<List<Course>>(){}.getType());
         }
     }
+
+    public static class DataSerializer<T> implements JsonDeserializer<T> {
+        @Override
+        public T deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+                throws JsonParseException {
+            JsonElement content = je.getAsJsonObject().get("result_data");
+            return new Gson().fromJson(content, type);
+        }
+    }
 }
