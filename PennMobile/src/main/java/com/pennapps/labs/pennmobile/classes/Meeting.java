@@ -8,4 +8,5 @@ public class Meeting {
     public String building_code;
     public String building_name;
     public String room_number;
+    public String section_id;
 }

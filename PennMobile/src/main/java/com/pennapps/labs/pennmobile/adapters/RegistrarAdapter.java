@@ -33,7 +33,11 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
             courseInstr.setText("");
         }
         courseTitle.setText(course.course_title);
-        view.setTag(courseId.getText());
+        try {
+            view.setTag(course.meetings.get(0).section_id);
+        } catch (IndexOutOfBoundsException e) {
+            view.setTag(courseId.getText());
+        }
         return view;
     }
 }
