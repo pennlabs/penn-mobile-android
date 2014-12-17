@@ -7,6 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.pennapps.labs.pennmobile.classes.Course;
+import com.pennapps.labs.pennmobile.classes.Venue;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -31,6 +32,17 @@ public class Serializer {
                 throws JsonParseException {
             JsonElement content = je.getAsJsonObject().get("result_data");
             return new Gson().fromJson(content, type);
+        }
+    }
+
+    public static class VenueSerializer implements JsonDeserializer<List<Venue>> {
+        @Override
+        public List<Venue> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+                throws JsonParseException {
+            JsonElement content = je
+                    .getAsJsonObject().get("document")
+                    .getAsJsonObject().get("venue");
+            return new Gson().fromJson(content, new TypeToken<List<Venue>>(){}.getType());
         }
     }
 }

@@ -1,7 +1,9 @@
 package com.pennapps.labs.pennmobile.api;
 
 import com.pennapps.labs.pennmobile.classes.Course;
+import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.Person;
+import com.pennapps.labs.pennmobile.classes.Venue;
 
 import java.util.List;
 
@@ -20,4 +22,7 @@ public interface Labs {
     @GET("/directory/search")
     List<Person> people(
         @Query("name") String name);
+
+    @GET("/dining/venues")
+    List<Venue> venues();
 }
