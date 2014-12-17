@@ -70,4 +70,10 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
         List<Person> people = mLabs.people("adel");
         assertEquals("Victor O Adeleke", people.get(0).getName());
     }
+
+    public void testCourseMeetingSection() {
+        Labs mLabs = activity.getLabsInstance();
+        List<Course> courses = mLabs.courses("BIBB 109");
+        assertEquals("BIBB109401", courses.get(0).meetings.get(0).section_id);
+    }
 }
