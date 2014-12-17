@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
 import android.app.Activity;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -15,12 +14,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.pennapps.labs.pennmobile.adapters.RegistrarAdapter;
+import com.pennapps.labs.pennmobile.api.Labs;
+import com.pennapps.labs.pennmobile.classes.Course;
+
+import java.util.List;
 
 
 public class RegistrarSearchFragment extends Fragment {
 
     public static final String COURSE_ID_EXTRA = "COURSE_ID";
-    private CourseDatabase courseDatabase;
+    private Labs mLabs;
     public static Fragment mFragment;
     private Activity mActivity;
     private RegistrarAdapter mAdapter;
@@ -30,7 +33,7 @@ public class RegistrarSearchFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActivity = getActivity();
-        courseDatabase = new CourseDatabase(this.getActivity().getApplicationContext());
+        mLabs = ((MainActivity) getActivity()).getLabsInstance();
         mFragment = this;
     }
 
@@ -84,17 +87,17 @@ public class RegistrarSearchFragment extends Fragment {
             }
 
             @Override
-            public boolean onQueryTextSubmit(String arg0) {
+            public boolean onQueryTextSubmit(String input) {
                 getActivity().findViewById(R.id.registrar_instructions).setVisibility(View.GONE);
                 getActivity().findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
-                Cursor cursor = courseDatabase.getWordMatches(arg0.replaceAll("\\s+",""), null);
+                List<Course> courses = mLabs.courses(input);
                 RegistrarListFragment listFragment = new RegistrarListFragment();
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                 transaction.replace(R.id.registrar_fragment, listFragment, "LIST")
                         .addToBackStack(null)
                         .commit();
                 mAdapter = new RegistrarAdapter(mActivity.getApplicationContext(),
-                        R.layout.search_entry, cursor, 0);
+                        R.layout.search_entry, courses);
                 listFragment.setListAdapter(mAdapter);
 
                 return true;
