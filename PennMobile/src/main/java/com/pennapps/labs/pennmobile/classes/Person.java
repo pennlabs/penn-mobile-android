@@ -6,8 +6,7 @@ import org.apache.commons.lang3.text.WordUtils;
 
 /**
  * Created by Adel on 12/16/14.
- * Class for Person from Directory
- * Will replace Person class at some point
+ * Class for a Person from Directory
  */
 public class Person {
     @SerializedName("person_id") public String id;
