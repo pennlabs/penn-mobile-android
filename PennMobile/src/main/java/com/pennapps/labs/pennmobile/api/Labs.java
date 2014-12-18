@@ -2,12 +2,14 @@ package com.pennapps.labs.pennmobile.api;
 
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
+import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
 import java.util.List;
 
 import retrofit.http.GET;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
@@ -25,4 +27,8 @@ public interface Labs {
 
     @GET("/dining/venues")
     List<Venue> venues();
+
+    @GET("/dining/daily_menu/{id}")
+    NewDiningHall daily_menu(
+        @Path("id") int id);
 }

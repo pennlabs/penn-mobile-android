@@ -7,7 +7,9 @@ import android.widget.ListView;
 
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Course;
+import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 import com.pennapps.labs.pennmobile.classes.Person;
+import com.pennapps.labs.pennmobile.classes.Venue;
 
 import java.util.List;
 
@@ -75,5 +77,18 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
         Labs mLabs = activity.getLabsInstance();
         List<Course> courses = mLabs.courses("BIBB 109");
         assertEquals("BIBB109401", courses.get(0).meetings.get(0).section_id);
+    }
+
+    public void testDiningVenues() {
+        Labs mLabs = activity.getLabsInstance();
+        List<Venue> venues = mLabs.venues();
+        assertEquals("1920 Commons", venues.get(0).name);
+    }
+
+    public void testDiningMenuMeals() {
+        Labs mLabs = activity.getLabsInstance();
+        List<Venue> venues = mLabs.venues();
+        NewDiningHall commons = mLabs.daily_menu(venues.get(0).id);
+        assertEquals(2, commons.menus.size());
     }
 }
