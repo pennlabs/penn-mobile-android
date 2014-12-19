@@ -12,5 +12,4 @@ import java.util.List;
 public class FoodItem {
     @SerializedName("txtTitle") String title;
     @SerializedName("txtDescription") String description;
-    List<String> attributes = new ArrayList<>();
 }

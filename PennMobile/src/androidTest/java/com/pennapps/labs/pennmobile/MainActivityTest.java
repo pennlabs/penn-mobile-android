@@ -89,6 +89,6 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
         Labs mLabs = activity.getLabsInstance();
         List<Venue> venues = mLabs.venues();
         NewDiningHall commons = mLabs.daily_menu(venues.get(0).id);
-        assertEquals(2, commons.menus.size());
+        assertTrue(commons.menus.size() > 0);
     }
 }

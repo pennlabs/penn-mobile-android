@@ -11,5 +11,5 @@ import java.util.List;
  */
 public class DiningStation {
     @SerializedName("txtStationDescription") String name;
-//    @SerializedName("tblItem") List<FoodItem> items = new ArrayList<>();
+    @SerializedName("tblItem") List<FoodItem> items = new ArrayList<>();
 }
