@@ -25,5 +25,6 @@
     <string name="labs_icon">Penn Labs</string>
     <string name="course_desc_title">Description</string>
     <string name="add_contact">Add contact</string>
+    <string name="no_results">No results found.</string>
 
 </resources>
