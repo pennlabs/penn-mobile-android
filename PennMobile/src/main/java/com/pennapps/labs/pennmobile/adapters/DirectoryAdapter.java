@@ -12,14 +12,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.R;
+import com.pennapps.labs.pennmobile.classes.Person;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class DirectoryAdapter extends ArrayAdapter<Person> {
 
-    public DirectoryAdapter(Context context, ArrayList<Person> persons) {
+    public DirectoryAdapter(Context context, List<Person> persons) {
         super(context, R.layout.directory_list_item, persons);
     }
 
@@ -42,29 +42,28 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
                 Intent intent = new Intent(Intent.ACTION_INSERT);
                 intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
 
-                String name = currentPerson.getFirstName() + " " + currentPerson.getLastName();
-
+                String name = currentPerson.getName();
                 intent.putExtra(ContactsContract.Intents.Insert.NAME, name);
-                intent.putExtra(ContactsContract.Intents.Insert.PHONE, currentPerson.getPhone());
-                intent.putExtra(ContactsContract.Intents.Insert.EMAIL, currentPerson.getEmail());
+                intent.putExtra(ContactsContract.Intents.Insert.PHONE, currentPerson.phone);
+                intent.putExtra(ContactsContract.Intents.Insert.EMAIL, currentPerson.email);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 getContext().startActivity(intent);
             }
         });
 
-        tvName.setText(person.getFirstName() + " " + person.getLastName());
-        tvAffiliation.setText(person.getAffiliation());
+        tvName.setText(person.getName());
+        tvAffiliation.setText(person.affiliation);
 
-        if (person.getEmail().length() == 0) {
+        if (person.email.length() == 0) {
             tvEmail.setVisibility(View.GONE);
         } else {
-            tvEmail.setText(person.getEmail());
+            tvEmail.setText(person.email);
             tvEmail.setPaintFlags(tvEmail.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
             tvEmail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String uri = "mailto:" + currentPerson.getEmail();
+                    String uri = "mailto:" + currentPerson.email;
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setData(Uri.parse(uri));
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -73,14 +72,14 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
             });
         }
 
-        if (person.getPhone().length() == 0) {
+        if (person.phone.length() == 0) {
             tvPhone.setVisibility(View.GONE);
         } else {
-            tvPhone.setText(person.getPhone());
+            tvPhone.setText(person.phone);
             tvPhone.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String uri = "tel:" + currentPerson.getPhone();
+                    String uri = "tel:" + currentPerson.phone;
                     Intent intent = new Intent(Intent.ACTION_DIAL);
                     intent.setData(Uri.parse(uri));
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -5,6 +5,14 @@ import android.test.ActivityUnitTestCase;
 import android.view.ContextThemeWrapper;
 import android.widget.ListView;
 
+import com.pennapps.labs.pennmobile.api.Labs;
+import com.pennapps.labs.pennmobile.classes.Course;
+import com.pennapps.labs.pennmobile.classes.NewDiningHall;
+import com.pennapps.labs.pennmobile.classes.Person;
+import com.pennapps.labs.pennmobile.classes.Venue;
+
+import java.util.List;
+
 /**
  * Unit testing for MainActivity
  * Created by Adel on 12/9/14.
@@ -33,5 +41,54 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
 
     public void testMainDrawerLayout() {
         assertTrue(activity.findViewById(R.id.left_drawer) instanceof ListView);
+    }
+
+    public void testLabsCoursesAPI() {
+        Labs mLabs = activity.getLabsInstance();
+        List<Course> courses = mLabs.courses("CIS 110");
+        assertEquals(110, courses.get(0).course_number);
+    }
+
+    public void testLabsCoursesInstructors() {
+        Labs mLabs = activity.getLabsInstance();
+        List<Course> courses = mLabs.courses("CIS 110");
+        assertEquals("Eric Eaton", courses.get(0).instructors.get(0).name);
+    }
+
+    public void testCourseMeetings() {
+        Labs mLabs = activity.getLabsInstance();
+        List<Course> courses = mLabs.courses("CIS 110");
+        assertEquals("Towne Building", courses.get(0).meetings.get(0).building_name);
+    }
+
+    public void testDirectorySearch() {
+        Labs mLabs = activity.getLabsInstance();
+        List<Person> people = mLabs.people("adel");
+        assertEquals("ADELEKE, VICTOR O", people.get(0).name);
+    }
+
+    public void testDirectorySearchGetName() {
+        Labs mLabs = activity.getLabsInstance();
+        List<Person> people = mLabs.people("adel");
+        assertEquals("Victor O Adeleke", people.get(0).getName());
+    }
+
+    public void testCourseMeetingSection() {
+        Labs mLabs = activity.getLabsInstance();
+        List<Course> courses = mLabs.courses("BIBB 109");
+        assertEquals("BIBB109401", courses.get(0).meetings.get(0).section_id);
+    }
+
+    public void testDiningVenues() {
+        Labs mLabs = activity.getLabsInstance();
+        List<Venue> venues = mLabs.venues();
+        assertEquals("1920 Commons", venues.get(0).name);
+    }
+
+    public void testDiningMenuMeals() {
+        Labs mLabs = activity.getLabsInstance();
+        List<Venue> venues = mLabs.venues();
+        NewDiningHall commons = mLabs.daily_menu(venues.get(0).id);
+        assertTrue(commons.menus.size() > 0);
     }
 }

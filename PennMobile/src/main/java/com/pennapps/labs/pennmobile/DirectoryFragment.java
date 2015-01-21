@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,21 +14,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.support.v7.widget.SearchView;
 
 import com.pennapps.labs.pennmobile.adapters.DirectoryAdapter;
-import com.pennapps.labs.pennmobile.api.DirectoryAPI;
+import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Person;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
+import java.util.List;
 
 public class DirectoryFragment extends ListFragment {
 
-    private DirectoryAPI mAPI;
+    private Labs mLabs;
     private ListView mListView;
     private Context mContext;
     private String mName;
@@ -38,7 +34,7 @@ public class DirectoryFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getActivity().getApplicationContext();
-        mAPI = new DirectoryAPI();
+        mLabs = ((MainActivity) getActivity()).getLabsInstance();
         mName = getArguments().getString(DirectorySearchFragment.NAME_INTENT_EXTRA);
         new GetRequestTask().execute();
     }
@@ -107,19 +103,14 @@ public class DirectoryFragment extends ListFragment {
     }
 
     private class GetRequestTask extends AsyncTask<Void, Void, Boolean> {
-        private JSONArray responseArr;
+        private List<Person> people;
 
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                JSONObject resultObj = mAPI.search(mName);
-                try {
-                    responseArr = (JSONArray) resultObj.get("result_data");
-                } catch (NullPointerException e) {
-                    return false;
-                }
-                return responseArr.length() != 0;
-            } catch(JSONException e) {
+                people = mLabs.people(mName);
+                return true;
+            } catch(Exception ignored) {
                 return false;
             }
         }
@@ -131,25 +122,16 @@ public class DirectoryFragment extends ListFragment {
                 return;
             }
             try {
-                ArrayList<Person> personArr = new ArrayList<>();
-                JSONObject resp;
-
-                for (int i = 0; i < responseArr.length(); i++) {
-                    resp = (JSONObject) responseArr.get(i);
-
-                    Person person = new Person.Builder(resp.get("list_name").toString(),
-                            resp.get("list_affiliation").toString()).
-                            phone(resp.get("list_phone").toString()).
-                            email(resp.get("list_email").toString()).
-                            build();
-                    personArr.add(person);
-                }
-
-                DirectoryAdapter mAdapter = new DirectoryAdapter(mContext, personArr);
-                mListView.setAdapter(mAdapter);
+                DirectoryAdapter mAdapter = new DirectoryAdapter(mContext, people);
                 getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-                getActivity().findViewById(android.R.id.list).setVisibility(View.VISIBLE);
-            } catch (JSONException | NullPointerException ignored) {
+                if (people.size() == 0) {
+                    getActivity().findViewById(R.id.no_results).setVisibility(View.VISIBLE);
+                } else {
+                    mListView.setAdapter(mAdapter);
+                    getActivity().findViewById(R.id.no_results).setVisibility(View.GONE);
+                    getActivity().findViewById(android.R.id.list).setVisibility(View.VISIBLE);
+                }
+            } catch (NullPointerException ignored) {
 
             }
         }

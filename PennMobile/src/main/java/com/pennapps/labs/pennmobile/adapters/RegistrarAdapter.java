@@ -1,30 +1,43 @@
 package com.pennapps.labs.pennmobile.adapters;
 
 import android.content.Context;
-import android.database.Cursor;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ResourceCursorAdapter;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.R;
+import com.pennapps.labs.pennmobile.classes.Course;
 
-public class RegistrarAdapter extends ResourceCursorAdapter {
+import java.util.List;
 
-    public RegistrarAdapter(Context context, int layout, Cursor c, int flags) {
-        super(context, layout, c, flags);
+public class RegistrarAdapter extends ArrayAdapter<Course> {
+
+    public RegistrarAdapter(Context context, int layout, List<Course> courses) {
+        super(context, layout, courses);
     }
 
-    @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public View getView(int position, View convertView, ViewGroup parent) {
+        Course course = getItem(position);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.search_entry, null);
+
         TextView courseId = (TextView) view.findViewById(R.id.course_id_text);
-        courseId.setText(cursor.getString(cursor.getColumnIndex("course_id")));
-
         TextView courseInstr = (TextView) view.findViewById(R.id.course_instr_text);
-        courseInstr.setText(cursor.getString(cursor.getColumnIndex("instructor")));
-
         TextView courseTitle = (TextView) view.findViewById(R.id.course_title_text);
-        courseTitle.setText(cursor.getString(cursor.getColumnIndex("course_title")));
 
-        view.setTag(cursor.getString(cursor.getColumnIndex("course_id")));
+        courseId.setText(course.course_department + course.course_number);
+        try {
+            courseInstr.setText(course.instructors.get(0).name);
+        } catch (IndexOutOfBoundsException e) {
+            courseInstr.setText("");
+        }
+        courseTitle.setText(course.course_title);
+        try {
+            view.setTag(course.meetings.get(0).section_id);
+        } catch (IndexOutOfBoundsException e) {
+            view.setTag(courseId.getText());
+        }
+        return view;
     }
 }

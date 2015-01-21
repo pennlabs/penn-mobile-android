@@ -16,12 +16,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.pennapps.labs.pennmobile.api.RegistrarAPI;
-import com.pennapps.labs.pennmobile.pcr.RegCourse;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.pennapps.labs.pennmobile.api.Labs;
+import com.pennapps.labs.pennmobile.classes.Course;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,7 +27,7 @@ import butterknife.InjectView;
 
 public class RegistrarFragment extends Fragment {
 
-    private RegistrarAPI mAPI;
+    private Labs mLabs;
     private GoogleMap map;
     private SupportMapFragment mapFragment;
 
@@ -45,7 +41,7 @@ public class RegistrarFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAPI = new RegistrarAPI();
+        mLabs = ((MainActivity) getActivity()).getLabsInstance();
         new GetRequestTask(getArguments().getString(RegistrarSearchFragment.COURSE_ID_EXTRA)).execute();
     }
 
@@ -79,10 +75,10 @@ public class RegistrarFragment extends Fragment {
             }
         }
     }
-    public LatLng getBuildingLatLng(RegCourse course) {
+    public LatLng getBuildingLatLng(Course course) {
         Geocoder geocoder = new Geocoder(getActivity().getApplicationContext());
         try {
-            List<Address> locationList = geocoder.getFromLocationName(course.getBuildingName(), 1);
+            List<Address> locationList = geocoder.getFromLocationName(course.meetings.get(0).building_name, 1);
             try {
                 return new LatLng(locationList.get(0).getLatitude(), locationList.get(0).getLongitude());
             } catch (IndexOutOfBoundsException e) {
@@ -96,7 +92,14 @@ public class RegistrarFragment extends Fragment {
 
     private class GetRequestTask extends AsyncTask<Void, Void, Boolean> {
         private String input;
-        private JSONObject resp;
+        private List<Course> courses;
+        private Course course;
+        private LatLng courseLatLng;
+        private String courseCodeText;
+        private String locationText;
+        private String courseTitleText;
+        private String instructorsText;
+        private String courseDescription;
 
         GetRequestTask(String s) {
             input = s;
@@ -105,60 +108,29 @@ public class RegistrarFragment extends Fragment {
         @Override
         protected Boolean doInBackground(Void... voids) {
             try {
-                JSONObject resultObj = mAPI.getCourse(input);
-                JSONArray responseArr = (JSONArray) resultObj.get("courses");
-                if (responseArr.length() == 0) {
-                    return false;
-                }
-                resp = (JSONObject) responseArr.get(0);
+                courses = mLabs.courses(input);
+                course = courses.get(0);
+                courseLatLng = getBuildingLatLng(course);
+                courseCodeText = course.course_department + " " + course.course_number;
+                locationText = courseCodeText + " - " + course.meetings.get(0).building_code + " " + course.meetings.get(0).room_number;
+                courseTitleText = course.course_title;
+                instructorsText = course.instructors.get(0).name;
+                courseDescription = course.course_description;
                 return true;
-            } catch(JSONException e) {
-                return false;
-            } catch(Exception e) {
+            } catch (Exception ignored) {
                 return false;
             }
         }
 
         @Override
         protected void onPostExecute(Boolean valid) {
-            if (!valid) {
+            if (!valid || courses.size() == 0) {
                 courseCodeTextView.setText(input);
                 courseTitleTextView.setText(input + " is not currently offered.");
                 return;
             }
             try {
-                JSONObject meetings = (JSONObject) ((JSONArray) resp.get("meetings")).get(0);
-                JSONArray instrJSON = (JSONArray) resp.get("instructors");
-                String[] instrArr = new String[instrJSON.length()];
-                for (int i = 0; i < instrJSON.length(); i++) {
-                    instrArr[i] = ((JSONObject) instrJSON.get(i)).get("name").toString();
-                }
-
-                RegCourse course = new RegCourse.Builder(resp.get("activity").toString(),
-                                        resp.get("course_department").toString(),
-                                        resp.get("course_number").toString()).
-                                        course_description(resp.get("course_description").toString()).
-                                        course_title(resp.get("course_title").toString()).
-                                        instructors(instrArr).
-                                        building_code(meetings.get("building_code").toString()).
-                                        building_name(meetings.get("building_name").toString()).
-                                        room_number(meetings.get("room_number").toString()).
-                                        start_time(meetings.get("start_time").toString()).
-                                        end_time(meetings.get("end_time").toString()).
-                                        section_id(meetings.get("section_id_normalized").toString()).
-                                        build();
-
-                LatLng courseLatLng = getBuildingLatLng(course);
-
-                String courseCodeText = course.getCourseDept() + " " + course.getCourseNumber();
                 courseCodeTextView.setText(courseCodeText);
-
-                String locationText;
-                if (course.getBuildingName().equals("")) {
-                    locationText = courseCodeText;
-                } else {
-                    locationText = courseCodeText + " - " + course.getBuildingCode() + " " + course.getRoomNumber();
-                }
 
                 if (map != null && courseLatLng != null) {
                     mapFrame.setVisibility(View.VISIBLE);
@@ -167,14 +139,9 @@ public class RegistrarFragment extends Fragment {
                         .position(courseLatLng)
                         .title(locationText));
                 }
-
-                String courseTitleText = course.getCourseTitle();
                 courseTitleTextView.setText(courseTitleText);
-
-                String instructorsText = course.getInstructors()[0];
                 instructorTextView.setText(instructorsText);
 
-                String courseDescription = course.getCourseDesc();
                 if (courseDescription.equals("")) {
                     descriptionTitle.setVisibility(View.GONE);
                     descriptionTextView.setVisibility(View.GONE);
@@ -183,7 +150,7 @@ public class RegistrarFragment extends Fragment {
                     descriptionTextView.setVisibility(View.VISIBLE);
                     descriptionTextView.setText(courseDescription);
                 }
-            } catch (JSONException | NullPointerException ignored) {
+            } catch (NullPointerException ignored) {
 
             }
         }

@@ -8,8 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.R;
+import com.pennapps.labs.pennmobile.classes.DiningHall;
 
 import org.apache.commons.lang3.text.WordUtils;
 

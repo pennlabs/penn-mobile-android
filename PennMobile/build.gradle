@@ -40,4 +40,5 @@ dependencies {
     compile 'com.crashlytics.android:crashlytics:1.+'
     compile 'com.jpardogo.materialtabstrip:library:1.0.6'
     compile 'com.jakewharton:butterknife:6.0.0'
+    compile 'com.squareup.retrofit:retrofit:1.8.0'
 }

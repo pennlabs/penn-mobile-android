@@ -101,7 +101,7 @@ public class TransitExpListFragment extends Fragment {
             }
 
             try {
-                mTransitArr = new ArrayList<BusStop>();
+                mTransitArr = new ArrayList<>();
 
                 for (int i = 0; i < responseArr.length(); i++) {
                     JSONObject resp = (JSONObject) responseArr.get(i);
