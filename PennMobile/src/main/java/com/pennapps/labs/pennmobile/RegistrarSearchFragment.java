@@ -96,6 +96,7 @@ public class RegistrarSearchFragment extends Fragment {
             public boolean onQueryTextSubmit(String input) {
                 searchView.clearFocus();
                 hideKeyboard = true;
+                getActivity().findViewById(R.id.no_results).setVisibility(View.GONE);
                 getActivity().findViewById(R.id.registrar_instructions).setVisibility(View.GONE);
                 getActivity().findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
                 new GetRequestTask(input).execute();
