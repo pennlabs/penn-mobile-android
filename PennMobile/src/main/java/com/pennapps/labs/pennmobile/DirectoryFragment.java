@@ -123,9 +123,14 @@ public class DirectoryFragment extends ListFragment {
             }
             try {
                 DirectoryAdapter mAdapter = new DirectoryAdapter(mContext, people);
-                mListView.setAdapter(mAdapter);
                 getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-                getActivity().findViewById(android.R.id.list).setVisibility(View.VISIBLE);
+                if (people.size() == 0) {
+                    getActivity().findViewById(R.id.no_results).setVisibility(View.VISIBLE);
+                } else {
+                    mListView.setAdapter(mAdapter);
+                    getActivity().findViewById(R.id.no_results).setVisibility(View.GONE);
+                    getActivity().findViewById(android.R.id.list).setVisibility(View.VISIBLE);
+                }
             } catch (NullPointerException ignored) {
 
             }
