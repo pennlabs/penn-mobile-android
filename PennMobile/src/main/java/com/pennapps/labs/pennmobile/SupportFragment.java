@@ -17,9 +17,16 @@ import java.util.List;
  * A simple {@link ListFragment} subclass.
  */
 public class SupportFragment extends ListFragment {
+
+    private ListView mListView;
+
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ListView support_list = (ListView) getActivity().findViewById(R.id.support_list);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        mListView = getListView();
         List<String> your_array_list = new ArrayList<>();
         your_array_list.add("foo");
         your_array_list.add("bar");
@@ -28,7 +35,8 @@ public class SupportFragment extends ListFragment {
                 getActivity().getApplicationContext(),
                 R.layout.support_list_item,
                 your_array_list);
-        support_list.setAdapter(arrayAdapter);
+        mListView.setAdapter(arrayAdapter);
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
