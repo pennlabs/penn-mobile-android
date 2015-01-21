@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -90,28 +91,51 @@ public class RegistrarSearchFragment extends Fragment {
             public boolean onQueryTextSubmit(String input) {
                 getActivity().findViewById(R.id.registrar_instructions).setVisibility(View.GONE);
                 getActivity().findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
-                List<Course> courses = mLabs.courses(input);
-                if (courses.size() == 0) {
-                    getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-                    getActivity().findViewById(R.id.no_results).setVisibility(View.VISIBLE);
-                    getActivity().findViewById(R.id.registrar_fragment).setVisibility(View.GONE);
-                } else {
-                    getActivity().findViewById(R.id.registrar_fragment).setVisibility(View.VISIBLE);
-                    getActivity().findViewById(R.id.no_results).setVisibility(View.GONE);
-                    RegistrarListFragment listFragment = new RegistrarListFragment();
-                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                    transaction.replace(R.id.registrar_fragment, listFragment, "LIST")
-                            .addToBackStack(null)
-                            .commit();
-                    mAdapter = new RegistrarAdapter(mActivity.getApplicationContext(),
-                            R.layout.search_entry, courses);
-                    listFragment.setListAdapter(mAdapter);
-                }
-
+                new GetRequestTask(input).execute();
                 return true;
             }
         };
         searchView.setOnQueryTextListener(queryListener);
+    }
+
+    private class GetRequestTask extends AsyncTask<Void, Void, Boolean> {
+
+        private String input;
+        private List<Course> courses;
+
+        GetRequestTask(String s) {
+            input = s;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                courses = mLabs.courses(input);
+                return true;
+            } catch (Exception ignored) {
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean valid) {
+            if (courses.size() == 0) {
+                getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                getActivity().findViewById(R.id.no_results).setVisibility(View.VISIBLE);
+                getActivity().findViewById(R.id.registrar_fragment).setVisibility(View.GONE);
+            } else {
+                getActivity().findViewById(R.id.registrar_fragment).setVisibility(View.VISIBLE);
+                getActivity().findViewById(R.id.no_results).setVisibility(View.GONE);
+                RegistrarListFragment listFragment = new RegistrarListFragment();
+                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                transaction.replace(R.id.registrar_fragment, listFragment, "LIST")
+                        .addToBackStack(null)
+                        .commit();
+                mAdapter = new RegistrarAdapter(mActivity.getApplicationContext(),
+                        R.layout.search_entry, courses);
+                listFragment.setListAdapter(mAdapter);
+            }
+        }
     }
 
 }

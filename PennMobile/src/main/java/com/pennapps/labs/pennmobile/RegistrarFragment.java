@@ -93,6 +93,13 @@ public class RegistrarFragment extends Fragment {
     private class GetRequestTask extends AsyncTask<Void, Void, Boolean> {
         private String input;
         private List<Course> courses;
+        private Course course;
+        private LatLng courseLatLng;
+        private String courseCodeText;
+        private String locationText;
+        private String courseTitleText;
+        private String instructorsText;
+        private String courseDescription;
 
         GetRequestTask(String s) {
             input = s;
@@ -102,6 +109,13 @@ public class RegistrarFragment extends Fragment {
         protected Boolean doInBackground(Void... voids) {
             try {
                 courses = mLabs.courses(input);
+                course = courses.get(0);
+                courseLatLng = getBuildingLatLng(course);
+                courseCodeText = course.course_department + " " + course.course_number;
+                locationText = courseCodeText + " - " + course.meetings.get(0).building_code + " " + course.meetings.get(0).room_number;
+                courseTitleText = course.course_title;
+                instructorsText = course.instructors.get(0).name;
+                courseDescription = course.course_description;
                 return true;
             } catch (Exception ignored) {
                 return false;
@@ -116,14 +130,8 @@ public class RegistrarFragment extends Fragment {
                 return;
             }
             try {
-                Course course = courses.get(0);
-
-                LatLng courseLatLng = getBuildingLatLng(course);
-
-                String courseCodeText = course.course_department + " " + course.course_number;
                 courseCodeTextView.setText(courseCodeText);
 
-                String locationText = courseCodeText + " - " + course.meetings.get(0).building_code + " " + course.meetings.get(0).room_number;
                 if (map != null && courseLatLng != null) {
                     mapFrame.setVisibility(View.VISIBLE);
                     map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 17));
@@ -131,14 +139,9 @@ public class RegistrarFragment extends Fragment {
                         .position(courseLatLng)
                         .title(locationText));
                 }
-
-                String courseTitleText = course.course_title;
                 courseTitleTextView.setText(courseTitleText);
-
-                String instructorsText = course.instructors.get(0).name;
                 instructorTextView.setText(instructorsText);
 
-                String courseDescription = course.course_description;
                 if (courseDescription.equals("")) {
                     descriptionTitle.setVisibility(View.GONE);
                     descriptionTextView.setVisibility(View.GONE);
