@@ -27,6 +27,7 @@ public class RegistrarSearchFragment extends Fragment {
     private Labs mLabs;
     public static Fragment mFragment;
     private Activity mActivity;
+    private boolean hideKeyboard;
     private RegistrarAdapter mAdapter;
     private SearchView searchView;
 
@@ -34,6 +35,7 @@ public class RegistrarSearchFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActivity = getActivity();
+        hideKeyboard = false;
         mLabs = ((MainActivity) getActivity()).getLabsInstance();
         mFragment = this;
     }
@@ -70,6 +72,9 @@ public class RegistrarSearchFragment extends Fragment {
         searchView.setIconifiedByDefault(false);
         searchView.setIconified(false);
         searchMenuItem.expandActionView();
+        if (hideKeyboard) {
+            searchView.clearFocus();
+        }
     }
 
 
@@ -89,6 +94,8 @@ public class RegistrarSearchFragment extends Fragment {
 
             @Override
             public boolean onQueryTextSubmit(String input) {
+                searchView.clearFocus();
+                hideKeyboard = true;
                 getActivity().findViewById(R.id.registrar_instructions).setVisibility(View.GONE);
                 getActivity().findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
                 new GetRequestTask(input).execute();
