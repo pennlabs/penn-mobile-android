@@ -119,7 +119,7 @@ public class RegistrarSearchFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Boolean valid) {
-            if (courses.size() == 0) {
+            if (courses == null || courses.size() == 0) {
                 getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                 getActivity().findViewById(R.id.no_results).setVisibility(View.VISIBLE);
                 getActivity().findViewById(R.id.registrar_fragment).setVisibility(View.GONE);
