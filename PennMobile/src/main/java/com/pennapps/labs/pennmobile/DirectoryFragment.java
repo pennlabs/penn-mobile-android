@@ -131,6 +131,7 @@ public class DirectoryFragment extends ListFragment {
                     getActivity().findViewById(R.id.no_results).setVisibility(View.GONE);
                     getActivity().findViewById(android.R.id.list).setVisibility(View.VISIBLE);
                 }
+                searchView.clearFocus();
             } catch (NullPointerException ignored) {
 
             }
