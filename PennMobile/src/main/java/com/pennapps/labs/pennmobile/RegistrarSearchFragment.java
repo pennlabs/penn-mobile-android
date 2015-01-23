@@ -74,6 +74,8 @@ public class RegistrarSearchFragment extends Fragment {
         searchMenuItem.expandActionView();
         if (hideKeyboard) {
             searchView.clearFocus();
+        } else {
+            searchView.setQuery("", false);
         }
     }
 
