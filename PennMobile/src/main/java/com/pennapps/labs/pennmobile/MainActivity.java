@@ -18,6 +18,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.pennapps.labs.pennmobile.adapters.NavDrawerListAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.api.Serializer;
 import com.pennapps.labs.pennmobile.classes.Course;
