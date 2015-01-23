@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile;
+package com.pennapps.labs.pennmobile.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.pennapps.labs.pennmobile.NavDrawerItem;
+import com.pennapps.labs.pennmobile.R;
 
 import java.util.ArrayList;
 
