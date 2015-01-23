@@ -34,15 +34,4 @@
     <string name="instructor">Instructor</string>
     <string name="difficulty">Difficulty</string>
 
-    <!-- Support strings -->
-    <string name="penn_police_general">Penn Police General</string>
-    <string name="penn_police_general_num">(215) 898&#8211;7297</string>
-    <string name="penn_police_emergency">Penn Police Emergencies/MERT</string>
-    <string name="penn_police_emergency_num">(215) 573&#8211;3333</string>
-    <string name="penn_walk">Penn Walk</string>
-    <string name="penn_walk_num">215&#8211;898&#8211;WALK (9255)</string>
-    <string name="penn_ride">Penn Ride</string>
-    <string name="penn_ride_num">215&#8211;898&#8211;RIDE (7433)</string>
-    <string name="help_line">Help Line</string>
-    <string name="help_line_num">215&#8211;898&#8211;HELP (4357)</string>
 </resources>
