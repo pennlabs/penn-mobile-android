@@ -8,17 +8,23 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 public class NewsTab extends Fragment {
 
     WebView mWebView;
+    private View mView;
     private boolean mIsWebViewAvailable;
     private boolean newsLoaded;
+    private RelativeLayout Pbar;
     private String mUrl = "http://www.thedp.com/";
 
     public NewsTab() {
@@ -31,6 +37,9 @@ public class NewsTab extends Fragment {
 
         newsLoaded = false;
         mWebView = new WebView(getActivity());
+        getActivity().getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
 
         Bundle args = getArguments();
         mUrl = args.getString("url");
@@ -45,7 +54,11 @@ public class NewsTab extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return mWebView;
+        mView = inflater.inflate(R.layout.fragment_news_tab, container, false);
+
+        Pbar = (RelativeLayout) mView.findViewById(R.id.loadingPanel);
+
+        return mView;
     }
 
     public void loadNews() {
@@ -62,7 +75,22 @@ public class NewsTab extends Fragment {
         });
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        mWebView.setWebChromeClient(new WebChromeClient());
+        mWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        mWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        mWebView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int progress)
+            {
+                if(progress >= 80) {
+                    Pbar.setVisibility(View.GONE);
+                    ViewGroup parent = (ViewGroup) mWebView.getParent();
+                    if (parent != null) {
+                        parent.removeView(mWebView);
+                    }
+                    ((LinearLayout) mView).addView(mWebView);
+                }
+            }
+        });
         mWebView.setWebViewClient(new InnerWebViewClient()); // forces it to open in app
         mWebView.loadUrl(mUrl);
     }
