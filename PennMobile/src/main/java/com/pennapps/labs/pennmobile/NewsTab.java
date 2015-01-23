@@ -18,6 +18,7 @@ public class NewsTab extends Fragment {
 
     WebView mWebView;
     private boolean mIsWebViewAvailable;
+    private boolean newsLoaded;
     private String mUrl = "http://www.thedp.com/";
 
     public NewsTab() {
@@ -27,6 +28,9 @@ public class NewsTab extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        newsLoaded = false;
+        mWebView = new WebView(getActivity());
 
         Bundle args = getArguments();
         mUrl = args.getString("url");
@@ -41,8 +45,11 @@ public class NewsTab extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return mWebView;
+    }
+
+    public void loadNews() {
         mIsWebViewAvailable = true;
-        mWebView = new WebView(getActivity());
         mWebView.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -58,7 +65,15 @@ public class NewsTab extends Fragment {
         mWebView.setWebChromeClient(new WebChromeClient());
         mWebView.setWebViewClient(new InnerWebViewClient()); // forces it to open in app
         mWebView.loadUrl(mUrl);
-        return mWebView;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && !newsLoaded ) {
+            loadNews();
+            newsLoaded = true;
+        }
     }
 
     /* To ensure links open within the application */
