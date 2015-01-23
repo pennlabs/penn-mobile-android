@@ -15,7 +15,20 @@ public class Person {
     @SerializedName("list_email") public String email;
     @SerializedName("list_organization") public String organization;
     @SerializedName("list_phone") public String phone;
+    @SerializedName("list_phone_words") public String phone_words;
     @SerializedName("list_title_or_major") public String title_or_major;
+
+    public Person(String name, String phone) {
+        this.name = name;
+        this.phone = phone;
+        this.phone_words = "";
+    }
+
+    public Person(String name, String phone, String phone_words) {
+        this.name = name;
+        this.phone = phone;
+        this.phone_words = phone_words;
+    }
 
     public String getName() {
         int firstComma = name.indexOf(",");
