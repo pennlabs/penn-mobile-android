@@ -45,7 +45,7 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
         try {
             courseInstr.setText(course.instructors.get(0).name);
         } catch (IndexOutOfBoundsException e) {
-            courseInstr.setText("No professor listed");
+            courseInstr.setText(getContext().getString(R.string.professor_missing));
             courseInstr.setTextColor(Color.parseColor("#4a000000"));
         }
         courseTitle.setText(course.course_title);

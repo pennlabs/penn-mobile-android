@@ -33,5 +33,6 @@
     <string name="course">Course</string>
     <string name="instructor">Instructor</string>
     <string name="difficulty">Difficulty</string>
+    <string name="professor_missing">No professor listed</string>
 
 </resources>

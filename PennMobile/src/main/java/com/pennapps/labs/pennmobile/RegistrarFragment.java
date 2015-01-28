@@ -132,7 +132,7 @@ public class RegistrarFragment extends Fragment {
                 try {
                     instructorsText = course.instructors.get(0).name;
                 } catch (IndexOutOfBoundsException e) {
-                    instructorsText = "No professor listed";
+                    instructorsText = getString(R.string.professor_missing);
                 }
                 courseDescription = course.course_description;
                 return true;
@@ -161,7 +161,7 @@ public class RegistrarFragment extends Fragment {
                 courseActivityTextView.setText(activityText);
                 courseTitleTextView.setText(courseTitleText);
                 instructorTextView.setText(instructorsText);
-                if (instructorsText.equals("No professor listed")) {
+                if (instructorsText.equals(getString(R.string.professor_missing))) {
                     instructorTextView.setTextColor(getResources().getColor(R.color.color_primary_light));
                 }
 
