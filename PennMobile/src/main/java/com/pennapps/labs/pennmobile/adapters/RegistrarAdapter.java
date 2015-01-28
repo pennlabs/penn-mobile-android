@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -43,7 +44,8 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
         try {
             courseInstr.setText(course.instructors.get(0).name);
         } catch (IndexOutOfBoundsException e) {
-            courseInstr.setText("");
+            courseInstr.setText("No professor listed");
+            courseInstr.setTextColor(Color.parseColor("#4a000000"));
         }
         courseTitle.setText(course.course_title);
         try {
