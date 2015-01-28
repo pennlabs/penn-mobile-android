@@ -142,7 +142,7 @@ public class RegistrarSearchFragment extends Fragment {
                         .addToBackStack(null)
                         .commit();
                 mAdapter = new RegistrarAdapter(mActivity.getApplicationContext(),
-                        R.layout.search_entry, courses);
+                        R.layout.registrar_list_item, courses);
                 listFragment.setListAdapter(mAdapter);
             }
         }

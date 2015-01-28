@@ -1,11 +1,15 @@
 package com.pennapps.labs.pennmobile;
 
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,7 +99,7 @@ public class RegistrarFragment extends Fragment {
         private List<Course> courses;
         private Course course;
         private LatLng courseLatLng;
-        private String courseCodeText;
+        private Spannable courseCodeText;
         private String locationText;
         private String courseTitleText;
         private String instructorsText;
@@ -111,7 +115,15 @@ public class RegistrarFragment extends Fragment {
                 courses = mLabs.courses(input);
                 course = courses.get(0);
                 courseLatLng = getBuildingLatLng(course);
-                courseCodeText = course.course_department + " " + course.course_number;
+                courseCodeText = new SpannableString(
+                        course.course_department + " " +
+                        String.format("%03d", course.course_number) + " " +
+                        String.format("%03d", course.section_number));
+                courseCodeText.setSpan(
+                        new ForegroundColorSpan(getResources().getColor(R.color.color_primary_light)),
+                        courseCodeText.length() - 3,
+                        courseCodeText.length(),
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 locationText = courseCodeText + " - " + course.meetings.get(0).building_code + " " + course.meetings.get(0).room_number;
                 courseTitleText = course.course_title;
                 instructorsText = course.instructors.get(0).name;
