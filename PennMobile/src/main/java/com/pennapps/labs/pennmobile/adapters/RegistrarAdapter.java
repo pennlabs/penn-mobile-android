@@ -29,6 +29,7 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
         TextView courseId = (TextView) view.findViewById(R.id.course_id_text);
         TextView courseInstr = (TextView) view.findViewById(R.id.course_instr_text);
         TextView courseTitle = (TextView) view.findViewById(R.id.course_title_text);
+        TextView courseActivity = (TextView) view.findViewById(R.id.course_activity);
 
         Spannable courseCode = new SpannableString(
                 course.course_department +
@@ -48,6 +49,7 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
             courseInstr.setTextColor(Color.parseColor("#4a000000"));
         }
         courseTitle.setText(course.course_title);
+        courseActivity.setText(course.activity);
         try {
             view.setTag(course.meetings.get(0).section_id);
         } catch (IndexOutOfBoundsException e) {

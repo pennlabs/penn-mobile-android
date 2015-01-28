@@ -10,6 +10,7 @@ public class Course {
     public int section_number;
     public String course_title;
     public String course_description;
+    public String activity;
     public List<Instructor> instructors = new ArrayList<>();
     public List<Meeting> meetings = new ArrayList<>();
 }

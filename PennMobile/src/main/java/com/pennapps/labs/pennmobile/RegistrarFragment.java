@@ -36,6 +36,7 @@ public class RegistrarFragment extends Fragment {
     private SupportMapFragment mapFragment;
 
     @InjectView(R.id.course_code) TextView courseCodeTextView;
+    @InjectView(R.id.course_activity) TextView courseActivityTextView;
     @InjectView(R.id.course_title) TextView courseTitleTextView;
     @InjectView(R.id.instructor) TextView instructorTextView;
     @InjectView(R.id.course_desc_title) TextView descriptionTitle;
@@ -101,6 +102,7 @@ public class RegistrarFragment extends Fragment {
         private LatLng courseLatLng;
         private Spannable courseCodeText;
         private String locationText;
+        private String activityText;
         private String courseTitleText;
         private String instructorsText;
         private String courseDescription;
@@ -124,6 +126,7 @@ public class RegistrarFragment extends Fragment {
                         courseCodeText.length() - 3,
                         courseCodeText.length(),
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                activityText = course.activity;
                 locationText = courseCodeText + " - " + course.meetings.get(0).building_code + " " + course.meetings.get(0).room_number;
                 courseTitleText = course.course_title;
                 instructorsText = course.instructors.get(0).name;
@@ -151,6 +154,7 @@ public class RegistrarFragment extends Fragment {
                         .position(courseLatLng)
                         .title(locationText));
                 }
+                courseActivityTextView.setText(activityText);
                 courseTitleTextView.setText(courseTitleText);
                 instructorTextView.setText(instructorsText);
 
