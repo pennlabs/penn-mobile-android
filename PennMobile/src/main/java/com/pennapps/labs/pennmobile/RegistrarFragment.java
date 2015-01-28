@@ -129,7 +129,11 @@ public class RegistrarFragment extends Fragment {
                 activityText = course.activity;
                 locationText = courseCodeText + " - " + course.meetings.get(0).building_code + " " + course.meetings.get(0).room_number;
                 courseTitleText = course.course_title;
-                instructorsText = course.instructors.get(0).name;
+                try {
+                    instructorsText = course.instructors.get(0).name;
+                } catch (IndexOutOfBoundsException e) {
+                    instructorsText = "No professor listed";
+                }
                 courseDescription = course.course_description;
                 return true;
             } catch (Exception ignored) {
@@ -140,7 +144,7 @@ public class RegistrarFragment extends Fragment {
         @Override
         protected void onPostExecute(Boolean valid) {
             if (!valid || courses.size() == 0) {
-                courseCodeTextView.setText(input);
+                courseCodeTextView.setText(courseCodeText);
                 courseTitleTextView.setText(input + " is not currently offered.");
                 return;
             }
@@ -157,6 +161,9 @@ public class RegistrarFragment extends Fragment {
                 courseActivityTextView.setText(activityText);
                 courseTitleTextView.setText(courseTitleText);
                 instructorTextView.setText(instructorsText);
+                if (instructorsText.equals("No professor listed")) {
+                    instructorTextView.setTextColor(getResources().getColor(R.color.color_primary_light));
+                }
 
                 if (courseDescription.equals("")) {
                     descriptionTitle.setVisibility(View.GONE);
