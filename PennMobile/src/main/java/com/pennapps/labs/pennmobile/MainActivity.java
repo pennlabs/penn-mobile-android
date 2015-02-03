@@ -175,6 +175,16 @@ public class MainActivity extends ActionBarActivity {
                 .addToBackStack(null)
                 .commit();
 
+        fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
+                if (backStackEntryCount == 0) { // If we are on the home screen then we should always
+                    setTitle("PennMobile");     // set the title to PennMobile
+                }
+            }
+        });
+
         mDrawerList.setItemChecked(position, true);
         setTitle(mFeatureTitles[position]);
         mDrawerLayout.closeDrawer(mDrawerList);
@@ -195,10 +205,12 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void setTitle(CharSequence title) {
-        try {
-            getSupportActionBar().setTitle(title);
-        } catch (NullPointerException e) {
-            getSupportActionBar().setTitle("PennMobile");
+        if (getSupportActionBar() != null) {
+            if (title.equals("Home")) {
+                getSupportActionBar().setTitle("PennMobile");
+            } else {
+                getSupportActionBar().setTitle(title);
+            }
         }
     }
 
