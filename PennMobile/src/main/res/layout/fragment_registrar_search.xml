@@ -41,9 +41,8 @@
             android:indeterminate="true" />
     </RelativeLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/registrar_fragment"
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1" />
