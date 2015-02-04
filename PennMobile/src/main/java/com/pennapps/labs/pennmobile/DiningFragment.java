@@ -149,7 +149,7 @@ public class DiningFragment extends ListFragment {
 
                         for (int i = 0; i < meals.length(); i++) {
                             JSONObject meal = meals.getJSONObject(i);
-                            parseMeal(meal, mDiningHall);
+                            MenuFragment.parseMeal(meal, mDiningHall);
                         }
                     }
                 }
@@ -157,60 +157,6 @@ public class DiningFragment extends ListFragment {
 
             }
             return null;
-        }
-
-        private void parseMeal(JSONObject meal, DiningHall diningHall) {
-            try {
-                String mealName = meal.getString("txtDayPartDescription");
-
-                JSONArray stations = new JSONArray();
-                try {
-                    stations = meal.getJSONArray("tblStation");
-                } catch (JSONException e) {
-                    JSONObject stationsObject = meal.getJSONObject("tblStation");
-                    stations.put(stationsObject);
-                }
-                HashMap<String, HashSet<String>> currentMenu = new HashMap<>();
-                for (int j = 0; j < stations.length(); j++) {
-                    JSONObject station = stations.getJSONObject(j);
-                    parseStation(station, currentMenu);
-                }
-
-                if (mealName != null) {
-                    diningHall.menus.put(mealName, currentMenu);
-                }
-            } catch (JSONException ignored) {
-
-            }
-        }
-
-        private void parseStation(JSONObject station, HashMap<String, HashSet<String>> menu) {
-            try {
-                String stationName = station.getString("txtStationDescription");
-                JSONArray stationItems = new JSONArray();
-                try {
-                    stationItems = station.getJSONArray("tblItem");
-                } catch (JSONException e) {
-                    JSONObject stationItem = station.getJSONObject("tblItem");
-                    stationItems.put(stationItem);
-                }
-                for (int k = 0; k < stationItems.length(); k++) {
-                    JSONObject foodItem = stationItems.getJSONObject(k);
-                    String foodName = foodItem.getString("txtTitle");
-                    foodName = StringEscapeUtils.unescapeHtml4(foodName);
-                    if (menu.containsKey(stationName)) {
-                        HashSet<String> items = menu.get(stationName);
-                        items.add(foodName);
-                        menu.put(stationName, items);
-                    } else {
-                        HashSet<String> items = new HashSet<>();
-                        items.add(foodName);
-                        menu.put(stationName, items);
-                    }
-                }
-            } catch (JSONException ignored) {
-
-            }
         }
 
         @Override

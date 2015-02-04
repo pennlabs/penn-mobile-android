@@ -63,7 +63,7 @@ public class MenuFragment extends Fragment {
         return v;
     }
 
-    private void parseMeal(JSONObject meal, DiningHall diningHall) {
+    public static void parseMeal(JSONObject meal, DiningHall diningHall) {
         try {
             String mealName = meal.getString("txtDayPartDescription");
 
@@ -88,7 +88,7 @@ public class MenuFragment extends Fragment {
         }
     }
 
-    private void parseStation(JSONObject station, HashMap<String, HashSet<String>> menu) {
+    public static void parseStation(JSONObject station, HashMap<String, HashSet<String>> menu) {
         try {
             String stationName = station.getString("txtStationDescription");
             JSONArray stationItems = new JSONArray();
