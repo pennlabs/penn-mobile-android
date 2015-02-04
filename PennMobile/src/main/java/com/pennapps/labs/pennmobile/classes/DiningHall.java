@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public class DiningHall implements Parcelable {
     private boolean residential;
     private boolean hasMenu;
     private HashMap<String, Interval> openHours;
-    public HashMap<String, HashMap<String, String>> menus;
+    public HashMap<String, HashMap<String, HashSet<String>>> menus;
 
     DateTimeFormatter DATEFORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 

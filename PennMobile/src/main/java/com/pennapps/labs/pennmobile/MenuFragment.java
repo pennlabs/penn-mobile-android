@@ -3,6 +3,8 @@ package com.pennapps.labs.pennmobile;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 public class MenuFragment extends Fragment {
@@ -71,7 +74,7 @@ public class MenuFragment extends Fragment {
                 JSONObject stationsObject = meal.getJSONObject("tblStation");
                 stations.put(stationsObject);
             }
-            HashMap<String, String> currentMenu = new HashMap<>();
+            HashMap<String, HashSet<String>> currentMenu = new HashMap<>();
             for (int j = 0; j < stations.length(); j++) {
                 JSONObject station = stations.getJSONObject(j);
                 parseStation(station, currentMenu);
@@ -85,7 +88,7 @@ public class MenuFragment extends Fragment {
         }
     }
 
-    private void parseStation(JSONObject station, HashMap<String, String> menu) {
+    private void parseStation(JSONObject station, HashMap<String, HashSet<String>> menu) {
         try {
             String stationName = station.getString("txtStationDescription");
             JSONArray stationItems = new JSONArray();
@@ -100,9 +103,13 @@ public class MenuFragment extends Fragment {
                 String foodName = foodItem.getString("txtTitle");
                 foodName = StringEscapeUtils.unescapeHtml4(foodName);
                 if (menu.containsKey(stationName)) {
-                    menu.put(stationName, menu.get(stationName) + ", " + foodName);
+                    HashSet<String> items = menu.get(stationName);
+                    items.add(foodName);
+                    menu.put(stationName, items);
                 } else {
-                    menu.put(stationName, foodName);
+                    HashSet<String> items = new HashSet<>();
+                    items.add(foodName);
+                    menu.put(stationName, items);
                 }
             }
         } catch (JSONException ignored) {
@@ -129,34 +136,39 @@ public class MenuFragment extends Fragment {
             hallStatus.setBackground(view.getContext().getResources().getDrawable(R.drawable.label_red));
         }
 
-        for (Map.Entry<String, HashMap<String, String>> menu : diningHall.menus.entrySet()) {
+        for (Map.Entry<String, HashMap<String, HashSet<String>>> menu : diningHall.menus.entrySet()) {
             String mealName = StringUtils.capitalize(menu.getKey());
             String menuText = "";
-            for (Map.Entry<String, String> menuItem : menu.getValue().entrySet()) {
+            for (Map.Entry<String, HashSet<String>> menuItem : menu.getValue().entrySet()) {
                 String key = StringUtils.capitalize(menuItem.getKey());
-                String value = menuItem.getValue();
-                menuText += key + ": " + value + "\n";
+                HashSet<String> items = menuItem.getValue();
+                String tab = "&nbsp&nbsp&nbsp ";
+                menuText += "<b>" + key + "</b> <br>";
+                for (String item : items) {
+                    menuText += tab + item + "<br>";
+                }
             }
+            Spanned menuHtml = Html.fromHtml(menuText);
             switch (mealName) {
                 case "Breakfast":
                     view.findViewById(R.id.dining_hall_breakfast_title).setVisibility(View.VISIBLE);
                     breakfastMenuTV.setVisibility(View.VISIBLE);
-                    breakfastMenuTV.setText(menuText);
+                    breakfastMenuTV.setText(menuHtml);
                     break;
                 case "Brunch":
                     view.findViewById(R.id.dining_hall_brunch_title).setVisibility(View.VISIBLE);
                     brunchMenuTV.setVisibility(View.VISIBLE);
-                    brunchMenuTV.setText(menuText);
+                    brunchMenuTV.setText(menuHtml);
                     break;
                 case "Lunch":
                     view.findViewById(R.id.dining_hall_lunch_title).setVisibility(View.VISIBLE);
                     lunchMenuTV.setVisibility(View.VISIBLE);
-                    lunchMenuTV.setText(menuText);
+                    lunchMenuTV.setText(menuHtml);
                     break;
                 case "Dinner":
                     view.findViewById(R.id.dining_hall_dinner_title).setVisibility(View.VISIBLE);
                     dinnerMenuTV.setVisibility(View.VISIBLE);
-                    dinnerMenuTV.setText(menuText);
+                    dinnerMenuTV.setText(menuHtml);
                     break;
             }
         }

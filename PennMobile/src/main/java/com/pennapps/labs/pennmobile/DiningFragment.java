@@ -26,6 +26,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class DiningFragment extends ListFragment {
 
@@ -169,7 +170,7 @@ public class DiningFragment extends ListFragment {
                     JSONObject stationsObject = meal.getJSONObject("tblStation");
                     stations.put(stationsObject);
                 }
-                HashMap<String, String> currentMenu = new HashMap<>();
+                HashMap<String, HashSet<String>> currentMenu = new HashMap<>();
                 for (int j = 0; j < stations.length(); j++) {
                     JSONObject station = stations.getJSONObject(j);
                     parseStation(station, currentMenu);
@@ -183,7 +184,7 @@ public class DiningFragment extends ListFragment {
             }
         }
 
-        private void parseStation(JSONObject station, HashMap<String, String> menu) {
+        private void parseStation(JSONObject station, HashMap<String, HashSet<String>> menu) {
             try {
                 String stationName = station.getString("txtStationDescription");
                 JSONArray stationItems = new JSONArray();
@@ -198,9 +199,13 @@ public class DiningFragment extends ListFragment {
                     String foodName = foodItem.getString("txtTitle");
                     foodName = StringEscapeUtils.unescapeHtml4(foodName);
                     if (menu.containsKey(stationName)) {
-                        menu.put(stationName, menu.get(stationName) + ", " + foodName);
+                        HashSet<String> items = menu.get(stationName);
+                        items.add(foodName);
+                        menu.put(stationName, items);
                     } else {
-                        menu.put(stationName, foodName);
+                        HashSet<String> items = new HashSet<>();
+                        items.add(foodName);
+                        menu.put(stationName, items);
                     }
                 }
             } catch (JSONException ignored) {
