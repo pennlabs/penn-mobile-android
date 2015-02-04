@@ -22,6 +22,8 @@
             <TextView
                 android:id="@+id/registrar_button"
                 android:layout_below="@+id/registrar_img"
+                android:clickable="true"
+                android:onClick="onHomeButtonClick"
                 style="@style/MainText"
                 android:text="@string/registrar" />
 
@@ -42,6 +44,8 @@
             <TextView
                 android:id="@+id/directory_button"
                 android:layout_below="@id/directory_img"
+                android:clickable="true"
+                android:onClick="onHomeButtonClick"
                 style="@style/MainText"
                 android:text="@string/directory" />
 
@@ -68,6 +72,8 @@
             <TextView
                 android:id="@+id/dining_button"
                 android:layout_below="@+id/dining_img"
+                android:clickable="true"
+                android:onClick="onHomeButtonClick"
                 style="@style/MainText"
                 android:text="@string/dining" />
         </RelativeLayout>
@@ -85,6 +91,8 @@
             <TextView
                 android:id="@+id/transit_button"
                 android:layout_below="@+id/transit_img"
+                android:clickable="true"
+                android:onClick="onHomeButtonClick"
                 style="@style/MainText"
                 android:text="@string/transit"/>
         </RelativeLayout>
@@ -110,6 +118,8 @@
             <TextView
                 android:id="@+id/news_button"
                 android:layout_below="@+id/news_img"
+                android:clickable="true"
+                android:onClick="onHomeButtonClick"
                 style="@style/MainText"
                 android:text="@string/news" />
         </RelativeLayout>

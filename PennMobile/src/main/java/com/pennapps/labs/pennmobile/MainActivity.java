@@ -191,15 +191,15 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void onHomeButtonClick(View v) {
-        if (v.getId() == R.id.registrar_img || v.getId() == R.id.registrar_cont) {
+        if (v.getId() == R.id.registrar_img || v.getId() == R.id.registrar_cont || v.getId() == R.id.registrar_button) {
             selectItem(1);
-        } else if (v.getId() == R.id.directory_img || v.getId() == R.id.directory_cont) {
+        } else if (v.getId() == R.id.directory_img || v.getId() == R.id.directory_cont || v.getId() == R.id.directory_button) {
             selectItem(2);
-        } else if (v.getId() == R.id.dining_img || v.getId() == R.id.dining_cont) {
+        } else if (v.getId() == R.id.dining_img || v.getId() == R.id.dining_cont || v.getId() == R.id.dining_button) {
             selectItem(3);
-        } else if (v.getId() == R.id.transit_img || v.getId() == R.id.transit_cont) {
+        } else if (v.getId() == R.id.transit_img || v.getId() == R.id.transit_cont || v.getId() == R.id.transit_button) {
             selectItem(4);
-        } else if (v.getId() == R.id.news_img || v.getId() == R.id.news_cont) {
+        } else if (v.getId() == R.id.news_img || v.getId() == R.id.news_cont || v.getId() == R.id.news_button) {
             selectItem(5);
         }
     }
