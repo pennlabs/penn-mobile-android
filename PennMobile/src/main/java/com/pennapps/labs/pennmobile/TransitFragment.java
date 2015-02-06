@@ -34,9 +34,9 @@ public class TransitFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mWebView = new WebView(getActivity());
-        //getActivity().getWindow().setFlags(
-        //        WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
-        //        WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+        getActivity().getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
 
         InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
