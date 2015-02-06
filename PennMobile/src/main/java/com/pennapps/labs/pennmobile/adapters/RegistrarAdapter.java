@@ -1,6 +1,10 @@
 package com.pennapps.labs.pennmobile.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,19 +24,32 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         Course course = getItem(position);
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.search_entry, null);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.registrar_list_item, null);
 
         TextView courseId = (TextView) view.findViewById(R.id.course_id_text);
         TextView courseInstr = (TextView) view.findViewById(R.id.course_instr_text);
         TextView courseTitle = (TextView) view.findViewById(R.id.course_title_text);
+        TextView courseActivity = (TextView) view.findViewById(R.id.course_activity);
 
-        courseId.setText(course.course_department + course.course_number);
+        Spannable courseCode = new SpannableString(
+                course.course_department +
+                String.format("%03d", course.course_number) + " " +
+                String.format("%03d", course.section_number)
+        );
+        courseCode.setSpan(
+                new ForegroundColorSpan(view.getResources().getColor(R.color.secondary_text_default_material_light)),
+                courseCode.length() - 3,
+                courseCode.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        courseId.setText(courseCode);
         try {
             courseInstr.setText(course.instructors.get(0).name);
         } catch (IndexOutOfBoundsException e) {
-            courseInstr.setText("");
+            courseInstr.setText(getContext().getString(R.string.professor_missing));
+            courseInstr.setTextColor(Color.parseColor("#4a000000"));
         }
         courseTitle.setText(course.course_title);
+        courseActivity.setText(course.activity);
         try {
             view.setTag(course.meetings.get(0).section_id);
         } catch (IndexOutOfBoundsException e) {

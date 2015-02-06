@@ -1,11 +1,15 @@
 package com.pennapps.labs.pennmobile;
 
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +36,7 @@ public class RegistrarFragment extends Fragment {
     private SupportMapFragment mapFragment;
 
     @InjectView(R.id.course_code) TextView courseCodeTextView;
+    @InjectView(R.id.course_activity) TextView courseActivityTextView;
     @InjectView(R.id.course_title) TextView courseTitleTextView;
     @InjectView(R.id.instructor) TextView instructorTextView;
     @InjectView(R.id.course_desc_title) TextView descriptionTitle;
@@ -95,8 +100,9 @@ public class RegistrarFragment extends Fragment {
         private List<Course> courses;
         private Course course;
         private LatLng courseLatLng;
-        private String courseCodeText;
+        private Spannable courseCodeText;
         private String locationText;
+        private String activityText;
         private String courseTitleText;
         private String instructorsText;
         private String courseDescription;
@@ -111,10 +117,23 @@ public class RegistrarFragment extends Fragment {
                 courses = mLabs.courses(input);
                 course = courses.get(0);
                 courseLatLng = getBuildingLatLng(course);
-                courseCodeText = course.course_department + " " + course.course_number;
+                courseCodeText = new SpannableString(
+                        course.course_department + " " +
+                        String.format("%03d", course.course_number) + " " +
+                        String.format("%03d", course.section_number));
+                courseCodeText.setSpan(
+                        new ForegroundColorSpan(getResources().getColor(R.color.color_primary_light)),
+                        courseCodeText.length() - 3,
+                        courseCodeText.length(),
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                activityText = course.activity;
                 locationText = courseCodeText + " - " + course.meetings.get(0).building_code + " " + course.meetings.get(0).room_number;
                 courseTitleText = course.course_title;
-                instructorsText = course.instructors.get(0).name;
+                try {
+                    instructorsText = course.instructors.get(0).name;
+                } catch (IndexOutOfBoundsException e) {
+                    instructorsText = getString(R.string.professor_missing);
+                }
                 courseDescription = course.course_description;
                 return true;
             } catch (Exception ignored) {
@@ -125,7 +144,7 @@ public class RegistrarFragment extends Fragment {
         @Override
         protected void onPostExecute(Boolean valid) {
             if (!valid || courses.size() == 0) {
-                courseCodeTextView.setText(input);
+                courseCodeTextView.setText(courseCodeText);
                 courseTitleTextView.setText(input + " is not currently offered.");
                 return;
             }
@@ -139,8 +158,12 @@ public class RegistrarFragment extends Fragment {
                         .position(courseLatLng)
                         .title(locationText));
                 }
+                courseActivityTextView.setText(activityText);
                 courseTitleTextView.setText(courseTitleText);
                 instructorTextView.setText(instructorsText);
+                if (instructorsText.equals(getString(R.string.professor_missing))) {
+                    instructorTextView.setTextColor(getResources().getColor(R.color.color_primary_light));
+                }
 
                 if (courseDescription.equals("")) {
                     descriptionTitle.setVisibility(View.GONE);
