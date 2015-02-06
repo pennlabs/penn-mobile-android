@@ -92,9 +92,10 @@ public class DirectoryFragment extends ListFragment {
                 args.putString(NAME_INTENT_EXTRA, arg0);
                 fragment.setArguments(args);
 
-                FragmentManager fragmentManager = getFragmentManager();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_frame, fragment)
+                        .addToBackStack(null)
                         .commit();
                 return true;
             }

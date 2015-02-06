@@ -74,7 +74,7 @@ public class DiningFragment extends ListFragment {
             args.putParcelable("DiningHall", (Parcelable) v.getTag());
             fragment.setArguments(args);
 
-            FragmentManager fragmentManager = this.getFragmentManager();
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.dining_fragment, fragment)
                     .addToBackStack(null)

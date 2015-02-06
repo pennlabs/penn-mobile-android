@@ -71,8 +71,9 @@ public class DirectorySearchFragment extends Fragment {
                 args.putString(NAME_INTENT_EXTRA, arg0);
                 fragment.setArguments(args);
 
-                FragmentManager fragmentManager = getFragmentManager();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction()
+                        .addToBackStack(null)
                         .replace(R.id.content_frame, fragment)
                         .commit();
                 return true;

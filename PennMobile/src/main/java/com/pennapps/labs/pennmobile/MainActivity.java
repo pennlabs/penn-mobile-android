@@ -94,6 +94,20 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
+            mDrawerLayout.closeDrawer(mDrawerList);
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    private void closeKeyboard() {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+    }
+
+    @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
@@ -111,12 +125,7 @@ public class MainActivity extends ActionBarActivity {
         // Pass the event to ActionBarDrawerToggle, if it returns
         // true, then it has handled the app icon touch event
         if (mDrawerToggle.onOptionsItemSelected(item)) {
-            InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-
-            View view = getCurrentFocus();
-            if (view != null) {
-                inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-            }
+            closeKeyboard();
             return true;
         }
         // Handle your other action bar items...
@@ -167,48 +176,42 @@ public class MainActivity extends ActionBarActivity {
                 .addToBackStack(null)
                 .commit();
 
+        fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
+                if (backStackEntryCount == 0) { // If we are on the home screen then we should always
+                    setTitle("PennMobile");     // set the title to PennMobile
+                }
+            }
+        });
+
         mDrawerList.setItemChecked(position, true);
         setTitle(mFeatureTitles[position]);
         mDrawerLayout.closeDrawer(mDrawerList);
     }
 
-    public void onClick(View v) {
-        // Click event handler for the main menu on first open
-        CharSequence viewText = ((TextView) v).getText();
-        if (viewText.equals("Registrar")) {
-            selectItem(1);
-        } else if (viewText.equals("Directory")) {
-            selectItem(2);
-        } else if (viewText.equals("Dining")) {
-            selectItem(3);
-        } else if (viewText.equals("Transit")) {
-            selectItem(4);
-        } else if (viewText.equals("News")) {
-            selectItem(5);
-        } else if (viewText.equals("About")) {
-            selectItem(6);
-        }
-    }
-
     public void onHomeButtonClick(View v) {
-        if (v.getId() == R.id.registrar_img || v.getId() == R.id.registrar_cont) {
+        if (v.getId() == R.id.registrar_img || v.getId() == R.id.registrar_cont || v.getId() == R.id.registrar_button) {
             selectItem(1);
-        } else if (v.getId() == R.id.directory_img || v.getId() == R.id.directory_cont) {
+        } else if (v.getId() == R.id.directory_img || v.getId() == R.id.directory_cont || v.getId() == R.id.directory_button) {
             selectItem(2);
-        } else if (v.getId() == R.id.dining_img || v.getId() == R.id.dining_cont) {
+        } else if (v.getId() == R.id.dining_img || v.getId() == R.id.dining_cont || v.getId() == R.id.dining_button) {
             selectItem(3);
-        } else if (v.getId() == R.id.transit_img || v.getId() == R.id.transit_cont) {
+        } else if (v.getId() == R.id.transit_img || v.getId() == R.id.transit_cont || v.getId() == R.id.transit_button) {
             selectItem(4);
-        } else if (v.getId() == R.id.news_img || v.getId() == R.id.news_cont) {
+        } else if (v.getId() == R.id.news_img || v.getId() == R.id.news_cont || v.getId() == R.id.news_button) {
             selectItem(5);
         }
     }
 
     public void setTitle(CharSequence title) {
-        try {
-            getSupportActionBar().setTitle(title);
-        } catch (NullPointerException e) {
-            getSupportActionBar().setTitle("PennMobile");
+        if (getSupportActionBar() != null) {
+            if (title.equals("Home")) {
+                getSupportActionBar().setTitle("PennMobile");
+            } else {
+                getSupportActionBar().setTitle(title);
+            }
         }
     }
 

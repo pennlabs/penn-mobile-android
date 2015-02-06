@@ -137,8 +137,8 @@ public class RegistrarSearchFragment extends Fragment {
                 getActivity().findViewById(R.id.registrar_fragment).setVisibility(View.VISIBLE);
                 getActivity().findViewById(R.id.no_results).setVisibility(View.GONE);
                 RegistrarListFragment listFragment = new RegistrarListFragment();
-                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                transaction.replace(R.id.registrar_fragment, listFragment, "LIST")
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.add(R.id.registrar_fragment, listFragment, "LIST")
                         .addToBackStack(null)
                         .commit();
                 mAdapter = new RegistrarAdapter(mActivity.getApplicationContext(),
