@@ -40,7 +40,7 @@ public class AboutFragment extends Fragment {
         });
         featureRequest.setMovementMethod(LinkMovementMethod.getInstance());
         String text = "PennMobile was developed by Penn Labs, with funding<br>" +
-                "and support from the Undergraduate Assembly. <br><br> &copy; 2014 Penn Labs <br><br>" +
+                "and support from the Undergraduate Assembly. Special thanks to Vishwa Patel. <br><br> &copy; 2014 Penn Labs <br><br>" +
                 "<a href='mailto:pennappslabs@gmail.com?subject=[Penn Mobile Android]'>Request a feature</a><br><br>" +
                 "<a href='http://pennlabs.org'>More information</a>";
         featureRequest.setText(Html.fromHtml(text));

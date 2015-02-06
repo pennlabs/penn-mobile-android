@@ -12,14 +12,13 @@
         android:paddingBottom="40dp"
         android:paddingLeft="40dp"
         android:paddingRight="40dp"
-        android:paddingTop="40dp"
+        android:paddingTop="20dp"
         android:src="@drawable/app_shared_logo" />
 
     <TextView
         android:id="@+id/about_desc"
         android:paddingLeft="40dp"
         android:paddingRight="40dp"
-        android:paddingBottom="20dp"
         style="@style/MainText"/>
 
 </LinearLayout>
