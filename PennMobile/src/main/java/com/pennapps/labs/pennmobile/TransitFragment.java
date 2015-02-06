@@ -8,16 +8,22 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 public class TransitFragment extends Fragment {
 
     WebView mWebView;
     private boolean mIsWebViewAvailable;
+    private View mView;
+    private RelativeLayout Pbar;
 
     public TransitFragment() {
         super();
@@ -26,6 +32,11 @@ public class TransitFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mWebView = new WebView(getActivity());
+        getActivity().getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
 
         InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -37,11 +48,12 @@ public class TransitFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (mWebView != null) {
-            mWebView.destroy();
-        }
+        mView = inflater.inflate(R.layout.fragment_transit, container, false);
+
+        Pbar = (RelativeLayout) mView.findViewById(R.id.loadingPanel);
+
         mIsWebViewAvailable = true;
-        mWebView = new WebView(getActivity());
+        mWebView = (WebView) mView.findViewById(R.id.transitWebView);
         mWebView.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -54,11 +66,26 @@ public class TransitFragment extends Fragment {
         });
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        mWebView.setWebChromeClient(new WebChromeClient());
+        mWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        mWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        mWebView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int progress)
+            {
+                if(progress >= 90) {
+                    ViewGroup parentWebView = (ViewGroup) mWebView.getParent();
+                    if (parentWebView != null) {
+                        parentWebView.removeView(mWebView);
+                    }
+                    Pbar.setVisibility(View.GONE);
+                    ((LinearLayout) mView).addView(mWebView);
+                }
+            }
+        });
         mWebView.setWebViewClient(new InnerWebViewClient()); // forces it to open in app
         String mUrl = "http://www.pennrides.com/map?showHeader=0&route=229,230&silent_disable_timeout=1";
         mWebView.loadUrl(mUrl);
-        return mWebView;
+        return mView;
     }
 
     /* To ensure links open within the application */
