@@ -64,13 +64,13 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
     public void testDirectorySearch() {
         Labs mLabs = activity.getLabsInstance();
         List<Person> people = mLabs.people("adel");
-        assertEquals("ADELEKE, VICTOR O", people.get(0).name);
+        assertEquals("ADELMAN, STEPHEN R", people.get(0).name);
     }
 
     public void testDirectorySearchGetName() {
         Labs mLabs = activity.getLabsInstance();
         List<Person> people = mLabs.people("adel");
-        assertEquals("Victor O Adeleke", people.get(0).getName());
+        assertEquals("Stephen R Adelman", people.get(0).getName());
     }
 
     public void testCourseMeetingSection() {
