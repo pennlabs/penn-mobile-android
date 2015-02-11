@@ -19,6 +19,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Course;
@@ -127,7 +128,7 @@ public class RegistrarFragment extends Fragment {
                         courseCodeText.length(),
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 activityText = course.activity;
-                locationText = courseCodeText + " - " + course.meetings.get(0).building_code + " " + course.meetings.get(0).room_number;
+                locationText = course.meetings.get(0).building_code + " " + course.meetings.get(0).room_number;
                 courseTitleText = course.course_title;
                 try {
                     instructorsText = course.instructors.get(0).name;
@@ -154,9 +155,10 @@ public class RegistrarFragment extends Fragment {
                 if (map != null && courseLatLng != null) {
                     mapFrame.setVisibility(View.VISIBLE);
                     map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 17));
-                    map.addMarker(new MarkerOptions()
-                        .position(courseLatLng)
-                        .title(locationText));
+                    Marker marker = map.addMarker(new MarkerOptions()
+                            .position(courseLatLng)
+                            .title(locationText));
+                    marker.showInfoWindow();
                 }
                 courseActivityTextView.setText(activityText);
                 courseTitleTextView.setText(courseTitleText);
