@@ -21,9 +21,11 @@ import android.widget.RelativeLayout;
 public class NewsTab extends Fragment {
 
     WebView mWebView;
+    static WebView currentWebView;
     private View mView;
     private boolean mIsWebViewAvailable;
     private boolean newsLoaded;
+    boolean isVisibleToUser = false;
     private RelativeLayout Pbar;
     private String mUrl = "http://www.thedp.com/";
 
@@ -57,6 +59,10 @@ public class NewsTab extends Fragment {
         mView = inflater.inflate(R.layout.fragment_news_tab, container, false);
 
         Pbar = (RelativeLayout) mView.findViewById(R.id.loadingPanel);
+        if (!newsLoaded) {
+            loadNews();
+            newsLoaded = true;
+        }
 
         return mView;
     }
@@ -98,10 +104,10 @@ public class NewsTab extends Fragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && !newsLoaded ) {
-            loadNews();
-            newsLoaded = true;
+        if (isVisibleToUser) {
+            currentWebView = mWebView;
         }
+        this.isVisibleToUser = isVisibleToUser;
     }
 
     /* To ensure links open within the application */
