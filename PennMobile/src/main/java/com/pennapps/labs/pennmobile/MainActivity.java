@@ -52,7 +52,7 @@ public class MainActivity extends ActionBarActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         
-        mFeatureTitles = new String[]{"Home", "Courses", "Directory", "Dining", "Transit", "News", "Support", "About"};
+        mFeatureTitles = new String[]{"Home", "Courses", "Directory", "Buildings", "Dining", "Transit", "News", "Support", "About"};
         int[] icons = new int[]{R.drawable.ic_home, R.drawable.ic_book, R.drawable.ic_contacts,
                 R.drawable.ic_restaurant, R.drawable.ic_directions_bus, R.drawable.ic_announcement,
                 R.drawable.ic_help, R.drawable.ic_info
@@ -159,14 +159,16 @@ public class MainActivity extends ActionBarActivity {
         } else if (position == 2) {
             fragment = new DirectorySearchFragment();
         } else if (position == 3) {
-            fragment = new DiningFragment();
+            fragment = new BuildingFragment();
         } else if (position == 4) {
-            fragment = new TransitFragment();
+            fragment = new DiningFragment();
         } else if (position == 5) {
-            fragment = new EventsFragment();
+            fragment = new TransitFragment();
         } else if (position == 6) {
-            fragment = new SupportFragment();
+            fragment = new EventsFragment();
         } else if (position == 7) {
+            fragment = new SupportFragment();
+        } else if (position == 8) {
             fragment = new AboutFragment();
         }
 
