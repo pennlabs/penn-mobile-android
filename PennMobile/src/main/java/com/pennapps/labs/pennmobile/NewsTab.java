@@ -39,9 +39,8 @@ public class NewsTab extends Fragment {
 
         newsLoaded = false;
         mWebView = new WebView(getActivity());
-        getActivity().getWindow().setFlags(
-                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
-                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+        mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         Bundle args = getArguments();
         mUrl = args.getString("url");
@@ -69,20 +68,6 @@ public class NewsTab extends Fragment {
 
     public void loadNews() {
         mIsWebViewAvailable = true;
-        mWebView.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if ((keyCode == KeyEvent.KEYCODE_BACK) && mWebView.canGoBack()) {
-                    mWebView.goBack();
-                    return true;
-                }
-                return false;
-            }
-        });
-        WebSettings webSettings = mWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        mWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        mWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int progress)
