@@ -20,8 +20,10 @@
     <!-- Search -->
     <string name="registrar_search">Search for courses</string>
     <string name="directory_search">Search for people</string>
+    <string name="building_search">Search for buildings</string>
     <string name="directory_instructions">Search for Penn faculty</string>
     <string name="registrar_instructions">Search for courses</string>
+    <string name="building_instructions">Search for Penn buildings</string>
 
     <!-- Dining -->
     <string name="breakfast">Breakfast</string>

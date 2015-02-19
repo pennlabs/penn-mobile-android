@@ -18,7 +18,7 @@ public class BuildingFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_directory, container, false);
+        return inflater.inflate(R.layout.fragment_building, container, false);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class BuildingFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
-            case R.id.directory_search:
+            case R.id.building_search:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -40,8 +40,8 @@ public class BuildingFragment extends Fragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        MenuItem searchMenuItem = menu.findItem(R.id.directory_search);
-        searchView = (SearchView) menu.findItem(R.id.directory_search).getActionView();
+        MenuItem searchMenuItem = menu.findItem(R.id.building_search);
+        searchView = (SearchView) menu.findItem(R.id.building_search).getActionView();
         searchView.setQuery("", false);
         searchView.setIconifiedByDefault(false);
         searchView.setIconified(false);
@@ -50,10 +50,10 @@ public class BuildingFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.directory, menu);
+        inflater.inflate(R.menu.building, menu);
         getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
 
-        searchView = (SearchView) menu.findItem(R.id.directory_search).getActionView();
+        searchView = (SearchView) menu.findItem(R.id.building_search).getActionView();
         final SearchView.OnQueryTextListener queryListener = new SearchView.OnQueryTextListener() {
 
             @Override
@@ -64,9 +64,9 @@ public class BuildingFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String arg0) {
                 // TODO: error check for filled in fields
-                getActivity().findViewById(R.id.directory_instructions).setVisibility(View.GONE);
+                getActivity().findViewById(R.id.building_instructions).setVisibility(View.GONE);
                 getActivity().findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
-                Fragment fragment = new DirectoryFragment();
+                Fragment fragment = new BuildingFragment();
                 Bundle args = new Bundle();
                 args.putString(NAME_INTENT_EXTRA, arg0);
                 fragment.setArguments(args);
