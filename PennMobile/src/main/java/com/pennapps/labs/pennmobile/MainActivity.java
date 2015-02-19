@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -99,7 +100,13 @@ public class MainActivity extends ActionBarActivity {
             mDrawerLayout.closeDrawer(mDrawerList);
             return;
         }
-        super.onBackPressed();
+
+        WebView webView = NewsTab.currentWebView;
+        if (webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void closeKeyboard() {

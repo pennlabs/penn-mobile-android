@@ -21,9 +21,11 @@ import android.widget.RelativeLayout;
 public class NewsTab extends Fragment {
 
     WebView mWebView;
+    static WebView currentWebView;
     private View mView;
     private boolean mIsWebViewAvailable;
     private boolean newsLoaded;
+    boolean isVisibleToUser = false;
     private RelativeLayout Pbar;
     private String mUrl = "http://www.thedp.com/";
 
@@ -37,9 +39,8 @@ public class NewsTab extends Fragment {
 
         newsLoaded = false;
         mWebView = new WebView(getActivity());
-        getActivity().getWindow().setFlags(
-                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
-                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+        mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         Bundle args = getArguments();
         mUrl = args.getString("url");
@@ -57,26 +58,16 @@ public class NewsTab extends Fragment {
         mView = inflater.inflate(R.layout.fragment_news_tab, container, false);
 
         Pbar = (RelativeLayout) mView.findViewById(R.id.loadingPanel);
+        if (!newsLoaded) {
+            loadNews();
+            newsLoaded = true;
+        }
 
         return mView;
     }
 
     public void loadNews() {
         mIsWebViewAvailable = true;
-        mWebView.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if ((keyCode == KeyEvent.KEYCODE_BACK) && mWebView.canGoBack()) {
-                    mWebView.goBack();
-                    return true;
-                }
-                return false;
-            }
-        });
-        WebSettings webSettings = mWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        mWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        mWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int progress)
@@ -98,10 +89,10 @@ public class NewsTab extends Fragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && !newsLoaded ) {
-            loadNews();
-            newsLoaded = true;
+        if (isVisibleToUser) {
+            currentWebView = mWebView;
         }
+        this.isVisibleToUser = isVisibleToUser;
     }
 
     /* To ensure links open within the application */
