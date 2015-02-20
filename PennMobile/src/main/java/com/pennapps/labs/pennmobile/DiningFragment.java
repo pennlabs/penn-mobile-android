@@ -19,14 +19,11 @@ import com.pennapps.labs.pennmobile.adapters.DiningAdapter;
 import com.pennapps.labs.pennmobile.api.DiningAPI;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 
 public class DiningFragment extends ListFragment {
 
@@ -66,12 +63,12 @@ public class DiningFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        DiningHall diningHall = (DiningHall) v.getTag();
+        DiningHall diningHall = ((DiningAdapter.ViewHolder) v.getTag()).hall;
         if (diningHall.hasMenu()) {
             Fragment fragment = new MenuFragment();
 
             Bundle args = new Bundle();
-            args.putParcelable("DiningHall", (Parcelable) v.getTag());
+            args.putParcelable("DiningHall", ((DiningAdapter.ViewHolder) v.getTag()).hall);
             fragment.setArguments(args);
 
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();

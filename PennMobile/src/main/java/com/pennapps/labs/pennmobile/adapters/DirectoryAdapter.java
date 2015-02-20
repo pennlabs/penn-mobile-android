@@ -17,26 +17,31 @@ import com.pennapps.labs.pennmobile.classes.Person;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class DirectoryAdapter extends ArrayAdapter<Person> {
+    private final LayoutInflater inflater;
 
     public DirectoryAdapter(Context context, List<Person> persons) {
         super(context, R.layout.directory_list_item, persons);
+        inflater = LayoutInflater.from(context);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View view, ViewGroup parent) {
+        ViewHolder holder;
+        if (view != null) {
+            holder = (ViewHolder) view.getTag();
+        } else {
+            view = inflater.inflate(R.layout.directory_list_item, parent, false);
+            holder = new ViewHolder(view);
+            view.setTag(holder);
+        }
         Person person = getItem(position);
         final Person currentPerson = person;
-        View view = LayoutInflater.from(getContext())
-                .inflate(R.layout.directory_list_item, null);
 
-        TextView tvName = (TextView) view.findViewById(R.id.tv_person_name);
-        TextView tvAffiliation = (TextView) view.findViewById(R.id.tv_person_affiliation);
-        TextView tvEmail = (TextView) view.findViewById(R.id.tv_person_email);
-        TextView tvPhone = (TextView) view.findViewById(R.id.tv_person_phone);
-        ImageView contact = (ImageView) view.findViewById(R.id.contact_icon);
-
-        contact.setOnClickListener(new View.OnClickListener() {
+        holder.contact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_INSERT);
@@ -52,15 +57,15 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
             }
         });
 
-        tvName.setText(person.getName());
-        tvAffiliation.setText(person.affiliation);
+        holder.tvName.setText(person.getName());
+        holder.tvAffiliation.setText(person.affiliation);
 
         if (person.email.length() == 0) {
-            tvEmail.setVisibility(View.GONE);
+            holder.tvEmail.setVisibility(View.GONE);
         } else {
-            tvEmail.setText(person.email);
-            tvEmail.setPaintFlags(tvEmail.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
-            tvEmail.setOnClickListener(new View.OnClickListener() {
+            holder.tvEmail.setText(person.email);
+            holder.tvEmail.setPaintFlags(holder.tvEmail.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
+            holder.tvEmail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     String uri = "mailto:" + currentPerson.email;
@@ -73,10 +78,10 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
         }
 
         if (person.phone.length() == 0) {
-            tvPhone.setVisibility(View.GONE);
+            holder.tvPhone.setVisibility(View.GONE);
         } else {
-            tvPhone.setText(person.phone);
-            tvPhone.setOnClickListener(new View.OnClickListener() {
+            holder.tvPhone.setText(person.phone);
+            holder.tvPhone.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     String uri = "tel:" + currentPerson.phone;
@@ -89,6 +94,18 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
         }
 
         return view;
+    }
+
+    static class ViewHolder {
+        @InjectView(R.id.tv_person_name) TextView tvName;
+        @InjectView(R.id.tv_person_affiliation) TextView tvAffiliation;
+        @InjectView(R.id.tv_person_email) TextView tvEmail;
+        @InjectView(R.id.tv_person_phone) TextView tvPhone;
+        @InjectView(R.id.contact_icon) ImageView contact;
+
+        public ViewHolder(View view) {
+            ButterKnife.inject(this, view);
+        }
     }
 
 }
