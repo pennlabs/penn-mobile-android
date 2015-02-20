@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.pennapps.labs.pennmobile.adapters.RegistrarAdapter;
+
 public class RegistrarListFragment extends ListFragment {
 
     @Override
@@ -33,7 +35,7 @@ public class RegistrarListFragment extends ListFragment {
         Fragment fragment = new RegistrarFragment();
 
         Bundle args = new Bundle();
-        args.putString(RegistrarSearchFragment.COURSE_ID_EXTRA, v.getTag().toString());
+        args.putString(RegistrarSearchFragment.COURSE_ID_EXTRA, ((RegistrarAdapter.ViewHolder) v.getTag()).course);
         fragment.setArguments(args);
 
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
