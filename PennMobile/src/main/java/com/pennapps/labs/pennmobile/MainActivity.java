@@ -101,10 +101,15 @@ public class MainActivity extends ActionBarActivity {
             return;
         }
 
-        WebView webView = NewsTab.currentWebView;
-        if (webView.canGoBack()) {
-            webView.goBack();
-        } else {
+        try {
+            WebView webView = NewsTab.currentWebView;
+            if (webView.canGoBack()) {
+                webView.goBack();
+            } else {
+                super.onBackPressed();
+            }
+        } catch (NullPointerException ignored) {
+            // No webview exists currently
             super.onBackPressed();
         }
     }
