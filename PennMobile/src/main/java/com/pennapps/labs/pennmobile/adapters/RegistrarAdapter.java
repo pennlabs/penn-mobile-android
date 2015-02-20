@@ -2,9 +2,11 @@ package com.pennapps.labs.pennmobile.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +43,7 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
                 courseCode.length() - 3,
                 courseCode.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        courseCode.setSpan(new StyleSpan(Typeface.BOLD), 0, 6, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         courseId.setText(courseCode);
         try {
             courseInstr.setText(course.instructors.get(0).name);
