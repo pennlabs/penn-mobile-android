@@ -16,58 +16,63 @@ import org.apache.commons.lang3.text.WordUtils;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class DiningAdapter extends ArrayAdapter<DiningHall> {
+    private final LayoutInflater inflater;
 
     public DiningAdapter(Context context, ArrayList<DiningHall> diningHalls) {
         super(context, R.layout.dining_list_item, diningHalls);
+        inflater = LayoutInflater.from(context);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View view, ViewGroup parent) {
         DiningHall diningHall = getItem(position);
-        View view = LayoutInflater.from(getContext())
-                .inflate(R.layout.dining_list_item, null);
+        ViewHolder holder;
+        if (view != null) {
+            holder = (ViewHolder) view.getTag();
+        } else {
+            view = inflater.inflate(R.layout.dining_list_item, parent, false);
+            holder = new ViewHolder(view, diningHall);
+            view.setTag(holder);
+        }
 
-        TextView hallNameTV = (TextView) view.findViewById(R.id.dining_hall_name);
-        TextView hallStatus = (TextView) view.findViewById(R.id.dining_hall_status);
-        TextView openMeal = (TextView) view.findViewById(R.id.dining_hall_open_meal);
-        TextView openClose = (TextView) view.findViewById(R.id.dining_hall_open_close);
-        ImageView menuArrow = (ImageView) view.findViewById(R.id.dining_hall_menu_indicator);
-        menuArrow.setVisibility(View.GONE);
-        view.findViewById(R.id.dining_hall_open_meal).setVisibility(View.VISIBLE);
-        view.findViewById(R.id.dining_hall_open_close).setVisibility(View.VISIBLE);
+        holder.menuArrow.setVisibility(View.GONE);
+        holder.openMeal.setVisibility(View.VISIBLE);
+        holder.openClose.setVisibility(View.VISIBLE);
 
-        hallNameTV.setText(WordUtils.capitalizeFully(diningHall.getName()));
-        view.setTag(diningHall);
+        holder.hallNameTV.setText(WordUtils.capitalizeFully(diningHall.getName()));
 
         if (diningHall.isOpen()) {
-            hallStatus.setText("Open");
-            hallStatus.setBackground(getContext().getResources().getDrawable(R.drawable.label_green));
+            holder.hallStatus.setText("Open");
+            holder.hallStatus.setBackground(getContext().getResources().getDrawable(R.drawable.label_green));
             if (!diningHall.openMeal().equals("all")) {
-                openMeal.setText("Currently serving " + diningHall.openMeal());
+                holder.openMeal.setText("Currently serving " + diningHall.openMeal());
             } else {
                 view.findViewById(R.id.dining_hall_open_meal).setVisibility(View.GONE);
             }
-            openClose.setText("Closes at " + diningHall.closingTime());
+            holder.openClose.setText("Closes at " + diningHall.closingTime());
         } else {
-            hallStatus.setText("Closed");
-            hallStatus.setBackground(getContext().getResources().getDrawable(R.drawable.label_red));
+            holder.hallStatus.setText("Closed");
+            holder.hallStatus.setBackground(getContext().getResources().getDrawable(R.drawable.label_red));
             String meal = diningHall.nextMeal();
             if (meal.equals("") || meal.equals("all")) {
                 view.findViewById(R.id.dining_hall_open_meal).setVisibility(View.GONE);
             } else {
-                openMeal.setText("Next serving " + meal);
+                holder.openMeal.setText("Next serving " + meal);
             }
             String openingTime = diningHall.openingTime();
             if (openingTime.equals("")) {
                 view.findViewById(R.id.dining_hall_open_close).setVisibility(View.GONE);
             } else {
-                openClose.setText("Opens at " + diningHall.openingTime());
+                holder.openClose.setText("Opens at " + diningHall.openingTime());
             }
         }
 
         if (diningHall.hasMenu()) {
-            menuArrow.setVisibility(View.VISIBLE);
+            holder.menuArrow.setVisibility(View.VISIBLE);
         }
 
         this.sort(new MenuComparator());
@@ -84,6 +89,20 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
             } else {
                 return 0;
             }
+        }
+    }
+
+    public static class ViewHolder {
+        @InjectView(R.id.dining_hall_name) TextView hallNameTV;
+        @InjectView(R.id.dining_hall_status) TextView hallStatus;
+        @InjectView(R.id.dining_hall_open_meal) TextView openMeal;
+        @InjectView(R.id.dining_hall_open_close) TextView openClose;
+        @InjectView(R.id.dining_hall_menu_indicator) ImageView menuArrow;
+        public DiningHall hall;
+
+        public ViewHolder(View view, DiningHall hall) {
+            this.hall = hall;
+            ButterKnife.inject(this, view);
         }
     }
 }
