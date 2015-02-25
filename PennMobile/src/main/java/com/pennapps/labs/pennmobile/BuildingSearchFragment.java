@@ -12,7 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class BuildingSearchFragment extends ListFragment {
+import com.google.android.gms.maps.MapView;
+
+public class BuildingSearchFragment extends Fragment {
 
     public static final String NAME_INTENT_EXTRA = "";
     private SearchView searchView;
@@ -67,7 +69,7 @@ public class BuildingSearchFragment extends ListFragment {
                 // TODO: error check for filled in fields
                 getActivity().findViewById(R.id.building_instructions).setVisibility(View.GONE);
                 getActivity().findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
-                Fragment fragment = new BuildingFragment();
+                Fragment fragment = new MapFragment();
                 Bundle args = new Bundle();
                 args.putString(NAME_INTENT_EXTRA, arg0);
                 fragment.setArguments(args);
@@ -82,5 +84,6 @@ public class BuildingSearchFragment extends ListFragment {
         };
         searchView.setOnQueryTextListener(queryListener);
     }
+
 
 }
