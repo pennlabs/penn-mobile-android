@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.api;
 
+import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.NewDiningHall;
@@ -24,6 +25,10 @@ public interface Labs {
     @GET("/directory/search")
     List<Person> people(
         @Query("name") String name);
+
+    @GET("/buildings/search")
+    List<Building> buildings(
+        @Query("q") String name);
 
     @GET("/dining/venues")
     List<Venue> venues();

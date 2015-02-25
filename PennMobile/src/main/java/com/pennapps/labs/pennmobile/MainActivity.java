@@ -24,6 +24,7 @@ import com.google.gson.reflect.TypeToken;
 import com.pennapps.labs.pennmobile.adapters.NavDrawerListAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.api.Serializer;
+import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 import com.pennapps.labs.pennmobile.classes.Person;
@@ -53,7 +54,7 @@ public class MainActivity extends ActionBarActivity {
         StrictMode.setThreadPolicy(policy);
         
         mFeatureTitles = new String[]{"Home", "Courses", "Directory", "Buildings", "Dining", "Transit", "News", "Support", "About"};
-        int[] icons = new int[]{R.drawable.ic_home, R.drawable.ic_book, R.drawable.ic_contacts,
+        int[] icons = new int[]{R.drawable.ic_home, R.drawable.ic_book, R.drawable.ic_contacts, R.drawable.ic_directions_bus,
                 R.drawable.ic_restaurant, R.drawable.ic_directions_bus, R.drawable.ic_announcement,
                 R.drawable.ic_help, R.drawable.ic_info
         };
@@ -159,7 +160,7 @@ public class MainActivity extends ActionBarActivity {
         } else if (position == 2) {
             fragment = new DirectorySearchFragment();
         } else if (position == 3) {
-            fragment = new BuildingFragment();
+            fragment = new BuildingSearchFragment();
         } else if (position == 4) {
             fragment = new DiningFragment();
         } else if (position == 5) {
@@ -221,6 +222,7 @@ public class MainActivity extends ActionBarActivity {
         if (mLabs == null) {
             GsonBuilder gsonBuilder = new GsonBuilder();
             gsonBuilder.registerTypeAdapter(new TypeToken<List<Course>>(){}.getType(), new Serializer.CourseSerializer());
+            gsonBuilder.registerTypeAdapter(new TypeToken<List<Building>>(){}.getType(), new Serializer.BuildingSerializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<List<Person>>(){}.getType(), new Serializer.DataSerializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<List<Venue>>(){}.getType(), new Serializer.VenueSerializer());
             gsonBuilder.registerTypeAdapter(NewDiningHall.class, new Serializer.MenuSerializer());
