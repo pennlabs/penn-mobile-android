@@ -10,6 +10,7 @@ import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -17,9 +18,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Building;
+import com.pennapps.labs.pennmobile.classes.Person;
 
 import java.util.List;
 
@@ -38,6 +41,9 @@ public class MapFragment extends Fragment {
         mContext = getActivity().getApplicationContext();
         mLabs = ((MainActivity) getActivity()).getLabsInstance();
         mName = getArguments().getString(DirectorySearchFragment.NAME_INTENT_EXTRA);
+
+        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
         new GetRequestTask().execute();
     }
 
@@ -67,7 +73,7 @@ public class MapFragment extends Fragment {
             myLocation = new LatLng(location.getLatitude(),
                     location.getLongitude());
         }
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 10));
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));
 
         return v;
     }
@@ -115,13 +121,18 @@ public class MapFragment extends Fragment {
                 if (buildings.size() == 0) {
                     getActivity().findViewById(R.id.no_results).setVisibility(View.VISIBLE);
                 } else {
+                    LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
                     for (Building building : buildings) {
                         double latitude = Double.parseDouble(building.latitude);
                         double longitude = Double.parseDouble(building.longitude);
+                        LatLng point = new LatLng(latitude, longitude);
+                        boundsBuilder.include(point);
                         googleMap.addMarker(new MarkerOptions()
-                                .position(new LatLng(latitude, longitude))
+                                .position(point)
                                 .title(building.title));
                     }
+                    LatLngBounds bounds = boundsBuilder.build();
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
                     getActivity().findViewById(R.id.no_results).setVisibility(View.GONE);
                     getActivity().findViewById(android.R.id.list).setVisibility(View.VISIBLE);
                 }
