@@ -47,14 +47,14 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Crashlytics.start(this);
+        // Crashlytics.start(this);
         setContentView(R.layout.activity_main);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         
-        mFeatureTitles = new String[]{"Home", "Courses", "Directory", "Buildings", "Dining", "Transit", "News", "Support", "About"};
-        int[] icons = new int[]{R.drawable.ic_home, R.drawable.ic_book, R.drawable.ic_contacts, R.drawable.ic_directions_bus,
+        mFeatureTitles = new String[]{"Home", "Courses", "Directory", "Map", "Dining", "Transit", "News", "Support", "About"};
+        int[] icons = new int[]{R.drawable.ic_home, R.drawable.ic_book, R.drawable.ic_contacts, R.drawable.ic_map,
                 R.drawable.ic_restaurant, R.drawable.ic_directions_bus, R.drawable.ic_announcement,
                 R.drawable.ic_help, R.drawable.ic_info
         };
@@ -160,7 +160,7 @@ public class MainActivity extends ActionBarActivity {
         } else if (position == 2) {
             fragment = new DirectorySearchFragment();
         } else if (position == 3) {
-            fragment = new BuildingSearchFragment();
+            fragment = new MapFragment();
         } else if (position == 4) {
             fragment = new DiningFragment();
         } else if (position == 5) {
