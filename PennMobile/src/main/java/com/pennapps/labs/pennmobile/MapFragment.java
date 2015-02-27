@@ -95,13 +95,14 @@ public class MapFragment extends Fragment {
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            boolean success = true;
             try {
                 buildings = mLabs.buildings(mName);
-                return true;
             } catch(Exception ignored) {
                 ignored.printStackTrace();
-                return false;
+                success = false;
             }
+            return success;
         }
 
         @Override
@@ -111,7 +112,6 @@ public class MapFragment extends Fragment {
                 return;
             }
             try {
-                getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                 if (buildings.size() == 0) {
                     getActivity().findViewById(R.id.no_results).setVisibility(View.VISIBLE);
                 } else {
