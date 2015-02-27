@@ -37,4 +37,8 @@
     <string name="difficulty">Difficulty</string>
     <string name="professor_missing">No professor listed</string>
 
+    <!-- Map -->
+    <string name="image_description">Photo</string>
+
+
 </resources>

@@ -4,10 +4,9 @@ import android.content.Context;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.SyncStateContract;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.SearchView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,19 +14,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Building;
-import com.pennapps.labs.pennmobile.classes.Person;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -49,7 +51,7 @@ public class MapFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_map, container, false);
 
         mapView = (MapView) v.findViewById(R.id.mapView);
@@ -59,13 +61,50 @@ public class MapFragment extends Fragment {
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         googleMap.setMyLocationEnabled(true);
 
+        googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+            boolean seen = false;
+
+            @Override
+            public View getInfoWindow(Marker arg0) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(final Marker arg0) {
+                View view = getActivity().getLayoutInflater().inflate(R.layout.info_window, null);
+
+                ImageView imageView= (ImageView) view.findViewById(R.id.building_image);
+                TextView name = (TextView) view.findViewById(R.id.building_name);
+                name.setText(arg0.getTitle());
+
+                if (arg0.getSnippet().isEmpty()) {
+                    imageView.setVisibility(View.GONE);
+                } else if (seen) {
+                    Picasso.with(getActivity()).load(arg0.getSnippet()).into(imageView);
+                } else {
+                    seen = true;
+                    Picasso.with(getActivity()).load(arg0.getSnippet()).into(imageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            getInfoContents(arg0);
+                        }
+
+                        @Override
+                        public void onError() {}
+                    });
+                }
+                return view;
+            }
+        });
+
         try {
             MapsInitializer.initialize(this.getActivity());
         } catch (Exception e) {
             e.printStackTrace();
         }
         Location location = googleMap.getMyLocation();
-        LatLng myLocation = new LatLng(39.9529,-75.197098);
+        LatLng myLocation = new LatLng(39.9529, -75.197098);
 
         if (location != null) {
             myLocation = new LatLng(location.getLatitude(),
@@ -148,7 +187,7 @@ public class MapFragment extends Fragment {
             boolean success = true;
             try {
                 buildings = mLabs.buildings(query);
-            } catch(Exception ignored) {
+            } catch (Exception ignored) {
                 ignored.printStackTrace();
                 success = false;
             }
@@ -172,7 +211,8 @@ public class MapFragment extends Fragment {
                         boundsBuilder.include(point);
                         googleMap.addMarker(new MarkerOptions()
                                 .position(point)
-                                .title(building.title));
+                                .title(building.title)
+                                .snippet(building.getImageURL()));
                     }
                     LatLngBounds bounds = boundsBuilder.build();
                     Location NECorner = new Location("");
