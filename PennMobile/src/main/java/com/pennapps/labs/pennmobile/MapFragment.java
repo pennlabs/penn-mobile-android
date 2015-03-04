@@ -31,7 +31,10 @@ import com.pennapps.labs.pennmobile.classes.Building;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class MapFragment extends Fragment {
 
@@ -40,11 +43,14 @@ public class MapFragment extends Fragment {
     private GoogleMap googleMap;
     private SearchView searchView;
     private String query = "";
+    private static Marker currentMarker;
+    private static Set<Marker> loadedMarkers;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLabs = ((MainActivity) getActivity()).getLabsInstance();
+        loadedMarkers = new HashSet<>();
 
         InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
@@ -61,42 +67,7 @@ public class MapFragment extends Fragment {
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         googleMap.setMyLocationEnabled(true);
 
-        googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-
-            boolean seen = false;
-
-            @Override
-            public View getInfoWindow(Marker arg0) {
-                return null;
-            }
-
-            @Override
-            public View getInfoContents(final Marker arg0) {
-                View view = getActivity().getLayoutInflater().inflate(R.layout.info_window, null);
-
-                ImageView imageView= (ImageView) view.findViewById(R.id.building_image);
-                TextView name = (TextView) view.findViewById(R.id.building_name);
-                name.setText(arg0.getTitle());
-
-                if (arg0.getSnippet().isEmpty()) {
-                    imageView.setVisibility(View.GONE);
-                } else if (seen) {
-                    Picasso.with(getActivity()).load(arg0.getSnippet()).into(imageView);
-                } else {
-                    seen = true;
-                    Picasso.with(getActivity()).load(arg0.getSnippet()).into(imageView, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            getInfoContents(arg0);
-                        }
-
-                        @Override
-                        public void onError() {}
-                    });
-                }
-                return view;
-            }
-        });
+        googleMap.setInfoWindowAdapter(new CustomWindowAdapter(inflater));
 
         try {
             MapsInitializer.initialize(this.getActivity());
@@ -113,6 +84,50 @@ public class MapFragment extends Fragment {
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));
 
         return v;
+    }
+
+    private class CustomWindowAdapter implements GoogleMap.InfoWindowAdapter {
+
+        private View view;
+        LayoutInflater inflater = null;
+
+        public CustomWindowAdapter(LayoutInflater inflater) {
+            this.inflater = inflater;
+            view = inflater.inflate(R.layout.info_window, null);
+        }
+
+        @Override
+        public View getInfoWindow(Marker arg0) {
+            return null;
+        }
+
+        @Override
+        public View getInfoContents(final Marker arg0) {
+            currentMarker = arg0;
+
+            ImageView imageView= (ImageView) view.findViewById(R.id.building_image);
+            TextView name = (TextView) view.findViewById(R.id.building_name);
+            name.setText(arg0.getTitle());
+
+            if (arg0.getSnippet().isEmpty()) {
+                imageView.setVisibility(View.GONE);
+            } else if (loadedMarkers.contains(currentMarker)) {
+                Picasso.with(getActivity()).load(arg0.getSnippet()).into(imageView);
+            } else {
+                loadedMarkers.add(currentMarker);
+                Picasso.with(getActivity()).load(arg0.getSnippet()).into(imageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        currentMarker.hideInfoWindow();
+                        currentMarker.showInfoWindow();
+                    }
+
+                    @Override
+                    public void onError() {}
+                });
+            }
+            return view;
+        }
     }
 
     @Override
