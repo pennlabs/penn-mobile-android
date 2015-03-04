@@ -1,0 +1,31 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/building_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@string/image_description"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"/>
+
+    <TextView
+        android:id="@+id/building_name"
+        android:layout_below="@+id/building_image"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@id/building_image"
+        android:layout_alignEnd="@id/building_image"
+        android:layout_alignLeft="@id/building_image"
+        android:layout_alignRight="@id/building_image"
+        android:layout_centerHorizontal="true"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#000000" />
+
+
+</RelativeLayout>

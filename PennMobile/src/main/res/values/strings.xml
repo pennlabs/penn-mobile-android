@@ -20,8 +20,10 @@
     <!-- Search -->
     <string name="registrar_search">Search for courses</string>
     <string name="directory_search">Search for people</string>
+    <string name="building_search">Search for buildings</string>
     <string name="directory_instructions">Search for Penn faculty</string>
     <string name="registrar_instructions">Search for courses</string>
+    <string name="building_instructions">Search for Penn buildings</string>
 
     <!-- Dining -->
     <string name="breakfast">Breakfast</string>
@@ -34,5 +36,10 @@
     <string name="instructor">Instructor</string>
     <string name="difficulty">Difficulty</string>
     <string name="professor_missing">No professor listed</string>
+
+    <!-- Map -->
+    <string name="image_description">Photo</string>
+    <string name="map">Map</string>
+
 
 </resources>

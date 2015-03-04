@@ -25,6 +25,7 @@ import com.google.gson.reflect.TypeToken;
 import com.pennapps.labs.pennmobile.adapters.NavDrawerListAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.api.Serializer;
+import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 import com.pennapps.labs.pennmobile.classes.Person;
@@ -53,8 +54,8 @@ public class MainActivity extends ActionBarActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         
-        mFeatureTitles = new String[]{"Home", "Courses", "Directory", "Dining", "Transit", "News", "Support", "About"};
-        int[] icons = new int[]{R.drawable.ic_home, R.drawable.ic_book, R.drawable.ic_contacts,
+        mFeatureTitles = new String[]{"Home", "Courses", "Directory", "Map", "Dining", "Transit", "News", "Support", "About"};
+        int[] icons = new int[]{R.drawable.ic_home, R.drawable.ic_book, R.drawable.ic_contacts, R.drawable.ic_map,
                 R.drawable.ic_restaurant, R.drawable.ic_directions_bus, R.drawable.ic_announcement,
                 R.drawable.ic_help, R.drawable.ic_info
         };
@@ -171,14 +172,16 @@ public class MainActivity extends ActionBarActivity {
         } else if (position == 2) {
             fragment = new DirectorySearchFragment();
         } else if (position == 3) {
-            fragment = new DiningFragment();
+            fragment = new MapFragment();
         } else if (position == 4) {
-            fragment = new TransitFragment();
+            fragment = new DiningFragment();
         } else if (position == 5) {
-            fragment = new EventsFragment();
+            fragment = new TransitFragment();
         } else if (position == 6) {
-            fragment = new SupportFragment();
+            fragment = new EventsFragment();
         } else if (position == 7) {
+            fragment = new SupportFragment();
+        } else if (position == 8) {
             fragment = new AboutFragment();
         }
 
@@ -209,11 +212,13 @@ public class MainActivity extends ActionBarActivity {
         } else if (v.getId() == R.id.directory_img || v.getId() == R.id.directory_cont || v.getId() == R.id.directory_button) {
             selectItem(2);
         } else if (v.getId() == R.id.dining_img || v.getId() == R.id.dining_cont || v.getId() == R.id.dining_button) {
-            selectItem(3);
-        } else if (v.getId() == R.id.transit_img || v.getId() == R.id.transit_cont || v.getId() == R.id.transit_button) {
             selectItem(4);
-        } else if (v.getId() == R.id.news_img || v.getId() == R.id.news_cont || v.getId() == R.id.news_button) {
+        } else if (v.getId() == R.id.transit_img || v.getId() == R.id.transit_cont || v.getId() == R.id.transit_button) {
             selectItem(5);
+        } else if (v.getId() == R.id.news_img || v.getId() == R.id.news_cont || v.getId() == R.id.news_button) {
+            selectItem(6);
+        } else if (v.getId() == R.id.map_img || v.getId() == R.id.map_cont || v.getId() == R.id.map_button) {
+            selectItem(3);
         }
     }
 
@@ -231,6 +236,7 @@ public class MainActivity extends ActionBarActivity {
         if (mLabs == null) {
             GsonBuilder gsonBuilder = new GsonBuilder();
             gsonBuilder.registerTypeAdapter(new TypeToken<List<Course>>(){}.getType(), new Serializer.CourseSerializer());
+            gsonBuilder.registerTypeAdapter(new TypeToken<List<Building>>(){}.getType(), new Serializer.BuildingSerializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<List<Person>>(){}.getType(), new Serializer.DataSerializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<List<Venue>>(){}.getType(), new Serializer.VenueSerializer());
             gsonBuilder.registerTypeAdapter(NewDiningHall.class, new Serializer.MenuSerializer());

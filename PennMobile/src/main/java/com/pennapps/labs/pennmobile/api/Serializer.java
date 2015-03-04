@@ -6,6 +6,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 import com.pennapps.labs.pennmobile.classes.Venue;
@@ -24,6 +25,15 @@ public class Serializer {
                 throws JsonParseException {
             JsonElement content = je.getAsJsonObject().get("courses");
             return new Gson().fromJson(content, new TypeToken<List<Course>>(){}.getType());
+        }
+    }
+
+    public static class BuildingSerializer implements JsonDeserializer<List<Building>> {
+        @Override
+        public List<Building> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+                throws JsonParseException {
+            JsonElement content = je.getAsJsonObject().get("result_data");
+            return new Gson().fromJson(content, new TypeToken<List<Building>>(){}.getType());
         }
     }
 
