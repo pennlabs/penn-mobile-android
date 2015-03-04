@@ -124,6 +124,27 @@
                 android:text="@string/news" />
         </RelativeLayout>
 
+
+        <RelativeLayout
+            android:id="@+id/map_cont"
+            android:onClick="onHomeButtonClick"
+            android:layout_marginBottom="15dp"
+            style="@style/MainRelativeLayout">
+
+            <ImageButton
+                android:id="@+id/map_img"
+                android:src="@drawable/ic_maps"
+                style="@style/MainIcon" />
+
+            <TextView
+                android:id="@+id/map_button"
+                android:layout_below="@+id/map_img"
+                android:clickable="true"
+                android:onClick="onHomeButtonClick"
+                style="@style/MainText"
+                android:text="@string/map" />
+        </RelativeLayout>
+
     </TableRow>
 
 </TableLayout>
