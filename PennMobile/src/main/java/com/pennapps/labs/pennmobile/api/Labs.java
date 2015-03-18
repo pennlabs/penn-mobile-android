@@ -12,6 +12,7 @@ import java.util.List;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
+import rx.Observable;
 
 /**
  * Created by Adel on 12/13/14.
@@ -27,7 +28,7 @@ public interface Labs {
         @Query("name") String name);
 
     @GET("/buildings/search")
-    List<Building> buildings(
+    Observable<List<Building>> buildings(
         @Query("q") String name);
 
     @GET("/dining/venues")
