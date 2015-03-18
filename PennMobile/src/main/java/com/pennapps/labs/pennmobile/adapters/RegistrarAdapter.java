@@ -44,7 +44,7 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
             } catch (IndexOutOfBoundsException e) {
                 holder = new ViewHolder(view, courseName);
             }
-            view.setTag(holder);
+            view.setTag(course);
         }
 
         Spannable courseCode = new SpannableString(courseName);

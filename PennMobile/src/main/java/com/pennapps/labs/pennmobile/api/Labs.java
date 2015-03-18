@@ -20,7 +20,7 @@ import rx.Observable;
  */
 public interface Labs {
     @GET("/registrar/search")
-    List<Course> courses(
+    Observable<List<Course>> courses(
         @Query("q") String name);
 
     @GET("/directory/search")

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.pennapps.labs.pennmobile.adapters.RegistrarAdapter;
+import com.pennapps.labs.pennmobile.classes.Course;
 
 public class RegistrarListFragment extends ListFragment {
 
@@ -35,7 +36,7 @@ public class RegistrarListFragment extends ListFragment {
         Fragment fragment = new RegistrarFragment();
 
         Bundle args = new Bundle();
-        args.putString(RegistrarSearchFragment.COURSE_ID_EXTRA, ((RegistrarAdapter.ViewHolder) v.getTag()).course);
+        args.putParcelable("RegistrarFragment", (Course) v.getTag());
         fragment.setArguments(args);
 
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
