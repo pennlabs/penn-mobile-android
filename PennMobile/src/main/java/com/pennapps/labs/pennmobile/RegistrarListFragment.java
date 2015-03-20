@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,7 @@ public class RegistrarListFragment extends ListFragment {
         Fragment fragment = new RegistrarFragment();
 
         Bundle args = new Bundle();
-        args.putParcelable("RegistrarFragment", (Course) v.getTag());
+        args.putParcelable("RegistrarFragment", ((RegistrarAdapter.ViewHolder) v.getTag()).course);
         fragment.setArguments(args);
 
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();

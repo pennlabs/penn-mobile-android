@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,6 +80,7 @@ public class RegistrarFragment extends Fragment {
             }
         }
     }
+
     public LatLng getBuildingLatLng(Course course) {
         Geocoder geocoder = new Geocoder(getActivity().getApplicationContext());
         try {
