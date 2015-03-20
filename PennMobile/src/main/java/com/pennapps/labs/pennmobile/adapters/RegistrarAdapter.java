@@ -46,6 +46,8 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
             view.setTag(holder);
         }
 
+        holder.course = course;
+
         Spannable courseCode = new SpannableString(courseName);
         courseCode.setSpan(
                 new ForegroundColorSpan(view.getResources().getColor(R.color.secondary_text_default_material_light)),
