@@ -22,6 +22,7 @@ import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class DirectoryFragment extends ListFragment {
 
@@ -108,7 +109,12 @@ public class DirectoryFragment extends ListFragment {
 
     private void processQuery() {
         mLabs.people(mName)
-            .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<Person>>() {
+            @Override
+            public List<Person> call(Throwable throwable) {
+                return null;
+            }
+        })
             .subscribe(new Action1<List<Person>>() {
             @Override
             public void call(List<Person> people) {

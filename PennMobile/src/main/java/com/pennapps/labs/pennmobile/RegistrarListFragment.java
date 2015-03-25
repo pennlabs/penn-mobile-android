@@ -4,14 +4,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.pennapps.labs.pennmobile.adapters.RegistrarAdapter;
-import com.pennapps.labs.pennmobile.classes.Course;
 
 public class RegistrarListFragment extends ListFragment {
 
