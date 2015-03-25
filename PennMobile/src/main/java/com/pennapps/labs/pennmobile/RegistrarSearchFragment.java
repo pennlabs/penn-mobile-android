@@ -12,6 +12,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.adapters.RegistrarAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
@@ -22,6 +25,10 @@ import java.util.List;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import rx.functions.Func1;
+
 public class RegistrarSearchFragment extends Fragment {
 
     public static final String COURSE_ID_EXTRA = "COURSE_ID";
@@ -31,6 +38,11 @@ public class RegistrarSearchFragment extends Fragment {
     private boolean hideKeyboard;
     private RegistrarAdapter mAdapter;
     private SearchView searchView;
+
+    @InjectView(R.id.no_results) TextView no_results;
+    @InjectView(R.id.registrar_instructions) TextView registrar_instructions;
+    @InjectView(R.id.loadingPanel) RelativeLayout loadingPanel;
+    @InjectView(R.id.registrar_fragment) FrameLayout registrar_fragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,8 +56,9 @@ public class RegistrarSearchFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-
-        return inflater.inflate(R.layout.fragment_registrar_search, container, false);
+        View v = inflater.inflate(R.layout.fragment_registrar_search, container, false);
+        ButterKnife.inject(this, v);
+        return v;
     }
 
     @Override
@@ -83,7 +96,7 @@ public class RegistrarSearchFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.registrar, menu);
-        getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+        loadingPanel.setVisibility(View.GONE);
         MenuItem searchMenuItem = menu.findItem(R.id.registrar_search);
 
         searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
@@ -98,9 +111,10 @@ public class RegistrarSearchFragment extends Fragment {
             public boolean onQueryTextSubmit(String input) {
                 searchView.clearFocus();
                 hideKeyboard = true;
-                getActivity().findViewById(R.id.no_results).setVisibility(View.GONE);
-                getActivity().findViewById(R.id.registrar_instructions).setVisibility(View.GONE);
-                getActivity().findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
+                no_results.setVisibility(View.GONE);
+                registrar_instructions.setVisibility(View.GONE);
+                loadingPanel.setVisibility(View.VISIBLE);
+                registrar_fragment.removeAllViews();
                 searchCourses(input);
                 return true;
             }
@@ -110,27 +124,33 @@ public class RegistrarSearchFragment extends Fragment {
 
     private void searchCourses(String query) {
         mLabs.courses(query)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new Action1<List<Course>>() {
-            @Override
-            public void call(List<Course> courses) {
-                if (courses == null || courses.size() == 0) {
-                    getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-                    getActivity().findViewById(R.id.no_results).setVisibility(View.VISIBLE);
-                    getActivity().findViewById(R.id.registrar_fragment).setVisibility(View.GONE);
-                } else {
-                    getActivity().findViewById(R.id.registrar_fragment).setVisibility(View.VISIBLE);
-                    getActivity().findViewById(R.id.no_results).setVisibility(View.GONE);
-                    RegistrarListFragment listFragment = new RegistrarListFragment();
-                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                    transaction.add(R.id.registrar_fragment, listFragment, "LIST")
-                            .addToBackStack(null)
-                            .commit();
-                    mAdapter = new RegistrarAdapter(mActivity.getApplicationContext(),
-                            R.layout.registrar_list_item, courses);
-                    listFragment.setListAdapter(mAdapter);
+            .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<Course>>() {
+                @Override
+                public List<Course> call(Throwable throwable) {
+                    return null;
                 }
-            }});
+            })
+            .subscribe(new Action1<List<Course>>() {
+                @Override
+                public void call(List<Course> courses) {
+                    if (courses == null || courses.size() == 0) {
+                        loadingPanel.setVisibility(View.GONE);
+                        no_results.setVisibility(View.VISIBLE);
+                        registrar_fragment.setVisibility(View.GONE);
+                    } else {
+                        registrar_fragment.setVisibility(View.VISIBLE);
+                        no_results.setVisibility(View.GONE);
+                        RegistrarListFragment listFragment = new RegistrarListFragment();
+                        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                        mAdapter = new RegistrarAdapter(mActivity.getApplicationContext(),
+                                R.layout.registrar_list_item, courses);
+                        listFragment.setListAdapter(mAdapter);
+                        transaction.replace(R.id.registrar_fragment, listFragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
+                }
+            });
     }
 }
 

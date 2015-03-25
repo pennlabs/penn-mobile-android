@@ -35,6 +35,7 @@ import java.util.Set;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class MapFragment extends Fragment {
 
@@ -196,7 +197,12 @@ public class MapFragment extends Fragment {
 
     private void searchBuildings(String query) {
         mLabs.buildings(query)
-            .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<Building>>() {
+            @Override
+            public List<Building> call(Throwable throwable) {
+                return null;
+            }
+        })
             .subscribe(new Action1<List<Building>>() {
             @Override
             public void call(List<Building> buildings) {
