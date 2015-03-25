@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,6 +20,10 @@ import com.pennapps.labs.pennmobile.classes.Person;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+
 public class DirectoryFragment extends ListFragment {
 
     private Labs mLabs;
@@ -36,12 +39,14 @@ public class DirectoryFragment extends ListFragment {
         mContext = getActivity().getApplicationContext();
         mLabs = ((MainActivity) getActivity()).getLabsInstance();
         mName = getArguments().getString(DirectorySearchFragment.NAME_INTENT_EXTRA);
-        new GetRequestTask().execute();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_directory, container, false);
+        View v = inflater.inflate(R.layout.fragment_directory, container, false);
+        ButterKnife.inject(this, v);
+        processQuery();
+        return v;
     }
 
     @Override
@@ -103,26 +108,12 @@ public class DirectoryFragment extends ListFragment {
         searchView.setOnQueryTextListener(queryListener);
     }
 
-    private class GetRequestTask extends AsyncTask<Void, Void, Boolean> {
-        private List<Person> people;
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            try {
-                people = mLabs.people(mName);
-                return true;
-            } catch(Exception ignored) {
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean valid) {
-            if (!valid) {
-                // TODO:
-                return;
-            }
-            try {
+    private void processQuery() {
+        mLabs.people(mName)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Action1<List<Person>>() {
+            @Override
+            public void call(List<Person> people) {
                 DirectoryAdapter mAdapter = new DirectoryAdapter(mContext, people);
                 getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                 if (people.size() == 0) {
@@ -133,9 +124,6 @@ public class DirectoryFragment extends ListFragment {
                     getActivity().findViewById(android.R.id.list).setVisibility(View.VISIBLE);
                 }
                 searchView.clearFocus();
-            } catch (NullPointerException ignored) {
-
-            }
-        }
+            }});
     }
 }

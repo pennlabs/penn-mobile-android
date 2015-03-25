@@ -24,7 +24,7 @@ public interface Labs {
         @Query("q") String name);
 
     @GET("/directory/search")
-    List<Person> people(
+    Observable<List<Person>> people(
         @Query("name") String name);
 
     @GET("/buildings/search")
