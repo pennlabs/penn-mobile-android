@@ -24,6 +24,7 @@ import com.pennapps.labs.pennmobile.classes.Course;
 import java.io.IOException;
 import java.util.List;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class RegistrarFragment extends Fragment {
@@ -49,6 +50,7 @@ public class RegistrarFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_registrar, container, false);
+        ButterKnife.inject(this, v);
         processCourse();
         return v;
     }
