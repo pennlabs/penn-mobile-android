@@ -7,6 +7,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,12 +24,14 @@ import butterknife.InjectView;
 
 public class RegistrarAdapter extends ArrayAdapter<Course> {
     private final LayoutInflater inflater;
+    private List<Course> courses;
 
     public RegistrarAdapter(Context context, int layout, List<Course> courses) {
         super(context, layout, courses);
+        this.courses = courses;
         inflater = LayoutInflater.from(context);
     }
-
+    @Override
     public View getView(int position, View view, ViewGroup parent) {
         Course course = getItem(position);
         String courseName = course.course_department +
@@ -39,13 +42,11 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
             holder = (ViewHolder) view.getTag();
         } else {
             view = inflater.inflate(R.layout.registrar_list_item, parent, false);
-            try {
-                holder = new ViewHolder(view, course.meetings.get(0).section_id);
-            } catch (IndexOutOfBoundsException e) {
-                holder = new ViewHolder(view, courseName);
-            }
+            holder = new ViewHolder(view, course);
             view.setTag(holder);
         }
+
+        holder.course = course;
 
         Spannable courseCode = new SpannableString(courseName);
         courseCode.setSpan(
@@ -73,11 +74,16 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
         @InjectView(R.id.course_instr_text) TextView courseInstr;
         @InjectView(R.id.course_title_text) TextView courseTitle;
         @InjectView(R.id.course_activity) TextView courseActivity;
-        public String course;
+        public Course course;
 
-        public ViewHolder(View view, String course) {
+        public ViewHolder(View view, Course course) {
             this.course = course;
             ButterKnife.inject(this, view);
         }
+    }
+
+    @Override
+    public int getCount() {
+        return courses != null ? courses.size() : 0;
     }
 }

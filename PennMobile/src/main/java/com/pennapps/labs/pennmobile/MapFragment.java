@@ -2,11 +2,9 @@ package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,8 +31,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 public class MapFragment extends Fragment {
 
@@ -187,35 +187,19 @@ public class MapFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String arg0) {
                 query = arg0;
-                new GetRequestTask().execute();
+                searchBuildings(query);
                 return true;
             }
         };
         searchView.setOnQueryTextListener(queryListener);
     }
 
-    private class GetRequestTask extends AsyncTask<Void, Void, Boolean> {
-        private List<Building> buildings;
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            boolean success = true;
-            try {
-                buildings = mLabs.buildings(query);
-            } catch (Exception ignored) {
-                ignored.printStackTrace();
-                success = false;
-            }
-            return success;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean valid) {
-            if (!valid) {
-                // TODO:
-                return;
-            }
-            try {
+    private void searchBuildings(String query) {
+        mLabs.buildings(query)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Action1<List<Building>>() {
+            @Override
+            public void call(List<Building> buildings) {
                 googleMap.clear();
                 if (!buildings.isEmpty()) {
                     LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
@@ -248,9 +232,7 @@ public class MapFragment extends Fragment {
                             Toast.LENGTH_LONG).show();
                 }
                 searchView.clearFocus();
-            } catch (NullPointerException ignored) {
-
             }
-        }
+            });
     }
 }

@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -20,6 +19,8 @@ import com.pennapps.labs.pennmobile.classes.Course;
 
 import java.util.List;
 
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 public class RegistrarSearchFragment extends Fragment {
 
@@ -79,7 +80,6 @@ public class RegistrarSearchFragment extends Fragment {
         }
     }
 
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.registrar, menu);
@@ -101,53 +101,37 @@ public class RegistrarSearchFragment extends Fragment {
                 getActivity().findViewById(R.id.no_results).setVisibility(View.GONE);
                 getActivity().findViewById(R.id.registrar_instructions).setVisibility(View.GONE);
                 getActivity().findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
-                new GetRequestTask(input).execute();
+                searchCourses(input);
                 return true;
             }
         };
         searchView.setOnQueryTextListener(queryListener);
     }
 
-    private class GetRequestTask extends AsyncTask<Void, Void, Boolean> {
-
-        private String input;
-        private List<Course> courses;
-
-        GetRequestTask(String s) {
-            input = s;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            try {
-                courses = mLabs.courses(input);
-                return true;
-            } catch (Exception ignored) {
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean valid) {
-            if (courses == null || courses.size() == 0) {
-                getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-                getActivity().findViewById(R.id.no_results).setVisibility(View.VISIBLE);
-                getActivity().findViewById(R.id.registrar_fragment).setVisibility(View.GONE);
-            } else {
-                getActivity().findViewById(R.id.registrar_fragment).setVisibility(View.VISIBLE);
-                getActivity().findViewById(R.id.no_results).setVisibility(View.GONE);
-                RegistrarListFragment listFragment = new RegistrarListFragment();
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.add(R.id.registrar_fragment, listFragment, "LIST")
-                        .addToBackStack(null)
-                        .commit();
-                mAdapter = new RegistrarAdapter(mActivity.getApplicationContext(),
-                        R.layout.registrar_list_item, courses);
-                listFragment.setListAdapter(mAdapter);
-            }
-        }
+    private void searchCourses(String query) {
+        mLabs.courses(query)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Action1<List<Course>>() {
+            @Override
+            public void call(List<Course> courses) {
+                if (courses == null || courses.size() == 0) {
+                    getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                    getActivity().findViewById(R.id.no_results).setVisibility(View.VISIBLE);
+                    getActivity().findViewById(R.id.registrar_fragment).setVisibility(View.GONE);
+                } else {
+                    getActivity().findViewById(R.id.registrar_fragment).setVisibility(View.VISIBLE);
+                    getActivity().findViewById(R.id.no_results).setVisibility(View.GONE);
+                    RegistrarListFragment listFragment = new RegistrarListFragment();
+                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    transaction.add(R.id.registrar_fragment, listFragment, "LIST")
+                            .addToBackStack(null)
+                            .commit();
+                    mAdapter = new RegistrarAdapter(mActivity.getApplicationContext(),
+                            R.layout.registrar_list_item, courses);
+                    listFragment.setListAdapter(mAdapter);
+                }
+            }});
     }
-
 }
 
 

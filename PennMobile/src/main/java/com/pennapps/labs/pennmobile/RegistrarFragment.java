@@ -2,7 +2,6 @@ package com.pennapps.labs.pennmobile;
 
 import android.location.Address;
 import android.location.Geocoder;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -20,20 +19,18 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Course;
 
 import java.io.IOException;
 import java.util.List;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class RegistrarFragment extends Fragment {
 
-    private Labs mLabs;
     private GoogleMap map;
     private SupportMapFragment mapFragment;
+    private Course course;
 
     @InjectView(R.id.course_code) TextView courseCodeTextView;
     @InjectView(R.id.course_activity) TextView courseActivityTextView;
@@ -46,14 +43,13 @@ public class RegistrarFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLabs = ((MainActivity) getActivity()).getLabsInstance();
-        new GetRequestTask(getArguments().getString(RegistrarSearchFragment.COURSE_ID_EXTRA)).execute();
+        course = getArguments().getParcelable("RegistrarFragment");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_registrar, container, false);
-        ButterKnife.inject(this, v);
+        processCourse();
         return v;
     }
 
@@ -79,14 +75,15 @@ public class RegistrarFragment extends Fragment {
             }
         }
     }
+
     public LatLng getBuildingLatLng(Course course) {
         Geocoder geocoder = new Geocoder(getActivity().getApplicationContext());
         try {
-            List<Address> locationList = geocoder.getFromLocationName(course.meetings.get(0).building_name, 1);
-            try {
-                return new LatLng(locationList.get(0).getLatitude(), locationList.get(0).getLongitude());
-            } catch (IndexOutOfBoundsException e) {
-                return null;
+            if (course.meetings.size() > 0) {
+                List<Address> locationList = geocoder.getFromLocationName(course.meetings.get(0).building_name, 1);
+                if (locationList.size() > 0) {
+                    return new LatLng(locationList.get(0).getLatitude(), locationList.get(0).getLongitude());
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -94,89 +91,65 @@ public class RegistrarFragment extends Fragment {
         return null;
     }
 
-    private class GetRequestTask extends AsyncTask<Void, Void, Boolean> {
-        private String input;
-        private List<Course> courses;
-        private Course course;
-        private LatLng courseLatLng;
-        private Spannable courseCodeText;
-        private String locationText;
-        private String activityText;
-        private String courseTitleText;
-        private String instructorsText;
-        private String courseDescription;
+    private void processCourse() {
+        LatLng courseLatLng;
+        Spannable courseCodeText;
+        String activityText;
+        String courseTitleText;
+        String instructorsText;
+        String courseDescription;
+        String locationText = "";
 
-        GetRequestTask(String s) {
-            input = s;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            try {
-                courses = mLabs.courses(input);
-                course = courses.get(0);
-                courseLatLng = getBuildingLatLng(course);
-                courseCodeText = new SpannableString(
-                        course.course_department + " " +
+        courseLatLng = getBuildingLatLng(course);
+        courseCodeText = new SpannableString(
+                course.course_department + " " +
                         String.format("%03d", course.course_number) + " " +
                         String.format("%03d", course.section_number));
-                courseCodeText.setSpan(
-                        new ForegroundColorSpan(getResources().getColor(R.color.color_primary_light)),
-                        courseCodeText.length() - 3,
-                        courseCodeText.length(),
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                activityText = course.activity;
-                locationText = course.meetings.get(0).building_code + " " + course.meetings.get(0).room_number;
-                courseTitleText = course.course_title;
-                try {
-                    instructorsText = course.instructors.get(0).name;
-                } catch (IndexOutOfBoundsException e) {
-                    instructorsText = getString(R.string.professor_missing);
-                }
-                courseDescription = course.course_description;
-                return true;
-            } catch (Exception ignored) {
-                return false;
-            }
+        courseCodeText.setSpan(
+                new ForegroundColorSpan(getResources().getColor(R.color.color_primary_light)),
+                courseCodeText.length() - 3,
+                courseCodeText.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        activityText = course.activity;
+        if (course.meetings.size() > 0) {
+            locationText = course.meetings.get(0).building_code + " " + course.meetings.get(0).room_number;
         }
+        if (course.instructors.size() > 0) {
+            instructorsText = course.instructors.get(0).name;
+        } else {
+            instructorsText = getString(R.string.professor_missing);
+        }
+        courseTitleText = course.course_title;
+        courseDescription = course.course_description;
 
-        @Override
-        protected void onPostExecute(Boolean valid) {
-            if (!valid || courses.size() == 0) {
-                courseCodeTextView.setText(courseCodeText);
-                courseTitleTextView.setText(input + " is not currently offered.");
-                return;
+        try {
+            courseCodeTextView.setText(courseCodeText);
+
+            if (map != null && courseLatLng != null) {
+                mapFrame.setVisibility(View.VISIBLE);
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 17));
+                Marker marker = map.addMarker(new MarkerOptions()
+                        .position(courseLatLng)
+                        .title(locationText));
+                marker.showInfoWindow();
             }
-            try {
-                courseCodeTextView.setText(courseCodeText);
-
-                if (map != null && courseLatLng != null) {
-                    mapFrame.setVisibility(View.VISIBLE);
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 17));
-                    Marker marker = map.addMarker(new MarkerOptions()
-                            .position(courseLatLng)
-                            .title(locationText));
-                    marker.showInfoWindow();
-                }
-                courseActivityTextView.setText(activityText);
-                courseTitleTextView.setText(courseTitleText);
-                instructorTextView.setText(instructorsText);
-                if (instructorsText.equals(getString(R.string.professor_missing))) {
-                    instructorTextView.setTextColor(getResources().getColor(R.color.color_primary_light));
-                }
-
-                if (courseDescription.equals("")) {
-                    descriptionTitle.setVisibility(View.GONE);
-                    descriptionTextView.setVisibility(View.GONE);
-                } else {
-                    descriptionTitle.setVisibility(View.VISIBLE);
-                    descriptionTextView.setVisibility(View.VISIBLE);
-                    descriptionTextView.setText(courseDescription);
-                }
-            } catch (NullPointerException ignored) {
-
+            courseActivityTextView.setText(activityText);
+            courseTitleTextView.setText(courseTitleText);
+            instructorTextView.setText(instructorsText);
+            if (instructorsText.equals(getString(R.string.professor_missing))) {
+                instructorTextView.setTextColor(getResources().getColor(R.color.color_primary_light));
             }
+
+            if (courseDescription.equals("")) {
+                descriptionTitle.setVisibility(View.GONE);
+                descriptionTextView.setVisibility(View.GONE);
+            } else {
+                descriptionTitle.setVisibility(View.VISIBLE);
+                descriptionTextView.setVisibility(View.VISIBLE);
+                descriptionTextView.setText(courseDescription);
+            }
+        } catch (NullPointerException ignored) {
+
         }
     }
-
 }
