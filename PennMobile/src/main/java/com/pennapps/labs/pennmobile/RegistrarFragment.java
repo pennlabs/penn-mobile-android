@@ -24,7 +24,6 @@ import com.pennapps.labs.pennmobile.classes.Course;
 import java.io.IOException;
 import java.util.List;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class RegistrarFragment extends Fragment {
@@ -50,7 +49,6 @@ public class RegistrarFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_registrar, container, false);
-        ButterKnife.inject(this, v);
         processCourse();
         return v;
     }
@@ -81,11 +79,11 @@ public class RegistrarFragment extends Fragment {
     public LatLng getBuildingLatLng(Course course) {
         Geocoder geocoder = new Geocoder(getActivity().getApplicationContext());
         try {
-            List<Address> locationList = geocoder.getFromLocationName(course.meetings.get(0).building_name, 1);
-            try {
-                return new LatLng(locationList.get(0).getLatitude(), locationList.get(0).getLongitude());
-            } catch (IndexOutOfBoundsException e) {
-                return null;
+            if (course.meetings.size() > 0) {
+                List<Address> locationList = geocoder.getFromLocationName(course.meetings.get(0).building_name, 1);
+                if (locationList.size() > 0) {
+                    return new LatLng(locationList.get(0).getLatitude(), locationList.get(0).getLongitude());
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -96,11 +94,11 @@ public class RegistrarFragment extends Fragment {
     private void processCourse() {
         LatLng courseLatLng;
         Spannable courseCodeText;
-        String locationText;
         String activityText;
         String courseTitleText;
         String instructorsText;
         String courseDescription;
+        String locationText = "";
 
         courseLatLng = getBuildingLatLng(course);
         courseCodeText = new SpannableString(
@@ -113,13 +111,15 @@ public class RegistrarFragment extends Fragment {
                 courseCodeText.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         activityText = course.activity;
-        locationText = course.meetings.get(0).building_code + " " + course.meetings.get(0).room_number;
-        courseTitleText = course.course_title;
-        try {
+        if (course.meetings.size() > 0) {
+            locationText = course.meetings.get(0).building_code + " " + course.meetings.get(0).room_number;
+        }
+        if (course.instructors.size() > 0) {
             instructorsText = course.instructors.get(0).name;
-        } catch (IndexOutOfBoundsException e) {
+        } else {
             instructorsText = getString(R.string.professor_missing);
         }
+        courseTitleText = course.course_title;
         courseDescription = course.course_description;
 
         try {
