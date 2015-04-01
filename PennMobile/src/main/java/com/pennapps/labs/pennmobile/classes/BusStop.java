@@ -1,11 +1,13 @@
 package com.pennapps.labs.pennmobile.classes;
 
+import com.google.gson.annotations.SerializedName;
+
 public class BusStop {
 
-    private String id;
-    private String name;
-    private double latitude;
-    private double longitude;
+    @SerializedName("BusStopId") private String id;
+    @SerializedName("BusStopName") private String name;
+    @SerializedName("Latitude") private double latitude;
+    @SerializedName("Longitude") private double longitude;
 
     public BusStop(String id, String name, String latitude, String longitude) {
         this.id = id;

@@ -7,6 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.pennapps.labs.pennmobile.classes.Building;
+import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 import com.pennapps.labs.pennmobile.classes.Venue;
@@ -66,6 +67,15 @@ public class Serializer {
                     content.getAsJsonObject().get("tblMenu").getAsJsonObject().get("tblDayPart").getAsJsonArray());
             content.getAsJsonObject().remove("tblMenu");
             return new Gson().fromJson(content, NewDiningHall.class);
+        }
+    }
+
+    public static class BusStopSerializer implements JsonDeserializer<List<BusStop>> {
+        @Override
+        public List<BusStop> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+                throws JsonParseException {
+            JsonElement content = je.getAsJsonObject().get("result_data");
+            return new Gson().fromJson(content, new TypeToken<List<BusStop>>(){}.getType());
         }
     }
 }

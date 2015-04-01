@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile.api;
 
 import com.pennapps.labs.pennmobile.classes.Building;
+import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 import com.pennapps.labs.pennmobile.classes.Person;
@@ -36,4 +37,7 @@ public interface Labs {
     @GET("/dining/daily_menu/{id}")
     NewDiningHall daily_menu(
         @Path("id") int id);
+
+    @GET("/transit/stops")
+    Observable<List<BusStop>> bus_stops();
 }
