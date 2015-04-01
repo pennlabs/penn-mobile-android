@@ -114,7 +114,7 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    private void closeKeyboard() {
+    public void closeKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
     }

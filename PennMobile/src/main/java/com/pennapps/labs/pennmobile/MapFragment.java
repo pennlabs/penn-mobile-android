@@ -53,8 +53,7 @@ public class MapFragment extends Fragment {
         mLabs = ((MainActivity) getActivity()).getLabsInstance();
         loadedMarkers = new HashSet<>();
 
-        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+        ((MainActivity) getActivity()).closeKeyboard();
     }
 
     @Override

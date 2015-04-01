@@ -60,9 +60,7 @@ public class SupportFragment extends ListFragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-
-            Person person = getItem(position);
-            final Person currentPerson = person;
+            final Person currentPerson = getItem(position);
 
             View view = LayoutInflater.from(getContext())
                     .inflate(R.layout.support_list_item, null);
