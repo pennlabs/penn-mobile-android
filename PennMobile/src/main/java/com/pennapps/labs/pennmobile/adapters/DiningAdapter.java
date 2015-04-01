@@ -38,6 +38,7 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
             holder = new ViewHolder(view, diningHall);
             view.setTag(holder);
         }
+        holder.hall = diningHall;
 
         holder.menuArrow.setVisibility(View.GONE);
         holder.openMeal.setVisibility(View.VISIBLE);
