@@ -40,4 +40,11 @@ public interface Labs {
 
     @GET("/transit/stops")
     Observable<List<BusStop>> bus_stops();
+
+    @GET("/transit/routing")
+    Observable<List<BusStop>> routing(
+        @Query("latFrom") String latFrom,
+        @Query("latTo") String latTo,
+        @Query("lonFrom") String lonFrom,
+        @Query("lonTo") String lonTo);
 }
