@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.pennapps.labs.pennmobile.api.Labs;
+import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 
 import java.util.List;
@@ -109,22 +110,22 @@ public class TransitFragment extends Fragment {
     }
 
     private void getBusStops() {
-        mLabs.bus_stops()
-            .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<BusStop>>() {
+        mLabs.routing("39.9519195827096", "39.9535408278178", "-75.1901131868362", "-75.1976716518402")
+            .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, BusRoute>() {
             @Override
-            public List<BusStop> call(Throwable throwable) {
+            public BusRoute call(Throwable throwable) {
                 return null;
             }
         })
-            .subscribe(new Action1<List<BusStop>>() {
-                @Override
-                public void call(List<BusStop> busStops) {
-                    for (BusStop busStop : busStops) {
-                        googleMap.addCircle(new CircleOptions()
-                            .center(new LatLng(busStop.getLatitude(), busStop.getLongitude()))
-                            .radius(10));
+                .subscribe(new Action1<BusRoute>() {
+                    @Override
+                    public void call(BusRoute route) {
+                        for (BusStop busStop : route.path) {
+                            googleMap.addCircle(new CircleOptions()
+                                    .center(new LatLng(busStop.getLatitude(), busStop.getLongitude()))
+                                    .radius(10));
+                        }
                     }
-                }
             });
     }
 }
