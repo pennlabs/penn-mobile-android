@@ -2,10 +2,15 @@ package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +28,9 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
+import com.pennapps.labs.pennmobile.classes.Course;
 
+import java.io.IOException;
 import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
@@ -34,6 +41,8 @@ public class TransitFragment extends Fragment {
 
     private MapView mapView;
     private GoogleMap googleMap;
+    private SearchView searchView;
+    private String query = "";
     private Labs mLabs;
 
     @Override
@@ -57,7 +66,6 @@ public class TransitFragment extends Fragment {
 
         mapView = (MapView) v.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
-        getBusStops();
 
         googleMap = mapView.getMap();
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -81,14 +89,10 @@ public class TransitFragment extends Fragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -109,23 +113,79 @@ public class TransitFragment extends Fragment {
         mapView.onLowMemory();
     }
 
-    private void getBusStops() {
-        mLabs.routing("39.9519195827096", "39.9535408278178", "-75.1901131868362", "-75.1976716518402")
-            .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, BusRoute>() {
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.transit_search:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        searchView = (SearchView) menu.findItem(R.id.transit_search).getActionView();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.transit, menu);
+
+        searchView = (SearchView) menu.findItem(R.id.transit_search).getActionView();
+        final SearchView.OnQueryTextListener queryListener = new SearchView.OnQueryTextListener() {
+
             @Override
-            public BusRoute call(Throwable throwable) {
-                return null;
+            public boolean onQueryTextChange(String arg0) {
+                return true;
             }
-        })
-                .subscribe(new Action1<BusRoute>() {
-                    @Override
-                    public void call(BusRoute route) {
-                        for (BusStop busStop : route.path) {
-                            googleMap.addCircle(new CircleOptions()
-                                    .center(new LatLng(busStop.getLatitude(), busStop.getLongitude()))
-                                    .radius(10));
-                        }
+
+            @Override
+            public boolean onQueryTextSubmit(String arg0) {
+                query = arg0;
+                searchTransit(query);
+                return true;
+            }
+        };
+        searchView.setOnQueryTextListener(queryListener);
+    }
+
+    public LatLng getLatLng(String destination) {
+        Geocoder geocoder = new Geocoder(getActivity().getApplicationContext());
+        try {
+            List<Address> locationList = geocoder.getFromLocationName(destination, 1);
+            if (locationList.size() > 0) {
+                return new LatLng(locationList.get(0).getLatitude(), locationList.get(0).getLongitude());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void searchTransit(String query) {
+        LatLng latLng = getLatLng(query);
+        Toast.makeText(getActivity().getApplicationContext(), latLng.toString(), Toast.LENGTH_SHORT).show();
+        mLabs.routing("39.9519195827096", Double.toString(latLng.latitude), "-75.1901131868362", Double.toString(latLng.longitude))
+            .observeOn(AndroidSchedulers.mainThread())
+            .onErrorReturn(new Func1<Throwable, BusRoute>() {
+                @Override
+                public BusRoute call(Throwable throwable) {
+                    return new BusRoute();
+                }
+            })
+            .subscribe(new Action1<BusRoute>() {
+                @Override
+                public void call(BusRoute route) {
+                    googleMap.clear();
+                    for (BusStop busStop : route.path) {
+                        googleMap.addCircle(new CircleOptions()
+                                .center(new LatLng(busStop.getLatitude(), busStop.getLongitude()))
+                                .radius(10));
                     }
+                }
             });
     }
 }

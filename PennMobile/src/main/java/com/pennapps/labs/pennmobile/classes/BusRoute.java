@@ -9,4 +9,8 @@ public class BusRoute {
     public double walkingDistanceAfter;
     public double walkingDistanceBefore;
 
+    public BusRoute() {
+        path = new ArrayList<>();
+    }
+
 }
