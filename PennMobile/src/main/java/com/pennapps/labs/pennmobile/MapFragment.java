@@ -2,6 +2,8 @@ package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
@@ -16,6 +18,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -46,13 +54,22 @@ public class MapFragment extends Fragment {
     private String query = "";
     private static Marker currentMarker;
     private static Set<Marker> loadedMarkers;
+    private static GoogleApiClient mGoogleApiClient;
+    private MapCallBacks mapCallBacks;
+    public static final LatLng DEFAULT_LATLNG = new LatLng(39.9529, -75.197098);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLabs = ((MainActivity) getActivity()).getLabsInstance();
         loadedMarkers = new HashSet<>();
-
+        mapCallBacks = new MapCallBacks();
+        mGoogleApiClient = new GoogleApiClient.Builder(( getActivity().getApplicationContext()))
+                .addConnectionCallbacks(mapCallBacks)
+                .addOnConnectionFailedListener(mapCallBacks)
+                .addApi(LocationServices.API)
+                .build();
+        mapCallBacks.setGoogleApiClient(mGoogleApiClient);
         InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
     }
@@ -76,7 +93,7 @@ public class MapFragment extends Fragment {
             e.printStackTrace();
         }
         Location location = googleMap.getMyLocation();
-        LatLng myLocation = new LatLng(39.9529, -75.197098);
+        LatLng myLocation = DEFAULT_LATLNG;
 
         if (location != null) {
             myLocation = new LatLng(location.getLatitude(),
@@ -86,7 +103,6 @@ public class MapFragment extends Fragment {
 
         return v;
     }
-
     private class CustomWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
         private View view;
@@ -141,12 +157,20 @@ public class MapFragment extends Fragment {
     public void onResume() {
         mapView.onResume();
         super.onResume();
+        mapCallBacks.requestLocationUpdates();
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        mapCallBacks.stopLocationUpdates();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
+        mapCallBacks.stopLocationUpdates();
     }
 
     @Override
@@ -241,4 +265,111 @@ public class MapFragment extends Fragment {
             }
             });
     }
+
+    class MapCallBacks implements LocationListener, ConnectionCallbacks, OnConnectionFailedListener  {
+        LatLng latLng;
+        GoogleApiClient mGoogleApiClient;
+        LocationRequest mLocationRequest;
+        boolean waiting, called, connected;
+        MapCallBacks(){
+            createLocationRequest();
+            called = false;
+        }
+
+        protected void createLocationRequest() {
+            mLocationRequest = new LocationRequest();
+            mLocationRequest.setInterval(10000);
+            mLocationRequest.setFastestInterval(5000);
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        }
+        @Override
+        public void onConnected(Bundle bundle) {
+            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            requestLocationUpdates();
+            waiting = false;
+            connected = true;
+        }
+
+        public void requestLocationUpdates(){
+            if(!called && connected) {
+                LocationServices.FusedLocationApi.requestLocationUpdates(
+                        mGoogleApiClient, mLocationRequest,
+                        (com.google.android.gms.location.LocationListener) this);
+            }
+            called = true;
+        }
+
+        public void stopLocationUpdates() {
+            if(connected && called) {
+                LocationServices.FusedLocationApi.removeLocationUpdates(
+                        mGoogleApiClient, (com.google.android.gms.location.LocationListener) this);
+            }
+            called = false;
+        }
+
+        @Override
+        public void onConnectionSuspended(int cause){
+            //handle cause later
+            if(latLng == null) {
+                latLng = DEFAULT_LATLNG;
+            }
+            waiting = false;
+            connected = false;
+        }
+
+        @Override
+        public void onConnectionFailed(ConnectionResult connectionResult) {
+            //handle connectionResult later
+            if(latLng == null) {
+                latLng = DEFAULT_LATLNG;
+            }
+            waiting = false;
+        }
+
+        public LatLng getLatLng(){
+            if(latLng == null){
+                return DEFAULT_LATLNG;
+            }
+            return latLng;
+        }
+
+        public GoogleApiClient getGoogleApiClient(){
+            return mGoogleApiClient;
+        }
+
+        public void setGoogleApiClient(GoogleApiClient mGoogleApiClient){
+            this.mGoogleApiClient = mGoogleApiClient;
+        }
+
+        @Override
+        public void onLocationChanged(Location location) {
+            if(location != null){
+                latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            }
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            if (status == LocationProvider.AVAILABLE){
+                waiting = false;
+                requestLocationUpdates();
+            }
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            if (waiting){
+                requestLocationUpdates();
+            }
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            stopLocationUpdates();
+            waiting = true;
+        }
+    }
+
+
 }
