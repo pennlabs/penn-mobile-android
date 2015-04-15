@@ -54,8 +54,8 @@ public class MapFragment extends Fragment {
     private String query = "";
     private static Marker currentMarker;
     private static Set<Marker> loadedMarkers;
-    private static GoogleApiClient mGoogleApiClient;
-    private MapCallBacks mapCallBacks;
+    private GoogleApiClient mGoogleApiClient;
+    private static MapCallBacks mapCallBacks;
     public static final LatLng DEFAULT_LATLNG = new LatLng(39.9529, -75.197098);
 
     @Override
@@ -92,14 +92,7 @@ public class MapFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Location location = googleMap.getMyLocation();
-        LatLng myLocation = DEFAULT_LATLNG;
-
-        if (location != null) {
-            myLocation = new LatLng(location.getLatitude(),
-                    location.getLongitude());
-        }
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mapCallBacks.getLatLng(), 14));
 
         return v;
     }
@@ -197,6 +190,10 @@ public class MapFragment extends Fragment {
         searchView.setIconified(true);
     }
 
+    public static MapCallBacks getMapCallBacks(){
+        return mapCallBacks;
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.building, menu);
@@ -266,7 +263,7 @@ public class MapFragment extends Fragment {
             });
     }
 
-    class MapCallBacks implements LocationListener, ConnectionCallbacks, OnConnectionFailedListener  {
+    static class MapCallBacks implements LocationListener, ConnectionCallbacks, OnConnectionFailedListener  {
         LatLng latLng;
         GoogleApiClient mGoogleApiClient;
         LocationRequest mLocationRequest;
@@ -274,6 +271,8 @@ public class MapFragment extends Fragment {
         MapCallBacks(){
             createLocationRequest();
             called = false;
+            connected = false;
+            waiting = false;
         }
 
         protected void createLocationRequest() {
@@ -288,7 +287,6 @@ public class MapFragment extends Fragment {
             latLng = new LatLng(location.getLatitude(), location.getLongitude());
             requestLocationUpdates();
             waiting = false;
-            connected = true;
         }
 
         public void requestLocationUpdates(){
@@ -304,6 +302,9 @@ public class MapFragment extends Fragment {
             if(connected && called) {
                 LocationServices.FusedLocationApi.removeLocationUpdates(
                         mGoogleApiClient, (com.google.android.gms.location.LocationListener) this);
+            }
+            if(latLng == null) {
+                latLng = DEFAULT_LATLNG;
             }
             called = false;
         }
@@ -370,6 +371,4 @@ public class MapFragment extends Fragment {
             waiting = true;
         }
     }
-
-
 }

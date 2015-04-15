@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -44,6 +46,8 @@ public class TransitFragment extends Fragment {
     private SearchView searchView;
     private String query = "";
     private Labs mLabs;
+    private GoogleApiClient mGoogleApiClient;
+    private static MapFragment.MapCallBacks mapCallBacks;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,19 @@ public class TransitFragment extends Fragment {
         mLabs = ((MainActivity) getActivity()).getLabsInstance();
 
         InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        mapCallBacks = MapFragment.getMapCallBacks();
+        if(mapCallBacks == null) {
+            mapCallBacks = new MapFragment.MapCallBacks();
+            mGoogleApiClient = new GoogleApiClient.Builder((getActivity().getApplicationContext()))
+                    .addConnectionCallbacks(mapCallBacks)
+                    .addOnConnectionFailedListener(mapCallBacks)
+                    .addApi(LocationServices.API)
+                    .build();
+            mapCallBacks.setGoogleApiClient(mGoogleApiClient);
+        } else{
+            mGoogleApiClient = mapCallBacks.getGoogleApiClient();
+        }
 
         View view = getActivity().getCurrentFocus();
         if (view != null) {
@@ -76,13 +93,7 @@ public class TransitFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Location location = googleMap.getMyLocation();
-        LatLng myLocation = new LatLng(39.9529, -75.197098);
-
-        if (location != null) {
-            myLocation = new LatLng(location.getLatitude(),
-                    location.getLongitude());
-        }
+        LatLng myLocation = mapCallBacks.getLatLng();
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));
 
         return v;
@@ -168,7 +179,8 @@ public class TransitFragment extends Fragment {
     private void searchTransit(String query) {
         LatLng latLng = getLatLng(query);
         Toast.makeText(getActivity().getApplicationContext(), latLng.toString(), Toast.LENGTH_SHORT).show();
-        mLabs.routing("39.9519195827096", Double.toString(latLng.latitude), "-75.1901131868362", Double.toString(latLng.longitude))
+        mLabs.routing(String.valueOf(mapCallBacks.getLatLng().latitude), Double.toString(latLng.latitude),
+                String.valueOf(mapCallBacks.getLatLng().longitude), Double.toString(latLng.longitude))
             .observeOn(AndroidSchedulers.mainThread())
             .onErrorReturn(new Func1<Throwable, BusRoute>() {
                 @Override
@@ -180,11 +192,16 @@ public class TransitFragment extends Fragment {
                 @Override
                 public void call(BusRoute route) {
                     googleMap.clear();
+                    PolylineOptions options = new PolylineOptions();
                     for (BusStop busStop : route.path) {
+                        LatLng latLngBuff = new LatLng(busStop.getLatitude(), busStop.getLongitude());
                         googleMap.addCircle(new CircleOptions()
-                                .center(new LatLng(busStop.getLatitude(), busStop.getLongitude()))
+                                .center(latLngBuff)
                                 .radius(10));
+                        options.add(latLngBuff);
                     }
+                    options.width(5).color(Color.BLACK);
+                    Polyline line = googleMap.addPolyline(options);
                 }
             });
     }
