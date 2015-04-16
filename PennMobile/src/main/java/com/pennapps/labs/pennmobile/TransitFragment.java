@@ -46,7 +46,6 @@ public class TransitFragment extends Fragment {
     private SearchView searchView;
     private String query = "";
     private Labs mLabs;
-    private GoogleApiClient mGoogleApiClient;
     private static MapFragment.MapCallBacks mapCallBacks;
 
     @Override
@@ -55,20 +54,17 @@ public class TransitFragment extends Fragment {
 
         mLabs = ((MainActivity) getActivity()).getLabsInstance();
 
-        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-
         mapCallBacks = MapFragment.getMapCallBacks();
         if(mapCallBacks == null) {
             mapCallBacks = new MapFragment.MapCallBacks();
-            mGoogleApiClient = new GoogleApiClient.Builder((getActivity().getApplicationContext()))
+            GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder((getActivity().getApplicationContext()))
                     .addConnectionCallbacks(mapCallBacks)
                     .addOnConnectionFailedListener(mapCallBacks)
                     .addApi(LocationServices.API)
                     .build();
             mapCallBacks.setGoogleApiClient(mGoogleApiClient);
-        } else{
-            mGoogleApiClient = mapCallBacks.getGoogleApiClient();
         }
+        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         View view = getActivity().getCurrentFocus();
         if (view != null) {
@@ -170,6 +166,11 @@ public class TransitFragment extends Fragment {
             if (locationList.size() > 0) {
                 return new LatLng(locationList.get(0).getLatitude(), locationList.get(0).getLongitude());
             }
+            else{
+                Toast.makeText(getActivity().getApplicationContext(),
+                        "Location not found, please try again", Toast.LENGTH_SHORT).show();
+                searchView.setQuery("", false);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -178,6 +179,14 @@ public class TransitFragment extends Fragment {
 
     private void searchTransit(String query) {
         LatLng latLng = getLatLng(query);
+        if(latLng == null){
+            return;
+        }
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
         Toast.makeText(getActivity().getApplicationContext(), latLng.toString(), Toast.LENGTH_SHORT).show();
         mLabs.routing(String.valueOf(mapCallBacks.getLatLng().latitude), Double.toString(latLng.latitude),
                 String.valueOf(mapCallBacks.getLatLng().longitude), Double.toString(latLng.longitude))
@@ -195,12 +204,13 @@ public class TransitFragment extends Fragment {
                     PolylineOptions options = new PolylineOptions();
                     for (BusStop busStop : route.path) {
                         LatLng latLngBuff = new LatLng(busStop.getLatitude(), busStop.getLongitude());
+                        Toast.makeText(getActivity().getApplicationContext(), latLngBuff.toString(), Toast.LENGTH_SHORT).show();
                         googleMap.addCircle(new CircleOptions()
                                 .center(latLngBuff)
                                 .radius(10));
                         options.add(latLngBuff);
                     }
-                    options.width(5).color(Color.BLACK);
+                    options.width(15).color(Color.BLACK);
                     Polyline line = googleMap.addPolyline(options);
                 }
             });

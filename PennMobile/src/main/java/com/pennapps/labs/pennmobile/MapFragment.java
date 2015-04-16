@@ -94,6 +94,7 @@ public class MapFragment extends Fragment {
         }
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mapCallBacks.getLatLng(), 14));
 
+
         return v;
     }
     private class CustomWindowAdapter implements GoogleMap.InfoWindowAdapter {
