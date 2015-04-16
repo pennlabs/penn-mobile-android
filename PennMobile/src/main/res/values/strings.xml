@@ -42,5 +42,8 @@
     <string name="image_description">Photo</string>
     <string name="map">Map</string>
 
+    <!-- Transit search -->
+    <string name="starting_location_hint">Using current location</string>
+
 
 </resources>

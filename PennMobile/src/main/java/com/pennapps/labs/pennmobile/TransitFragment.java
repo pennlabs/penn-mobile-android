@@ -4,10 +4,10 @@ import android.content.Context;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +15,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -30,7 +33,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
-import com.pennapps.labs.pennmobile.classes.Course;
 
 import java.io.IOException;
 import java.util.List;
@@ -46,6 +48,7 @@ public class TransitFragment extends Fragment {
     private SearchView searchView;
     private String query = "";
     private Labs mLabs;
+    private EditText startingLoc;
     private static MapFragment.MapCallBacks mapCallBacks;
 
     @Override
@@ -91,7 +94,20 @@ public class TransitFragment extends Fragment {
         }
         LatLng myLocation = mapCallBacks.getLatLng();
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));
+        startingLoc = (EditText) v.findViewById(R.id.transit_starting_location);
+        startingLoc.setOnEditorActionListener(new OnEditorActionListener(){
 
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(event != null&& query != null && !query.isEmpty()){
+                    LatLng start = getLatLng(v.getEditableText().toString());
+                    if(start != null){
+                        searchTransit(query, start);
+                    }
+                }
+                return false;
+            }
+        });
         return v;
     }
 
@@ -146,6 +162,9 @@ public class TransitFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String arg0) {
+                if(arg0.isEmpty()){
+                    startingLoc.setVisibility(View.GONE);
+                }
                 return true;
             }
 
@@ -153,6 +172,7 @@ public class TransitFragment extends Fragment {
             public boolean onQueryTextSubmit(String arg0) {
                 query = arg0;
                 searchTransit(query);
+                startingLoc.setVisibility(View.VISIBLE);
                 return true;
             }
         };
@@ -178,6 +198,10 @@ public class TransitFragment extends Fragment {
     }
 
     private void searchTransit(String query) {
+        searchTransit(query, mapCallBacks.getLatLng());
+    }
+
+    private void searchTransit(String query, LatLng start){
         LatLng latLng = getLatLng(query);
         if(latLng == null){
             return;
@@ -188,31 +212,30 @@ public class TransitFragment extends Fragment {
             inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
         Toast.makeText(getActivity().getApplicationContext(), latLng.toString(), Toast.LENGTH_SHORT).show();
-        mLabs.routing(String.valueOf(mapCallBacks.getLatLng().latitude), Double.toString(latLng.latitude),
-                String.valueOf(mapCallBacks.getLatLng().longitude), Double.toString(latLng.longitude))
-            .observeOn(AndroidSchedulers.mainThread())
-            .onErrorReturn(new Func1<Throwable, BusRoute>() {
-                @Override
-                public BusRoute call(Throwable throwable) {
-                    return new BusRoute();
-                }
-            })
-            .subscribe(new Action1<BusRoute>() {
-                @Override
-                public void call(BusRoute route) {
-                    googleMap.clear();
-                    PolylineOptions options = new PolylineOptions();
-                    for (BusStop busStop : route.path) {
-                        LatLng latLngBuff = new LatLng(busStop.getLatitude(), busStop.getLongitude());
-                        Toast.makeText(getActivity().getApplicationContext(), latLngBuff.toString(), Toast.LENGTH_SHORT).show();
-                        googleMap.addCircle(new CircleOptions()
-                                .center(latLngBuff)
-                                .radius(10));
-                        options.add(latLngBuff);
+        mLabs.routing(String.valueOf(start.latitude), Double.toString(latLng.latitude),
+                String.valueOf(start.longitude), Double.toString(latLng.longitude))
+                .observeOn(AndroidSchedulers.mainThread())
+                .onErrorReturn(new Func1<Throwable, BusRoute>() {
+                    @Override
+                    public BusRoute call(Throwable throwable) {
+                        return new BusRoute();
                     }
-                    options.width(15).color(Color.BLACK);
-                    Polyline line = googleMap.addPolyline(options);
-                }
-            });
+                })
+                .subscribe(new Action1<BusRoute>() {
+                    @Override
+                    public void call(BusRoute route) {
+                        googleMap.clear();
+                        PolylineOptions options = new PolylineOptions();
+                        for (BusStop busStop : route.path) {
+                            LatLng latLngBuff = new LatLng(busStop.getLatitude(), busStop.getLongitude());
+                            googleMap.addCircle(new CircleOptions()
+                                    .center(latLngBuff)
+                                    .radius(10));
+                            options.add(latLngBuff);
+                        }
+                        options.width(15).color(Color.BLACK);
+                        Polyline line = googleMap.addPolyline(options);
+                    }
+                });
     }
 }
