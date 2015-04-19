@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
@@ -14,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -28,13 +30,17 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.pennapps.labs.pennmobile.api.Labs;
+import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
@@ -99,7 +105,7 @@ public class TransitFragment extends Fragment {
 
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(event != null&& query != null && !query.isEmpty()){
+                if((actionId == EditorInfo.IME_ACTION_DONE || event != null) && query != null && !query.isEmpty()){
                     LatLng start = getLatLng(v.getEditableText().toString());
                     if(start != null){
                         searchTransit(query, start);
@@ -180,19 +186,48 @@ public class TransitFragment extends Fragment {
     }
 
     public LatLng getLatLng(String destination) {
-        Geocoder geocoder = new Geocoder(getActivity().getApplicationContext());
-        try {
-            List<Address> locationList = geocoder.getFromLocationName(destination, 1);
-            if (locationList.size() > 0) {
-                return new LatLng(locationList.get(0).getLatitude(), locationList.get(0).getLongitude());
+        LatLng start = mapCallBacks.getLatLng();
+        final String dest = destination;
+        //first try building api
+        final LinkedList<LatLng> bufflist = new LinkedList<LatLng>();
+        mLabs.buildings(query)
+                .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<Building>>() {
+            @Override
+            public List<Building> call(Throwable throwable) {
+                return null;
             }
-            else{
-                Toast.makeText(getActivity().getApplicationContext(),
-                        "Location not found, please try again", Toast.LENGTH_SHORT).show();
-                searchView.setQuery("", false);
+        }).subscribe(new Action1<List<Building>>() {
+            @Override
+            public void call(List<Building> buildings) {
+                if (!buildings.isEmpty()) {
+
+                    bufflist.add(new LatLng (Double.parseDouble(buildings.get(0).latitude),
+                            Double.parseDouble(buildings.get(0).longitude)));
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(), "No results found.",
+                            Toast.LENGTH_LONG).show();
+                    Geocoder geocoder = new Geocoder(getActivity().getApplicationContext());
+                    try {
+                        List<Address> locationList = geocoder.getFromLocationName(dest, 1);
+                        if (locationList.size() > 0) {
+                            bufflist.add(new LatLng(locationList.get(0).getLatitude(),
+                                    locationList.get(0).getLongitude()));
+                        }
+                        else{
+                            Toast.makeText(getActivity().getApplicationContext(),
+                                    "Location not found, please try again", Toast.LENGTH_SHORT).show();
+                            searchView.setQuery("", false);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        });
+        if(bufflist.size() == 1){
+            Toast.makeText(getActivity().getApplicationContext(), "found it",
+                    Toast.LENGTH_LONG).show();
+            return bufflist.get(0);
         }
         return null;
     }
@@ -202,7 +237,8 @@ public class TransitFragment extends Fragment {
     }
 
     private void searchTransit(String query, LatLng start){
-        LatLng latLng = getLatLng(query);
+        final LatLng startLatLng = start;
+        final LatLng latLng = getLatLng(query);
         if(latLng == null){
             return;
         }
@@ -225,16 +261,31 @@ public class TransitFragment extends Fragment {
                     @Override
                     public void call(BusRoute route) {
                         googleMap.clear();
+                        if(route == null){
+                            Toast.makeText(getActivity().getApplicationContext(), "No path found.", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         PolylineOptions options = new PolylineOptions();
                         for (BusStop busStop : route.path) {
                             LatLng latLngBuff = new LatLng(busStop.getLatitude(), busStop.getLongitude());
                             googleMap.addCircle(new CircleOptions()
                                     .center(latLngBuff)
-                                    .radius(10));
+                                    .radius(10))
+                                    .setFillColor(Color.BLACK);
                             options.add(latLngBuff);
                         }
-                        options.width(15).color(Color.BLACK);
-                        Polyline line = googleMap.addPolyline(options);
+                        options.width(15).color(Color.BLUE);
+                        googleMap.addPolyline(options);
+                        PolylineOptions startwalk = new PolylineOptions();
+                        startwalk.add(startLatLng);
+                        startwalk.add(new LatLng(route.path.get(0).getLatitude(), route.path.get(0).getLongitude()));
+                        startwalk.color(Color.RED).width(15);
+                        googleMap.addPolyline(startwalk);
+                        PolylineOptions endwalk = new PolylineOptions();
+                        endwalk.add(new LatLng(route.path.get(route.path.size()-1).getLatitude(), route.path.get(route.path.size()-1).getLongitude()));
+                        endwalk.add(latLng);
+                        endwalk.color(Color.RED).width(15);
+                        googleMap.addPolyline(endwalk);
                     }
                 });
     }
