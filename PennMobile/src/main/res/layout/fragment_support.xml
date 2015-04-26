@@ -4,6 +4,7 @@
     tools:context="com.pennapps.labs.pennmobile.SupportFragment">
 
     <ListView
+        tools:listitem="@layout/support_list_item"
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

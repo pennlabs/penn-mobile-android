@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:background="@drawable/list_selector"
     android:layout_height="48dp">
 
     <ImageView
+        tools:src="@drawable/ic_home"
         android:id="@+id/nav_img_icon"
         android:layout_width="24dp"
         android:layout_height="wrap_content"
@@ -17,6 +19,7 @@
         />
 
     <TextView
+        tools:text="Home"
         android:id="@+id/nav_text_title"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
