@@ -44,6 +44,7 @@
 
     <!-- Transit search -->
     <string name="starting_location_hint">Using current location</string>
+    <string name="routes_list">Routes</string>
 
 
 </resources>

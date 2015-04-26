@@ -2,15 +2,14 @@ package com.pennapps.labs.pennmobile.classes;
 
 import java.util.ArrayList;
 
+/**
+ * Created by Jason on 4/22/2015.
+ */
 public class BusRoute {
-
-    public ArrayList<BusStop> path;
+    public ArrayList<BusStop> route;
     public String route_name;
-    public double walkingDistanceAfter;
-    public double walkingDistanceBefore;
 
     public BusRoute() {
-        path = new ArrayList<>();
+        route = new ArrayList<>();
     }
-
 }

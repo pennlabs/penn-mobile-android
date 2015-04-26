@@ -2,13 +2,14 @@ package com.pennapps.labs.pennmobile.classes;
 
 import com.google.gson.annotations.SerializedName;
 
+
 public class BusStop {
 
     @SerializedName("BusStopId") private String id;
     @SerializedName("BusStopName") private String name;
     @SerializedName("Latitude") private double latitude;
     @SerializedName("Longitude") private double longitude;
-
+    public int order;
     public BusStop(String id, String name, String latitude, String longitude) {
         this.id = id;
         this.name = name;

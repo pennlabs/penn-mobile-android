@@ -7,7 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.pennapps.labs.pennmobile.classes.Building;
-import com.pennapps.labs.pennmobile.classes.BusRoute;
+import com.pennapps.labs.pennmobile.classes.BusPath;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.NewDiningHall;
@@ -76,16 +76,17 @@ public class Serializer {
         public List<BusStop> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
                 throws JsonParseException {
             JsonElement content = je.getAsJsonObject().get("result_data");
+
             return new Gson().fromJson(content, new TypeToken<List<BusStop>>(){}.getType());
         }
     }
 
-    public static class BusRouteSerializer implements JsonDeserializer<BusRoute> {
+    public static class BusPathSerializer implements JsonDeserializer<BusPath> {
         @Override
-        public BusRoute deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+        public BusPath deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
                 throws JsonParseException {
             JsonElement content = je.getAsJsonObject().get("result_data");
-            return new Gson().fromJson(content, BusRoute.class);
+            return new Gson().fromJson(content, BusPath.class);
         }
     }
 }

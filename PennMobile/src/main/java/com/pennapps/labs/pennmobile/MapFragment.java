@@ -7,6 +7,7 @@ import android.location.LocationProvider;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,6 +48,7 @@ import rx.functions.Func1;
 
 public class MapFragment extends Fragment {
 
+    public static final String TAG = "MapFragment";
     private Labs mLabs;
     private MapView mapView;
     private GoogleMap googleMap;
@@ -145,6 +147,12 @@ public class MapFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        mapCallBacks.getGoogleApiClient().connect();
     }
 
     @Override
@@ -286,6 +294,7 @@ public class MapFragment extends Fragment {
         public void onConnected(Bundle bundle) {
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            Log.d(TAG, "new lat lng = " + latLng);
             requestLocationUpdates();
             waiting = false;
         }
