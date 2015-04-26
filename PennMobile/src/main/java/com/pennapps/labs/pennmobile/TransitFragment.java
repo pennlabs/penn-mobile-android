@@ -2,11 +2,13 @@ package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -25,6 +27,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
@@ -36,18 +40,23 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.BusPath;
+import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
@@ -62,6 +71,7 @@ public class TransitFragment extends Fragment {
     private String query = "";
     private Labs mLabs;
     public static final String TAG = "TransitFragment";
+    private boolean routesClicked;
     private EditText startingLoc;
     private static MapFragment.MapCallBacks mapCallBacks;
 
@@ -87,6 +97,8 @@ public class TransitFragment extends Fragment {
         if (view != null) {
             inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
+
+        routesClicked = false;
     }
 
     @Override
@@ -117,6 +129,38 @@ public class TransitFragment extends Fragment {
                     drawMap(query, v.getEditableText().toString(), null);
                 }
                 return false;
+            }
+        });
+
+        RelativeLayout routes_rl = (RelativeLayout) v.findViewById(R.id.routes_button_rl);
+        final ListView list = (ListView) v.findViewById(R.id.transit_routes_list);
+        routes_rl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                routesClicked = !routesClicked;
+                if(routesClicked){
+                    list.setVisibility(View.VISIBLE);
+                    mLabs.routes().observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<BusRoute>>() {
+                        @Override
+                        public List<BusRoute> call(Throwable throwable) {
+                            return null;
+                        }
+                    }).subscribe(new Action1<List<BusRoute>>(){
+                        @Override
+                        public void call(List<BusRoute> routes) {
+                            ArrayList<String> route_names = new ArrayList<String>(routes.size());
+                            for(BusRoute route: routes){
+                                route_names.add(route.route_name);
+                            }
+                            RoutesAdapter adapter = new RoutesAdapter(getActivity().getApplicationContext(),
+                                    routes, route_names);
+                            list.setAdapter(adapter);
+                        }
+                    });
+                }else{
+                    list.setVisibility(View.GONE);
+
+                }
             }
         });
         return v;
@@ -279,18 +323,13 @@ public class TransitFragment extends Fragment {
                                                         .position(latLngBuff)
                                                         .title(busStop.getName())
                                                         .icon(BitmapDescriptorFactory
-                                                                .fromResource(R.drawable.ic_beenhere_black_24dp)));
+                                                            .fromResource(R.drawable.ic_beenhere_black_24dp)));
                                             }
                                             else {
                                                 googleMap.addMarker(new MarkerOptions()
                                                         .position(latLngBuff)
                                                         .title(busStop.getName()));
                                             }
-                                        }else{
-                                            googleMap.addCircle(new CircleOptions()
-                                                    .center(latLngBuff)
-                                                    .radius(10))
-                                                    .setFillColor(Color.BLACK);
                                         }
                                         options.add(latLngBuff);
                                     }
@@ -340,10 +379,16 @@ public class TransitFragment extends Fragment {
         int[] colors = {Color.GREEN, Color.RED, Color.BLUE, Color.BLACK, Color.GRAY};
         ArrayList<String> v;
         Context c;
-        RoutesAdapter(Context context, ArrayList<String> values){
+        List<BusRoute> routes;
+        Polyline[] polylines;
+        HashMap<Polyline, HashSet<Marker>> markers;
+        RoutesAdapter(Context context, List<BusRoute> routes, ArrayList<String> values){
             super(context, R.layout.route_list_item, values);
             v = values;
             c = context;
+            this.routes = routes;
+            polylines = new Polyline[routes.size()];
+            markers = new HashMap<Polyline, HashSet<Marker>>();
         }
 
         @Override
@@ -357,13 +402,13 @@ public class TransitFragment extends Fragment {
             }
             ((TextView)rowView.findViewById(R.id.routes_name)).setText(v.get(position));
             Button b = (Button) rowView.findViewById(R.id.routes_checkbox);
-            Bitmap bitmap = Bitmap.createBitmap(20, 20, Bitmap.Config.ARGB_8888);
+            Bitmap bitmap = Bitmap.createBitmap(40, 40, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
             Paint paint = new Paint();
             paint.setStyle(Paint.Style.STROKE);
-            paint.setColor(Color.BLACK);
-            RectF rectf = new RectF(2, 2, 18, 18);
-            canvas.drawRoundRect(rectf, 2, 2, paint);
+            paint.setColor(Color.WHITE);
+            RectF rectf = new RectF(10, 10, 30, 30);
+            canvas.drawRoundRect(rectf, 4, 4, paint);
             BitmapDrawable drawable = new BitmapDrawable(getResources(), bitmap);
             b.setBackground(drawable);
             b.setOnClickListener(new View.OnClickListener(){
@@ -372,27 +417,52 @@ public class TransitFragment extends Fragment {
                 public void onClick(View v) {
                     clicked = !clicked;
                     if(clicked){
-                        Bitmap bitmap = Bitmap.createBitmap(20, 20, Bitmap.Config.ARGB_8888);
+                        Bitmap bitmap = Bitmap.createBitmap(40, 40, Bitmap.Config.ARGB_8888);
                         Canvas canvas = new Canvas(bitmap);
                         Paint paint = new Paint();
                         paint.setStyle(Paint.Style.FILL);
                         paint.setColor(colors[index]);
-                        RectF rectf = new RectF(2, 2, 18, 18);
-                        canvas.drawRoundRect(rectf, 2, 2, paint);
+                        RectF rectf = new RectF(10, 10, 30, 30);
+                        canvas.drawRoundRect(rectf, 4, 4, paint);
 
                         paint.setStyle(Paint.Style.STROKE);
-                        paint.setColor(Color.BLACK);
-                        canvas.drawRoundRect(rectf, 2, 2, paint);
+                        paint.setColor(Color.WHITE);
+                        canvas.drawRoundRect(rectf, 4, 4, paint);
                         BitmapDrawable drawable = new BitmapDrawable(getResources(), bitmap);
                         v.setBackground(drawable);
+                        PolylineOptions options = new PolylineOptions();
+                        HashSet<Marker> markerset = new HashSet<Marker>();
+                        for (BusStop busStop : routes.get(index).stops) {
+                            LatLng latLngBuff = new LatLng(busStop.getLatitude(), busStop.getLongitude());
+                            if (busStop.getName() != null) {
+                                googleMap.addMarker(new MarkerOptions()
+                                        .position(latLngBuff)
+                                        .title(busStop.getName())
+                                        .icon(BitmapDescriptorFactory
+                                                .fromResource(R.drawable.ic_beenhere_black_24dp)));
+                            }
+                            options.add(latLngBuff);
+                        }
+                        options.width(15).color(colors[index]);
+                        polylines[index] = googleMap.addPolyline(options);
+                        markers.put(polylines[index], markerset);
                     } else{
-                        Bitmap bitmap = Bitmap.createBitmap(20, 20, Bitmap.Config.ARGB_8888);
+                        if(polylines[index] != null){
+                            polylines[index].remove();
+                        }
+                        if(markers.containsKey(polylines[index])){
+                            for(Marker m: markers.get(polylines[index])){
+                                m.remove();
+                            }
+                            markers.remove(polylines[index]);
+                        }
+                        Bitmap bitmap = Bitmap.createBitmap(40, 40, Bitmap.Config.ARGB_8888);
                         Canvas canvas = new Canvas(bitmap);
                         Paint paint = new Paint();
                         paint.setStyle(Paint.Style.STROKE);
-                        paint.setColor(Color.BLACK);
-                        RectF rectf = new RectF(2, 2, 18, 18);
-                        canvas.drawRoundRect(rectf, 2, 2, paint);
+                        paint.setColor(Color.WHITE);
+                        RectF rectf = new RectF(10, 10, 30, 30);
+                        canvas.drawRoundRect(rectf, 4, 4, paint);
                         BitmapDrawable drawable = new BitmapDrawable(getResources(), bitmap);
                         v.setBackground(drawable);
                     }
