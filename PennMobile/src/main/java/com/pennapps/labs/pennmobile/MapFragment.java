@@ -293,7 +293,11 @@ public class MapFragment extends Fragment {
         @Override
         public void onConnected(Bundle bundle) {
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            if(location == null){
+                latLng = DEFAULT_LATLNG;
+            }else{
+                latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            }
             Log.d(TAG, "new lat lng = " + latLng);
             requestLocationUpdates();
             waiting = false;

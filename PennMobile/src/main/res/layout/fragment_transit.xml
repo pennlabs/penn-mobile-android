@@ -16,48 +16,4 @@
         android:id="@+id/transit_starting_location"
         android:singleLine="true"/>
 
-    <RelativeLayout
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/transit_starting_location"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_alignParentRight="true"
-        android:background="@color/black"
-        >
-
-        <RelativeLayout
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/routes_button_rl">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/routes_arrow_iv"
-                android:src="@drawable/ic_keyboard_arrow_down_white_18dp"
-                android:layout_alignParentRight="true"
-                android:contentDescription="@string/routes_list" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_alignTop="@id/routes_arrow_iv"
-                android:layout_alignBottom="@id/routes_arrow_iv"
-                android:gravity="center"
-                android:layout_centerHorizontal="true"
-                android:textColor="@color/white"
-                android:text="@string/routes_list"/>
-
-        </RelativeLayout>
-
-        <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/transit_routes_list"
-            android:layout_below="@id/routes_button_rl"
-            android:visibility="gone"
-        />
-
-    </RelativeLayout>
-
 </RelativeLayout>
