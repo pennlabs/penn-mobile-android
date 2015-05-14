@@ -45,37 +45,38 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
 
     public void testLabsCoursesAPI() {
         Labs mLabs = activity.getLabsInstance();
-        List<Course> courses = mLabs.courses("CIS 110");
+        List<Course> courses = mLabs.courses("CIS 110").toList().toBlocking().single().get(0);
         assertEquals(110, courses.get(0).course_number);
     }
 
     public void testLabsCoursesInstructors() {
         Labs mLabs = activity.getLabsInstance();
-        List<Course> courses = mLabs.courses("CIS 110");
-        assertEquals("Eric Eaton", courses.get(0).instructors.get(0).name);
+        List<Course> courses = mLabs.courses("CIS 110").toList().toBlocking().single().get(0);
+        assertEquals("Benedict Brown", courses.get(0).instructors.get(0).name);
     }
 
     public void testCourseMeetings() {
         Labs mLabs = activity.getLabsInstance();
-        List<Course> courses = mLabs.courses("CIS 110");
-        assertEquals("Towne Building", courses.get(0).meetings.get(0).building_name);
+        List<Course> courses = mLabs.courses("CIS 110").toList().toBlocking().single().get(0);
+        // Course locations not announced yet
+        assertEquals("", courses.get(0).meetings.get(0).building_name);
     }
 
     public void testDirectorySearch() {
         Labs mLabs = activity.getLabsInstance();
-        List<Person> people = mLabs.people("adel");
+        List<Person> people = mLabs.people("adel").toList().toBlocking().single().get(0);
         assertEquals("ADELMAN, STEPHEN R", people.get(0).name);
     }
 
     public void testDirectorySearchGetName() {
         Labs mLabs = activity.getLabsInstance();
-        List<Person> people = mLabs.people("adel");
+        List<Person> people = mLabs.people("adel").toList().toBlocking().single().get(0);
         assertEquals("Stephen R Adelman", people.get(0).getName());
     }
 
     public void testCourseMeetingSection() {
         Labs mLabs = activity.getLabsInstance();
-        List<Course> courses = mLabs.courses("BIBB 109");
+        List<Course> courses = mLabs.courses("BIBB 109").toList().toBlocking().single().get(0);
         assertEquals("BIBB109401", courses.get(0).meetings.get(0).section_id);
     }
 

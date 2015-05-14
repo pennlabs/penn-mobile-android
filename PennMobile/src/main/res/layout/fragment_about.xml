@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -16,6 +17,7 @@
         android:src="@drawable/app_shared_logo" />
 
     <TextView
+        tools:text="PennMobile was developed by Penn Labs, with funding and support from the Undergraduate Assembly"
         android:id="@+id/about_desc"
         android:paddingLeft="40dp"
         android:paddingRight="40dp"

@@ -1,5 +1,5 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_container"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -36,6 +36,7 @@
 
 
         <TextView
+            tools:text="CIS 110 001"
             android:id="@+id/course_code"
             android:textColor="#FFFFFF"
             android:layout_width="wrap_content"
@@ -44,6 +45,7 @@
             />
 
         <TextView
+            tools:text="Introduction to Computer Programming"
             android:id="@+id/course_title"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
             android:textColor="#FFFFFF"
@@ -57,6 +59,7 @@
             android:layout_height="wrap_content" >
 
         <TextView
+            tools:text="Benedict Brown"
             android:id="@+id/instructor"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
             android:textColor="#FFFFFF"
@@ -65,6 +68,7 @@
 
 
         <TextView
+            tools:text="LEC"
             android:id="@+id/course_activity"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
             android:textColor="@color/color_primary_light"
@@ -84,6 +88,7 @@
             android:orientation="vertical"
             android:paddingBottom="20dp">
             <TextView
+                tools:visibility="visible"
                 android:id="@+id/course_desc_title"
                 android:visibility="gone"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
@@ -95,6 +100,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
+                tools:text="Introduction to Computer Programming is the first course in our series."
                 android:id="@+id/course_desc"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
                 android:layout_marginLeft="15dp"
