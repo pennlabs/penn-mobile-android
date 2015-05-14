@@ -1,15 +1,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <RelativeLayout
+        tools:visibility="gone"
         android:id="@+id/loadingPanel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center" >
 
         <ProgressBar
+            tools:visibility="gone"
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -18,10 +21,13 @@
 
 
     <FrameLayout
+        tools:visibility="visible"
         android:id="@+id/dining_fragment"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
         <ListView
+            tools:visibility="visible"
+            tools:listitem="@layout/dining_list_item"
             android:id="@android:id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
