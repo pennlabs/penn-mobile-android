@@ -2,30 +2,14 @@ package com.pennapps.labs.pennmobile.classes;
 
 import java.util.ArrayList;
 
+/**
+ * Created by Jason on 4/22/2015.
+ */
 public class BusRoute {
+    public ArrayList<BusStop> stops;
+    public String route_name;
 
-    // private String direction;
-    private String description;
-    private String title;
-    private ArrayList<BusRouteStop> routeStops;
-
-    public BusRoute(String title, String description) {
-        this.description = description;
-        this.title = title;
-    }
-
-    public BusRoute(String title, String description, ArrayList<BusRouteStop> routeStops) {
-        // this.direction = direction;
-        this.description = description;
-        this.title = title;
-        this.routeStops = routeStops;
-    }
-
-    public ArrayList<BusRouteStop> getRouteStops() {
-        return routeStops;
-    }
-
-    public String getTitle() {
-        return title;
+    public BusRoute() {
+        stops = new ArrayList<>();
     }
 }

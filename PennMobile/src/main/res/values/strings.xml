@@ -19,6 +19,7 @@
 
     <!-- Search -->
     <string name="registrar_search">Search for courses</string>
+    <string name="transit_search">Search for destinations</string>
     <string name="directory_search">Search for people</string>
     <string name="building_search">Search for buildings</string>
     <string name="directory_instructions">Search for Penn faculty</string>
@@ -40,6 +41,11 @@
     <!-- Map -->
     <string name="image_description">Photo</string>
     <string name="map">Map</string>
+
+    <!-- Transit search -->
+    <string name="starting_location_hint">Using current location</string>
+    <string name="routes_list">Routes</string>
+    <string name="routes_ok">OK</string>
 
 
 </resources>

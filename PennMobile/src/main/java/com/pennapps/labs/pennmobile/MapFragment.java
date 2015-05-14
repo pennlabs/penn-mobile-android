@@ -2,9 +2,12 @@ package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +19,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -39,6 +48,7 @@ import rx.functions.Func1;
 
 public class MapFragment extends Fragment {
 
+    public static final String TAG = "MapFragment";
     private Labs mLabs;
     private MapView mapView;
     private GoogleMap googleMap;
@@ -46,14 +56,24 @@ public class MapFragment extends Fragment {
     private String query = "";
     private static Marker currentMarker;
     private static Set<Marker> loadedMarkers;
+    private GoogleApiClient mGoogleApiClient;
+    private static MapCallBacks mapCallBacks;
+    public static final LatLng DEFAULT_LATLNG = new LatLng(39.9529, -75.197098);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLabs = ((MainActivity) getActivity()).getLabsInstance();
         loadedMarkers = new HashSet<>();
-
-        ((MainActivity) getActivity()).closeKeyboard();
+        mapCallBacks = new MapCallBacks();
+        mGoogleApiClient = new GoogleApiClient.Builder(( getActivity().getApplicationContext()))
+                .addConnectionCallbacks(mapCallBacks)
+                .addOnConnectionFailedListener(mapCallBacks)
+                .addApi(LocationServices.API)
+                .build();
+        mapCallBacks.setGoogleApiClient(mGoogleApiClient);
+        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
     }
 
     @Override
@@ -74,18 +94,11 @@ public class MapFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Location location = googleMap.getMyLocation();
-        LatLng myLocation = new LatLng(39.9529, -75.197098);
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mapCallBacks.getLatLng(), 14));
 
-        if (location != null) {
-            myLocation = new LatLng(location.getLatitude(),
-                    location.getLongitude());
-        }
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));
 
         return v;
     }
-
     private class CustomWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
         private View view;
@@ -137,15 +150,29 @@ public class MapFragment extends Fragment {
     }
 
     @Override
+    public void onStart(){
+        super.onStart();
+        mapCallBacks.getGoogleApiClient().connect();
+    }
+
+    @Override
     public void onResume() {
         mapView.onResume();
         super.onResume();
+        mapCallBacks.requestLocationUpdates();
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        mapCallBacks.stopLocationUpdates();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
+        mapCallBacks.stopLocationUpdates();
     }
 
     @Override
@@ -170,6 +197,10 @@ public class MapFragment extends Fragment {
         searchView = (SearchView) menu.findItem(R.id.building_search).getActionView();
         searchView.setIconifiedByDefault(true);
         searchView.setIconified(true);
+    }
+
+    public static MapCallBacks getMapCallBacks(){
+        return mapCallBacks;
     }
 
     @Override
@@ -239,5 +270,119 @@ public class MapFragment extends Fragment {
                 searchView.clearFocus();
             }
             });
+    }
+
+    static class MapCallBacks implements LocationListener, ConnectionCallbacks, OnConnectionFailedListener  {
+        LatLng latLng;
+        GoogleApiClient mGoogleApiClient;
+        LocationRequest mLocationRequest;
+        boolean waiting, called, connected;
+        MapCallBacks(){
+            createLocationRequest();
+            called = false;
+            connected = false;
+            waiting = false;
+        }
+
+        protected void createLocationRequest() {
+            mLocationRequest = new LocationRequest();
+            mLocationRequest.setInterval(10000);
+            mLocationRequest.setFastestInterval(5000);
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        }
+        @Override
+        public void onConnected(Bundle bundle) {
+            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if(location == null){
+                latLng = DEFAULT_LATLNG;
+            }else{
+                latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            }
+            Log.d(TAG, "new lat lng = " + latLng);
+            requestLocationUpdates();
+            waiting = false;
+        }
+
+        public void requestLocationUpdates(){
+            if(!called && connected) {
+                LocationServices.FusedLocationApi.requestLocationUpdates(
+                        mGoogleApiClient, mLocationRequest,
+                        (com.google.android.gms.location.LocationListener) this);
+            }
+            called = true;
+        }
+
+        public void stopLocationUpdates() {
+            if(connected && called) {
+                LocationServices.FusedLocationApi.removeLocationUpdates(
+                        mGoogleApiClient, (com.google.android.gms.location.LocationListener) this);
+            }
+            if(latLng == null) {
+                latLng = DEFAULT_LATLNG;
+            }
+            called = false;
+        }
+
+        @Override
+        public void onConnectionSuspended(int cause){
+            //handle cause later
+            if(latLng == null) {
+                latLng = DEFAULT_LATLNG;
+            }
+            waiting = false;
+            connected = false;
+        }
+
+        @Override
+        public void onConnectionFailed(ConnectionResult connectionResult) {
+            //handle connectionResult later
+            if(latLng == null) {
+                latLng = DEFAULT_LATLNG;
+            }
+            waiting = false;
+        }
+
+        public LatLng getLatLng(){
+            if(latLng == null){
+                return DEFAULT_LATLNG;
+            }
+            return latLng;
+        }
+
+        public GoogleApiClient getGoogleApiClient(){
+            return mGoogleApiClient;
+        }
+
+        public void setGoogleApiClient(GoogleApiClient mGoogleApiClient){
+            this.mGoogleApiClient = mGoogleApiClient;
+        }
+
+        @Override
+        public void onLocationChanged(Location location) {
+            if(location != null){
+                latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            }
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            if (status == LocationProvider.AVAILABLE){
+                waiting = false;
+                requestLocationUpdates();
+            }
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            if (waiting){
+                requestLocationUpdates();
+            }
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            stopLocationUpdates();
+            waiting = true;
+        }
     }
 }
