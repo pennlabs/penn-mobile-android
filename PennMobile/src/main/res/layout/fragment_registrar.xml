@@ -32,6 +32,7 @@
         android:paddingEnd="15dp"
         android:paddingRight="20dp"
         android:layout_marginBottom="15dp"
+        tools:layout_marginBottom="0dp"
         android:background="@color/color_primary_dark">
 
 
@@ -77,6 +78,68 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout_marginBottom="15dp">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="30dip"
+            android:paddingTop="30dip"
+            android:background="#6DCFF6">
+            <TextView
+                tools:text="2.7"
+                android:id="@+id/course_avg_course"
+                style="@style/RatingFont"
+                android:textSize="40sp" />
+            <TextView
+                style="@style/RatingFont"
+                android:text="@string/course" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="30dip"
+            android:paddingTop="30dip"
+            android:background="#9DDCF9">
+            <TextView
+                tools:text="2.5"
+                android:id="@+id/course_avg_instr"
+                style="@style/RatingFont"
+                android:textSize="40sp" />
+            <TextView
+                style="@style/RatingFont"
+                android:text="@string/instructor" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="30dip"
+            android:paddingTop="30dip"
+            android:background="#A2B7DF">
+            <TextView
+                tools:text="2.8"
+                android:id="@+id/course_avg_diff"
+                style="@style/RatingFont"
+                android:textSize="40sp" />
+            <TextView
+                style="@style/RatingFont"
+                android:text="@string/difficulty" />
+        </LinearLayout>
     </LinearLayout>
 
     <ScrollView
