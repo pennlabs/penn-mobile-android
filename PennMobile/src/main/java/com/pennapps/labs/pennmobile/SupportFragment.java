@@ -16,10 +16,6 @@ import java.util.List;
 
 public class SupportFragment extends ListFragment {
 
-    @Override public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         ListView mListView = getListView();
