@@ -18,9 +18,6 @@ import java.util.List;
 
 public class EventsFragment extends Fragment {
 
-    private MyTabAdapter pageAdapter = null;
-    private ViewPager pager = null;
-
     public EventsFragment() {
         super();
     }
@@ -75,14 +72,14 @@ public class EventsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_news, container, false);
 
-        pageAdapter = new MyTabAdapter(getActivity().getSupportFragmentManager());
+        MyTabAdapter pageAdapter = new MyTabAdapter(getActivity().getSupportFragmentManager());
 
         pageAdapter.addItem("http://www.thedp.com/", "The DP");
         pageAdapter.addItem("http://www.34st.com/", "34th Street");
         pageAdapter.addItem("http://www.thedp.com/blog/under-the-button/", "Under the Button");
         pageAdapter.addItem("http://eventsatpenn.com/", "Events");
 
-        pager = (ViewPager) v.findViewById(R.id.pager);
+        ViewPager pager = (ViewPager) v.findViewById(R.id.pager);
         // This gives the number of Fragments loaded outside the view.
         // Here set to the number of Fragments minus one, i.e., all Fragments loaded.
         // This might not be a good idea if there are many Fragments.

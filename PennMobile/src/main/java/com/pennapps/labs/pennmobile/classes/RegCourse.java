@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile.pcr;
+package com.pennapps.labs.pennmobile.classes;
 
 
 public class RegCourse {
