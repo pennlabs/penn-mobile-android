@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile.adapters;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +49,7 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
 
         if (diningHall.isOpen()) {
             holder.hallStatus.setText("Open");
-            holder.hallStatus.setBackground(getContext().getResources().getDrawable(R.drawable.label_green));
+            holder.hallStatus.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.label_green));
             if (!diningHall.openMeal().equals("all")) {
                 holder.openMeal.setText("Currently serving " + diningHall.openMeal());
             } else {
@@ -57,7 +58,7 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
             holder.openClose.setText("Closes at " + diningHall.closingTime());
         } else {
             holder.hallStatus.setText("Closed");
-            holder.hallStatus.setBackground(getContext().getResources().getDrawable(R.drawable.label_red));
+            holder.hallStatus.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.label_red));
             String meal = diningHall.nextMeal();
             if (meal.equals("") || meal.equals("all")) {
                 view.findViewById(R.id.dining_hall_open_meal).setVisibility(View.GONE);

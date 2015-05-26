@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.Gravity;
@@ -130,10 +131,10 @@ public class MenuFragment extends Fragment {
         view.setTag(diningHall);
         if (diningHall.isOpen()) {
             hallStatus.setText("Open");
-            hallStatus.setBackground(view.getContext().getResources().getDrawable(R.drawable.label_green));
+            hallStatus.setBackground(ContextCompat.getDrawable(view.getContext(), R.drawable.label_green));
         } else {
             hallStatus.setText("Closed");
-            hallStatus.setBackground(view.getContext().getResources().getDrawable(R.drawable.label_red));
+            hallStatus.setBackground(ContextCompat.getDrawable(view.getContext(), R.drawable.label_red));
         }
 
         for (Map.Entry<String, HashMap<String, HashSet<String>>> menu : diningHall.menus.entrySet()) {
@@ -172,16 +173,6 @@ public class MenuFragment extends Fragment {
                     break;
             }
         }
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
 }

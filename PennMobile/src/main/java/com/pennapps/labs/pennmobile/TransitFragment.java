@@ -15,7 +15,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -70,7 +69,6 @@ public class TransitFragment extends Fragment {
     private SearchView searchView;
     private String query = "";
     private Labs mLabs;
-    public static final String TAG = "TransitFragment";
     private EditText startingLoc;
     private static MapFragment.MapCallBacks mapCallBacks;
     private RoutesAdapter adapter;
@@ -183,7 +181,7 @@ public class TransitFragment extends Fragment {
                     }).subscribe(new Action1<List<BusRoute>>(){
                         @Override
                         public void call(List<BusRoute> routes) {
-                            ArrayList<String> route_names = new ArrayList<String>(routes.size());
+                            ArrayList<String> route_names = new ArrayList<>(routes.size());
                             for(BusRoute route: routes){
                                 route_names.add(route.route_name);
                             }
@@ -193,7 +191,7 @@ public class TransitFragment extends Fragment {
 
                         }
                     });
-                }else{
+                } else{
                     showRouteDialogBox();
                 }
                 return true;
@@ -394,7 +392,7 @@ public class TransitFragment extends Fragment {
             c = context;
             this.routes = routes;
             polylines = new Polyline[routes.size()];
-            markers = new HashMap<Polyline, HashSet<Marker>>();
+            markers = new HashMap<>();
             routesClicked = new boolean[values.size()];
             for(boolean b: routesClicked){
                 b = false;
@@ -433,7 +431,7 @@ public class TransitFragment extends Fragment {
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
             if(routesClicked[index]){
                 PolylineOptions options = new PolylineOptions();
-                HashSet<Marker> markerset = new HashSet<Marker>();
+                HashSet<Marker> markerSet = new HashSet<>();
                 for (BusStop busStop : routes.get(index).stops) {
                     for(BusStop bs: busStop.path_to){
                         options.add(new LatLng(bs.getLatitude(), bs.getLongitude()));
@@ -441,7 +439,7 @@ public class TransitFragment extends Fragment {
                     }
                     LatLng latLngBuff = new LatLng(busStop.getLatitude(), busStop.getLongitude());
                     if (busStop.getName() != null) {
-                        markerset.add(googleMap.addMarker(new MarkerOptions()
+                        markerSet.add(googleMap.addMarker(new MarkerOptions()
                                 .position(latLngBuff)
                                 .title(busStop.getName())
                                 .icon(BitmapDescriptorFactory
@@ -461,7 +459,7 @@ public class TransitFragment extends Fragment {
                 builder.include(latLngBuff);
                 options.width(15).color(colors[index]);
                 polylines[index] = googleMap.addPolyline(options);
-                markers.put(polylines[index], markerset);
+                markers.put(polylines[index], markerSet);
                 changeZoomLevel(builder.build());
             } else{
                 if(polylines[index] != null){

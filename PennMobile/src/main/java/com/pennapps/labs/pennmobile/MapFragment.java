@@ -72,8 +72,9 @@ public class MapFragment extends Fragment {
                 .addApi(LocationServices.API)
                 .build();
         mapCallBacks.setGoogleApiClient(mGoogleApiClient);
-        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+        if (getActivity() != null) {
+            ((MainActivity) getActivity()).closeKeyboard();
+        }
     }
 
     @Override
