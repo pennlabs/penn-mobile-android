@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -52,16 +53,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Crashlytics.start(this);
+//        Crashlytics.start(this);
         setContentView(R.layout.activity_main);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         
-        mFeatureTitles = new String[]{"Home", "Courses", "Directory", "Dining", "Transit", "News", "Map", "Campus Help", "About"};
+        mFeatureTitles = new String[]{"Home", "Courses", "Directory", "Dining", "Transit", "News", "Map", "Campus Help", "Settings", "About"};
         int[] icons = new int[]{R.drawable.ic_home, R.drawable.ic_book, R.drawable.ic_contacts,
                 R.drawable.ic_restaurant, R.drawable.ic_directions_bus, R.drawable.ic_announcement,
-                R.drawable.ic_map, R.drawable.ic_face_unlock_black_24dp, R.drawable.ic_info
+                R.drawable.ic_map, R.drawable.ic_face_unlock_black_24dp, R.drawable.ic_settings_black_24dp,
+                R.drawable.ic_info
         };
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -179,6 +181,9 @@ public class MainActivity extends AppCompatActivity {
         } else if (position == 7) {
             fragment = new SupportFragment();
         } else if (position == 8) {
+            startActivity(new Intent(this, SettingsActivity.class));
+            return;
+        } else if (position == 9) {
             fragment = new AboutFragment();
         }
 

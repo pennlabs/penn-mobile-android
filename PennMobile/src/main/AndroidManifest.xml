@@ -48,6 +48,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:screenOrientation="portrait"
+            android:label="PennMobile" >
+        </activity>
         <meta-data android:name="com.crashlytics.ApiKey" android:value="18a765536e6539a73a15dd36c369ed29cfb91aa1"/>
     </application>
 
