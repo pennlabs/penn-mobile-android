@@ -32,6 +32,7 @@ import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Venue;
+import com.squareup.okhttp.OkHttpClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private String[] mFeatureTitles;
     private Labs mLabs;
+    private OkHttpClient mAPIClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -246,5 +248,12 @@ public class MainActivity extends AppCompatActivity {
             mLabs = restAdapter.create(Labs.class);
         }
         return mLabs;
+    }
+
+    public OkHttpClient getAPIClient() {
+        if (mAPIClient == null) {
+            mAPIClient = new OkHttpClient();
+        }
+        return mAPIClient;
     }
 }

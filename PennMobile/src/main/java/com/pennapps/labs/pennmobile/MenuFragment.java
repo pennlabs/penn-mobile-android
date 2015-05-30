@@ -34,7 +34,7 @@ public class MenuFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAPI = new DiningAPI();
+        mAPI = new DiningAPI(((MainActivity) getActivity()).getAPIClient());
         mDiningHall = getArguments().getParcelable("DiningHall");
     }
 
