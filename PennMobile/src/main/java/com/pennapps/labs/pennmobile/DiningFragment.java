@@ -35,7 +35,7 @@ public class DiningFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAPI = new DiningAPI();
+        mAPI = new DiningAPI(((MainActivity) getActivity()).getAPIClient());
         mActivity = getActivity();
         mDiningHalls = new ArrayList<>();
         mFragment = this;

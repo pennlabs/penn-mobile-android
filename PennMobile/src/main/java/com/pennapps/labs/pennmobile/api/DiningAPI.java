@@ -1,60 +1,41 @@
 package com.pennapps.labs.pennmobile.api;
 
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import java.io.IOException;
 
-public class DiningAPI extends API {
+public class DiningAPI {
+    protected OkHttpClient client;
+    protected String BASE_URL = "http://api.pennlabs.org/dining/";
 
-    public DiningAPI() {
-        super();
-        BASE_URL = "http://api.pennlabs.org/dining/";
+    public DiningAPI(OkHttpClient client) {
+        this.client = client;
+    }
+
+    public JSONObject getAPIData(String urlPath) {
+        Request request = new Request.Builder()
+                .url(BASE_URL + urlPath)
+                .header("Content-Type", "application/json")
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            return new JSONObject(response.body().string());
+        } catch (JSONException | IOException ignored) {
+            return null;
+        }
     }
 
     public JSONObject getVenues() {
-        HttpGet httpGet = new HttpGet(BASE_URL + "venues");
-        try {
-            HttpResponse response = httpClient.execute(httpGet);
-            JSONTokener tokener = new JSONTokener(inputStreamToString
-                    (response.getEntity().getContent()).toString());
-            return new JSONObject(tokener);
-        } catch (IOException e) {
-            return null;
-        } catch (JSONException e) {
-            return null;
-        }
+        return getAPIData("venues");
     }
 
     public JSONObject getDailyMenu(int hallID) {
-        HttpGet httpGet = new HttpGet(BASE_URL + "daily_menu/" + hallID);
-        try {
-            HttpResponse response = httpClient.execute(httpGet);
-            JSONTokener tokener = new JSONTokener(inputStreamToString
-                    (response.getEntity().getContent()).toString());
-            return new JSONObject(tokener);
-        } catch (IOException e) {
-            return null;
-        } catch (JSONException e) {
-            return null;
-        }
-    }
-
-    public JSONObject getWeeklyMenu(String hallID) {
-        HttpGet httpGet = new HttpGet(BASE_URL + "weekly_menu/" + hallID);
-        try {
-            HttpResponse response = httpClient.execute(httpGet);
-            JSONTokener tokener = new JSONTokener(inputStreamToString
-                    (response.getEntity().getContent()).toString());
-            return new JSONObject(tokener);
-        } catch (IOException e) {
-            return null;
-        } catch (JSONException e) {
-            return null;
-        }
+        return getAPIData("daily_menu/" + hallID);
     }
 }
