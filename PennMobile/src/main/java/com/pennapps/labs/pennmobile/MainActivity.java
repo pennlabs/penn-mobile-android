@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (position == 4) {
             fragment = new TransitFragment();
         } else if (position == 5) {
-            fragment = new EventsFragment();
+            fragment = new NewsFragment();
         } else if (position == 6) {
             fragment = new MapFragment();
         } else if (position == 7) {

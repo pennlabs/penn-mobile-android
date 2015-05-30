@@ -16,9 +16,9 @@ import com.astuetz.PagerSlidingTabStrip;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventsFragment extends Fragment {
+public class NewsFragment extends Fragment {
 
-    public EventsFragment() {
+    public NewsFragment() {
         super();
     }
 
