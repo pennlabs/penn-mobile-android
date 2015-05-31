@@ -5,4 +5,9 @@
         android:title="@string/pref_vegetarian"
         android:summary="@string/pref_vegetarian_summ"
         android:defaultValue="false" />
+    <CheckBoxPreference
+        android:key="pref_vegan"
+        android:title="@string/pref_vegan"
+        android:summary="@string/pref_vegan_summ"
+        android:defaultValue="false" />
 </PreferenceScreen>
