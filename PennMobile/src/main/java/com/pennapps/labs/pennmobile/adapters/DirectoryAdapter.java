@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.classes.Person;
@@ -93,6 +95,19 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
             });
         }
 
+        holder.star.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToggleButton star = (ToggleButton) v;
+                boolean starred = star.isChecked();
+                if (starred) {
+                    System.out.println("Starred " + currentPerson.getName());
+                } else {
+                    System.out.println("Unstarred " + currentPerson.getName());
+                }
+            }
+        });
+
         return view;
     }
 
@@ -101,6 +116,7 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
         @InjectView(R.id.tv_person_affiliation) TextView tvAffiliation;
         @InjectView(R.id.tv_person_email) TextView tvEmail;
         @InjectView(R.id.tv_person_phone) TextView tvPhone;
+        @InjectView(R.id.star_contact) ToggleButton star;
         @InjectView(R.id.contact_icon) ImageView contact;
 
         public ViewHolder(View view) {

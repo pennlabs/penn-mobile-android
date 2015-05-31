@@ -21,11 +21,25 @@
         android:textStyle="bold"
         android:textColor="#000000" />
 
+    <ToggleButton
+        android:id="@+id/star_contact"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignRight="@id/tv_person_name"
+        android:layout_marginBottom="10dp"
+        android:textOn=""
+        android:textOff=""
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:tint="@color/star_color_off"
+        android:background="@drawable/star" />
+
     <ImageView
         android:id="@+id/contact_icon"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_alignRight="@id/tv_person_name"
+        android:layout_below="@+id/star_contact"
         android:contentDescription="@string/add_contact"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
