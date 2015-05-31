@@ -20,6 +20,7 @@ public class SettingsActivity extends PreferenceActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.SettingsTheme);
         super.onCreate(savedInstanceState);
 
         ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
