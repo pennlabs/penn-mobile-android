@@ -2,57 +2,60 @@ package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.StringBuilderPrinter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
-import com.astuetz.PagerSlidingTabStrip;
-
+import java.net.URLStreamHandler;
 import java.util.ArrayList;
 import java.util.List;
 
 public class NewsFragment extends Fragment {
 
-    public NewsFragment() {
-        super();
-    }
+    class MyTabAdapter extends FragmentStatePagerAdapter {
 
-    class MyTabAdapter extends FragmentPagerAdapter {
-        private List<Fragment> fragments;
-        private List<String> titles;
+        ArrayList<String> URLs;
+        ArrayList<String> titles;
 
         public MyTabAdapter(FragmentManager fm) {
             super(fm);
-            this.fragments = new ArrayList<>();
-            this.titles = new ArrayList<>();
+            URLs = new ArrayList<>();
+            titles = new ArrayList<>();
+            addTab("http://www.thedp.com/", "The DP");
+            addTab("http://www.34st.com/", "34th Street");
+            addTab("http://www.thedp.com/blog/under-the-button/", "UTB");
+            addTab("http://eventsatpenn.com/", "Events");
         }
 
-        public void addItem(String url, String title) {
-            Fragment myFragment = new NewsTab();
-            Bundle args = new Bundle();
-            args.putString("url", url);
-            myFragment.setArguments(args);
-            this.fragments.add(myFragment);
-            this.titles.add(title);
+        private void addTab(String url, String title) {
+            URLs.add(url);
+            titles.add(title);
         }
 
         @Override
         public Fragment getItem(int position) {
-            return this.fragments.get(position);
+            Fragment myFragment = new NewsTab();
+            Bundle args = new Bundle();
+            args.putString("url", URLs.get(position));
+            myFragment.setArguments(args);
+            return myFragment;
         }
 
         public CharSequence getPageTitle(int position) {
-            return this.titles.get(position);
+            return titles.get(position);
         }
 
         @Override
         public int getCount() {
-            return this.fragments.size();
+            return URLs.size();
         }
     }
 
@@ -73,21 +76,12 @@ public class NewsFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_news, container, false);
 
         MyTabAdapter pageAdapter = new MyTabAdapter(getActivity().getSupportFragmentManager());
-
-        pageAdapter.addItem("http://www.thedp.com/", "The DP");
-        pageAdapter.addItem("http://www.34st.com/", "34th Street");
-        pageAdapter.addItem("http://www.thedp.com/blog/under-the-button/", "Under the Button");
-        pageAdapter.addItem("http://eventsatpenn.com/", "Events");
-
         ViewPager pager = (ViewPager) v.findViewById(R.id.pager);
-        // This gives the number of Fragments loaded outside the view.
-        // Here set to the number of Fragments minus one, i.e., all Fragments loaded.
-        // This might not be a good idea if there are many Fragments.
-        pager.setOffscreenPageLimit(pageAdapter.getCount() - 1);
         pager.setAdapter(pageAdapter);
 
-        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) v.findViewById(R.id.tabs);
-        tabs.setViewPager(pager);
+        TabLayout tabLayout = (TabLayout) v.findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(pager);
+
         return v;
     }
 }
