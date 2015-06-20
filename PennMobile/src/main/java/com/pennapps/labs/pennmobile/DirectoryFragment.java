@@ -116,18 +116,25 @@ public class DirectoryFragment extends ListFragment {
             }
         })
             .subscribe(new Action1<List<Person>>() {
-            @Override
-            public void call(List<Person> people) {
-                DirectoryAdapter mAdapter = new DirectoryAdapter(mContext, people);
-                getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-                if (people.size() == 0) {
-                    getActivity().findViewById(R.id.no_results).setVisibility(View.VISIBLE);
-                } else {
-                    mListView.setAdapter(mAdapter);
-                    getActivity().findViewById(R.id.no_results).setVisibility(View.GONE);
-                    getActivity().findViewById(android.R.id.list).setVisibility(View.VISIBLE);
+                @Override
+                public void call(List<Person> people) {
+                    DirectoryAdapter mAdapter = new DirectoryAdapter(mContext, people);
+                    getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                    if (people.size() == 0) {
+                        getActivity().findViewById(R.id.no_results).setVisibility(View.VISIBLE);
+                    } else {
+                        mListView.setAdapter(mAdapter);
+                        getActivity().findViewById(R.id.no_results).setVisibility(View.GONE);
+                        getActivity().findViewById(android.R.id.list).setVisibility(View.VISIBLE);
+                    }
+                    searchView.clearFocus();
                 }
-                searchView.clearFocus();
-            }});
+            });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(R.string.directory);
     }
 }

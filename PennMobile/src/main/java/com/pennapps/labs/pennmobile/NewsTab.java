@@ -118,6 +118,7 @@ public class NewsTab extends Fragment {
     @Override
     public void onResume() {
         mWebView.onResume();
+        getActivity().setTitle(R.string.news);
         super.onResume();
     }
 

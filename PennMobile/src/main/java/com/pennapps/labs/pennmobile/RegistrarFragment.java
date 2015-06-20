@@ -69,6 +69,7 @@ public class RegistrarFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        getActivity().setTitle(R.string.registrar);
         if (map == null) {
             map = mapFragment.getMap();
             if (map != null) {
