@@ -90,4 +90,10 @@ public class NewsFragment extends Fragment {
         tabs.setViewPager(pager);
         return v;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(R.string.news);
+    }
 }

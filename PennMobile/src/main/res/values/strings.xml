@@ -3,6 +3,7 @@
 
     <!-- General -->
     <string name="app_name">PennMobile (Beta)</string>
+    <string name="main_title">PennMobile</string>
     <string name="action_settings">Settings</string>
     <string name="drawer_open">Open drawer</string>
     <string name="drawer_close">Close drawer</string>
@@ -12,6 +13,8 @@
     <string name="transit">Transit</string>
     <string name="directory">Directory</string>
     <string name="news">News</string>
+    <string name="support">Support</string>
+    <string name="about">About</string>
     <string name="labs_icon">Penn Labs</string>
     <string name="course_desc_title">Description</string>
     <string name="add_contact">Add contact</string>
