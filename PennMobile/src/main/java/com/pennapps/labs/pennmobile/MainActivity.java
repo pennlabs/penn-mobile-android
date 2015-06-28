@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -14,14 +15,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.pennapps.labs.pennmobile.adapters.NavDrawerListAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.api.Serializer;
 import com.pennapps.labs.pennmobile.classes.Building;
@@ -34,7 +32,6 @@ import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Venue;
 import com.squareup.okhttp.OkHttpClient;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.RestAdapter;
@@ -43,9 +40,8 @@ import retrofit.converter.GsonConverter;
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
+    private NavigationView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
-    private String[] mFeatureTitles;
     private Labs mLabs;
     private OkHttpClient mAPIClient;
 
@@ -57,32 +53,23 @@ public class MainActivity extends AppCompatActivity {
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        
-        mFeatureTitles = new String[]{"Home", "Courses", "Directory", "Dining", "Transit", "News", "Map", "Campus Help", "About"};
-        int[] icons = new int[]{R.drawable.ic_home, R.drawable.ic_book, R.drawable.ic_contacts,
-                R.drawable.ic_restaurant, R.drawable.ic_directions_bus, R.drawable.ic_announcement,
-                R.drawable.ic_map, R.drawable.ic_face_unlock_black_24dp, R.drawable.ic_info
-        };
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
                 R.string.drawer_open,  /* "open drawer" description */
                 R.string.drawer_close  /* "close drawer" description */
         ) {};
-
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        mDrawerList = (NavigationView) findViewById(R.id.navigation);
+        mDrawerList.setNavigationItemSelectedListener(new DrawerItemClickListener());
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
-
-        ArrayList<NavDrawerItem> mFeatureList = createNavDrawerItems(mFeatureTitles, icons);
-        mDrawerList.setAdapter(new NavDrawerListAdapter(this, mFeatureList));
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         // Set default fragment to MainFragment
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
@@ -149,21 +136,42 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-
+    private class DrawerItemClickListener implements NavigationView.OnNavigationItemSelectedListener {
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position);
+        public boolean onNavigationItemSelected(MenuItem item) {
+            int id = item.getItemId();
+            item.setChecked(true);
+            switch (id) {
+                case R.id.navHome:
+                    selectItem(0);
+                    break;
+                case R.id.navRegistrar:
+                    selectItem(1);
+                    break;
+                case R.id.navDirectory:
+                    selectItem(2);
+                    break;
+                case R.id.navDining:
+                    selectItem(3);
+                    break;
+                case R.id.navTransit:
+                    selectItem(4);
+                    break;
+                case R.id.navNews:
+                    selectItem(5);
+                    break;
+                case R.id.navMap:
+                    selectItem(6);
+                    break;
+                case R.id.navSupport:
+                    selectItem(7);
+                    break;
+                case R.id.navAbout:
+                    selectItem(8);
+                    break;
+            }
+            return false;
         }
-
-    }
-
-    private ArrayList<NavDrawerItem> createNavDrawerItems(String[] navbarItems, int[] icons) {
-        ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<>();
-        for (int i = 0; i < navbarItems.length; i++) {
-            navDrawerItems.add(new NavDrawerItem(navbarItems[i], icons[i]));
-        }
-        return navDrawerItems;
     }
 
     private void selectItem(int position) {
@@ -193,7 +201,6 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.content_frame, fragment)
                 .addToBackStack(null)
                 .commit();
-        mDrawerList.setItemChecked(position, true);
         mDrawerLayout.closeDrawer(mDrawerList);
     }
 
