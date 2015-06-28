@@ -43,6 +43,11 @@ public class RegistrarListFragment extends ListFragment {
         onResume();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(R.string.registrar);
+    }
 }
 
 

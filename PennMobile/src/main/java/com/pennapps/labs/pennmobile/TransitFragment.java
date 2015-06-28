@@ -149,6 +149,7 @@ public class TransitFragment extends Fragment {
     @Override
     public void onResume() {
         mapView.onResume();
+        getActivity().setTitle(R.string.transit);
         super.onResume();
     }
 

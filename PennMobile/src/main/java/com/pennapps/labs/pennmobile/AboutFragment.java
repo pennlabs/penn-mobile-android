@@ -46,4 +46,10 @@ public class AboutFragment extends Fragment {
         featureRequest.setText(Html.fromHtml(text));
         return v;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(R.string.about);
+    }
 }

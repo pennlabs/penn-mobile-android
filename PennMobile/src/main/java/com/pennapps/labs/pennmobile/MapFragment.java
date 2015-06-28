@@ -159,6 +159,7 @@ public class MapFragment extends Fragment {
         mapView.onResume();
         super.onResume();
         mapCallBacks.requestLocationUpdates();
+        getActivity().setTitle(R.string.map);
     }
 
     @Override

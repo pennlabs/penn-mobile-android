@@ -110,6 +110,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        setTitle(R.string.main_title);
+    }
+
     public void closeKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (getCurrentFocus() != null) {
@@ -187,19 +193,7 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.content_frame, fragment)
                 .addToBackStack(null)
                 .commit();
-
-        fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
-                if (backStackEntryCount == 0) { // If we are on the home screen then we should always
-                    setTitle("PennMobile");     // set the title to PennMobile
-                }
-            }
-        });
-
         mDrawerList.setItemChecked(position, true);
-        setTitle(mFeatureTitles[position]);
         mDrawerLayout.closeDrawer(mDrawerList);
     }
 
@@ -216,16 +210,6 @@ public class MainActivity extends AppCompatActivity {
             selectItem(5);
         } else if (v.getId() == R.id.map_img || v.getId() == R.id.map_cont || v.getId() == R.id.map_button) {
             selectItem(6);
-        }
-    }
-
-    public void setTitle(CharSequence title) {
-        if (getSupportActionBar() != null) {
-            if (title.equals("Home")) {
-                getSupportActionBar().setTitle("PennMobile");
-            } else {
-                getSupportActionBar().setTitle(title);
-            }
         }
     }
 
