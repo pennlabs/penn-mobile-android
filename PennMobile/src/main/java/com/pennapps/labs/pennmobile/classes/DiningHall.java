@@ -109,8 +109,7 @@ public class DiningHall implements Parcelable {
 
     public String closingTime() {
         String closingTime = "";
-        for (String mealName : openHours.keySet()) {
-            Interval openInterval = openHours.get(mealName);
+        for (Interval openInterval : openHours.values()) {
             DateTime currentTime = new DateTime();
             if (openInterval.contains(currentTime)) {
                 closingTime = openInterval.getEnd().toString("h:mma");
@@ -143,8 +142,7 @@ public class DiningHall implements Parcelable {
     }
 
     public boolean isOpen() {
-        for (String mealName : openHours.keySet()) {
-            Interval openInterval = openHours.get(mealName);
+        for (Interval openInterval : openHours.values()) {
             DateTime currentTime = new DateTime();
             if (openInterval.contains(currentTime)) {
                 return true;
@@ -175,11 +173,11 @@ public class DiningHall implements Parcelable {
     }
 
     public String openMeal() {
-        for (String mealName : openHours.keySet()) {
-            Interval openInterval = openHours.get(mealName);
+        for (Map.Entry<String, Interval> entry : openHours.entrySet()) {
+            Interval openInterval = entry.getValue();
             DateTime currentTime = new DateTime();
             if (openInterval.contains(currentTime)) {
-                return mealName;
+                return entry.getKey();
             }
         }
         return null;
