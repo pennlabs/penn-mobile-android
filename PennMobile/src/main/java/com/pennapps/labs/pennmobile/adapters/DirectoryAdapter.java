@@ -2,20 +2,26 @@ package com.pennapps.labs.pennmobile.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.classes.Person;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -64,7 +70,7 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
             holder.tvEmail.setVisibility(View.GONE);
         } else {
             holder.tvEmail.setText(person.email);
-            holder.tvEmail.setPaintFlags(holder.tvEmail.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
+            holder.tvEmail.setPaintFlags(holder.tvEmail.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
             holder.tvEmail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -93,6 +99,32 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
             });
         }
 
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(view.getContext());
+        Set<String> starredContacts = sharedPref.getStringSet("starred", new HashSet<String>());
+        holder.star.setChecked(starredContacts.contains(currentPerson.getName()));
+        holder.star.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(v.getContext());
+                Set<String> starredContacts = sharedPref.getStringSet("starred", new HashSet<String>());
+                SharedPreferences.Editor editedPreferences = sharedPref.edit();
+                ToggleButton star = (ToggleButton) v;
+                boolean starred = star.isChecked();
+                String currentName = currentPerson.getName();
+                if (starred) {
+                    System.out.println("Starred " + currentPerson.getName());
+                    if (currentName != null) {
+                        starredContacts.add(currentName);
+                    }
+                } else {
+                    System.out.println("Unstarred " + currentPerson.getName());
+                    starredContacts.remove(currentName);
+                }
+                editedPreferences.putStringSet("starred", starredContacts);
+                editedPreferences.apply();
+            }
+        });
+
         return view;
     }
 
@@ -101,6 +133,7 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
         @InjectView(R.id.tv_person_affiliation) TextView tvAffiliation;
         @InjectView(R.id.tv_person_email) TextView tvEmail;
         @InjectView(R.id.tv_person_phone) TextView tvPhone;
+        @InjectView(R.id.star_contact) ToggleButton star;
         @InjectView(R.id.contact_icon) ImageView contact;
 
         public ViewHolder(View view) {
