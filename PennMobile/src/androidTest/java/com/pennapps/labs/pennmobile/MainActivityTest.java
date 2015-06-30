@@ -1,9 +1,9 @@
 package com.pennapps.labs.pennmobile;
 
 import android.content.Intent;
+import android.support.design.widget.NavigationView;
 import android.test.ActivityUnitTestCase;
 import android.view.ContextThemeWrapper;
-import android.widget.ListView;
 
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Course;
@@ -36,11 +36,11 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
     }
 
     public void testMainLayout() {
-        assertNotNull(activity.findViewById(R.id.left_drawer));
+        assertNotNull(activity.findViewById(R.id.navigation));
     }
 
     public void testMainDrawerLayout() {
-        assertTrue(activity.findViewById(R.id.left_drawer) instanceof ListView);
+        assertTrue(activity.findViewById(R.id.navigation) instanceof NavigationView);
     }
 
     public void testLabsCoursesAPI() {
