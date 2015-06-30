@@ -27,11 +27,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginTop="4dp"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:textColor="@color/white"
             android:textStyle="bold"
-            android:paddingRight="10dp"
-            android:paddingLeft="10dp" />
+            android:paddingRight="8dp"
+            android:paddingLeft="8dp" />
 
         <TextView
             tools:text="Currently serving dinner"
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_alignRight="@id/dining_hall_status"
             android:layout_below="@id/dining_hall_status"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="4dp"
             android:src="@drawable/ic_chevron_right_black_36dp"/>
 
     </RelativeLayout>
