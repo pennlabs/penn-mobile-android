@@ -137,19 +137,24 @@ public class MenuFragment extends Fragment {
             hallStatus.setBackground(ContextCompat.getDrawable(view.getContext(), R.drawable.label_red));
         }
 
+        StringBuilder menuText = new StringBuilder();
         for (Map.Entry<String, HashMap<String, HashSet<String>>> menu : diningHall.menus.entrySet()) {
+            menuText.setLength(0);
             String mealName = StringUtils.capitalize(menu.getKey());
-            String menuText = "";
             for (Map.Entry<String, HashSet<String>> menuItem : menu.getValue().entrySet()) {
                 String key = StringUtils.capitalize(menuItem.getKey());
                 HashSet<String> items = menuItem.getValue();
                 String tab = "&nbsp&nbsp&nbsp ";
-                menuText += "<b>" + key + "</b> <br>";
+                menuText.append("<b>");
+                menuText.append(key);
+                menuText.append("</b> <br>");
                 for (String item : items) {
-                    menuText += tab + item + "<br>";
+                    menuText.append(tab);
+                    menuText.append(item);
+                    menuText.append("<br>");
                 }
             }
-            Spanned menuHtml = Html.fromHtml(menuText);
+            Spanned menuHtml = Html.fromHtml(menuText.toString());
             switch (mealName) {
                 case "Breakfast":
                     view.findViewById(R.id.dining_hall_breakfast_title).setVisibility(View.VISIBLE);
