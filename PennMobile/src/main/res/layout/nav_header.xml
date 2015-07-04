@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:layout_width="240dp"
     android:layout_width="match_parent"
-    android:layout_height="96dp">
+    android:layout_height="144dp">
 
     <ImageView
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
             android:layout_gravity="bottom"
             android:layout_margin="8dp"
             android:textColor="@color/white"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:text="Welcome" />
     </RelativeLayout>
 
