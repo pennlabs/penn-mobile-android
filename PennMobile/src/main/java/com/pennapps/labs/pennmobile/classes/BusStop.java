@@ -2,7 +2,6 @@ package com.pennapps.labs.pennmobile.classes;
 
 import com.google.gson.annotations.SerializedName;
 
-
 import java.util.List;
 
 

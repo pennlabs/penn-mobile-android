@@ -22,11 +22,10 @@ import com.pennapps.labs.pennmobile.classes.Course;
 
 import java.util.List;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 public class RegistrarSearchFragment extends Fragment {

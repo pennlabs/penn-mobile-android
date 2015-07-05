@@ -33,9 +33,9 @@ import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Venue;
 import com.squareup.okhttp.OkHttpClient;
 
-import io.fabric.sdk.android.Fabric;
 import java.util.List;
 
+import io.fabric.sdk.android.Fabric;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 
