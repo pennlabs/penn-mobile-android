@@ -35,7 +35,7 @@ public class AboutFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_about, container, false);
-        ButterKnife.inject(this, v);
+        ButterKnife.bind(this, v);
         TextView featureRequest = (TextView) v.findViewById(R.id.about_desc);
         featureRequest.setOnClickListener(new View.OnClickListener() {
               @Override

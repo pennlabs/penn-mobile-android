@@ -22,8 +22,8 @@ import com.pennapps.labs.pennmobile.classes.Course;
 
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -38,10 +38,10 @@ public class RegistrarSearchFragment extends Fragment {
     private RegistrarAdapter mAdapter;
     private SearchView searchView;
 
-    @InjectView(R.id.no_results) TextView no_results;
-    @InjectView(R.id.registrar_instructions) TextView registrar_instructions;
-    @InjectView(R.id.loadingPanel) RelativeLayout loadingPanel;
-    @InjectView(R.id.registrar_fragment) FrameLayout registrar_fragment;
+    @Bind(R.id.no_results) TextView no_results;
+    @Bind(R.id.registrar_instructions) TextView registrar_instructions;
+    @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
+    @Bind(R.id.registrar_fragment) FrameLayout registrar_fragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ public class RegistrarSearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_registrar_search, container, false);
-        ButterKnife.inject(this, v);
+        ButterKnife.bind(this, v);
         return v;
     }
 
