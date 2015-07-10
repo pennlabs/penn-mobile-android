@@ -22,8 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class DirectoryAdapter extends ArrayAdapter<Person> {
     private final LayoutInflater inflater;
@@ -128,15 +128,15 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
     }
 
     static class ViewHolder {
-        @InjectView(R.id.tv_person_name) TextView tvName;
-        @InjectView(R.id.tv_person_affiliation) TextView tvAffiliation;
-        @InjectView(R.id.tv_person_email) TextView tvEmail;
-        @InjectView(R.id.tv_person_phone) TextView tvPhone;
-        @InjectView(R.id.star_contact) ToggleButton star;
-        @InjectView(R.id.contact_icon) ImageView contact;
+        @Bind(R.id.tv_person_name) TextView tvName;
+        @Bind(R.id.tv_person_affiliation) TextView tvAffiliation;
+        @Bind(R.id.tv_person_email) TextView tvEmail;
+        @Bind(R.id.tv_person_phone) TextView tvPhone;
+        @Bind(R.id.star_contact) ToggleButton star;
+        @Bind(R.id.contact_icon) ImageView contact;
 
         public ViewHolder(View view) {
-            ButterKnife.inject(this, view);
+            ButterKnife.bind(this, view);
         }
     }
 
