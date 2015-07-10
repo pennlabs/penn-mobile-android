@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.annotation.LayoutRes;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -25,7 +26,7 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
     private final LayoutInflater inflater;
     private List<Course> courses;
 
-    public RegistrarAdapter(Context context, int layout, List<Course> courses) {
+    public RegistrarAdapter(Context context, @LayoutRes int layout, List<Course> courses) {
         super(context, layout, courses);
         this.courses = courses;
         inflater = LayoutInflater.from(context);
