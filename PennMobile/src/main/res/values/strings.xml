@@ -19,6 +19,7 @@
     <string name="course_desc_title">Description</string>
     <string name="add_contact">Add contact</string>
     <string name="no_results">No results found.</string>
+    <string name="action_licenses">Open Source Licenses</string>
 
     <!-- Search -->
     <string name="registrar_search">Search for courses</string>
