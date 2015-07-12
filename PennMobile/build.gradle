@@ -47,4 +47,5 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
         transitive = true;
     }
+    testCompile 'junit:junit:4.12'
 }
