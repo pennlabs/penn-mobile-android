@@ -7,8 +7,6 @@ import android.view.ContextThemeWrapper;
 
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Course;
-import com.pennapps.labs.pennmobile.classes.DiningStation;
-import com.pennapps.labs.pennmobile.classes.Menu;
 import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Venue;
@@ -99,7 +97,7 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
         Labs mLabs = activity.getLabsInstance();
         List<Venue> venues = mLabs.venues();
         NewDiningHall commons = mLabs.daily_menu(venues.get(0).id);
-        Menu menu = commons.menus.get(0);
+        NewDiningHall.Menu menu = commons.menus.get(0);
         assertTrue(menu.name.equals("Brunch") || menu.name.equals("Breakfast"));
     }
 
@@ -107,8 +105,8 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
         Labs mLabs = activity.getLabsInstance();
         List<Venue> venues = mLabs.venues();
         NewDiningHall commons = mLabs.daily_menu(venues.get(0).id);
-        Menu menu = commons.menus.get(0);
-        DiningStation station = menu.stations.get(0);
+        NewDiningHall.Menu menu = commons.menus.get(0);
+        NewDiningHall.DiningStation station = menu.stations.get(0);
         assertTrue(station.items.size() > 1);
     }
 }

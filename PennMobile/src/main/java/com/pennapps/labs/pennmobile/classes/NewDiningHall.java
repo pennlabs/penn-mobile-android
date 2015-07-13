@@ -13,4 +13,31 @@ import java.util.List;
 public class NewDiningHall {
     public String name;
     @SerializedName("tblDayPart") public List<Menu> menus = new ArrayList<>();
+
+    /**
+     * Created by Adel on 12/18/14.
+     * Class for a single menu, ie. Lunch, Dinner
+     */
+    public static class Menu {
+        @SerializedName("txtDayPartDescription") public String name;
+        @SerializedName("tblStation") public List<DiningStation> stations = new ArrayList<>();
+    }
+
+    /**
+     * Created by Adel on 12/18/14.
+     * Class for a station at a dining hall
+     */
+    public static class DiningStation {
+        @SerializedName("txtStationDescription") public String name;
+        @SerializedName("tblItem") public List<FoodItem> items = new ArrayList<>();
+    }
+
+    /**
+     * Created by Adel on 12/18/14.
+     * Class for Food items in Dining menus
+     */
+    public static class FoodItem {
+        @SerializedName("txtTitle") String title;
+        @SerializedName("txtDescription") String description;
+    }
 }
