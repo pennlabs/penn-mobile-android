@@ -10,6 +10,8 @@ import java.util.List;
  * Class for a station at a dining hall
  */
 public class DiningStation {
-    @SerializedName("txtStationDescription") String name;
-    @SerializedName("tblItem") List<FoodItem> items = new ArrayList<>();
+    @SerializedName("txtStationDescription")
+    public String name;
+    @SerializedName("tblItem")
+    public List<FoodItem> items = new ArrayList<>();
 }
