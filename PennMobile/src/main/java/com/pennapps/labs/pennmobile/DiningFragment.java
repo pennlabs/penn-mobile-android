@@ -33,6 +33,7 @@ public class DiningFragment extends ListFragment {
     private Labs mLabs;
     private ListView mListView;
     private ArrayList<DiningHall> mDiningHalls;
+    private ArrayList<DiningHall> mNDiningHalls;
     private Activity mActivity;
     public static Fragment mFragment;
 
@@ -43,6 +44,7 @@ public class DiningFragment extends ListFragment {
         mLabs = ((MainActivity) getActivity()).getLabsInstance();
         mActivity = getActivity();
         mDiningHalls = new ArrayList<>();
+        mNDiningHalls = new ArrayList<>();
         mFragment = this;
         InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -106,6 +108,7 @@ public class DiningFragment extends ListFragment {
                     }
                     Venue nV = newVenues.get(i);
                     DiningHall newHall = new DiningHall(nV.id, nV.name, nV.isResidential(), nV.hasMenu(mLabs), nV.getHours());
+                    mNDiningHalls.add(newHall);
                     mDiningHalls.add(new DiningHall(id, name, isResidential, hasMenu, hours));
                 }
             } catch (JSONException | NullPointerException ignored) {

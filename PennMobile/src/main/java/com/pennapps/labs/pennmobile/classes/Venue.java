@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile.classes;
 import com.google.gson.annotations.SerializedName;
 import com.pennapps.labs.pennmobile.api.Labs;
 
+import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 import java.util.ArrayList;
@@ -36,7 +37,18 @@ public class Venue {
     }
 
     public HashMap<String, Interval> getHours() {
-        HashMap<String, Interval> parsed = new HashMap<>();
-        return parsed;
+        if (hours.isEmpty()) {
+            return new HashMap<>();
+        }
+        DateTime currentTime = new DateTime();
+        VenueInterval hoursToday = hours.get(0);
+        int dayOfWeek = 0;
+        // Split by T gets the Y-M-D format to compare against the date in JSON
+        while (!hoursToday.date.equals(currentTime.toString().split("T")[0])) {
+            hoursToday = hours.get(dayOfWeek);
+            dayOfWeek++;
+        }
+
+        return hoursToday.getIntervals();
     }
 }
