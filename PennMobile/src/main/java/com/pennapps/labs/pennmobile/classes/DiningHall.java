@@ -40,6 +40,15 @@ public class DiningHall implements Parcelable {
         this.menus = new HashMap<>();
     }
 
+    public DiningHall(int id, String name, boolean residential, boolean hasMenu, HashMap<String, Interval> hours) {
+        this.id = id;
+        this.name = name;
+        this.residential = residential;
+        this.hasMenu = hasMenu;
+        this.openHours = hours;
+        this.menus = new HashMap<>();
+    }
+
     public int describeContents(){
         return 0;
     }

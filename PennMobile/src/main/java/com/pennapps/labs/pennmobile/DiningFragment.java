@@ -16,17 +16,21 @@ import android.widget.ListView;
 
 import com.pennapps.labs.pennmobile.adapters.DiningAdapter;
 import com.pennapps.labs.pennmobile.api.DiningAPI;
+import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
+import com.pennapps.labs.pennmobile.classes.Venue;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DiningFragment extends ListFragment {
 
     private DiningAPI mAPI;
+    private Labs mLabs;
     private ListView mListView;
     private ArrayList<DiningHall> mDiningHalls;
     private Activity mActivity;
@@ -36,6 +40,7 @@ public class DiningFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAPI = new DiningAPI(((MainActivity) getActivity()).getAPIClient());
+        mLabs = ((MainActivity) getActivity()).getLabsInstance();
         mActivity = getActivity();
         mDiningHalls = new ArrayList<>();
         mFragment = this;
@@ -85,6 +90,7 @@ public class DiningFragment extends ListFragment {
 
             try {
                 JSONObject resultObj = mAPI.getVenues();
+                List<Venue> newVenues = mLabs.venues();
                 JSONArray venues = resultObj.getJSONObject("document").getJSONArray("venue");
                 for (int i = 0; i < venues.length(); i++) {
                     JSONObject venue = venues.getJSONObject(i);
@@ -98,6 +104,8 @@ public class DiningFragment extends ListFragment {
                     } catch (JSONException e) {
                         hours = new JSONArray();
                     }
+                    Venue nV = newVenues.get(i);
+                    DiningHall newHall = new DiningHall(nV.id, nV.name, nV.isResidential(), nV.hasMenu(mLabs), nV.getHours());
                     mDiningHalls.add(new DiningHall(id, name, isResidential, hasMenu, hours));
                 }
             } catch (JSONException | NullPointerException ignored) {
