@@ -33,7 +33,6 @@ public class DiningFragment extends ListFragment {
     private Labs mLabs;
     private ListView mListView;
     private ArrayList<DiningHall> mDiningHalls;
-    private ArrayList<DiningHall> mNDiningHalls;
     private Activity mActivity;
     public static Fragment mFragment;
 
@@ -44,7 +43,6 @@ public class DiningFragment extends ListFragment {
         mLabs = ((MainActivity) getActivity()).getLabsInstance();
         mActivity = getActivity();
         mDiningHalls = new ArrayList<>();
-        mNDiningHalls = new ArrayList<>();
         mFragment = this;
         InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -89,30 +87,10 @@ public class DiningFragment extends ListFragment {
 
         @Override
         protected Void doInBackground(Void... params) {
-
-            try {
-                JSONObject resultObj = mAPI.getVenues();
-                List<Venue> newVenues = mLabs.venues();
-                JSONArray venues = resultObj.getJSONObject("document").getJSONArray("venue");
-                for (int i = 0; i < venues.length(); i++) {
-                    JSONObject venue = venues.getJSONObject(i);
-                    int id = venue.getInt("id");
-                    String name = venue.getString("name");
-                    boolean isResidential = venue.getString("venueType").equals("residential") && !name.equals("Cafe at McClelland");
-                    boolean hasMenu = hasMenu(venue);
-                    JSONArray hours;
-                    try {
-                        hours = venue.getJSONArray("dateHours");
-                    } catch (JSONException e) {
-                        hours = new JSONArray();
-                    }
-                    Venue nV = newVenues.get(i);
-                    DiningHall newHall = new DiningHall(nV.id, nV.name, nV.isResidential(), nV.hasMenu(mLabs), nV.getHours());
-                    mNDiningHalls.add(newHall);
-                    mDiningHalls.add(new DiningHall(id, name, isResidential, hasMenu, hours));
-                }
-            } catch (JSONException | NullPointerException ignored) {
-
+            List<Venue> venues = mLabs.venues();
+            for (Venue venue : venues) {
+                DiningHall hall = new DiningHall(venue.id, venue.name, venue.isResidential(), venue.hasMenu(mLabs), venue.getHours());
+                mDiningHalls.add(hall);
             }
             return null;
         }
@@ -121,25 +99,6 @@ public class DiningFragment extends ListFragment {
         protected void onPostExecute(Void params) {
             new GetMenusTask().execute();
         }
-    }
-
-    private boolean hasMenu(JSONObject venue) {
-        try {
-            if (venue.getString("dailyMenuURL").isEmpty()) {
-                return false;
-            } else {
-                JSONObject meals = mAPI.getDailyMenu(venue.getInt("id")).getJSONObject("Document")
-                        .getJSONObject("tblMenu");
-                if (meals.length() == 0) {
-                    return false;
-                }
-            }
-        } catch (JSONException ignored) {
-            return false;
-        } catch (NullPointerException ignored) {
-            return false;
-        }
-        return true;
     }
 
     private class GetMenusTask extends AsyncTask<Void, Void, Void> {
