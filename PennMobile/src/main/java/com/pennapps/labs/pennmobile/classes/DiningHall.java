@@ -5,11 +5,6 @@ import android.os.Parcelable;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,14 +24,12 @@ public class DiningHall implements Parcelable {
     private HashMap<String, Interval> openHours;
     public HashMap<String, HashMap<String, HashSet<String>>> menus;
 
-    DateTimeFormatter DATEFORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-
-    public DiningHall(int id, String name, boolean residential, boolean hasMenu, JSONArray hours) {
+    public DiningHall(int id, String name, boolean residential, boolean hasMenu, HashMap<String, Interval> hours) {
         this.id = id;
         this.name = name;
         this.residential = residential;
         this.hasMenu = hasMenu;
-        this.openHours = parseHours(hours);
+        this.openHours = hours;
         this.menus = new HashMap<>();
     }
 
@@ -53,42 +46,6 @@ public class DiningHall implements Parcelable {
         dest.writeString(name);
     }
 
-    private HashMap<String, Interval> parseHours(JSONArray hours) {
-        HashMap<String, Interval> openHours = new HashMap<>();
-
-        try {
-
-            JSONObject hoursToday = hours.getJSONObject(0);
-            String date = hoursToday.getString("date");
-            DateTime currentTime = new DateTime();
-            int dayOfWeek = 0;
-            // Split by T gets the Y-M-D format to compare against the date in JSON
-            while (!hoursToday.getString("date").equals(currentTime.toString().split("T")[0])) {
-                hoursToday = hours.getJSONObject(dayOfWeek);
-                date = hoursToday.getString("date");
-                dayOfWeek++;
-            }
-
-            try {
-                JSONArray meals = hoursToday.getJSONArray("meal");
-                for (int i = 0; i < meals.length(); i++) {
-                    JSONObject meal = meals.getJSONObject(i);
-                    String mealName = meal.getString("type");
-                    Interval mealOpenInterval = parseMealHours(meal, date);
-                    openHours.put(mealName, mealOpenInterval);
-                }
-            } catch (JSONException e) {
-                JSONObject meal = hoursToday.getJSONObject("meal");
-                String mealName = meal.getString("type");
-                Interval mealOpenInterval = parseMealHours(meal, date);
-                openHours.put(mealName, mealOpenInterval);
-            }
-        } catch (JSONException ignored) {
-
-        }
-        return openHours;
-    }
-
     public int getId() {
         return id;
     }
@@ -99,9 +56,6 @@ public class DiningHall implements Parcelable {
 
     public boolean isResidential() {
         return residential;
-    }
-    public boolean isRetail() {
-        return !residential;
     }
     public boolean hasMenu() {
         return hasMenu;
@@ -149,27 +103,6 @@ public class DiningHall implements Parcelable {
             }
         }
         return false;
-    }
-
-    private Interval parseMealHours(JSONObject meal, String date) {
-        try {
-            String openTime = date + " " + meal.getString("open");
-            String closeTime = date + " " + meal.getString("close");
-            if (meal.getString("close").equals("00:00:00") ||
-                    meal.getString("close").equals("24:00:00")) {
-                closeTime = date + " " + "23:59:59";
-            }
-            DateTime openInstant = DateTime.parse(openTime, DATEFORMAT);
-            DateTime closeInstant = DateTime.parse(closeTime, DATEFORMAT);
-
-            if (closeInstant.getHourOfDay() < 6) {
-                closeInstant = closeInstant.plusDays(1);
-            }
-
-            return new Interval(openInstant, closeInstant);
-        } catch (JSONException ignored) {
-            return null;
-        }
     }
 
     public String openMeal() {

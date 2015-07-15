@@ -16,17 +16,21 @@ import android.widget.ListView;
 
 import com.pennapps.labs.pennmobile.adapters.DiningAdapter;
 import com.pennapps.labs.pennmobile.api.DiningAPI;
+import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
+import com.pennapps.labs.pennmobile.classes.Venue;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DiningFragment extends ListFragment {
 
     private DiningAPI mAPI;
+    private Labs mLabs;
     private ListView mListView;
     private ArrayList<DiningHall> mDiningHalls;
     private Activity mActivity;
@@ -36,6 +40,7 @@ public class DiningFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAPI = new DiningAPI(((MainActivity) getActivity()).getAPIClient());
+        mLabs = ((MainActivity) getActivity()).getLabsInstance();
         mActivity = getActivity();
         mDiningHalls = new ArrayList<>();
         mFragment = this;
@@ -82,26 +87,10 @@ public class DiningFragment extends ListFragment {
 
         @Override
         protected Void doInBackground(Void... params) {
-
-            try {
-                JSONObject resultObj = mAPI.getVenues();
-                JSONArray venues = resultObj.getJSONObject("document").getJSONArray("venue");
-                for (int i = 0; i < venues.length(); i++) {
-                    JSONObject venue = venues.getJSONObject(i);
-                    int id = venue.getInt("id");
-                    String name = venue.getString("name");
-                    boolean isResidential = venue.getString("venueType").equals("residential") && !name.equals("Cafe at McClelland");
-                    boolean hasMenu = hasMenu(venue);
-                    JSONArray hours;
-                    try {
-                        hours = venue.getJSONArray("dateHours");
-                    } catch (JSONException e) {
-                        hours = new JSONArray();
-                    }
-                    mDiningHalls.add(new DiningHall(id, name, isResidential, hasMenu, hours));
-                }
-            } catch (JSONException | NullPointerException ignored) {
-
+            List<Venue> venues = mLabs.venues();
+            for (Venue venue : venues) {
+                DiningHall hall = new DiningHall(venue.id, venue.name, venue.isResidential(), venue.hasMenu(mLabs), venue.getHours());
+                mDiningHalls.add(hall);
             }
             return null;
         }
@@ -110,25 +99,6 @@ public class DiningFragment extends ListFragment {
         protected void onPostExecute(Void params) {
             new GetMenusTask().execute();
         }
-    }
-
-    private boolean hasMenu(JSONObject venue) {
-        try {
-            if (venue.getString("dailyMenuURL").isEmpty()) {
-                return false;
-            } else {
-                JSONObject meals = mAPI.getDailyMenu(venue.getInt("id")).getJSONObject("Document")
-                        .getJSONObject("tblMenu");
-                if (meals.length() == 0) {
-                    return false;
-                }
-            }
-        } catch (JSONException ignored) {
-            return false;
-        } catch (NullPointerException ignored) {
-            return false;
-        }
-        return true;
     }
 
     private class GetMenusTask extends AsyncTask<Void, Void, Void> {
