@@ -37,12 +37,16 @@ public class VenueInterval {
         public Interval getInterval(String date) {
             String openTime = date + " " + open;
             String closeTime = date + " " + close;
+            // Avoid midnight hour confusion as API returns both 00:00 and 24:00
+            // Switch it to more comprehensible 23:59 / 11:59PM
             if (close.equals("00:00:00") || close.equals("24:00:00")) {
                 closeTime = date + " " + "23:59:59";
             }
             DateTime openInstant = DateTime.parse(openTime, DATEFORMAT);
             DateTime closeInstant = DateTime.parse(closeTime, DATEFORMAT);
 
+            // Close hours sometimes given in AM hours of next day
+            // Cutoff for "early morning" hours was decided to be 6AM
             if (closeInstant.getHourOfDay() < 6) {
                 closeInstant = closeInstant.plusDays(1);
             }
