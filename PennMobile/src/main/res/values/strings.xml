@@ -51,5 +51,8 @@
     <string name="routes_list">Routes</string>
     <string name="routes_ok">OK</string>
 
+    <!-- About -->
+    <string name="licenses">Licenses</string>
+
 
 </resources>
