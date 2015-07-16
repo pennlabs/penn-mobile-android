@@ -138,9 +138,4 @@ public class DiningHall implements Parcelable {
 
         return nextMeal;
     }
-
-    public class Meal {
-        public String name;
-        public HashMap<String, String> menu;
-    }
 }
