@@ -15,7 +15,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 
 import com.pennapps.labs.pennmobile.adapters.DiningAdapter;
-import com.pennapps.labs.pennmobile.api.DiningAPI;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.NewDiningHall;
@@ -26,7 +25,6 @@ import java.util.List;
 
 public class DiningFragment extends ListFragment {
 
-    private DiningAPI mAPI;
     private Labs mLabs;
     private ListView mListView;
     private ArrayList<DiningHall> mDiningHalls;
@@ -36,7 +34,6 @@ public class DiningFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAPI = new DiningAPI(((MainActivity) getActivity()).getAPIClient());
         mLabs = ((MainActivity) getActivity()).getLabsInstance();
         mActivity = getActivity();
         mDiningHalls = new ArrayList<>();
