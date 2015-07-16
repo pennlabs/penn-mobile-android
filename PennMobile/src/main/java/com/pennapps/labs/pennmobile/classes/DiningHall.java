@@ -38,6 +38,23 @@ public class DiningHall implements Parcelable {
         this.menus = new LinkedHashMap<>();
     }
 
+    protected DiningHall(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+    }
+
+    public static final Creator<DiningHall> CREATOR = new Creator<DiningHall>() {
+        @Override
+        public DiningHall createFromParcel(Parcel in) {
+            return new DiningHall(in);
+        }
+
+        @Override
+        public DiningHall[] newArray(int size) {
+            return new DiningHall[size];
+        }
+    };
+
     public void parseMeal(JSONObject meal) {
         try {
             String mealName = meal.getString("txtDayPartDescription");

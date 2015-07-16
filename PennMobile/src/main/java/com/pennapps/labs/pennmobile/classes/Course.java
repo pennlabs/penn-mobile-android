@@ -17,6 +17,27 @@ public class Course implements Parcelable {
     public List<Instructor> instructors = new ArrayList<>();
     public List<Meeting> meetings = new ArrayList<>();
 
+    protected Course(Parcel in) {
+        course_department = in.readString();
+        course_number = in.readInt();
+        section_number = in.readInt();
+        course_title = in.readString();
+        course_description = in.readString();
+        activity = in.readString();
+    }
+
+    public static final Creator<Course> CREATOR = new Creator<Course>() {
+        @Override
+        public Course createFromParcel(Parcel in) {
+            return new Course(in);
+        }
+
+        @Override
+        public Course[] newArray(int size) {
+            return new Course[size];
+        }
+    };
+
     public int describeContents(){
         return 0;
     }
