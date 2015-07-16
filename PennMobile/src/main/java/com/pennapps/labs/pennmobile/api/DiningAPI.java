@@ -31,10 +31,6 @@ public class DiningAPI {
         }
     }
 
-    public JSONObject getVenues() {
-        return getAPIData("venues");
-    }
-
     public JSONObject getDailyMenu(int hallID) {
         return getAPIData("daily_menu/" + hallID);
     }
