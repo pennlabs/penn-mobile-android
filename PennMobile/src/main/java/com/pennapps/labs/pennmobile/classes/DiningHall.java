@@ -55,6 +55,12 @@ public class DiningHall implements Parcelable {
         }
     };
 
+    public void parseMeals(NewDiningHall h) {
+        for (NewDiningHall.Menu menu : h.menus) {
+            this.menus.put(menu.name, menu.getStationMap());
+        }
+    }
+
     public void parseMeal(JSONObject meal) {
         try {
             String mealName = meal.getString("txtDayPartDescription");
