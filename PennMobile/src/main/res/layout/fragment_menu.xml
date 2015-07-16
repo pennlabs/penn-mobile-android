@@ -5,79 +5,74 @@
     android:fillViewport="true"
     tools:context="com.pennapps.labs.pennmobile.MenuFragment">
     <LinearLayout
+        android:id="@+id/menu_parent"
+        android:padding="15sp"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:id="@+id/main_menu_layout"
         android:layout_height="wrap_content">
         <RelativeLayout
-            android:layout_margin="15sp"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent">
-            <RelativeLayout
-                android:id="@+id/dining_hall_title"
+            android:id="@+id/dining_hall_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                tools:text="1920 Commons"
+                android:id="@+id/dining_hall_name"
+                style="@style/HallName" />
+
+            <TextView
+                android:id="@+id/dining_hall_status"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="4dp"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                tools:background="@drawable/label_green"
+                tools:text="Open" />
 
-                <TextView
-                    android:id="@+id/dining_hall_name"
-                    style="@style/HallName" />
-
-                <TextView
-                    android:id="@+id/dining_hall_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginTop="4dp"
-                    android:textSize="20sp"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:paddingRight="10dp"
-                    android:paddingLeft="10dp" />
-
-            </RelativeLayout>
-
-            <TextView
-                android:id="@+id/dining_hall_breakfast_title"
-                android:layout_below="@+id/dining_hall_title"
-                style="@style/MealName"
-                android:text="@string/breakfast" />
-
-            <TextView
-                android:id="@+id/dining_hall_breakfast"
-                android:layout_below="@+id/dining_hall_breakfast_title"
-                style="@style/Menu" />
-
-            <TextView
-                android:id="@+id/dining_hall_brunch_title"
-                android:layout_below="@+id/dining_hall_breakfast"
-                style="@style/MealName"
-                android:text="@string/brunch" />
-
-            <TextView
-                android:id="@+id/dining_hall_brunch"
-                android:layout_below="@+id/dining_hall_brunch_title"
-                style="@style/Menu" />
-
-            <TextView
-                android:id="@+id/dining_hall_lunch_title"
-                android:layout_below="@+id/dining_hall_brunch"
-                style="@style/MealName"
-                android:text="@string/lunch" />
-
-            <TextView
-                android:id="@+id/dining_hall_lunch"
-                android:layout_below="@+id/dining_hall_lunch_title"
-                style="@style/Menu" />
-
-            <TextView
-                android:id="@+id/dining_hall_dinner_title"
-                android:layout_below="@+id/dining_hall_lunch"
-                style="@style/MealName"
-                android:text="@string/dinner" />
-
-            <TextView
-                android:id="@+id/dining_hall_dinner"
-                android:layout_below="@+id/dining_hall_dinner_title"
-                style="@style/Menu" />
         </RelativeLayout>
+
+        <TextView
+            android:id="@+id/dining_hall_breakfast_title"
+            style="@style/MealName"
+            tools:visibility="visible"
+            android:text="@string/breakfast" />
+
+        <TextView
+            android:id="@+id/dining_hall_breakfast"
+            tools:visibility="visible"
+            tools:text="Sausage"
+            style="@style/Menu" />
+
+        <TextView
+            android:id="@+id/dining_hall_brunch_title"
+            style="@style/MealName"
+            android:text="@string/brunch" />
+
+        <TextView
+            android:id="@+id/dining_hall_brunch"
+            style="@style/Menu" />
+
+        <TextView
+            android:id="@+id/dining_hall_lunch_title"
+            style="@style/MealName"
+            android:text="@string/lunch" />
+
+        <TextView
+            android:id="@+id/dining_hall_lunch"
+            style="@style/Menu" />
+
+        <TextView
+            android:id="@+id/dining_hall_dinner_title"
+            style="@style/MealName"
+            android:text="@string/dinner" />
+
+        <TextView
+            android:id="@+id/dining_hall_dinner"
+            style="@style/Menu" />
     </LinearLayout>
 </ScrollView>
