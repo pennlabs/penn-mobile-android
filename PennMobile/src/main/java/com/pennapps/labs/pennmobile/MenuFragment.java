@@ -159,9 +159,8 @@ public class MenuFragment extends Fragment {
             menuParent.addView(mealNameTV);
             // Menu
             TextView menuTV = new TextView(view.getContext(), null, R.style.Menu);
-            Spanned menuHtml = Html.fromHtml(menuText.toString());
             menuTV.setVisibility(View.VISIBLE);
-            menuTV.setText(menuHtml);
+            menuTV.setText(Html.fromHtml(menuText.toString()));
             menuParent.addView(menuTV);
         }
     }
