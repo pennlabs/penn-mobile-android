@@ -11,7 +11,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
@@ -51,6 +50,7 @@ import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.BusPath;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
+import com.pennapps.labs.pennmobile.classes.MapCallbacks;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -70,7 +70,7 @@ public class TransitFragment extends Fragment {
     private String query = "";
     private Labs mLabs;
     private EditText startingLoc;
-    private static MapFragment.MapCallBacks mapCallBacks;
+    private static MapCallbacks mapCallBacks;
     private RoutesAdapter adapter;
     private boolean[] routesClicked;
 
@@ -80,9 +80,9 @@ public class TransitFragment extends Fragment {
 
         mLabs = ((MainActivity) getActivity()).getLabsInstance();
 
-        mapCallBacks = MapFragment.getMapCallBacks();
-        if(mapCallBacks == null) {
-            mapCallBacks = new MapFragment.MapCallBacks();
+        mapCallBacks = MapFragment.getMapCallbacks();
+        if (mapCallBacks == null) {
+            mapCallBacks = new MapCallbacks();
             GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder((getActivity().getApplicationContext()))
                     .addConnectionCallbacks(mapCallBacks)
                     .addOnConnectionFailedListener(mapCallBacks)
@@ -120,10 +120,9 @@ public class TransitFragment extends Fragment {
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));
         startingLoc = (EditText) v.findViewById(R.id.transit_starting_location);
         startingLoc.setOnEditorActionListener(new OnEditorActionListener(){
-
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if((actionId == EditorInfo.IME_ACTION_DONE || event != null) && query != null && !query.isEmpty()){
+                if ((actionId == EditorInfo.IME_ACTION_DONE || event != null) && query != null && !query.isEmpty()) {
                     drawMap(query, v.getEditableText().toString(), null);
                 }
                 return false;
@@ -173,7 +172,7 @@ public class TransitFragment extends Fragment {
             case R.id.transit_search:
                 return true;
             case R.id.transit_route:
-                if(adapter == null){
+                if (adapter == null) {
                     mLabs.routes().observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<BusRoute>>() {
                         @Override
                         public List<BusRoute> call(Throwable throwable) {
@@ -183,16 +182,15 @@ public class TransitFragment extends Fragment {
                         @Override
                         public void call(List<BusRoute> routes) {
                             ArrayList<String> route_names = new ArrayList<>(routes.size());
-                            for(BusRoute route: routes){
+                            for (BusRoute route: routes) {
                                 route_names.add(route.route_name);
                             }
                             adapter = new RoutesAdapter(getActivity().getApplicationContext(),
                                     routes, route_names);
                             showRouteDialogBox();
-
                         }
                     });
-                } else{
+                } else {
                     showRouteDialogBox();
                 }
                 return true;
@@ -204,15 +202,15 @@ public class TransitFragment extends Fragment {
     private void showRouteDialogBox(){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.routes_list).setAdapter(adapter, null)
-        .setPositiveButton(R.string.routes_ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-                googleMap.clear();
-                for(int i = 0; i < adapter.getCount(); i++){
-                    adapter.drawRoutes(i);
+            .setPositiveButton(R.string.routes_ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                    googleMap.clear();
+                    for (int i = 0; i < adapter.getCount(); i++) {
+                        adapter.drawRoutes(i);
+                    }
                 }
-            }
-        }).show();
+            }).show();
     }
 
     @Override
@@ -257,16 +255,15 @@ public class TransitFragment extends Fragment {
             InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
-        String q = destination;
-        if(current == null){
-            q = start;
+        if (current == null) {
+            destination = start;
         }
-        mLabs.buildings(q)
-                .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<Building>>() {
-            @Override
-            public List<Building> call(Throwable throwable) {
-                return null;
-            }
+        mLabs.buildings(destination)
+            .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<Building>>() {
+                @Override
+                public List<Building> call(Throwable throwable) {
+                    return null;
+                }
         }).subscribe(new Action1<List<Building>>() {
             @Override
             public void call(List<Building> buildings) {
@@ -298,60 +295,61 @@ public class TransitFragment extends Fragment {
                         return;
                     }
                     mLabs.routing(String.valueOf(beginL.latitude), Double.toString(endL.latitude),
-                            String.valueOf(beginL.longitude), Double.toString(endL.longitude))
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .onErrorReturn(new Func1<Throwable, BusPath>() {
-                                @Override
-                                public BusPath call(Throwable throwable) {
-                                    return new BusPath();
+                        String.valueOf(beginL.longitude), Double.toString(endL.longitude))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .onErrorReturn(new Func1<Throwable, BusPath>() {
+                            @Override
+                            public BusPath call(Throwable throwable) {
+                                return new BusPath();
+                            }
+                        })
+                        .subscribe(new Action1<BusPath>() {
+                            @Override
+                            public void call(BusPath route) {
+                                googleMap.clear();
+                                if (route == null) {
+                                    Toast.makeText(getActivity().getApplicationContext(), "No path found.", Toast.LENGTH_SHORT).show();
+                                    return;
                                 }
-                            })
-                            .subscribe(new Action1<BusPath>() {
-                                @Override
-                                public void call(BusPath route) {
-                                    googleMap.clear();
-                                    if (route == null) {
-                                        Toast.makeText(getActivity().getApplicationContext(), "No path found.", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
-                                    PolylineOptions options = new PolylineOptions();
-                                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                                    for (BusStop busStop : route.path) {
-                                        LatLng latLngBuff = new LatLng(busStop.getLatitude(), busStop.getLongitude());
-                                        if (busStop.getName() != null) {
-                                            if (route.path.indexOf(busStop) != 0
-                                                    && route.path.indexOf(busStop) != route.path.size() - 1) {
-                                                googleMap.addMarker(new MarkerOptions()
-                                                        .position(latLngBuff)
-                                                        .title(busStop.getName())
-                                                        .icon(BitmapDescriptorFactory
-                                                                .fromResource(R.drawable.ic_brightness_1_black_18dp)));
-                                            } else {
-                                                googleMap.addMarker(new MarkerOptions()
-                                                        .position(latLngBuff)
-                                                        .title(busStop.getName()));
-                                            }
+                                PolylineOptions options = new PolylineOptions();
+                                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                                for (BusStop busStop : route.path) {
+                                    LatLng latLngBuff = new LatLng(busStop.getLatitude(), busStop.getLongitude());
+                                    if (busStop.getName() != null) {
+                                        if (route.path.indexOf(busStop) != 0
+                                                && route.path.indexOf(busStop) != route.path.size() - 1) {
+                                            googleMap.addMarker(new MarkerOptions()
+                                                    .position(latLngBuff)
+                                                    .title(busStop.getName())
+                                                    .icon(BitmapDescriptorFactory
+                                                            .fromResource(R.drawable.ic_brightness_1_black_18dp)));
+                                        } else {
+                                            googleMap.addMarker(new MarkerOptions()
+                                                    .position(latLngBuff)
+                                                    .title(busStop.getName()));
                                         }
-                                        options.add(latLngBuff);
-                                        builder.include(latLngBuff);
                                     }
-                                    builder.include(beginL);
-                                    builder.include(endL);
-                                    options.width(15).color(Color.BLUE);
-                                    changeZoomLevel(builder.build());
-                                    googleMap.addPolyline(options);
-                                    PolylineOptions startwalk = new PolylineOptions();
-                                    startwalk.add(beginL);
-                                    startwalk.add(new LatLng(route.path.get(0).getLatitude(), route.path.get(0).getLongitude()));
-                                    startwalk.color(Color.RED).width(15);
-                                    googleMap.addPolyline(startwalk);
-                                    PolylineOptions endwalk = new PolylineOptions();
-                                    endwalk.add(new LatLng(route.path.get(route.path.size() - 1).getLatitude(), route.path.get(route.path.size() - 1).getLongitude()));
-                                    endwalk.add(endL);
-                                    endwalk.color(Color.RED).width(15);
-                                    googleMap.addPolyline(endwalk);
+                                    options.add(latLngBuff);
+                                    builder.include(latLngBuff);
                                 }
-                            });
+                                builder.include(beginL);
+                                builder.include(endL);
+                                options.width(15).color(Color.BLUE);
+
+                                MapFragment.changeZoomLevel(googleMap, builder.build());
+                                googleMap.addPolyline(options);
+                                PolylineOptions startwalk = new PolylineOptions();
+                                startwalk.add(beginL);
+                                startwalk.add(new LatLng(route.path.get(0).getLatitude(), route.path.get(0).getLongitude()));
+                                startwalk.color(Color.RED).width(15);
+                                googleMap.addPolyline(startwalk);
+                                PolylineOptions endwalk = new PolylineOptions();
+                                endwalk.add(new LatLng(route.path.get(route.path.size() - 1).getLatitude(), route.path.get(route.path.size() - 1).getLongitude()));
+                                endwalk.add(endL);
+                                endwalk.color(Color.RED).width(15);
+                                googleMap.addPolyline(endwalk);
+                            }
+                        });
                 }
             }
         });
@@ -381,21 +379,29 @@ public class TransitFragment extends Fragment {
     }
 
     private class RoutesAdapter extends ArrayAdapter<String> {
-        int[] colors = {Color.rgb(76, 175, 80), Color.rgb(244, 67, 54), Color.rgb(63, 81, 181), Color.BLACK, Color.GRAY};
-        ArrayList<String> v;
-        Context c;
+
+        int[] colors = {
+            Color.rgb(76, 175, 80),
+            Color.rgb(244, 67, 54),
+            Color.rgb(63, 81, 181),
+            Color.BLACK,
+            Color.GRAY
+        };
+        ArrayList<String> values;
+        Context context;
         List<BusRoute> routes;
         Polyline[] polylines;
         HashMap<Polyline, HashSet<Marker>> markers;
         RoutesAdapter(Context context, List<BusRoute> routes, ArrayList<String> values){
             super(context, R.layout.route_list_item, values);
-            v = values;
-            c = context;
+            this.values = values;
+            this.context = context;
             this.routes = routes;
             polylines = new Polyline[routes.size()];
             markers = new HashMap<>();
             routesClicked = new boolean[values.size()];
-            for(boolean b: routesClicked){
+            // trying to initialize all values to false?
+            for (boolean b: routesClicked) {
                 b = false;
             }
         }
@@ -404,12 +410,11 @@ public class TransitFragment extends Fragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             final int index = position;
             View rowView = convertView;
-            if(rowView == null)
-            {
-                LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            if (rowView == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 rowView = inflater.inflate(R.layout.route_list_item, parent, false);
             }
-            ((TextView)rowView.findViewById(R.id.routes_name)).setText(v.get(position));
+            ((TextView) rowView.findViewById(R.id.routes_name)).setText(values.get(position));
             final Button b = (Button) rowView.findViewById(R.id.routes_checkbox);
             updateRoutes(index, b);
             b.setOnClickListener(new View.OnClickListener() {
@@ -428,13 +433,13 @@ public class TransitFragment extends Fragment {
             return rowView;
         }
 
-        public void drawRoutes(int index){
+        public void drawRoutes(int index) {
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            if(routesClicked[index]){
+            if (routesClicked[index]) {
                 PolylineOptions options = new PolylineOptions();
                 HashSet<Marker> markerSet = new HashSet<>();
                 for (BusStop busStop : routes.get(index).stops) {
-                    for(BusStop bs: busStop.path_to){
+                    for(BusStop bs: busStop.path_to) {
                         options.add(new LatLng(bs.getLatitude(), bs.getLongitude()));
                         builder.include(new LatLng(bs.getLatitude(), bs.getLongitude()));
                     }
@@ -444,13 +449,13 @@ public class TransitFragment extends Fragment {
                                 .position(latLngBuff)
                                 .title(busStop.getName())
                                 .icon(BitmapDescriptorFactory
-                                        .fromResource(R.drawable.ic_brightness_1_black_18dp))));
+                                .fromResource(R.drawable.ic_brightness_1_black_18dp))));
 
                     }
                     options.add(latLngBuff);
                     builder.include(latLngBuff);
                 }
-                for(BusStop bs: routes.get(index).stops.get(0).path_to){
+                for (BusStop bs: routes.get(index).stops.get(0).path_to) {
                     options.add(new LatLng(bs.getLatitude(), bs.getLongitude()));
                     builder.include(new LatLng(bs.getLatitude(), bs.getLongitude()));
                 }
@@ -461,65 +466,37 @@ public class TransitFragment extends Fragment {
                 options.width(15).color(colors[index]);
                 polylines[index] = googleMap.addPolyline(options);
                 markers.put(polylines[index], markerSet);
-                changeZoomLevel(builder.build());
-            } else{
-                if(polylines[index] != null){
+                MapFragment.changeZoomLevel(googleMap, builder.build());
+            } else {
+                if (polylines[index] != null) {
                     polylines[index].remove();
                 }
-                if(markers.containsKey(polylines[index])){
-                    for(Marker m: markers.get(polylines[index])){
+                if (markers.containsKey(polylines[index])) {
+                    for (Marker m: markers.get(polylines[index])) {
                         m.remove();
                     }
                     markers.remove(polylines[index]);
                 }
             }
         }
-        private void updateRoutes(int index, View v){
-            if(routesClicked[index]){
-                Bitmap bitmap = Bitmap.createBitmap(80, 80, Bitmap.Config.ARGB_8888);
-                Canvas canvas = new Canvas(bitmap);
-                Paint paint = new Paint();
+
+        private void updateRoutes(int index, View v) {
+            Bitmap bitmap = Bitmap.createBitmap(80, 80, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            RectF rectf = new RectF(15, 15, 60, 60);
+            Paint paint = new Paint();
+            if (routesClicked[index]) {
                 paint.setStyle(Paint.Style.FILL);
                 paint.setColor(colors[index]);
-                RectF rectf = new RectF(15, 15, 60, 60);
-                canvas.drawRoundRect(rectf,10, 10, paint);
-
-                paint.setStyle(Paint.Style.STROKE);
-                paint.setColor(Color.BLACK);
                 canvas.drawRoundRect(rectf, 10, 10, paint);
-                BitmapDrawable drawable = new BitmapDrawable(getResources(), bitmap);
-                if(v != null) {
-                    v.setBackground(drawable);
-                }
-            } else{
-                Bitmap bitmap = Bitmap.createBitmap(80, 80, Bitmap.Config.ARGB_8888);
-                Canvas canvas = new Canvas(bitmap);
-                Paint paint = new Paint();
-                paint.setStyle(Paint.Style.STROKE);
-                paint.setColor(Color.BLACK);
-                RectF rectf = new RectF(15, 15, 60, 60);
-                canvas.drawRoundRect(rectf, 10, 10, paint);
-                BitmapDrawable drawable = new BitmapDrawable(getResources(), bitmap);
-                if(v != null) {
-                    v.setBackground(drawable);
-                }
+            }
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setColor(Color.BLACK);
+            canvas.drawRoundRect(rectf, 10, 10, paint);
+            BitmapDrawable drawable = new BitmapDrawable(getResources(), bitmap);
+            if (v != null) {
+                v.setBackground(drawable);
             }
         }
-    }
-
-    private void changeZoomLevel(LatLngBounds bounds){
-        Location NECorner = new Location("");
-        Location SWCorner = new Location("");
-        LatLng northeast = bounds.northeast;
-        LatLng southwest = bounds.southwest;
-        NECorner.setLatitude(northeast.latitude);
-        NECorner.setLatitude(northeast.longitude);
-        SWCorner.setLatitude(southwest.latitude);
-        SWCorner.setLatitude(southwest.longitude);
-        int padding = 100;
-        if (SWCorner.distanceTo(NECorner) < 40) {
-            padding = 500;
-        }
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
     }
 }

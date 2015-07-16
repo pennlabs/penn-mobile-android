@@ -1,12 +1,9 @@
 package com.pennapps.labs.pennmobile;
 
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationProvider;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,11 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,6 +26,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Building;
+import com.pennapps.labs.pennmobile.classes.MapCallbacks;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -46,30 +40,28 @@ import rx.functions.Func1;
 
 public class MapFragment extends Fragment {
 
-    public static final String TAG = "MapFragment";
     private Labs mLabs;
     private MapView mapView;
     private GoogleMap googleMap;
+
     private SearchView searchView;
     private String query = "";
     private static Marker currentMarker;
     private static Set<Marker> loadedMarkers;
-    private GoogleApiClient mGoogleApiClient;
-    private static MapCallBacks mapCallBacks;
-    public static final LatLng DEFAULT_LATLNG = new LatLng(39.9529, -75.197098);
+    private static MapCallbacks mapCallbacks;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLabs = ((MainActivity) getActivity()).getLabsInstance();
         loadedMarkers = new HashSet<>();
-        mapCallBacks = new MapCallBacks();
-        mGoogleApiClient = new GoogleApiClient.Builder(( getActivity().getApplicationContext()))
-                .addConnectionCallbacks(mapCallBacks)
-                .addOnConnectionFailedListener(mapCallBacks)
+        mapCallbacks = new MapCallbacks();
+        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(( getActivity().getApplicationContext()))
+                .addConnectionCallbacks(mapCallbacks)
+                .addOnConnectionFailedListener(mapCallbacks)
                 .addApi(LocationServices.API)
                 .build();
-        mapCallBacks.setGoogleApiClient(mGoogleApiClient);
+        mapCallbacks.setGoogleApiClient(mGoogleApiClient);
         if (getActivity() != null) {
             ((MainActivity) getActivity()).closeKeyboard();
         }
@@ -93,15 +85,16 @@ public class MapFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mapCallBacks.getLatLng(), 14));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mapCallbacks.getLatLng(), 14));
 
 
         return v;
     }
+
     private class CustomWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
         private View view;
-        LayoutInflater inflater = null;
+        LayoutInflater inflater;
 
         public CustomWindowAdapter(LayoutInflater inflater) {
             this.inflater = inflater;
@@ -114,20 +107,20 @@ public class MapFragment extends Fragment {
         }
 
         @Override
-        public View getInfoContents(final Marker arg0) {
-            currentMarker = arg0;
+        public View getInfoContents(final Marker marker) {
+            currentMarker = marker;
 
-            ImageView imageView= (ImageView) view.findViewById(R.id.building_image);
+            ImageView imageView = (ImageView) view.findViewById(R.id.building_image);
             TextView name = (TextView) view.findViewById(R.id.building_name);
-            name.setText(arg0.getTitle());
+            name.setText(marker.getTitle());
 
-            if (arg0.getSnippet().isEmpty()) {
+            if (marker.getSnippet().isEmpty()) {
                 imageView.setVisibility(View.GONE);
             } else if (loadedMarkers.contains(currentMarker)) {
-                Picasso.with(getActivity()).load(arg0.getSnippet()).into(imageView);
+                Picasso.with(getActivity()).load(marker.getSnippet()).into(imageView);
             } else {
                 loadedMarkers.add(currentMarker);
-                Picasso.with(getActivity()).load(arg0.getSnippet()).into(imageView, new Callback() {
+                Picasso.with(getActivity()).load(marker.getSnippet()).into(imageView, new Callback() {
                     @Override
                     public void onSuccess() {
                         currentMarker.hideInfoWindow();
@@ -151,28 +144,28 @@ public class MapFragment extends Fragment {
     @Override
     public void onStart(){
         super.onStart();
-        mapCallBacks.getGoogleApiClient().connect();
+        mapCallbacks.getGoogleApiClient().connect();
     }
 
     @Override
     public void onResume() {
-        mapView.onResume();
         super.onResume();
-        mapCallBacks.requestLocationUpdates();
+        mapView.onResume();
+        mapCallbacks.requestLocationUpdates();
         getActivity().setTitle(R.string.map);
     }
 
     @Override
     public void onStop(){
         super.onStop();
-        mapCallBacks.stopLocationUpdates();
+        mapCallbacks.stopLocationUpdates();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
-        mapCallBacks.stopLocationUpdates();
+        mapCallbacks.stopLocationUpdates();
     }
 
     @Override
@@ -199,8 +192,8 @@ public class MapFragment extends Fragment {
         searchView.setIconified(true);
     }
 
-    public static MapCallBacks getMapCallBacks(){
-        return mapCallBacks;
+    public static MapCallbacks getMapCallbacks(){
+        return mapCallbacks;
     }
 
     @Override
@@ -228,16 +221,21 @@ public class MapFragment extends Fragment {
     private void searchBuildings(String query) {
         mLabs.buildings(query)
             .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<Building>>() {
-            @Override
-            public List<Building> call(Throwable throwable) {
-                return null;
-            }
-        })
+                @Override
+                public List<Building> call(Throwable throwable) {
+                    return null;
+                }
+            })
             .subscribe(new Action1<List<Building>>() {
-            @Override
-            public void call(List<Building> buildings) {
-                googleMap.clear();
-                if (!buildings.isEmpty()) {
+                @Override
+                public void call(List<Building> buildings) {
+                    googleMap.clear();
+                    searchView.clearFocus();
+                    if (buildings.isEmpty()) {
+                        Toast.makeText(getActivity().getApplicationContext(), "No results found.",
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
                     for (Building building : buildings) {
                         double latitude = Double.parseDouble(building.latitude);
@@ -249,140 +247,24 @@ public class MapFragment extends Fragment {
                                 .title(building.title)
                                 .snippet(building.getImageURL()));
                     }
-                    LatLngBounds bounds = boundsBuilder.build();
-                    Location NECorner = new Location("");
-                    Location SWCorner = new Location("");
-                    LatLng northeast = bounds.northeast;
-                    LatLng southwest = bounds.southwest;
-                    NECorner.setLatitude(northeast.latitude);
-                    NECorner.setLatitude(northeast.longitude);
-                    SWCorner.setLatitude(southwest.latitude);
-                    SWCorner.setLatitude(southwest.longitude);
-                    int padding = 100;
-                    if (SWCorner.distanceTo(NECorner) < 40) {
-                        padding = 500;
-                    }
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
-                } else {
-                    Toast.makeText(getActivity().getApplicationContext(), "No results found.",
-                            Toast.LENGTH_LONG).show();
+                    changeZoomLevel(googleMap, boundsBuilder.build());
                 }
-                searchView.clearFocus();
-            }
             });
     }
 
-    static class MapCallBacks implements LocationListener, ConnectionCallbacks, OnConnectionFailedListener  {
-        LatLng latLng;
-        GoogleApiClient mGoogleApiClient;
-        LocationRequest mLocationRequest;
-        boolean waiting, called, connected;
-        MapCallBacks(){
-            createLocationRequest();
-            called = false;
-            connected = false;
-            waiting = false;
+    public static void changeZoomLevel(GoogleMap googleMap, LatLngBounds bounds){
+        Location NECorner = new Location("");
+        Location SWCorner = new Location("");
+        LatLng northeast = bounds.northeast;
+        LatLng southwest = bounds.southwest;
+        NECorner.setLatitude(northeast.latitude);
+        NECorner.setLatitude(northeast.longitude);
+        SWCorner.setLatitude(southwest.latitude);
+        SWCorner.setLatitude(southwest.longitude);
+        int padding = 100;
+        if (SWCorner.distanceTo(NECorner) < 40) {
+            padding = 500;
         }
-
-        protected void createLocationRequest() {
-            mLocationRequest = new LocationRequest();
-            mLocationRequest.setInterval(10000);
-            mLocationRequest.setFastestInterval(5000);
-            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        }
-        @Override
-        public void onConnected(Bundle bundle) {
-            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            if(location == null){
-                latLng = DEFAULT_LATLNG;
-            }else{
-                latLng = new LatLng(location.getLatitude(), location.getLongitude());
-            }
-            Log.d(TAG, "new lat lng = " + latLng);
-            requestLocationUpdates();
-            waiting = false;
-        }
-
-        public void requestLocationUpdates(){
-            if(!called && connected) {
-                LocationServices.FusedLocationApi.requestLocationUpdates(
-                        mGoogleApiClient, mLocationRequest,
-                        (com.google.android.gms.location.LocationListener) this);
-            }
-            called = true;
-        }
-
-        public void stopLocationUpdates() {
-            if(connected && called) {
-                LocationServices.FusedLocationApi.removeLocationUpdates(
-                        mGoogleApiClient, (com.google.android.gms.location.LocationListener) this);
-            }
-            if(latLng == null) {
-                latLng = DEFAULT_LATLNG;
-            }
-            called = false;
-        }
-
-        @Override
-        public void onConnectionSuspended(int cause){
-            //handle cause later
-            if(latLng == null) {
-                latLng = DEFAULT_LATLNG;
-            }
-            waiting = false;
-            connected = false;
-        }
-
-        @Override
-        public void onConnectionFailed(ConnectionResult connectionResult) {
-            //handle connectionResult later
-            if(latLng == null) {
-                latLng = DEFAULT_LATLNG;
-            }
-            waiting = false;
-        }
-
-        public LatLng getLatLng(){
-            if(latLng == null){
-                return DEFAULT_LATLNG;
-            }
-            return latLng;
-        }
-
-        public GoogleApiClient getGoogleApiClient(){
-            return mGoogleApiClient;
-        }
-
-        public void setGoogleApiClient(GoogleApiClient mGoogleApiClient){
-            this.mGoogleApiClient = mGoogleApiClient;
-        }
-
-        @Override
-        public void onLocationChanged(Location location) {
-            if(location != null){
-                latLng = new LatLng(location.getLatitude(), location.getLongitude());
-            }
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-            if (status == LocationProvider.AVAILABLE){
-                waiting = false;
-                requestLocationUpdates();
-            }
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-            if (waiting){
-                requestLocationUpdates();
-            }
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-            stopLocationUpdates();
-            waiting = true;
-        }
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
     }
 }
