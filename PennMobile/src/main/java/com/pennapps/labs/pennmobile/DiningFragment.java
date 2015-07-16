@@ -115,7 +115,7 @@ public class DiningFragment extends ListFragment {
 
                         for (int i = 0; i < meals.length(); i++) {
                             JSONObject meal = meals.getJSONObject(i);
-                            MenuFragment.parseMeal(meal, mDiningHall);
+                            mDiningHall.parseMeal(meal);
                         }
                     }
                 }
