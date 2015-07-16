@@ -47,21 +47,6 @@ public class MenuFragment extends Fragment {
         diningHallNameTV.setText(mDiningHall.getName());
         diningHallNameTV.setGravity(Gravity.LEFT);
         fillDescriptions(v);
-        try {
-            if (mDiningHall.isResidential() && mDiningHall.hasMenu()) {
-                JSONObject resultObj = mAPI.getDailyMenu(mDiningHall.getId());
-
-                JSONArray meals = resultObj.getJSONObject("Document")
-                        .getJSONObject("tblMenu")
-                        .getJSONArray("tblDayPart");
-
-                for (int i = 0; i < meals.length(); i++) {
-                    JSONObject meal = meals.getJSONObject(i);
-                    parseMeal(meal, mDiningHall);
-                }
-            }
-        } catch (JSONException ignored) {
-        }
         return v;
     }
 
