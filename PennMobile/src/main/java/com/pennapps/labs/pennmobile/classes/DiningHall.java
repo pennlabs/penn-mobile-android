@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public class DiningHall implements Parcelable {
     private boolean residential;
     private boolean hasMenu;
     private HashMap<String, Interval> openHours;
-    public HashMap<String, HashMap<String, HashSet<String>>> menus;
+    public LinkedHashMap<String, HashMap<String, HashSet<String>>> menus;
 
     public DiningHall(int id, String name, boolean residential, boolean hasMenu, HashMap<String, Interval> hours) {
         this.id = id;
@@ -30,7 +31,7 @@ public class DiningHall implements Parcelable {
         this.residential = residential;
         this.hasMenu = hasMenu;
         this.openHours = hours;
-        this.menus = new HashMap<>();
+        this.menus = new LinkedHashMap<>();
     }
 
     public int describeContents(){

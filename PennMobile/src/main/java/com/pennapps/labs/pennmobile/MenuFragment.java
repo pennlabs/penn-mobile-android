@@ -10,6 +10,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.api.DiningAPI;
@@ -122,10 +123,7 @@ public class MenuFragment extends Fragment {
         DiningHall diningHall = mDiningHall;
         TextView hallNameTV = (TextView) view.findViewById(R.id.dining_hall_name);
         TextView hallStatus = (TextView) view.findViewById(R.id.dining_hall_status);
-        TextView breakfastMenuTV = (TextView) view.findViewById(R.id.dining_hall_breakfast);
-        TextView brunchMenuTV = (TextView) view.findViewById(R.id.dining_hall_brunch);
-        TextView lunchMenuTV = (TextView) view.findViewById(R.id.dining_hall_lunch);
-        TextView dinnerMenuTV = (TextView) view.findViewById(R.id.dining_hall_dinner);
+        LinearLayout menuParent = (LinearLayout) view.findViewById(R.id.menu_parent);
 
         hallNameTV.setText(WordUtils.capitalizeFully(diningHall.getName()));
         view.setTag(diningHall);
@@ -154,29 +152,17 @@ public class MenuFragment extends Fragment {
                     menuText.append("<br>");
                 }
             }
+            // Meal name
+            TextView mealNameTV = new TextView(view.getContext(), null, R.style.MealName);
+            mealNameTV.setVisibility(View.VISIBLE);
+            mealNameTV.setText(mealName);
+            menuParent.addView(mealNameTV);
+            // Menu
+            TextView menuTV = new TextView(view.getContext(), null, R.style.Menu);
             Spanned menuHtml = Html.fromHtml(menuText.toString());
-            switch (mealName) {
-                case "Breakfast":
-                    view.findViewById(R.id.dining_hall_breakfast_title).setVisibility(View.VISIBLE);
-                    breakfastMenuTV.setVisibility(View.VISIBLE);
-                    breakfastMenuTV.setText(menuHtml);
-                    break;
-                case "Brunch":
-                    view.findViewById(R.id.dining_hall_brunch_title).setVisibility(View.VISIBLE);
-                    brunchMenuTV.setVisibility(View.VISIBLE);
-                    brunchMenuTV.setText(menuHtml);
-                    break;
-                case "Lunch":
-                    view.findViewById(R.id.dining_hall_lunch_title).setVisibility(View.VISIBLE);
-                    lunchMenuTV.setVisibility(View.VISIBLE);
-                    lunchMenuTV.setText(menuHtml);
-                    break;
-                case "Dinner":
-                    view.findViewById(R.id.dining_hall_dinner_title).setVisibility(View.VISIBLE);
-                    dinnerMenuTV.setVisibility(View.VISIBLE);
-                    dinnerMenuTV.setText(menuHtml);
-                    break;
-            }
+            menuTV.setVisibility(View.VISIBLE);
+            menuTV.setText(menuHtml);
+            menuParent.addView(menuTV);
         }
     }
 
