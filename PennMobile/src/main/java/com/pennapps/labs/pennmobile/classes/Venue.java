@@ -37,18 +37,14 @@ public class Venue {
     }
 
     public HashMap<String, Interval> getHours() {
-        if (hours.isEmpty()) {
-            return new HashMap<>();
-        }
         DateTime currentTime = new DateTime();
-        VenueInterval hoursToday = hours.get(0);
-        int dayOfWeek = 0;
         // Split by T gets the Y-M-D format to compare against the date in JSON
-        while (!hoursToday.date.equals(currentTime.toString().split("T")[0])) {
-            hoursToday = hours.get(dayOfWeek);
-            dayOfWeek++;
+        for (VenueInterval interval : hours) {
+            if (interval.date.equals(currentTime.toString().split("T")[0])) {
+                return interval.getIntervals();
+            }
         }
 
-        return hoursToday.getIntervals();
+        return new HashMap<>();
     }
 }
