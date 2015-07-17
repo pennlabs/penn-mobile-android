@@ -34,7 +34,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.pennapps.labs.pennmobile.adapters.RoutesAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
@@ -45,7 +44,6 @@ import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.MapCallbacks;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -67,8 +65,6 @@ public class TransitFragment extends Fragment {
     private MainActivity activity;
     static List<BusRoute> routes;
     static HashSet<BusRoute> selectedRoutes;
-    public HashMap<BusRoute, Polyline> polylines;
-    public HashMap<Polyline, HashSet<Marker>> markers;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -343,13 +339,11 @@ public class TransitFragment extends Fragment {
         });
     }
 
-    private class CustomWindowAdapter implements GoogleMap.InfoWindowAdapter {
+    private static class CustomWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
         private View view;
-        LayoutInflater inflater = null;
 
         public CustomWindowAdapter(LayoutInflater inflater) {
-            this.inflater = inflater;
             view = inflater.inflate(R.layout.busstop_info_window, null);
         }
 

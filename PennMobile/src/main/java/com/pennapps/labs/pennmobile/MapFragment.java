@@ -96,10 +96,8 @@ public class MapFragment extends Fragment {
     private class CustomWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
         private View view;
-        LayoutInflater inflater;
 
         public CustomWindowAdapter(LayoutInflater inflater) {
-            this.inflater = inflater;
             view = inflater.inflate(R.layout.info_window, null);
         }
 
