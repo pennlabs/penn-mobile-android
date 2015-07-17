@@ -3,12 +3,7 @@ package com.pennapps.labs.pennmobile;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -21,13 +16,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
@@ -45,6 +36,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.pennapps.labs.pennmobile.adapters.RoutesAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.BusPath;
@@ -56,6 +48,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -72,12 +65,15 @@ public class TransitFragment extends Fragment {
     private static MapCallbacks mapCallBacks;
     private RoutesAdapter adapter;
     private MainActivity activity;
+    static List<BusRoute> routes;
+    static HashSet<BusRoute> selectedRoutes;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = (MainActivity) getActivity();
         mLabs = activity.getLabsInstance();
+        selectedRoutes = new HashSet<>();
 
         mapCallBacks = MapFragment.getMapCallbacks();
         if (mapCallBacks == null) {
@@ -175,6 +171,7 @@ public class TransitFragment extends Fragment {
                     }).subscribe(new Action1<List<BusRoute>>(){
                         @Override
                         public void call(List<BusRoute> routes) {
+                            TransitFragment.routes = routes;
                             adapter = new RoutesAdapter(activity.getApplicationContext(), routes);
                             showRouteDialogBox();
                         }
@@ -195,8 +192,8 @@ public class TransitFragment extends Fragment {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.cancel();
                     googleMap.clear();
-                    for (BusRoute busRoute : adapter.routes) {
-                        adapter.drawRoute(busRoute);
+                    for (BusRoute busRoute : selectedRoutes) {
+                        drawRoute(busRoute);
                     }
                 }
             }).show();
@@ -367,131 +364,60 @@ public class TransitFragment extends Fragment {
         }
     }
 
-    private class RoutesAdapter extends ArrayAdapter<BusRoute> {
+    public static Set<BusRoute> selectedRoutes() {
+        return selectedRoutes;
+    }
 
-        private LayoutInflater inflater;
-        Context context;
-        List<BusRoute> routes;
-        HashMap<BusRoute, Integer> colors;
-        HashMap<BusRoute, Polyline> polylines;
-        HashMap<BusRoute, Boolean> selectedRoutes;
-        HashMap<Polyline, HashSet<Marker>> markers;
+    public static void selectRoute(BusRoute busRoute) {
+        selectedRoutes.add(busRoute);
+    }
 
-        RoutesAdapter(Context context, List<BusRoute> routes) {
-            super(context, R.layout.route_list_item, routes);
-            inflater = LayoutInflater.from(context);
-            this.context = context;
-            this.routes = routes;
-            polylines = new HashMap<>();
-            markers = new HashMap<>();
-            selectedRoutes = new HashMap<>();
-            colors = new HashMap<>();
-            initializeMaps();
-        }
+    public static void deselectRoute(BusRoute busRoute) {
+        selectedRoutes.remove(busRoute);
+    }
 
-        @Override
-        public View getView(int position, View view, ViewGroup parent) {
-            final BusRoute busRoute = getItem(position);
-            if (view == null) {
-                view = inflater.inflate(R.layout.route_list_item, parent, false);
-            }
-            ((TextView) view.findViewById(R.id.routes_name)).setText(busRoute.route_name);
-            final Button button = (Button) view.findViewById(R.id.routes_checkbox);
-            updateRoute(busRoute, button);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    selectedRoutes.put(busRoute, !selectedRoutes.get(busRoute));
-                    updateRoute(busRoute, v);
-                }
-            });
-            button.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    button.setLayoutParams(new LinearLayout.LayoutParams(button.getMeasuredHeight(), button.getMeasuredHeight()));
-                }
-            });
-            return view;
-        }
-
-        public void drawRoute(BusRoute busRoute) {
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            if (selectedRoutes.get(busRoute)) {
-                PolylineOptions options = new PolylineOptions();
-                HashSet<Marker> markerSet = new HashSet<>();
-                for (BusStop busStop : busRoute.stops) {
-                    for(BusStop bs: busStop.path_to) {
-                        options.add(new LatLng(bs.getLatitude(), bs.getLongitude()));
-                        builder.include(new LatLng(bs.getLatitude(), bs.getLongitude()));
-                    }
-                    LatLng latLngBuff = new LatLng(busStop.getLatitude(), busStop.getLongitude());
-                    if (busStop.getName() != null) {
-                        markerSet.add(googleMap.addMarker(new MarkerOptions()
-                                .position(latLngBuff)
-                                .title(busStop.getName())
-                                .icon(BitmapDescriptorFactory
-                                .fromResource(R.drawable.ic_brightness_1_black_18dp))));
-
-                    }
-                    options.add(latLngBuff);
-                    builder.include(latLngBuff);
-                }
-                for (BusStop bs: busRoute.stops.get(0).path_to) {
+    public void drawRoute(BusRoute busRoute) {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        if (selectedRoutes.contains(busRoute)) {
+            PolylineOptions options = new PolylineOptions();
+            HashSet<Marker> markerSet = new HashSet<>();
+            for (BusStop busStop : busRoute.stops) {
+                for(BusStop bs: busStop.path_to) {
                     options.add(new LatLng(bs.getLatitude(), bs.getLongitude()));
                     builder.include(new LatLng(bs.getLatitude(), bs.getLongitude()));
                 }
-                LatLng latLngBuff = new LatLng(busRoute.stops.get(0).getLatitude(),
-                        busRoute.stops.get(0).getLongitude());
+                LatLng latLngBuff = new LatLng(busStop.getLatitude(), busStop.getLongitude());
+                if (busStop.getName() != null) {
+                    markerSet.add(googleMap.addMarker(new MarkerOptions()
+                            .position(latLngBuff)
+                            .title(busStop.getName())
+                            .icon(BitmapDescriptorFactory
+                                    .fromResource(R.drawable.ic_brightness_1_black_18dp))));
+                }
                 options.add(latLngBuff);
                 builder.include(latLngBuff);
-                options.width(15).color(colors.get(busRoute));
-                polylines.put(busRoute, googleMap.addPolyline(options));
-                markers.put(polylines.get(busRoute), markerSet);
-                MapFragment.changeZoomLevel(googleMap, builder.build());
-            } else {
-                if (polylines.get(busRoute) != null) {
-                    polylines.get(busRoute).remove();
-                }
-                if (markers.containsKey(polylines.get(busRoute))) {
-                    for (Marker m: markers.get(polylines.get(busRoute))) {
-                        m.remove();
-                    }
-                    markers.remove(polylines.get(busRoute));
-                }
             }
-        }
-
-        private void initializeMaps() {
-            for (BusRoute busRoute : this.routes) {
-                if (busRoute.route_name.equals("Campus Loop")) {
-                    colors.put(busRoute, Color.rgb(76, 175, 80));
-                } else if (busRoute.route_name.equals("PennBUS West")) {
-                    colors.put(busRoute, Color.rgb(244, 67, 54));
-                } else if (busRoute.route_name.equals("PennBUS East")) {
-                    colors.put(busRoute, Color.rgb(63, 81, 181));
-                } else {
-                    colors.put(busRoute, Color.GRAY);
+            for (BusStop bs: busRoute.stops.get(0).path_to) {
+                options.add(new LatLng(bs.getLatitude(), bs.getLongitude()));
+                builder.include(new LatLng(bs.getLatitude(), bs.getLongitude()));
+            }
+            LatLng latLngBuff = new LatLng(busRoute.stops.get(0).getLatitude(),
+                    busRoute.stops.get(0).getLongitude());
+            options.add(latLngBuff);
+            builder.include(latLngBuff);
+            options.width(15).color(adapter.colors.get(busRoute));
+            adapter.polylines.put(busRoute, googleMap.addPolyline(options));
+            adapter.markers.put(adapter.polylines.get(busRoute), markerSet);
+            MapFragment.changeZoomLevel(googleMap, builder.build());
+        } else {
+            if (adapter.polylines.get(busRoute) != null) {
+                adapter.polylines.get(busRoute).remove();
+            }
+            if (adapter.markers.containsKey(adapter.polylines.get(busRoute))) {
+                for (Marker m: adapter.markers.get(adapter.polylines.get(busRoute))) {
+                    m.remove();
                 }
-                selectedRoutes.put(busRoute, Boolean.FALSE);
-            }
-        }
-
-        private void updateRoute(BusRoute busRoute, View v) {
-            Bitmap bitmap = Bitmap.createBitmap(80, 80, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            RectF rectf = new RectF(15, 15, 60, 60);
-            Paint paint = new Paint();
-            if (selectedRoutes.get(busRoute)) {
-                paint.setStyle(Paint.Style.FILL);
-                paint.setColor(colors.get(busRoute));
-                canvas.drawRoundRect(rectf, 10, 10, paint);
-            }
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setColor(Color.BLACK);
-            canvas.drawRoundRect(rectf, 10, 10, paint);
-            BitmapDrawable drawable = new BitmapDrawable(getResources(), bitmap);
-            if (v != null) {
-                v.setBackground(drawable);
+                adapter.markers.remove(adapter.polylines.get(busRoute));
             }
         }
     }
