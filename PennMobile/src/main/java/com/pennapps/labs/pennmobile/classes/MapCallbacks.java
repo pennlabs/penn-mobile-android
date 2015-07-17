@@ -14,11 +14,11 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class MapCallbacks implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    LatLng latLng;
-    GoogleApiClient mGoogleApiClient;
-    LocationRequest mLocationRequest;
-    boolean waiting, called, connected;
-    LatLng DEFAULT_LATLNG = new LatLng(39.9529, -75.197098);
+    public LatLng latLng;
+    public GoogleApiClient mGoogleApiClient;
+    public LocationRequest mLocationRequest;
+    public boolean waiting, called, connected;
+    public LatLng DEFAULT_LATLNG = new LatLng(39.9529, -75.197098);
 
     public MapCallbacks() {
         createLocationRequest();

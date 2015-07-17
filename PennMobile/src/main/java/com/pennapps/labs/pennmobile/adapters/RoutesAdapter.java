@@ -16,14 +16,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.Polyline;
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.TransitFragment;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -33,9 +30,6 @@ public class RoutesAdapter extends ArrayAdapter<BusRoute> {
     List<BusRoute> routes;
     Context context;
     Set<BusRoute> selectedRoutes;
-    public HashMap<BusRoute, Integer> colors;
-    public HashMap<BusRoute, Polyline> polylines;
-    public HashMap<Polyline, HashSet<Marker>> markers;
 
     public RoutesAdapter(Context context, List<BusRoute> routes) {
         super(context, R.layout.route_list_item, routes);
@@ -43,9 +37,6 @@ public class RoutesAdapter extends ArrayAdapter<BusRoute> {
         inflater = LayoutInflater.from(context);
         this.context = context;
         this.selectedRoutes = TransitFragment.selectedRoutes();
-        polylines = new HashMap<>();
-        markers = new HashMap<>();
-        colors = new HashMap<>();
         initializeMaps();
     }
 
@@ -61,11 +52,7 @@ public class RoutesAdapter extends ArrayAdapter<BusRoute> {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (selectedRoutes.contains(busRoute)) {
-                    TransitFragment.deselectRoute(busRoute);
-                } else {
-                    TransitFragment.selectRoute(busRoute);
-                }
+                TransitFragment.toggleRouteSelection(busRoute);
                 updateCheckbox(busRoute, v);
             }
         });
@@ -80,15 +67,6 @@ public class RoutesAdapter extends ArrayAdapter<BusRoute> {
 
     private void initializeMaps() {
         for (BusRoute busRoute : this.routes) {
-            if (busRoute.route_name.equals("Campus Loop")) {
-                colors.put(busRoute, Color.rgb(76, 175, 80));
-            } else if (busRoute.route_name.equals("PennBUS West")) {
-                colors.put(busRoute, Color.rgb(244, 67, 54));
-            } else if (busRoute.route_name.equals("PennBUS East")) {
-                colors.put(busRoute, Color.rgb(63, 81, 181));
-            } else {
-                colors.put(busRoute, Color.GRAY);
-            }
             selectedRoutes.add(busRoute);
         }
     }
@@ -100,7 +78,7 @@ public class RoutesAdapter extends ArrayAdapter<BusRoute> {
         Paint paint = new Paint();
         if (selectedRoutes.contains(busRoute)) {
             paint.setStyle(Paint.Style.FILL);
-            paint.setColor(colors.get(busRoute));
+            paint.setColor(busRoute.getColor());
             canvas.drawRoundRect(rectf, 10, 10, paint);
         }
         paint.setStyle(Paint.Style.STROKE);

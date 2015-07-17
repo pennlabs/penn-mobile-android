@@ -67,6 +67,8 @@ public class TransitFragment extends Fragment {
     private MainActivity activity;
     static List<BusRoute> routes;
     static HashSet<BusRoute> selectedRoutes;
+    public HashMap<BusRoute, Polyline> polylines;
+    public HashMap<Polyline, HashSet<Marker>> markers;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -109,7 +111,7 @@ public class TransitFragment extends Fragment {
         LatLng myLocation = mapCallBacks.getLatLng();
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));
         startingLoc = (EditText) v.findViewById(R.id.transit_starting_location);
-        startingLoc.setOnEditorActionListener(new OnEditorActionListener(){
+        startingLoc.setOnEditorActionListener(new OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((actionId == EditorInfo.IME_ACTION_DONE || event != null) && query != null && !query.isEmpty()) {
@@ -130,7 +132,7 @@ public class TransitFragment extends Fragment {
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         mapCallBacks.getGoogleApiClient().connect();
     }
@@ -168,7 +170,7 @@ public class TransitFragment extends Fragment {
                         public List<BusRoute> call(Throwable throwable) {
                             return null;
                         }
-                    }).subscribe(new Action1<List<BusRoute>>(){
+                    }).subscribe(new Action1<List<BusRoute>>() {
                         @Override
                         public void call(List<BusRoute> routes) {
                             TransitFragment.routes = routes;
@@ -185,18 +187,18 @@ public class TransitFragment extends Fragment {
         }
     }
 
-    private void showRouteDialogBox(){
+    private void showRouteDialogBox() {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(R.string.routes_list).setAdapter(adapter, null)
-            .setPositiveButton(R.string.routes_ok, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.cancel();
-                    googleMap.clear();
-                    for (BusRoute busRoute : selectedRoutes) {
-                        drawRoute(busRoute);
+                .setPositiveButton(R.string.routes_ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        googleMap.clear();
+                        for (BusRoute busRoute : selectedRoutes) {
+                            drawRoute(busRoute);
+                        }
                     }
-                }
-            }).show();
+                }).show();
     }
 
     @Override
@@ -245,11 +247,11 @@ public class TransitFragment extends Fragment {
             destination = start;
         }
         mLabs.buildings(destination)
-            .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<Building>>() {
-                @Override
-                public List<Building> call(Throwable throwable) {
-                    return null;
-                }
+                .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<Building>>() {
+            @Override
+            public List<Building> call(Throwable throwable) {
+                return null;
+            }
         }).subscribe(new Action1<List<Building>>() {
             @Override
             public void call(List<Building> buildings) {
@@ -281,61 +283,61 @@ public class TransitFragment extends Fragment {
                         return;
                     }
                     mLabs.routing(String.valueOf(beginL.latitude), Double.toString(endL.latitude),
-                        String.valueOf(beginL.longitude), Double.toString(endL.longitude))
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .onErrorReturn(new Func1<Throwable, BusPath>() {
-                            @Override
-                            public BusPath call(Throwable throwable) {
-                                return new BusPath();
-                            }
-                        })
-                        .subscribe(new Action1<BusPath>() {
-                            @Override
-                            public void call(BusPath route) {
-                                googleMap.clear();
-                                if (route == null) {
-                                    Toast.makeText(activity.getApplicationContext(), "No path found.", Toast.LENGTH_SHORT).show();
-                                    return;
+                            String.valueOf(beginL.longitude), Double.toString(endL.longitude))
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .onErrorReturn(new Func1<Throwable, BusPath>() {
+                                @Override
+                                public BusPath call(Throwable throwable) {
+                                    return new BusPath();
                                 }
-                                PolylineOptions options = new PolylineOptions();
-                                LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                                for (BusStop busStop : route.path) {
-                                    LatLng latLngBuff = new LatLng(busStop.getLatitude(), busStop.getLongitude());
-                                    if (busStop.getName() != null) {
-                                        if (route.path.indexOf(busStop) != 0
-                                                && route.path.indexOf(busStop) != route.path.size() - 1) {
-                                            googleMap.addMarker(new MarkerOptions()
-                                                    .position(latLngBuff)
-                                                    .title(busStop.getName())
-                                                    .icon(BitmapDescriptorFactory
-                                                            .fromResource(R.drawable.ic_brightness_1_black_18dp)));
-                                        } else {
-                                            googleMap.addMarker(new MarkerOptions()
-                                                    .position(latLngBuff)
-                                                    .title(busStop.getName()));
-                                        }
+                            })
+                            .subscribe(new Action1<BusPath>() {
+                                @Override
+                                public void call(BusPath route) {
+                                    googleMap.clear();
+                                    if (route == null) {
+                                        Toast.makeText(activity.getApplicationContext(), "No path found.", Toast.LENGTH_SHORT).show();
+                                        return;
                                     }
-                                    options.add(latLngBuff);
-                                    builder.include(latLngBuff);
-                                }
-                                builder.include(beginL);
-                                builder.include(endL);
-                                options.width(15).color(Color.BLUE);
+                                    PolylineOptions options = new PolylineOptions();
+                                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                                    for (BusStop busStop : route.path) {
+                                        LatLng latLngBuff = new LatLng(busStop.getLatitude(), busStop.getLongitude());
+                                        if (busStop.getName() != null) {
+                                            if (route.path.indexOf(busStop) != 0
+                                                    && route.path.indexOf(busStop) != route.path.size() - 1) {
+                                                googleMap.addMarker(new MarkerOptions()
+                                                        .position(latLngBuff)
+                                                        .title(busStop.getName())
+                                                        .icon(BitmapDescriptorFactory
+                                                                .fromResource(R.drawable.ic_brightness_1_black_18dp)));
+                                            } else {
+                                                googleMap.addMarker(new MarkerOptions()
+                                                        .position(latLngBuff)
+                                                        .title(busStop.getName()));
+                                            }
+                                        }
+                                        options.add(latLngBuff);
+                                        builder.include(latLngBuff);
+                                    }
+                                    builder.include(beginL);
+                                    builder.include(endL);
+                                    options.width(15).color(Color.BLUE);
 
-                                MapFragment.changeZoomLevel(googleMap, builder.build());
-                                googleMap.addPolyline(options);
-                                PolylineOptions startwalk = new PolylineOptions();
-                                startwalk.add(beginL);
-                                startwalk.add(new LatLng(route.path.get(0).getLatitude(), route.path.get(0).getLongitude()));
-                                startwalk.color(Color.RED).width(15);
-                                googleMap.addPolyline(startwalk);
-                                PolylineOptions endwalk = new PolylineOptions();
-                                endwalk.add(new LatLng(route.path.get(route.path.size() - 1).getLatitude(), route.path.get(route.path.size() - 1).getLongitude()));
-                                endwalk.add(endL);
-                                endwalk.color(Color.RED).width(15);
-                                googleMap.addPolyline(endwalk);
-                            }
-                        });
+                                    MapFragment.changeZoomLevel(googleMap, builder.build());
+                                    googleMap.addPolyline(options);
+                                    PolylineOptions startwalk = new PolylineOptions();
+                                    startwalk.add(beginL);
+                                    startwalk.add(new LatLng(route.path.get(0).getLatitude(), route.path.get(0).getLongitude()));
+                                    startwalk.color(Color.RED).width(15);
+                                    googleMap.addPolyline(startwalk);
+                                    PolylineOptions endwalk = new PolylineOptions();
+                                    endwalk.add(new LatLng(route.path.get(route.path.size() - 1).getLatitude(), route.path.get(route.path.size() - 1).getLongitude()));
+                                    endwalk.add(endL);
+                                    endwalk.color(Color.RED).width(15);
+                                    googleMap.addPolyline(endwalk);
+                                }
+                            });
                 }
             }
         });
@@ -368,57 +370,31 @@ public class TransitFragment extends Fragment {
         return selectedRoutes;
     }
 
-    public static void selectRoute(BusRoute busRoute) {
-        selectedRoutes.add(busRoute);
-    }
-
-    public static void deselectRoute(BusRoute busRoute) {
-        selectedRoutes.remove(busRoute);
+    public static void toggleRouteSelection(BusRoute busRoute) {
+        if (selectedRoutes.contains(busRoute)) {
+            selectedRoutes.remove(busRoute);
+        } else {
+            selectedRoutes.add(busRoute);
+        }
     }
 
     public void drawRoute(BusRoute busRoute) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        if (selectedRoutes.contains(busRoute)) {
-            PolylineOptions options = new PolylineOptions();
-            HashSet<Marker> markerSet = new HashSet<>();
-            for (BusStop busStop : busRoute.stops) {
-                for(BusStop bs: busStop.path_to) {
-                    options.add(new LatLng(bs.getLatitude(), bs.getLongitude()));
-                    builder.include(new LatLng(bs.getLatitude(), bs.getLongitude()));
-                }
-                LatLng latLngBuff = new LatLng(busStop.getLatitude(), busStop.getLongitude());
-                if (busStop.getName() != null) {
-                    markerSet.add(googleMap.addMarker(new MarkerOptions()
-                            .position(latLngBuff)
-                            .title(busStop.getName())
-                            .icon(BitmapDescriptorFactory
-                                    .fromResource(R.drawable.ic_brightness_1_black_18dp))));
-                }
-                options.add(latLngBuff);
-                builder.include(latLngBuff);
-            }
-            for (BusStop bs: busRoute.stops.get(0).path_to) {
-                options.add(new LatLng(bs.getLatitude(), bs.getLongitude()));
+        PolylineOptions options = busRoute.getPolylineOptions();
+        for (MarkerOptions markerOptions : busRoute.markers) {
+            googleMap.addMarker(markerOptions);
+        }
+        for (BusStop busStop : busRoute.stops) {
+            for (BusStop bs : busStop.path_to) {
                 builder.include(new LatLng(bs.getLatitude(), bs.getLongitude()));
             }
-            LatLng latLngBuff = new LatLng(busRoute.stops.get(0).getLatitude(),
-                    busRoute.stops.get(0).getLongitude());
-            options.add(latLngBuff);
+            LatLng latLngBuff = new LatLng(busStop.getLatitude(), busStop.getLongitude());
             builder.include(latLngBuff);
-            options.width(15).color(adapter.colors.get(busRoute));
-            adapter.polylines.put(busRoute, googleMap.addPolyline(options));
-            adapter.markers.put(adapter.polylines.get(busRoute), markerSet);
-            MapFragment.changeZoomLevel(googleMap, builder.build());
-        } else {
-            if (adapter.polylines.get(busRoute) != null) {
-                adapter.polylines.get(busRoute).remove();
-            }
-            if (adapter.markers.containsKey(adapter.polylines.get(busRoute))) {
-                for (Marker m: adapter.markers.get(adapter.polylines.get(busRoute))) {
-                    m.remove();
-                }
-                adapter.markers.remove(adapter.polylines.get(busRoute));
-            }
         }
+        for (BusStop bs : busRoute.stops.get(0).path_to) {
+            builder.include(new LatLng(bs.getLatitude(), bs.getLongitude()));
+        }
+        googleMap.addPolyline(options);
+        MapFragment.changeZoomLevel(googleMap, builder.build());
     }
 }
