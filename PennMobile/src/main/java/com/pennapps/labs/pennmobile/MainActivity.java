@@ -110,8 +110,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void closeKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (getCurrentFocus() != null) {
-            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        View view = getCurrentFocus();
+        if (view != null) {
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 

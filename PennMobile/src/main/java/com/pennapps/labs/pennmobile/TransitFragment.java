@@ -67,36 +67,32 @@ public class TransitFragment extends Fragment {
     private MapView mapView;
     private GoogleMap googleMap;
     private SearchView searchView;
-    private String query = "";
+    private String query;
     private Labs mLabs;
     private EditText startingLoc;
     private static MapCallbacks mapCallBacks;
     private RoutesAdapter adapter;
     private boolean[] routesClicked;
+    private MainActivity activity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mLabs = ((MainActivity) getActivity()).getLabsInstance();
+        activity = (MainActivity) getActivity();
+        mLabs = activity.getLabsInstance();
 
         mapCallBacks = MapFragment.getMapCallbacks();
         if (mapCallBacks == null) {
             mapCallBacks = new MapCallbacks();
-            GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder((getActivity().getApplicationContext()))
+            Context context = activity.getApplicationContext();
+            GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(context)
                     .addConnectionCallbacks(mapCallBacks)
                     .addOnConnectionFailedListener(mapCallBacks)
                     .addApi(LocationServices.API)
                     .build();
             mapCallBacks.setGoogleApiClient(mGoogleApiClient);
         }
-        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        View view = getActivity().getCurrentFocus();
-        if (view != null) {
-            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-
+        activity.closeKeyboard();
     }
 
     @Override
@@ -112,7 +108,7 @@ public class TransitFragment extends Fragment {
         googleMap.setInfoWindowAdapter(new CustomWindowAdapter(inflater));
 
         try {
-            MapsInitializer.initialize(this.getActivity());
+            MapsInitializer.initialize(activity);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -148,7 +144,7 @@ public class TransitFragment extends Fragment {
     @Override
     public void onResume() {
         mapView.onResume();
-        getActivity().setTitle(R.string.transit);
+        activity.setTitle(R.string.transit);
         super.onResume();
     }
 
@@ -185,7 +181,7 @@ public class TransitFragment extends Fragment {
                             for (BusRoute route: routes) {
                                 route_names.add(route.route_name);
                             }
-                            adapter = new RoutesAdapter(getActivity().getApplicationContext(),
+                            adapter = new RoutesAdapter(activity.getApplicationContext(),
                                     routes, route_names);
                             showRouteDialogBox();
                         }
@@ -200,7 +196,7 @@ public class TransitFragment extends Fragment {
     }
 
     private void showRouteDialogBox(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(R.string.routes_list).setAdapter(adapter, null)
             .setPositiveButton(R.string.routes_ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
@@ -227,7 +223,7 @@ public class TransitFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String arg0) {
-                if(arg0.isEmpty()){
+                if (arg0.isEmpty()) {
                     startingLoc.setVisibility(View.GONE);
                     startingLoc.setText("");
                 }
@@ -250,9 +246,9 @@ public class TransitFragment extends Fragment {
         final String begin = start;
         final LatLng beginL = current;
         final String dest = destination;
-        View view = getActivity().getCurrentFocus();
+        View view = activity.getCurrentFocus();
         if (view != null) {
-            InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
         if (current == null) {
@@ -272,14 +268,14 @@ public class TransitFragment extends Fragment {
                     latLng = new LatLng(Double.parseDouble(buildings.get(0).latitude),
                             Double.parseDouble(buildings.get(0).longitude));
                 } else {
-                    Geocoder geocoder = new Geocoder(getActivity().getApplicationContext());
+                    Geocoder geocoder = new Geocoder(activity.getApplicationContext());
                     try {
                         List<Address> locationList = geocoder.getFromLocationName(dest, 1);
                         if (locationList.size() > 0) {
                             latLng = new LatLng(locationList.get(0).getLatitude(),
                                     locationList.get(0).getLongitude());
                         } else {
-                            Toast.makeText(getActivity().getApplicationContext(),
+                            Toast.makeText(activity.getApplicationContext(),
                                     "Location not found, please try again", Toast.LENGTH_SHORT).show();
                             searchView.setQuery("", false);
                         }
@@ -308,7 +304,7 @@ public class TransitFragment extends Fragment {
                             public void call(BusPath route) {
                                 googleMap.clear();
                                 if (route == null) {
-                                    Toast.makeText(getActivity().getApplicationContext(), "No path found.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(activity.getApplicationContext(), "No path found.", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
                                 PolylineOptions options = new PolylineOptions();
@@ -400,10 +396,6 @@ public class TransitFragment extends Fragment {
             polylines = new Polyline[routes.size()];
             markers = new HashMap<>();
             routesClicked = new boolean[values.size()];
-            // trying to initialize all values to false?
-            for (boolean b: routesClicked) {
-                b = false;
-            }
         }
 
         @Override

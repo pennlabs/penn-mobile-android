@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
+import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -45,7 +46,8 @@ public class MapFragment extends Fragment {
     private GoogleMap googleMap;
 
     private SearchView searchView;
-    private String query = "";
+    private String query;
+    private MainActivity activity;
     private static Marker currentMarker;
     private static Set<Marker> loadedMarkers;
     private static MapCallbacks mapCallbacks;
@@ -53,18 +55,18 @@ public class MapFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLabs = ((MainActivity) getActivity()).getLabsInstance();
+        activity = (MainActivity) getActivity();
+        mLabs = activity.getLabsInstance();
         loadedMarkers = new HashSet<>();
         mapCallbacks = new MapCallbacks();
-        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(( getActivity().getApplicationContext()))
+        Context context = activity.getApplicationContext();
+        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(mapCallbacks)
                 .addOnConnectionFailedListener(mapCallbacks)
                 .addApi(LocationServices.API)
                 .build();
         mapCallbacks.setGoogleApiClient(mGoogleApiClient);
-        if (getActivity() != null) {
-            ((MainActivity) getActivity()).closeKeyboard();
-        }
+        activity.closeKeyboard();
     }
 
     @Override
@@ -81,7 +83,7 @@ public class MapFragment extends Fragment {
         googleMap.setInfoWindowAdapter(new CustomWindowAdapter(inflater));
 
         try {
-            MapsInitializer.initialize(this.getActivity());
+            MapsInitializer.initialize(activity);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -117,10 +119,10 @@ public class MapFragment extends Fragment {
             if (marker.getSnippet().isEmpty()) {
                 imageView.setVisibility(View.GONE);
             } else if (loadedMarkers.contains(currentMarker)) {
-                Picasso.with(getActivity()).load(marker.getSnippet()).into(imageView);
+                Picasso.with(activity).load(marker.getSnippet()).into(imageView);
             } else {
                 loadedMarkers.add(currentMarker);
-                Picasso.with(getActivity()).load(marker.getSnippet()).into(imageView, new Callback() {
+                Picasso.with(activity).load(marker.getSnippet()).into(imageView, new Callback() {
                     @Override
                     public void onSuccess() {
                         currentMarker.hideInfoWindow();
@@ -142,7 +144,7 @@ public class MapFragment extends Fragment {
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         mapCallbacks.getGoogleApiClient().connect();
     }
@@ -152,7 +154,7 @@ public class MapFragment extends Fragment {
         super.onResume();
         mapView.onResume();
         mapCallbacks.requestLocationUpdates();
-        getActivity().setTitle(R.string.map);
+        activity.setTitle(R.string.map);
     }
 
     @Override
@@ -229,27 +231,31 @@ public class MapFragment extends Fragment {
             .subscribe(new Action1<List<Building>>() {
                 @Override
                 public void call(List<Building> buildings) {
-                    googleMap.clear();
-                    searchView.clearFocus();
-                    if (buildings.isEmpty()) {
-                        Toast.makeText(getActivity().getApplicationContext(), "No results found.",
-                                Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                    LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
-                    for (Building building : buildings) {
-                        double latitude = Double.parseDouble(building.latitude);
-                        double longitude = Double.parseDouble(building.longitude);
-                        LatLng point = new LatLng(latitude, longitude);
-                        boundsBuilder.include(point);
-                        googleMap.addMarker(new MarkerOptions()
-                                .position(point)
-                                .title(building.title)
-                                .snippet(building.getImageURL()));
-                    }
-                    changeZoomLevel(googleMap, boundsBuilder.build());
+                    drawResults(buildings);
                 }
             });
+    }
+
+    private void drawResults(List<Building> buildings) {
+        googleMap.clear();
+        searchView.clearFocus();
+        if (buildings.isEmpty()) {
+            Toast.makeText(activity.getApplicationContext(), "No results found.",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+        LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+        for (Building building : buildings) {
+            double latitude = Double.parseDouble(building.latitude);
+            double longitude = Double.parseDouble(building.longitude);
+            LatLng point = new LatLng(latitude, longitude);
+            boundsBuilder.include(point);
+            googleMap.addMarker(new MarkerOptions()
+                    .position(point)
+                    .title(building.title)
+                    .snippet(building.getImageURL()));
+        }
+        changeZoomLevel(googleMap, boundsBuilder.build());
     }
 
     public static void changeZoomLevel(GoogleMap googleMap, LatLngBounds bounds){
