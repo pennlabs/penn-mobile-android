@@ -6,6 +6,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.annotations.SerializedName;
 import com.pennapps.labs.pennmobile.R;
 
 import java.util.ArrayList;
@@ -17,7 +18,9 @@ import java.util.Set;
  * Created by Jason on 4/22/2015.
  */
 public class BusRoute {
-    public ArrayList<BusStop> stops;
+    @SerializedName("path") public ArrayList<BusStop> stops;
+    public double walkingDistanceAfter;
+    public double walkingDistanceBefore;
     public String route_name;
     public PolylineOptions polylineOptions;
     public Set<MarkerOptions> markers;

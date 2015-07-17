@@ -38,7 +38,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.pennapps.labs.pennmobile.adapters.RoutesAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Building;
-import com.pennapps.labs.pennmobile.classes.BusPath;
+import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.MapCallbacks;
@@ -282,15 +282,15 @@ public class TransitFragment extends Fragment {
                     mLabs.routing(String.valueOf(beginL.latitude), Double.toString(endL.latitude),
                             String.valueOf(beginL.longitude), Double.toString(endL.longitude))
                             .observeOn(AndroidSchedulers.mainThread())
-                            .onErrorReturn(new Func1<Throwable, BusPath>() {
+                            .onErrorReturn(new Func1<Throwable, BusRoute>() {
                                 @Override
-                                public BusPath call(Throwable throwable) {
-                                    return new BusPath();
+                                public BusRoute call(Throwable throwable) {
+                                    return new BusRoute();
                                 }
                             })
-                            .subscribe(new Action1<BusPath>() {
+                            .subscribe(new Action1<BusRoute>() {
                                 @Override
-                                public void call(BusPath route) {
+                                public void call(BusRoute route) {
                                     googleMap.clear();
                                     if (route == null) {
                                         Toast.makeText(activity.getApplicationContext(), "No path found.", Toast.LENGTH_SHORT).show();
@@ -298,11 +298,11 @@ public class TransitFragment extends Fragment {
                                     }
                                     PolylineOptions options = new PolylineOptions();
                                     LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                                    for (BusStop busStop : route.path) {
+                                    for (BusStop busStop : route.stops) {
                                         LatLng latLngBuff = new LatLng(busStop.getLatitude(), busStop.getLongitude());
                                         if (busStop.getName() != null) {
-                                            if (route.path.indexOf(busStop) != 0
-                                                    && route.path.indexOf(busStop) != route.path.size() - 1) {
+                                            if (route.stops.indexOf(busStop) != 0
+                                                    && route.stops.indexOf(busStop) != route.stops.size() - 1) {
                                                 googleMap.addMarker(new MarkerOptions()
                                                         .position(latLngBuff)
                                                         .title(busStop.getName())
@@ -325,11 +325,11 @@ public class TransitFragment extends Fragment {
                                     googleMap.addPolyline(options);
                                     PolylineOptions startwalk = new PolylineOptions();
                                     startwalk.add(beginL);
-                                    startwalk.add(new LatLng(route.path.get(0).getLatitude(), route.path.get(0).getLongitude()));
+                                    startwalk.add(new LatLng(route.stops.get(0).getLatitude(), route.stops.get(0).getLongitude()));
                                     startwalk.color(Color.RED).width(15);
                                     googleMap.addPolyline(startwalk);
                                     PolylineOptions endwalk = new PolylineOptions();
-                                    endwalk.add(new LatLng(route.path.get(route.path.size() - 1).getLatitude(), route.path.get(route.path.size() - 1).getLongitude()));
+                                    endwalk.add(new LatLng(route.stops.get(route.stops.size() - 1).getLatitude(), route.stops.get(route.stops.size() - 1).getLongitude()));
                                     endwalk.add(endL);
                                     endwalk.color(Color.RED).width(15);
                                     googleMap.addPolyline(endwalk);
