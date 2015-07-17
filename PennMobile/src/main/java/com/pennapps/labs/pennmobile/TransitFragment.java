@@ -64,7 +64,7 @@ public class TransitFragment extends Fragment {
     private RoutesAdapter adapter;
     private MainActivity activity;
     static List<BusRoute> routes;
-    static HashSet<BusRoute> selectedRoutes;
+    public static HashSet<BusRoute> selectedRoutes;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -170,6 +170,7 @@ public class TransitFragment extends Fragment {
                         @Override
                         public void call(List<BusRoute> routes) {
                             TransitFragment.routes = routes;
+                            selectedRoutes.addAll(routes);
                             adapter = new RoutesAdapter(activity.getApplicationContext(), routes);
                             showRouteDialogBox();
                         }
@@ -358,10 +359,6 @@ public class TransitFragment extends Fragment {
             name.setText(arg0.getTitle());
             return view;
         }
-    }
-
-    public static Set<BusRoute> selectedRoutes() {
-        return selectedRoutes;
     }
 
     public static void toggleRouteSelection(BusRoute busRoute) {

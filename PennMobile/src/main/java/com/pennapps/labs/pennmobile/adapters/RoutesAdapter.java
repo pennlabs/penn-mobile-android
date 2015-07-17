@@ -36,8 +36,7 @@ public class RoutesAdapter extends ArrayAdapter<BusRoute> {
         this.routes = routes;
         inflater = LayoutInflater.from(context);
         this.context = context;
-        this.selectedRoutes = TransitFragment.selectedRoutes();
-        initializeMaps();
+        this.selectedRoutes = TransitFragment.selectedRoutes;
     }
 
     @Override
@@ -63,12 +62,6 @@ public class RoutesAdapter extends ArrayAdapter<BusRoute> {
             }
         });
         return view;
-    }
-
-    private void initializeMaps() {
-        for (BusRoute busRoute : this.routes) {
-            selectedRoutes.add(busRoute);
-        }
     }
 
     private void updateCheckbox(BusRoute busRoute, View v) {
