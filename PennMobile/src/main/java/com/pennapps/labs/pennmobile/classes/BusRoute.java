@@ -6,7 +6,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.gson.annotations.SerializedName;
 import com.pennapps.labs.pennmobile.R;
 
 import java.util.ArrayList;

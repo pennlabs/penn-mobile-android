@@ -15,11 +15,10 @@ public class Building {
     @SerializedName("campus_item_images") public List<BuildingImage> images = new ArrayList<>();
 
     public String getImageURL() {
-        if (!images.isEmpty()) {
-            return images.get(0).image_url;
-        } else {
+        if (images.isEmpty()) {
             return "";
         }
+        return images.get(0).image_url;
     }
 
     public LatLng getLatLng() {
