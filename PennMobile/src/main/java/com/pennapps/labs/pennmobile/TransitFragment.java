@@ -39,14 +39,12 @@ import com.pennapps.labs.pennmobile.adapters.RoutesAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
-import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.MapCallbacks;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -161,20 +159,7 @@ public class TransitFragment extends Fragment {
                 return true;
             case R.id.transit_route:
                 if (adapter == null) {
-                    mLabs.routes().observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<BusRoute>>() {
-                        @Override
-                        public List<BusRoute> call(Throwable throwable) {
-                            return null;
-                        }
-                    }).subscribe(new Action1<List<BusRoute>>() {
-                        @Override
-                        public void call(List<BusRoute> routes) {
-                            TransitFragment.routes = routes;
-                            selectedRoutes.addAll(routes);
-                            adapter = new RoutesAdapter(activity.getApplicationContext(), routes);
-                            showRouteDialogBox();
-                        }
-                    });
+                    loadRouteAdapter();
                 } else {
                     showRouteDialogBox();
                 }
@@ -182,6 +167,23 @@ public class TransitFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void loadRouteAdapter() {
+        mLabs.routes().observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<BusRoute>>() {
+            @Override
+            public List<BusRoute> call(Throwable throwable) {
+                return null;
+            }
+        }).subscribe(new Action1<List<BusRoute>>() {
+            @Override
+            public void call(List<BusRoute> routes) {
+                TransitFragment.routes = routes;
+                selectedRoutes.addAll(routes);
+                adapter = new RoutesAdapter(activity.getApplicationContext(), routes);
+                showRouteDialogBox();
+            }
+        });
     }
 
     private void showRouteDialogBox() {
@@ -235,11 +237,7 @@ public class TransitFragment extends Fragment {
         final String begin = start;
         final LatLng beginL = current;
         final String dest = destination;
-        View view = activity.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
+        activity.closeKeyboard();
         if (current == null) {
             destination = start;
         }
