@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.pennapps.labs.pennmobile.classes.Building;
@@ -86,7 +87,18 @@ public class Serializer {
         public BusRoute deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
                 throws JsonParseException {
             JsonElement content = je.getAsJsonObject().get("result_data");
-            return new Gson().fromJson(content, BusRoute.class);
+            JsonObject jsonObject = content.getAsJsonObject();
+
+            BusRoute busRoute = new Gson().fromJson(content, BusRoute.class);
+
+            if (jsonObject.get("path") != null) {
+                JsonElement stopList = jsonObject.get("path");
+                List<BusStop> stops = new Gson().fromJson(stopList, new TypeToken<List<BusStop>>() {
+                }.getType());
+                busRoute.setStops(stops);
+            }
+
+            return busRoute;
         }
     }
 

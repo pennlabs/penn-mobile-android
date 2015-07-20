@@ -29,14 +29,6 @@ public class BusStop {
         return name;
     }
 
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
     public LatLng getLatLng() {
         return new LatLng(latitude, longitude);
     }

@@ -11,6 +11,7 @@ import com.pennapps.labs.pennmobile.R;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -18,7 +19,7 @@ import java.util.Set;
  * Created by Jason on 4/22/2015.
  */
 public class BusRoute {
-    @SerializedName("path") public ArrayList<BusStop> stops;
+    public ArrayList<BusStop> stops;
     public double walkingDistanceAfter;
     public double walkingDistanceBefore;
     public String route_name;
@@ -50,28 +51,31 @@ public class BusRoute {
         polylineOptions = new PolylineOptions();
         for (BusStop busStop : stops) {
             for (BusStop bs : busStop.path_to) {
-                polylineOptions.add(new LatLng(bs.getLatitude(), bs.getLongitude()));
+                polylineOptions.add(bs.getLatLng());
             }
-            LatLng latLngBuff = new LatLng(busStop.getLatitude(), busStop.getLongitude());
+            LatLng latLngBuff = busStop.getLatLng();
             if (busStop.getName() != null) {
                 markers.add(new MarkerOptions()
                         .position(latLngBuff)
                         .title(busStop.getName())
+                        .anchor(0.5f, 0.5f)
                         .icon(BitmapDescriptorFactory
                                 .fromResource(R.drawable.ic_brightness_1_black_18dp)));
             }
             polylineOptions.add(latLngBuff);
         }
 
-        for(BusStop bs: stops.get(0).path_to){
-            polylineOptions.add(new LatLng(bs.getLatitude(), bs.getLongitude()));
-        }
-        LatLng latLngBuff = new LatLng(stops.get(0).getLatitude(),stops.get(0).getLongitude());
-        polylineOptions.add(latLngBuff);
         for (BusStop bs : stops.get(0).path_to) {
-            polylineOptions.add(new LatLng(bs.getLatitude(), bs.getLongitude()));
+            polylineOptions.add(bs.getLatLng());
         }
+
+        LatLng latLngBuff = stops.get(0).getLatLng();
+        polylineOptions.add(latLngBuff);
         polylineOptions.width(15).color(getColor());
         return polylineOptions;
+    }
+
+    public void setStops(List<BusStop> stops) {
+        this.stops = (ArrayList<BusStop>) stops;
     }
 }
