@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public class DiningHall implements Parcelable {
     private boolean residential;
     private boolean hasMenu;
     private HashMap<String, Interval> openHours;
-    public HashMap<String, HashMap<String, HashSet<String>>> menus;
+    public LinkedHashMap<String, HashMap<String, HashSet<String>>> menus;
 
     public DiningHall(int id, String name, boolean residential, boolean hasMenu, HashMap<String, Interval> hours) {
         this.id = id;
@@ -30,7 +31,30 @@ public class DiningHall implements Parcelable {
         this.residential = residential;
         this.hasMenu = hasMenu;
         this.openHours = hours;
-        this.menus = new HashMap<>();
+        this.menus = new LinkedHashMap<>();
+    }
+
+    protected DiningHall(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+    }
+
+    public static final Creator<DiningHall> CREATOR = new Creator<DiningHall>() {
+        @Override
+        public DiningHall createFromParcel(Parcel in) {
+            return new DiningHall(in);
+        }
+
+        @Override
+        public DiningHall[] newArray(int size) {
+            return new DiningHall[size];
+        }
+    };
+
+    public void parseMeals(NewDiningHall h) {
+        for (NewDiningHall.Menu menu : h.menus) {
+            this.menus.put(menu.name, menu.getStationMap());
+        }
     }
 
     public int describeContents(){
@@ -136,10 +160,5 @@ public class DiningHall implements Parcelable {
         }
 
         return nextMeal;
-    }
-
-    public class Meal {
-        public String name;
-        public HashMap<String, String> menu;
     }
 }

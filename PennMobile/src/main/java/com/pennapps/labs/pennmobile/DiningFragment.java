@@ -15,21 +15,16 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 
 import com.pennapps.labs.pennmobile.adapters.DiningAdapter;
-import com.pennapps.labs.pennmobile.api.DiningAPI;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
+import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 import com.pennapps.labs.pennmobile.classes.Venue;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DiningFragment extends ListFragment {
 
-    private DiningAPI mAPI;
     private Labs mLabs;
     private ListView mListView;
     private ArrayList<DiningHall> mDiningHalls;
@@ -39,7 +34,6 @@ public class DiningFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAPI = new DiningAPI(((MainActivity) getActivity()).getAPIClient());
         mLabs = ((MainActivity) getActivity()).getLabsInstance();
         mActivity = getActivity();
         mDiningHalls = new ArrayList<>();
@@ -104,23 +98,11 @@ public class DiningFragment extends ListFragment {
     private class GetMenusTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            try {
-                for (DiningHall mDiningHall : mDiningHalls) {
-                    if (mDiningHall.isResidential() && mDiningHall.hasMenu()) {
-                        JSONObject resultObj = mAPI.getDailyMenu(mDiningHall.getId());
-
-                        JSONArray meals = resultObj.getJSONObject("Document")
-                                .getJSONObject("tblMenu")
-                                .getJSONArray("tblDayPart");
-
-                        for (int i = 0; i < meals.length(); i++) {
-                            JSONObject meal = meals.getJSONObject(i);
-                            MenuFragment.parseMeal(meal, mDiningHall);
-                        }
-                    }
+            for (DiningHall mDiningHall : mDiningHalls) {
+                if (mDiningHall.isResidential() && mDiningHall.hasMenu()) {
+                    NewDiningHall hall = mLabs.daily_menu(mDiningHall.getId());
+                    mDiningHall.parseMeals(hall);
                 }
-            } catch (JSONException ignored) {
-
             }
             return null;
         }
