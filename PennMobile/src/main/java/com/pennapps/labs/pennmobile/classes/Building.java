@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.classes;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -19,5 +20,9 @@ public class Building {
         } else {
             return "";
         }
+    }
+
+    public LatLng getLatLng() {
+        return new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
     }
 }
