@@ -110,7 +110,7 @@ public class TransitFragment extends Fragment {
                 boolean nonEmptyQuery = query != null && !query.isEmpty();
                 boolean inputFinished = actionId == EditorInfo.IME_ACTION_DONE || event != null;
                 if (inputFinished && nonEmptyQuery) {
-                    drawMap(null, v.getEditableText().toString(), query);
+                    drawMap(v.getEditableText().toString(), query);
                 }
                 return false;
             }
@@ -225,7 +225,7 @@ public class TransitFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String arg0) {
                 query = arg0;
-                drawMap(mapCallBacks.getLatLng(), null, query);
+                drawMap(null, query);
                 startingLoc.setVisibility(View.VISIBLE);
                 return true;
             }
@@ -233,15 +233,11 @@ public class TransitFragment extends Fragment {
         searchView.setOnQueryTextListener(queryListener);
     }
 
-    private void drawMap(LatLng current, String start, String destination) {
+    private void drawMap(String start, String destination) {
         final String begin = start;
-        final LatLng beginL = current;
         final String dest = destination;
         activity.closeKeyboard();
-        if (current == null) {
-            destination = start;
-        }
-        mLabs.buildings(destination)
+        mLabs.buildings(start)
                 .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<Building>>() {
             @Override
             public List<Building> call(Throwable throwable) {
@@ -250,74 +246,85 @@ public class TransitFragment extends Fragment {
         }).subscribe(new Action1<List<Building>>() {
             @Override
             public void call(List<Building> buildings) {
-                LatLng latLng = null;
-                if (!buildings.isEmpty()) {
-                    latLng = buildings.get(0).getLatLng();
-                } else {
-                    Geocoder geocoder = new Geocoder(activity.getApplicationContext());
-                    try {
-                        List<Address> locationList = geocoder.getFromLocationName(dest, 1);
-                        if (locationList.size() > 0) {
-                            latLng = new LatLng(locationList.get(0).getLatitude(),
-                                    locationList.get(0).getLongitude());
-                        } else {
-                            Toast.makeText(activity.getApplicationContext(),
-                                    R.string.location_not_found, Toast.LENGTH_SHORT).show();
-                            searchView.setQuery("", false);
-                            return;
+                mLabs.buildings(dest)
+                        .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<Building>>() {
+                    @Override
+                    public List<Building> call(Throwable throwable) {
+                        return null;
+                    }
+                }).subscribe(new Action1<List<Building>>() {
+                    @Override
+                    public void call(List<Building> buildings) {
+                        Geocoder geocoder = new Geocoder(activity.getApplicationContext());
+                        LatLng startLatLng = null;
+                        LatLng destLatLng = null;
+                        try {
+                            List<Address> startLocations = geocoder.getFromLocationName(begin, 1);
+                            List<Address> destLocations = geocoder.getFromLocationName(dest, 1);
+                            if (startLocations.size() > 0 && destLocations.size() > 0) {
+                                startLatLng = new LatLng(startLocations.get(0).getLatitude(),
+                                        startLocations.get(0).getLongitude());
+                                destLatLng = new LatLng(destLocations.get(0).getLatitude(),
+                                        destLocations.get(0).getLongitude());
+                            } else {
+                                Toast.makeText(activity.getApplicationContext(),
+                                        R.string.location_not_found, Toast.LENGTH_SHORT).show();
+                                searchView.setQuery("", false);
+                                return;
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                        retrieveRoute(startLatLng, destLatLng);
                     }
-                }
-                if (beginL == null) {
-                    drawMap(latLng, begin, dest);
-                } else {
-                    final LatLng endL = latLng;
-                    if (endL == null) {
-                        return;
-                    }
-                    String latBegin = String.valueOf(beginL.latitude);
-                    String longBegin = Double.toString(endL.latitude);
-                    String latEnd = String.valueOf(beginL.longitude);
-                    String longEnd = Double.toString(endL.longitude);
-                    mLabs.routing(latBegin, longBegin, latEnd, longEnd)
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .onErrorReturn(new Func1<Throwable, BusRoute>() {
-                                @Override
-                                public BusRoute call(Throwable throwable) {
-                                    return new BusRoute();
-                                }
-                            })
-                            .subscribe(new Action1<BusRoute>() {
-                                @Override
-                                public void call(BusRoute route) {
-                                    googleMap.clear();
-                                    if (route == null) {
-                                        Toast.makeText(activity.getApplicationContext(), R.string.no_path_found, Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
-                                    PolylineOptions options = new PolylineOptions();
-                                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                                    for (BusStop busStop : route.stops) {
-                                        LatLng latLngBuff = busStop.getLatLng();
-                                        addMapMarker(route, busStop, latLngBuff);
-                                        options.add(latLngBuff);
-                                        builder.include(latLngBuff);
-                                    }
-                                    builder.include(beginL);
-                                    builder.include(endL);
-                                    options.width(15).color(Color.BLUE);
-
-                                    MapFragment.changeZoomLevel(googleMap, builder.build());
-                                    googleMap.addPolyline(options);
-                                    addWalkingPath(beginL, route.stops.get(0));
-                                    addWalkingPath(endL, route.stops.get(route.stops.size() - 1));
-                                }
-                            });
-                }
+                });
             }
         });
+    }
+
+    private void retrieveRoute(final LatLng startLatLng, final LatLng destLatLng) {
+        String latBegin = String.valueOf(startLatLng.latitude);
+        String longBegin = Double.toString(startLatLng.longitude);
+        String latEnd = String.valueOf(destLatLng.latitude);
+        String longEnd = Double.toString(destLatLng.longitude);
+        mLabs.routing(latBegin, longBegin, latEnd, longEnd)
+                .observeOn(AndroidSchedulers.mainThread())
+                .onErrorReturn(new Func1<Throwable, BusRoute>() {
+                    @Override
+                    public BusRoute call(Throwable throwable) {
+                        return new BusRoute();
+                    }
+                })
+                .subscribe(new Action1<BusRoute>() {
+                    @Override
+                    public void call(BusRoute route) {
+                        googleMap.clear();
+                        if (route == null) {
+                            Toast.makeText(activity.getApplicationContext(), R.string.no_path_found, Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        PolylineOptions options = new PolylineOptions();
+                        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+                        for (BusStop busStop : route.stops) {
+                            LatLng latLngBuff = busStop.getLatLng();
+                            addMapMarker(route, busStop, latLngBuff);
+                            options.add(latLngBuff);
+                            builder.include(latLngBuff);
+                        }
+
+                        LatLng currentLocation = mapCallBacks.getLatLng();
+                        builder.include(currentLocation);
+                        builder.include(startLatLng);
+                        builder.include(destLatLng);
+                        options.width(15).color(Color.BLUE);
+
+                        googleMap.addPolyline(options);
+                        addWalkingPath(currentLocation, route.stops.get(0));
+                        addWalkingPath(destLatLng, route.stops.get(route.stops.size() - 1));
+                        MapFragment.changeZoomLevel(googleMap, builder.build());
+                    }
+                });
     }
 
     private static class CustomWindowAdapter implements GoogleMap.InfoWindowAdapter {
