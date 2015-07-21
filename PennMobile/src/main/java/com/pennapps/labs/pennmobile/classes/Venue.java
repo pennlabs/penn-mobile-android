@@ -30,7 +30,7 @@ public class Venue {
 
     public boolean hasMenu(Labs mAPI) {
         try {
-            return mAPI.daily_menu(id).menus.size() > 0;
+            return mAPI.daily_menu(id).toBlocking().single().menus.size() > 0;
         } catch (Exception ignored) {
             return false;
         }

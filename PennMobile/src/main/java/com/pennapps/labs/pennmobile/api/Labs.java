@@ -37,7 +37,7 @@ public interface Labs {
     Observable<List<Venue>> venues();
 
     @GET("/dining/daily_menu/{id}")
-    NewDiningHall daily_menu(
+    Observable<NewDiningHall> daily_menu(
         @Path("id") int id);
 
     @GET("/transit/stops")

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -81,21 +82,12 @@ public class DiningFragment extends ListFragment {
     }
 
     private void getDiningHalls() {
+        final ArrayList<DiningHall> diningHalls = new ArrayList<>();
         mLabs.venues()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                new Action1<List<Venue>>() {
+                .doOnCompleted(new Action0() {
                     @Override
-                    public void call(List<Venue> venues) {
-                        ArrayList<DiningHall> diningHalls = new ArrayList<>();
-                        for (Venue venue : venues) {
-                            DiningHall hall = new DiningHall(venue.id, venue.name, venue.isResidential(), venue.hasMenu(mLabs), venue.getHours());
-                            diningHalls.add(hall);
-                            if (hall.isResidential() && hall.hasMenu()) {
-                                NewDiningHall newDiningHall = mLabs.daily_menu(hall.getId());
-                                hall.parseMeals(newDiningHall);
-                            }
-                        }
+                    public void call() {
                         try {
                             DiningAdapter mAdapter = new DiningAdapter(mActivity, diningHalls);
                             mListView.setAdapter(mAdapter);
@@ -104,13 +96,32 @@ public class DiningFragment extends ListFragment {
 
                         }
                     }
-                },
-                new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        showErrorToast();
-                    }
-                });
+                })
+                .subscribe(
+                        new Action1<List<Venue>>() {
+                            @Override
+                            public void call(List<Venue> venues) {
+                                for (Venue venue : venues) {
+                                    final DiningHall hall = new DiningHall(venue.id, venue.name, venue.isResidential(), venue.hasMenu(mLabs), venue.getHours());
+                                    diningHalls.add(hall);
+                                    if (hall.isResidential()) {
+                                        mLabs.daily_menu(hall.getId()).observeOn(AndroidSchedulers.mainThread())
+                                                .subscribe(new Action1<NewDiningHall>() {
+                                                    @Override
+                                                    public void call(NewDiningHall newDiningHall) {
+                                                        hall.parseMeals(newDiningHall);
+                                                    }
+                                                });
+                                    }
+                                }
+                            }
+                        },
+                        new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                showErrorToast();
+                            }
+                        });
     }
 
     private void showErrorToast() {
