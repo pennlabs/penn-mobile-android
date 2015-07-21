@@ -46,7 +46,6 @@ public class MapCallbacks implements LocationListener, GoogleApiClient.Connectio
         waiting = false;
     }
 
-    // reason for cast of this?
     public void requestLocationUpdates(){
         if (!called && connected) {
             LocationServices.FusedLocationApi.requestLocationUpdates(

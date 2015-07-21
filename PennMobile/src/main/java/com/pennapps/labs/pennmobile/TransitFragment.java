@@ -170,19 +170,21 @@ public class TransitFragment extends Fragment {
     }
 
     private void loadRouteAdapter() {
-        mLabs.routes().observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<BusRoute>>() {
-            @Override
-            public List<BusRoute> call(Throwable throwable) {
-                return null;
-            }
-        }).subscribe(new Action1<List<BusRoute>>() {
-            @Override
-            public void call(List<BusRoute> routes) {
-                selectedRoutes.addAll(routes);
-                adapter = new RoutesAdapter(activity.getApplicationContext(), routes);
-                showRouteDialogBox();
-            }
-        });
+        mLabs.routes().observeOn(AndroidSchedulers.mainThread()).subscribe(
+                new Action1<List<BusRoute>>() {
+                    @Override
+                    public void call(List<BusRoute> routes) {
+                        selectedRoutes.addAll(routes);
+                        adapter = new RoutesAdapter(activity.getApplicationContext(), routes);
+                        showRouteDialogBox();
+                    }
+                },
+                new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        showErrorToast();
+                    }
+                });
     }
 
     private void showRouteDialogBox() {
@@ -241,9 +243,7 @@ public class TransitFragment extends Fragment {
         try {
             List<Address> locations = geocoder.getFromLocationName(locationName, 1);
             if (locations.size() == 0) {
-                Toast.makeText(activity.getApplicationContext(),
-                        R.string.location_not_found, Toast.LENGTH_SHORT).show();
-                searchView.setQuery("", false);
+                showErrorToast();
                 return null;
             }
             return new LatLng(locations.get(0).getLatitude(), locations.get(0).getLongitude());
@@ -255,39 +255,56 @@ public class TransitFragment extends Fragment {
 
     private void drawUserRoute(final String begin, final String dest) {
         activity.closeKeyboard();
-        mLabs.buildings(dest)
-                .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<Building>>() {
-            @Override
-            public List<Building> call(Throwable throwable) {
-                return null;
-            }
-        }).subscribe(new Action1<List<Building>>() {
-            @Override
-            public void call(List<Building> buildings) {
-                final LatLng destLatLng = getLocationLatLng(buildings, dest);
-                if (destLatLng == null) {
-                    return;
-                }
-                if (begin == null) {
-                    retrieveRoute(mapCallBacks.getLatLng(), destLatLng, true);
-                    return;
-                }
-                mLabs.buildings(begin)
-                        .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<Building>>() {
-                    @Override
-                    public List<Building> call(Throwable throwable) {
-                        return null;
-                    }
-                }).subscribe(new Action1<List<Building>>() {
+        mLabs.buildings(dest).subscribe(
+                new Action1<List<Building>>() {
                     @Override
                     public void call(List<Building> buildings) {
-                        LatLng startLatLng = getLocationLatLng(buildings, begin);
-                        if (startLatLng == null) {
+                        if (buildings.isEmpty()) {
+                            showErrorToast();
                             return;
                         }
-                        retrieveRoute(startLatLng, destLatLng, false);
+                        final LatLng destLatLng = getLocationLatLng(buildings, dest);
+                        if (destLatLng == null) {
+                            return;
+                        }
+                        if (begin == null) {
+                            retrieveRoute(mapCallBacks.getLatLng(), destLatLng, true);
+                            return;
+                        }
+                        mLabs.buildings(begin).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                                new Action1<List<Building>>() {
+                                    @Override
+                                    public void call(List<Building> buildings) {
+                                        LatLng startLatLng = getLocationLatLng(buildings, begin);
+                                        if (startLatLng == null) {
+                                            return;
+                                        }
+                                        retrieveRoute(startLatLng, destLatLng, false);
+                                    }
+                                },
+                                new Action1<Throwable>() {
+                                    @Override
+                                    public void call(Throwable throwable) {
+                                        showErrorToast();
+                                    }
+                                });
+                    }
+                },
+                new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        showErrorToast();
                     }
                 });
+    }
+
+    private void showErrorToast() {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(activity.getApplicationContext(),
+                        R.string.no_path_found,Toast.LENGTH_SHORT).show();
+                searchView.setQuery("", false);
             }
         });
     }
@@ -297,45 +314,45 @@ public class TransitFragment extends Fragment {
         String longBegin = Double.toString(startLatLng.longitude);
         String latEnd = String.valueOf(destLatLng.latitude);
         String longEnd = Double.toString(destLatLng.longitude);
-        mLabs.routing(latBegin, latEnd, longBegin, longEnd)
-                .observeOn(AndroidSchedulers.mainThread())
-                .onErrorReturn(new Func1<Throwable, BusRoute>() {
-                    @Override
-                    public BusRoute call(Throwable throwable) {
-                        return null;
-                    }
-                })
-                .subscribe(new Action1<BusRoute>() {
-                    @Override
-                    public void call(BusRoute route) {
-                        googleMap.clear();
-                        if (route == null || route.stops.size() == 0) {
-                            Toast.makeText(activity.getApplicationContext(), R.string.no_path_found, Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        PolylineOptions options = new PolylineOptions();
-                        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        mLabs.routing(latBegin, latEnd, longBegin, longEnd).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<BusRoute>() {
+                            @Override
+                            public void call(BusRoute route) {
+                                googleMap.clear();
+                                if (route == null || route.stops.size() == 0) {
+                                    showErrorToast();
+                                    return;
+                                }
+                                PolylineOptions options = new PolylineOptions();
+                                LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
-                        for (BusStop busStop : route.stops) {
-                            LatLng latLngBuff = busStop.getLatLng();
-                            addMapMarker(route, busStop, latLngBuff);
-                            options.add(latLngBuff);
-                            builder.include(latLngBuff);
-                        }
-                        builder.include(startLatLng);
-                        builder.include(destLatLng);
-                        options.width(15).color(Color.BLUE);
+                                for (BusStop busStop : route.stops) {
+                                    LatLng latLngBuff = busStop.getLatLng();
+                                    addMapMarker(route, busStop, latLngBuff);
+                                    options.add(latLngBuff);
+                                    builder.include(latLngBuff);
+                                }
+                                builder.include(startLatLng);
+                                builder.include(destLatLng);
+                                options.width(15).color(Color.BLUE);
 
-                        googleMap.addPolyline(options);
-                        if (showCurrent) {
-                            LatLng currentLocation = mapCallBacks.getLatLng();
-                            builder.include(currentLocation);
-                            addWalkingPath(currentLocation, route.stops.get(0));
-                        }
-                        addWalkingPath(destLatLng, route.stops.get(route.stops.size() - 1));
-                        MapFragment.changeZoomLevel(googleMap, builder.build());
-                    }
-                });
+                                googleMap.addPolyline(options);
+                                if (showCurrent) {
+                                    LatLng currentLocation = mapCallBacks.getLatLng();
+                                    builder.include(currentLocation);
+                                    addWalkingPath(currentLocation, route.stops.get(0));
+                                }
+                                addWalkingPath(destLatLng, route.stops.get(route.stops.size() - 1));
+                                MapFragment.changeZoomLevel(googleMap, builder.build());
+                            }
+                        },
+                        new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                showErrorToast();
+                            }
+                        });
     }
 
     private static class CustomWindowAdapter implements GoogleMap.InfoWindowAdapter {

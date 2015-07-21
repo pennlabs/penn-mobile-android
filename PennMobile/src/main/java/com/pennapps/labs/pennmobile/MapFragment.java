@@ -220,26 +220,38 @@ public class MapFragment extends Fragment {
 
     private void searchBuildings(String query) {
         mLabs.buildings(query)
-            .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<Building>>() {
-                @Override
-                public List<Building> call(Throwable throwable) {
-                    return null;
-                }
-            })
-            .subscribe(new Action1<List<Building>>() {
-                @Override
-                public void call(List<Building> buildings) {
-                    drawResults(buildings);
-                }
-            });
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                    new Action1<List<Building>>() {
+                        @Override
+                        public void call(List<Building> buildings) {
+                            drawResults(buildings);
+                        }
+                    },
+                    new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            showErrorToast();
+                        }
+                    });
+    }
+
+    private void showErrorToast() {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(activity.getApplicationContext(),
+                        R.string.location_not_found, Toast.LENGTH_SHORT).show();
+                searchView.setQuery("", false);
+            }
+        });
     }
 
     private void drawResults(List<Building> buildings) {
         googleMap.clear();
         searchView.clearFocus();
         if (buildings.isEmpty()) {
-            Toast.makeText(activity.getApplicationContext(), "No results found.",
-                    Toast.LENGTH_LONG).show();
+            showErrorToast();
             return;
         }
         LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
