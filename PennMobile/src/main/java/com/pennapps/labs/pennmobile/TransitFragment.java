@@ -255,7 +255,7 @@ public class TransitFragment extends Fragment {
 
     private void drawUserRoute(final String begin, final String dest) {
         activity.closeKeyboard();
-        mLabs.buildings(dest).subscribe(
+        mLabs.buildings(dest).observeOn(AndroidSchedulers.mainThread()).subscribe(
                 new Action1<List<Building>>() {
                     @Override
                     public void call(List<Building> buildings) {
