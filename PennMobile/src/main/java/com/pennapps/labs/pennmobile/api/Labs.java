@@ -34,7 +34,7 @@ public interface Labs {
         @Query("q") String name);
 
     @GET("/dining/venues")
-    List<Venue> venues();
+    Observable<List<Venue>> venues();
 
     @GET("/dining/daily_menu/{id}")
     NewDiningHall daily_menu(
