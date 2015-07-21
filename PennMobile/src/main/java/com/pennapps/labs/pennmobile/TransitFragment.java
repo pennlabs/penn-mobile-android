@@ -60,7 +60,6 @@ public class TransitFragment extends Fragment {
     private static MapCallbacks mapCallBacks;
     private RoutesAdapter adapter;
     private MainActivity activity;
-    static List<BusRoute> routes;
     public static HashSet<BusRoute> selectedRoutes;
 
     @Override
@@ -179,7 +178,6 @@ public class TransitFragment extends Fragment {
         }).subscribe(new Action1<List<BusRoute>>() {
             @Override
             public void call(List<BusRoute> routes) {
-                TransitFragment.routes = routes;
                 selectedRoutes.addAll(routes);
                 adapter = new RoutesAdapter(activity.getApplicationContext(), routes);
                 showRouteDialogBox();
@@ -194,9 +192,11 @@ public class TransitFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                         googleMap.clear();
+                        LatLngBounds.Builder builder = new LatLngBounds.Builder();
                         for (BusRoute busRoute : selectedRoutes) {
-                            drawOfficialRoute(busRoute);
+                            drawOfficialRoute(builder, busRoute);
                         }
+                        MapFragment.changeZoomLevel(googleMap, builder.build());
                     }
                 }).show();
     }
@@ -393,8 +393,7 @@ public class TransitFragment extends Fragment {
         }
     }
 
-    private void drawOfficialRoute(BusRoute busRoute) {
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+    private void drawOfficialRoute(LatLngBounds.Builder builder, BusRoute busRoute) {
         PolylineOptions options = busRoute.getPolylineOptions();
         for (MarkerOptions markerOptions : busRoute.markers) {
             googleMap.addMarker(markerOptions);
@@ -409,6 +408,5 @@ public class TransitFragment extends Fragment {
             builder.include(bs.getLatLng());
         }
         googleMap.addPolyline(options);
-        MapFragment.changeZoomLevel(googleMap, builder.build());
     }
 }
