@@ -110,7 +110,7 @@ public class TransitFragment extends Fragment {
                 boolean nonEmptyQuery = query != null && !query.isEmpty();
                 boolean inputFinished = actionId == EditorInfo.IME_ACTION_DONE || event != null;
                 if (inputFinished && nonEmptyQuery) {
-                    drawMap(v.getEditableText().toString(), query);
+                    drawUserRoute(v.getEditableText().toString(), query);
                 }
                 return false;
             }
@@ -195,7 +195,7 @@ public class TransitFragment extends Fragment {
                         dialog.cancel();
                         googleMap.clear();
                         for (BusRoute busRoute : selectedRoutes) {
-                            drawRoute(busRoute);
+                            drawOfficialRoute(busRoute);
                         }
                     }
                 }).show();
@@ -225,7 +225,7 @@ public class TransitFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String arg0) {
                 query = arg0;
-                drawMap(null, query);
+                drawUserRoute(null, query);
                 startingLoc.setVisibility(View.VISIBLE);
                 return true;
             }
@@ -233,11 +233,29 @@ public class TransitFragment extends Fragment {
         searchView.setOnQueryTextListener(queryListener);
     }
 
-    private void drawMap(String start, String destination) {
-        final String begin = start;
-        final String dest = destination;
+    private LatLng getLocationLatLng(List<Building> buildings, String locationName) {
+        if (buildings != null && !buildings.isEmpty()) {
+            return buildings.get(0).getLatLng();
+        }
+        Geocoder geocoder = new Geocoder(activity.getApplicationContext());
+        try {
+            List<Address> locations = geocoder.getFromLocationName(locationName, 1);
+            if (locations.size() == 0) {
+                Toast.makeText(activity.getApplicationContext(),
+                        R.string.location_not_found, Toast.LENGTH_SHORT).show();
+                searchView.setQuery("", false);
+                return null;
+            }
+            return new LatLng(locations.get(0).getLatitude(), locations.get(0).getLongitude());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void drawUserRoute(final String begin, final String dest) {
         activity.closeKeyboard();
-        mLabs.buildings(start)
+        mLabs.buildings(dest)
                 .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<Building>>() {
             @Override
             public List<Building> call(Throwable throwable) {
@@ -246,7 +264,15 @@ public class TransitFragment extends Fragment {
         }).subscribe(new Action1<List<Building>>() {
             @Override
             public void call(List<Building> buildings) {
-                mLabs.buildings(dest)
+                final LatLng destLatLng = getLocationLatLng(buildings, dest);
+                if (destLatLng == null) {
+                    return;
+                }
+                if (begin == null) {
+                    retrieveRoute(mapCallBacks.getLatLng(), destLatLng, true);
+                    return;
+                }
+                mLabs.buildings(begin)
                         .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<Building>>() {
                     @Override
                     public List<Building> call(Throwable throwable) {
@@ -255,51 +281,35 @@ public class TransitFragment extends Fragment {
                 }).subscribe(new Action1<List<Building>>() {
                     @Override
                     public void call(List<Building> buildings) {
-                        Geocoder geocoder = new Geocoder(activity.getApplicationContext());
-                        LatLng startLatLng = null;
-                        LatLng destLatLng = null;
-                        try {
-                            List<Address> startLocations = geocoder.getFromLocationName(begin, 1);
-                            List<Address> destLocations = geocoder.getFromLocationName(dest, 1);
-                            if (startLocations.size() > 0 && destLocations.size() > 0) {
-                                startLatLng = new LatLng(startLocations.get(0).getLatitude(),
-                                        startLocations.get(0).getLongitude());
-                                destLatLng = new LatLng(destLocations.get(0).getLatitude(),
-                                        destLocations.get(0).getLongitude());
-                            } else {
-                                Toast.makeText(activity.getApplicationContext(),
-                                        R.string.location_not_found, Toast.LENGTH_SHORT).show();
-                                searchView.setQuery("", false);
-                                return;
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        LatLng startLatLng = getLocationLatLng(buildings, begin);
+                        if (startLatLng == null) {
+                            return;
                         }
-                        retrieveRoute(startLatLng, destLatLng);
+                        retrieveRoute(startLatLng, destLatLng, false);
                     }
                 });
             }
         });
     }
 
-    private void retrieveRoute(final LatLng startLatLng, final LatLng destLatLng) {
+    private void retrieveRoute(final LatLng startLatLng, final LatLng destLatLng, final boolean showCurrent) {
         String latBegin = String.valueOf(startLatLng.latitude);
         String longBegin = Double.toString(startLatLng.longitude);
         String latEnd = String.valueOf(destLatLng.latitude);
         String longEnd = Double.toString(destLatLng.longitude);
-        mLabs.routing(latBegin, longBegin, latEnd, longEnd)
+        mLabs.routing(latBegin, latEnd, longBegin, longEnd)
                 .observeOn(AndroidSchedulers.mainThread())
                 .onErrorReturn(new Func1<Throwable, BusRoute>() {
                     @Override
                     public BusRoute call(Throwable throwable) {
-                        return new BusRoute();
+                        return null;
                     }
                 })
                 .subscribe(new Action1<BusRoute>() {
                     @Override
                     public void call(BusRoute route) {
                         googleMap.clear();
-                        if (route == null) {
+                        if (route == null || route.stops.size() == 0) {
                             Toast.makeText(activity.getApplicationContext(), R.string.no_path_found, Toast.LENGTH_SHORT).show();
                             return;
                         }
@@ -312,15 +322,16 @@ public class TransitFragment extends Fragment {
                             options.add(latLngBuff);
                             builder.include(latLngBuff);
                         }
-
-                        LatLng currentLocation = mapCallBacks.getLatLng();
-                        builder.include(currentLocation);
                         builder.include(startLatLng);
                         builder.include(destLatLng);
                         options.width(15).color(Color.BLUE);
 
                         googleMap.addPolyline(options);
-                        addWalkingPath(currentLocation, route.stops.get(0));
+                        if (showCurrent) {
+                            LatLng currentLocation = mapCallBacks.getLatLng();
+                            builder.include(currentLocation);
+                            addWalkingPath(currentLocation, route.stops.get(0));
+                        }
                         addWalkingPath(destLatLng, route.stops.get(route.stops.size() - 1));
                         MapFragment.changeZoomLevel(googleMap, builder.build());
                     }
@@ -382,7 +393,7 @@ public class TransitFragment extends Fragment {
         }
     }
 
-    private void drawRoute(BusRoute busRoute) {
+    private void drawOfficialRoute(BusRoute busRoute) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         PolylineOptions options = busRoute.getPolylineOptions();
         for (MarkerOptions markerOptions : busRoute.markers) {
