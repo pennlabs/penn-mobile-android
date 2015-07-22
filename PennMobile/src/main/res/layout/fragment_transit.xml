@@ -1,19 +1,41 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.google.android.gms.maps.MapView android:id="@+id/mapView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:id="@+id/transit_from_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:hint="@string/starting_location_hint"
+        android:orientation="horizontal"
         android:visibility="gone"
-        android:id="@+id/transit_starting_location"
-        android:singleLine="true"/>
+        tools:visibility="visible"
+        android:background="?attr/colorPrimary" >
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="16dp"
+            android:tint="@color/white"
+            android:src="@drawable/ic_home" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="8dp"
+            android:hint="@string/starting_location_hint"
+            android:id="@+id/transit_starting_location"
+            android:textColor="@color/white"
+            android:background="?attr/colorPrimary"
+            android:singleLine="true" />
+    </LinearLayout>
 
 </RelativeLayout>
