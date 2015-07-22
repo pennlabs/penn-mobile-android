@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.classes;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -14,10 +15,13 @@ public class Building {
     @SerializedName("campus_item_images") public List<BuildingImage> images = new ArrayList<>();
 
     public String getImageURL() {
-        if (!images.isEmpty()) {
-            return images.get(0).image_url;
-        } else {
+        if (images.isEmpty()) {
             return "";
         }
+        return images.get(0).image_url;
+    }
+
+    public LatLng getLatLng() {
+        return new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
     }
 }
