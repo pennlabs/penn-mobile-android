@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,9 +24,12 @@ import com.pennapps.labs.pennmobile.classes.Venue;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 public class DiningFragment extends ListFragment {
@@ -38,7 +42,7 @@ public class DiningFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLabs = ((MainActivity) getActivity()).getLabsInstance();
+        mLabs = MainActivity.getLabsInstance();
         mActivity = getActivity();
         mFragment = this;
         InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -84,44 +88,39 @@ public class DiningFragment extends ListFragment {
     private void getDiningHalls() {
         final ArrayList<DiningHall> diningHalls = new ArrayList<>();
         mLabs.venues()
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnCompleted(new Action0() {
+                .flatMap(new Func1<List<Venue>, Observable<Venue>>() {
                     @Override
-                    public void call() {
-                        try {
-                            DiningAdapter mAdapter = new DiningAdapter(mActivity, diningHalls);
-                            mListView.setAdapter(mAdapter);
-                            getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-                        } catch (NullPointerException ignored) {
-
-                        }
+                    public Observable<Venue> call(List<Venue> venues) {
+                        return Observable.from(venues);
                     }
                 })
-                .subscribe(
-                        new Action1<List<Venue>>() {
+                .flatMap(new Func1<Venue, Observable<Venue>>() {
+                    @Override
+                    public Observable<Venue> call(Venue venue) {
+                        DiningHall hall = new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours());
+                        diningHalls.add(hall);
+                        return Observable.just(venue);
+                    }
+                })
+                .toList()
+                .subscribe(new Action1<List<Venue>>() {
+                    @Override
+                    public void call(List<Venue> venues) {
+                        mActivity.runOnUiThread(new Runnable() {
                             @Override
-                            public void call(List<Venue> venues) {
-                                for (Venue venue : venues) {
-                                    final DiningHall hall = new DiningHall(venue.id, venue.name, venue.isResidential(), venue.hasMenu(mLabs), venue.getHours());
-                                    diningHalls.add(hall);
-                                    if (hall.isResidential()) {
-                                        mLabs.daily_menu(hall.getId()).observeOn(AndroidSchedulers.mainThread())
-                                                .subscribe(new Action1<NewDiningHall>() {
-                                                    @Override
-                                                    public void call(NewDiningHall newDiningHall) {
-                                                        hall.parseMeals(newDiningHall);
-                                                    }
-                                                });
-                                    }
-                                }
-                            }
-                        },
-                        new Action1<Throwable>() {
-                            @Override
-                            public void call(Throwable throwable) {
-                                showErrorToast();
+                            public void run() {
+                                DiningAdapter adapter = new DiningAdapter(mActivity, diningHalls);
+                                mListView.setAdapter(adapter);
+                                mActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                             }
                         });
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        showErrorToast();
+                    }
+                });
     }
 
     private void showErrorToast() {

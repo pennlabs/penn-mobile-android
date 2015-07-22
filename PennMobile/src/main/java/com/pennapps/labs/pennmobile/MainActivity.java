@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar toolbar;
-    private Labs mLabs;
+    private static Labs mLabs;
     private OkHttpClient mAPIClient;
 
     @Override
@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public Labs getLabsInstance() {
+    public static Labs getLabsInstance() {
         if (mLabs == null) {
             GsonBuilder gsonBuilder = new GsonBuilder();
             gsonBuilder.registerTypeAdapter(new TypeToken<List<Course>>(){}.getType(), new Serializer.CourseSerializer());
