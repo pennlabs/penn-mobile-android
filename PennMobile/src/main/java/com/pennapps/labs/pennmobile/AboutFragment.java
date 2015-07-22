@@ -37,11 +37,6 @@ public class AboutFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_about, container, false);
         ButterKnife.bind(this, v);
         TextView featureRequest = (TextView) v.findViewById(R.id.about_desc);
-        featureRequest.setOnClickListener(new View.OnClickListener() {
-              @Override
-              public void onClick(View view) {
-              }
-        });
         featureRequest.setMovementMethod(LinkMovementMethod.getInstance());
         String text = "PennMobile was developed by Penn Labs, with funding<br>" +
                 "and support from the Undergraduate Assembly. Special thanks to Vishwa Patel. <br><br> &copy; 2015 Penn Labs <br><br>" +
@@ -55,6 +50,12 @@ public class AboutFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle(R.string.about);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 
     @OnClick(R.id.licenses)
