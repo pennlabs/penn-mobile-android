@@ -10,7 +10,6 @@ import com.pennapps.labs.pennmobile.R;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -74,7 +73,7 @@ public class BusRoute {
         return polylineOptions;
     }
 
-    public void setStops(List<BusStop> stops) {
-        this.stops = (ArrayList<BusStop>) stops;
+    public void setStops(ArrayList<BusStop> stops) {
+        this.stops = stops;
     }
 }

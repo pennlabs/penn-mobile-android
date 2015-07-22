@@ -15,6 +15,7 @@ import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -93,7 +94,7 @@ public class Serializer {
 
             if (jsonObject.get("path") != null) {
                 JsonElement stopList = jsonObject.get("path");
-                List<BusStop> stops = new Gson().fromJson(stopList, new TypeToken<List<BusStop>>() {
+                ArrayList<BusStop> stops = new Gson().fromJson(stopList, new TypeToken<List<BusStop>>() {
                 }.getType());
                 busRoute.setStops(stops);
             }
