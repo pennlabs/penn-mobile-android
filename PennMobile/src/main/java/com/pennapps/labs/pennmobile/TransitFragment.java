@@ -174,7 +174,6 @@ public class TransitFragment extends Fragment {
                 new Action1<List<BusRoute>>() {
                     @Override
                     public void call(List<BusRoute> routes) {
-                        selectedRoutes.addAll(routes);
                         adapter = new RoutesAdapter(activity.getApplicationContext(), routes);
                         showRouteDialogBox();
                     }
@@ -198,7 +197,9 @@ public class TransitFragment extends Fragment {
                         for (BusRoute busRoute : selectedRoutes) {
                             drawOfficialRoute(builder, busRoute);
                         }
-                        MapFragment.changeZoomLevel(googleMap, builder.build());
+                        if (!selectedRoutes.isEmpty()) {
+                            MapFragment.changeZoomLevel(googleMap, builder.build());
+                        }
                     }
                 }).show();
     }
