@@ -243,14 +243,13 @@ public class TransitFragment extends Fragment {
         Geocoder geocoder = new Geocoder(activity.getApplicationContext());
         try {
             List<Address> locations = geocoder.getFromLocationName(locationName, 1);
-            if (locations.size() == 0) {
-                showErrorToast();
-                return null;
+            if (locations.size() != 0) {
+                return new LatLng(locations.get(0).getLatitude(), locations.get(0).getLongitude());
             }
-            return new LatLng(locations.get(0).getLatitude(), locations.get(0).getLongitude());
         } catch (IOException e) {
             e.printStackTrace();
         }
+        showErrorToast();
         return null;
     }
 
@@ -260,10 +259,6 @@ public class TransitFragment extends Fragment {
                 new Action1<List<Building>>() {
                     @Override
                     public void call(List<Building> buildings) {
-                        if (buildings.isEmpty()) {
-                            showErrorToast();
-                            return;
-                        }
                         final LatLng destLatLng = getLocationLatLng(buildings, dest);
                         if (destLatLng == null) {
                             return;
