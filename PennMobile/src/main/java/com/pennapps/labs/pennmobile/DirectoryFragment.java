@@ -2,8 +2,6 @@ package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
@@ -13,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.adapters.DirectoryAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
@@ -20,6 +20,8 @@ import com.pennapps.labs.pennmobile.classes.Person;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -31,6 +33,11 @@ public class DirectoryFragment extends ListFragment {
     private Context mContext;
     private SearchView searchView;
 
+    @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
+    @Bind(R.id.no_results) TextView no_results;
+    @Bind(android.R.id.list) ListView list;
+    @Bind(R.id.directory_instructions) TextView directory_instructions;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,8 +47,10 @@ public class DirectoryFragment extends ListFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_directory, container, false);
-        v.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+        ButterKnife.bind(this, v);
+        loadingPanel.setVisibility(View.GONE);
         return v;
     }
 
@@ -87,9 +96,9 @@ public class DirectoryFragment extends ListFragment {
             @Override
             public boolean onQueryTextSubmit(String arg0) {
                 mListView.setAdapter(null);
-                getActivity().findViewById(R.id.directory_instructions).setVisibility(View.GONE);
-                getActivity().findViewById(R.id.no_results).setVisibility(View.GONE);
-                getActivity().findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
+                directory_instructions.setVisibility(View.GONE);
+                no_results.setVisibility(View.GONE);
+                loadingPanel.setVisibility(View.VISIBLE);
                 processQuery(arg0);
                 return true;
             }
@@ -109,12 +118,12 @@ public class DirectoryFragment extends ListFragment {
                 @Override
                 public void call(List<Person> people) {
                     DirectoryAdapter mAdapter = new DirectoryAdapter(mContext, people);
-                    getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                    loadingPanel.setVisibility(View.GONE);
                     if (people.size() == 0) {
-                        getActivity().findViewById(R.id.no_results).setVisibility(View.VISIBLE);
+                        no_results.setVisibility(View.VISIBLE);
                     } else {
                         mListView.setAdapter(mAdapter);
-                        getActivity().findViewById(android.R.id.list).setVisibility(View.VISIBLE);
+                        list.setVisibility(View.VISIBLE);
                     }
                     searchView.clearFocus();
                 }
@@ -125,5 +134,11 @@ public class DirectoryFragment extends ListFragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle(R.string.directory);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 }
