@@ -43,7 +43,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_margin="16dp"
-            android:background="@drawable/ic_close"
+            android:background="@drawable/abc_ic_clear_mtrl_alpha"
             android:layout_alignParentRight="true"/>
 
     </RelativeLayout>

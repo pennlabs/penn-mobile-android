@@ -230,7 +230,6 @@ public class TransitFragment extends Fragment {
             public boolean onQueryTextChange(String arg0) {
                 if (arg0.isEmpty()) {
                     fromBar.setVisibility(View.GONE);
-                    startingLoc.setText("");
                 }
                 return true;
             }
@@ -238,7 +237,7 @@ public class TransitFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String arg0) {
                 query = arg0;
-                drawUserRoute(null, query);
+                drawUserRoute(startingLoc.getEditableText().toString(), query);
                 fromBar.setVisibility(View.VISIBLE);
                 return true;
             }
@@ -273,7 +272,7 @@ public class TransitFragment extends Fragment {
                         if (destLatLng == null) {
                             return;
                         }
-                        if (begin == null) {
+                        if (begin == null || begin.equals("")) {
                             retrieveRoute(mapCallBacks.getLatLng(), destLatLng, true);
                             return;
                         }
@@ -436,6 +435,7 @@ public class TransitFragment extends Fragment {
     @OnClick(R.id.clear_location)
     public void clearFromLocation() {
         startingLoc.setText(null);
+        startingLoc.findFocus();
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(startingLoc, InputMethodManager.SHOW_IMPLICIT);
     }
