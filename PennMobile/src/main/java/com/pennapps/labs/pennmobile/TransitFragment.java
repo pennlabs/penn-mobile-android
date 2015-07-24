@@ -181,7 +181,7 @@ public class TransitFragment extends Fragment {
                 new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        showErrorToast();
+                        activity.showErrorToast(R.string.no_path_found);
                     }
                 });
     }
@@ -249,7 +249,7 @@ public class TransitFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        showErrorToast();
+        activity.showErrorToast(R.string.no_path_found);
         return null;
     }
 
@@ -281,7 +281,7 @@ public class TransitFragment extends Fragment {
                                 new Action1<Throwable>() {
                                     @Override
                                     public void call(Throwable throwable) {
-                                        showErrorToast();
+                                        activity.showErrorToast(R.string.no_path_found);
                                     }
                                 });
                     }
@@ -289,20 +289,9 @@ public class TransitFragment extends Fragment {
                 new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        showErrorToast();
+                        activity.showErrorToast(R.string.no_path_found);
                     }
                 });
-    }
-
-    private void showErrorToast() {
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(activity.getApplicationContext(),
-                        R.string.no_path_found, Toast.LENGTH_SHORT).show();
-                searchView.setQuery("", false);
-            }
-        });
     }
 
     private void retrieveRoute(final LatLng startLatLng, final LatLng destLatLng, final boolean showCurrent) {
@@ -317,7 +306,7 @@ public class TransitFragment extends Fragment {
                             public void call(BusRoute route) {
                                 googleMap.clear();
                                 if (route == null || route.stops.size() == 0) {
-                                    showErrorToast();
+                                    activity.showErrorToast(R.string.no_path_found);
                                     return;
                                 }
                                 PolylineOptions options = new PolylineOptions();
@@ -346,7 +335,7 @@ public class TransitFragment extends Fragment {
                         new Action1<Throwable>() {
                             @Override
                             public void call(Throwable throwable) {
-                                showErrorToast();
+                                activity.showErrorToast(R.string.no_path_found);
                             }
                         });
     }

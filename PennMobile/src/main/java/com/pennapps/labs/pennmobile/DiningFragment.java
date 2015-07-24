@@ -101,18 +101,9 @@ public class DiningFragment extends ListFragment {
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        showErrorToast();
+                        mActivity.showErrorToast(R.string.no_results);
                     }
                 });
-    }
-
-    private void showErrorToast() {
-        mActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(mActivity, R.string.no_results, Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override

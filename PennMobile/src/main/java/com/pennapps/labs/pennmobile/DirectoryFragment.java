@@ -27,6 +27,7 @@ import rx.functions.Func1;
 public class DirectoryFragment extends ListFragment {
 
     private Labs mLabs;
+    private MainActivity mActivity;
     private ListView mListView;
     private Context mContext;
     private String mName;
@@ -36,7 +37,8 @@ public class DirectoryFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = getActivity().getApplicationContext();
+        mActivity = (MainActivity) getActivity();
+        mContext = mActivity.getApplicationContext();
         mLabs = MainActivity.getLabsInstance();
         mName = getArguments().getString(DirectorySearchFragment.NAME_INTENT_EXTRA);
     }
@@ -109,12 +111,6 @@ public class DirectoryFragment extends ListFragment {
 
     private void processQuery() {
         mLabs.people(mName)
-            .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<Person>>() {
-            @Override
-            public List<Person> call(Throwable throwable) {
-                return null;
-            }
-        })
             .subscribe(new Action1<List<Person>>() {
                 @Override
                 public void call(List<Person> people) {
@@ -128,6 +124,11 @@ public class DirectoryFragment extends ListFragment {
                         getActivity().findViewById(android.R.id.list).setVisibility(View.VISIBLE);
                     }
                     searchView.clearFocus();
+                }
+            }, new Action1<Throwable>() {
+                @Override
+                public void call(Throwable throwable) {
+                    mActivity.showErrorToast(R.string.no_results);
                 }
             });
     }

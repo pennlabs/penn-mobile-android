@@ -231,27 +231,16 @@ public class MapFragment extends Fragment {
                     new Action1<Throwable>() {
                         @Override
                         public void call(Throwable throwable) {
-                            showErrorToast();
+                            activity.showErrorToast(R.string.location_not_found);
                         }
                     });
-    }
-
-    private void showErrorToast() {
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(activity.getApplicationContext(),
-                        R.string.location_not_found, Toast.LENGTH_SHORT).show();
-                searchView.setQuery("", false);
-            }
-        });
     }
 
     private void drawResults(List<Building> buildings) {
         googleMap.clear();
         searchView.clearFocus();
         if (buildings.isEmpty()) {
-            showErrorToast();
+            activity.showErrorToast(R.string.location_not_found);
             return;
         }
         LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
