@@ -56,7 +56,7 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
 
         holder.hallNameTV.setText(WordUtils.capitalizeFully(diningHall.getName()));
 
-        if (diningHall.isResidential() && diningHall.menus.size() == 0) {
+        if (diningHall.isResidential() && !diningHall.hasMenu()) {
             mLabs.daily_menu(diningHall.getId())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<NewDiningHall>() {
@@ -99,7 +99,7 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
                 holder.openClose.setText("Opens at " + diningHall.openingTime());
             }
         }
-        
+
         if (diningHall.hasMenu()) {
             holder.menuArrow.setVisibility(View.VISIBLE);
         }
