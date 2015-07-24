@@ -19,6 +19,7 @@ import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -29,7 +30,7 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
     private final LayoutInflater inflater;
     private Labs mLabs;
 
-    public DiningAdapter(Context context, ArrayList<DiningHall> diningHalls) {
+    public DiningAdapter(Context context, List<DiningHall> diningHalls) {
         super(context, R.layout.dining_list_item, diningHalls);
         inflater = LayoutInflater.from(context);
         mLabs = MainActivity.getLabsInstance();

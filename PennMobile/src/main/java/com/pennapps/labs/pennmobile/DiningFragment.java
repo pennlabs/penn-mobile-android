@@ -86,7 +86,6 @@ public class DiningFragment extends ListFragment {
     }
 
     private void getDiningHalls() {
-        final ArrayList<DiningHall> diningHalls = new ArrayList<>();
         mLabs.venues()
                 .flatMap(new Func1<List<Venue>, Observable<Venue>>() {
                     @Override
@@ -94,18 +93,17 @@ public class DiningFragment extends ListFragment {
                         return Observable.from(venues);
                     }
                 })
-                .flatMap(new Func1<Venue, Observable<Venue>>() {
+                .flatMap(new Func1<Venue, Observable<DiningHall>>() {
                     @Override
-                    public Observable<Venue> call(Venue venue) {
+                    public Observable<DiningHall> call(Venue venue) {
                         DiningHall hall = new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours());
-                        diningHalls.add(hall);
-                        return Observable.just(venue);
+                        return Observable.just(hall);
                     }
                 })
                 .toList()
-                .subscribe(new Action1<List<Venue>>() {
+                .subscribe(new Action1<List<DiningHall>>() {
                     @Override
-                    public void call(List<Venue> venues) {
+                    public void call(final List<DiningHall> diningHalls) {
                         mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
