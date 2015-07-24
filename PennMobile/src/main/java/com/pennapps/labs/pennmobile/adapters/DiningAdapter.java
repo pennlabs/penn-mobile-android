@@ -17,7 +17,6 @@ import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 
 import org.apache.commons.lang3.text.WordUtils;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
