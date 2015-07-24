@@ -9,36 +9,45 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.pennapps.labs.pennmobile.MainActivity;
 import com.pennapps.labs.pennmobile.R;
+import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
+import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 
 import org.apache.commons.lang3.text.WordUtils;
 
-import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 public class DiningAdapter extends ArrayAdapter<DiningHall> {
     private final LayoutInflater inflater;
+    private Labs mLabs;
 
-    public DiningAdapter(Context context, ArrayList<DiningHall> diningHalls) {
+    public DiningAdapter(Context context, List<DiningHall> diningHalls) {
         super(context, R.layout.dining_list_item, diningHalls);
         inflater = LayoutInflater.from(context);
+        mLabs = MainActivity.getLabsInstance();
     }
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
-        DiningHall diningHall = getItem(position);
-        ViewHolder holder;
+        final DiningHall diningHall = getItem(position);
+        ViewHolder hallHolder;
         if (view != null) {
-            holder = (ViewHolder) view.getTag();
+            hallHolder = (ViewHolder) view.getTag();
         } else {
             view = inflater.inflate(R.layout.dining_list_item, parent, false);
-            holder = new ViewHolder(view, diningHall);
-            view.setTag(holder);
+            hallHolder = new ViewHolder(view, diningHall);
+            view.setTag(hallHolder);
         }
+
+        final ViewHolder holder = hallHolder;
         holder.hall = diningHall;
 
         holder.menuArrow.setVisibility(View.GONE);
@@ -46,6 +55,24 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
         holder.openClose.setVisibility(View.VISIBLE);
 
         holder.hallNameTV.setText(WordUtils.capitalizeFully(diningHall.getName()));
+
+        if (diningHall.isResidential() && !diningHall.hasMenu()) {
+            mLabs.daily_menu(diningHall.getId())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<NewDiningHall>() {
+                        @Override
+                        public void call(NewDiningHall newDiningHall) {
+                            diningHall.parseMeals(newDiningHall);
+                            if (diningHall.hasMenu()) {
+                                holder.menuArrow.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                        }
+                    });
+        }
 
         if (diningHall.isOpen()) {
             holder.hallStatus.setText("Open");

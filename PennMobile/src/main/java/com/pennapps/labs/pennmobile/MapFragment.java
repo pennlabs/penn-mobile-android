@@ -55,8 +55,8 @@ public class MapFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mLabs = MainActivity.getLabsInstance();
         activity = (MainActivity) getActivity();
-        mLabs = activity.getLabsInstance();
         loadedMarkers = new HashSet<>();
         mapCallbacks = new MapCallbacks();
         Context context = activity.getApplicationContext();

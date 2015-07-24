@@ -37,7 +37,7 @@ public class DirectoryFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getActivity().getApplicationContext();
-        mLabs = ((MainActivity) getActivity()).getLabsInstance();
+        mLabs = MainActivity.getLabsInstance();
         mName = getArguments().getString(DirectorySearchFragment.NAME_INTENT_EXTRA);
     }
 

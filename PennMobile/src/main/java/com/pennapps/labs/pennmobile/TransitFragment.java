@@ -66,7 +66,7 @@ public class TransitFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = (MainActivity) getActivity();
-        mLabs = activity.getLabsInstance();
+        mLabs = MainActivity.getLabsInstance();
         selectedRoutes = new HashSet<>();
 
         mapCallBacks = MapFragment.getMapCallbacks();
@@ -299,7 +299,7 @@ public class TransitFragment extends Fragment {
             @Override
             public void run() {
                 Toast.makeText(activity.getApplicationContext(),
-                        R.string.no_path_found,Toast.LENGTH_SHORT).show();
+                        R.string.no_path_found, Toast.LENGTH_SHORT).show();
                 searchView.setQuery("", false);
             }
         });

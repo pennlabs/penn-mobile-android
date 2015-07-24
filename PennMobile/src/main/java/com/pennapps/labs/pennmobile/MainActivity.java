@@ -30,7 +30,6 @@ import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Venue;
-import com.squareup.okhttp.OkHttpClient;
 
 import java.util.List;
 
@@ -44,8 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar toolbar;
-    private Labs mLabs;
-    private OkHttpClient mAPIClient;
+    private static Labs mLabs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -225,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public Labs getLabsInstance() {
+    public static Labs getLabsInstance() {
         if (mLabs == null) {
             GsonBuilder gsonBuilder = new GsonBuilder();
             gsonBuilder.registerTypeAdapter(new TypeToken<List<Course>>(){}.getType(), new Serializer.CourseSerializer());
@@ -244,12 +242,5 @@ public class MainActivity extends AppCompatActivity {
             mLabs = restAdapter.create(Labs.class);
         }
         return mLabs;
-    }
-
-    public OkHttpClient getAPIClient() {
-        if (mAPIClient == null) {
-            mAPIClient = new OkHttpClient();
-        }
-        return mAPIClient;
     }
 }

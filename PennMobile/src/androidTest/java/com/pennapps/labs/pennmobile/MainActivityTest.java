@@ -82,20 +82,20 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
 
     public void testDiningVenues() {
         Labs mLabs = activity.getLabsInstance();
-        List<Venue> venues = mLabs.venues();
+        List<Venue> venues = mLabs.venues().toList().toBlocking().single().get(0);
         assertEquals("1920 Commons", venues.get(0).name);
     }
 
     public void testDiningMenuMeals() {
         Labs mLabs = activity.getLabsInstance();
-        List<Venue> venues = mLabs.venues();
+        List<Venue> venues = mLabs.venues().toList().toBlocking().single().get(0);
         NewDiningHall commons = mLabs.daily_menu(venues.get(0).id);
         assertTrue(commons.menus.size() > 0);
     }
 
     public void testDiningMenu() {
         Labs mLabs = activity.getLabsInstance();
-        List<Venue> venues = mLabs.venues();
+        List<Venue> venues = mLabs.venues().toList().toBlocking().single().get(0);
         NewDiningHall commons = mLabs.daily_menu(venues.get(0).id);
         NewDiningHall.Menu menu = commons.menus.get(0);
         assertTrue(menu.name.equals("Brunch") || menu.name.equals("Breakfast"));
@@ -103,7 +103,7 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
 
     public void testDiningMenuStation() {
         Labs mLabs = activity.getLabsInstance();
-        List<Venue> venues = mLabs.venues();
+        List<Venue> venues = mLabs.venues().toList().toBlocking().single().get(0);
         NewDiningHall commons = mLabs.daily_menu(venues.get(0).id);
         NewDiningHall.Menu menu = commons.menus.get(0);
         NewDiningHall.DiningStation station = menu.stations.get(0);
