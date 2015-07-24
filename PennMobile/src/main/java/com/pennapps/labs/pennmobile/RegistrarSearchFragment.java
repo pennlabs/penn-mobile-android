@@ -157,6 +157,12 @@ public class RegistrarSearchFragment extends Fragment {
         super.onResume();
         getActivity().setTitle(R.string.registrar);
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
 }
 
 

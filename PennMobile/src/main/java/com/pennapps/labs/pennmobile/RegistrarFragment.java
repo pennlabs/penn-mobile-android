@@ -94,6 +94,12 @@ public class RegistrarFragment extends Fragment {
         return null;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
+
     private void processCourse() {
         LatLng courseLatLng;
         Spannable courseCodeText;

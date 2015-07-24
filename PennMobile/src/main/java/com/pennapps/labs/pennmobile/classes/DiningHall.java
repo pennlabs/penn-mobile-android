@@ -50,9 +50,6 @@ public class DiningHall implements Parcelable {
     };
 
     public void parseMeals(NewDiningHall h) {
-        if (h == null) {
-            return;
-        }
         for (NewDiningHall.Menu menu : h.menus) {
             this.menus.put(menu.name, menu.getStationMap());
         }
