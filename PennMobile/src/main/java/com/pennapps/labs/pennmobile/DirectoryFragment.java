@@ -111,31 +111,27 @@ public class DirectoryFragment extends ListFragment {
 
     private void processQuery() {
         mLabs.people(mName)
-            .subscribe(new Action1<List<Person>>() {
-                @Override
-                public void call(final List<Person> people) {
-                    mActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            DirectoryAdapter mAdapter = new DirectoryAdapter(mContext, people);
-                            getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-                            if (people.size() == 0) {
-                                getActivity().findViewById(R.id.no_results).setVisibility(View.VISIBLE);
-                            } else {
-                                mListView.setAdapter(mAdapter);
-                                getActivity().findViewById(R.id.no_results).setVisibility(View.GONE);
-                                getActivity().findViewById(android.R.id.list).setVisibility(View.VISIBLE);
-                            }
-                            searchView.clearFocus();
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<Person>>() {
+                    @Override
+                    public void call(final List<Person> people) {
+                        DirectoryAdapter mAdapter = new DirectoryAdapter(mContext, people);
+                        getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                        if (people.size() == 0) {
+                            getActivity().findViewById(R.id.no_results).setVisibility(View.VISIBLE);
+                        } else {
+                            mListView.setAdapter(mAdapter);
+                            getActivity().findViewById(R.id.no_results).setVisibility(View.GONE);
+                            getActivity().findViewById(android.R.id.list).setVisibility(View.VISIBLE);
                         }
-                    });
-                }
-            }, new Action1<Throwable>() {
-                @Override
-                public void call(Throwable throwable) {
-                    mActivity.showErrorToast(R.string.no_results);
-                }
-            });
+                        searchView.clearFocus();
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        mActivity.showErrorToast(R.string.no_results);
+                    }
+                });
     }
 
     @Override

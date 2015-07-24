@@ -123,37 +123,33 @@ public class RegistrarSearchFragment extends Fragment {
 
     private void searchCourses(String query) {
         mLabs.courses(query)
-            .subscribe(new Action1<List<Course>>() {
-                @Override
-                public void call(final List<Course> courses) {
-                    mActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (courses == null || courses.size() == 0) {
-                                loadingPanel.setVisibility(View.GONE);
-                                no_results.setVisibility(View.VISIBLE);
-                                registrar_fragment.setVisibility(View.GONE);
-                            } else {
-                                registrar_fragment.setVisibility(View.VISIBLE);
-                                no_results.setVisibility(View.GONE);
-                                RegistrarListFragment listFragment = new RegistrarListFragment();
-                                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                                mAdapter = new RegistrarAdapter(mActivity.getApplicationContext(),
-                                        R.layout.registrar_list_item, courses);
-                                listFragment.setListAdapter(mAdapter);
-                                transaction.replace(R.id.registrar_fragment, listFragment)
-                                        .addToBackStack(null)
-                                        .commit();
-                            }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<Course>>() {
+                    @Override
+                    public void call(final List<Course> courses) {
+                        if (courses == null || courses.size() == 0) {
+                            loadingPanel.setVisibility(View.GONE);
+                            no_results.setVisibility(View.VISIBLE);
+                            registrar_fragment.setVisibility(View.GONE);
+                        } else {
+                            registrar_fragment.setVisibility(View.VISIBLE);
+                            no_results.setVisibility(View.GONE);
+                            RegistrarListFragment listFragment = new RegistrarListFragment();
+                            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                            mAdapter = new RegistrarAdapter(mActivity.getApplicationContext(),
+                                    R.layout.registrar_list_item, courses);
+                            listFragment.setListAdapter(mAdapter);
+                            transaction.replace(R.id.registrar_fragment, listFragment)
+                                    .addToBackStack(null)
+                                    .commit();
                         }
-                    });
-                }
-            }, new Action1<Throwable>() {
-                @Override
-                public void call(Throwable throwable) {
-                    mActivity.showErrorToast(R.string.no_results);
-                }
-            });
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        mActivity.showErrorToast(R.string.no_results);
+                    }
+                });
     }
 
     @Override
