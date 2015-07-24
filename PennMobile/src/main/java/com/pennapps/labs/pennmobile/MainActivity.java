@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
+        //Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
         if (position == 0) {
             fragment = new MainFragment();
         } if (position == 1) {
-            fragment = new RegistrarSearchFragment();
+            fragment = new RegistrarFragment();
         } else if (position == 2) {
             fragment = new DirectorySearchFragment();
         } else if (position == 3) {
