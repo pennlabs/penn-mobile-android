@@ -24,7 +24,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 
 public class DirectoryFragment extends ListFragment {
 
@@ -116,7 +115,7 @@ public class DirectoryFragment extends ListFragment {
                     public void call(final List<Person> people) {
                         DirectoryAdapter mAdapter = new DirectoryAdapter(mContext, people);
                         loadingPanel.setVisibility(View.GONE);
-                        if (people.size() == 0) {
+                        if (people.isEmpty()) {
                             no_results.setVisibility(View.VISIBLE);
                         } else {
                             mListView.setAdapter(mAdapter);

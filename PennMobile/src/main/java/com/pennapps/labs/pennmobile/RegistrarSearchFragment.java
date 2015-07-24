@@ -1,7 +1,7 @@
 package com.pennapps.labs.pennmobile;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
@@ -26,7 +26,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 
 public class RegistrarSearchFragment extends Fragment {
 
@@ -126,8 +125,8 @@ public class RegistrarSearchFragment extends Fragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<List<Course>>() {
                     @Override
-                    public void call(final List<Course> courses) {
-                        if (courses == null || courses.size() == 0) {
+                    public void call(@NonNull final List<Course> courses) {
+                        if (courses.isEmpty()) {
                             loadingPanel.setVisibility(View.GONE);
                             no_results.setVisibility(View.VISIBLE);
                             registrar_fragment.setVisibility(View.GONE);
