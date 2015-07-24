@@ -78,7 +78,7 @@ public class TransitFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mLabs = ((MainActivity) getActivity()).getLabsInstance();
+        mLabs = MainActivity.getLabsInstance();
 
         mapCallBacks = MapFragment.getMapCallBacks();
         if(mapCallBacks == null) {

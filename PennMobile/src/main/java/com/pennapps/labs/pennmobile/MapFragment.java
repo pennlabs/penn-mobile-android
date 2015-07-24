@@ -61,7 +61,7 @@ public class MapFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLabs = ((MainActivity) getActivity()).getLabsInstance();
+        mLabs = MainActivity.getLabsInstance();
         loadedMarkers = new HashSet<>();
         mapCallBacks = new MapCallBacks();
         mGoogleApiClient = new GoogleApiClient.Builder(( getActivity().getApplicationContext()))

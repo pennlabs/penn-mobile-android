@@ -48,7 +48,7 @@ public class RegistrarSearchFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mActivity = getActivity();
         hideKeyboard = false;
-        mLabs = ((MainActivity) getActivity()).getLabsInstance();
+        mLabs = MainActivity.getLabsInstance();
         mFragment = this;
     }
 
