@@ -1,8 +1,5 @@
 package com.pennapps.labs.pennmobile;
 
-
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,7 +7,6 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -29,21 +25,17 @@ public class DiningFragment extends ListFragment {
 
     private Labs mLabs;
     private ListView mListView;
-    private Activity mActivity;
+    private MainActivity mActivity;
     public static Fragment mFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLabs = MainActivity.getLabsInstance();
-        mActivity = getActivity();
+        mActivity = (MainActivity) getActivity();
         mFragment = this;
-        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        View view = getActivity().getCurrentFocus();
-        if (view != null) {
-            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
+        mActivity.closeKeyboard();
 
         getDiningHalls();
     }
@@ -109,18 +101,9 @@ public class DiningFragment extends ListFragment {
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        showErrorToast();
+                        mActivity.showErrorToast(R.string.no_results);
                     }
                 });
-    }
-
-    private void showErrorToast() {
-        mActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(mActivity, R.string.no_results, Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override

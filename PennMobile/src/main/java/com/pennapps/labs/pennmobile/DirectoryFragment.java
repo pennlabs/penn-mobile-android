@@ -24,11 +24,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 
 public class DirectoryFragment extends ListFragment {
 
     private Labs mLabs;
+    private MainActivity mActivity;
     private ListView mListView;
     private Context mContext;
     private SearchView searchView;
@@ -41,7 +41,8 @@ public class DirectoryFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = getActivity().getApplicationContext();
+        mActivity = (MainActivity) getActivity();
+        mContext = mActivity.getApplicationContext();
         mLabs = MainActivity.getLabsInstance();
     }
 
@@ -95,6 +96,7 @@ public class DirectoryFragment extends ListFragment {
 
             @Override
             public boolean onQueryTextSubmit(String arg0) {
+                searchView.clearFocus();
                 mListView.setAdapter(null);
                 directory_instructions.setVisibility(View.GONE);
                 no_results.setVisibility(View.GONE);
@@ -108,26 +110,25 @@ public class DirectoryFragment extends ListFragment {
 
     private void processQuery(String query) {
         mLabs.people(query)
-            .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<Person>>() {
-            @Override
-            public List<Person> call(Throwable throwable) {
-                return null;
-            }
-        })
-            .subscribe(new Action1<List<Person>>() {
-                @Override
-                public void call(List<Person> people) {
-                    DirectoryAdapter mAdapter = new DirectoryAdapter(mContext, people);
-                    loadingPanel.setVisibility(View.GONE);
-                    if (people.size() == 0) {
-                        no_results.setVisibility(View.VISIBLE);
-                    } else {
-                        mListView.setAdapter(mAdapter);
-                        list.setVisibility(View.VISIBLE);
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<Person>>() {
+                    @Override
+                    public void call(final List<Person> people) {
+                        DirectoryAdapter mAdapter = new DirectoryAdapter(mContext, people);
+                        loadingPanel.setVisibility(View.GONE);
+                        if (people.isEmpty()) {
+                            no_results.setVisibility(View.VISIBLE);
+                        } else {
+                            mListView.setAdapter(mAdapter);
+                            list.setVisibility(View.VISIBLE);
+                        }
                     }
-                    searchView.clearFocus();
-                }
-            });
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        mActivity.showErrorToast(R.string.no_results);
+                    }
+                });
     }
 
     @Override

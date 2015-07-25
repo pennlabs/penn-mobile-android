@@ -1,7 +1,7 @@
 package com.pennapps.labs.pennmobile;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
@@ -26,14 +26,13 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 
 public class RegistrarSearchFragment extends Fragment {
 
     public static final String COURSE_ID_EXTRA = "COURSE_ID";
     private Labs mLabs;
     public static Fragment mFragment;
-    private Activity mActivity;
+    private MainActivity mActivity;
     private boolean hideKeyboard;
     private RegistrarAdapter mAdapter;
     private SearchView searchView;
@@ -46,7 +45,7 @@ public class RegistrarSearchFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mActivity = getActivity();
+        mActivity = (MainActivity) getActivity();
         hideKeyboard = false;
         mLabs = MainActivity.getLabsInstance();
         mFragment = this;
@@ -123,33 +122,33 @@ public class RegistrarSearchFragment extends Fragment {
 
     private void searchCourses(String query) {
         mLabs.courses(query)
-            .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<Course>>() {
-                @Override
-                public List<Course> call(Throwable throwable) {
-                    return null;
-                }
-            })
-            .subscribe(new Action1<List<Course>>() {
-                @Override
-                public void call(List<Course> courses) {
-                    if (courses == null || courses.size() == 0) {
-                        loadingPanel.setVisibility(View.GONE);
-                        no_results.setVisibility(View.VISIBLE);
-                        registrar_fragment.setVisibility(View.GONE);
-                    } else {
-                        registrar_fragment.setVisibility(View.VISIBLE);
-                        no_results.setVisibility(View.GONE);
-                        RegistrarListFragment listFragment = new RegistrarListFragment();
-                        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                        mAdapter = new RegistrarAdapter(mActivity.getApplicationContext(),
-                                R.layout.registrar_list_item, courses);
-                        listFragment.setListAdapter(mAdapter);
-                        transaction.replace(R.id.registrar_fragment, listFragment)
-                                .addToBackStack(null)
-                                .commit();
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<Course>>() {
+                    @Override
+                    public void call(@NonNull final List<Course> courses) {
+                        if (courses.isEmpty()) {
+                            loadingPanel.setVisibility(View.GONE);
+                            no_results.setVisibility(View.VISIBLE);
+                            registrar_fragment.setVisibility(View.GONE);
+                        } else {
+                            registrar_fragment.setVisibility(View.VISIBLE);
+                            no_results.setVisibility(View.GONE);
+                            RegistrarListFragment listFragment = new RegistrarListFragment();
+                            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                            mAdapter = new RegistrarAdapter(mActivity.getApplicationContext(),
+                                    R.layout.registrar_list_item, courses);
+                            listFragment.setListAdapter(mAdapter);
+                            transaction.replace(R.id.registrar_fragment, listFragment)
+                                    .addToBackStack(null)
+                                    .commit();
+                        }
                     }
-                }
-            });
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        mActivity.showErrorToast(R.string.no_results);
+                    }
+                });
     }
 
     @Override
