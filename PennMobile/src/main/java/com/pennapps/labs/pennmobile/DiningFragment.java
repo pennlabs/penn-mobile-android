@@ -1,9 +1,5 @@
 package com.pennapps.labs.pennmobile;
 
-
-import android.app.Activity;
-import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,41 +7,37 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.pennapps.labs.pennmobile.adapters.DiningAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
-import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class DiningFragment extends ListFragment {
 
     private Labs mLabs;
     private ListView mListView;
-    private ArrayList<DiningHall> mDiningHalls;
-    private Activity mActivity;
+    private MainActivity mActivity;
     public static Fragment mFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLabs = ((MainActivity) getActivity()).getLabsInstance();
-        mActivity = getActivity();
-        mDiningHalls = new ArrayList<>();
+        mLabs = MainActivity.getLabsInstance();
+        mActivity = (MainActivity) getActivity();
         mFragment = this;
-        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        View view = getActivity().getCurrentFocus();
-        if (view != null) {
-            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
+        mActivity.closeKeyboard();
 
-        new GetOpenTask().execute();
+        getDiningHalls();
     }
 
     @Override
@@ -77,46 +69,41 @@ public class DiningFragment extends ListFragment {
             onResume();
         }
     }
-    private class GetOpenTask extends AsyncTask<Void, Void, Void> {
 
-        @Override
-        protected Void doInBackground(Void... params) {
-            List<Venue> venues = mLabs.venues();
-            for (Venue venue : venues) {
-                DiningHall hall = new DiningHall(venue.id, venue.name, venue.isResidential(), venue.hasMenu(mLabs), venue.getHours());
-                mDiningHalls.add(hall);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void params) {
-            new GetMenusTask().execute();
-        }
-    }
-
-    private class GetMenusTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            for (DiningHall mDiningHall : mDiningHalls) {
-                if (mDiningHall.isResidential() && mDiningHall.hasMenu()) {
-                    NewDiningHall hall = mLabs.daily_menu(mDiningHall.getId());
-                    mDiningHall.parseMeals(hall);
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void params) {
-            try {
-                DiningAdapter mAdapter = new DiningAdapter(mActivity, mDiningHalls);
-                mListView.setAdapter(mAdapter);
-                getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-            } catch (NullPointerException ignored) {
-
-            }
-        }
+    private void getDiningHalls() {
+        mLabs.venues()
+                .flatMap(new Func1<List<Venue>, Observable<Venue>>() {
+                    @Override
+                    public Observable<Venue> call(List<Venue> venues) {
+                        return Observable.from(venues);
+                    }
+                })
+                .flatMap(new Func1<Venue, Observable<DiningHall>>() {
+                    @Override
+                    public Observable<DiningHall> call(Venue venue) {
+                        DiningHall hall = new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours());
+                        return Observable.just(hall);
+                    }
+                })
+                .toList()
+                .subscribe(new Action1<List<DiningHall>>() {
+                    @Override
+                    public void call(final List<DiningHall> diningHalls) {
+                        mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                DiningAdapter adapter = new DiningAdapter(mActivity, diningHalls);
+                                mListView.setAdapter(adapter);
+                                mActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                            }
+                        });
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        mActivity.showErrorToast(R.string.no_results);
+                    }
+                });
     }
 
     @Override

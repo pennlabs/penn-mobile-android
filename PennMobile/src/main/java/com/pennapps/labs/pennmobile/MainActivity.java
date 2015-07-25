@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
@@ -30,7 +31,6 @@ import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Venue;
-import com.squareup.okhttp.OkHttpClient;
 
 import java.util.List;
 
@@ -44,8 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar toolbar;
-    private Labs mLabs;
-    private OkHttpClient mAPIClient;
+    private static Labs mLabs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
         } if (position == 1) {
             fragment = new RegistrarSearchFragment();
         } else if (position == 2) {
-            fragment = new DirectorySearchFragment();
+            fragment = new DirectoryFragment();
         } else if (position == 3) {
             fragment = new DiningFragment();
         } else if (position == 4) {
@@ -225,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public Labs getLabsInstance() {
+    public static Labs getLabsInstance() {
         if (mLabs == null) {
             GsonBuilder gsonBuilder = new GsonBuilder();
             gsonBuilder.registerTypeAdapter(new TypeToken<List<Course>>(){}.getType(), new Serializer.CourseSerializer());
@@ -246,10 +245,12 @@ public class MainActivity extends AppCompatActivity {
         return mLabs;
     }
 
-    public OkHttpClient getAPIClient() {
-        if (mAPIClient == null) {
-            mAPIClient = new OkHttpClient();
-        }
-        return mAPIClient;
+    public void showErrorToast(final int errorMessage) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

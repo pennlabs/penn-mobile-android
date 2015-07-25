@@ -28,14 +28,6 @@ public class Venue {
         return venueType.equals("residential") && !name.equals("Cafe at McClelland");
     }
 
-    public boolean hasMenu(Labs mAPI) {
-        try {
-            return mAPI.daily_menu(id).menus.size() > 0;
-        } catch (Exception ignored) {
-            return false;
-        }
-    }
-
     public HashMap<String, Interval> getHours() {
         DateTime currentTime = new DateTime();
         // Split by T gets the Y-M-D format to compare against the date in JSON

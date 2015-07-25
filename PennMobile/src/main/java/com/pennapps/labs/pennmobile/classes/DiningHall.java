@@ -21,15 +21,13 @@ public class DiningHall implements Parcelable {
     private String name;
     // Refers to whether the dining hall is residential or retail
     private boolean residential;
-    private boolean hasMenu;
     private HashMap<String, Interval> openHours;
     public LinkedHashMap<String, HashMap<String, HashSet<String>>> menus;
 
-    public DiningHall(int id, String name, boolean residential, boolean hasMenu, HashMap<String, Interval> hours) {
+    public DiningHall(int id, String name, boolean residential, HashMap<String, Interval> hours) {
         this.id = id;
         this.name = name;
         this.residential = residential;
-        this.hasMenu = hasMenu;
         this.openHours = hours;
         this.menus = new LinkedHashMap<>();
     }
@@ -63,7 +61,7 @@ public class DiningHall implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeBooleanArray(new boolean[] {residential, hasMenu});
+        dest.writeBooleanArray(new boolean[] {residential});
         dest.writeMap(openHours);
         dest.writeMap(menus);
         dest.writeInt(id);
@@ -81,8 +79,9 @@ public class DiningHall implements Parcelable {
     public boolean isResidential() {
         return residential;
     }
+
     public boolean hasMenu() {
-        return hasMenu;
+        return menus.size() > 0;
     }
 
     public String closingTime() {
