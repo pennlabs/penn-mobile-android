@@ -36,7 +36,7 @@ public class RegistrarFragment extends ListFragment {
 
     private Labs mLabs;
     private ListView listView;
-    private Activity mActivity;
+    private MainActivity mActivity;
     private RegistrarAdapter mAdapter;
     private SearchView searchView;
 
@@ -47,7 +47,7 @@ public class RegistrarFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mActivity = getActivity();
+        mActivity = (MainActivity) getActivity();
         mLabs = MainActivity.getLabsInstance();
     }
 
@@ -115,26 +115,26 @@ public class RegistrarFragment extends ListFragment {
 
     private void searchCourses(String query) {
         mLabs.courses(query)
-            .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<Course>>() {
-            @Override
-            public List<Course> call(Throwable throwable) {
-                return null;
-            }
-        })
-            .subscribe(new Action1<List<Course>>() {
-                @Override
-                public void call(List<Course> courses) {
-                    loadingPanel.setVisibility(View.GONE);
-                    if (courses == null || courses.size() == 0) {
-                        no_results.setVisibility(View.VISIBLE);
-                        listView.setVisibility(View.GONE);
-                    } else {
-                        mAdapter = new RegistrarAdapter(mActivity, courses);
-                        listView.setVisibility(View.VISIBLE);
-                        listView.setAdapter(mAdapter);
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<Course>>() {
+                    @Override
+                    public void call(List<Course> courses) {
+                        loadingPanel.setVisibility(View.GONE);
+                        if (courses == null || courses.size() == 0) {
+                            no_results.setVisibility(View.VISIBLE);
+                            listView.setVisibility(View.GONE);
+                        } else {
+                            mAdapter = new RegistrarAdapter(mActivity, courses);
+                            listView.setVisibility(View.VISIBLE);
+                            listView.setAdapter(mAdapter);
+                        }
                     }
-                }
-            });
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        mActivity.showErrorToast(R.string.no_results);
+                    }
+                });
     }
 
     @Override
