@@ -163,4 +163,8 @@ public class CourseActivity extends AppCompatActivity {
             }
         }
     }
+
+    public void finish(View view) {
+        super.finish();
+    }
 }
