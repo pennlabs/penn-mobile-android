@@ -24,8 +24,8 @@ import com.pennapps.labs.pennmobile.classes.Course;
 import java.io.IOException;
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class RegistrarFragment extends Fragment {
 
@@ -33,13 +33,13 @@ public class RegistrarFragment extends Fragment {
     private SupportMapFragment mapFragment;
     private Course course;
 
-    @InjectView(R.id.course_code) TextView courseCodeTextView;
-    @InjectView(R.id.course_activity) TextView courseActivityTextView;
-    @InjectView(R.id.course_title) TextView courseTitleTextView;
-    @InjectView(R.id.instructor) TextView instructorTextView;
-    @InjectView(R.id.course_desc_title) TextView descriptionTitle;
-    @InjectView(R.id.course_desc) TextView descriptionTextView;
-    @InjectView(R.id.registrar_map_frame) View mapFrame;
+    @Bind(R.id.course_code) TextView courseCodeTextView;
+    @Bind(R.id.course_activity) TextView courseActivityTextView;
+    @Bind(R.id.course_title) TextView courseTitleTextView;
+    @Bind(R.id.instructor) TextView instructorTextView;
+    @Bind(R.id.course_desc_title) TextView descriptionTitle;
+    @Bind(R.id.course_desc) TextView descriptionTextView;
+    @Bind(R.id.registrar_map_frame) View mapFrame;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,7 +50,7 @@ public class RegistrarFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_registrar, container, false);
-        ButterKnife.inject(this, v);
+        ButterKnife.bind(this, v);
         processCourse();
         return v;
     }
@@ -69,6 +69,7 @@ public class RegistrarFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        getActivity().setTitle(R.string.registrar);
         if (map == null) {
             map = mapFragment.getMap();
             if (map != null) {
@@ -91,6 +92,12 @@ public class RegistrarFragment extends Fragment {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 
     private void processCourse() {

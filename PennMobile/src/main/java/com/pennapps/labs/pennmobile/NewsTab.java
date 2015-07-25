@@ -1,12 +1,10 @@
 package com.pennapps.labs.pennmobile;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -19,20 +17,17 @@ public class NewsTab extends Fragment {
     static WebView currentWebView;
     private View mView;
     private boolean mIsWebViewAvailable;
-    private boolean newsLoaded;
     boolean isVisibleToUser = false;
     private RelativeLayout Pbar;
+    private boolean newsLoaded;
     private String mUrl = "http://www.thedp.com/";
-
-    public NewsTab() {
-        super();
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         newsLoaded = false;
+
         mWebView = new WebView(getActivity());
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
@@ -40,24 +35,17 @@ public class NewsTab extends Fragment {
         Bundle args = getArguments();
         mUrl = args.getString("url");
 
-        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        View view = getActivity().getCurrentFocus();
-        if (view != null) {
-            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
+        ((MainActivity) getActivity()).closeKeyboard();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_news_tab, container, false);
-
         Pbar = (RelativeLayout) mView.findViewById(R.id.loadingPanel);
         if (!newsLoaded) {
             loadNews();
             newsLoaded = true;
         }
-
         return mView;
     }
 
@@ -77,24 +65,18 @@ public class NewsTab extends Fragment {
                 }
             }
         });
-        mWebView.setWebViewClient(new InnerWebViewClient()); // forces it to open in app
+        mWebView.setWebViewClient(new WebViewClient()); // forces it to open in app
         mWebView.loadUrl(mUrl);
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
+        boolean isVisible = getUserVisibleHint();
+        if (isVisible) {
             currentWebView = mWebView;
         }
-        this.isVisibleToUser = isVisibleToUser;
-    }
-
-    /* To ensure links open within the application */
-    private class InnerWebViewClient extends WebViewClient {
-        @Override
-        public void onPageFinished(WebView view, String url) {
-        }
+        this.isVisibleToUser = isVisible;
     }
 
     @Override
@@ -118,6 +100,7 @@ public class NewsTab extends Fragment {
     @Override
     public void onResume() {
         mWebView.onResume();
+        getActivity().setTitle(R.string.news);
         super.onResume();
     }
 

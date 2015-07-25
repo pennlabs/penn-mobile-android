@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.annotation.LayoutRes;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -18,14 +19,14 @@ import com.pennapps.labs.pennmobile.classes.Course;
 
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class RegistrarAdapter extends ArrayAdapter<Course> {
     private final LayoutInflater inflater;
     private List<Course> courses;
 
-    public RegistrarAdapter(Context context, int layout, List<Course> courses) {
+    public RegistrarAdapter(Context context, @LayoutRes int layout, List<Course> courses) {
         super(context, layout, courses);
         this.courses = courses;
         inflater = LayoutInflater.from(context);
@@ -69,15 +70,15 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
     }
 
     public static class ViewHolder {
-        @InjectView(R.id.course_id_text) TextView courseId;
-        @InjectView(R.id.course_instr_text) TextView courseInstr;
-        @InjectView(R.id.course_title_text) TextView courseTitle;
-        @InjectView(R.id.course_activity) TextView courseActivity;
+        @Bind(R.id.course_id_text) TextView courseId;
+        @Bind(R.id.course_instr_text) TextView courseInstr;
+        @Bind(R.id.course_title_text) TextView courseTitle;
+        @Bind(R.id.course_activity) TextView courseActivity;
         public Course course;
 
         public ViewHolder(View view, Course course) {
             this.course = course;
-            ButterKnife.inject(this, view);
+            ButterKnife.bind(this, view);
         }
     }
 

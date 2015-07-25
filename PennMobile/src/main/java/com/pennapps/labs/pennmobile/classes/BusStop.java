@@ -1,7 +1,7 @@
 package com.pennapps.labs.pennmobile.classes;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
-
 
 import java.util.List;
 
@@ -29,12 +29,7 @@ public class BusStop {
         return name;
     }
 
-    public double getLatitude() {
-        return latitude;
+    public LatLng getLatLng() {
+        return new LatLng(latitude, longitude);
     }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
 }

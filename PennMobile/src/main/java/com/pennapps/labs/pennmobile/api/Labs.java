@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile.api;
 
 import com.pennapps.labs.pennmobile.classes.Building;
-import com.pennapps.labs.pennmobile.classes.BusPath;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
@@ -34,10 +33,10 @@ public interface Labs {
         @Query("q") String name);
 
     @GET("/dining/venues")
-    List<Venue> venues();
+    Observable<List<Venue>> venues();
 
     @GET("/dining/daily_menu/{id}")
-    NewDiningHall daily_menu(
+    Observable<NewDiningHall> daily_menu(
         @Path("id") int id);
 
     @GET("/transit/stops")
@@ -47,7 +46,7 @@ public interface Labs {
     Observable<List<BusRoute>> routes();
 
     @GET("/transit/routing")
-    Observable<BusPath> routing(
+    Observable<BusRoute> routing(
         @Query("latFrom") String latFrom,
         @Query("latTo") String latTo,
         @Query("lonFrom") String lonFrom,

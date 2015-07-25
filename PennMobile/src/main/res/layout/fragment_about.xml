@@ -1,26 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:fillViewport="true" android:orientation="vertical"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/labs_icon"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/labs_icon"
-        android:paddingBottom="40dp"
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp"
-        android:paddingTop="20dp"
-        android:src="@drawable/app_shared_logo" />
+        <ImageView
+            android:id="@+id/labs_icon"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/labs_icon"
+            android:paddingBottom="40dp"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp"
+            android:paddingTop="20dp"
+            android:src="@drawable/app_shared_logo" />
 
-    <TextView
-        tools:text="PennMobile was developed by Penn Labs, with funding and support from the Undergraduate Assembly"
-        android:id="@+id/about_desc"
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp"
-        style="@style/MainText"/>
+        <TextView
+            tools:text="PennMobile was developed by Penn Labs, with funding and support from the Undergraduate Assembly"
+            android:id="@+id/about_desc"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp"
+            style="@style/MainText"/>
 
-</LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/licenses"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/licenses"/>
+        </RelativeLayout>
+    </LinearLayout>
+</ScrollView>

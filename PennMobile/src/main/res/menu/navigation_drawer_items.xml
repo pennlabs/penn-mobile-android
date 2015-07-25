@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navHome"
+            android:icon="@drawable/ic_home"
+            android:title="Home"/>
+
+        <item
+            android:id="@+id/navRegistrar"
+            android:icon="@drawable/ic_book"
+            android:title="@string/registrar"/>
+
+        <item
+            android:id="@+id/navDirectory"
+            android:icon="@drawable/ic_contacts"
+            android:title="@string/directory"/>
+
+        <item
+            android:id="@+id/navDining"
+            android:icon="@drawable/ic_restaurant"
+            android:title="@string/dining"/>
+
+        <item
+            android:id="@+id/navTransit"
+            android:icon="@drawable/ic_directions_bus"
+            android:title="@string/transit"/>
+
+        <item
+            android:id="@+id/navNews"
+            android:icon="@drawable/ic_announcement"
+            android:title="@string/news"/>
+
+        <item
+            android:id="@+id/navMap"
+            android:icon="@drawable/ic_map"
+            android:title="@string/map"/>
+
+        <item
+            android:id="@+id/navSupport"
+            android:icon="@drawable/ic_face_unlock_black_24dp"
+            android:title="@string/support"/>
+
+        <item
+            android:id="@+id/navSettings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/action_settings"/>
+
+        <item
+            android:id="@+id/navAbout"
+            android:icon="@drawable/ic_info"
+            android:title="@string/about"/>
+    </group>
+</menu>

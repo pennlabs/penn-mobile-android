@@ -5,86 +5,74 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.pennapps.labs.pennmobile.adapters.NavDrawerListAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.api.Serializer;
 import com.pennapps.labs.pennmobile.classes.Building;
-import com.pennapps.labs.pennmobile.classes.BusPath;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Venue;
-import com.squareup.okhttp.OkHttpClient;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import io.fabric.sdk.android.Fabric;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
+    private NavigationView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
-    private String[] mFeatureTitles;
-    private Labs mLabs;
-    private OkHttpClient mAPIClient;
+    private Toolbar toolbar;
+    private static Labs mLabs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        Crashlytics.start(this);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        
-        mFeatureTitles = new String[]{"Home", "Courses", "Directory", "Dining", "Transit", "News", "Map", "Campus Help", "Settings", "About"};
-        int[] icons = new int[]{R.drawable.ic_home, R.drawable.ic_book, R.drawable.ic_contacts,
-                R.drawable.ic_restaurant, R.drawable.ic_directions_bus, R.drawable.ic_announcement,
-                R.drawable.ic_map, R.drawable.ic_face_unlock_black_24dp, R.drawable.ic_settings_black_24dp,
-                R.drawable.ic_info
-        };
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
                 R.string.drawer_open,  /* "open drawer" description */
                 R.string.drawer_close  /* "close drawer" description */
         ) {};
-
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        mDrawerList = (NavigationView) findViewById(R.id.navigation);
+        mDrawerList.setNavigationItemSelectedListener(new DrawerItemClickListener());
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
-
-        ArrayList<NavDrawerItem> mFeatureList = createNavDrawerItems(mFeatureTitles, icons);
-        mDrawerList.setAdapter(new NavDrawerListAdapter(this, mFeatureList));
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         // Set default fragment to MainFragment
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
@@ -112,10 +100,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        setTitle(R.string.main_title);
+    }
+
     public void closeKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (getCurrentFocus() != null) {
-            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        View view = getCurrentFocus();
+        if (view != null) {
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
 
@@ -145,21 +140,45 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-
+    private class DrawerItemClickListener implements NavigationView.OnNavigationItemSelectedListener {
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position);
+        public boolean onNavigationItemSelected(MenuItem item) {
+            int id = item.getItemId();
+            item.setChecked(true);
+            switch (id) {
+                case R.id.navHome:
+                    selectItem(0);
+                    break;
+                case R.id.navRegistrar:
+                    selectItem(1);
+                    break;
+                case R.id.navDirectory:
+                    selectItem(2);
+                    break;
+                case R.id.navDining:
+                    selectItem(3);
+                    break;
+                case R.id.navTransit:
+                    selectItem(4);
+                    break;
+                case R.id.navNews:
+                    selectItem(5);
+                    break;
+                case R.id.navMap:
+                    selectItem(6);
+                    break;
+                case R.id.navSupport:
+                    selectItem(7);
+                    break;
+                case R.id.navSettings:
+                    selectItem(8);
+                    break;
+                case R.id.navAbout:
+                    selectItem(9);
+                    break;
+            }
+            return false;
         }
-
-    }
-
-    private ArrayList<NavDrawerItem> createNavDrawerItems(String[] navbarItems, int[] icons) {
-        ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<>();
-        for (int i = 0; i < navbarItems.length; i++) {
-            navDrawerItems.add(new NavDrawerItem(navbarItems[i], icons[i]));
-        }
-        return navDrawerItems;
     }
 
     private void selectItem(int position) {
@@ -169,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
         } if (position == 1) {
             fragment = new RegistrarSearchFragment();
         } else if (position == 2) {
-            fragment = new DirectorySearchFragment();
+            fragment = new DirectoryFragment();
         } else if (position == 3) {
             fragment = new DiningFragment();
         } else if (position == 4) {
@@ -192,19 +211,6 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.content_frame, fragment)
                 .addToBackStack(null)
                 .commit();
-
-        fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
-                if (backStackEntryCount == 0) { // If we are on the home screen then we should always
-                    setTitle("PennMobile");     // set the title to PennMobile
-                }
-            }
-        });
-
-        mDrawerList.setItemChecked(position, true);
-        setTitle(mFeatureTitles[position]);
         mDrawerLayout.closeDrawer(mDrawerList);
     }
 
@@ -224,17 +230,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void setTitle(CharSequence title) {
-        if (getSupportActionBar() != null) {
-            if (title.equals("Home")) {
-                getSupportActionBar().setTitle("PennMobile");
-            } else {
-                getSupportActionBar().setTitle(title);
-            }
-        }
-    }
-
-    public Labs getLabsInstance() {
+    public static Labs getLabsInstance() {
         if (mLabs == null) {
             GsonBuilder gsonBuilder = new GsonBuilder();
             gsonBuilder.registerTypeAdapter(new TypeToken<List<Course>>(){}.getType(), new Serializer.CourseSerializer());
@@ -243,8 +239,8 @@ public class MainActivity extends AppCompatActivity {
             gsonBuilder.registerTypeAdapter(new TypeToken<List<Venue>>(){}.getType(), new Serializer.VenueSerializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<List<BusStop>>(){}.getType(), new Serializer.BusStopSerializer());
             gsonBuilder.registerTypeAdapter(NewDiningHall.class, new Serializer.MenuSerializer());
-            gsonBuilder.registerTypeAdapter(BusPath.class, new Serializer.BusPathSerializer());
-            gsonBuilder.registerTypeAdapter(new TypeToken<List<BusRoute>>(){}.getType(), new Serializer.BusRouteSerializer());
+            gsonBuilder.registerTypeAdapter(BusRoute.class, new Serializer.BusRouteSerializer());
+            gsonBuilder.registerTypeAdapter(new TypeToken<List<BusRoute>>(){}.getType(), new Serializer.BusRouteListSerializer());
             Gson gson = gsonBuilder.create();
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setConverter(new GsonConverter(gson))
@@ -255,10 +251,12 @@ public class MainActivity extends AppCompatActivity {
         return mLabs;
     }
 
-    public OkHttpClient getAPIClient() {
-        if (mAPIClient == null) {
-            mAPIClient = new OkHttpClient();
-        }
-        return mAPIClient;
+    public void showErrorToast(final int errorMessage) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

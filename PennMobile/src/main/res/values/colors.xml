@@ -2,6 +2,7 @@
 <resources>
     <color name="white">#FFFFFF</color>
     <color name="yellow">#FFFF00</color>
+
     <color name="fuchsia">#FF00FF</color>
     <color name="red">#FF0000</color>
     <color name="silver">#C0C0C0</color>
@@ -23,4 +24,7 @@
     <color name="color_secondary">#41c0ee</color>
     <color name="color_accent">#FFFFFF</color>
     <color name="secondary_text_material_light">#8a000000</color>
+
+    <color name="star_color_off">#cccccc</color>
+    <color name="star_color_on">#f4b400</color>
 </resources>

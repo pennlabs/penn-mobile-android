@@ -1,9 +1,9 @@
 package com.pennapps.labs.pennmobile;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
@@ -25,33 +25,32 @@ import com.pennapps.labs.pennmobile.classes.Course;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 
 public class RegistrarSearchFragment extends Fragment {
 
     public static final String COURSE_ID_EXTRA = "COURSE_ID";
     private Labs mLabs;
     public static Fragment mFragment;
-    private Activity mActivity;
+    private MainActivity mActivity;
     private boolean hideKeyboard;
     private RegistrarAdapter mAdapter;
     private SearchView searchView;
 
-    @InjectView(R.id.no_results) TextView no_results;
-    @InjectView(R.id.registrar_instructions) TextView registrar_instructions;
-    @InjectView(R.id.loadingPanel) RelativeLayout loadingPanel;
-    @InjectView(R.id.registrar_fragment) FrameLayout registrar_fragment;
+    @Bind(R.id.no_results) TextView no_results;
+    @Bind(R.id.registrar_instructions) TextView registrar_instructions;
+    @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
+    @Bind(R.id.registrar_fragment) FrameLayout registrar_fragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mActivity = getActivity();
+        mActivity = (MainActivity) getActivity();
         hideKeyboard = false;
-        mLabs = ((MainActivity) getActivity()).getLabsInstance();
+        mLabs = MainActivity.getLabsInstance();
         mFragment = this;
     }
 
@@ -59,7 +58,7 @@ public class RegistrarSearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_registrar_search, container, false);
-        ButterKnife.inject(this, v);
+        ButterKnife.bind(this, v);
         return v;
     }
 
@@ -126,35 +125,47 @@ public class RegistrarSearchFragment extends Fragment {
 
     private void searchCourses(String query) {
         mLabs.courses(query)
-            .observeOn(AndroidSchedulers.mainThread()).onErrorReturn(new Func1<Throwable, List<Course>>() {
-                @Override
-                public List<Course> call(Throwable throwable) {
-                    return null;
-                }
-            })
-            .subscribe(new Action1<List<Course>>() {
-                @Override
-                public void call(List<Course> courses) {
-                    if (courses == null || courses.size() == 0) {
-                        loadingPanel.setVisibility(View.GONE);
-                        no_results.setVisibility(View.VISIBLE);
-                        registrar_fragment.setVisibility(View.GONE);
-                    } else {
-                        registrar_fragment.setVisibility(View.VISIBLE);
-                        no_results.setVisibility(View.GONE);
-                        RegistrarListFragment listFragment = new RegistrarListFragment();
-                        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                        // Filter recitation classes based on preference
-                        courses = filterCourses(courses);
-                        mAdapter = new RegistrarAdapter(mActivity.getApplicationContext(),
-                                R.layout.registrar_list_item, courses);
-                        listFragment.setListAdapter(mAdapter);
-                        transaction.replace(R.id.registrar_fragment, listFragment)
-                                .addToBackStack(null)
-                                .commit();
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<Course>>() {
+                    @Override
+                    public void call(@NonNull final List<Course> courses) {
+                        if (courses.isEmpty()) {
+                            loadingPanel.setVisibility(View.GONE);
+                            no_results.setVisibility(View.VISIBLE);
+                            registrar_fragment.setVisibility(View.GONE);
+                        } else {
+                            registrar_fragment.setVisibility(View.VISIBLE);
+                            no_results.setVisibility(View.GONE);
+                            RegistrarListFragment listFragment = new RegistrarListFragment();
+                            // Filter recitation classes based on preference
+                            List<Course> filtered_courses = filterCourses(courses);
+                            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                            mAdapter = new RegistrarAdapter(mActivity.getApplicationContext(),
+                                    R.layout.registrar_list_item, filtered_courses);
+                            listFragment.setListAdapter(mAdapter);
+                            transaction.replace(R.id.registrar_fragment, listFragment)
+                                    .addToBackStack(null)
+                                    .commit();
+                        }
                     }
-                }
-            });
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        mActivity.showErrorToast(R.string.no_results);
+                    }
+                });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(R.string.registrar);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 
     private List<Course> filterCourses(List<Course> courses) {

@@ -3,6 +3,7 @@
 
     <!-- General -->
     <string name="app_name">PennMobile (Beta)</string>
+    <string name="main_title">PennMobile</string>
     <string name="action_settings">Settings</string>
     <string name="drawer_open">Open drawer</string>
     <string name="drawer_close">Close drawer</string>
@@ -12,10 +13,13 @@
     <string name="transit">Transit</string>
     <string name="directory">Directory</string>
     <string name="news">News</string>
+    <string name="support">Campus Help</string>
+    <string name="about">About</string>
     <string name="labs_icon">Penn Labs</string>
     <string name="course_desc_title">Description</string>
     <string name="add_contact">Add contact</string>
     <string name="no_results">No results found.</string>
+    <string name="action_licenses">Open Source Licenses</string>
 
     <!-- Search -->
     <string name="registrar_search">Search for courses</string>
@@ -46,6 +50,11 @@
     <string name="starting_location_hint">Using current location</string>
     <string name="routes_list">Routes</string>
     <string name="routes_ok">OK</string>
+    <string name="location_not_found">Location not found, please try again</string>
+    <string name="no_path_found">No path found</string>
+
+    <!-- About -->
+    <string name="licenses">Licenses</string>
 
     <!-- Settings -->
     <string name="pref_courses_title">Courses</string>
