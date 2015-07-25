@@ -17,7 +17,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -44,17 +46,21 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 public class TransitFragment extends Fragment {
 
-    private MapView mapView;
+    @Bind(R.id.mapView) MapView mapView;
+    @Bind(R.id.transit_starting_location) EditText startingLoc;
+    @Bind(R.id.transit_from_bar) RelativeLayout fromBar;
     private GoogleMap googleMap;
     private SearchView searchView;
     private String query;
     private Labs mLabs;
-    private EditText startingLoc;
     private static MapCallbacks mapCallBacks;
     private RoutesAdapter adapter;
     private MainActivity activity;
@@ -84,8 +90,8 @@ public class TransitFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_transit, container, false);
+        ButterKnife.bind(this, v);
 
-        mapView = (MapView) v.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
 
         googleMap = mapView.getMap();
@@ -100,7 +106,6 @@ public class TransitFragment extends Fragment {
         }
         LatLng myLocation = mapCallBacks.getLatLng();
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));
-        startingLoc = (EditText) v.findViewById(R.id.transit_starting_location);
         startingLoc.setOnEditorActionListener(new OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -140,6 +145,12 @@ public class TransitFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 
     @Override
@@ -217,8 +228,7 @@ public class TransitFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String arg0) {
                 if (arg0.isEmpty()) {
-                    startingLoc.setVisibility(View.GONE);
-                    startingLoc.setText("");
+                    fromBar.setVisibility(View.GONE);
                 }
                 return true;
             }
@@ -226,8 +236,8 @@ public class TransitFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String arg0) {
                 query = arg0;
-                drawUserRoute(null, query);
-                startingLoc.setVisibility(View.VISIBLE);
+                drawUserRoute(startingLoc.getEditableText().toString(), query);
+                fromBar.setVisibility(View.VISIBLE);
                 return true;
             }
         };
@@ -261,7 +271,7 @@ public class TransitFragment extends Fragment {
                         if (destLatLng == null) {
                             return;
                         }
-                        if (begin == null) {
+                        if (begin == null || begin.equals("")) {
                             retrieveRoute(mapCallBacks.getLatLng(), destLatLng, true);
                             return;
                         }
@@ -408,5 +418,13 @@ public class TransitFragment extends Fragment {
             builder.include(bs.getLatLng());
         }
         googleMap.addPolyline(options);
+    }
+
+    @OnClick(R.id.clear_location)
+    public void clearFromLocation() {
+        startingLoc.setText(null);
+        startingLoc.findFocus();
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(startingLoc, InputMethodManager.SHOW_IMPLICIT);
     }
 }
