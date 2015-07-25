@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
@@ -184,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
         } if (position == 1) {
             fragment = new RegistrarFragment();
         } else if (position == 2) {
-            fragment = new DirectorySearchFragment();
+            fragment = new DirectoryFragment();
         } else if (position == 3) {
             fragment = new DiningFragment();
         } else if (position == 4) {
@@ -242,5 +243,14 @@ public class MainActivity extends AppCompatActivity {
             mLabs = restAdapter.create(Labs.class);
         }
         return mLabs;
+    }
+
+    public void showErrorToast(final int errorMessage) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
