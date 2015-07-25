@@ -210,6 +210,7 @@ public class MapFragment extends Fragment {
 
             @Override
             public boolean onQueryTextSubmit(String arg0) {
+                searchView.clearFocus();
                 query = arg0;
                 searchBuildings(query);
                 return true;
@@ -220,25 +221,23 @@ public class MapFragment extends Fragment {
 
     private void searchBuildings(String query) {
         mLabs.buildings(query)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                    new Action1<List<Building>>() {
-                        @Override
-                        public void call(List<Building> buildings) {
-                            drawResults(buildings);
-                        }
-                    },
-                    new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
-                            activity.showErrorToast(R.string.location_not_found);
-                        }
-                    });
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<Building>>() {
+                    @Override
+                    public void call(List<Building> buildings) {
+                        drawResults(buildings);
+                    }
+                },
+                new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        activity.showErrorToast(R.string.location_not_found);
+                    }
+                });
     }
 
     private void drawResults(List<Building> buildings) {
         googleMap.clear();
-        searchView.clearFocus();
         if (buildings.isEmpty()) {
             activity.showErrorToast(R.string.location_not_found);
             return;

@@ -96,6 +96,7 @@ public class DirectoryFragment extends ListFragment {
 
             @Override
             public boolean onQueryTextSubmit(String arg0) {
+                searchView.clearFocus();
                 mListView.setAdapter(null);
                 directory_instructions.setVisibility(View.GONE);
                 no_results.setVisibility(View.GONE);
@@ -121,7 +122,6 @@ public class DirectoryFragment extends ListFragment {
                             mListView.setAdapter(mAdapter);
                             list.setVisibility(View.VISIBLE);
                         }
-                        searchView.clearFocus();
                     }
                 }, new Action1<Throwable>() {
                     @Override
