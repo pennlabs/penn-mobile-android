@@ -35,25 +35,19 @@ public class RegistrarFragment extends ListFragment {
 
     private Labs mLabs;
     private ListView listView;
-    public static Fragment mFragment;
     private Activity mActivity;
-    private boolean hideKeyboard;
     private RegistrarAdapter mAdapter;
     private SearchView searchView;
 
     @Bind(R.id.no_results) TextView no_results;
     @Bind(R.id.registrar_instructions) TextView registrar_instructions;
     @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
-    @Bind(R.id.registrar_fragment) FrameLayout registrar_fragment;
-    @Bind(android.R.id.list) ListView list;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActivity = getActivity();
-        hideKeyboard = false;
         mLabs = MainActivity.getLabsInstance();
-        mFragment = this;
     }
 
     @Override
@@ -89,11 +83,6 @@ public class RegistrarFragment extends ListFragment {
         searchView.setIconifiedByDefault(false);
         searchView.setIconified(false);
         searchMenuItem.expandActionView();
-        if (hideKeyboard) {
-            searchView.clearFocus();
-        } else {
-            searchView.setQuery("", false);
-        }
     }
 
     @Override
@@ -113,10 +102,8 @@ public class RegistrarFragment extends ListFragment {
             @Override
             public boolean onQueryTextSubmit(String input) {
                 searchView.clearFocus();
-                hideKeyboard = true;
-                list.setVisibility(View.GONE);
-                no_results.setVisibility(View.GONE);
                 registrar_instructions.setVisibility(View.GONE);
+                no_results.setVisibility(View.GONE);
                 loadingPanel.setVisibility(View.VISIBLE);
                 searchCourses(input);
                 return true;
@@ -139,13 +126,10 @@ public class RegistrarFragment extends ListFragment {
                     loadingPanel.setVisibility(View.GONE);
                     if (courses == null || courses.size() == 0) {
                         no_results.setVisibility(View.VISIBLE);
-                        registrar_fragment.setVisibility(View.GONE);
+                        listView.setVisibility(View.GONE);
                     } else {
-                        list.setVisibility(View.VISIBLE);
-                        registrar_fragment.setVisibility(View.VISIBLE);
-                        listView.setVisibility(View.VISIBLE);
-                        no_results.setVisibility(View.GONE);
                         mAdapter = new RegistrarAdapter(mActivity, courses);
+                        listView.setVisibility(View.VISIBLE);
                         listView.setAdapter(mAdapter);
                     }
                 }
