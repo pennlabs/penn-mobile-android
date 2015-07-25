@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -138,17 +139,11 @@ public class RegistrarFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        Fragment fragment = new CourseFragment();
-
+        Intent intent = new Intent(getActivity(), CourseActivity.class);
         Bundle args = new Bundle();
-        args.putParcelable("CourseFragment", ((RegistrarAdapter.ViewHolder) v.getTag()).course);
-        fragment.setArguments(args);
-
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.registrar_fragment, fragment)
-                .addToBackStack(null)
-                .commit();
+        args.putParcelable("Course", ((RegistrarAdapter.ViewHolder) v.getTag()).course);
+        intent.putExtras(args);
+        startActivity(intent);
         loadingPanel.setVisibility(View.GONE);
         onResume();
     }

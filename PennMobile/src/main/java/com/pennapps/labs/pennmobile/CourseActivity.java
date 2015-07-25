@@ -1,17 +1,16 @@
 package com.pennapps.labs.pennmobile;
 
-import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -28,7 +27,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class CourseFragment extends Fragment {
+public class CourseActivity extends AppCompatActivity {
 
     private GoogleMap map;
     private SupportMapFragment mapFragment;
@@ -43,46 +42,40 @@ public class CourseFragment extends Fragment {
     @Bind(R.id.registrar_map_frame) View mapFrame;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        course = getArguments().getParcelable("CourseFragment");
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_course, container, false);
-        v.setBackgroundColor(Color.WHITE);
-        ButterKnife.bind(this, v);
-        processCourse();
-        return v;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        FragmentManager fm = getChildFragmentManager();
+        course = getIntent().getExtras().getParcelable("Course");
+        setContentView(R.layout.activity_course);
+        ButterKnife.bind(this);
+        FragmentManager fm = getSupportFragmentManager();
         if (mapFragment == null) {
             mapFragment = SupportMapFragment.newInstance();
             fm.beginTransaction().add(R.id.registrar_map_container, mapFragment).commit();
             fm.executePendingTransactions();
         }
+        processCourse();
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        getActivity().setTitle(R.string.registrar);
-        if (map == null) {
-            map = mapFragment.getMap();
-            if (map != null) {
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(39.95198, -75.19368), 17));
-                map.getUiSettings().setZoomControlsEnabled(false);
-            }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_course, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
         }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public LatLng getBuildingLatLng(Course course) {
-        Geocoder geocoder = new Geocoder(getActivity().getApplicationContext());
+        Geocoder geocoder = new Geocoder(this);
         try {
             if (course.meetings.size() > 0) {
                 List<Address> locationList = geocoder.getFromLocationName(course.meetings.get(0).building_name, 1);
@@ -94,12 +87,6 @@ public class CourseFragment extends Fragment {
             e.printStackTrace();
         }
         return null;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 
     private void processCourse() {
@@ -161,6 +148,19 @@ public class CourseFragment extends Fragment {
             }
         } catch (NullPointerException ignored) {
 
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setTitle(R.string.course);
+        if (map == null) {
+            map = mapFragment.getMap();
+            if (map != null) {
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(39.95198, -75.19368), 17));
+                map.getUiSettings().setZoomControlsEnabled(false);
+            }
         }
     }
 }
