@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/pref_courses_title"
+        android:key="pref_courses_settings">
+        <CheckBoxPreference
+            android:key="pref_recitations"
+            android:title="@string/pref_recitations"
+            android:summary="@string/pref_recitations_summ"
+            android:defaultValue="true" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/pref_dining_title"
+        android:key="pref_dining_settings">
+        <CheckBoxPreference
+            android:key="pref_vegetarian"
+            android:title="@string/pref_vegetarian"
+            android:summary="@string/pref_vegetarian_summ"
+            android:defaultValue="false" />
+    </PreferenceCategory>
+</PreferenceScreen>

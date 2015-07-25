@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+    <header
+        android:title="@string/pref_courses_title"
+        android:fragment="com.pennapps.labs.pennmobile.SettingsFragment" >
+        <extra
+            android:name="category"
+            android:value="pref_courses_settings" />
+    </header>
+    <header
+        android:title="@string/pref_dining_title"
+        android:fragment="com.pennapps.labs.pennmobile.SettingsFragment" >
+        <extra
+            android:name="category"
+            android:value="pref_dining_settings" />
+    </header>
+</preference-headers>

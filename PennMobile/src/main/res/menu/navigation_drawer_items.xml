@@ -42,6 +42,11 @@
             android:title="@string/support"/>
 
         <item
+            android:id="@+id/navSettings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/action_settings"/>
+
+        <item
             android:id="@+id/navAbout"
             android:icon="@drawable/ic_info"
             android:title="@string/about"/>

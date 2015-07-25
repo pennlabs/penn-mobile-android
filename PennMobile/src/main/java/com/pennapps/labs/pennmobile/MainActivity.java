@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -56,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
@@ -170,8 +170,11 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navSupport:
                     selectItem(7);
                     break;
-                case R.id.navAbout:
+                case R.id.navSettings:
                     selectItem(8);
+                    break;
+                case R.id.navAbout:
+                    selectItem(9);
                     break;
             }
             return false;
@@ -197,6 +200,9 @@ public class MainActivity extends AppCompatActivity {
         } else if (position == 7) {
             fragment = new SupportFragment();
         } else if (position == 8) {
+            startActivity(new Intent(this, SettingsActivity.class));
+            return;
+        } else if (position == 9) {
             fragment = new AboutFragment();
         }
 

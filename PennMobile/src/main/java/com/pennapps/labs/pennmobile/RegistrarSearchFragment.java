@@ -1,6 +1,8 @@
 package com.pennapps.labs.pennmobile;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -20,6 +22,7 @@ import com.pennapps.labs.pennmobile.adapters.RegistrarAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Course;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -134,9 +137,11 @@ public class RegistrarSearchFragment extends Fragment {
                             registrar_fragment.setVisibility(View.VISIBLE);
                             no_results.setVisibility(View.GONE);
                             RegistrarListFragment listFragment = new RegistrarListFragment();
+                            // Filter recitation classes based on preference
+                            List<Course> filtered_courses = filterCourses(courses);
                             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                             mAdapter = new RegistrarAdapter(mActivity.getApplicationContext(),
-                                    R.layout.registrar_list_item, courses);
+                                    R.layout.registrar_list_item, filtered_courses);
                             listFragment.setListAdapter(mAdapter);
                             transaction.replace(R.id.registrar_fragment, listFragment)
                                     .addToBackStack(null)
@@ -161,6 +166,22 @@ public class RegistrarSearchFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    private List<Course> filterCourses(List<Course> courses) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        boolean recitations = sharedPref.getBoolean("pref_recitations", true);
+        if (!recitations) {
+            List<Course> courses_filt = new ArrayList<>();
+            for (Course course : courses) {
+                if (course.activity.equals("LEC")) {
+                    courses_filt.add(course);
+                }
+            }
+            return courses_filt;
+        } else {
+            return courses;
+        }
     }
 }
 

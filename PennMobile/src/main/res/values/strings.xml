@@ -56,5 +56,15 @@
     <!-- About -->
     <string name="licenses">Licenses</string>
 
+    <!-- Settings -->
+    <string name="pref_courses_title">Courses</string>
+    <string name="pref_recitations">Show recitations</string>
+    <string name="pref_recitations_summ">Display recitations in search results</string>
+
+    <string name="pref_dining_title">Dining</string>
+    <string name="pref_vegetarian">Show only vegetarian items</string>
+    <string name="pref_vegetarian_summ">Display only vegetarian food items in the dining menus</string>
+    <string name="pref_vegan">Show only vegan items</string>
+    <string name="pref_vegan_summ">Display only vegan food items in the dining menus</string>
 
 </resources>
