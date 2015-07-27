@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
         mDrawerList = (NavigationView) findViewById(R.id.navigation);
         mDrawerList.setNavigationItemSelectedListener(new DrawerItemClickListener());
+        mDrawerList.getMenu().findItem(R.id.navHome).setChecked(true);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
