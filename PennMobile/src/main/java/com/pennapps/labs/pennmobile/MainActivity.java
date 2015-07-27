@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
         if (position == 0) {
             fragment = new MainFragment();
         } if (position == 1) {
-            fragment = new RegistrarSearchFragment();
+            fragment = new RegistrarFragment();
         } else if (position == 2) {
             fragment = new DirectoryFragment();
         } else if (position == 3) {

@@ -55,6 +55,6 @@
 
     <!-- About -->
     <string name="licenses">Licenses</string>
-
+    <string name="title_activity_course">CourseActivity</string>
 
 </resources>
