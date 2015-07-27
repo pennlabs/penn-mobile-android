@@ -88,10 +88,9 @@ public class CourseActivity extends AppCompatActivity {
     }
 
     private void findCourseCode(final int courseCodeLength) {
-        String pattern = "(?<=\\s(A|P)M)\\w{" + courseCodeLength + "}";
-        Matcher m = Pattern.compile(pattern).matcher(course.first_meeting_days);
-        if (m.find()) {
-            mLabs.buildings(m.group(0))
+        String courseCode = getRegex("(?<=\\s(A|P)M)\\w{" + courseCodeLength + "}");
+        if (courseCode != "") {
+            mLabs.buildings(courseCode)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<List<Building>>() {
                         @Override
@@ -107,14 +106,25 @@ public class CourseActivity extends AppCompatActivity {
     }
 
     private void drawMarker(LatLng courseLatLng) {
+        String days = getRegex("^[a-zA-Z]+");
+        String times = getRegex("([\\d]{1,2}:[\\d]{1,2}\\s*[aApP][mM])");
+        String location = getRegex("(?<=\\s(A|P)M)\\w+");
         if (map != null && courseLatLng != null) {
             mapFrame.setVisibility(View.VISIBLE);
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 17));
             Marker marker = map.addMarker(new MarkerOptions()
                     .position(courseLatLng)
-                    .title(course.first_meeting_days));
+                    .title(days + " " + times + " " + location));
             marker.showInfoWindow();
         }
+    }
+
+    private String getRegex(String pattern) {
+        Matcher m = Pattern.compile(pattern).matcher(course.first_meeting_days);
+        if (m.find()) {
+            return m.group(0);
+        }
+        return "";
     }
 
     private void processCourse() {
