@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.annotation.AnyRes;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -146,59 +147,59 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(MenuItem item) {
             int id = item.getItemId();
             item.setChecked(true);
-            switch (id) {
-                case R.id.navHome:
-                    selectItem(0);
-                    break;
-                case R.id.navRegistrar:
-                    selectItem(1);
-                    break;
-                case R.id.navDirectory:
-                    selectItem(2);
-                    break;
-                case R.id.navDining:
-                    selectItem(3);
-                    break;
-                case R.id.navTransit:
-                    selectItem(4);
-                    break;
-                case R.id.navNews:
-                    selectItem(5);
-                    break;
-                case R.id.navMap:
-                    selectItem(6);
-                    break;
-                case R.id.navSupport:
-                    selectItem(7);
-                    break;
-                case R.id.navAbout:
-                    selectItem(8);
-                    break;
-            }
+            selectItem(id);
             return false;
         }
     }
 
-    private void selectItem(int position) {
+    private void selectItem(@AnyRes int id) {
         Fragment fragment = null;
-        if (position == 0) {
-            fragment = new MainFragment();
-        } if (position == 1) {
-            fragment = new RegistrarSearchFragment();
-        } else if (position == 2) {
-            fragment = new DirectoryFragment();
-        } else if (position == 3) {
-            fragment = new DiningFragment();
-        } else if (position == 4) {
-            fragment = new TransitFragment();
-        } else if (position == 5) {
-            fragment = new NewsFragment();
-        } else if (position == 6) {
-            fragment = new MapFragment();
-        } else if (position == 7) {
-            fragment = new SupportFragment();
-        } else if (position == 8) {
-            fragment = new AboutFragment();
+        switch (id) {
+            case R.id.navHome:
+                fragment = new MainFragment();
+                break;
+            case R.id.navRegistrar:
+            case R.id.registrar_img:
+            case R.id.registrar_cont:
+            case R.id.registrar_button:
+                fragment = new RegistrarSearchFragment();
+                break;
+            case R.id.navDirectory:
+            case R.id.directory_img:
+            case R.id.directory_cont:
+            case R.id.directory_button:
+                fragment = new DirectoryFragment();
+                break;
+            case R.id.navDining:
+            case R.id.dining_img:
+            case R.id.dining_cont:
+            case R.id.dining_button:
+                fragment = new DiningFragment();
+                break;
+            case R.id.navTransit:
+            case R.id.transit_img:
+            case R.id.transit_cont:
+            case R.id.transit_button:
+                fragment = new TransitFragment();
+                break;
+            case R.id.navNews:
+            case R.id.news_img:
+            case R.id.news_cont:
+            case R.id.news_button:
+                fragment = new NewsFragment();
+                break;
+            case R.id.navMap:
+            case R.id.map_img:
+            case R.id.map_cont:
+            case R.id.map_button:
+                fragment = new MapFragment();
+                break;
+            case R.id.navSupport:
+                fragment = new SupportFragment();
+                break;
+            case R.id.navAbout:
+                fragment = new AboutFragment();
+                break;
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -211,25 +212,21 @@ public class MainActivity extends AppCompatActivity {
 
     public void onHomeButtonClick(View v) {
         final Menu menu = mDrawerList.getMenu();
-        if (v.getId() == R.id.registrar_img || v.getId() == R.id.registrar_cont || v.getId() == R.id.registrar_button) {
+        final int id = v.getId();
+        if (id == R.id.registrar_img || id == R.id.registrar_cont || id == R.id.registrar_button) {
             menu.findItem(R.id.navRegistrar).setChecked(true);
-            selectItem(1);
-        } else if (v.getId() == R.id.directory_img || v.getId() == R.id.directory_cont || v.getId() == R.id.directory_button) {
+        } else if (id == R.id.directory_img || id == R.id.directory_cont || id == R.id.directory_button) {
             menu.findItem(R.id.navDirectory).setChecked(true);
-            selectItem(2);
-        } else if (v.getId() == R.id.dining_img || v.getId() == R.id.dining_cont || v.getId() == R.id.dining_button) {
+        } else if (id == R.id.dining_img || id == R.id.dining_cont || id == R.id.dining_button) {
             menu.findItem(R.id.navDining).setChecked(true);
-            selectItem(3);
-        } else if (v.getId() == R.id.transit_img || v.getId() == R.id.transit_cont || v.getId() == R.id.transit_button) {
+        } else if (id == R.id.transit_img || id == R.id.transit_cont || id == R.id.transit_button) {
             menu.findItem(R.id.navTransit).setChecked(true);
-            selectItem(4);
-        } else if (v.getId() == R.id.news_img || v.getId() == R.id.news_cont || v.getId() == R.id.news_button) {
+        } else if (id == R.id.news_img || id == R.id.news_cont || id == R.id.news_button) {
             menu.findItem(R.id.navNews).setChecked(true);
-            selectItem(5);
-        } else if (v.getId() == R.id.map_img || v.getId() == R.id.map_cont || v.getId() == R.id.map_button) {
+        } else if (id == R.id.map_img || id == R.id.map_cont || id == R.id.map_button) {
             menu.findItem(R.id.navMap).setChecked(true);
-            selectItem(6);
         }
+        selectItem(id);
     }
 
     public static Labs getLabsInstance() {
