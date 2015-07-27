@@ -24,6 +24,8 @@ public class Course implements Parcelable {
         course_title = in.readString();
         course_description = in.readString();
         activity = in.readString();
+        in.readList(instructors, Instructor.class.getClassLoader());
+        in.readList(meetings, Meeting.class.getClassLoader());
     }
 
     public static final Creator<Course> CREATOR = new Creator<Course>() {
