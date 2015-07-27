@@ -167,44 +167,32 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new MainFragment();
                 break;
             case R.id.nav_registrar:
-            case R.id.registrar_img:
             case R.id.registrar_cont:
-            case R.id.registrar_button:
                 menu.findItem(R.id.nav_registrar).setChecked(true);
                 fragment = new RegistrarSearchFragment();
                 break;
             case R.id.nav_directory:
-            case R.id.directory_img:
             case R.id.directory_cont:
-            case R.id.directory_button:
                 menu.findItem(R.id.nav_directory).setChecked(true);
                 fragment = new DirectoryFragment();
                 break;
             case R.id.nav_dining:
-            case R.id.dining_img:
             case R.id.dining_cont:
-            case R.id.dining_button:
                 menu.findItem(R.id.nav_dining).setChecked(true);
                 fragment = new DiningFragment();
                 break;
             case R.id.nav_transit:
-            case R.id.transit_img:
             case R.id.transit_cont:
-            case R.id.transit_button:
                 menu.findItem(R.id.nav_transit).setChecked(true);
                 fragment = new TransitFragment();
                 break;
             case R.id.nav_news:
-            case R.id.news_img:
             case R.id.news_cont:
-            case R.id.news_button:
                 menu.findItem(R.id.nav_news).setChecked(true);
                 fragment = new NewsFragment();
                 break;
             case R.id.nav_map:
-            case R.id.map_img:
             case R.id.map_cont:
-            case R.id.map_button:
                 menu.findItem(R.id.nav_map).setChecked(true);
                 fragment = new MapFragment();
                 break;
