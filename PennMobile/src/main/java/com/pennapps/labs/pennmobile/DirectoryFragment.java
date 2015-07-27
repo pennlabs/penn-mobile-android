@@ -126,7 +126,8 @@ public class DirectoryFragment extends ListFragment {
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        mActivity.showErrorToast(R.string.no_results);
+                        loadingPanel.setVisibility(View.GONE);
+                        no_results.setVisibility(View.VISIBLE);
                     }
                 });
     }
