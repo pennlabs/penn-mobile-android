@@ -21,19 +21,26 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.pennapps.labs.pennmobile.api.Labs;
+import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.Course;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 public class CourseActivity extends AppCompatActivity {
 
     private GoogleMap map;
     private SupportMapFragment mapFragment;
     private Course course;
+    private Labs mLabs;
 
     @Bind(R.id.course_code) TextView courseCodeTextView;
     @Bind(R.id.course_activity) TextView courseActivityTextView;
@@ -47,6 +54,7 @@ public class CourseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         course = getIntent().getExtras().getParcelable("Course");
+        mLabs = MainActivity.getLabsInstance();
         setContentView(R.layout.activity_course);
         ButterKnife.bind(this);
         FragmentManager fm = getSupportFragmentManager();
@@ -61,7 +69,6 @@ public class CourseActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        processCourse();
     }
 
     @Override
@@ -83,19 +90,18 @@ public class CourseActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public LatLng getBuildingLatLng(Course course) {
-        Geocoder geocoder = new Geocoder(this);
-        try {
-            if (course.meetings.size() > 0) {
-                List<Address> locationList = geocoder.getFromLocationName(course.meetings.get(0).building_name, 1);
-                if (locationList.size() > 0) {
-                    return new LatLng(locationList.get(0).getLatitude(), locationList.get(0).getLongitude());
-                }
+    public LatLng getBuildingLatLng(Course course, int courseCodeLength) {
+        LatLng latLng = null;
+        String pattern = "(?<=\\s(A|P)M)\\w{" + courseCodeLength + "}";
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(course.first_meeting_days);
+        if (m.find()) {
+            List<Building> results = mLabs.buildings(m.group(0)).toBlocking().single();
+            if (!results.isEmpty()) {
+                latLng = results.get(0).getLatLng();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return null;
+        return latLng;
     }
 
     private void processCourse() {
@@ -105,9 +111,12 @@ public class CourseActivity extends AppCompatActivity {
         String courseTitleText;
         String instructorsText;
         String courseDescription;
-        String locationText = "";
+        String locationText;
 
-        courseLatLng = getBuildingLatLng(course);
+        courseLatLng = getBuildingLatLng(course, 3);
+        if (courseLatLng == null) {
+            courseLatLng = getBuildingLatLng(course, 4);
+        }
         courseCodeText = new SpannableString(
                 course.course_department + " " +
                         String.format("%03d", course.course_number) + " " +
@@ -118,9 +127,7 @@ public class CourseActivity extends AppCompatActivity {
                 courseCodeText.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         activityText = course.activity;
-        if (course.meetings.size() > 0) {
-            locationText = course.meetings.get(0).building_code + " " + course.meetings.get(0).room_number;
-        }
+        locationText = course.first_meeting_days;
         if (course.instructors.size() > 0) {
             instructorsText = course.instructors.get(0).name;
         } else {
@@ -171,5 +178,6 @@ public class CourseActivity extends AppCompatActivity {
                 map.getUiSettings().setZoomControlsEnabled(false);
             }
         }
+        processCourse();
     }
 }
