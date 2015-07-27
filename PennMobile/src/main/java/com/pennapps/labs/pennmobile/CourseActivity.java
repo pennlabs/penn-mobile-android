@@ -3,8 +3,10 @@ package com.pennapps.labs.pennmobile;
 import android.location.Address;
 import android.location.Geocoder;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -53,6 +55,12 @@ public class CourseActivity extends AppCompatActivity {
             fm.beginTransaction().add(R.id.registrar_map_container, mapFragment).commit();
             fm.executePendingTransactions();
         }
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         processCourse();
     }
 
@@ -65,9 +73,10 @@ public class CourseActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        } else if (id == android.R.id.home) {
+            finish();
             return true;
         }
 
@@ -162,9 +171,5 @@ public class CourseActivity extends AppCompatActivity {
                 map.getUiSettings().setZoomControlsEnabled(false);
             }
         }
-    }
-
-    public void finish(View view) {
-        super.finish();
     }
 }
