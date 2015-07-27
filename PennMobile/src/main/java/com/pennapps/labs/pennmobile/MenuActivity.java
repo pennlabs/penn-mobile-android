@@ -7,6 +7,7 @@ import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ActionMenuView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -47,18 +48,10 @@ public class MenuActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return item.getItemId() == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
     public void fillDescriptions() {
-
         hallNameTV.setText(WordUtils.capitalizeFully(mDiningHall.getName()));
         if (mDiningHall.isOpen()) {
             hallStatus.setText("Open");
@@ -68,33 +61,30 @@ public class MenuActivity extends AppCompatActivity {
             hallStatus.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.label_red));
         }
 
-        StringBuilder menuText = new StringBuilder();
         for (Map.Entry<String, HashMap<String, HashSet<String>>> menu : mDiningHall.menus.entrySet()) {
-            menuText.setLength(0);
-            String mealName = StringUtils.capitalize(menu.getKey());
+            addDiningTextView(R.style.MealName, StringUtils.capitalize(menu.getKey()));
             for (Map.Entry<String, HashSet<String>> menuItem : menu.getValue().entrySet()) {
-                String key = StringUtils.capitalize(menuItem.getKey());
-                HashSet<String> items = menuItem.getValue();
-                String tab = "&nbsp&nbsp&nbsp ";
-                menuText.append("<b>");
-                menuText.append(key);
-                menuText.append("</b> <br>");
-                for (String item : items) {
-                    menuText.append(tab);
-                    menuText.append(item);
-                    menuText.append("<br>");
+                addDiningTextView(R.style.DiningStation, StringUtils.capitalize(menuItem.getKey()));
+                for (String item : menuItem.getValue()) {
+                    addDiningTextView(R.style.FoodItem, item);
                 }
             }
-            // Meal name
-            TextView mealNameTV = new TextView(getApplicationContext(), null, R.style.MealName);
-            mealNameTV.setVisibility(View.VISIBLE);
-            mealNameTV.setText(mealName);
-            menuParent.addView(mealNameTV);
-            // Menu
-            TextView menuTV = new TextView(getApplicationContext(), null, R.style.Menu);
-            menuTV.setVisibility(View.VISIBLE);
-            menuTV.setText(Html.fromHtml(menuText.toString()));
-            menuParent.addView(menuTV);
         }
+    }
+
+    private void addDiningTextView(int style, String text) {
+        TextView textView = new TextView(getApplicationContext());
+        textView.setTextAppearance(getApplicationContext(), style);
+        textView.setText(text);
+        if (style == R.style.FoodItem) {
+            textView.setPadding(50, 0, 0, 0);
+        } else if (style == R.style.MealName) {
+            textView.setPadding(0, 25, 0, 25);
+        }
+        menuParent.addView(textView);
+    }
+
+    public void finish(View v) {
+        super.finish();
     }
 }
