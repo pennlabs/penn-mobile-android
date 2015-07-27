@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         mDrawerList = (NavigationView) findViewById(R.id.navigation);
         mDrawerList.setNavigationItemSelectedListener(new DrawerItemClickListener());
-        mDrawerList.getMenu().findItem(R.id.navHome).setChecked(true);
+        mDrawerList.getMenu().findItem(R.id.nav_home).setChecked(true);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -161,55 +161,55 @@ public class MainActivity extends AppCompatActivity {
         final Menu menu = mDrawerList.getMenu();
         Fragment fragment = null;
         switch (id) {
-            case R.id.navHome:
+            case R.id.nav_home:
                 fragment = new MainFragment();
                 break;
-            case R.id.navRegistrar:
+            case R.id.nav_registrar:
             case R.id.registrar_img:
             case R.id.registrar_cont:
             case R.id.registrar_button:
-                menu.findItem(R.id.navRegistrar).setChecked(true);
+                menu.findItem(R.id.nav_registrar).setChecked(true);
                 fragment = new RegistrarSearchFragment();
                 break;
-            case R.id.navDirectory:
+            case R.id.nav_directory:
             case R.id.directory_img:
             case R.id.directory_cont:
             case R.id.directory_button:
-                menu.findItem(R.id.navDirectory).setChecked(true);
+                menu.findItem(R.id.nav_directory).setChecked(true);
                 fragment = new DirectoryFragment();
                 break;
-            case R.id.navDining:
+            case R.id.nav_dining:
             case R.id.dining_img:
             case R.id.dining_cont:
             case R.id.dining_button:
-                menu.findItem(R.id.navDining).setChecked(true);
+                menu.findItem(R.id.nav_dining).setChecked(true);
                 fragment = new DiningFragment();
                 break;
-            case R.id.navTransit:
+            case R.id.nav_transit:
             case R.id.transit_img:
             case R.id.transit_cont:
             case R.id.transit_button:
-                menu.findItem(R.id.navTransit).setChecked(true);
+                menu.findItem(R.id.nav_transit).setChecked(true);
                 fragment = new TransitFragment();
                 break;
-            case R.id.navNews:
+            case R.id.nav_news:
             case R.id.news_img:
             case R.id.news_cont:
             case R.id.news_button:
-                menu.findItem(R.id.navNews).setChecked(true);
+                menu.findItem(R.id.nav_news).setChecked(true);
                 fragment = new NewsFragment();
                 break;
-            case R.id.navMap:
+            case R.id.nav_map:
             case R.id.map_img:
             case R.id.map_cont:
             case R.id.map_button:
-                menu.findItem(R.id.navMap).setChecked(true);
+                menu.findItem(R.id.nav_map).setChecked(true);
                 fragment = new MapFragment();
                 break;
-            case R.id.navSupport:
+            case R.id.nav_support:
                 fragment = new SupportFragment();
                 break;
-            case R.id.navAbout:
+            case R.id.nav_about:
                 fragment = new AboutFragment();
                 break;
         }
@@ -220,6 +220,10 @@ public class MainActivity extends AppCompatActivity {
                 .addToBackStack(null)
                 .commit();
         mDrawerLayout.closeDrawer(mDrawerList);
+    }
+
+    public void onHomeButtonClick(View v) {
+        navigateLayout(v.getId());
     }
 
     public static Labs getLabsInstance() {

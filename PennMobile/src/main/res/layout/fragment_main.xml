@@ -11,7 +11,7 @@
 
         <RelativeLayout
             android:id="@+id/registrar_cont"
-            android:onClick="navigateLayout"
+            android:onClick="onHomeButtonClick"
             style="@style/MainRelativeLayout">
 
             <ImageButton
@@ -23,7 +23,7 @@
                 android:id="@+id/registrar_button"
                 android:layout_below="@+id/registrar_img"
                 android:clickable="true"
-                android:onClick="navigateLayout"
+                android:onClick="onHomeButtonClick"
                 style="@style/MainText"
                 android:text="@string/registrar" />
 
@@ -31,7 +31,7 @@
 
         <RelativeLayout
             android:id="@+id/directory_cont"
-            android:onClick="navigateLayout"
+            android:onClick="onHomeButtonClick"
             android:text="@string/directory"
             style="@style/MainRelativeLayout">
 
@@ -45,7 +45,7 @@
                 android:id="@+id/directory_button"
                 android:layout_below="@id/directory_img"
                 android:clickable="true"
-                android:onClick="navigateLayout"
+                android:onClick="onHomeButtonClick"
                 style="@style/MainText"
                 android:text="@string/directory" />
 
@@ -61,7 +61,7 @@
 
         <RelativeLayout
             android:id="@+id/dining_cont"
-            android:onClick="navigateLayout"
+            android:onClick="onHomeButtonClick"
             style="@style/MainRelativeLayout">
 
             <ImageButton
@@ -73,14 +73,14 @@
                 android:id="@+id/dining_button"
                 android:layout_below="@+id/dining_img"
                 android:clickable="true"
-                android:onClick="navigateLayout"
+                android:onClick="onHomeButtonClick"
                 style="@style/MainText"
                 android:text="@string/dining" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/transit_cont"
-            android:onClick="navigateLayout"
+            android:onClick="onHomeButtonClick"
             style="@style/MainRelativeLayout">
 
             <ImageButton
@@ -92,7 +92,7 @@
                 android:id="@+id/transit_button"
                 android:layout_below="@+id/transit_img"
                 android:clickable="true"
-                android:onClick="navigateLayout"
+                android:onClick="onHomeButtonClick"
                 style="@style/MainText"
                 android:text="@string/transit"/>
         </RelativeLayout>
@@ -106,7 +106,7 @@
 
         <RelativeLayout
             android:id="@+id/news_cont"
-            android:onClick="navigateLayout"
+            android:onClick="onHomeButtonClick"
             android:layout_marginBottom="15dp"
             style="@style/MainRelativeLayout">
 
@@ -119,7 +119,7 @@
                 android:id="@+id/news_button"
                 android:layout_below="@+id/news_img"
                 android:clickable="true"
-                android:onClick="navigateLayout"
+                android:onClick="onHomeButtonClick"
                 style="@style/MainText"
                 android:text="@string/news" />
         </RelativeLayout>
@@ -127,7 +127,7 @@
 
         <RelativeLayout
             android:id="@+id/map_cont"
-            android:onClick="navigateLayout"
+            android:onClick="onHomeButtonClick"
             android:layout_marginBottom="15dp"
             style="@style/MainRelativeLayout">
 
@@ -140,7 +140,7 @@
                 android:id="@+id/map_button"
                 android:layout_below="@+id/map_img"
                 android:clickable="true"
-                android:onClick="navigateLayout"
+                android:onClick="onHomeButtonClick"
                 style="@style/MainText"
                 android:text="@string/map" />
         </RelativeLayout>
