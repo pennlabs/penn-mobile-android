@@ -64,7 +64,12 @@ public class MainActivity extends AppCompatActivity {
                 mDrawerLayout,         /* DrawerLayout object */
                 R.string.drawer_open,  /* "open drawer" description */
                 R.string.drawer_close  /* "close drawer" description */
-        ) {};
+        ) {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, 0);
+            }
+        };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         mDrawerList = (NavigationView) findViewById(R.id.navigation);
