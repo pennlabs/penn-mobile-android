@@ -1,11 +1,25 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.pennapps.labs.pennmobile.MenuActivity">
 
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+    </android.support.design.widget.AppBarLayout>
+
     <RelativeLayout
-        android:padding="15sp"
-        android:background="@color/color_primary"
+        android:padding="15dp"
         android:id="@+id/dining_hall_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -13,16 +27,17 @@
         <TextView
             tools:text="1920 Commons"
             android:id="@+id/dining_hall_name"
-            style="@style/HallNameWhite" />
+            style="@style/HallName" />
 
         <TextView
             android:id="@+id/dining_hall_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/clear"
-            android:layout_toStartOf="@+id/clear"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="2dp"
             android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:textSize="20sp"
             android:textColor="@color/white"
             android:textStyle="bold"
@@ -31,19 +46,9 @@
             tools:background="@drawable/label_green"
             tools:text="Open" />
 
-        <Button
-            android:id="@+id/clear"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:onClick="finish"
-            android:background="@drawable/abc_ic_clear_mtrl_alpha"/>
-
     </RelativeLayout>
 
     <ScrollView
-        android:layout_below="@id/dining_hall_title"
         android:layout_marginLeft="16dip"
         android:layout_marginStart="16dip"
         android:layout_marginBottom="16dip"
@@ -59,4 +64,4 @@
         </LinearLayout>
     </ScrollView>
 
-</RelativeLayout>
+</LinearLayout>

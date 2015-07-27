@@ -104,8 +104,4 @@
         <item name="android:layout_marginRight">80dp</item>
         <item name="android:textColor">@color/black</item>
     </style>
-
-    <style name="HallNameWhite" parent="HallName">
-        <item name="android:textColor">@color/white</item>
-    </style>
 </resources>
