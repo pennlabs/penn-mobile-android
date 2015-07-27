@@ -1,7 +1,5 @@
 package com.pennapps.labs.pennmobile;
 
-import android.location.Address;
-import android.location.Geocoder;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -25,7 +23,6 @@ import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.Course;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -90,33 +87,45 @@ public class CourseActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public LatLng getBuildingLatLng(Course course, int courseCodeLength) {
-        LatLng latLng = null;
+    private void findCourseCode(final int courseCodeLength) {
         String pattern = "(?<=\\s(A|P)M)\\w{" + courseCodeLength + "}";
-        Pattern r = Pattern.compile(pattern);
-        Matcher m = r.matcher(course.first_meeting_days);
+        Matcher m = Pattern.compile(pattern).matcher(course.first_meeting_days);
         if (m.find()) {
-            List<Building> results = mLabs.buildings(m.group(0)).toBlocking().single();
-            if (!results.isEmpty()) {
-                latLng = results.get(0).getLatLng();
-            }
+            mLabs.buildings(m.group(0))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<List<Building>>() {
+                        @Override
+                        public void call(List<Building> buildings) {
+                            if (!buildings.isEmpty()) {
+                                drawMarker(buildings.get(0).getLatLng());
+                            } else if (courseCodeLength != 4) {
+                                findCourseCode(4);
+                            }
+                        }
+                    });
         }
-        return latLng;
+    }
+
+    private void drawMarker(LatLng courseLatLng) {
+        if (map != null && courseLatLng != null) {
+            mapFrame.setVisibility(View.VISIBLE);
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 17));
+            Marker marker = map.addMarker(new MarkerOptions()
+                    .position(courseLatLng)
+                    .title(course.first_meeting_days));
+            marker.showInfoWindow();
+        }
     }
 
     private void processCourse() {
-        LatLng courseLatLng;
         Spannable courseCodeText;
         String activityText;
         String courseTitleText;
         String instructorsText;
         String courseDescription;
-        String locationText;
 
-        courseLatLng = getBuildingLatLng(course, 3);
-        if (courseLatLng == null) {
-            courseLatLng = getBuildingLatLng(course, 4);
-        }
+        findCourseCode(3);
+
         courseCodeText = new SpannableString(
                 course.course_department + " " +
                         String.format("%03d", course.course_number) + " " +
@@ -127,7 +136,6 @@ public class CourseActivity extends AppCompatActivity {
                 courseCodeText.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         activityText = course.activity;
-        locationText = course.first_meeting_days;
         if (course.instructors.size() > 0) {
             instructorsText = course.instructors.get(0).name;
         } else {
@@ -138,15 +146,6 @@ public class CourseActivity extends AppCompatActivity {
 
         try {
             courseCodeTextView.setText(courseCodeText);
-
-            if (map != null && courseLatLng != null) {
-                mapFrame.setVisibility(View.VISIBLE);
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 17));
-                Marker marker = map.addMarker(new MarkerOptions()
-                        .position(courseLatLng)
-                        .title(locationText));
-                marker.showInfoWindow();
-            }
             courseActivityTextView.setText(activityText);
             courseTitleTextView.setText(courseTitleText);
             instructorTextView.setText(instructorsText);
