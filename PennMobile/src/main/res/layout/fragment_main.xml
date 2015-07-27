@@ -12,6 +12,7 @@
             style="@style/MainRelativeLayout">
 
             <ImageView
+                android:contentDescription="@string/registrar"
                 android:id="@+id/registrar_img"
                 android:src="@drawable/ic_registrar"
                 style="@style/MainIcon" />
@@ -30,6 +31,7 @@
 
 
             <ImageView
+                android:contentDescription="@string/directory"
                 android:id="@+id/directory_img"
                 android:src="@drawable/ic_directory"
                 style="@style/MainIcon" />
@@ -51,6 +53,7 @@
             style="@style/MainRelativeLayout">
 
             <ImageView
+                android:contentDescription="@string/dining"
                 android:id="@+id/dining_img"
                 android:src="@drawable/ic_dining"
                 style="@style/MainIcon" />
@@ -67,6 +70,7 @@
             style="@style/MainRelativeLayout">
 
             <ImageView
+                android:contentDescription="@string/transit"
                 android:id="@+id/transit_img"
                 android:src="@drawable/ic_transit"
                 style="@style/MainIcon" />
@@ -87,6 +91,7 @@
             style="@style/MainRelativeLayout">
 
             <ImageView
+                android:contentDescription="@string/news"
                 android:id="@+id/news_img"
                 android:src="@drawable/ic_news"
                 style="@style/MainIcon" />
@@ -105,6 +110,7 @@
             style="@style/MainRelativeLayout">
 
             <ImageView
+                android:contentDescription="@string/map"
                 android:id="@+id/map_img"
                 android:src="@drawable/ic_maps"
                 style="@style/MainIcon" />
