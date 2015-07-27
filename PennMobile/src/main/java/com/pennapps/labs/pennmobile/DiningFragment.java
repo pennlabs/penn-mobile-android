@@ -18,6 +18,7 @@ import com.pennapps.labs.pennmobile.classes.Venue;
 import java.util.List;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
@@ -72,6 +73,7 @@ public class DiningFragment extends ListFragment {
 
     private void getDiningHalls() {
         mLabs.venues()
+                .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<List<Venue>, Observable<Venue>>() {
                     @Override
                     public Observable<Venue> call(List<Venue> venues) {
@@ -89,19 +91,15 @@ public class DiningFragment extends ListFragment {
                 .subscribe(new Action1<List<DiningHall>>() {
                     @Override
                     public void call(final List<DiningHall> diningHalls) {
-                        mActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                DiningAdapter adapter = new DiningAdapter(mActivity, diningHalls);
-                                mListView.setAdapter(adapter);
-                                mActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-                            }
-                        });
+                        DiningAdapter adapter = new DiningAdapter(mActivity, diningHalls);
+                        mListView.setAdapter(adapter);
+                        mActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        mActivity.showErrorToast(R.string.no_results);
+                        mActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                        mActivity.findViewById(R.id.no_results).setVisibility(View.VISIBLE);
                     }
                 });
     }
