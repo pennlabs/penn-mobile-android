@@ -12,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -43,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private NavigationView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
-    private Toolbar toolbar;
     private static Labs mLabs;
 
     @Override
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
         mDrawerList = (NavigationView) findViewById(R.id.navigation);
         mDrawerList.setNavigationItemSelectedListener(new DrawerItemClickListener());
+        mDrawerList.getMenu().findItem(R.id.navHome).setChecked(true);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -209,17 +210,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onHomeButtonClick(View v) {
+        final Menu menu = mDrawerList.getMenu();
         if (v.getId() == R.id.registrar_img || v.getId() == R.id.registrar_cont || v.getId() == R.id.registrar_button) {
+            menu.findItem(R.id.navRegistrar).setChecked(true);
             selectItem(1);
         } else if (v.getId() == R.id.directory_img || v.getId() == R.id.directory_cont || v.getId() == R.id.directory_button) {
+            menu.findItem(R.id.navDirectory).setChecked(true);
             selectItem(2);
         } else if (v.getId() == R.id.dining_img || v.getId() == R.id.dining_cont || v.getId() == R.id.dining_button) {
+            menu.findItem(R.id.navDining).setChecked(true);
             selectItem(3);
         } else if (v.getId() == R.id.transit_img || v.getId() == R.id.transit_cont || v.getId() == R.id.transit_button) {
+            menu.findItem(R.id.navTransit).setChecked(true);
             selectItem(4);
         } else if (v.getId() == R.id.news_img || v.getId() == R.id.news_cont || v.getId() == R.id.news_button) {
+            menu.findItem(R.id.navNews).setChecked(true);
             selectItem(5);
         } else if (v.getId() == R.id.map_img || v.getId() == R.id.map_cont || v.getId() == R.id.map_button) {
+            menu.findItem(R.id.navMap).setChecked(true);
             selectItem(6);
         }
     }
