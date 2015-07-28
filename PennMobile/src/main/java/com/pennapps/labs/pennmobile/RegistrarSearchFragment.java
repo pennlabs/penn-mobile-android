@@ -36,8 +36,8 @@ public class RegistrarSearchFragment extends Fragment {
     private boolean hideKeyboard;
     private RegistrarAdapter mAdapter;
     private SearchView searchView;
+    private TextView no_results;
 
-    @Bind(R.id.no_results) TextView no_results;
     @Bind(R.id.registrar_instructions) TextView registrar_instructions;
     @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
     @Bind(R.id.registrar_fragment) FrameLayout registrar_fragment;
@@ -55,6 +55,7 @@ public class RegistrarSearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_registrar_search, container, false);
+        no_results = (TextView) mActivity.findViewById(R.id.no_results);
         ButterKnife.bind(this, v);
         return v;
     }

@@ -32,9 +32,9 @@ public class DirectoryFragment extends ListFragment {
     private ListView mListView;
     private Context mContext;
     private SearchView searchView;
+    private TextView no_results;
 
     @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
-    @Bind(R.id.no_results) TextView no_results;
     @Bind(android.R.id.list) ListView list;
     @Bind(R.id.directory_instructions) TextView directory_instructions;
 
@@ -51,6 +51,7 @@ public class DirectoryFragment extends ListFragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_directory, container, false);
         ButterKnife.bind(this, v);
+        no_results = (TextView) mActivity.findViewById(R.id.no_results);
         loadingPanel.setVisibility(View.GONE);
         return v;
     }
