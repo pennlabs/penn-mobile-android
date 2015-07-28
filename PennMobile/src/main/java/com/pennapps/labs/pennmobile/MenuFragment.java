@@ -1,15 +1,15 @@
 package com.pennapps.labs.pennmobile;
 
+import android.graphics.Color;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.view.Menu;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ActionMenuView;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -25,55 +25,40 @@ import java.util.Map;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MenuActivity extends AppCompatActivity {
+public class MenuFragment extends Fragment {
 
     private DiningHall mDiningHall;
+    private MainActivity mActivity;
 
     @Bind(R.id.dining_hall_name) TextView hallNameTV;
     @Bind(R.id.dining_hall_status) TextView hallStatus;
     @Bind(R.id.menu_parent) LinearLayout menuParent;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_menu);
-        ButterKnife.bind(this);
-        mDiningHall = getIntent().getExtras().getParcelable("DiningHall");
+        mDiningHall = getArguments().getParcelable("DiningHall");
+        mActivity = (MainActivity) getActivity();
+        mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_menu, container, false);
+        v.setBackgroundColor(Color.WHITE);
+        ButterKnife.bind(this, v);
         fillDescriptions();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case(R.id.action_settings):
-                return true;
-            case(android.R.id.home):
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return v;
     }
 
     public void fillDescriptions() {
         hallNameTV.setText(WordUtils.capitalizeFully(mDiningHall.getName()));
         if (mDiningHall.isOpen()) {
             hallStatus.setText("Open");
-            hallStatus.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.label_green));
+            hallStatus.setBackground(ContextCompat.getDrawable(mActivity, R.drawable.label_green));
         } else {
             hallStatus.setText("Closed");
-            hallStatus.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.label_red));
+            hallStatus.setBackground(ContextCompat.getDrawable(mActivity, R.drawable.label_red));
         }
 
         for (Map.Entry<String, HashMap<String, HashSet<String>>> menu : mDiningHall.menus.entrySet()) {
@@ -88,8 +73,8 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     private void addDiningTextView(int style, String text) {
-        TextView textView = new TextView(getApplicationContext());
-        textView.setTextAppearance(getApplicationContext(), style);
+        TextView textView = new TextView(mActivity);
+        textView.setTextAppearance(mActivity, style);
         textView.setText(text);
         if (style == R.style.FoodItem) {
             textView.setPadding(50, 0, 0, 0);
@@ -102,6 +87,13 @@ public class MenuActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        setTitle(R.string.menu);
+        getActivity().setTitle(R.string.menu);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        getActivity().setTitle(R.string.dining);
+        ButterKnife.unbind(this);
     }
 }

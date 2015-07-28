@@ -1,11 +1,12 @@
 package com.pennapps.labs.pennmobile;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
+import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -58,12 +59,17 @@ public class DiningFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         DiningHall diningHall = ((DiningAdapter.ViewHolder) v.getTag()).hall;
         if (diningHall.hasMenu()) {
-            Intent intent = new Intent(getActivity(), MenuActivity.class);
+            Fragment fragment = new MenuFragment();
+
             Bundle args = new Bundle();
-            args.putParcelable("DiningHall", diningHall);
-            intent.putExtras(args);
-            startActivity(intent);
-            onResume();
+            args.putParcelable("DiningHall", ((DiningAdapter.ViewHolder) v.getTag()).hall);
+            fragment.setArguments(args);
+
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.dining_fragment, fragment)
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 
