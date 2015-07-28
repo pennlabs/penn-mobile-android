@@ -2,47 +2,47 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/navHome"
+            android:id="@+id/nav_home"
             android:icon="@drawable/ic_home"
             android:title="Home"/>
 
         <item
-            android:id="@+id/navRegistrar"
+            android:id="@+id/nav_registrar"
             android:icon="@drawable/ic_book"
             android:title="@string/registrar"/>
 
         <item
-            android:id="@+id/navDirectory"
+            android:id="@+id/nav_directory"
             android:icon="@drawable/ic_contacts"
             android:title="@string/directory"/>
 
         <item
-            android:id="@+id/navDining"
+            android:id="@+id/nav_dining"
             android:icon="@drawable/ic_restaurant"
             android:title="@string/dining"/>
 
         <item
-            android:id="@+id/navTransit"
+            android:id="@+id/nav_transit"
             android:icon="@drawable/ic_directions_bus"
             android:title="@string/transit"/>
 
         <item
-            android:id="@+id/navNews"
+            android:id="@+id/nav_news"
             android:icon="@drawable/ic_announcement"
             android:title="@string/news"/>
 
         <item
-            android:id="@+id/navMap"
+            android:id="@+id/nav_map"
             android:icon="@drawable/ic_map"
             android:title="@string/map"/>
 
         <item
-            android:id="@+id/navSupport"
+            android:id="@+id/nav_support"
             android:icon="@drawable/ic_face_unlock_black_24dp"
             android:title="@string/support"/>
 
         <item
-            android:id="@+id/navAbout"
+            android:id="@+id/nav_about"
             android:icon="@drawable/ic_info"
             android:title="@string/about"/>
     </group>
