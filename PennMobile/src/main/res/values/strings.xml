@@ -35,6 +35,7 @@
     <string name="brunch">Brunch</string>
     <string name="lunch">Lunch</string>
     <string name="dinner">Dinner</string>
+    <string name="menu">Menu</string>
 
     <!-- Courses -->
     <string name="course">Course</string>
@@ -55,6 +56,5 @@
 
     <!-- About -->
     <string name="licenses">Licenses</string>
-
 
 </resources>

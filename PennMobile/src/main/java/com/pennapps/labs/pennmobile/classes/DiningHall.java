@@ -33,6 +33,13 @@ public class DiningHall implements Parcelable {
     }
 
     protected DiningHall(Parcel in) {
+        boolean[] booleanArray = new boolean[1];
+        in.readBooleanArray(booleanArray);
+        residential = booleanArray[0];
+        openHours = new HashMap<>();
+        menus = new LinkedHashMap<>();
+        in.readMap(openHours, Interval.class.getClassLoader());
+        in.readMap(menus, HashMap.class.getClassLoader());
         id = in.readInt();
         name = in.readString();
     }
