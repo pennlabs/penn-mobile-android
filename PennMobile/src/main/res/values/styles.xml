@@ -59,15 +59,12 @@
     <style name="MealName" parent="TextAppearance.AppCompat.Subhead">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="android:visibility">gone</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="DiningStation" parent="TextAppearance.AppCompat.Small">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:visibility">gone</item>
         <item name="android:textColor">@color/black</item>
     </style>
 
@@ -75,20 +72,16 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/black</item>
-        <item name="android:visibility">gone</item>
     </style>
 
     <style name="Menu" parent="TextAppearance.AppCompat.Body2">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:visibility">gone</item>
-        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="HallName" parent="TextAppearance.AppCompat.Title">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginRight">80dp</item>
-        <item name="android:textColor">@color/black</item>
     </style>
 </resources>

@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.StyleRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -71,7 +72,7 @@ public class MenuFragment extends Fragment {
         }
     }
 
-    private void addDiningTextView(int style, String text) {
+    private void addDiningTextView(@StyleRes int style, String text) {
         TextView textView = new TextView(mActivity);
         textView.setTextAppearance(mActivity, style);
         textView.setText(text);
@@ -86,7 +87,7 @@ public class MenuFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle(R.string.menu);
+        getActivity().setTitle(mDiningHall.getName() + " Menu");
     }
 
     @Override
