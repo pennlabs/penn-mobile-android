@@ -4,11 +4,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
+import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.RelativeLayout;
 
 import com.pennapps.labs.pennmobile.adapters.DiningAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
@@ -17,6 +19,8 @@ import com.pennapps.labs.pennmobile.classes.Venue;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -26,18 +30,15 @@ public class DiningFragment extends ListFragment {
     private Labs mLabs;
     private ListView mListView;
     private MainActivity mActivity;
-    public static Fragment mFragment;
+
+    @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLabs = MainActivity.getLabsInstance();
         mActivity = (MainActivity) getActivity();
-        mFragment = this;
-
         mActivity.closeKeyboard();
-
-        getDiningHalls();
     }
 
     @Override
@@ -48,7 +49,10 @@ public class DiningFragment extends ListFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_dining, container, false);
+        View v = inflater.inflate(R.layout.fragment_dining, container, false);
+        ButterKnife.bind(this, v);
+        getDiningHalls();
+        return v;
     }
 
     @Override
@@ -66,7 +70,6 @@ public class DiningFragment extends ListFragment {
                     .replace(R.id.dining_fragment, fragment)
                     .addToBackStack(null)
                     .commit();
-            onResume();
         }
     }
 
@@ -94,7 +97,7 @@ public class DiningFragment extends ListFragment {
                             public void run() {
                                 DiningAdapter adapter = new DiningAdapter(mActivity, diningHalls);
                                 mListView.setAdapter(adapter);
-                                mActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                                loadingPanel.setVisibility(View.GONE);
                             }
                         });
                     }
@@ -110,5 +113,11 @@ public class DiningFragment extends ListFragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle(R.string.dining);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 }

@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
         if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
             mDrawerLayout.closeDrawer(mDrawerList);
             return;
@@ -244,5 +245,9 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public ActionBarDrawerToggle getActionBarToggle() {
+        return mDrawerToggle;
     }
 }

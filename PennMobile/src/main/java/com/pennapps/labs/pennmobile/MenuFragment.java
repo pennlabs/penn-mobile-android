@@ -3,10 +3,11 @@ package com.pennapps.labs.pennmobile;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.text.Html;
-import android.view.Gravity;
+import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -21,75 +22,78 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class MenuFragment extends Fragment {
 
     private DiningHall mDiningHall;
+    private MainActivity mActivity;
+
+    @Bind(R.id.dining_hall_name) TextView hallNameTV;
+    @Bind(R.id.dining_hall_status) TextView hallStatus;
+    @Bind(R.id.menu_parent) LinearLayout menuParent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDiningHall = getArguments().getParcelable("DiningHall");
+        mActivity = (MainActivity) getActivity();
+        mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_menu, container, false);
         v.setBackgroundColor(Color.WHITE);
-        TextView diningHallNameTV = (TextView) v.findViewById(R.id.dining_hall_name);
-        diningHallNameTV.setText(mDiningHall.getName());
-        diningHallNameTV.setGravity(Gravity.LEFT);
-        fillDescriptions(v);
+        ButterKnife.bind(this, v);
+        fillDescriptions();
         return v;
     }
 
-    public void fillDescriptions(View view) {
-        TextView hallNameTV = (TextView) view.findViewById(R.id.dining_hall_name);
-        TextView hallStatus = (TextView) view.findViewById(R.id.dining_hall_status);
-        LinearLayout menuParent = (LinearLayout) view.findViewById(R.id.menu_parent);
-
+    public void fillDescriptions() {
         hallNameTV.setText(WordUtils.capitalizeFully(mDiningHall.getName()));
-        view.setTag(mDiningHall);
         if (mDiningHall.isOpen()) {
             hallStatus.setText("Open");
-            hallStatus.setBackground(ContextCompat.getDrawable(view.getContext(), R.drawable.label_green));
+            hallStatus.setBackground(ContextCompat.getDrawable(mActivity, R.drawable.label_green));
         } else {
             hallStatus.setText("Closed");
-            hallStatus.setBackground(ContextCompat.getDrawable(view.getContext(), R.drawable.label_red));
+            hallStatus.setBackground(ContextCompat.getDrawable(mActivity, R.drawable.label_red));
         }
 
-        StringBuilder menuText = new StringBuilder();
         for (Map.Entry<String, HashMap<String, HashSet<String>>> menu : mDiningHall.menus.entrySet()) {
-            menuText.setLength(0);
-            String mealName = StringUtils.capitalize(menu.getKey());
+            addDiningTextView(R.style.MealName, StringUtils.capitalize(menu.getKey()));
             for (Map.Entry<String, HashSet<String>> menuItem : menu.getValue().entrySet()) {
-                String key = StringUtils.capitalize(menuItem.getKey());
-                HashSet<String> items = menuItem.getValue();
-                String tab = "&nbsp&nbsp&nbsp ";
-                menuText.append("<b>");
-                menuText.append(key);
-                menuText.append("</b> <br>");
-                for (String item : items) {
-                    menuText.append(tab);
-                    menuText.append(item);
-                    menuText.append("<br>");
+                addDiningTextView(R.style.DiningStation, StringUtils.capitalize(menuItem.getKey()));
+                for (String item : menuItem.getValue()) {
+                    addDiningTextView(R.style.FoodItem, item);
                 }
             }
-            // Meal name
-            TextView mealNameTV = new TextView(view.getContext(), null, R.style.MealName);
-            mealNameTV.setVisibility(View.VISIBLE);
-            mealNameTV.setText(mealName);
-            menuParent.addView(mealNameTV);
-            // Menu
-            TextView menuTV = new TextView(view.getContext(), null, R.style.Menu);
-            menuTV.setVisibility(View.VISIBLE);
-            menuTV.setText(Html.fromHtml(menuText.toString()));
-            menuParent.addView(menuTV);
         }
+    }
+
+    private void addDiningTextView(int style, String text) {
+        TextView textView = new TextView(mActivity);
+        textView.setTextAppearance(mActivity, style);
+        textView.setText(text);
+        if (style == R.style.FoodItem) {
+            textView.setPadding(50, 0, 0, 0);
+        } else if (style == R.style.MealName) {
+            textView.setPadding(0, 25, 0, 25);
+        }
+        menuParent.addView(textView);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        getActivity().setTitle(R.string.menu);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
         getActivity().setTitle(R.string.dining);
+        ButterKnife.unbind(this);
     }
 }
