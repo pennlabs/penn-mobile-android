@@ -12,7 +12,6 @@
         android:gravity="center" >
 
         <ProgressBar
-            tools:visibility="gone"
             android:indeterminateTint="@color/color_primary"
             android:indeterminateTintMode="src_in"
             android:id="@+id/progressBar"

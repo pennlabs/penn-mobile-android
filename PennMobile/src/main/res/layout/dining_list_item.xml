@@ -20,18 +20,10 @@
             style="@style/HallName" />
 
         <TextView
+            android:id="@+id/dining_hall_status"
             tools:text="Open"
             tools:background="@drawable/label_green"
-            android:id="@+id/dining_hall_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="4dp"
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:paddingRight="8dp"
-            android:paddingLeft="8dp" />
+            style="@style/DiningStatusLabel" />
 
         <TextView
             tools:text="Currently serving dinner"
