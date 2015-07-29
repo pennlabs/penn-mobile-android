@@ -4,11 +4,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.StyleRes;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -16,6 +13,7 @@ import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -66,7 +64,7 @@ public class MenuFragment extends Fragment {
             for (Map.Entry<String, HashSet<String>> menuItem : menu.getValue().entrySet()) {
                 addDiningTextView(R.style.DiningStation, StringUtils.capitalize(menuItem.getKey()));
                 for (String item : menuItem.getValue()) {
-                    addDiningTextView(R.style.FoodItem, item);
+                    addDiningTextView(R.style.FoodItem, StringEscapeUtils.unescapeXml(item));
                 }
             }
         }
