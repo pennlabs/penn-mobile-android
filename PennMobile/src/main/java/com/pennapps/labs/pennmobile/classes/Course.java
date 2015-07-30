@@ -14,6 +14,7 @@ public class Course implements Parcelable {
     public String course_title;
     public String course_description;
     public String activity;
+    public String first_meeting_days;
     public List<Instructor> instructors = new ArrayList<>();
     public List<Meeting> meetings = new ArrayList<>();
 
@@ -24,6 +25,9 @@ public class Course implements Parcelable {
         course_title = in.readString();
         course_description = in.readString();
         activity = in.readString();
+        first_meeting_days = in.readString();
+        in.readList(instructors, Instructor.class.getClassLoader());
+        in.readList(meetings, Meeting.class.getClassLoader());
     }
 
     public static final Creator<Course> CREATOR = new Creator<Course>() {
@@ -50,7 +54,14 @@ public class Course implements Parcelable {
         dest.writeString(course_title);
         dest.writeString(course_description);
         dest.writeString(activity);
+        dest.writeString(first_meeting_days);
         dest.writeList(instructors);
         dest.writeList(meetings);
+    }
+
+    public String getName() {
+        return course_department + " " +
+                String.format("%03d", course_number) + " " +
+                String.format("%03d", section_number);
     }
 }
