@@ -5,16 +5,14 @@
     android:layout_height="fill_parent"
     tools:context="com.pennapps.labs.pennmobile.MainFragment">
 
-    <TableRow
-        android:layout_weight="1"
-        android:layout_gravity="center">
+    <TableRow style="@style/MainTableLayout">
 
         <RelativeLayout
             android:id="@+id/registrar_cont"
-            android:onClick="onHomeButtonClick"
             style="@style/MainRelativeLayout">
 
-            <ImageButton
+            <ImageView
+                android:contentDescription="@string/registrar"
                 android:id="@+id/registrar_img"
                 android:src="@drawable/ic_registrar"
                 style="@style/MainIcon" />
@@ -22,21 +20,18 @@
             <TextView
                 android:id="@+id/registrar_button"
                 android:layout_below="@+id/registrar_img"
-                android:clickable="true"
-                android:onClick="onHomeButtonClick"
-                style="@style/MainText"
-                android:text="@string/registrar" />
+                android:text="@string/registrar"
+                style="@style/MainText"/>
 
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/directory_cont"
-            android:onClick="onHomeButtonClick"
-            android:text="@string/directory"
             style="@style/MainRelativeLayout">
 
 
-            <ImageButton
+            <ImageView
+                android:contentDescription="@string/directory"
                 android:id="@+id/directory_img"
                 android:src="@drawable/ic_directory"
                 style="@style/MainIcon" />
@@ -44,27 +39,21 @@
             <TextView
                 android:id="@+id/directory_button"
                 android:layout_below="@id/directory_img"
-                android:clickable="true"
-                android:onClick="onHomeButtonClick"
-                style="@style/MainText"
-                android:text="@string/directory" />
+                android:text="@string/directory"
+                style="@style/MainText"/>
 
         </RelativeLayout>
 
     </TableRow>
 
-    <TableRow
-        android:layout_weight="1"
-        android:layout_gravity="center"
-        android:layout_width="fill_parent"
-        android:baselineAligned="true">
+    <TableRow style="@style/MainTableLayout">
 
         <RelativeLayout
             android:id="@+id/dining_cont"
-            android:onClick="onHomeButtonClick"
             style="@style/MainRelativeLayout">
 
-            <ImageButton
+            <ImageView
+                android:contentDescription="@string/dining"
                 android:id="@+id/dining_img"
                 android:src="@drawable/ic_dining"
                 style="@style/MainIcon" />
@@ -72,18 +61,16 @@
             <TextView
                 android:id="@+id/dining_button"
                 android:layout_below="@+id/dining_img"
-                android:clickable="true"
-                android:onClick="onHomeButtonClick"
-                style="@style/MainText"
-                android:text="@string/dining" />
+                android:text="@string/dining"
+                style="@style/MainText"/>
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/transit_cont"
-            android:onClick="onHomeButtonClick"
             style="@style/MainRelativeLayout">
 
-            <ImageButton
+            <ImageView
+                android:contentDescription="@string/transit"
                 android:id="@+id/transit_img"
                 android:src="@drawable/ic_transit"
                 style="@style/MainIcon" />
@@ -91,26 +78,20 @@
             <TextView
                 android:id="@+id/transit_button"
                 android:layout_below="@+id/transit_img"
-                android:clickable="true"
-                android:onClick="onHomeButtonClick"
-                style="@style/MainText"
-                android:text="@string/transit"/>
+                android:text="@string/transit"
+                style="@style/MainText"/>
         </RelativeLayout>
     </TableRow>
 
-    <TableRow
-        android:layout_weight="1"
-        android:layout_gravity="center"
-        android:layout_width="fill_parent"
-        android:baselineAligned="true">
+    <TableRow style="@style/MainTableLayout">
 
         <RelativeLayout
             android:id="@+id/news_cont"
-            android:onClick="onHomeButtonClick"
             android:layout_marginBottom="15dp"
             style="@style/MainRelativeLayout">
 
-            <ImageButton
+            <ImageView
+                android:contentDescription="@string/news"
                 android:id="@+id/news_img"
                 android:src="@drawable/ic_news"
                 style="@style/MainIcon" />
@@ -118,20 +99,18 @@
             <TextView
                 android:id="@+id/news_button"
                 android:layout_below="@+id/news_img"
-                android:clickable="true"
-                android:onClick="onHomeButtonClick"
-                style="@style/MainText"
-                android:text="@string/news" />
+                android:text="@string/news"
+                style="@style/MainText"/>
         </RelativeLayout>
 
 
         <RelativeLayout
             android:id="@+id/map_cont"
-            android:onClick="onHomeButtonClick"
             android:layout_marginBottom="15dp"
             style="@style/MainRelativeLayout">
 
-            <ImageButton
+            <ImageView
+                android:contentDescription="@string/map"
                 android:id="@+id/map_img"
                 android:src="@drawable/ic_maps"
                 style="@style/MainIcon" />
@@ -139,10 +118,8 @@
             <TextView
                 android:id="@+id/map_button"
                 android:layout_below="@+id/map_img"
-                android:clickable="true"
-                android:onClick="onHomeButtonClick"
-                style="@style/MainText"
-                android:text="@string/map" />
+                android:text="@string/map"
+                style="@style/MainText"/>
         </RelativeLayout>
 
     </TableRow>
