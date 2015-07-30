@@ -41,7 +41,6 @@ public class CourseFragment extends Fragment {
     private Course course;
     private Labs mLabs;
 
-    @Bind(R.id.course_code) TextView courseCodeTextView;
     @Bind(R.id.course_activity) TextView courseActivityTextView;
     @Bind(R.id.course_title) TextView courseTitleTextView;
     @Bind(R.id.instructor) TextView instructorTextView;
@@ -184,7 +183,6 @@ public class CourseFragment extends Fragment {
         courseDescription = course.course_description;
 
         try {
-            courseCodeTextView.setText(courseCodeText);
             courseActivityTextView.setText(activityText);
             courseTitleTextView.setText(courseTitleText);
             instructorTextView.setText(instructorsText);

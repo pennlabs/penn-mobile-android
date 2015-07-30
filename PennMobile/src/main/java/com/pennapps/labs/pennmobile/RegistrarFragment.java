@@ -74,7 +74,7 @@ public class RegistrarFragment extends ListFragment {
     }
 
     @Override
-    public void  onPrepareOptionsMenu(Menu menu) {
+    public void onPrepareOptionsMenu(Menu menu) {
         if (hideSearchView) {
             searchView.clearFocus();
         }

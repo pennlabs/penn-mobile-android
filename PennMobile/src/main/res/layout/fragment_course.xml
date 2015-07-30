@@ -36,22 +36,10 @@
         android:background="@color/color_primary_dark">
 
         <TextView
-            tools:text="CIS 110 001"
-            android:id="@+id/course_code"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:textColor="#FFFFFF"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/Base.TextAppearance.AppCompat.Display2"
-            />
-
-        <TextView
             tools:text="Introduction to Computer Programming"
             android:id="@+id/course_title"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
             android:textColor="#FFFFFF"
-            android:layout_below="@+id/course_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
