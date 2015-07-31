@@ -4,11 +4,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
+import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.RelativeLayout;
 
 import com.pennapps.labs.pennmobile.adapters.DiningAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
@@ -17,6 +19,8 @@ import com.pennapps.labs.pennmobile.classes.Venue;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -27,35 +31,50 @@ public class DiningFragment extends ListFragment {
     private Labs mLabs;
     private ListView mListView;
     private MainActivity mActivity;
-    public static Fragment mFragment;
+
+    @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLabs = MainActivity.getLabsInstance();
         mActivity = (MainActivity) getActivity();
-        mFragment = this;
-
         mActivity.closeKeyboard();
-
-        getDiningHalls();
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
         mListView = getListView();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_dining, container, false);
+        View v = inflater.inflate(R.layout.fragment_dining, container, false);
+        ButterKnife.bind(this, v);
+        getDiningHalls();
+        return v;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mActivity.onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         DiningHall diningHall = ((DiningAdapter.ViewHolder) v.getTag()).hall;
         if (diningHall.hasMenu()) {
+            mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
+            mActivity.getActionBarToggle().syncState();
             Fragment fragment = new MenuFragment();
 
             Bundle args = new Bundle();
@@ -67,7 +86,6 @@ public class DiningFragment extends ListFragment {
                     .replace(R.id.dining_fragment, fragment)
                     .addToBackStack(null)
                     .commit();
-            onResume();
         }
     }
 
@@ -93,12 +111,12 @@ public class DiningFragment extends ListFragment {
                     public void call(final List<DiningHall> diningHalls) {
                         DiningAdapter adapter = new DiningAdapter(mActivity, diningHalls);
                         mListView.setAdapter(adapter);
-                        mActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                        loadingPanel.setVisibility(View.GONE);
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        mActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                        loadingPanel.setVisibility(View.GONE);
                         mActivity.findViewById(R.id.no_results).setVisibility(View.VISIBLE);
                     }
                 });
@@ -108,5 +126,11 @@ public class DiningFragment extends ListFragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle(R.string.dining);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 }

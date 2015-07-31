@@ -49,6 +49,10 @@ public class AboutFragment extends Fragment {
         ButterKnife.unbind(this);
     }
 
+    @OnClick(R.id.about_desc)
+    public void onClick() {
+    }
+
     @OnClick(R.id.licenses)
     public void displayLicensesAlertDialog() {
         WebView view = (WebView) LayoutInflater.from(getActivity()).inflate(R.layout.dialog_licenses, null);
