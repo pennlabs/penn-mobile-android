@@ -19,6 +19,7 @@ import java.util.List;
  */
 public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
     private MainActivity activity;
+    private Labs mLabs;
 
     public MainActivityTest() {
         super(MainActivity.class);
@@ -33,6 +34,7 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
                 MainActivity.class);
         startActivity(intent, null, null);
         activity = getActivity();
+        mLabs = MainActivity.getLabsInstance();
     }
 
     public void testMainLayout() {
@@ -44,57 +46,48 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
     }
 
     public void testLabsCoursesAPI() {
-        Labs mLabs = activity.getLabsInstance();
         List<Course> courses = mLabs.courses("CIS 110").toList().toBlocking().single().get(0);
         assertEquals(110, courses.get(0).course_number);
     }
 
     public void testLabsCoursesInstructors() {
-        Labs mLabs = activity.getLabsInstance();
         List<Course> courses = mLabs.courses("CIS 110").toList().toBlocking().single().get(0);
         assertEquals("Benedict Brown", courses.get(0).instructors.get(0).name);
     }
 
     public void testCourseMeetings() {
-        Labs mLabs = activity.getLabsInstance();
         List<Course> courses = mLabs.courses("CIS 110").toList().toBlocking().single().get(0);
         // Course locations not announced yet
         assertEquals("", courses.get(0).meetings.get(0).building_name);
     }
 
     public void testDirectorySearch() {
-        Labs mLabs = activity.getLabsInstance();
         List<Person> people = mLabs.people("adel").toList().toBlocking().single().get(0);
         assertEquals("ADELMAN, STEPHEN R", people.get(0).name);
     }
 
     public void testDirectorySearchGetName() {
-        Labs mLabs = activity.getLabsInstance();
         List<Person> people = mLabs.people("adel").toList().toBlocking().single().get(0);
         assertEquals("Stephen R Adelman", people.get(0).getName());
     }
 
     public void testCourseMeetingSection() {
-        Labs mLabs = activity.getLabsInstance();
         List<Course> courses = mLabs.courses("BIBB 109").toList().toBlocking().single().get(0);
         assertEquals("BIBB109401", courses.get(0).meetings.get(0).section_id);
     }
 
     public void testDiningVenues() {
-        Labs mLabs = activity.getLabsInstance();
         List<Venue> venues = mLabs.venues().toList().toBlocking().single().get(0);
         assertEquals("1920 Commons", venues.get(0).name);
     }
 
     public void testDiningMenuMeals() {
-        Labs mLabs = activity.getLabsInstance();
         List<Venue> venues = mLabs.venues().toList().toBlocking().single().get(0);
         NewDiningHall commons = mLabs.daily_menu(venues.get(0).id);
         assertTrue(commons.menus.size() > 0);
     }
 
     public void testDiningMenu() {
-        Labs mLabs = activity.getLabsInstance();
         List<Venue> venues = mLabs.venues().toList().toBlocking().single().get(0);
         NewDiningHall commons = mLabs.daily_menu(venues.get(0).id);
         NewDiningHall.Menu menu = commons.menus.get(0);
@@ -102,7 +95,6 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
     }
 
     public void testDiningMenuStation() {
-        Labs mLabs = activity.getLabsInstance();
         List<Venue> venues = mLabs.venues().toList().toBlocking().single().get(0);
         NewDiningHall commons = mLabs.daily_menu(venues.get(0).id);
         NewDiningHall.Menu menu = commons.menus.get(0);
