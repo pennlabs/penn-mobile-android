@@ -117,7 +117,7 @@ public class CourseFragment extends Fragment {
         ButterKnife.unbind(this);
     }
 
-    private void findCourseCode() {
+    private void drawCourseMap() {
         String buildingCode = "";
         final String meetingLocation;
         // Check if course has meetings and building code is not empty
@@ -128,8 +128,8 @@ public class CourseFragment extends Fragment {
             // Fallback for empty building code, useful before semester starts
             // Regex gets building code after AM/PM
             // Ex: "MWF12:00 PMTOWN100" -> "TOWN"
-            buildingCode = getRegex("(?<=\\s(A|P)M)[A-Z]+");
-            meetingLocation = getRegex("(?<=\\s(A|P)M)\\w+");
+            buildingCode = getRegex(course.first_meeting_days, "(?<=\\s(A|P)M)[A-Z]+");
+            meetingLocation = getRegex(course.first_meeting_days, "(?<=\\s(A|P)M)\\w+");
         } else {
             meetingLocation = "";
         }
@@ -154,8 +154,8 @@ public class CourseFragment extends Fragment {
             days = course.meetings.get(0).meeting_days;
             times = course.meetings.get(0).start_time;
         } else if (!course.first_meeting_days.equals("")) {
-            days = getRegex("^[a-zA-Z]+");
-            times = getRegex("([\\d]{1,2}:[\\d]{1,2}\\s*[aApP][mM])");
+            days = getRegex(course.first_meeting_days, "^[a-zA-Z]+");
+            times = getRegex(course.first_meeting_days, "([\\d]{1,2}:[\\d]{1,2}\\s*[aApP][mM])");
         }
         String markerText = days + " " + times + " " + meetingLocation;
         if (map != null && courseLatLng != null) {
@@ -169,8 +169,8 @@ public class CourseFragment extends Fragment {
     }
 
     @NonNull
-    private String getRegex(String pattern) {
-        Matcher m = Pattern.compile(pattern).matcher(course.first_meeting_days);
+    private String getRegex(String string, String pattern) {
+        Matcher m = Pattern.compile(pattern).matcher(string);
         if (m.find()) {
             return m.group(0);
         }
@@ -184,7 +184,7 @@ public class CourseFragment extends Fragment {
         String instructorsText;
         String courseDescription;
 
-        findCourseCode();
+        drawCourseMap();
 
         courseCodeText = new SpannableString(course.getName());
         courseCodeText.setSpan(
