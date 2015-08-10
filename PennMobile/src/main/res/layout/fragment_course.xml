@@ -78,13 +78,8 @@
         android:layout_height="wrap_content"
         tools:layout_marginBottom="15dp">
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingBottom="30dip"
-            android:paddingTop="30dip"
-            android:background="#6DCFF6">
+            android:background="#6DCFF6"
+            style="@style/PCRBox">
             <TextView
                 tools:text="2.7"
                 android:id="@+id/course_avg_course"
@@ -96,13 +91,8 @@
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingBottom="30dip"
-            android:paddingTop="30dip"
-            android:background="#9DDCF9">
+            android:background="#9DDCF9"
+            style="@style/PCRBox">
             <TextView
                 tools:text="2.5"
                 android:id="@+id/course_avg_instr"
@@ -114,13 +104,8 @@
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingBottom="30dip"
-            android:paddingTop="30dip"
-            android:background="#A2B7DF">
+            android:background="#A2B7DF"
+            style="@style/PCRBox">
             <TextView
                 tools:text="2.8"
                 android:id="@+id/course_avg_diff"
