@@ -118,9 +118,16 @@ public class CourseFragment extends Fragment {
     }
 
     private void findCourseCode() {
-        // Regex gets building code after AM/PM
-        // Ex: "MWF12:00 PMTOWN100" -> "TOWN"
-        String buildingCode = getRegex("(?<=\\s(A|P)M)[A-Z]+");
+        String buildingCode = "";
+        // Check if course has meetings and building code is not empty
+        if (!course.meetings.isEmpty() && !course.meetings.get(0).building_code.equals("")) {
+            buildingCode = course.meetings.get(0).building_name;
+        } else if (!course.first_meeting_days.equals("")) {
+            // Fallback for empty building code, useful before semester starts
+            // Regex gets building code after AM/PM
+            // Ex: "MWF12:00 PMTOWN100" -> "TOWN"
+            buildingCode = getRegex("(?<=\\s(A|P)M)[A-Z]+");
+        }
         if (!buildingCode.equals("")) {
             mLabs.buildings(buildingCode)
                     .observeOn(AndroidSchedulers.mainThread())
