@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.SearchView;
@@ -26,8 +25,6 @@ import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.Course;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -118,21 +115,8 @@ public class CourseFragment extends Fragment {
     }
 
     private void drawCourseMap() {
-        String buildingCode = "";
-        final String meetingLocation;
-        // Check if course has meetings and building code is not empty
-        if (!course.meetings.isEmpty() && !course.meetings.get(0).building_code.equals("")) {
-            buildingCode = course.meetings.get(0).building_code;
-            meetingLocation = course.meetings.get(0).building_code + course.meetings.get(0).room_number;
-        } else if (!course.first_meeting_days.equals("")) {
-            // Fallback for empty building code, useful before semester starts
-            // Regex gets building code after AM/PM
-            // Ex: "MWF12:00 PMTOWN100" -> "TOWN"
-            buildingCode = getRegex(course.first_meeting_days, "(?<=\\s(A|P)M)[A-Z]+");
-            meetingLocation = getRegex(course.first_meeting_days, "(?<=\\s(A|P)M)\\w+");
-        } else {
-            meetingLocation = "";
-        }
+        String buildingCode = course.getBuildingCode();
+        final String meetingLocation = course.getMeetingLocation();
         if (buildingCode != null && !buildingCode.equals("")) {
             mLabs.buildings(buildingCode)
                     .observeOn(AndroidSchedulers.mainThread())
@@ -148,19 +132,8 @@ public class CourseFragment extends Fragment {
     }
 
     private void drawMarker(LatLng courseLatLng, String meetingLocation) {
-        String days = "";
-        String times = "";
-        // Check if course has meetings, use first_meeting_days as fallback
-        if (!course.meetings.isEmpty()) {
-            days = course.meetings.get(0).meeting_days;
-            times = course.meetings.get(0).start_time;
-        } else if (!course.first_meeting_days.equals("")) {
-            // Ex: "MWF12:00 PMTOWN100"
-            // Regex gets the days which are alphabetic at start of string -> "MWF"
-            days = getRegex(course.first_meeting_days, "^[A-Z]+");
-            // Regex gets time -> "12:00 PM"
-            times = getRegex(course.first_meeting_days, "(\\d{1,2}:\\d{1,2}\\s*[AP]M)");
-        }
+        String days = course.getMeetingDays();
+        String times = course.getMeetingStartTime();
         String markerText = days + " " + times + " " + meetingLocation;
         if (map != null && courseLatLng != null) {
             mapFrame.setVisibility(View.VISIBLE);
@@ -170,15 +143,6 @@ public class CourseFragment extends Fragment {
                     .title(markerText));
             marker.showInfoWindow();
         }
-    }
-
-    @NonNull
-    private String getRegex(String string, String pattern) {
-        Matcher m = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE).matcher(string);
-        if (m.find()) {
-            return m.group(0);
-        }
-        return "";
     }
 
     private void processCourse() {

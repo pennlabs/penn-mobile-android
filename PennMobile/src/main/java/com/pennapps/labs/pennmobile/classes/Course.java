@@ -3,9 +3,12 @@ package com.pennapps.labs.pennmobile.classes;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Course implements Parcelable {
     public String course_department;
@@ -59,9 +62,68 @@ public class Course implements Parcelable {
         dest.writeList(meetings);
     }
 
+    @NonNull
+    private String getRegex(String string, String pattern) {
+        Matcher m = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE).matcher(string);
+        if (m.find()) {
+            return m.group(0);
+        }
+        return "";
+    }
+
     public String getName() {
         return course_department + " " +
                 String.format("%03d", course_number) + " " +
                 String.format("%03d", section_number);
+    }
+
+    @NonNull
+    public String getBuildingCode() {
+        if (!meetings.isEmpty() && !meetings.get(0).building_code.equals("")) {
+            return meetings.get(0).building_code;
+        } else if (!first_meeting_days.equals("")) {
+            // Fallback for empty building code, useful before semester starts
+            // Regex gets building code after AM/PM
+            // Ex: "MWF12:00 PMTOWN100" -> "TOWN"
+            return getRegex(first_meeting_days, "(?<=\\s(A|P)M)[A-Z]+");
+        }
+        return "";
+    }
+
+    @NonNull
+    public String getMeetingLocation() {
+        if (!meetings.isEmpty() && !meetings.get(0).building_code.equals("")) {
+            return meetings.get(0).building_code + meetings.get(0).room_number;
+        } else if (!first_meeting_days.equals("")) {
+            // Fallback for empty building code, useful before semester starts
+            // Regex gets building code and room number after AM/PM
+            // Ex: "MWF12:00 PMTOWN100" -> "TOWN100"
+            return getRegex(first_meeting_days, "(?<=\\s(A|P)M)\\w+");
+        }
+        return "";
+    }
+
+    @NonNull
+    public String getMeetingDays() {
+        if (!meetings.isEmpty()) {
+            return meetings.get(0).meeting_days;
+        } else if (!first_meeting_days.equals("")) {
+            // Regex gets the days which are alphabetic at start of string
+            // Ex: "MWF12:00 PMTOWN100" -> "MWF"
+            return getRegex(first_meeting_days, "^[A-Z]+");
+        }
+        return "";
+    }
+
+    @NonNull
+    public String getMeetingStartTime() {
+        if (!meetings.isEmpty()) {
+            return meetings.get(0).start_time;
+        } else if (!first_meeting_days.equals("")) {
+            // Regex gets time
+            // Ex: "MWF12:00 PMTOWN100" -> "12:00 PM"
+            return getRegex(first_meeting_days, "(\\d{1,2}:\\d{1,2}\\s*[AP]M)");
+        }
+        return "";
     }
 }
