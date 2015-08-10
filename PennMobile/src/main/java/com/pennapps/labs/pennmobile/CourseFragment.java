@@ -146,7 +146,6 @@ public class CourseFragment extends Fragment {
     }
 
     private void processCourse() {
-        Spannable courseCodeText;
         String activityText;
         String courseTitleText;
         String instructorsText;
@@ -154,12 +153,6 @@ public class CourseFragment extends Fragment {
 
         drawCourseMap();
 
-        courseCodeText = new SpannableString(course.getName());
-        courseCodeText.setSpan(
-                new ForegroundColorSpan(getResources().getColor(R.color.color_primary_light)),
-                courseCodeText.length() - 3,
-                courseCodeText.length(),
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         activityText = course.activity;
         if (course.instructors.size() > 0) {
             instructorsText = course.instructors.get(0).name;
