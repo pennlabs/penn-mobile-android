@@ -98,7 +98,7 @@ public class Course implements Parcelable {
             // Fallback for empty building code, useful before semester starts
             // Regex gets building code and room number after AM/PM
             // Ex: "MWF12:00 PMTOWN100" -> "TOWN100"
-            return getRegex(first_meeting_days, "(?<=\\s(A|P)M)\\w+");
+            return getRegex(first_meeting_days, "(?<=\\s(A|P)M)\\w{3,4}");
         }
         return "";
     }
