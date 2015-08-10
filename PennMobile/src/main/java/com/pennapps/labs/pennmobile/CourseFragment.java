@@ -4,9 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.SearchView;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -117,7 +114,7 @@ public class CourseFragment extends Fragment {
     private void drawCourseMap() {
         String buildingCode = course.getBuildingCode();
         final String meetingLocation = course.getMeetingLocation();
-        if (buildingCode != null && !buildingCode.equals("")) {
+        if (!buildingCode.equals("")) {
             mLabs.buildings(buildingCode)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<List<Building>>() {

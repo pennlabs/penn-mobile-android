@@ -33,9 +33,7 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         Course course = getItem(position);
-        String courseName = course.course_department +
-                String.format("%03d", course.course_number) + " " +
-                String.format("%03d", course.section_number);
+        String courseName = course.getName();
         ViewHolder holder;
         if (view != null) {
             holder = (ViewHolder) view.getTag();
