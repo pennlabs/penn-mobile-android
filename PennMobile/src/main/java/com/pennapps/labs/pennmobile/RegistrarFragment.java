@@ -1,97 +1,157 @@
 package com.pennapps.labs.pennmobile;
 
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
+import android.support.v4.app.ListFragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.pennapps.labs.pennmobile.adapters.RegistrarAdapter;
+import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Course;
 
-import java.io.IOException;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
-public class RegistrarFragment extends Fragment {
+public class RegistrarFragment extends ListFragment {
 
-    private GoogleMap map;
-    private SupportMapFragment mapFragment;
-    private Course course;
+    private Labs mLabs;
+    private ListView listView;
+    private MainActivity mActivity;
+    private RegistrarAdapter mAdapter;
+    public static SearchView searchView;
+    public static boolean hideSearchView = false;
 
-    @Bind(R.id.course_code) TextView courseCodeTextView;
-    @Bind(R.id.course_activity) TextView courseActivityTextView;
-    @Bind(R.id.course_title) TextView courseTitleTextView;
-    @Bind(R.id.instructor) TextView instructorTextView;
-    @Bind(R.id.course_desc_title) TextView descriptionTitle;
-    @Bind(R.id.course_desc) TextView descriptionTextView;
-    @Bind(R.id.registrar_map_frame) View mapFrame;
+    @Bind(R.id.no_results) TextView no_results;
+    @Bind(R.id.registrar_instructions) TextView registrar_instructions;
+    @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        course = getArguments().getParcelable("RegistrarFragment");
+        mActivity = (MainActivity) getActivity();
+        mLabs = MainActivity.getLabsInstance();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_registrar, container, false);
         ButterKnife.bind(this, v);
-        processCourse();
         return v;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        FragmentManager fm = getChildFragmentManager();
-        if (mapFragment == null) {
-            mapFragment = SupportMapFragment.newInstance();
-            fm.beginTransaction().add(R.id.registrar_map_container, mapFragment).commit();
-            fm.executePendingTransactions();
+        setHasOptionsMenu(true);
+        listView = getListView();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.registrar_search:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        getActivity().setTitle(R.string.registrar);
-        if (map == null) {
-            map = mapFragment.getMap();
-            if (map != null) {
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(39.95198, -75.19368), 17));
-                map.getUiSettings().setZoomControlsEnabled(false);
-            }
+    public void onPrepareOptionsMenu(Menu menu) {
+        if (hideSearchView) {
+            searchView.clearFocus();
         }
     }
 
-    public LatLng getBuildingLatLng(Course course) {
-        Geocoder geocoder = new Geocoder(getActivity().getApplicationContext());
-        try {
-            if (course.meetings.size() > 0) {
-                List<Address> locationList = geocoder.getFromLocationName(course.meetings.get(0).building_name, 1);
-                if (locationList.size() > 0) {
-                    return new LatLng(locationList.get(0).getLatitude(), locationList.get(0).getLongitude());
-                }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.registrar, menu);
+        loadingPanel.setVisibility(View.GONE);
+        MenuItem searchMenuItem = menu.findItem(R.id.registrar_search);
+        searchMenuItem.expandActionView();
+
+        searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
+        searchView.setIconified(false);
+        final SearchView.OnQueryTextListener queryListener = new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextChange(String arg0) {
+                return true;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+
+            @Override
+            public boolean onQueryTextSubmit(String input) {
+                searchView.clearFocus();
+                registrar_instructions.setVisibility(View.GONE);
+                no_results.setVisibility(View.GONE);
+                loadingPanel.setVisibility(View.VISIBLE);
+                searchCourses(input);
+                return true;
+            }
+        };
+        searchView.setOnQueryTextListener(queryListener);
+    }
+
+    private void searchCourses(String query) {
+        mLabs.courses(query)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<Course>>() {
+                    @Override
+                    public void call(List<Course> courses) {
+                        loadingPanel.setVisibility(View.GONE);
+                        if (courses == null || courses.size() == 0) {
+                            no_results.setVisibility(View.VISIBLE);
+                            listView.setVisibility(View.GONE);
+                        } else {
+                            mAdapter = new RegistrarAdapter(mActivity, courses);
+                            listView.setVisibility(View.VISIBLE);
+                            listView.setAdapter(mAdapter);
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        loadingPanel.setVisibility(View.GONE);
+                        no_results.setVisibility(View.VISIBLE);
+                        listView.setVisibility(View.GONE);
+                    }
+                });
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        Fragment fragment = new CourseFragment();
+        Course course = ((RegistrarAdapter.ViewHolder) v.getTag()).course;
+        mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
+        mActivity.getActionBarToggle().syncState();
+        Bundle args = new Bundle();
+        args.putParcelable("CourseFragment", course);
+        fragment.setArguments(args);
+
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.registrar_fragment, fragment)
+                .addToBackStack(null)
+                .commit();
+        getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+        onResume();
     }
 
     @Override
@@ -99,66 +159,6 @@ public class RegistrarFragment extends Fragment {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
-
-    private void processCourse() {
-        LatLng courseLatLng;
-        Spannable courseCodeText;
-        String activityText;
-        String courseTitleText;
-        String instructorsText;
-        String courseDescription;
-        String locationText = "";
-
-        courseLatLng = getBuildingLatLng(course);
-        courseCodeText = new SpannableString(
-                course.course_department + " " +
-                        String.format("%03d", course.course_number) + " " +
-                        String.format("%03d", course.section_number));
-        courseCodeText.setSpan(
-                new ForegroundColorSpan(getResources().getColor(R.color.color_primary_light)),
-                courseCodeText.length() - 3,
-                courseCodeText.length(),
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        activityText = course.activity;
-        if (course.meetings.size() > 0) {
-            locationText = course.meetings.get(0).building_code + " " + course.meetings.get(0).room_number;
-        }
-        if (course.instructors.size() > 0) {
-            instructorsText = course.instructors.get(0).name;
-        } else {
-            instructorsText = getString(R.string.professor_missing);
-        }
-        courseTitleText = course.course_title;
-        courseDescription = course.course_description;
-
-        try {
-            courseCodeTextView.setText(courseCodeText);
-
-            if (map != null && courseLatLng != null) {
-                mapFrame.setVisibility(View.VISIBLE);
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 17));
-                Marker marker = map.addMarker(new MarkerOptions()
-                        .position(courseLatLng)
-                        .title(locationText));
-                marker.showInfoWindow();
-            }
-            courseActivityTextView.setText(activityText);
-            courseTitleTextView.setText(courseTitleText);
-            instructorTextView.setText(instructorsText);
-            if (instructorsText.equals(getString(R.string.professor_missing))) {
-                instructorTextView.setTextColor(getResources().getColor(R.color.color_primary_light));
-            }
-
-            if (courseDescription.equals("")) {
-                descriptionTitle.setVisibility(View.GONE);
-                descriptionTextView.setVisibility(View.GONE);
-            } else {
-                descriptionTitle.setVisibility(View.VISIBLE);
-                descriptionTextView.setVisibility(View.VISIBLE);
-                descriptionTextView.setText(courseDescription);
-            }
-        } catch (NullPointerException ignored) {
-
-        }
-    }
 }
+
+

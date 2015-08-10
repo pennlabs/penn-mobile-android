@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_registrar:
             case R.id.registrar_cont:
                 menu.findItem(R.id.nav_registrar).setChecked(true);
-                fragment = new RegistrarSearchFragment();
+                fragment = new RegistrarFragment();
                 break;
             case R.id.nav_directory:
             case R.id.directory_cont:

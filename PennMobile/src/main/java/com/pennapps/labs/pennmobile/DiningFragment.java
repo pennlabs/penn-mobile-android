@@ -30,7 +30,6 @@ public class DiningFragment extends ListFragment {
     private Labs mLabs;
     private ListView mListView;
     private MainActivity mActivity;
-
     @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
 
     @Override

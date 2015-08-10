@@ -161,7 +161,6 @@ public class TransitFragment extends Fragment {
         mapView.onLowMemory();
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
