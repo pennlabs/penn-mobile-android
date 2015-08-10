@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -59,7 +58,6 @@ public class CourseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_course, container, false);
-        v.setBackgroundColor(Color.WHITE);
         ButterKnife.bind(this, v);
         return v;
     }
