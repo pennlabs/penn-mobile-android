@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile.classes;
 
 import android.graphics.Color;
+import android.support.annotation.AnyRes;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -30,6 +31,11 @@ public class BusRoute {
         markers = new HashSet<>();
     }
 
+    /**
+     * Provide appropriate colors for each bus route.
+     * @return Color as an int, output of `Color.rgb`
+     */
+    @AnyRes
     public int getColor() {
         switch (route_name) {
             case "Campus Loop":

@@ -18,6 +18,10 @@ public class VenueInterval {
     public String date;
     @SerializedName("meal") public List<MealInterval> meals;
 
+    /**
+     * Get all the open hour time intervals for this dining hall in a given date
+     * @return HashMap of meal name (lunch, dinner) to open hours expressed as a Joda Interval
+     */
     public HashMap<String, Interval> getIntervals() {
         HashMap<String, Interval> openHours = new HashMap<>();
         for (MealInterval mI : meals) {
@@ -32,8 +36,19 @@ public class VenueInterval {
         public String close;
         public String type;
 
+        /**
+         * Date format used by dining API.
+         * Example: "2015-08-10 15:00:00"
+         */
         static final DateTimeFormatter DATEFORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
+        /**
+         * Put together the date given with the hours to create a POJO for the time interval in
+         * which the dining hall is open.
+         * Any time before 6:00am is assumed to be from the next day rather than the given date.
+         * @param date Date string in yyyy-MM-dd format
+         * @return Time interval in which meal is open represented as a Joda Interval
+         */
         public Interval getInterval(String date) {
             String openTime = date + " " + open;
             String closeTime = date + " " + close;

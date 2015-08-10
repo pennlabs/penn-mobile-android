@@ -28,6 +28,10 @@ public class Venue {
         return venueType.equals("residential") && !name.equals("Cafe at McClelland");
     }
 
+    /**
+     * Get a mapping of meal names to open hours for all meals in the dining hall this week
+     * @return HashMap of meal name (lunch, dinner) to open hours expressed as a Joda Interval
+     */
     public HashMap<String, Interval> getHours() {
         DateTime currentTime = new DateTime();
         // Split by T gets the Y-M-D format to compare against the date in JSON

@@ -30,6 +30,11 @@ public class Person {
         this.phone_words = phone_words;
     }
 
+    /**
+     * Get a person's full name from "Last, First MI" format.
+     * Ex: "ADELMAN, STEPHEN R" -> "Stephen R Adelman"
+     * @return Person's full name in ordered format
+     */
     public String getName() {
         int firstComma = name.indexOf(",");
         return WordUtils.capitalizeFully(name.substring(firstComma + 1).trim() + " " + name.substring(0, firstComma).trim());
