@@ -12,12 +12,16 @@ public class Meeting implements Parcelable {
     public String building_name;
     public String room_number;
     public String section_id;
+    public String meeting_days;
+    public String start_time;
 
     protected Meeting(Parcel in) {
         building_code = in.readString();
         building_name = in.readString();
         room_number = in.readString();
         section_id = in.readString();
+        meeting_days = in.readString();
+        start_time = in.readString();
     }
 
     public static final Creator<Meeting> CREATOR = new Creator<Meeting>() {
@@ -43,5 +47,7 @@ public class Meeting implements Parcelable {
         parcel.writeString(building_name);
         parcel.writeString(room_number);
         parcel.writeString(section_id);
+        parcel.writeString(meeting_days);
+        parcel.writeString(start_time);
     }
 }

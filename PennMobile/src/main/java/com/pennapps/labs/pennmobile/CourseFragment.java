@@ -119,39 +119,51 @@ public class CourseFragment extends Fragment {
 
     private void findCourseCode() {
         String buildingCode = "";
+        final String meetingLocation;
         // Check if course has meetings and building code is not empty
         if (!course.meetings.isEmpty() && !course.meetings.get(0).building_code.equals("")) {
-            buildingCode = course.meetings.get(0).building_name;
+            buildingCode = course.meetings.get(0).building_code;
+            meetingLocation = course.meetings.get(0).building_code + course.meetings.get(0).room_number;
         } else if (!course.first_meeting_days.equals("")) {
             // Fallback for empty building code, useful before semester starts
             // Regex gets building code after AM/PM
             // Ex: "MWF12:00 PMTOWN100" -> "TOWN"
             buildingCode = getRegex("(?<=\\s(A|P)M)[A-Z]+");
+            meetingLocation = getRegex("(?<=\\s(A|P)M)\\w+");
+        } else {
+            meetingLocation = "";
         }
-        if (!buildingCode.equals("")) {
+        if (buildingCode != null && !buildingCode.equals("")) {
             mLabs.buildings(buildingCode)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<List<Building>>() {
                         @Override
                         public void call(List<Building> buildings) {
                             if (!buildings.isEmpty()) {
-                                drawMarker(buildings.get(0).getLatLng());
+                                drawMarker(buildings.get(0).getLatLng(), meetingLocation);
                             }
                         }
                     });
         }
     }
 
-    private void drawMarker(LatLng courseLatLng) {
-        String days = getRegex("^[a-zA-Z]+");
-        String times = getRegex("([\\d]{1,2}:[\\d]{1,2}\\s*[aApP][mM])");
-        String location = getRegex("(?<=\\s(A|P)M)\\w+");
+    private void drawMarker(LatLng courseLatLng, String meetingLocation) {
+        String days = "";
+        String times = "";
+        if (!course.meetings.isEmpty()) {
+            days = course.meetings.get(0).meeting_days;
+            times = course.meetings.get(0).start_time;
+        } else if (!course.first_meeting_days.equals("")) {
+            days = getRegex("^[a-zA-Z]+");
+            times = getRegex("([\\d]{1,2}:[\\d]{1,2}\\s*[aApP][mM])");
+        }
+        String markerText = days + " " + times + " " + meetingLocation;
         if (map != null && courseLatLng != null) {
             mapFrame.setVisibility(View.VISIBLE);
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 17));
             Marker marker = map.addMarker(new MarkerOptions()
                     .position(courseLatLng)
-                    .title(days + " " + times + " " + location));
+                    .title(markerText));
             marker.showInfoWindow();
         }
     }
