@@ -150,12 +150,16 @@ public class CourseFragment extends Fragment {
     private void drawMarker(LatLng courseLatLng, String meetingLocation) {
         String days = "";
         String times = "";
+        // Check if course has meetings, use first_meeting_days as fallback
         if (!course.meetings.isEmpty()) {
             days = course.meetings.get(0).meeting_days;
             times = course.meetings.get(0).start_time;
         } else if (!course.first_meeting_days.equals("")) {
-            days = getRegex(course.first_meeting_days, "^[a-zA-Z]+");
-            times = getRegex(course.first_meeting_days, "([\\d]{1,2}:[\\d]{1,2}\\s*[aApP][mM])");
+            // Ex: "MWF12:00 PMTOWN100"
+            // Regex gets the days which are alphabetic at start of string -> "MWF"
+            days = getRegex(course.first_meeting_days, "^[A-Z]+");
+            // Regex gets time -> "12:00 PM"
+            times = getRegex(course.first_meeting_days, "(\\d{1,2}:\\d{1,2}\\s*[AP]M)");
         }
         String markerText = days + " " + times + " " + meetingLocation;
         if (map != null && courseLatLng != null) {
@@ -170,7 +174,7 @@ public class CourseFragment extends Fragment {
 
     @NonNull
     private String getRegex(String string, String pattern) {
-        Matcher m = Pattern.compile(pattern).matcher(string);
+        Matcher m = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE).matcher(string);
         if (m.find()) {
             return m.group(0);
         }
