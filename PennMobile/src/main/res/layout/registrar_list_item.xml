@@ -20,9 +20,7 @@
             android:id="@+id/course_id_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
-            android:textColor="@color/black"
-        />
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Title" />
 
         <TextView
             tools:text="Benedict Brown"
@@ -30,35 +28,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textColor="@color/black"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
-        />
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Title" />
 
     </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content">
 
-    <TextView
-        tools:text="LEC"
-        android:id="@+id/course_activity"
-        android:paddingLeft="0sp"
-        android:paddingRight="4sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textSize="12sp"
-        />
+        <TextView
+            tools:text="LEC"
+            android:id="@+id/course_activity"
+            android:paddingLeft="0sp"
+            android:paddingRight="4sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp" />
 
-    <TextView
-        tools:text="Introduction to Computer Programming"
-        android:id="@+id/course_title_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#000000" />
-
+        <TextView
+            tools:text="Introduction to Computer Programming"
+            android:id="@+id/course_title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </LinearLayout>
