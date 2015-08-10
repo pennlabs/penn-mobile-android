@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.SearchView;
@@ -116,18 +117,18 @@ public class CourseFragment extends Fragment {
         ButterKnife.unbind(this);
     }
 
-    private void findCourseCode(final int courseCodeLength) {
-        String courseCode = getRegex("(?<=\\s(A|P)M)\\w{" + courseCodeLength + "}");
-        if (!courseCode.equals("")) {
-            mLabs.buildings(courseCode)
+    private void findCourseCode() {
+        // Regex gets building code after AM/PM
+        // Ex: "MWF12:00 PMTOWN100" -> "TOWN"
+        String buildingCode = getRegex("(?<=\\s(A|P)M)[A-Z]+");
+        if (!buildingCode.equals("")) {
+            mLabs.buildings(buildingCode)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<List<Building>>() {
                         @Override
                         public void call(List<Building> buildings) {
                             if (!buildings.isEmpty()) {
                                 drawMarker(buildings.get(0).getLatLng());
-                            } else if (courseCodeLength != 4) {
-                                findCourseCode(4);
                             }
                         }
                     });
@@ -148,6 +149,7 @@ public class CourseFragment extends Fragment {
         }
     }
 
+    @NonNull
     private String getRegex(String pattern) {
         Matcher m = Pattern.compile(pattern).matcher(course.first_meeting_days);
         if (m.find()) {
@@ -163,7 +165,7 @@ public class CourseFragment extends Fragment {
         String instructorsText;
         String courseDescription;
 
-        findCourseCode(3);
+        findCourseCode();
 
         courseCodeText = new SpannableString(course.getName());
         courseCodeText.setSpan(
