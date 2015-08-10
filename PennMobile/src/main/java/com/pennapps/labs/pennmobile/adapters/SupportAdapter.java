@@ -47,9 +47,15 @@ public class SupportAdapter extends ArrayAdapter<Person> {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String uri = "tel:" + currentPerson.phone;
-                Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse(uri));
+                Intent intent;
+                if (currentPerson.phone.startsWith("http")) {
+                    intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(currentPerson.phone));
+                } else {
+                    String uri = "tel:" + currentPerson.phone;
+                    intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse(uri));
+                }
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 v.getContext().startActivity(intent);
             }

@@ -29,6 +29,7 @@ public class SupportFragment extends ListFragment {
         contacts_list.add(new Person("Special Services", "(215) 898-6600"));
         contacts_list.add(new Person("Women's Center", "(215) 898-8611"));
         contacts_list.add(new Person("Student Health Services", "(215) 746-3535"));
+        contacts_list.add(new Person("Penn Violence Protection", "https://secure.www.upenn.edu/vpul/pvp/gethelp"));
 
         SupportAdapter supportAdapter = new SupportAdapter(getActivity().getApplicationContext(), contacts_list);
 
