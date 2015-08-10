@@ -105,4 +105,27 @@
         <item name="android:paddingBottom">30dip</item>
         <item name="android:paddingTop">30dip</item>
     </style>
+
+    <style name="SearchInstructions">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">50dp</item>
+        <item name="android:layout_marginLeft">50dp</item>
+        <item name="android:layout_marginTop">75dp</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@android:color/darker_gray</item>
+    </style>
+
+    <style name="NoResults">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">50dp</item>
+        <item name="android:layout_marginLeft">50dp</item>
+        <item name="android:layout_marginTop">75dp</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
 </resources>
