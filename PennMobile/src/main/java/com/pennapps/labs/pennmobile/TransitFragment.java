@@ -338,6 +338,9 @@ public class TransitFragment extends Fragment {
                                     addWalkingPath(currentLocation, route.stops.get(0));
                                 }
                                 addWalkingPath(destLatLng, route.stops.get(route.stops.size() - 1));
+                                googleMap.addMarker(new MarkerOptions()
+                                    .position(destLatLng)
+                                    .title(query));
                                 MapFragment.changeZoomLevel(googleMap, builder.build());
                             }
                         },
