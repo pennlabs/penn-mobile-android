@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile.classes;
 
 import com.google.gson.annotations.SerializedName;
-import com.pennapps.labs.pennmobile.api.Labs;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;

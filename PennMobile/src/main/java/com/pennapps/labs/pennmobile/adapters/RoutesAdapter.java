@@ -20,7 +20,6 @@ import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.TransitFragment;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
