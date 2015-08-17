@@ -30,12 +30,6 @@
     <string name="registrar_instructions">Search for courses</string>
     <string name="building_instructions">Search for Penn buildings</string>
 
-    <!-- Dining -->
-    <string name="breakfast">Breakfast</string>
-    <string name="brunch">Brunch</string>
-    <string name="lunch">Lunch</string>
-    <string name="dinner">Dinner</string>
-
     <!-- Courses -->
     <string name="course">Course</string>
     <string name="instructor">Instructor</string>

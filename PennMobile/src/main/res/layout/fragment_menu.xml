@@ -24,15 +24,15 @@
     </RelativeLayout>
 
     <ScrollView
-        android:layout_marginLeft="16dip"
-        android:layout_marginStart="16dip"
-        android:layout_marginBottom="16dip"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
         <LinearLayout
             android:id="@+id/menu_parent"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:paddingLeft="16dip"
+            android:paddingRight="16dip"
+            android:paddingBottom="16dip"
             android:orientation="vertical">
 
             <!-- Menus inserted here programmatically -->

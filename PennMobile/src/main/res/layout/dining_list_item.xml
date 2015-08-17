@@ -1,53 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:orientation="vertical">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
-    <RelativeLayout
+    <TextView
+        tools:text="1920 Commons"
+        android:id="@+id/dining_hall_name"
+        style="@style/HallName" />
+
+    <TextView
+        android:id="@+id/dining_hall_status"
+        tools:text="Open"
+        tools:background="@drawable/label_green"
+        style="@style/DiningStatusLabel" />
+
+    <TextView
+        tools:text="Currently serving dinner"
+        tools:visibility="visible"
+        android:id="@+id/dining_hall_open_meal"
+        android:layout_below="@+id/dining_hall_name"
+        style="@style/MealName"/>
+
+    <TextView
+        tools:text="Closes at 9:00PM"
+        tools:visibility="visible"
+        android:id="@+id/dining_hall_open_close"
+        android:layout_below="@+id/dining_hall_open_meal"
+        style="@style/Menu"/>
+
+    <ImageView
+        android:id="@+id/dining_hall_menu_indicator"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/dining_hall_status"
+        android:layout_below="@id/dining_hall_status"
+        android:layout_marginTop="4dp"
+        android:src="@drawable/ic_chevron_right_black_36dp"/>
 
-        <TextView
-            tools:text="1920 Commons"
-            android:id="@+id/dining_hall_name"
-            style="@style/HallName" />
-
-        <TextView
-            android:id="@+id/dining_hall_status"
-            tools:text="Open"
-            tools:background="@drawable/label_green"
-            style="@style/DiningStatusLabel" />
-
-        <TextView
-            tools:text="Currently serving dinner"
-            tools:visibility="visible"
-            android:id="@+id/dining_hall_open_meal"
-            android:layout_below="@+id/dining_hall_name"
-            style="@style/MealName"/>
-
-        <TextView
-            tools:text="Closes at 9:00PM"
-            tools:visibility="visible"
-            android:id="@+id/dining_hall_open_close"
-            android:layout_below="@+id/dining_hall_open_meal"
-            style="@style/Menu"/>
-
-        <ImageView
-            android:id="@+id/dining_hall_menu_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignRight="@id/dining_hall_status"
-            android:layout_below="@id/dining_hall_status"
-            android:layout_marginTop="4dp"
-            android:src="@drawable/ic_chevron_right_black_36dp"/>
-
-    </RelativeLayout>
-
-</LinearLayout>
+</RelativeLayout>
