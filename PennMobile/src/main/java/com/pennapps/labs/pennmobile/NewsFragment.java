@@ -64,11 +64,16 @@ public class NewsFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_news, container, false);
 
         MyTabAdapter pageAdapter = new MyTabAdapter(getActivity().getSupportFragmentManager());
-        ViewPager pager = (ViewPager) v.findViewById(R.id.pager);
+        final ViewPager pager = (ViewPager) v.findViewById(R.id.pager);
         pager.setAdapter(pageAdapter);
 
-        TabLayout tabLayout = (TabLayout) v.findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(pager);
+        final TabLayout tabLayout = (TabLayout) v.findViewById(R.id.tabs);
+        tabLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                tabLayout.setupWithViewPager(pager);
+            }
+        });
 
         return v;
     }

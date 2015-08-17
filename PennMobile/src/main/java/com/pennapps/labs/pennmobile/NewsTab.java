@@ -55,7 +55,7 @@ public class NewsTab extends Fragment {
             @Override
             public void onProgressChanged(WebView view, int progress)
             {
-                if(progress >= 80) {
+                if (progress >= 80 && mWebView != null) {
                     Pbar.setVisibility(View.GONE);
                     ViewGroup parent = (ViewGroup) mWebView.getParent();
                     if (parent != null) {
