@@ -138,6 +138,7 @@ public class TransitFragment extends Fragment {
     public void onResume() {
         mapView.onResume();
         activity.setTitle(R.string.transit);
+        activity.setNav(R.id.nav_transit);
         super.onResume();
     }
 
