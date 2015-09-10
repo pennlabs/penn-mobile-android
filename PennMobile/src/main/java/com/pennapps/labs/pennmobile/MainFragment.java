@@ -49,6 +49,7 @@ public class MainFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle(R.string.main_title);
+        ((MainActivity) getActivity()).setNav(R.id.nav_home);
     }
 
 }

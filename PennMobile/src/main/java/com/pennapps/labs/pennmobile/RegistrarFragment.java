@@ -155,6 +155,13 @@ public class RegistrarFragment extends ListFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(R.string.registrar);
+        mActivity.setNav(R.id.nav_registrar);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);

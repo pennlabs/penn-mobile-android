@@ -170,32 +170,26 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.nav_registrar:
             case R.id.registrar_cont:
-                menu.findItem(R.id.nav_registrar).setChecked(true);
                 fragment = new RegistrarFragment();
                 break;
             case R.id.nav_directory:
             case R.id.directory_cont:
-                menu.findItem(R.id.nav_directory).setChecked(true);
                 fragment = new DirectoryFragment();
                 break;
             case R.id.nav_dining:
             case R.id.dining_cont:
-                menu.findItem(R.id.nav_dining).setChecked(true);
                 fragment = new DiningFragment();
                 break;
             case R.id.nav_transit:
             case R.id.transit_cont:
-                menu.findItem(R.id.nav_transit).setChecked(true);
                 fragment = new TransitFragment();
                 break;
             case R.id.nav_news:
             case R.id.news_cont:
-                menu.findItem(R.id.nav_news).setChecked(true);
                 fragment = new NewsFragment();
                 break;
             case R.id.nav_map:
             case R.id.map_cont:
-                menu.findItem(R.id.nav_map).setChecked(true);
                 fragment = new MapFragment();
                 break;
             case R.id.nav_support:
@@ -250,5 +244,10 @@ public class MainActivity extends AppCompatActivity {
 
     public ActionBarDrawerToggle getActionBarToggle() {
         return mDrawerToggle;
+    }
+
+    public void setNav(int id){
+        final Menu menu = mDrawerList.getMenu();
+        menu.findItem(id).setChecked(true);
     }
 }
