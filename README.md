@@ -3,6 +3,8 @@ PennMobile Android
 
 Penn's mobile app for Android, created in a partnership between Penn Labs and the UA.
 
+[![PennMobile on Google Play](https://developer.android.com/images/brand/en_generic_rgb_wo_60.png)](https://play.google.com/store/apps/details?id=com.pennapps.labs.pennmobile)
+
 ## Features
 
 * Course search from registrar
