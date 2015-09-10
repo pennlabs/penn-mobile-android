@@ -29,8 +29,6 @@ public class MenuFragment extends Fragment {
     private DiningHall mDiningHall;
     private MainActivity mActivity;
 
-    @Bind(R.id.dining_hall_name) TextView hallNameTV;
-    @Bind(R.id.dining_hall_status) TextView hallStatus;
     @Bind(R.id.menu_parent) LinearLayout menuParent;
 
     @Override
@@ -50,15 +48,6 @@ public class MenuFragment extends Fragment {
     }
 
     public void fillDescriptions() {
-        hallNameTV.setText(WordUtils.capitalizeFully(mDiningHall.getName()));
-        if (mDiningHall.isOpen()) {
-            hallStatus.setText("Open");
-            hallStatus.setBackground(ContextCompat.getDrawable(mActivity, R.drawable.label_green));
-        } else {
-            hallStatus.setText("Closed");
-            hallStatus.setBackground(ContextCompat.getDrawable(mActivity, R.drawable.label_red));
-        }
-
         for (Map.Entry<String, HashMap<String, HashSet<String>>> menu : mDiningHall.menus.entrySet()) {
             addDiningTextView(R.style.MealName, StringUtils.capitalize(menu.getKey()));
             for (Map.Entry<String, HashSet<String>> menuItem : menu.getValue().entrySet()) {
