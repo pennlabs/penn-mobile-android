@@ -17,6 +17,12 @@ import java.util.List;
 public class SupportFragment extends ListFragment {
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ((MainActivity) getActivity()).closeKeyboard();
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         ListView mListView = getListView();
         List<Person> contacts_list = new ArrayList<>();
@@ -47,5 +53,6 @@ public class SupportFragment extends ListFragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle(R.string.support);
+        ((MainActivity) getActivity()).setNav(R.id.nav_support);
     }
 }
