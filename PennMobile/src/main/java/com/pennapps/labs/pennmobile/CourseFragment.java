@@ -132,7 +132,7 @@ public class CourseFragment extends Fragment {
         String days = course.getMeetingDays();
         String times = course.getMeetingStartTime();
         String markerText = days + " " + times + " " + meetingLocation;
-        if (map != null && courseLatLng != null) {
+        if (map != null && courseLatLng != null && mapFrame != null) {
             mapFrame.setVisibility(View.VISIBLE);
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 17));
             Marker marker = map.addMarker(new MarkerOptions()
