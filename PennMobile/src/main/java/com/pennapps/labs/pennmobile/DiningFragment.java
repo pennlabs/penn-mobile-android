@@ -110,7 +110,9 @@ public class DiningFragment extends ListFragment {
                             public void run() {
                                 DiningAdapter adapter = new DiningAdapter(mActivity, diningHalls);
                                 mListView.setAdapter(adapter);
-                                loadingPanel.setVisibility(View.GONE);
+                                if (loadingPanel != null) {
+                                    loadingPanel.setVisibility(View.GONE);
+                                }
                             }
                         });
                     }
