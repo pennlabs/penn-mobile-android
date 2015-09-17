@@ -4,8 +4,6 @@ import com.google.gson.annotations.SerializedName;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,19 +33,13 @@ public class Venue {
      */
     public HashMap<String, Interval> getHours() {
         DateTime currentTime = new DateTime();
-        DateTimeFormatter intervalFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
-        DateTime intervalDateTime;
-        VenueInterval today = new VenueInterval();
-        VenueInterval tomorrow = new VenueInterval();
+        // Split by T gets the Y-M-D format to compare against the date in JSON
         for (VenueInterval interval : hours) {
-            intervalDateTime = intervalFormatter.parseDateTime(interval.date);
-            if (intervalDateTime.toLocalDate().equals(currentTime.toLocalDate())) {
-                today = interval;
-            } else if(intervalDateTime.toLocalDate().equals(currentTime.plusDays(1).toLocalDate())) {
-                tomorrow = interval;
+            if (interval.date.equals(currentTime.toString().split("T")[0])) {
+                return interval.getIntervals();
             }
         }
 
-        return VenueInterval.getIntervals(today, tomorrow);
+        return new HashMap<>();
     }
 }

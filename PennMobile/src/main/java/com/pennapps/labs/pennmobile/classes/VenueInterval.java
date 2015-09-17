@@ -22,19 +22,11 @@ public class VenueInterval {
      * Get all the open hour time intervals for this dining hall in a given date
      * @return HashMap of meal name (lunch, dinner) to open hours expressed as a Joda Interval
      */
-    public static HashMap<String, Interval> getIntervals(VenueInterval today, VenueInterval tomorrow) {
+    public HashMap<String, Interval> getIntervals() {
         HashMap<String, Interval> openHours = new HashMap<>();
-        for (MealInterval mI : today.meals) {
-            Interval mealOpenInterval = mI.getInterval(today.date);
-            if (mealOpenInterval.containsNow() || mealOpenInterval.isAfterNow()) {
-                openHours.put(mI.type, mealOpenInterval);
-            }
-        }
-        for (MealInterval mI : tomorrow.meals) {
-            Interval mealOpenInterval = mI.getInterval(tomorrow.date);
-            if (!openHours.containsKey(mI.type)) {
-                openHours.put(mI.type, mealOpenInterval);
-            }
+        for (MealInterval mI : meals) {
+            Interval mealOpenInterval = mI.getInterval(date);
+            openHours.put(mI.type, mealOpenInterval);
         }
         return openHours;
     }
