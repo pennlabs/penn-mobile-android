@@ -36,7 +36,13 @@ public class Venue {
         // Split by T gets the Y-M-D format to compare against the date in JSON
         for (VenueInterval interval : hours) {
             if (interval.date.equals(currentTime.toString().split("T")[0])) {
-                return interval.getIntervals();
+                HashMap<String, Interval> intervals = interval.getIntervals();
+                // Get intervals from tomorrow and add them as well if not end of week
+                int indexTomorrow = hours.indexOf(interval) + 1;
+                if (indexTomorrow < hours.size() - 1) {
+                    intervals.putAll(hours.get(hours.indexOf(interval) + 1).getIntervals());
+                }
+                return intervals;
             }
         }
 
