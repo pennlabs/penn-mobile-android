@@ -8,6 +8,7 @@ import org.joda.time.Interval;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Adel on 12/16/14.
@@ -34,12 +35,24 @@ public class Venue {
     public HashMap<String, Interval> getHours() {
         DateTime currentTime = new DateTime();
         // Split by T gets the Y-M-D format to compare against the date in JSON
+        DateTime tomorrow = currentTime.plusDays(1);
+        HashMap<String, Interval> intervals = new HashMap<>();
+        for (VenueInterval interval : hours) {
+            if (interval.date.equals(tomorrow.toString().split("T")[0])) {
+                intervals.putAll(interval.getIntervals());
+            }
+        }
         for (VenueInterval interval : hours) {
             if (interval.date.equals(currentTime.toString().split("T")[0])) {
-                return interval.getIntervals();
+                for(Map.Entry<String, Interval> entry: interval.getIntervals().entrySet()){
+                    if(entry.getValue().contains(currentTime)||
+                            currentTime.isBefore(entry.getValue().getStart())){
+                        intervals.put(entry.getKey(), entry.getValue());
+                    }
+                }
             }
         }
 
-        return new HashMap<>();
+        return intervals;
     }
 }
