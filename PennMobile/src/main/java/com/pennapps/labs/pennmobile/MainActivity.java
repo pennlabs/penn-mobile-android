@@ -198,6 +198,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_about:
                 fragment = new AboutFragment();
                 break;
+            case R.id.nav_pref:
+                fragment = new PreferenceFragment();
+                break;
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
