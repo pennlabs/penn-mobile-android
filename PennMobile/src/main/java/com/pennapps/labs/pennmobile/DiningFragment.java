@@ -108,9 +108,9 @@ public class DiningFragment extends ListFragment {
                         mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                DiningAdapter adapter = new DiningAdapter(mActivity, diningHalls);
-                                mListView.setAdapter(adapter);
                                 if (loadingPanel != null) {
+                                    DiningAdapter adapter = new DiningAdapter(mActivity, diningHalls);
+                                    mListView.setAdapter(adapter);
                                     loadingPanel.setVisibility(View.GONE);
                                 }
                             }

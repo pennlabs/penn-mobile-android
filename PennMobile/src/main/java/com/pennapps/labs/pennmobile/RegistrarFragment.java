@@ -118,22 +118,26 @@ public class RegistrarFragment extends ListFragment {
                 .subscribe(new Action1<List<Course>>() {
                     @Override
                     public void call(List<Course> courses) {
-                        loadingPanel.setVisibility(View.GONE);
-                        if (courses == null || courses.size() == 0) {
-                            no_results.setVisibility(View.VISIBLE);
-                            listView.setVisibility(View.GONE);
-                        } else {
-                            mAdapter = new RegistrarAdapter(mActivity, filterCourses(courses));
-                            listView.setVisibility(View.VISIBLE);
-                            listView.setAdapter(mAdapter);
+                        if(loadingPanel != null) {
+                            loadingPanel.setVisibility(View.GONE);
+                            if (courses == null || courses.size() == 0) {
+                                no_results.setVisibility(View.VISIBLE);
+                                listView.setVisibility(View.GONE);
+                            } else {
+                                mAdapter = new RegistrarAdapter(mActivity, filterCourses(courses));
+                                listView.setVisibility(View.VISIBLE);
+                                listView.setAdapter(mAdapter);
+                            }
                         }
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        loadingPanel.setVisibility(View.GONE);
-                        no_results.setVisibility(View.VISIBLE);
-                        listView.setVisibility(View.GONE);
+                        if(loadingPanel != null) {
+                            loadingPanel.setVisibility(View.GONE);
+                            no_results.setVisibility(View.VISIBLE);
+                            listView.setVisibility(View.GONE);
+                        }
                     }
                 });
     }
