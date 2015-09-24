@@ -1,10 +1,12 @@
 package com.pennapps.labs.pennmobile;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +22,7 @@ import com.pennapps.labs.pennmobile.adapters.RegistrarAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Course;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -120,7 +123,7 @@ public class RegistrarFragment extends ListFragment {
                             no_results.setVisibility(View.VISIBLE);
                             listView.setVisibility(View.GONE);
                         } else {
-                            mAdapter = new RegistrarAdapter(mActivity, courses);
+                            mAdapter = new RegistrarAdapter(mActivity, filterCourses(courses));
                             listView.setVisibility(View.VISIBLE);
                             listView.setAdapter(mAdapter);
                         }
@@ -166,6 +169,22 @@ public class RegistrarFragment extends ListFragment {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
+
+    private List<Course> filterCourses(List<Course> courses){
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        boolean recitations = sharedPref.getBoolean("pref_recitations", true);
+        if (!recitations) {
+            List<Course> courses_filt = new ArrayList<>();
+            for (Course course : courses) {
+                if (course.activity.equals("LEC")) {
+                    courses_filt.add(course);
+                    }
+                }
+            return courses_filt;
+            }else{
+                return courses;
+            }
+        }
 }
 
 
