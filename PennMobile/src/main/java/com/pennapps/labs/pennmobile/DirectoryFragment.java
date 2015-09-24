@@ -115,12 +115,14 @@ public class DirectoryFragment extends ListFragment {
                     @Override
                     public void call(final List<Person> people) {
                         DirectoryAdapter mAdapter = new DirectoryAdapter(mContext, people);
-                        loadingPanel.setVisibility(View.GONE);
-                        if (people.isEmpty()) {
-                            no_results.setVisibility(View.VISIBLE);
-                        } else {
-                            mListView.setAdapter(mAdapter);
-                            list.setVisibility(View.VISIBLE);
+                        if(loadingPanel != null) {
+                            loadingPanel.setVisibility(View.GONE);
+                            if (people.isEmpty()) {
+                                no_results.setVisibility(View.VISIBLE);
+                            } else {
+                                mListView.setAdapter(mAdapter);
+                                list.setVisibility(View.VISIBLE);
+                            }
                         }
                     }
                 }, new Action1<Throwable>() {
