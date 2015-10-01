@@ -4,6 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/no_results"
+        android:text="@string/no_results"
+        style="@style/NoResults" />
+
     <RelativeLayout
         tools:visibility="gone"
         android:id="@+id/loadingPanel"
