@@ -33,10 +33,14 @@ public class DirectoryFragment extends ListFragment {
     private Context mContext;
     private SearchView searchView;
 
-    @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
-    @Bind(R.id.no_results) TextView no_results;
-    @Bind(android.R.id.list) ListView list;
-    @Bind(R.id.directory_instructions) TextView directory_instructions;
+    @Bind(R.id.loadingPanel)
+    RelativeLayout loadingPanel;
+    @Bind(R.id.no_results)
+    TextView no_results;
+    @Bind(android.R.id.list)
+    ListView list;
+    @Bind(R.id.directory_instructions)
+    TextView directory_instructions;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -115,7 +119,7 @@ public class DirectoryFragment extends ListFragment {
                     @Override
                     public void call(final List<Person> people) {
                         DirectoryAdapter mAdapter = new DirectoryAdapter(mContext, people);
-                        if(loadingPanel != null) {
+                        if (loadingPanel != null) {
                             loadingPanel.setVisibility(View.GONE);
                             if (people.isEmpty()) {
                                 no_results.setVisibility(View.VISIBLE);
@@ -128,7 +132,7 @@ public class DirectoryFragment extends ListFragment {
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        if(loadingPanel !=null) {
+                        if (loadingPanel != null) {
                             loadingPanel.setVisibility(View.GONE);
                             no_results.setVisibility(View.VISIBLE);
                         }

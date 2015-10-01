@@ -31,8 +31,10 @@ public class DiningFragment extends ListFragment {
     private Labs mLabs;
     private ListView mListView;
     private MainActivity mActivity;
-    @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
-    @Bind(R.id.no_results) TextView no_results;
+    @Bind(R.id.loadingPanel)
+    RelativeLayout loadingPanel;
+    @Bind(R.id.no_results)
+    TextView no_results;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,7 +55,7 @@ public class DiningFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dining, container, false);
         ButterKnife.bind(this, v);
-        getDiningHalls(v);
+        getDiningHalls();
         return v;
     }
 
@@ -89,8 +91,7 @@ public class DiningFragment extends ListFragment {
         }
     }
 
-    private void getDiningHalls(View v) {
-        final View parent = v;
+    private void getDiningHalls() {
         mLabs.venues()
                 .flatMap(new Func1<List<Venue>, Observable<Venue>>() {
                     @Override
