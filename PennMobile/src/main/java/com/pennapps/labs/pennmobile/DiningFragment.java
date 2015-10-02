@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.adapters.DiningAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
@@ -29,7 +31,10 @@ public class DiningFragment extends ListFragment {
     private Labs mLabs;
     private ListView mListView;
     private MainActivity mActivity;
-    @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
+    @Bind(R.id.loadingPanel)
+    RelativeLayout loadingPanel;
+    @Bind(R.id.no_results)
+    TextView no_results;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -119,7 +124,17 @@ public class DiningFragment extends ListFragment {
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        mActivity.showErrorToast(R.string.no_results);
+                        mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (loadingPanel != null) {
+                                    loadingPanel.setVisibility(View.GONE);
+                                }
+                                if (no_results != null) {
+                                    no_results.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        });
                     }
                 });
     }
