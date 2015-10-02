@@ -20,10 +20,12 @@ public class Venue {
     public int id;
     public String name;
     public String venueType;
-    @SerializedName("dateHours") public List<VenueInterval> hours = new ArrayList<>();
+    @SerializedName("dateHours")
+    public List<VenueInterval> hours = new ArrayList<>();
 
     /**
      * Indicates whether a dining hall is residential (as opposed to retail).
+     *
      * @return boolean of whether a dining hall is labeled as residential
      */
     public boolean isResidential() {
@@ -32,6 +34,7 @@ public class Venue {
 
     /**
      * Get a mapping of meal names to open hours for all meals in the dining hall this week
+     *
      * @return HashMap of meal name (lunch, dinner) to open hours expressed as a Joda Interval
      */
     public HashMap<String, Interval> getHours() {
@@ -50,9 +53,9 @@ public class Venue {
         for (VenueInterval interval : hours) {
             intervalDateTime = intervalFormatter.parseDateTime(interval.date);
             if (intervalDateTime.toLocalDate().equals(currentTime.toLocalDate())) {
-                for(Map.Entry<String, Interval> entry: interval.getIntervals().entrySet()){
-                    if(entry.getValue().contains(currentTime)||
-                            currentTime.isBefore(entry.getValue().getStart())){
+                for (Map.Entry<String, Interval> entry : interval.getIntervals().entrySet()) {
+                    if (entry.getValue().contains(currentTime) ||
+                            currentTime.isBefore(entry.getValue().getStart())) {
                         intervals.put(entry.getKey(), entry.getValue());
                     }
                 }
