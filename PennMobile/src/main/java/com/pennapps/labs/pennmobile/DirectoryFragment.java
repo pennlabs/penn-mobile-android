@@ -122,7 +122,9 @@ public class DirectoryFragment extends ListFragment {
                         if (loadingPanel != null) {
                             loadingPanel.setVisibility(View.GONE);
                             if (people.isEmpty()) {
-                                no_results.setVisibility(View.VISIBLE);
+                                if (no_results != null) {
+                                    no_results.setVisibility(View.VISIBLE);
+                                }
                             } else {
                                 mListView.setAdapter(mAdapter);
                                 list.setVisibility(View.VISIBLE);
@@ -134,6 +136,8 @@ public class DirectoryFragment extends ListFragment {
                     public void call(Throwable throwable) {
                         if (loadingPanel != null) {
                             loadingPanel.setVisibility(View.GONE);
+                        }
+                        if (no_results != null) {
                             no_results.setVisibility(View.VISIBLE);
                         }
                     }

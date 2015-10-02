@@ -129,6 +129,8 @@ public class DiningFragment extends ListFragment {
                             public void run() {
                                 if (loadingPanel != null) {
                                     loadingPanel.setVisibility(View.GONE);
+                                }
+                                if (no_results != null) {
                                     no_results.setVisibility(View.VISIBLE);
                                 }
                             }
