@@ -112,12 +112,10 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
                 boolean starred = star.isChecked();
                 String currentName = currentPerson.getName();
                 if (starred) {
-                    System.out.println("Starred " + currentPerson.getName());
                     if (currentName != null) {
                         starredContacts.add(currentName);
                     }
                 } else {
-                    System.out.println("Unstarred " + currentPerson.getName());
                     starredContacts.remove(currentName);
                 }
                 editedPreferences.putStringSet("starred", starredContacts);
