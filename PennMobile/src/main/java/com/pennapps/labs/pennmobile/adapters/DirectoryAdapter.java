@@ -127,18 +127,12 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
     }
 
     static class ViewHolder {
-        @Bind(R.id.tv_person_name)
-        TextView tvName;
-        @Bind(R.id.tv_person_affiliation)
-        TextView tvAffiliation;
-        @Bind(R.id.tv_person_email)
-        TextView tvEmail;
-        @Bind(R.id.tv_person_phone)
-        TextView tvPhone;
-        @Bind(R.id.star_contact)
-        ToggleButton star;
-        @Bind(R.id.contact_icon)
-        ImageView contact;
+        @Bind(R.id.tv_person_name) TextView tvName;
+        @Bind(R.id.tv_person_affiliation) TextView tvAffiliation;
+        @Bind(R.id.tv_person_email) TextView tvEmail;
+        @Bind(R.id.tv_person_phone) TextView tvPhone;
+        @Bind(R.id.star_contact) ToggleButton star;
+        @Bind(R.id.contact_icon) ImageView contact;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);
