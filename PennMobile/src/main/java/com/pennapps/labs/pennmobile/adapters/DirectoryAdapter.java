@@ -105,18 +105,17 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
             @Override
             public void onClick(View v) {
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(v.getContext());
-                Set<String> starredContacts = sharedPref.getStringSet("starred", new HashSet<String>());
+                Set<String> buffer = sharedPref.getStringSet("starred", new HashSet<String>());
+                Set<String> starredContacts = new HashSet<>(buffer);
                 SharedPreferences.Editor editedPreferences = sharedPref.edit();
                 ToggleButton star = (ToggleButton) v;
                 boolean starred = star.isChecked();
                 String currentName = currentPerson.getName();
                 if (starred) {
-                    System.out.println("Starred " + currentPerson.getName());
                     if (currentName != null) {
                         starredContacts.add(currentName);
                     }
                 } else {
-                    System.out.println("Unstarred " + currentPerson.getName());
                     starredContacts.remove(currentName);
                 }
                 editedPreferences.putStringSet("starred", starredContacts);
