@@ -105,7 +105,8 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
             @Override
             public void onClick(View v) {
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(v.getContext());
-                Set<String> starredContacts = sharedPref.getStringSet("starred", new HashSet<String>());
+                Set<String> buffer = sharedPref.getStringSet("starred", new HashSet<String>());
+                Set<String> starredContacts = new HashSet<>(buffer);
                 SharedPreferences.Editor editedPreferences = sharedPref.edit();
                 ToggleButton star = (ToggleButton) v;
                 boolean starred = star.isChecked();
@@ -128,12 +129,18 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
     }
 
     static class ViewHolder {
-        @Bind(R.id.tv_person_name) TextView tvName;
-        @Bind(R.id.tv_person_affiliation) TextView tvAffiliation;
-        @Bind(R.id.tv_person_email) TextView tvEmail;
-        @Bind(R.id.tv_person_phone) TextView tvPhone;
-        @Bind(R.id.star_contact) ToggleButton star;
-        @Bind(R.id.contact_icon) ImageView contact;
+        @Bind(R.id.tv_person_name)
+        TextView tvName;
+        @Bind(R.id.tv_person_affiliation)
+        TextView tvAffiliation;
+        @Bind(R.id.tv_person_email)
+        TextView tvEmail;
+        @Bind(R.id.tv_person_phone)
+        TextView tvPhone;
+        @Bind(R.id.star_contact)
+        ToggleButton star;
+        @Bind(R.id.contact_icon)
+        ImageView contact;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);
