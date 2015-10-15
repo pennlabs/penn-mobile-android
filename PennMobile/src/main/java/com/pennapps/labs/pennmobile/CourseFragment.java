@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -20,6 +21,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.Course;
+import com.pennapps.labs.pennmobile.classes.Review;
 
 import java.util.List;
 
@@ -41,6 +43,10 @@ public class CourseFragment extends Fragment {
     @Bind(R.id.course_desc_title) TextView descriptionTitle;
     @Bind(R.id.course_desc) TextView descriptionTextView;
     @Bind(R.id.registrar_map_frame) View mapFrame;
+    @Bind(R.id.pcr_layout) LinearLayout pcrLayout;
+    @Bind(R.id.course_avg_course) TextView courseQuality;
+    @Bind(R.id.course_avg_instr) TextView instructorQuality;
+    @Bind(R.id.course_avg_diff) TextView courseDifficulty;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -142,6 +148,24 @@ public class CourseFragment extends Fragment {
         }
     }
 
+    private void findCourseReviews() {
+        mLabs.course_review(course.course_department + "-" + course.course_number)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Review>() {
+                    @Override
+                    public void call(Review review) {
+                        pcrLayout.setVisibility(View.VISIBLE);
+                        courseQuality.setText(review.courseQuality());
+                        instructorQuality.setText(review.instructorQuality());
+                        courseDifficulty.setText(review.difficulty());
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                    }
+                });
+    }
+
     private void processCourse() {
         String activityText;
         String courseTitleText;
@@ -178,5 +202,7 @@ public class CourseFragment extends Fragment {
         } catch (NullPointerException ignored) {
 
         }
+
+        findCourseReviews();
     }
 }

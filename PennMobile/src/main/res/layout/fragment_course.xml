@@ -69,6 +69,7 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/pcr_layout"
         android:visibility="gone"
         tools:visibility="visible"
         android:orientation="horizontal"

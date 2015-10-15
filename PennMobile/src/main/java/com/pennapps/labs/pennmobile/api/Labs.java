@@ -6,6 +6,7 @@ import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 import com.pennapps.labs.pennmobile.classes.Person;
+import com.pennapps.labs.pennmobile.classes.Review;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
 import java.util.List;
@@ -51,4 +52,8 @@ public interface Labs {
         @Query("latTo") String latTo,
         @Query("lonFrom") String lonFrom,
         @Query("lonTo") String lonTo);
+
+    @GET("/pcr/{id}")
+    Observable<Review> course_review(
+        @Path("id") String id);
 }
