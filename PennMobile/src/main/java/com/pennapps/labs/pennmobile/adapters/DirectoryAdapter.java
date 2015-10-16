@@ -27,10 +27,12 @@ import butterknife.ButterKnife;
 
 public class DirectoryAdapter extends ArrayAdapter<Person> {
     private final LayoutInflater inflater;
+    private Context mContext;
 
     public DirectoryAdapter(Context context, List<Person> persons) {
         super(context, R.layout.directory_list_item, persons);
         inflater = LayoutInflater.from(context);
+        mContext = context;
     }
 
     @Override
@@ -100,7 +102,7 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(view.getContext());
         Set<String> starredContacts = sharedPref.getStringSet("starred", new HashSet<String>());
-        holder.star.setChecked(starredContacts.contains(currentPerson.getName()));
+        holder.star.setChecked(starredContacts.contains(currentPerson.name));
         holder.star.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,13 +112,24 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
                 SharedPreferences.Editor editedPreferences = sharedPref.edit();
                 ToggleButton star = (ToggleButton) v;
                 boolean starred = star.isChecked();
-                String currentName = currentPerson.getName();
+                String currentName = currentPerson.name;
                 if (starred) {
                     if (currentName != null) {
                         starredContacts.add(currentName);
+                        StringBuilder stringBuilder = new StringBuilder();
+                        stringBuilder.append(currentPerson.affiliation);
+                        stringBuilder.append(mContext.getString(R.string.directory_delim));
+                        stringBuilder.append(currentPerson.phone);
+                        stringBuilder.append(mContext.getString(R.string.directory_delim));
+                        stringBuilder.append(currentPerson.email);
+                        editedPreferences.putString(currentName + ".data",
+                                stringBuilder.toString());
                     }
                 } else {
                     starredContacts.remove(currentName);
+                    if(currentName != null) {
+                        editedPreferences.remove(currentName + ".data");
+                    }
                 }
                 editedPreferences.putStringSet("starred", starredContacts);
                 editedPreferences.apply();
