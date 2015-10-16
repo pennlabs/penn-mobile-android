@@ -116,14 +116,8 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
                 if (starred) {
                     if (currentName != null) {
                         starredContacts.add(currentName);
-                        StringBuilder stringBuilder = new StringBuilder();
-                        stringBuilder.append(currentPerson.affiliation);
-                        stringBuilder.append(mContext.getString(R.string.directory_delim));
-                        stringBuilder.append(currentPerson.phone);
-                        stringBuilder.append(mContext.getString(R.string.directory_delim));
-                        stringBuilder.append(currentPerson.email);
                         editedPreferences.putString(currentName + ".data",
-                                stringBuilder.toString());
+                                getDataString(currentPerson));
                     }
                 } else {
                     starredContacts.remove(currentName);
@@ -137,6 +131,17 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
         });
 
         return view;
+    }
+
+    private String getDataString(Person currentPerson){
+        String delim = mContext.getString(R.string.directory_delim);
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(currentPerson.affiliation);
+        stringBuilder.append(delim);
+        stringBuilder.append(currentPerson.phone);
+        stringBuilder.append(delim);
+        stringBuilder.append(currentPerson.email);
+        return stringBuilder.toString();
     }
 
     static class ViewHolder {

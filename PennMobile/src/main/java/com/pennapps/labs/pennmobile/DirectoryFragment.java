@@ -2,13 +2,10 @@ package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,7 +25,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -45,7 +41,7 @@ public class DirectoryFragment extends ListFragment {
     private boolean starOn;
     private DirectoryAdapter mainAdapter;
     private Menu mMenu;
-    private int state;
+    private int stateOfScreen;
     private final int NO_STATE = 1, INSTR_STATE = 0, LIST_STATE = 2;
 
     @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
@@ -66,7 +62,7 @@ public class DirectoryFragment extends ListFragment {
         View v = inflater.inflate(R.layout.fragment_directory, container, false);
         ButterKnife.bind(this, v);
         loadingPanel.setVisibility(View.GONE);
-        state = INSTR_STATE;
+        stateOfScreen = INSTR_STATE;
         return v;
     }
 
@@ -87,35 +83,7 @@ public class DirectoryFragment extends ListFragment {
                 if (starOn) {
                     starOn = false;
                     item.setIcon(R.drawable.star_on);
-                    switch (state) {
-                        case NO_STATE:
-                            if (no_results != null) {
-                                no_results.setVisibility(View.VISIBLE);
-                            }
-                            if (mListView != null) {
-                                mListView.setVisibility(View.GONE);
-                            }
-                            break;
-                        case INSTR_STATE:
-                            if (directory_instructions != null) {
-                                directory_instructions.setVisibility(View.VISIBLE);
-                            }
-                            if (no_results != null) {
-                                no_results.setVisibility(View.GONE);
-                            }
-                            if (mListView != null) {
-                                mListView.setVisibility(View.GONE);
-                            }
-                            break;
-                        case LIST_STATE:
-                            if (mainAdapter != null && mListView != null) {
-                                mListView.setAdapter(mainAdapter);
-                            }
-                            if (no_results != null) {
-                                no_results.setVisibility(View.GONE);
-                            }
-                            break;
-                    }
+                    setScreenWithState();
                 } else {
                     SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
                     Set<String> starred = sharedPref.getStringSet("starred", new HashSet<String>());
@@ -146,13 +114,7 @@ public class DirectoryFragment extends ListFragment {
                                 people.add(person);
                             }
                         }
-                        DirectoryAdapter current = (DirectoryAdapter) mListView.getAdapter();
-                        if (current != null) {
-                            mainAdapter = current;
-                        }
-                        if (mListView.getVisibility() != View.VISIBLE) {
-                            mainAdapter = null;
-                        }
+                        saveAdapter();
                         DirectoryAdapter adapter = new DirectoryAdapter(mContext, people);
                         mListView.setAdapter(adapter);
                         ((MainActivity) getActivity()).closeKeyboard();
@@ -160,6 +122,38 @@ public class DirectoryFragment extends ListFragment {
                 }
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void setScreenWithState() {
+        switch (stateOfScreen) {
+            case NO_STATE:
+                if (no_results != null) {
+                    no_results.setVisibility(View.VISIBLE);
+                }
+                if (mListView != null) {
+                    mListView.setVisibility(View.GONE);
+                }
+                break;
+            case INSTR_STATE:
+                if (directory_instructions != null) {
+                    directory_instructions.setVisibility(View.VISIBLE);
+                }
+                if (no_results != null) {
+                    no_results.setVisibility(View.GONE);
+                }
+                if (mListView != null) {
+                    mListView.setVisibility(View.GONE);
+                }
+                break;
+            case LIST_STATE:
+                if (mainAdapter != null && mListView != null) {
+                    mListView.setAdapter(mainAdapter);
+                }
+                if (no_results != null) {
+                    no_results.setVisibility(View.GONE);
+                }
+                break;
         }
     }
 
@@ -190,7 +184,7 @@ public class DirectoryFragment extends ListFragment {
                 directory_instructions.setVisibility(View.GONE);
                 no_results.setVisibility(View.GONE);
                 loadingPanel.setVisibility(View.VISIBLE);
-                state = LIST_STATE;
+                stateOfScreen = LIST_STATE;
                 processQuery(arg0);
                 return true;
             }
@@ -214,13 +208,13 @@ public class DirectoryFragment extends ListFragment {
                             if (people.isEmpty()) {
                                 if (no_results != null) {
                                     no_results.setVisibility(View.VISIBLE);
-                                    state = NO_STATE;
+                                    stateOfScreen = NO_STATE;
                                 }
                             } else {
                                 if (mListView != null) {
                                     mListView.setAdapter(mAdapter);
                                     mListView.setVisibility(View.VISIBLE);
-                                    state = LIST_STATE;
+                                    stateOfScreen = LIST_STATE;
                                 }
                             }
                         }
@@ -230,14 +224,24 @@ public class DirectoryFragment extends ListFragment {
                     public void call(Throwable throwable) {
                         if (loadingPanel != null) {
                             loadingPanel.setVisibility(View.GONE);
-                            state = LIST_STATE;
+                            stateOfScreen = LIST_STATE;
                         }
                         if (no_results != null) {
                             no_results.setVisibility(View.VISIBLE);
-                            state = NO_STATE;
+                            stateOfScreen = NO_STATE;
                         }
                     }
                 });
+    }
+
+    private void saveAdapter(){
+        DirectoryAdapter current = (DirectoryAdapter) mListView.getAdapter();
+        if (current != null) {
+            mainAdapter = current;
+        }
+        if (mListView.getVisibility() != View.VISIBLE) {
+            mainAdapter = null;
+        }
     }
 
     @Override
@@ -252,4 +256,5 @@ public class DirectoryFragment extends ListFragment {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
+
 }
