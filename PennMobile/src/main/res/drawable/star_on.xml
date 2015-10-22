@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+    android:src="@drawable/abc_btn_rating_star_on_mtrl_alpha"
+    android:tint="@color/star_color_on" />
