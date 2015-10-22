@@ -159,11 +159,7 @@ public class DirectoryFragment extends ListFragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        MenuItem searchMenuItem = menu.findItem(R.id.directory_search);
         searchView = (SearchView) menu.findItem(R.id.directory_search).getActionView();
-        searchView.setIconifiedByDefault(false);
-        searchView.setIconified(false);
-        searchMenuItem.expandActionView();
     }
 
     @Override
