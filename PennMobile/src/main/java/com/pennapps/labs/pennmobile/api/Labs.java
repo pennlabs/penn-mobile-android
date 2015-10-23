@@ -4,6 +4,8 @@ import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
+import com.pennapps.labs.pennmobile.classes.Laundry;
+import com.pennapps.labs.pennmobile.classes.LaundryMachine;
 import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Review;
@@ -56,4 +58,11 @@ public interface Labs {
     @GET("/pcr/{id}")
     Observable<Review> course_review(
         @Path("id") String id);
+
+    @GET("/laundry/halls")
+    Observable<List<Laundry>> laundries();
+
+    @GET("/laundry/hall/{id}")
+    Observable<List<LaundryMachine>> laundryMachines(
+        @Path("id") int id);
 }

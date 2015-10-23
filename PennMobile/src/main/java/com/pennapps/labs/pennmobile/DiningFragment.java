@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,10 +30,8 @@ public class DiningFragment extends ListFragment {
     private Labs mLabs;
     private ListView mListView;
     private MainActivity mActivity;
-    @Bind(R.id.loadingPanel)
-    RelativeLayout loadingPanel;
-    @Bind(R.id.no_results)
-    TextView no_results;
+    @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
+    @Bind(R.id.no_results) TextView no_results;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
