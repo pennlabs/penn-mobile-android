@@ -48,6 +48,10 @@
     <string name="location_not_found">Location not found, please try again</string>
     <string name="no_path_found">No path found</string>
 
+    <!-- Laundry -->
+    <string name="laundry_washer">Washers</string>
+    <string name="laundry_dryer">Dryers</string>
+
     <!-- About -->
     <string name="licenses">Licenses</string>
 

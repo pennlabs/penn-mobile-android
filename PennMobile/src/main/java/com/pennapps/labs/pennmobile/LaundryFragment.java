@@ -1,6 +1,8 @@
 package com.pennapps.labs.pennmobile;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,6 +89,23 @@ public class LaundryFragment extends ListFragment {
                         });
                     }
                 });
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        LaundryHallAdapter adapter = (LaundryHallAdapter) l.getAdapter();
+        LaundryHall lh = adapter.getItem(position);
+        if(lh.getIds().size() > 1){
+            Fragment fragment = new LaundryBuildingFragment();
+            Bundle args = new Bundle();
+            args.putParcelable("Laundry Hall", lh);
+            fragment.setArguments(args);
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.laundry_fragment, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 
     @Override
