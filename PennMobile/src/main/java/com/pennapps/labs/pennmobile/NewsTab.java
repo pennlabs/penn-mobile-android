@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.RelativeLayout;
 public class NewsTab extends Fragment {
 
     WebView mWebView;
+    NestedScrollView scrollView;
     static WebView currentWebView;
     private View mView;
     private boolean mIsWebViewAvailable;
@@ -28,9 +30,11 @@ public class NewsTab extends Fragment {
 
         newsLoaded = false;
 
+        scrollView = new NestedScrollView(getActivity());
+
         mWebView = new WebView(getActivity());
         mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        scrollView.addView(mWebView);
 
         Bundle args = getArguments();
         mUrl = args.getString("url");
@@ -57,11 +61,11 @@ public class NewsTab extends Fragment {
             {
                 if (progress >= 80 && mWebView != null) {
                     Pbar.setVisibility(View.GONE);
-                    ViewGroup parent = (ViewGroup) mWebView.getParent();
+                    ViewGroup parent = (ViewGroup) scrollView.getParent();
                     if (parent != null) {
-                        parent.removeView(mWebView);
+                        parent.removeView(scrollView);
                     }
-                    ((LinearLayout) mView).addView(mWebView);
+                    ((LinearLayout) mView).addView(scrollView);
                 }
             }
         });

@@ -1,11 +1,9 @@
 package com.pennapps.labs.pennmobile;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,21 +59,10 @@ public class NewsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_news, container, false);
-
         TabAdapter pageAdapter = new TabAdapter(getActivity().getSupportFragmentManager());
-        final ViewPager pager = (ViewPager) v.findViewById(R.id.pager);
-        pager.setAdapter(pageAdapter);
+        ((MainActivity) getActivity()).addTabs(pageAdapter);
 
-        final TabLayout tabLayout = (TabLayout) v.findViewById(R.id.tabs);
-        tabLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                tabLayout.setupWithViewPager(pager);
-            }
-        });
-
-        return v;
+        return null;
     }
 
     @Override
@@ -83,5 +70,11 @@ public class NewsFragment extends Fragment {
         super.onResume();
         getActivity().setTitle(R.string.news);
         ((MainActivity) getActivity()).setNav(R.id.nav_news);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ((MainActivity) getActivity()).removeTabs();
     }
 }

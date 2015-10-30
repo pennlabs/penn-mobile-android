@@ -5,10 +5,13 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.AnyRes;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -252,5 +255,30 @@ public class MainActivity extends AppCompatActivity {
     public void setNav(int id){
         final Menu menu = mDrawerList.getMenu();
         menu.findItem(id).setChecked(true);
+    }
+
+    public void addTabs(NewsFragment.TabAdapter pageAdapter) {
+        final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
+
+        final ViewPager pager = (ViewPager) getLayoutInflater().inflate(R.layout.viewpager_layout, null);
+        pager.setAdapter(pageAdapter);
+
+        final TabLayout tabLayout = (TabLayout) getLayoutInflater().inflate(R.layout.tab_layout, null);
+        tabLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                tabLayout.setupWithViewPager(pager);
+            }
+        });
+
+        appBar.addView(tabLayout);
+        appBar.addView(pager);
+    }
+
+    public void removeTabs() {
+        final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
+        if (appBar != null) {
+            appBar.removeViews(1, 2);
+        }
     }
 }
