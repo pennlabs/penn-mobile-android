@@ -2,7 +2,7 @@
 <resources>
 
     <!-- General -->
-    <string name="app_name">PennMobile (Beta)</string>
+    <string name="app_name">PennMobile</string>
     <string name="main_title">PennMobile</string>
     <string name="action_settings">Settings</string>
     <string name="drawer_open">Open drawer</string>
