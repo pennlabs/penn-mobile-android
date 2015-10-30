@@ -14,12 +14,12 @@ import java.util.ArrayList;
 
 public class NewsFragment extends Fragment {
 
-    class MyTabAdapter extends FragmentStatePagerAdapter {
+    class TabAdapter extends FragmentStatePagerAdapter {
 
         ArrayList<String> URLs;
         ArrayList<String> titles;
 
-        public MyTabAdapter(FragmentManager fm) {
+        public TabAdapter(FragmentManager fm) {
             super(fm);
             URLs = new ArrayList<>();
             titles = new ArrayList<>();
@@ -63,7 +63,7 @@ public class NewsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_news, container, false);
 
-        MyTabAdapter pageAdapter = new MyTabAdapter(getActivity().getSupportFragmentManager());
+        TabAdapter pageAdapter = new TabAdapter(getActivity().getSupportFragmentManager());
         final ViewPager pager = (ViewPager) v.findViewById(R.id.pager);
         pager.setAdapter(pageAdapter);
 
