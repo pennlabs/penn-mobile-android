@@ -10,26 +10,9 @@
         android:text="@string/registrar_instructions"
         style="@style/SearchInstructions" />
 
-    <TextView
-        android:id="@+id/no_results"
-        android:text="@string/no_results"
-        style="@style/NoResults" />
+    <include layout="@layout/no_results" />
 
-    <RelativeLayout
-        tools:visibility="gone"
-        android:id="@+id/loadingPanel"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center" >
-
-        <ProgressBar
-            tools:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminateTint="@color/color_primary"
-            android:indeterminateTintMode="src_in"
-            android:indeterminate="true" />
-    </RelativeLayout>
+    <include layout="@layout/loading_panel" />
 
     <FrameLayout
         android:id="@+id/registrar_fragment"
