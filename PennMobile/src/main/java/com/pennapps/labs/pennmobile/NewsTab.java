@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
@@ -34,6 +35,7 @@ public class NewsTab extends Fragment {
 
         mWebView = new WebView(getActivity());
         mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.setBackgroundColor(Color.argb(1, 0, 0, 0));
         scrollView.addView(mWebView);
 
         Bundle args = getArguments();
