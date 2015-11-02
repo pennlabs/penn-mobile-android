@@ -47,6 +47,9 @@
     <string name="location_not_found">Location not found, please try again</string>
     <string name="no_path_found">No path found</string>
 
+    <!-- News -->
+    <string name="open_browser">Open in Browser</string>
+
     <!-- About -->
     <string name="licenses">Licenses</string>
 

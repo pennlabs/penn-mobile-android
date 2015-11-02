@@ -275,6 +275,10 @@ public class MainActivity extends AppCompatActivity {
         appBar.addView(pager);
     }
 
+    public String getCurrentTab() {
+        return "http://thedp.com";
+    }
+
     public void removeTabs() {
         final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
         if (appBar != null) {
