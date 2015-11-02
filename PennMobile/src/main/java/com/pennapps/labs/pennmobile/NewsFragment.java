@@ -91,8 +91,10 @@ public class NewsFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.news_browser:
                 String url = getCurrentTab();
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(browserIntent);
+                if (url != null) {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(browserIntent);
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -113,8 +115,12 @@ public class NewsFragment extends Fragment {
     }
 
     private String getCurrentTab() {
-        ViewFlipper flipper = (ViewFlipper) pager.getChildAt(pager.getCurrentItem() - 1);
-        WebView tab = (WebView) ((NestedScrollView) flipper.getChildAt(1)).getChildAt(0);
-        return tab.getUrl();
+        try {
+            ViewFlipper flipper = (ViewFlipper) pager.getChildAt(pager.getCurrentItem() - 1);
+            WebView tab = (WebView) ((NestedScrollView) flipper.getChildAt(1)).getChildAt(0);
+            return tab.getUrl();
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
