@@ -257,11 +257,8 @@ public class MainActivity extends AppCompatActivity {
         menu.findItem(id).setChecked(true);
     }
 
-    public void addTabs(NewsFragment.TabAdapter pageAdapter) {
+    public void addTabs(NewsFragment.TabAdapter pageAdapter, final ViewPager pager) {
         final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
-
-        final ViewPager pager = (ViewPager) getLayoutInflater().inflate(R.layout.viewpager_layout, null);
-        pager.setAdapter(pageAdapter);
 
         final TabLayout tabLayout = (TabLayout) getLayoutInflater().inflate(R.layout.tab_layout, null);
         tabLayout.post(new Runnable() {
@@ -270,13 +267,10 @@ public class MainActivity extends AppCompatActivity {
                 tabLayout.setupWithViewPager(pager);
             }
         });
-
         appBar.addView(tabLayout);
-        appBar.addView(pager);
-    }
 
-    public String getCurrentTab() {
-        return "http://thedp.com";
+        pager.setAdapter(pageAdapter);
+        appBar.addView(pager);
     }
 
     public void removeTabs() {

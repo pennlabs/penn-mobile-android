@@ -6,18 +6,23 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.widget.ViewFlipper;
 
 import java.util.ArrayList;
 
 public class NewsFragment extends Fragment {
 
     TabAdapter pageAdapter;
+    ViewPager pager;
 
     class TabAdapter extends FragmentStatePagerAdapter {
 
@@ -68,7 +73,8 @@ public class NewsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         pageAdapter = new TabAdapter(getActivity().getSupportFragmentManager());
-        ((MainActivity) getActivity()).addTabs(pageAdapter);
+        pager = (ViewPager) inflater.inflate(R.layout.viewpager_layout, null);
+        ((MainActivity) getActivity()).addTabs(pageAdapter, pager);
 
         return null;
     }
@@ -84,7 +90,7 @@ public class NewsFragment extends Fragment {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.news_browser:
-                String url = ((MainActivity) getActivity()).getCurrentTab();
+                String url = getCurrentTab();
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(browserIntent);
                 return true;
@@ -104,5 +110,11 @@ public class NewsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         ((MainActivity) getActivity()).removeTabs();
+    }
+
+    private String getCurrentTab() {
+        ViewFlipper flipper = (ViewFlipper) pager.getChildAt(pager.getCurrentItem() - 1);
+        WebView tab = (WebView) ((NestedScrollView) flipper.getChildAt(1)).getChildAt(0);
+        return tab.getUrl();
     }
 }
