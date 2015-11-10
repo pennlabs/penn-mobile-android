@@ -72,11 +72,12 @@ public class NewsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_news, container, false);
         pageAdapter = new TabAdapter(getActivity().getSupportFragmentManager());
-        pager = (ViewPager) inflater.inflate(R.layout.viewpager_layout, null);
+        pager = (ViewPager) v.findViewById(R.id.pager);
         ((MainActivity) getActivity()).addTabs(pageAdapter, pager);
 
-        return null;
+        return v;
     }
 
     @Override

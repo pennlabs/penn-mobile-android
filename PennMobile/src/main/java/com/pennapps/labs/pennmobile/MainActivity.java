@@ -270,7 +270,6 @@ public class MainActivity extends AppCompatActivity {
         appBar.addView(tabLayout);
 
         pager.setAdapter(pageAdapter);
-        appBar.addView(pager);
     }
 
     public void removeTabs() {
