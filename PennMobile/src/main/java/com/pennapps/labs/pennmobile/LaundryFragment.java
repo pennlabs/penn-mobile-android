@@ -1,12 +1,15 @@
 package com.pennapps.labs.pennmobile;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -16,6 +19,7 @@ import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Laundry;
 import com.pennapps.labs.pennmobile.classes.LaundryHall;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -28,6 +32,7 @@ public class LaundryFragment extends ListFragment {
     private Labs mLabs;
     private ListView mListView;
     private MainActivity mActivity;
+    private final static int ROW_CAP = 15;
     @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
     @Bind(R.id.no_results) TextView no_results;
 
@@ -69,6 +74,19 @@ public class LaundryFragment extends ListFragment {
                                     mListView.setAdapter(adapter);
                                     loadingPanel.setVisibility(View.GONE);
                                     no_results.setVisibility(View.GONE);
+                                    Bundle args = getArguments();
+                                    if (args != null) {
+                                        int hall_no = args.getInt("hall_no", -1);
+                                        if (hall_no != -1) {
+                                            for (LaundryHall hall : halls) {
+                                                for (Laundry laundry : hall.getIds()) {
+                                                    if (laundry.hall_no == hall_no) {
+                                                        toLaundryHall(hall);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         });
@@ -92,15 +110,48 @@ public class LaundryFragment extends ListFragment {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mActivity.onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         LaundryHallAdapter adapter = (LaundryHallAdapter) l.getAdapter();
         LaundryHall lh = adapter.getItem(position);
-        if(lh.getIds().size() > 1){
+        toLaundryHall(lh);
+    }
+
+    private void toLaundryHall(LaundryHall lh) {
+        mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
+        mActivity.getActionBarToggle().syncState();
+        Bundle args = new Bundle();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        if (lh.getIds().size() > 1) {
             Fragment fragment = new LaundryBuildingFragment();
-            Bundle args = new Bundle();
             args.putParcelable("Laundry Hall", lh);
+            if (getArguments() != null) {
+                int hall_no = getArguments().getInt("hall_no", -1);
+                if (hall_no != -1) {
+                    args.putInt("hall_no", hall_no);
+                    getArguments().putInt("hall_no", -1);
+                }
+            }
             fragment.setArguments(args);
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.laundry_fragment, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        } else if (lh.getIds().size() == 1) {
+            Fragment fragment = new LaundryMachineFragment();
+            args.putParcelable("laundry", lh.getIds().get(0));
+            fragment.setArguments(args);
             fragmentManager.beginTransaction()
                     .replace(R.id.laundry_fragment, fragment)
                     .addToBackStack(null)
@@ -113,5 +164,53 @@ public class LaundryFragment extends ListFragment {
         super.onResume();
         getActivity().setTitle(R.string.laundry);
         mActivity.setNav(R.id.nav_laundry);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
+
+    public static void setSummary(int avail, int used, int idoffset, RelativeLayout rl, Context context) {
+        if (idoffset == 0) {
+            idoffset = 0;
+        }
+        LinkedList<ImageView> vertical = new LinkedList<>();
+        ImageView prev = null;
+        int max_col = ROW_CAP;
+        if (avail + used > 15) {
+            max_col = (avail + used) / 2;
+        }
+        for (int i = 0; i < avail + used; i++) {
+            RelativeLayout.LayoutParams layparam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            if (i < max_col) {
+                layparam.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            } else if (i == max_col) {
+                layparam.addRule(RelativeLayout.BELOW, vertical.getLast().getId());
+            } else {
+                layparam.addRule(RelativeLayout.BELOW, vertical
+                        .get(vertical.size() - 2).getId());
+            }
+            if (i % max_col == 0) {
+                layparam.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            } else if (prev != null) {
+                layparam.addRule(RelativeLayout.RIGHT_OF, prev.getId());
+            }
+            layparam.setMargins(0, 0, 7, 5);
+            ImageView imageView = new ImageView(context);
+            if (i < avail) {
+                imageView.setImageResource(R.drawable.green_circle);
+            } else {
+                imageView.setImageResource(R.drawable.red_circle);
+            }
+            imageView.setId((idoffset + 1) * 300 + i);
+            rl.addView(imageView, layparam);
+            if (i % max_col == 0) {
+                vertical.add(imageView);
+            }
+            prev = imageView;
+        }
     }
 }

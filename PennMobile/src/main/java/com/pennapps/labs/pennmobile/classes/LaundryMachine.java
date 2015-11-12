@@ -7,5 +7,5 @@ public class LaundryMachine {
     public boolean available;
     public String machine_type;
     public int number;
-    public int time_left;
+    public String time_left;
 }

@@ -27,4 +27,7 @@
 
     <color name="star_color_off">#cccccc</color>
     <color name="star_color_on">#f4b400</color>
+
+    <color name="circle_color_red">#E52025</color>
+    <color name="circle_color_green">#66CC00</color>
 </resources>

@@ -27,7 +27,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="5dp"
-        android:paddingBottom="2dp"
         android:textSize="16sp"
         android:visibility="gone"/>
 
@@ -36,7 +35,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/tv_washers"
-        android:layout_alignTop="@id/tv_washers"
+        android:layout_alignBottom="@id/tv_washers"
+        android:paddingBottom="4dp"
         android:visibility="gone">
 
     </RelativeLayout>
@@ -44,10 +44,11 @@
     <TextView
         android:text="@string/laundry_dryer"
         android:id="@+id/tv_dryers"
-        android:layout_below="@id/rl_washers"
+        android:layout_below="@id/tv_washers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16dp"
+        android:layout_marginRight="5dp"
         android:visibility="gone"/>
 
     <RelativeLayout
@@ -55,7 +56,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/tv_dryers"
-        android:layout_alignTop="@id/tv_dryers"
+        android:layout_alignBottom="@id/tv_dryers"
+        android:paddingBottom="3dp"
         android:visibility="gone">
 
     </RelativeLayout>

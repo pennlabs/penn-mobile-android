@@ -51,6 +51,12 @@
     <!-- Laundry -->
     <string name="laundry_washer">Washers</string>
     <string name="laundry_dryer">Dryers</string>
+    <string name="laundry_summary">Summary</string>
+    <string name="laundry_available">Available</string>
+    <string name="laundry_availablein">left</string>
+    <string name="laundry_washer_textview">Washer</string>
+    <string name="laundry_dryer_textview">Dryer</string>
+    <string name="laundry_notification_alarm_intent">From alarm</string>
 
     <!-- About -->
     <string name="licenses">Licenses</string>

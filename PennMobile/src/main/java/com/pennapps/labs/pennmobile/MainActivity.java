@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private static Labs mLabs;
+    private boolean from_alarm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+
+        from_alarm = getIntent().getBooleanExtra(getString(R.string.laundry_notification_alarm_intent), false);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(
@@ -117,6 +121,11 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         setTitle(R.string.main_title);
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancelAll();
+        if(from_alarm){
+            navigateLayout(R.id.nav_laundry);
+        }
     }
 
     public void closeKeyboard() {
@@ -196,6 +205,12 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.nav_laundry:
                 fragment = new LaundryFragment();
+                if(from_alarm){
+                    from_alarm = false;
+                    Bundle arg = new Bundle();
+                    arg.putInt("hall_no", getIntent().getIntExtra("hall_no", -1));
+                    fragment.setArguments(arg);
+                }
                 break;
             case R.id.nav_support:
                 fragment = new SupportFragment();
