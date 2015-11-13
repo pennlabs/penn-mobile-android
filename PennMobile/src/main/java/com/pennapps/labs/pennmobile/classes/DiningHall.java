@@ -22,14 +22,14 @@ public class DiningHall implements Parcelable {
     // Refers to whether the dining hall is residential or retail
     private boolean residential;
     private HashMap<String, Interval> openHours;
-    public LinkedHashMap<String, HashMap<String, HashSet<String>>> menus;
+    public List<NewDiningHall.Menu> menus;
 
     public DiningHall(int id, String name, boolean residential, HashMap<String, Interval> hours) {
         this.id = id;
         this.name = name;
         this.residential = residential;
         this.openHours = hours;
-        this.menus = new LinkedHashMap<>();
+        this.menus = new ArrayList<>();
     }
 
     protected DiningHall(Parcel in) {
@@ -37,9 +37,9 @@ public class DiningHall implements Parcelable {
         in.readBooleanArray(booleanArray);
         residential = booleanArray[0];
         openHours = new HashMap<>();
-        menus = new LinkedHashMap<>();
+        menus = new ArrayList<>();
         in.readMap(openHours, Interval.class.getClassLoader());
-        in.readMap(menus, HashMap.class.getClassLoader());
+        in.readList(menus, ArrayList.class.getClassLoader());
         id = in.readInt();
         name = in.readString();
     }
@@ -56,10 +56,8 @@ public class DiningHall implements Parcelable {
         }
     };
 
-    public void parseMeals(NewDiningHall h) {
-        for (NewDiningHall.Menu menu : h.menus) {
-            this.menus.put(menu.name, menu.getStationMap());
-        }
+    public void setMeals(NewDiningHall h) {
+        this.menus = h.menus;
     }
 
     public int describeContents(){
@@ -70,7 +68,7 @@ public class DiningHall implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeBooleanArray(new boolean[] {residential});
         dest.writeMap(openHours);
-        dest.writeMap(menus);
+        dest.writeList(menus);
         dest.writeInt(id);
         dest.writeString(name);
     }

@@ -6,19 +6,24 @@ import android.support.annotation.StyleRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.classes.DiningHall;
+import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.Bind;
@@ -48,12 +53,12 @@ public class MenuFragment extends Fragment {
     }
 
     public void fillDescriptions() {
-        for (Map.Entry<String, HashMap<String, HashSet<String>>> menu : mDiningHall.menus.entrySet()) {
-            addDiningTextView(R.style.MealName, StringUtils.capitalize(menu.getKey()));
-            for (Map.Entry<String, HashSet<String>> menuItem : menu.getValue().entrySet()) {
-                addDiningTextView(R.style.DiningStation, StringUtils.capitalize(menuItem.getKey()));
-                for (String item : menuItem.getValue()) {
-                    addDiningTextView(R.style.FoodItem, StringEscapeUtils.unescapeXml(item));
+        for (NewDiningHall.Menu menu : mDiningHall.menus) {
+            addDiningTextView(R.style.MealName, StringUtils.capitalize(menu.name));
+            for (NewDiningHall.DiningStation station : menu.stations) {
+                addDiningTextView(R.style.DiningStation, StringUtils.capitalize(station.name));
+                for (NewDiningHall.FoodItem item : station.items) {
+                    addDiningTextView(R.style.FoodItem, StringEscapeUtils.unescapeXml(item.title));
                 }
             }
         }

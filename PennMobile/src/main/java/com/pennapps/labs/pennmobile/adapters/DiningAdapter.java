@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile.adapters;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,7 +62,7 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
                     .subscribe(new Action1<NewDiningHall>() {
                         @Override
                         public void call(NewDiningHall newDiningHall) {
-                            diningHall.parseMeals(newDiningHall);
+                            diningHall.setMeals(newDiningHall);
                             if (diningHall.hasMenu()) {
                                 holder.menuArrow.setVisibility(View.VISIBLE);
                             }
