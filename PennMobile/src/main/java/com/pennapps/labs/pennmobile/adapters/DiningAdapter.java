@@ -13,7 +13,6 @@ import com.pennapps.labs.pennmobile.MainActivity;
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
-import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -59,10 +58,10 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
         if (diningHall.isResidential() && !diningHall.hasMenu()) {
             mLabs.daily_menu(diningHall.getId())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<NewDiningHall>() {
+                    .subscribe(new Action1<DiningHall>() {
                         @Override
-                        public void call(NewDiningHall newDiningHall) {
-                            diningHall.setMeals(newDiningHall);
+                        public void call(DiningHall newDiningHall) {
+                            diningHall.sortMeals(newDiningHall.menus);
                             if (diningHall.hasMenu()) {
                                 holder.menuArrow.setVisibility(View.VISIBLE);
                             }

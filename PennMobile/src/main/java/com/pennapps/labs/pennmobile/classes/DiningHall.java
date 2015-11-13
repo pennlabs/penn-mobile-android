@@ -3,6 +3,8 @@ package com.pennapps.labs.pennmobile.classes;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
@@ -11,8 +13,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,14 +23,13 @@ public class DiningHall implements Parcelable {
     // Refers to whether the dining hall is residential or retail
     private boolean residential;
     private HashMap<String, Interval> openHours;
-    public List<NewDiningHall.Menu> menus;
+    @SerializedName("tblDayPart") public List<Menu> menus = new ArrayList<>();
 
     public DiningHall(int id, String name, boolean residential, HashMap<String, Interval> hours) {
         this.id = id;
         this.name = name;
         this.residential = residential;
         this.openHours = hours;
-        this.menus = new ArrayList<>();
     }
 
     protected DiningHall(Parcel in) {
@@ -57,13 +56,13 @@ public class DiningHall implements Parcelable {
         }
     };
 
-    public void setMeals(NewDiningHall h) {
-        this.menus = h.menus;
+    public void sortMeals(List<Menu> menus) {
+        this.menus = menus;
         String[] meals = {"Breakfast", "Brunch", "Lunch", "Dinner", "Express"};
         final List<String> mealOrder = Arrays.asList(meals);
-        Collections.sort(this.menus, new Comparator<NewDiningHall.Menu>() {
+        Collections.sort(this.menus, new Comparator<Menu>() {
             @Override
-            public int compare(NewDiningHall.Menu lhs, NewDiningHall.Menu rhs) {
+            public int compare(Menu lhs, Menu rhs) {
                 return mealOrder.indexOf(lhs.name) - mealOrder.indexOf(rhs.name);
             }
         });
@@ -173,5 +172,32 @@ public class DiningHall implements Parcelable {
         }
 
         return nextMeal;
+    }
+
+    /**
+    * Created by Adel on 12/18/14.
+            * Class for a single menu, ie. Lunch, Dinner
+    */
+    public static class Menu {
+        @SerializedName("txtDayPartDescription") public String name;
+        @SerializedName("tblStation") public List<DiningStation> stations = new ArrayList<>();
+    }
+
+    /**
+     * Created by Adel on 12/18/14.
+     * Class for a station at a dining hall
+     */
+    public static class DiningStation {
+        @SerializedName("txtStationDescription") public String name;
+        @SerializedName("tblItem") public List<FoodItem> items = new ArrayList<>();
+    }
+
+    /**
+     * Created by Adel on 12/18/14.
+     * Class for Food items in Dining menus
+     */
+    public static class FoodItem {
+        @SerializedName("txtTitle") public String title;
+        @SerializedName("txtDescription") String description;
     }
 }
