@@ -30,6 +30,10 @@
     <string name="registrar_instructions">Search for courses</string>
     <string name="building_instructions">Search for Penn buildings</string>
 
+    <!-- Dining -->
+    <string name="dining_hall_open">Open</string>
+    <string name="dining_hall_closed">Closed</string>
+
     <!-- Courses -->
     <string name="course">Course</string>
     <string name="instructor">Instructor</string>

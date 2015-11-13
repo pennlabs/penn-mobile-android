@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile.adapters;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,28 +76,28 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
         }
 
         if (diningHall.isOpen()) {
-            holder.hallStatus.setText("Open");
+            holder.hallStatus.setText(R.string.dining_hall_open);
             holder.hallStatus.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.label_green));
             if (!diningHall.openMeal().equals("all")) {
-                holder.openMeal.setText("Currently serving " + diningHall.openMeal());
+                holder.openMeal.setText(String.format("Currently serving %s", diningHall.openMeal()));
             } else {
                 view.findViewById(R.id.dining_hall_open_meal).setVisibility(View.GONE);
             }
-            holder.openClose.setText("Closes at " + diningHall.closingTime());
+            holder.openClose.setText(String.format("Closes at %s", diningHall.closingTime()));
         } else {
-            holder.hallStatus.setText("Closed");
+            holder.hallStatus.setText(R.string.dining_hall_closed);
             holder.hallStatus.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.label_red));
             String meal = diningHall.nextMeal();
             if (meal.equals("") || meal.equals("all")) {
                 view.findViewById(R.id.dining_hall_open_meal).setVisibility(View.GONE);
             } else {
-                holder.openMeal.setText("Next serving " + meal);
+                holder.openMeal.setText(String.format("Next serving %s", meal));
             }
             String openingTime = diningHall.openingTime();
             if (openingTime.equals("")) {
                 view.findViewById(R.id.dining_hall_open_close).setVisibility(View.GONE);
             } else {
-                holder.openClose.setText("Opens at " + diningHall.openingTime());
+                holder.openClose.setText(String.format("Opens at %s", diningHall.openingTime()));
             }
         }
 
