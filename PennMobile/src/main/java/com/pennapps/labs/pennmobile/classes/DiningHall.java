@@ -7,6 +7,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -58,6 +59,14 @@ public class DiningHall implements Parcelable {
 
     public void setMeals(NewDiningHall h) {
         this.menus = h.menus;
+        String[] meals = {"Breakfast", "Brunch", "Lunch", "Dinner", "Express"};
+        final List<String> mealOrder = Arrays.asList(meals);
+        Collections.sort(this.menus, new Comparator<NewDiningHall.Menu>() {
+            @Override
+            public int compare(NewDiningHall.Menu lhs, NewDiningHall.Menu rhs) {
+                return mealOrder.indexOf(lhs.name) - mealOrder.indexOf(rhs.name);
+            }
+        });
     }
 
     public int describeContents(){
