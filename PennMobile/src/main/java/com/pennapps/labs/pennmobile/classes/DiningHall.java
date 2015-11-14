@@ -3,15 +3,15 @@ package com.pennapps.labs.pennmobile.classes;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.joda.time.DateTime;
+import com.google.gson.annotations.SerializedName;
+
 import org.joda.time.Interval;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,14 +22,13 @@ public class DiningHall implements Parcelable {
     // Refers to whether the dining hall is residential or retail
     private boolean residential;
     private HashMap<String, Interval> openHours;
-    public LinkedHashMap<String, HashMap<String, HashSet<String>>> menus;
+    @SerializedName("tblDayPart") public List<Menu> menus = new ArrayList<>();
 
     public DiningHall(int id, String name, boolean residential, HashMap<String, Interval> hours) {
         this.id = id;
         this.name = name;
         this.residential = residential;
         this.openHours = hours;
-        this.menus = new LinkedHashMap<>();
     }
 
     protected DiningHall(Parcel in) {
@@ -37,9 +36,9 @@ public class DiningHall implements Parcelable {
         in.readBooleanArray(booleanArray);
         residential = booleanArray[0];
         openHours = new HashMap<>();
-        menus = new LinkedHashMap<>();
+        menus = new ArrayList<>();
         in.readMap(openHours, Interval.class.getClassLoader());
-        in.readMap(menus, HashMap.class.getClassLoader());
+        in.readList(menus, ArrayList.class.getClassLoader());
         id = in.readInt();
         name = in.readString();
     }
@@ -56,10 +55,16 @@ public class DiningHall implements Parcelable {
         }
     };
 
-    public void parseMeals(NewDiningHall h) {
-        for (NewDiningHall.Menu menu : h.menus) {
-            this.menus.put(menu.name, menu.getStationMap());
-        }
+    public void sortMeals(List<Menu> menus) {
+        this.menus = menus;
+        String[] meals = {"Breakfast", "Brunch", "Lunch", "Dinner", "Express"};
+        final List<String> mealOrder = Arrays.asList(meals);
+        Collections.sort(this.menus, new Comparator<Menu>() {
+            @Override
+            public int compare(Menu lhs, Menu rhs) {
+                return mealOrder.indexOf(lhs.name) - mealOrder.indexOf(rhs.name);
+            }
+        });
     }
 
     public int describeContents(){
@@ -70,7 +75,7 @@ public class DiningHall implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeBooleanArray(new boolean[] {residential});
         dest.writeMap(openHours);
-        dest.writeMap(menus);
+        dest.writeList(menus);
         dest.writeInt(id);
         dest.writeString(name);
     }
@@ -92,18 +97,15 @@ public class DiningHall implements Parcelable {
     }
 
     public String closingTime() {
-        String closingTime = "";
         for (Interval openInterval : openHours.values()) {
-            DateTime currentTime = new DateTime();
-            if (openInterval.contains(currentTime)) {
-                closingTime = openInterval.getEnd().toString("h:mma");
-                return closingTime;
+            if (openInterval.containsNow()) {
+                return openInterval.getEnd().toString("h:mma");
             }
         }
-        return closingTime;
+        return "";
     }
 
-    public String openingTime() {
+    private List<Map.Entry<String, Interval>> orderedHours() {
         List<Map.Entry<String, Interval>> list = new ArrayList<>(openHours.entrySet());
         Collections.sort( list, new Comparator<Map.Entry<String, Interval>>() {
             public int compare( Map.Entry<String, Interval> x, Map.Entry<String, Interval> y )
@@ -111,24 +113,23 @@ public class DiningHall implements Parcelable {
                 return x.getValue().getStart().compareTo(y.getValue().getStart());
             }
         });
+        return list;
+    }
 
-        String openingTime = "";
-
+    public String openingTime() {
+        List<Map.Entry<String, Interval>> list = orderedHours();
         for (int i = 0; i < list.size(); i++) {
             Interval openInterval = list.get(i).getValue();
             if (openInterval.isAfterNow()) {
-                openingTime = openInterval.getStart().toString("h:mma");
-                return openingTime;
+                return openInterval.getStart().toString("h:mma");
             }
         }
-
-        return openingTime;
+        return "";
     }
 
     public boolean isOpen() {
         for (Interval openInterval : openHours.values()) {
-            DateTime currentTime = new DateTime();
-            if (openInterval.contains(currentTime)) {
+            if (openInterval.containsNow()) {
                 return true;
             }
         }
@@ -138,8 +139,7 @@ public class DiningHall implements Parcelable {
     public String openMeal() {
         for (Map.Entry<String, Interval> entry : openHours.entrySet()) {
             Interval openInterval = entry.getValue();
-            DateTime currentTime = new DateTime();
-            if (openInterval.contains(currentTime)) {
+            if (openInterval.containsNow()) {
                 return entry.getKey();
             }
         }
@@ -147,24 +147,40 @@ public class DiningHall implements Parcelable {
     }
 
     public String nextMeal() {
-        List<Map.Entry<String, Interval>> list = new ArrayList<>(openHours.entrySet());
-        Collections.sort( list, new Comparator<Map.Entry<String, Interval>>() {
-            public int compare( Map.Entry<String, Interval> x, Map.Entry<String, Interval> y )
-            {
-                return x.getValue().getStart().compareTo(y.getValue().getStart());
-            }
-        });
-
-        String nextMeal = "";
-
+        List<Map.Entry<String, Interval>> list = orderedHours();
         for (int i = 0; i < list.size(); i++) {
             Interval openInterval = list.get(i).getValue();
             if (openInterval.isAfterNow()) {
-                nextMeal = list.get(i).getKey();
-                return nextMeal;
+                return list.get(i).getKey();
             }
         }
+        return "";
+    }
 
-        return nextMeal;
+    /**
+    * Created by Adel on 12/18/14.
+            * Class for a single menu, ie. Lunch, Dinner
+    */
+    public static class Menu {
+        @SerializedName("txtDayPartDescription") public String name;
+        @SerializedName("tblStation") public List<DiningStation> stations = new ArrayList<>();
+    }
+
+    /**
+     * Created by Adel on 12/18/14.
+     * Class for a station at a dining hall
+     */
+    public static class DiningStation {
+        @SerializedName("txtStationDescription") public String name;
+        @SerializedName("tblItem") public List<FoodItem> items = new ArrayList<>();
+    }
+
+    /**
+     * Created by Adel on 12/18/14.
+     * Class for Food items in Dining menus
+     */
+    public static class FoodItem {
+        @SerializedName("txtTitle") public String title;
+        @SerializedName("txtDescription") String description;
     }
 }

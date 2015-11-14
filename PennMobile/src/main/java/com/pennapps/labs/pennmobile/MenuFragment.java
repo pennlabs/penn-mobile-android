@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.StyleRes;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +14,6 @@ import com.pennapps.labs.pennmobile.classes.DiningHall;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.WordUtils;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -48,12 +42,12 @@ public class MenuFragment extends Fragment {
     }
 
     public void fillDescriptions() {
-        for (Map.Entry<String, HashMap<String, HashSet<String>>> menu : mDiningHall.menus.entrySet()) {
-            addDiningTextView(R.style.MealName, StringUtils.capitalize(menu.getKey()));
-            for (Map.Entry<String, HashSet<String>> menuItem : menu.getValue().entrySet()) {
-                addDiningTextView(R.style.DiningStation, StringUtils.capitalize(menuItem.getKey()));
-                for (String item : menuItem.getValue()) {
-                    addDiningTextView(R.style.FoodItem, StringEscapeUtils.unescapeXml(item));
+        for (DiningHall.Menu menu : mDiningHall.menus) {
+            addDiningTextView(R.style.MealName, StringUtils.capitalize(menu.name));
+            for (DiningHall.DiningStation station : menu.stations) {
+                addDiningTextView(R.style.DiningStation, StringUtils.capitalize(station.name));
+                for (DiningHall.FoodItem item : station.items) {
+                    addDiningTextView(R.style.FoodItem, StringEscapeUtils.unescapeXml(item.title));
                 }
             }
         }
