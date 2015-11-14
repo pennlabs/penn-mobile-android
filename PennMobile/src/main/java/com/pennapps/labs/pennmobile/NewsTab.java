@@ -1,5 +1,7 @@
 package com.pennapps.labs.pennmobile;
 
+import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,29 +10,26 @@ import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.widget.ViewFlipper;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class NewsTab extends Fragment {
 
-    WebView mWebView;
     static WebView currentWebView;
-    private View mView;
     private boolean mIsWebViewAvailable;
     boolean isVisibleToUser = false;
-    private RelativeLayout Pbar;
     private boolean newsLoaded;
     private String mUrl = "http://www.thedp.com/";
+
+    @Bind(R.id.webview) WebView mWebView;
+    @Bind(R.id.flipper) ViewFlipper mFlipper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         newsLoaded = false;
-
-        mWebView = new WebView(getActivity());
-        mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         Bundle args = getArguments();
         mUrl = args.getString("url");
@@ -39,14 +38,17 @@ public class NewsTab extends Fragment {
     }
 
     @Override
+    @SuppressLint("SetJavaScriptEnabled")
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_news_tab, container, false);
-        Pbar = (RelativeLayout) mView.findViewById(R.id.loadingPanel);
+        View v = inflater.inflate(R.layout.fragment_news_tab, container, false);
+        ButterKnife.bind(this, v);
+        mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.setBackgroundColor(Color.argb(1, 0, 0, 0));
         if (!newsLoaded) {
             loadNews();
             newsLoaded = true;
         }
-        return mView;
+        return v;
     }
 
     public void loadNews() {
@@ -56,12 +58,7 @@ public class NewsTab extends Fragment {
             public void onProgressChanged(WebView view, int progress)
             {
                 if (progress >= 80 && mWebView != null) {
-                    Pbar.setVisibility(View.GONE);
-                    ViewGroup parent = (ViewGroup) mWebView.getParent();
-                    if (parent != null) {
-                        parent.removeView(mWebView);
-                    }
-                    ((LinearLayout) mView).addView(mWebView);
+                    mFlipper.setDisplayedChild(1);
                 }
             }
         });

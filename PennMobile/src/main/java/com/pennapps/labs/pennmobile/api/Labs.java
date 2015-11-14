@@ -4,9 +4,9 @@ import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
+import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.Laundry;
 import com.pennapps.labs.pennmobile.classes.LaundryMachine;
-import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Review;
 import com.pennapps.labs.pennmobile.classes.Venue;
@@ -39,7 +39,7 @@ public interface Labs {
     Observable<List<Venue>> venues();
 
     @GET("/dining/daily_menu/{id}")
-    Observable<NewDiningHall> daily_menu(
+    Observable<DiningHall> daily_menu(
         @Path("id") int id);
 
     @GET("/transit/stops")

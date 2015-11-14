@@ -7,7 +7,7 @@ import android.view.ContextThemeWrapper;
 
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Course;
-import com.pennapps.labs.pennmobile.classes.NewDiningHall;
+import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
@@ -83,22 +83,22 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
 
     public void testDiningMenuMeals() {
         List<Venue> venues = mLabs.venues().toList().toBlocking().single().get(0);
-        NewDiningHall commons = mLabs.daily_menu(venues.get(0).id).toList().toBlocking().single().get(0);
+        DiningHall commons = mLabs.daily_menu(venues.get(0).id).toList().toBlocking().single().get(0);
         assertTrue(commons.menus.size() > 0);
     }
 
     public void testDiningMenu() {
         List<Venue> venues = mLabs.venues().toList().toBlocking().single().get(0);
-        NewDiningHall commons = mLabs.daily_menu(venues.get(0).id).toList().toBlocking().single().get(0);
-        NewDiningHall.Menu menu = commons.menus.get(0);
+        DiningHall commons = mLabs.daily_menu(venues.get(0).id).toList().toBlocking().single().get(0);
+        DiningHall.Menu menu = commons.menus.get(0);
         assertTrue(menu.name.equals("Brunch") || menu.name.equals("Breakfast"));
     }
 
     public void testDiningMenuStation() {
         List<Venue> venues = mLabs.venues().toList().toBlocking().single().get(0);
-        NewDiningHall commons = mLabs.daily_menu(venues.get(0).id).toList().toBlocking().single().get(0);
-        NewDiningHall.Menu menu = commons.menus.get(0);
-        NewDiningHall.DiningStation station = menu.stations.get(0);
+        DiningHall commons = mLabs.daily_menu(venues.get(0).id).toList().toBlocking().single().get(0);
+        DiningHall.Menu menu = commons.menus.get(0);
+        DiningHall.DiningStation station = menu.stations.get(0);
         assertTrue(station.items.size() > 1);
     }
 }

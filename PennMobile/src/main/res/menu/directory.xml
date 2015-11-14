@@ -7,4 +7,9 @@
         android:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="always"
         android:title="@string/search_title"/>
+
+    <item android:id="@+id/directory_star"
+          android:icon="@drawable/star_on"
+          app:showAsAction="always"
+          android:title="@string/directory_show"/>
 </menu>

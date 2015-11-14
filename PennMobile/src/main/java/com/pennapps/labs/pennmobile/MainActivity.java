@@ -6,10 +6,13 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.AnyRes;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -31,9 +34,9 @@ import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
+import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.Laundry;
 import com.pennapps.labs.pennmobile.classes.LaundryMachine;
-import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
@@ -243,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
             gsonBuilder.registerTypeAdapter(new TypeToken<List<Person>>(){}.getType(), new Serializer.DataSerializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<List<Venue>>(){}.getType(), new Serializer.VenueSerializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<List<BusStop>>(){}.getType(), new Serializer.BusStopSerializer());
-            gsonBuilder.registerTypeAdapter(NewDiningHall.class, new Serializer.MenuSerializer());
+            gsonBuilder.registerTypeAdapter(DiningHall.class, new Serializer.MenuSerializer());
             gsonBuilder.registerTypeAdapter(BusRoute.class, new Serializer.BusRouteSerializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<List<BusRoute>>(){}.getType(), new Serializer.BusRouteListSerializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<List<Laundry>>(){}.getType(), new Serializer.LaundryListSerializer());
@@ -274,5 +277,27 @@ public class MainActivity extends AppCompatActivity {
     public void setNav(int id){
         final Menu menu = mDrawerList.getMenu();
         menu.findItem(id).setChecked(true);
+    }
+
+    public void addTabs(NewsFragment.TabAdapter pageAdapter, final ViewPager pager) {
+        final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
+
+        final TabLayout tabLayout = (TabLayout) getLayoutInflater().inflate(R.layout.tab_layout, null);
+        tabLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                tabLayout.setupWithViewPager(pager);
+            }
+        });
+        appBar.addView(tabLayout);
+
+        pager.setAdapter(pageAdapter);
+    }
+
+    public void removeTabs() {
+        final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
+        if (appBar != null) {
+            appBar.removeViewAt(1);
+        }
     }
 }

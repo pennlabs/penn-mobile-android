@@ -11,9 +11,9 @@ import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
+import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.Laundry;
 import com.pennapps.labs.pennmobile.classes.LaundryMachine;
-import com.pennapps.labs.pennmobile.classes.NewDiningHall;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
 import java.lang.reflect.Type;
@@ -63,15 +63,15 @@ public class Serializer {
         }
     }
 
-    public static class MenuSerializer implements JsonDeserializer<NewDiningHall> {
+    public static class MenuSerializer implements JsonDeserializer<DiningHall> {
         @Override
-        public NewDiningHall deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+        public DiningHall deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
                 throws JsonParseException {
             JsonElement content = je.getAsJsonObject().get("Document");
             content.getAsJsonObject().add("tblDayPart",
                     content.getAsJsonObject().get("tblMenu").getAsJsonObject().get("tblDayPart").getAsJsonArray());
             content.getAsJsonObject().remove("tblMenu");
-            return new Gson().fromJson(content, NewDiningHall.class);
+            return new Gson().fromJson(content, DiningHall.class);
         }
     }
 
