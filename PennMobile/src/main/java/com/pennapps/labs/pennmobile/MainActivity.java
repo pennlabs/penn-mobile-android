@@ -275,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
     public void removeTabs() {
         final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
         if (appBar != null) {
-            appBar.removeViews(1, 2);
+            appBar.removeViewAt(1);
         }
     }
 }

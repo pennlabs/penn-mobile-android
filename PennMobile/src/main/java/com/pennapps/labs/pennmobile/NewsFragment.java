@@ -76,7 +76,6 @@ public class NewsFragment extends Fragment {
         pageAdapter = new TabAdapter(getActivity().getSupportFragmentManager());
         pager = (ViewPager) v.findViewById(R.id.pager);
         ((MainActivity) getActivity()).addTabs(pageAdapter, pager);
-
         return v;
     }
 
@@ -111,8 +110,8 @@ public class NewsFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         ((MainActivity) getActivity()).removeTabs();
+        super.onDestroyView();
     }
 
     private String getCurrentTab() {
