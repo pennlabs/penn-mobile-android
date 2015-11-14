@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 import java.util.ArrayList;
@@ -98,18 +97,15 @@ public class DiningHall implements Parcelable {
     }
 
     public String closingTime() {
-        String closingTime = "";
         for (Interval openInterval : openHours.values()) {
-            DateTime currentTime = new DateTime();
-            if (openInterval.contains(currentTime)) {
-                closingTime = openInterval.getEnd().toString("h:mma");
-                return closingTime;
+            if (openInterval.containsNow()) {
+                return openInterval.getEnd().toString("h:mma");
             }
         }
-        return closingTime;
+        return "";
     }
 
-    public String openingTime() {
+    private List<Map.Entry<String, Interval>> orderedHours() {
         List<Map.Entry<String, Interval>> list = new ArrayList<>(openHours.entrySet());
         Collections.sort( list, new Comparator<Map.Entry<String, Interval>>() {
             public int compare( Map.Entry<String, Interval> x, Map.Entry<String, Interval> y )
@@ -117,24 +113,23 @@ public class DiningHall implements Parcelable {
                 return x.getValue().getStart().compareTo(y.getValue().getStart());
             }
         });
+        return list;
+    }
 
-        String openingTime = "";
-
+    public String openingTime() {
+        List<Map.Entry<String, Interval>> list = orderedHours();
         for (int i = 0; i < list.size(); i++) {
             Interval openInterval = list.get(i).getValue();
             if (openInterval.isAfterNow()) {
-                openingTime = openInterval.getStart().toString("h:mma");
-                return openingTime;
+                return openInterval.getStart().toString("h:mma");
             }
         }
-
-        return openingTime;
+        return "";
     }
 
     public boolean isOpen() {
         for (Interval openInterval : openHours.values()) {
-            DateTime currentTime = new DateTime();
-            if (openInterval.contains(currentTime)) {
+            if (openInterval.containsNow()) {
                 return true;
             }
         }
@@ -144,8 +139,7 @@ public class DiningHall implements Parcelable {
     public String openMeal() {
         for (Map.Entry<String, Interval> entry : openHours.entrySet()) {
             Interval openInterval = entry.getValue();
-            DateTime currentTime = new DateTime();
-            if (openInterval.contains(currentTime)) {
+            if (openInterval.containsNow()) {
                 return entry.getKey();
             }
         }
@@ -153,25 +147,14 @@ public class DiningHall implements Parcelable {
     }
 
     public String nextMeal() {
-        List<Map.Entry<String, Interval>> list = new ArrayList<>(openHours.entrySet());
-        Collections.sort( list, new Comparator<Map.Entry<String, Interval>>() {
-            public int compare( Map.Entry<String, Interval> x, Map.Entry<String, Interval> y )
-            {
-                return x.getValue().getStart().compareTo(y.getValue().getStart());
-            }
-        });
-
-        String nextMeal = "";
-
+        List<Map.Entry<String, Interval>> list = orderedHours();
         for (int i = 0; i < list.size(); i++) {
             Interval openInterval = list.get(i).getValue();
             if (openInterval.isAfterNow()) {
-                nextMeal = list.get(i).getKey();
-                return nextMeal;
+                return list.get(i).getKey();
             }
         }
-
-        return nextMeal;
+        return "";
     }
 
     /**
