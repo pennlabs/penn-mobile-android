@@ -109,13 +109,13 @@ public class LaundryMachineTab extends ListFragment {
         LinkedList<LaundryMachine> filtered = new LinkedList<>();
         if(wash){
             for(LaundryMachine machine: machines){
-                if(machine.machine_type.contains(getString(R.string.laundry_washer))){
+                if(machine.machine_type.contains(getString(R.string.laundry_washer_textview))){
                     filtered.add(machine);
                 }
             }
         } else{
             for(LaundryMachine machine: machines){
-                if(machine.machine_type.contains(getString(R.string.laundry_dryer))){
+                if(machine.machine_type.contains(getString(R.string.laundry_dryer_textview))){
                     filtered.add(machine);
                 }
             }

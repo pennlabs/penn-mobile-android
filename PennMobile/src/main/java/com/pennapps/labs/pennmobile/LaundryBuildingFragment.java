@@ -29,7 +29,7 @@ public class LaundryBuildingFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         mActivity = (MainActivity) getActivity();
         mActivity.closeKeyboard();
-        lh = getArguments().getParcelable("Laundry Hall");
+        lh = getArguments().getParcelable(getString(R.string.laundry_hall_arg));
     }
 
     @Override
@@ -62,7 +62,7 @@ public class LaundryBuildingFragment extends ListFragment {
         mActivity.getActionBarToggle().syncState();
         Fragment fragment = new LaundryMachineFragment();
         Bundle args = new Bundle();
-        args.putParcelable("laundry", laundry);
+        args.putParcelable(getString(R.string.laundry), laundry);
         fragment.setArguments(args);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -80,11 +80,11 @@ public class LaundryBuildingFragment extends ListFragment {
             getActivity().setTitle(lh.getName());
         }
         if (getArguments() != null) {
-            int hall_no = getArguments().getInt("hall_no", -1);
+            int hall_no = getArguments().getInt(getString(R.string.laundry_hall_no), -1);
             if (hall_no != -1) {
                 for (Laundry laundry : lh.getIds()) {
                     if (laundry.hall_no == hall_no) {
-                        getArguments().putInt("hall_no", -1);
+                        getArguments().putInt(getString(R.string.laundry_hall_no), -1);
                         toLaundryMachine(laundry);
                     }
                 }
