@@ -53,6 +53,7 @@ public class NewsFragment extends Fragment {
             return myFragment;
         }
 
+        @Override
         public CharSequence getPageTitle(int position) {
             return titles.get(position);
         }
@@ -75,7 +76,7 @@ public class NewsFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_news, container, false);
         pageAdapter = new TabAdapter(getActivity().getSupportFragmentManager());
         pager = (ViewPager) v.findViewById(R.id.pager);
-        ((MainActivity) getActivity()).addTabs(pageAdapter, pager);
+        ((MainActivity) getActivity()).addNewsTabs(pageAdapter, pager);
         return v;
     }
 

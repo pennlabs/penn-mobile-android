@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
                 if(from_alarm){
                     from_alarm = false;
                     Bundle arg = new Bundle();
-                    arg.putInt("hall_no", getIntent().getIntExtra("hall_no", -1));
+                    arg.putInt(getString(R.string.laundry_hall_no), getIntent().getIntExtra(getString(R.string.laundry_hall_no), -1));
                     fragment.setArguments(arg);
                 }
                 break;
@@ -279,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
         menu.findItem(id).setChecked(true);
     }
 
-    public void addTabs(NewsFragment.TabAdapter pageAdapter, final ViewPager pager) {
+    public void addNewsTabs(NewsFragment.TabAdapter pageAdapter, final ViewPager pager) {
         final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
 
         final TabLayout tabLayout = (TabLayout) getLayoutInflater().inflate(R.layout.tab_layout, null);
@@ -293,6 +293,23 @@ public class MainActivity extends AppCompatActivity {
 
         pager.setAdapter(pageAdapter);
     }
+
+    public void addLaundryTabs(LaundryMachineFragment.TabAdapter pageAdapter, final ViewPager pager) {
+        final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
+
+        final TabLayout tabLayout = (TabLayout) getLayoutInflater().inflate(R.layout.tab_layout, null);
+        tabLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                tabLayout.setupWithViewPager(pager);
+            }
+        });
+        appBar.addView(tabLayout);
+
+        pager.setAdapter(pageAdapter);
+    }
+
+
 
     public void removeTabs() {
         final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);

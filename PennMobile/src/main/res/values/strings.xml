@@ -61,6 +61,14 @@
     <string name="laundry_washer_textview">Washer</string>
     <string name="laundry_dryer_textview">Dryer</string>
     <string name="laundry_notification_alarm_intent">From alarm</string>
+    <string name="laundry_notification_snackbar_on">Notification turned on for </string>
+    <string name="laundry_notification_snackbar_off">Notification turned off for </string>
+    <string name="laundry_switch">Activate switch for notification when complete</string>
+    <string name="laundry_undo">UNDO</string>
+    <string name="laundry_hall_no">hall_no</string>
+    <string name="laundry_position">position</string>
+    <string name="laundry_machine_intent">machines</string>
+    <string name="laundry_hall_arg">Laundry Hall</string>
 
     <!-- News -->
     <string name="open_browser">Open in Browser</string>
@@ -83,4 +91,5 @@
     <string name="directory_show">Show favorites</string>
     <string name="directory_all">Show all</string>
     <string name="directory_delim">|#|</string>
+
 </resources>

@@ -8,17 +8,10 @@
 
     <include layout="@layout/loading_panel" />
 
-
-    <FrameLayout
+    <ListView
         tools:visibility="visible"
-        android:id="@+id/laundry_fragment"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-        <ListView
-            tools:visibility="visible"
-            android:id="@android:id/list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </FrameLayout>
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

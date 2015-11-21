@@ -26,9 +26,12 @@ public class LaundryBroadcastReceiver extends BroadcastReceiver {
         Intent main = new Intent(context, MainActivity.class);
         main.putExtra(context.getString(R.string.laundry_notification_alarm_intent), true);
         main.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        main.putExtra("hall_no", intent.getIntExtra("hall_no", -1));
+        main.putExtra(context.getString(R.string.laundry_hall_no), intent.getIntExtra(context.getString(R.string.laundry_hall_no), -1));
         PendingIntent notifyIntent = PendingIntent.getActivity(context, 0, main, PendingIntent.FLAG_ONE_SHOT);
         mBuilder.setContentIntent(notifyIntent);
         manager.notify(2, mBuilder.build());
+        PendingIntent fromIntent = PendingIntent.getBroadcast(context, intent.getIntExtra(context.getString(R.string.laundry_position), 0),
+                intent, PendingIntent.FLAG_NO_CREATE);
+        fromIntent.cancel();
     }
 }

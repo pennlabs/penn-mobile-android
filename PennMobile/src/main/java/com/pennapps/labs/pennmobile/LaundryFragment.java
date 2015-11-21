@@ -76,7 +76,7 @@ public class LaundryFragment extends ListFragment {
                                     no_results.setVisibility(View.GONE);
                                     Bundle args = getArguments();
                                     if (args != null) {
-                                        int hall_no = args.getInt("hall_no", -1);
+                                        int hall_no = args.getInt(getString(R.string.laundry_hall_no), -1);
                                         if (hall_no != -1) {
                                             for (LaundryHall hall : halls) {
                                                 for (Laundry laundry : hall.getIds()) {
@@ -135,12 +135,12 @@ public class LaundryFragment extends ListFragment {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         if (lh.getIds().size() > 1) {
             Fragment fragment = new LaundryBuildingFragment();
-            args.putParcelable("Laundry Hall", lh);
+            args.putParcelable(getString(R.string.laundry_hall_arg), lh);
             if (getArguments() != null) {
-                int hall_no = getArguments().getInt("hall_no", -1);
+                int hall_no = getArguments().getInt(getString(R.string.laundry_hall_no), -1);
                 if (hall_no != -1) {
-                    args.putInt("hall_no", hall_no);
-                    getArguments().putInt("hall_no", -1);
+                    args.putInt(getString(R.string.laundry_hall_no), hall_no);
+                    getArguments().putInt(getString(R.string.laundry_hall_no), -1);
                 }
             }
             fragment.setArguments(args);
@@ -150,7 +150,7 @@ public class LaundryFragment extends ListFragment {
                     .commit();
         } else if (lh.getIds().size() == 1) {
             Fragment fragment = new LaundryMachineFragment();
-            args.putParcelable("laundry", lh.getIds().get(0));
+            args.putParcelable(getString(R.string.laundry), lh.getIds().get(0));
             fragment.setArguments(args);
             fragmentManager.beginTransaction()
                     .replace(R.id.laundry_fragment, fragment)
@@ -179,7 +179,7 @@ public class LaundryFragment extends ListFragment {
         LinkedList<ImageView> vertical = new LinkedList<>();
         ImageView prev = null;
         int max_col = ROW_CAP;
-        if (avail + used > 15) {
+        if (avail + used > ROW_CAP) {
             max_col = (avail + used) / 2;
         }
         for (int i = 0; i < avail + used; i++) {

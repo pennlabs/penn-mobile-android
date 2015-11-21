@@ -3,10 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/no_results"
-        android:text="@string/no_results"
-        style="@style/NoResults" />
+    <include layout="@layout/no_results" />
 
     <FrameLayout
         tools:visibility="visible"
