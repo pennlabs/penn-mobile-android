@@ -66,21 +66,22 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/transit_cont"
+            android:id="@+id/map_cont"
             style="@style/MainRelativeLayout">
 
             <ImageView
-                android:contentDescription="@string/transit"
-                android:id="@+id/transit_img"
-                android:src="@drawable/ic_transit"
+                android:contentDescription="@string/map"
+                android:id="@+id/map_img"
+                android:src="@drawable/ic_maps"
                 style="@style/MainIcon" />
 
             <TextView
-                android:id="@+id/transit_button"
-                android:layout_below="@+id/transit_img"
-                android:text="@string/transit"
+                android:id="@+id/map_button"
+                android:layout_below="@+id/map_img"
+                android:text="@string/map"
                 style="@style/MainText"/>
         </RelativeLayout>
+
     </TableRow>
 
     <TableRow style="@style/MainTableLayout">
@@ -100,25 +101,6 @@
                 android:id="@+id/news_button"
                 android:layout_below="@+id/news_img"
                 android:text="@string/news"
-                style="@style/MainText"/>
-        </RelativeLayout>
-
-
-        <RelativeLayout
-            android:id="@+id/map_cont"
-            android:layout_marginBottom="15dp"
-            style="@style/MainRelativeLayout">
-
-            <ImageView
-                android:contentDescription="@string/map"
-                android:id="@+id/map_img"
-                android:src="@drawable/ic_maps"
-                style="@style/MainIcon" />
-
-            <TextView
-                android:id="@+id/map_button"
-                android:layout_below="@+id/map_img"
-                android:text="@string/map"
                 style="@style/MainText"/>
         </RelativeLayout>
 
