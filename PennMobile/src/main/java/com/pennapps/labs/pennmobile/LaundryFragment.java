@@ -135,7 +135,7 @@ public class LaundryFragment extends ListFragment {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         if (lh.getIds().size() >= 1) {
             Fragment fragment;
-            if (lh.getIds().size() == 1){
+            if (lh.getIds().size() == 1) {
                 fragment = new LaundryMachineFragment();
                 args.putParcelable(getString(R.string.laundry), lh.getIds().get(0));
             } else {

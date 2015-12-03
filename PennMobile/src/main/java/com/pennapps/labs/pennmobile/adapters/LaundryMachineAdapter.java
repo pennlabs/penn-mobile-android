@@ -181,7 +181,7 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
     }
 
     @Override
-    public int getCount(){
+    public int getCount() {
         return machines.size() + 1;
     }
 }

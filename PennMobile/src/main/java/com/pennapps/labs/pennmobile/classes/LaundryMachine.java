@@ -6,7 +6,7 @@ import android.os.Parcelable;
 /**
  * Created by Jason on 10/21/2015.
  */
-public class LaundryMachine implements Parcelable{
+public class LaundryMachine implements Parcelable {
     public boolean available;
     public String machine_type;
     public int number;

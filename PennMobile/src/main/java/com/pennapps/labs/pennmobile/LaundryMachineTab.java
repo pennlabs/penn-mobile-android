@@ -34,7 +34,7 @@ public class LaundryMachineTab extends ListFragment {
     private ListView mListView;
     private boolean wash;
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLabs = MainActivity.getLabsInstance();
         mActivity = (MainActivity) getActivity();
@@ -53,12 +53,12 @@ public class LaundryMachineTab extends ListFragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.laundry_machine_tab, container, false);
         ButterKnife.bind(this, v);
-        if(getArguments() != null && getArguments().getParcelableArray(getString(R.string.laundry_machine_intent)) != null){
+        if (getArguments() != null && getArguments().getParcelableArray(getString(R.string.laundry_machine_intent)) != null) {
             LaundryMachine[] array = (LaundryMachine[])getArguments()
                     .getParcelableArray(getString(R.string.laundry_machine_intent));
             machines = new LinkedList<>(Arrays.asList(array));
         }
-        if(machines == null || machines.isEmpty()) {
+        if (machines == null || machines.isEmpty()) {
             getMachines();
         } else {
             v.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
@@ -67,7 +67,7 @@ public class LaundryMachineTab extends ListFragment {
         return v;
     }
 
-    private void getMachines(){
+    private void getMachines() {
         mLabs.laundryMachines(laundryRoom.hall_no)
                 .subscribe(new Action1<List<LaundryMachine>>() {
                     @Override
@@ -104,13 +104,13 @@ public class LaundryMachineTab extends ListFragment {
                 });
     }
 
-    private void setMachines(List<LaundryMachine> machines, LaundryRoom laundryRoom){
+    private void setMachines(List<LaundryMachine> machines, LaundryRoom laundryRoom) {
         this.machines = machines;
         LinkedList<LaundryMachine> filtered = new LinkedList<>();
         String type;
         if (wash) {
             type =  getString(R.string.laundry_washer_textview);
-        } else{
+        } else {
             type = getString(R.string.laundry_dryer_textview);
         }
         for (LaundryMachine machine: machines) {
@@ -122,7 +122,7 @@ public class LaundryMachineTab extends ListFragment {
         mListView.setAdapter(adapter);
     }
 
-    public List<LaundryMachine> returnMachines(){
+    public List<LaundryMachine> returnMachines() {
         return machines;
     }
 
