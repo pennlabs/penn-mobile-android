@@ -59,7 +59,7 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
         LinearLayout summary = (LinearLayout) view.findViewById(R.id.laundry_machine_list_summary);
         RelativeLayout item = (RelativeLayout) view.findViewById(R.id.laundry_machine_list_normal);
         StringBuilder stringBuilder = new StringBuilder();
-        if(position == 0){
+        if (position == 0) {
             item.setVisibility(View.GONE);
             summary.setVisibility(View.VISIBLE);
             ImageView imageView = (ImageView) view.findViewById(R.id.laundry_machine_iv);
@@ -68,8 +68,8 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
             description.setText(laundryRoom.name);
             TextView availcount = (TextView) view.findViewById(R.id.laundry_machine_summary);
             int avail = 0;
-            for(LaundryMachine machine: machines){
-                if(machine.available){
+            for (LaundryMachine machine: machines) {
+                if (machine.available) {
                     avail++;
                 }
             }
@@ -81,10 +81,10 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
             Point size = new Point();
             display.getSize(size);
             int width = size.x / 4;
-            if(wash){
+            if (wash) {
                 Picasso.with(activity).load(R.drawable.washer).resize(width, width).into(imageView);
                 LaundryFragment.setSummary(laundryRoom.washers_available, laundryRoom.washers_in_use, 10, summary_rl, activity);
-            } else{
+            } else {
                 Picasso.with(activity).load(R.drawable.dryer).resize(width, width).into(imageView);
                 LaundryFragment.setSummary(laundryRoom.dryers_available, laundryRoom.dryers_in_use, 10, summary_rl, activity);
             }
@@ -97,10 +97,10 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
             title.setText(stringBuilder);
             TextView description = (TextView) view.findViewById(R.id.laundry_machine_description);
             Switch mSwitch = (Switch) view.findViewById(R.id.laundry_notification_button);
-            if(machine.time_left == null || machine.time_left.equals("null")|| machine.time_left.contains("ago")){
+            if (machine.time_left == null || machine.time_left.equals("null")|| machine.time_left.contains("ago")) {
                 description.setText(R.string.laundry_available);
                 mSwitch.setVisibility(View.GONE);
-            } else{
+            } else {
                 stringBuilder = new StringBuilder();
                 stringBuilder.append("Busy – ").append(machine.time_left);
                 description.setText(stringBuilder);
@@ -118,9 +118,9 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
         intent.putExtra(activity.getString(R.string.laundry_position), laundryRoom.name.hashCode() + machine.number);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), laundryRoom.name.hashCode() + machine.number,
                 intent, PendingIntent.FLAG_NO_CREATE);
-        if(alarmIntent == null) {
+        if (alarmIntent == null) {
             mSwitch.setChecked(false);
-        } else{
+        } else {
             mSwitch.setChecked(true);
         }
         mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

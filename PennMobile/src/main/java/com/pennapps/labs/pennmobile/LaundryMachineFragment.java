@@ -40,7 +40,7 @@ public class LaundryMachineFragment extends Fragment {
             Bundle args = new Bundle();
             args.putInt(getString(R.string.laundry_position), position);
             args.putParcelable(getString(R.string.laundry), laundryRoom);
-            if(machines != null) {
+            if (machines != null) {
                 LaundryMachine[] array = (LaundryMachine[]) machines.toArray();
                 args.putParcelableArray(getString(R.string.laundry_machine_intent), array);
             }
@@ -54,7 +54,7 @@ public class LaundryMachineFragment extends Fragment {
 
         @Override
         public CharSequence getPageTitle(int position){
-            if(position == 0){
+            if (position == 0) {
                 return getString(R.string.laundry_washer);
             }
             return getString(R.string.laundry_dryer);
@@ -112,7 +112,7 @@ public class LaundryMachineFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(laundryRoom.name != null) {
+        if (laundryRoom.name != null) {
             mActivity.setTitle(laundryRoom.name);
         }
     }

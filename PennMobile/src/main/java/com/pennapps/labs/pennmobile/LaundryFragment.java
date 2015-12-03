@@ -182,7 +182,7 @@ public class LaundryFragment extends ListFragment {
                     RelativeLayout.LayoutParams.WRAP_CONTENT);
             if (i < max_col) {
                 layparam.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-            } else if (i == max_col) {
+            } else if (i % max_col == 0) {
                 layparam.addRule(RelativeLayout.BELOW, vertical.getLast().getId());
             } else {
                 layparam.addRule(RelativeLayout.BELOW, vertical

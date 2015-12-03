@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.nav_laundry:
                 fragment = new LaundryFragment();
-                if(from_alarm){
+                if (from_alarm) {
                     from_alarm = false;
                     Bundle arg = new Bundle();
                     arg.putInt(getString(R.string.laundry_hall_no), getIntent().getIntExtra(getString(R.string.laundry_hall_no), -1));
