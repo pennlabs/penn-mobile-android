@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.pennapps.labs.pennmobile.adapters.LaundryAdapter;
-import com.pennapps.labs.pennmobile.classes.Laundry;
+import com.pennapps.labs.pennmobile.adapters.LaundryRoomAdapter;
+import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryHall;
 
 import butterknife.Bind;
@@ -44,7 +44,7 @@ public class LaundryBuildingFragment extends ListFragment {
         v.setBackgroundColor(Color.WHITE);
         ButterKnife.bind(this, v);
         if (lh != null) {
-            LaundryAdapter adapter = new LaundryAdapter(mActivity, lh.getIds());
+            LaundryRoomAdapter adapter = new LaundryRoomAdapter(mActivity, lh.getIds());
             setListAdapter(adapter);
             no_results.setVisibility(View.GONE);
         }
@@ -53,16 +53,16 @@ public class LaundryBuildingFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        Laundry laundry = lh.getIds().get(position);
-        toLaundryMachine(laundry);
+        LaundryRoom laundryRoom = lh.getIds().get(position);
+        toLaundryMachine(laundryRoom);
     }
 
-    private void toLaundryMachine(Laundry laundry) {
+    private void toLaundryMachine(LaundryRoom laundryRoom) {
         mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
         mActivity.getActionBarToggle().syncState();
         Fragment fragment = new LaundryMachineFragment();
         Bundle args = new Bundle();
-        args.putParcelable(getString(R.string.laundry), laundry);
+        args.putParcelable(getString(R.string.laundry), laundryRoom);
         fragment.setArguments(args);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -82,10 +82,10 @@ public class LaundryBuildingFragment extends ListFragment {
         if (getArguments() != null) {
             int hall_no = getArguments().getInt(getString(R.string.laundry_hall_no), -1);
             if (hall_no != -1) {
-                for (Laundry laundry : lh.getIds()) {
-                    if (laundry.hall_no == hall_no) {
+                for (LaundryRoom laundryRoom : lh.getIds()) {
+                    if (laundryRoom.hall_no == hall_no) {
                         getArguments().putInt(getString(R.string.laundry_hall_no), -1);
-                        toLaundryMachine(laundry);
+                        toLaundryMachine(laundryRoom);
                     }
                 }
             }
@@ -95,7 +95,7 @@ public class LaundryBuildingFragment extends ListFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        getActivity().setTitle(R.string.laundry);
+        mActivity.setTitle(R.string.laundry);
         ButterKnife.unbind(this);
     }
 }

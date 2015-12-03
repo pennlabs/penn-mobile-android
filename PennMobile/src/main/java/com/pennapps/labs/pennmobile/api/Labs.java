@@ -5,7 +5,7 @@ import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
-import com.pennapps.labs.pennmobile.classes.Laundry;
+import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryMachine;
 import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Review;
@@ -60,7 +60,7 @@ public interface Labs {
         @Path("id") String id);
 
     @GET("/laundry/halls")
-    Observable<List<Laundry>> laundries();
+    Observable<List<LaundryRoom>> laundries();
 
     @GET("/laundry/hall/{id}")
     Observable<List<LaundryMachine>> laundryMachines(

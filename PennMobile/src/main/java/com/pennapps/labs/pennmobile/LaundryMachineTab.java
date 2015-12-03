@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.adapters.LaundryMachineAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
-import com.pennapps.labs.pennmobile.classes.Laundry;
+import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryMachine;
 
 import java.util.Arrays;
@@ -27,7 +27,7 @@ public class LaundryMachineTab extends ListFragment {
 
     private Labs mLabs;
     private MainActivity mActivity;
-    private Laundry laundry;
+    private LaundryRoom laundryRoom;
     @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
     @Bind(R.id.no_results) TextView no_results;
     private List<LaundryMachine> machines;
@@ -38,7 +38,7 @@ public class LaundryMachineTab extends ListFragment {
         super.onCreate(savedInstanceState);
         mLabs = MainActivity.getLabsInstance();
         mActivity = (MainActivity) getActivity();
-        laundry = getArguments().getParcelable(getString(R.string.laundry));
+        laundryRoom = getArguments().getParcelable(getString(R.string.laundry));
         wash = getArguments().getInt(getString(R.string.laundry_position), 0) == 0;
     }
 
@@ -62,13 +62,13 @@ public class LaundryMachineTab extends ListFragment {
             getMachines();
         } else {
             v.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-            setMachines(machines, laundry);
+            setMachines(machines, laundryRoom);
         }
         return v;
     }
 
     private void getMachines(){
-        mLabs.laundryMachines(laundry.hall_no)
+        mLabs.laundryMachines(laundryRoom.hall_no)
                 .subscribe(new Action1<List<LaundryMachine>>() {
                     @Override
                     public void call(final List<LaundryMachine> machines) {
@@ -79,7 +79,7 @@ public class LaundryMachineTab extends ListFragment {
                                     loadingPanel.setVisibility(View.GONE);
                                 }
                                 try {
-                                    setMachines(machines, laundry);
+                                    setMachines(machines, laundryRoom);
                                 } catch (NullPointerException ignore) {
                                     //it has gone to another page.
                                 }
@@ -104,23 +104,21 @@ public class LaundryMachineTab extends ListFragment {
                 });
     }
 
-    private void setMachines(List<LaundryMachine> machines, Laundry laundry){
+    private void setMachines(List<LaundryMachine> machines, LaundryRoom laundryRoom){
         this.machines = machines;
         LinkedList<LaundryMachine> filtered = new LinkedList<>();
-        if(wash){
-            for(LaundryMachine machine: machines){
-                if(machine.machine_type.contains(getString(R.string.laundry_washer_textview))){
-                    filtered.add(machine);
-                }
-            }
+        String type;
+        if (wash) {
+            type =  getString(R.string.laundry_washer_textview);
         } else{
-            for(LaundryMachine machine: machines){
-                if(machine.machine_type.contains(getString(R.string.laundry_dryer_textview))){
-                    filtered.add(machine);
-                }
+            type = getString(R.string.laundry_dryer_textview);
+        }
+        for (LaundryMachine machine: machines) {
+            if(machine.machine_type.contains(type)){
+                filtered.add(machine);
             }
         }
-        LaundryMachineAdapter adapter = new LaundryMachineAdapter(mActivity, filtered, wash, laundry);
+        LaundryMachineAdapter adapter = new LaundryMachineAdapter(mActivity, filtered, wash, laundryRoom);
         mListView.setAdapter(adapter);
     }
 

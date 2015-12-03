@@ -11,6 +11,7 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -35,7 +36,7 @@ import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
-import com.pennapps.labs.pennmobile.classes.Laundry;
+import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryMachine;
 import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Venue;
@@ -126,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         setTitle(R.string.main_title);
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         manager.cancelAll();
-        if(from_alarm){
+        if (from_alarm) {
             navigateLayout(R.id.nav_laundry);
         }
     }
@@ -249,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
             gsonBuilder.registerTypeAdapter(DiningHall.class, new Serializer.MenuSerializer());
             gsonBuilder.registerTypeAdapter(BusRoute.class, new Serializer.BusRouteSerializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<List<BusRoute>>(){}.getType(), new Serializer.BusRouteListSerializer());
-            gsonBuilder.registerTypeAdapter(new TypeToken<List<Laundry>>(){}.getType(), new Serializer.LaundryListSerializer());
+            gsonBuilder.registerTypeAdapter(new TypeToken<List<LaundryRoom>>(){}.getType(), new Serializer.LaundryListSerializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<List<LaundryMachine>>(){}.getType(), new Serializer.LaundryMachineSerializer());
             Gson gson = gsonBuilder.create();
             RestAdapter restAdapter = new RestAdapter.Builder()
@@ -279,22 +280,7 @@ public class MainActivity extends AppCompatActivity {
         menu.findItem(id).setChecked(true);
     }
 
-    public void addNewsTabs(NewsFragment.TabAdapter pageAdapter, final ViewPager pager) {
-        final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
-
-        final TabLayout tabLayout = (TabLayout) getLayoutInflater().inflate(R.layout.tab_layout, null);
-        tabLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                tabLayout.setupWithViewPager(pager);
-            }
-        });
-        appBar.addView(tabLayout);
-
-        pager.setAdapter(pageAdapter);
-    }
-
-    public void addLaundryTabs(LaundryMachineFragment.TabAdapter pageAdapter, final ViewPager pager) {
+    public void addTabs(FragmentStatePagerAdapter pageAdapter, final ViewPager pager) {
         final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
 
         final TabLayout tabLayout = (TabLayout) getLayoutInflater().inflate(R.layout.tab_layout, null);

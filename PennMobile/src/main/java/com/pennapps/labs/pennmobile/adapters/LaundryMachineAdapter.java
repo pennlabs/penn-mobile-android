@@ -4,8 +4,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.os.SystemClock;
 import android.support.design.widget.Snackbar;
@@ -25,8 +23,9 @@ import com.pennapps.labs.pennmobile.LaundryBroadcastReceiver;
 import com.pennapps.labs.pennmobile.LaundryFragment;
 import com.pennapps.labs.pennmobile.MainActivity;
 import com.pennapps.labs.pennmobile.R;
-import com.pennapps.labs.pennmobile.classes.Laundry;
+import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryMachine;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -41,15 +40,15 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
     private final LayoutInflater inflater;
     private MainActivity activity;
     private boolean wash;
-    private Laundry laundry;
+    private LaundryRoom laundryRoom;
 
-    public LaundryMachineAdapter(MainActivity activity, List<LaundryMachine> machines, boolean wash, Laundry laundry) {
+    public LaundryMachineAdapter(MainActivity activity, List<LaundryMachine> machines, boolean wash, LaundryRoom laundryRoom) {
         super(activity, R.layout.laundry_list_item, machines);
         this.machines = machines;
         inflater = LayoutInflater.from(activity);
         this.activity = activity;
         this.wash = wash;
-        this.laundry = laundry;
+        this.laundryRoom = laundryRoom;
     }
     @Override
     public View getView(int position, View view, ViewGroup parent) {
@@ -66,7 +65,7 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
             ImageView imageView = (ImageView) view.findViewById(R.id.laundry_machine_iv);
             RelativeLayout summary_rl = (RelativeLayout) view.findViewById(R.id.laundry_machine_summary_rl);
             TextView description = (TextView) view.findViewById(R.id.laundry_building_description);
-            description.setText(laundry.name);
+            description.setText(laundryRoom.name);
             TextView availcount = (TextView) view.findViewById(R.id.laundry_machine_summary);
             int avail = 0;
             for(LaundryMachine machine: machines){
@@ -74,7 +73,7 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
                     avail++;
                 }
             }
-            String str = wash? activity.getString(R.string.laundry_washer): activity.getString(R.string.laundry_dryer);
+            String str = wash ? activity.getString(R.string.laundry_washer) : activity.getString(R.string.laundry_dryer);
             stringBuilder.append(avail).append(" out of ").append(machines.size()).append(" ")
             .append(str).append(" available");
             availcount.setText(stringBuilder);
@@ -83,15 +82,11 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
             display.getSize(size);
             int width = size.x / 4;
             if(wash){
-                Bitmap bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.washer);
-                Bitmap resize = Bitmap.createScaledBitmap(bitmap, width, width, true);
-                imageView.setImageBitmap(resize);
-                LaundryFragment.setSummary(laundry.washers_available, laundry.washers_in_use, 10, summary_rl, activity);
+                Picasso.with(activity).load(R.drawable.washer).resize(width, width).into(imageView);
+                LaundryFragment.setSummary(laundryRoom.washers_available, laundryRoom.washers_in_use, 10, summary_rl, activity);
             } else{
-                Bitmap bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.dryer);
-                Bitmap resize = Bitmap.createScaledBitmap(bitmap, width, width, true);
-                imageView.setImageBitmap(resize);
-                LaundryFragment.setSummary(laundry.dryers_available, laundry.dryers_in_use, 10, summary_rl, activity);
+                Picasso.with(activity).load(R.drawable.dryer).resize(width, width).into(imageView);
+                LaundryFragment.setSummary(laundryRoom.dryers_available, laundryRoom.dryers_in_use, 10, summary_rl, activity);
             }
         } else{
             summary.setVisibility(View.GONE);
@@ -110,18 +105,18 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
                 stringBuilder.append("Busy – ").append(machine.time_left);
                 description.setText(stringBuilder);
                 mSwitch.setVisibility(View.VISIBLE);
-                SetSwitchState(machine, mSwitch);
+                setSwitchState(machine, mSwitch);
             }
         }
         return view;
     }
 
-    private void SetSwitchState(final LaundryMachine machine, Switch mSwitch) {
+    private void setSwitchState(final LaundryMachine machine, Switch mSwitch) {
         final Intent intent = new Intent(getContext(), LaundryBroadcastReceiver.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(activity.getString(R.string.laundry_hall_no), laundry.hall_no);
-        intent.putExtra(activity.getString(R.string.laundry_position), 50 * laundry.hall_no + machine.number);
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), 50 * laundry.hall_no + machine.number,
+        intent.putExtra(activity.getString(R.string.laundry_hall_no), laundryRoom.hall_no);
+        intent.putExtra(activity.getString(R.string.laundry_position), laundryRoom.name.hashCode() + machine.number);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), laundryRoom.name.hashCode() + machine.number,
                 intent, PendingIntent.FLAG_NO_CREATE);
         if(alarmIntent == null) {
             mSwitch.setChecked(false);
@@ -135,7 +130,7 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
                 final AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
                 final CompoundButton button = buttonView;
                 if (isChecked) {
-                    final PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), 50 * laundry.hall_no + machine.number,
+                    final PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), laundryRoom.name.hashCode() + machine.number,
                             intent, PendingIntent.FLAG_CANCEL_CURRENT);
                     alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 3000, alarmIntent);
                     StringBuilder stringBuilder = new StringBuilder();
@@ -156,7 +151,7 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
                     snackTextView.setTextColor(activity.getResources().getColor(R.color.white));
                     snackbar.show();
                 } else {
-                    final PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), 50 * laundry.hall_no + machine.number,
+                    final PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), laundryRoom.name.hashCode() + machine.number,
                             intent, PendingIntent.FLAG_NO_CREATE);
                     if (alarmIntent != null) {
                         alarmManager.cancel(alarmIntent);
@@ -171,7 +166,7 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
                                 @Override
                                 public void onClick(View view){
                                     button.setChecked(true);
-                                    PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), 50 * laundry.hall_no + machine.number,
+                                    PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), laundryRoom.name.hashCode() + machine.number,
                                             intent, PendingIntent.FLAG_CANCEL_CURRENT);
                                     alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 3000, alarmIntent);
                                 }

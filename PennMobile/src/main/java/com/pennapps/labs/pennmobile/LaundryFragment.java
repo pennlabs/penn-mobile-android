@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.adapters.LaundryHallAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
-import com.pennapps.labs.pennmobile.classes.Laundry;
+import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryHall;
 
 import java.util.LinkedList;
@@ -62,14 +62,14 @@ public class LaundryFragment extends ListFragment {
 
     private void getLaundryHall() {
         mLabs.laundries()
-                .subscribe(new Action1<List<Laundry>>() {
+                .subscribe(new Action1<List<LaundryRoom>>() {
                     @Override
-                    public void call(final List<Laundry> laundryHalls) {
+                    public void call(final List<LaundryRoom> rooms) {
                         mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 if (loadingPanel != null) {
-                                    List<LaundryHall> halls = LaundryHall.getLaundryHall(laundryHalls);
+                                    List<LaundryHall> halls = LaundryHall.getLaundryHall(rooms);
                                     LaundryHallAdapter adapter = new LaundryHallAdapter(mActivity, halls);
                                     mListView.setAdapter(adapter);
                                     loadingPanel.setVisibility(View.GONE);
@@ -79,8 +79,8 @@ public class LaundryFragment extends ListFragment {
                                         int hall_no = args.getInt(getString(R.string.laundry_hall_no), -1);
                                         if (hall_no != -1) {
                                             for (LaundryHall hall : halls) {
-                                                for (Laundry laundry : hall.getIds()) {
-                                                    if (laundry.hall_no == hall_no) {
+                                                for (LaundryRoom laundryRoom : hall.getIds()) {
+                                                    if (laundryRoom.hall_no == hall_no) {
                                                         toLaundryHall(hall);
                                                     }
                                                 }
@@ -133,24 +133,22 @@ public class LaundryFragment extends ListFragment {
         mActivity.getActionBarToggle().syncState();
         Bundle args = new Bundle();
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        if (lh.getIds().size() > 1) {
-            Fragment fragment = new LaundryBuildingFragment();
-            args.putParcelable(getString(R.string.laundry_hall_arg), lh);
-            if (getArguments() != null) {
-                int hall_no = getArguments().getInt(getString(R.string.laundry_hall_no), -1);
-                if (hall_no != -1) {
-                    args.putInt(getString(R.string.laundry_hall_no), hall_no);
-                    getArguments().putInt(getString(R.string.laundry_hall_no), -1);
+        if (lh.getIds().size() >= 1) {
+            Fragment fragment;
+            if (lh.getIds().size() == 1){
+                fragment = new LaundryMachineFragment();
+                args.putParcelable(getString(R.string.laundry), lh.getIds().get(0));
+            } else {
+                fragment = new LaundryBuildingFragment();
+                args.putParcelable(getString(R.string.laundry_hall_arg), lh);
+                if (getArguments() != null) {
+                    int hall_no = getArguments().getInt(getString(R.string.laundry_hall_no), -1);
+                    if (hall_no != -1) {
+                        args.putInt(getString(R.string.laundry_hall_no), hall_no);
+                        getArguments().putInt(getString(R.string.laundry_hall_no), -1);
+                    }
                 }
             }
-            fragment.setArguments(args);
-            fragmentManager.beginTransaction()
-                    .replace(R.id.laundry_fragment, fragment)
-                    .addToBackStack(null)
-                    .commit();
-        } else if (lh.getIds().size() == 1) {
-            Fragment fragment = new LaundryMachineFragment();
-            args.putParcelable(getString(R.string.laundry), lh.getIds().get(0));
             fragment.setArguments(args);
             fragmentManager.beginTransaction()
                     .replace(R.id.laundry_fragment, fragment)
@@ -162,7 +160,7 @@ public class LaundryFragment extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle(R.string.laundry);
+        mActivity.setTitle(R.string.laundry);
         mActivity.setNav(R.id.nav_laundry);
     }
 
@@ -173,9 +171,6 @@ public class LaundryFragment extends ListFragment {
     }
 
     public static void setSummary(int avail, int used, int idoffset, RelativeLayout rl, Context context) {
-        if (idoffset == 0) {
-            idoffset = 0;
-        }
         LinkedList<ImageView> vertical = new LinkedList<>();
         ImageView prev = null;
         int max_col = ROW_CAP;

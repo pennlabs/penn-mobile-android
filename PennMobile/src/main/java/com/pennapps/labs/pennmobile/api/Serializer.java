@@ -12,7 +12,7 @@ import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
-import com.pennapps.labs.pennmobile.classes.Laundry;
+import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryMachine;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
@@ -114,12 +114,12 @@ public class Serializer {
         }
     }
 
-    public static class LaundryListSerializer implements JsonDeserializer<List<Laundry>> {
+    public static class LaundryListSerializer implements JsonDeserializer<List<LaundryRoom>> {
         @Override
-        public List<Laundry> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+        public List<LaundryRoom> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
                 throws JsonParseException {
             JsonElement content = je.getAsJsonObject().get("halls");
-            return new Gson().fromJson(content, new TypeToken<List<Laundry>>(){}.getType());
+            return new Gson().fromJson(content, new TypeToken<List<LaundryRoom>>(){}.getType());
         }
     }
 

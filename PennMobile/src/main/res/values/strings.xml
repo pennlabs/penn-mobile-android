@@ -52,7 +52,7 @@
     <string name="location_not_found">Location not found, please try again</string>
     <string name="no_path_found">No path found</string>
 
-    <!-- Laundry -->
+    <!-- LaundryRoom -->
     <string name="laundry_washer">Washers</string>
     <string name="laundry_dryer">Dryers</string>
     <string name="laundry_summary">Summary</string>

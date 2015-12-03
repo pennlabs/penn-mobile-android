@@ -2,7 +2,6 @@ package com.pennapps.labs.pennmobile;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -12,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.pennapps.labs.pennmobile.api.Labs;
-import com.pennapps.labs.pennmobile.classes.Laundry;
+import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryMachine;
 
 import java.util.List;
@@ -25,7 +24,7 @@ import butterknife.ButterKnife;
 public class LaundryMachineFragment extends Fragment {
     private Labs mLabs;
     private MainActivity mActivity;
-    private Laundry laundry;
+    private LaundryRoom laundryRoom;
     private List<LaundryMachine> machines;
     private TabAdapter pageAdapter;
     private ViewPager pager;
@@ -40,7 +39,7 @@ public class LaundryMachineFragment extends Fragment {
             Fragment myFragment = new LaundryMachineTab(); //data stored into the parent fragment with Fragment.getParent();
             Bundle args = new Bundle();
             args.putInt(getString(R.string.laundry_position), position);
-            args.putParcelable(getString(R.string.laundry), laundry);
+            args.putParcelable(getString(R.string.laundry), laundryRoom);
             if(machines != null) {
                 LaundryMachine[] array = (LaundryMachine[]) machines.toArray();
                 args.putParcelableArray(getString(R.string.laundry_machine_intent), array);
@@ -71,13 +70,13 @@ public class LaundryMachineFragment extends Fragment {
         mActivity = (MainActivity) getActivity();
         mActivity.closeKeyboard();
         Bundle args = getArguments();
-        laundry = args.getParcelable(getString(R.string.laundry));
+        laundryRoom = args.getParcelable(getString(R.string.laundry));
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ((MainActivity) getActivity()).closeKeyboard();
+        mActivity.closeKeyboard();
         setHasOptionsMenu(true);
     }
 
@@ -106,23 +105,23 @@ public class LaundryMachineFragment extends Fragment {
             }
         });
         v.setBackgroundColor(Color.WHITE);
-        ((MainActivity) getActivity()).addLaundryTabs(pageAdapter, pager);
+        mActivity.addTabs(pageAdapter, pager);
         return v;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if(laundry.name != null) {
-            getActivity().setTitle(laundry.name);
+        if(laundryRoom.name != null) {
+            mActivity.setTitle(laundryRoom.name);
         }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        getActivity().setTitle(R.string.laundry);
-        ((MainActivity) getActivity()).removeTabs();
+        mActivity.setTitle(R.string.laundry);
+        mActivity.removeTabs();
         ButterKnife.unbind(this);
     }
 }

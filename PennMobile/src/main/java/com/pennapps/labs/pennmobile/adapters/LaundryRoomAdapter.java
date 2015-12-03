@@ -10,19 +10,19 @@ import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.LaundryFragment;
 import com.pennapps.labs.pennmobile.R;
-import com.pennapps.labs.pennmobile.classes.Laundry;
+import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 
 import java.util.List;
 
 /**
  * Created by Jason on 10/30/2015.
  */
-public class LaundryAdapter extends ArrayAdapter<Laundry> {
-    private List<Laundry> laundries;
+public class LaundryRoomAdapter extends ArrayAdapter<LaundryRoom> {
+    private List<LaundryRoom> laundries;
     private final LayoutInflater inflater;
     private Context mContext;
 
-    public LaundryAdapter(Context context, List<Laundry> laundries) {
+    public LaundryRoomAdapter(Context context, List<LaundryRoom> laundries) {
         super(context, R.layout.laundry_list_item, laundries);
         this.laundries = laundries;
         inflater = LayoutInflater.from(context);
@@ -35,7 +35,7 @@ public class LaundryAdapter extends ArrayAdapter<Laundry> {
             view = inflater.inflate(R.layout.laundry_list_item, parent, false);
         }
         TextView textView = (TextView) view.findViewById(R.id.tv_hall_name);
-        Laundry l = laundries.get(position);
+        LaundryRoom l = laundries.get(position);
         textView.setText(l.name);
         TextView washer_tv = (TextView) view.findViewById(R.id.tv_washers);
         RelativeLayout washer_rl = (RelativeLayout) view.findViewById(R.id.rl_washers);

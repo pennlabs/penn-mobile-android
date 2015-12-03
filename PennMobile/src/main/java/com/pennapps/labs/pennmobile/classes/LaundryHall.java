@@ -4,27 +4,25 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Jason on 10/21/2015.
  */
 public class LaundryHall implements Parcelable{
     private String name;
-    private ArrayList<Laundry> laundries;
+    private ArrayList<LaundryRoom> laundries;
 
-    public LaundryHall(String name, Laundry laundry) {
+    public LaundryHall(String name, LaundryRoom laundryRoom) {
         this.name = name;
         laundries = new ArrayList<>();
-        laundries.add(laundry);
+        laundries.add(laundryRoom);
     }
 
     protected LaundryHall(Parcel in) {
         name = in.readString();
-        laundries = in.createTypedArrayList(Laundry.CREATOR);
+        laundries = in.createTypedArrayList(LaundryRoom.CREATOR);
     }
 
     public static final Creator<LaundryHall> CREATOR = new Creator<LaundryHall>() {
@@ -39,9 +37,9 @@ public class LaundryHall implements Parcelable{
         }
     };
 
-    public static List<LaundryHall> getLaundryHall(List<Laundry> laundries) {
+    public static List<LaundryHall> getLaundryHall(List<LaundryRoom> laundries) {
         LinkedList<LaundryHall> halls = new LinkedList<>();
-        for (Laundry l : laundries) {
+        for (LaundryRoom l : laundries) {
             LaundryHall h = null;
             if (!halls.isEmpty()) {
                 h = halls.getLast();
@@ -60,7 +58,7 @@ public class LaundryHall implements Parcelable{
         return halls;
     }
 
-    public List<Laundry> getIds() {
+    public List<LaundryRoom> getIds() {
         return laundries;
     }
 

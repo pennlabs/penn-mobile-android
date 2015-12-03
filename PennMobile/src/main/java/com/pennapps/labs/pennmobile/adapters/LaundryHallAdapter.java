@@ -1,21 +1,15 @@
 package com.pennapps.labs.pennmobile.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.R;
-import com.pennapps.labs.pennmobile.classes.Laundry;
 import com.pennapps.labs.pennmobile.classes.LaundryHall;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /**
