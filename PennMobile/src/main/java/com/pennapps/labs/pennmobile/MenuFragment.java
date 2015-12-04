@@ -53,10 +53,10 @@ public class MenuFragment extends Fragment {
                 args.putParcelable("DiningHall", getArguments().getParcelable("DiningHall"));
                 fragment.setArguments(args);
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.dining_fragment, fragment);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.addToBackStack(null);
-                ft.commit();
+                ft.replace(R.id.dining_fragment, fragment)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .addToBackStack(null)
+                        .commit();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
