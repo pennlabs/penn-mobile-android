@@ -106,6 +106,25 @@
         <item name="android:layout_marginTop">4dp</item>
     </style>
 
+    <style name="DiningInfoHours" parent="TextAppearance.AppCompat.Body2">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentRight">true</item>
+    </style>
+
+    <style name="DiningInfoType" parent="TextAppearance.AppCompat.Body2">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentBottom">true</item>
+    </style>
+
+    <style name="DiningInfoDate" parent="TextAppearance.AppCompat.Subhead">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_alignParentBottom">true</item>
+    </style>
+
     <style name="PCRBox">
         <item name="android:orientation">vertical</item>
         <item name="android:layout_width">0dip</item>

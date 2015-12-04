@@ -59,7 +59,6 @@ public class VenueInterval {
             }
             DateTime openInstant = DateTime.parse(openTime, DATEFORMAT);
             DateTime closeInstant = DateTime.parse(closeTime, DATEFORMAT);
-
             // Close hours sometimes given in AM hours of next day
             // Cutoff for "early morning" hours was decided to be 6AM
             if (closeInstant.getHourOfDay() < 6) {
@@ -67,6 +66,20 @@ public class VenueInterval {
             }
 
             return new Interval(openInstant, closeInstant);
+        }
+        public String getFormattedHour(String hours){
+            String newHours = hours.substring(0,5);
+            int hour = Integer.parseInt(hours.substring(0, 2));
+            if (hour>12){
+                newHours = ""+(hour-12) + hours.substring(2,5);
+            }
+            if (hour>=12){
+                newHours+="pm";
+            }
+            else{
+                newHours+="am";
+            }
+            return newHours;
         }
     }
 }

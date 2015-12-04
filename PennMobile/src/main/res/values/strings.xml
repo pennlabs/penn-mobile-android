@@ -33,6 +33,7 @@
     <!-- Dining -->
     <string name="dining_hall_open">Open</string>
     <string name="dining_hall_closed">Closed</string>
+    <string name="dining_info">Dining Hall Hours</string>
 
     <!-- Courses -->
     <string name="course">Course</string>

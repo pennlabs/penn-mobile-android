@@ -64,4 +64,7 @@ public class Venue {
 
         return intervals;
     }
+    public List<VenueInterval> allHours(){
+        return hours;
+    }
 }
