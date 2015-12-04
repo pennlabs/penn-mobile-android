@@ -22,11 +22,6 @@
             android:title="@string/dining"/>
 
         <item
-            android:id="@+id/nav_transit"
-            android:icon="@drawable/ic_directions_bus"
-            android:title="@string/transit"/>
-
-        <item
             android:id="@+id/nav_news"
             android:icon="@drawable/ic_announcement"
             android:title="@string/news"/>
