@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
             Gson gson = gsonBuilder.create();
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setConverter(new GsonConverter(gson))
-                    .setEndpoint("http://api.pennlabs.org")
+                    .setEndpoint("https://api.pennlabs.org")
                     .build();
             mLabs = restAdapter.create(Labs.class);
         }
