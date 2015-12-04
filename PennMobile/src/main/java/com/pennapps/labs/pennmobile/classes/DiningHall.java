@@ -98,11 +98,14 @@ public class DiningHall implements Parcelable {
         return menus.size() > 0;
     }
 
-    public String getLocation(){ return location;}
+    public String getLocation() {
+        return location;
+    }
 
     public Venue getVenue(){
         return venue;
     }
+
     public String closingTime() {
         for (Interval openInterval : openHours.values()) {
             if (openInterval.containsNow()) {

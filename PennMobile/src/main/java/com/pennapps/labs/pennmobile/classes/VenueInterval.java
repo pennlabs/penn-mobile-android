@@ -67,17 +67,18 @@ public class VenueInterval {
 
             return new Interval(openInstant, closeInstant);
         }
-        public String getFormattedHour(String hours){
-            String newHours = hours.substring(0,5);
+
+        public String getFormattedHour(String hours) {
+            String newHours = hours.substring(0, 5);
             int hour = Integer.parseInt(hours.substring(0, 2));
-            if (hour>12){
-                newHours = ""+(hour-12) + hours.substring(2,5);
+            if (hour > 12) {
+                newHours = "" + (hour - 12) + hours.substring(2, 5);
             }
-            if (hour>=12){
-                newHours+="pm";
+            if (hour >= 12) {
+                newHours += "pm";
             }
-            else{
-                newHours+="am";
+            else {
+                newHours += "am";
             }
             return newHours;
         }

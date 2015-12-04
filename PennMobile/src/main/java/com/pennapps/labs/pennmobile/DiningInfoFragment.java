@@ -35,6 +35,7 @@ import rx.functions.Action1;
 
 /**
  * Created by Lily on 11/13/2015.
+ * Fragment for Dining information (hours, map)
  */
 public class DiningInfoFragment extends Fragment {
 
@@ -94,7 +95,6 @@ public class DiningInfoFragment extends Fragment {
     }
     private void drawMap() {
         String buildingCode = mDiningHall.getName();
-        final String location = mDiningHall.getName();
         if (!buildingCode.equals("")) {
             mLabs.buildings(buildingCode)
                     .observeOn(AndroidSchedulers.mainThread())
@@ -102,14 +102,14 @@ public class DiningInfoFragment extends Fragment {
                         @Override
                         public void call(List<Building> buildings) {
                             if (!buildings.isEmpty()) {
-                                drawMarker(buildings.get(0).getLatLng(), location);
+                                drawMarker(buildings.get(0).getLatLng());
                             }
                         }
                     });
         }
     }
 
-    private void drawMarker(LatLng courseLatLng, String meetingLocation) {
+    private void drawMarker(LatLng courseLatLng) {
         if (map != null && courseLatLng != null && mapFrame != null) {
             mapFrame.setVisibility(View.VISIBLE);
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 17));
@@ -131,7 +131,8 @@ public class DiningInfoFragment extends Fragment {
         TextView textView = new TextView(mActivity);
         DateTimeFormatter intervalFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
         DateTime dateTime = intervalFormatter.parseDateTime(day.date);
-        textView.setText(dateTime.dayOfWeek().getAsText() + ", " + dateTime.monthOfYear().getAsString() + "/" + dateTime.dayOfMonth().getAsShortText());
+        String dateString = dateTime.dayOfWeek().getAsText() + ", " + dateTime.monthOfYear().getAsString() + "/" + dateTime.dayOfMonth().getAsShortText();
+        textView.setText(dateString);
         textView.setTextAppearance(mActivity, R.style.DiningInfoDate);
         textView.setPadding(0, 10, 0, 10);
         if (vertical.isEmpty()){
@@ -165,7 +166,8 @@ public class DiningInfoFragment extends Fragment {
             layparamtimes.addRule(RelativeLayout.ALIGN_BOTTOM, vertical.getLast().getId());
             layparamtimes.setMargins(0, 10, 0, 0);
             TextView mealInt = new TextView(mActivity);
-            mealInt.setText(meal.getFormattedHour(meal.open) + " - " + meal.getFormattedHour(meal.close));
+            String hoursString = meal.getFormattedHour(meal.open) + " - " + meal.getFormattedHour(meal.close);
+            mealInt.setText(hoursString);
             mealInt.setTextAppearance(mActivity, R.style.DiningInfoHours);
             mealInt.setId(vertical.getLast().getId() + 1);
             menuParent.addView(mealInt, layparamtimes);
