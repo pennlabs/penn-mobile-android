@@ -25,6 +25,7 @@
     <color name="color_secondary">#41c0ee</color>
     <color name="color_accent">#FFFFFF</color>
     <color name="secondary_text_material_light">#8a000000</color>
+    <color name="splash_dark">#1A237E</color>
 
     <color name="star_color_off">#cccccc</color>
     <color name="star_color_on">#f4b400</color>

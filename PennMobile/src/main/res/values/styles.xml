@@ -10,6 +10,10 @@
         <item name="preferenceTheme">@style/ReferenceTheme</item>
     </style>
 
+    <style name="AppTheme.Launcher">
+        <item name="android:windowBackground">@drawable/splash_page</item>
+    </style>
+
     <style name="ReferenceTheme" parent="@style/PreferenceThemeOverlay">
         <item name="colorAccent">@color/color_primary</item>
     </style>

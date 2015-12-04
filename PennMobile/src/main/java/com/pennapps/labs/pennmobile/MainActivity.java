@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         if (!BuildConfig.DEBUG) {
             Fabric.with(this, new Crashlytics());
@@ -256,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
             Gson gson = gsonBuilder.create();
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setConverter(new GsonConverter(gson))
-                    .setEndpoint("http://api.pennlabs.org")
+                    .setEndpoint("https://api.pennlabs.org")
                     .build();
             mLabs = restAdapter.create(Labs.class);
         }
