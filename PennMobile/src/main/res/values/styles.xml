@@ -34,13 +34,13 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:gravity">center</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:layout_marginTop">2dp</item>
     </style>
 
     <style name="MainIcon">
-        <item name="android:layout_width">110dp</item>
-        <item name="android:layout_height">110dp</item>
+        <item name="android:layout_width">90dp</item>
+        <item name="android:layout_height">90dp</item>
         <item name="android:scaleType">centerInside</item>
         <item name="android:layout_centerInParent">true</item>
         <item name="android:background">@android:color/transparent</item>

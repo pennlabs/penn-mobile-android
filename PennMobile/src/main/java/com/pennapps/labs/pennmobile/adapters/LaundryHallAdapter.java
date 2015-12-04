@@ -18,13 +18,11 @@ import java.util.List;
 public class LaundryHallAdapter extends ArrayAdapter<LaundryHall> {
     private List<LaundryHall> laundries;
     private final LayoutInflater inflater;
-    private Context mContext;
 
     public LaundryHallAdapter(Context context, List<LaundryHall> laundries) {
         super(context, R.layout.laundry_list_item, laundries);
         this.laundries = laundries;
         inflater = LayoutInflater.from(context);
-        mContext = context;
     }
 
     @Override

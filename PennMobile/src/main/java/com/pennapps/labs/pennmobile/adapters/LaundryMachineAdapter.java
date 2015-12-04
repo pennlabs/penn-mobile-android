@@ -97,7 +97,8 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
             title.setText(stringBuilder);
             TextView description = (TextView) view.findViewById(R.id.laundry_machine_description);
             Switch mSwitch = (Switch) view.findViewById(R.id.laundry_notification_button);
-            if (machine.time_left == null || machine.time_left.equals("null")|| machine.time_left.contains("ago")) {
+            if (machine.time_left == null || machine.time_left.equals("null")|| machine.time_left.contains("ago") || machine.time_left.contains("just")
+                    || machine.time_left.contains("not")) {
                 description.setText(R.string.laundry_available);
                 mSwitch.setVisibility(View.GONE);
             } else {
@@ -114,8 +115,9 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
     private void setSwitchState(final LaundryMachine machine, Switch mSwitch) {
         final Intent intent = new Intent(getContext(), LaundryBroadcastReceiver.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(activity.getString(R.string.laundry_hall_no), laundryRoom.hall_no);
         intent.putExtra(activity.getString(R.string.laundry_position), laundryRoom.name.hashCode() + machine.number);
+        intent.putExtra(activity.getString(R.string.laundry), laundryRoom);
+        intent.putExtra(activity.getString(R.string.laundry_machine_intent), machine);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), laundryRoom.name.hashCode() + machine.number,
                 intent, PendingIntent.FLAG_NO_CREATE);
         if (alarmIntent == null) {
@@ -132,7 +134,7 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
                 if (isChecked) {
                     final PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), laundryRoom.name.hashCode() + machine.number,
                             intent, PendingIntent.FLAG_CANCEL_CURRENT);
-                    alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 3000, alarmIntent);
+                    alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + machine.getTimeInMilli(), alarmIntent);
                     StringBuilder stringBuilder = new StringBuilder();
                     stringBuilder.append(activity.getString(R.string.laundry_notification_snackbar_on))
                             .append(" ").append(machine.machine_type).append(" ")
@@ -168,7 +170,7 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
                                     button.setChecked(true);
                                     PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), laundryRoom.name.hashCode() + machine.number,
                                             intent, PendingIntent.FLAG_CANCEL_CURRENT);
-                                    alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 3000, alarmIntent);
+                                    alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + machine.getTimeInMilli(), alarmIntent);
                                 }
                             });
                     View subView = snackbar.getView();

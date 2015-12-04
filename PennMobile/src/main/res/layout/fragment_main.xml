@@ -41,9 +41,7 @@
                 android:layout_below="@id/directory_img"
                 android:text="@string/directory"
                 style="@style/MainText"/>
-
         </RelativeLayout>
-
     </TableRow>
 
     <TableRow style="@style/MainTableLayout">
@@ -87,7 +85,6 @@
 
         <RelativeLayout
             android:id="@+id/news_cont"
-            android:layout_marginBottom="15dp"
             style="@style/MainRelativeLayout">
 
             <ImageView
@@ -106,7 +103,6 @@
 
         <RelativeLayout
             android:id="@+id/map_cont"
-            android:layout_marginBottom="15dp"
             style="@style/MainRelativeLayout">
 
             <ImageView
@@ -121,7 +117,27 @@
                 android:text="@string/map"
                 style="@style/MainText"/>
         </RelativeLayout>
+    </TableRow>
 
+    <TableRow style="@style/MainTableLayout">
+        <RelativeLayout
+            android:id="@+id/laundry_cont"
+            android:paddingTop="-15dp"
+            android:layout_marginBottom="10dp"
+            style="@style/MainRelativeLayout">
+
+            <ImageView
+                android:contentDescription="@string/laundry"
+                android:id="@+id/laundry_img"
+                android:src="@drawable/ic_laundry"
+                style="@style/MainIcon" />
+
+            <TextView
+                android:id="@+id/laundry_button"
+                android:layout_below="@+id/laundry_img"
+                android:text="@string/laundry"
+                style="@style/MainText"/>
+        </RelativeLayout>
     </TableRow>
 
 </TableLayout>

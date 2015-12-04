@@ -208,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new MapFragment();
                 break;
             case R.id.nav_laundry:
+            case R.id.laundry_cont:
                 fragment = new LaundryFragment();
                 if (from_alarm) {
                     from_alarm = false;

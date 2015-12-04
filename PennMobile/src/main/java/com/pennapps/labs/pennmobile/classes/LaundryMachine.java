@@ -11,6 +11,7 @@ public class LaundryMachine implements Parcelable {
     public String machine_type;
     public int number;
     public String time_left;
+    public static final int MINUTE_TO_MILL = 60000;
 
     protected LaundryMachine(Parcel in) {
         available = in.readByte() != 0;
@@ -42,5 +43,16 @@ public class LaundryMachine implements Parcelable {
         dest.writeString(machine_type);
         dest.writeInt(number);
         dest.writeString(time_left);
+    }
+
+    public long getTimeInMilli(){
+        long answer;
+        int i = 0;
+        while(Character.isDigit(time_left.charAt(i))){
+            i++;
+        }
+        answer = Integer.parseInt(time_left.substring(0,i));
+        answer *= MINUTE_TO_MILL;
+        return answer;
     }
 }
