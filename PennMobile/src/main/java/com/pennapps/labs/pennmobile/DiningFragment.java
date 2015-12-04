@@ -30,10 +30,8 @@ public class DiningFragment extends ListFragment {
     private Labs mLabs;
     private ListView mListView;
     private MainActivity mActivity;
-    @Bind(R.id.loadingPanel)
-    RelativeLayout loadingPanel;
-    @Bind(R.id.no_results)
-    TextView no_results;
+    @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
+    @Bind(R.id.no_results) TextView no_results;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

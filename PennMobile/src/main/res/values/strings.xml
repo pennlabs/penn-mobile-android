@@ -13,6 +13,7 @@
     <string name="transit">Transit</string>
     <string name="directory">Directory</string>
     <string name="news">News</string>
+    <string name="laundry">Laundry</string>
     <string name="support">Campus Help</string>
     <string name="about">About</string>
     <string name="labs_icon">Penn Labs</string>
@@ -51,6 +52,24 @@
     <string name="location_not_found">Location not found, please try again</string>
     <string name="no_path_found">No path found</string>
 
+    <!-- LaundryRoom -->
+    <string name="laundry_washer">Washers</string>
+    <string name="laundry_dryer">Dryers</string>
+    <string name="laundry_summary">Summary</string>
+    <string name="laundry_available">Available</string>
+    <string name="laundry_availablein">left</string>
+    <string name="laundry_washer_textview">Washer</string>
+    <string name="laundry_dryer_textview">Dryer</string>
+    <string name="laundry_notification_alarm_intent">From alarm</string>
+    <string name="laundry_notification_snackbar_on">Notification turned on for </string>
+    <string name="laundry_notification_snackbar_off">Notification turned off for </string>
+    <string name="laundry_switch">Activate switch for notification when complete</string>
+    <string name="laundry_undo">UNDO</string>
+    <string name="laundry_hall_no">hall_no</string>
+    <string name="laundry_position">position</string>
+    <string name="laundry_machine_intent">machines</string>
+    <string name="laundry_hall_arg">Laundry Hall</string>
+
     <!-- News -->
     <string name="open_browser">Open in Browser</string>
 
@@ -72,4 +91,5 @@
     <string name="directory_show">Show favorites</string>
     <string name="directory_all">Show all</string>
     <string name="directory_delim">|#|</string>
+
 </resources>

@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -34,6 +36,8 @@ import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
+import com.pennapps.labs.pennmobile.classes.LaundryRoom;
+import com.pennapps.labs.pennmobile.classes.LaundryMachine;
 import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
@@ -49,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private static Labs mLabs;
+    private boolean from_alarm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+
+        from_alarm = getIntent().getBooleanExtra(getString(R.string.laundry_notification_alarm_intent), false);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(
@@ -119,6 +126,11 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         setTitle(R.string.main_title);
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancelAll();
+        if (from_alarm) {
+            navigateLayout(R.id.nav_laundry);
+        }
     }
 
     public void closeKeyboard() {
@@ -196,6 +208,16 @@ public class MainActivity extends AppCompatActivity {
             case R.id.map_cont:
                 fragment = new MapFragment();
                 break;
+            case R.id.nav_laundry:
+            case R.id.laundry_cont:
+                fragment = new LaundryFragment();
+                if (from_alarm) {
+                    from_alarm = false;
+                    Bundle arg = new Bundle();
+                    arg.putInt(getString(R.string.laundry_hall_no), getIntent().getIntExtra(getString(R.string.laundry_hall_no), -1));
+                    fragment.setArguments(arg);
+                }
+                break;
             case R.id.nav_support:
                 fragment = new SupportFragment();
                 break;
@@ -230,6 +252,8 @@ public class MainActivity extends AppCompatActivity {
             gsonBuilder.registerTypeAdapter(DiningHall.class, new Serializer.MenuSerializer());
             gsonBuilder.registerTypeAdapter(BusRoute.class, new Serializer.BusRouteSerializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<List<BusRoute>>(){}.getType(), new Serializer.BusRouteListSerializer());
+            gsonBuilder.registerTypeAdapter(new TypeToken<List<LaundryRoom>>(){}.getType(), new Serializer.LaundryListSerializer());
+            gsonBuilder.registerTypeAdapter(new TypeToken<List<LaundryMachine>>(){}.getType(), new Serializer.LaundryMachineSerializer());
             Gson gson = gsonBuilder.create();
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setConverter(new GsonConverter(gson))
@@ -258,7 +282,7 @@ public class MainActivity extends AppCompatActivity {
         menu.findItem(id).setChecked(true);
     }
 
-    public void addTabs(NewsFragment.TabAdapter pageAdapter, final ViewPager pager) {
+    public void addTabs(FragmentStatePagerAdapter pageAdapter, final ViewPager pager) {
         final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
 
         final TabLayout tabLayout = (TabLayout) getLayoutInflater().inflate(R.layout.tab_layout, null);
@@ -272,6 +296,8 @@ public class MainActivity extends AppCompatActivity {
 
         pager.setAdapter(pageAdapter);
     }
+
+
 
     public void removeTabs() {
         final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);

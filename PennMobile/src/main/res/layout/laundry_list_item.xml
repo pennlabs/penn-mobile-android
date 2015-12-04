@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin" >
+
+    <TextView
+        tools:text="Harrison"
+        android:id="@+id/tv_hall_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="2dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#000000" />
+    <TextView
+        android:text="@string/laundry_washer"
+        android:id="@+id/tv_washers"
+        android:layout_below="@+id/tv_hall_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:textSize="16sp"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_washers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/tv_washers"
+        android:layout_alignBottom="@id/tv_washers"
+        android:paddingBottom="4dp"
+        android:visibility="gone">
+
+    </RelativeLayout>
+
+    <TextView
+        android:text="@string/laundry_dryer"
+        android:id="@+id/tv_dryers"
+        android:layout_below="@id/tv_washers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:layout_marginRight="5dp"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_dryers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/tv_dryers"
+        android:layout_alignBottom="@id/tv_dryers"
+        android:paddingBottom="3dp"
+        android:visibility="gone">
+
+    </RelativeLayout>
+
+</RelativeLayout>

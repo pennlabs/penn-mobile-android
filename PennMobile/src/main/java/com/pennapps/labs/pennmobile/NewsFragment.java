@@ -53,6 +53,7 @@ public class NewsFragment extends Fragment {
             return myFragment;
         }
 
+        @Override
         public CharSequence getPageTitle(int position) {
             return titles.get(position);
         }

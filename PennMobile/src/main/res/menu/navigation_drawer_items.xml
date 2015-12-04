@@ -37,6 +37,11 @@
             android:title="@string/map"/>
 
         <item
+            android:id="@+id/nav_laundry"
+            android:icon="@drawable/ic_local_laundry_service"
+            android:title="@string/laundry"/>
+
+        <item
             android:id="@+id/nav_support"
             android:icon="@drawable/ic_face_unlock_black_24dp"
             android:title="@string/support"/>
