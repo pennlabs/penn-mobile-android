@@ -82,7 +82,7 @@ public class DirectoryFragment extends ListFragment {
             case R.id.directory_star:
                 if (starOn) {
                     starOn = false;
-                    item.setIcon(R.drawable.star_on);
+                    item.setIcon(R.drawable.star_off);
                     setScreenWithState();
                 } else {
                     SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -91,7 +91,7 @@ public class DirectoryFragment extends ListFragment {
                         Toast.makeText(mContext, "No favorites found.", Toast.LENGTH_SHORT).show();
                     } else {
                         starOn = true;
-                        item.setIcon(R.drawable.star_off);
+                        item.setIcon(R.drawable.star_on);
                         if (mListView.getVisibility() == View.GONE) {
                             mListView.setVisibility(View.VISIBLE);
                         }
@@ -196,7 +196,7 @@ public class DirectoryFragment extends ListFragment {
                     @Override
                     public void call(final List<Person> people) {
                         MenuItem star = mMenu.findItem(R.id.directory_star);
-                        star.setIcon(R.drawable.star_on);
+                        star.setIcon(R.drawable.star_off);
                         starOn = false;
                         DirectoryAdapter mAdapter = new DirectoryAdapter(mContext, people);
                         if (loadingPanel != null) {

@@ -139,15 +139,7 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
                     stringBuilder.append(activity.getString(R.string.laundry_notification_snackbar_on))
                             .append(" ").append(machine.machine_type).append(" ")
                             .append(machine.number);
-                    Snackbar snackbar = Snackbar.make(buttonView,stringBuilder , Snackbar.LENGTH_SHORT)
-                            .setAction(activity.getString(R.string.laundry_undo), new View.OnClickListener(){
-                                @Override
-                                public void onClick(View view){
-                                    button.setChecked(false);
-                                    alarmManager.cancel(alarmIntent);
-                                    alarmIntent.cancel();
-                                }
-                            });
+                    Snackbar snackbar = Snackbar.make(buttonView,stringBuilder , Snackbar.LENGTH_SHORT);
                     View subView = snackbar.getView();
                     TextView snackTextView = (TextView) subView.findViewById(android.support.design.R.id.snackbar_text);
                     snackTextView.setTextColor(activity.getResources().getColor(R.color.white));
@@ -163,16 +155,7 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
                     stringBuilder.append(activity.getString(R.string.laundry_notification_snackbar_off))
                             .append(" ").append(machine.machine_type).append(" ")
                             .append(machine.number);
-                    Snackbar snackbar = Snackbar.make(buttonView,stringBuilder, Snackbar.LENGTH_SHORT)
-                            .setAction(activity.getString(R.string.laundry_undo), new View.OnClickListener(){
-                                @Override
-                                public void onClick(View view){
-                                    button.setChecked(true);
-                                    PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), laundryRoom.name.hashCode() + machine.number,
-                                            intent, PendingIntent.FLAG_CANCEL_CURRENT);
-                                    alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + machine.getTimeInMilli(), alarmIntent);
-                                }
-                            });
+                    Snackbar snackbar = Snackbar.make(buttonView,stringBuilder, Snackbar.LENGTH_SHORT);
                     View subView = snackbar.getView();
                     TextView snackTextView = (TextView) subView.findViewById(android.support.design.R.id.snackbar_text);
                     snackTextView.setTextColor(activity.getResources().getColor(R.color.white));
