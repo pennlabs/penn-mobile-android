@@ -9,7 +9,7 @@
         android:title="@string/search_title"/>
 
     <item android:id="@+id/directory_star"
-          android:icon="@drawable/star_on"
+          android:icon="@drawable/star_off"
           app:showAsAction="always"
           android:title="@string/directory_show"/>
 </menu>
