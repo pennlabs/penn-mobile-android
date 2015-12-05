@@ -4,14 +4,26 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/building_image"
+    <ProgressBar
+        android:indeterminateTint="@color/color_primary"
+        android:indeterminateTintMode="src_in"
+        style="@android:style/Widget.ProgressBar.Small"
+        android:layout_gravity="center"
+        android:id="@+id/mapProgress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:contentDescription="@string/image_description"
+        android:layout_centerVertical="true"
+        android:padding="50dip"
         android:adjustViewBounds="true"
-        android:scaleType="fitXY"/>
+        android:indeterminate="true"/>
+    <ImageView
+        android:id="@+id/building_image"
+        android:layout_width="250dp"
+        android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@string/image_description"
+        android:adjustViewBounds="true"/>
 
     <TextView
         android:id="@+id/building_name"
