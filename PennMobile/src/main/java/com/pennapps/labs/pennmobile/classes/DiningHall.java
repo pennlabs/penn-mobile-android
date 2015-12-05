@@ -161,9 +161,35 @@ public class DiningHall implements Parcelable {
     * Created by Adel on 12/18/14.
             * Class for a single menu, ie. Lunch, Dinner
     */
-    public static class Menu {
+    public static class Menu implements Parcelable{
         @SerializedName("txtDayPartDescription") public String name;
         @SerializedName("tblStation") public List<DiningStation> stations = new ArrayList<>();
+
+        protected Menu(Parcel in) {
+            name = in.readString();
+        }
+
+        public static final Creator<Menu> CREATOR = new Creator<Menu>() {
+            @Override
+            public Menu createFromParcel(Parcel in) {
+                return new Menu(in);
+            }
+
+            @Override
+            public Menu[] newArray(int size) {
+                return new Menu[size];
+            }
+        };
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(name);
+        }
     }
 
     /**
