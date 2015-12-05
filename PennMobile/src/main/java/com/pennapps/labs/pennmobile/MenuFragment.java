@@ -4,7 +4,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.StyleRes;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -22,7 +26,6 @@ public class MenuFragment extends Fragment {
 
     private DiningHall mDiningHall;
     private MainActivity mActivity;
-
     @Bind(R.id.menu_parent) LinearLayout menuParent;
 
     @Override
@@ -30,6 +33,34 @@ public class MenuFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mDiningHall = getArguments().getParcelable("DiningHall");
         mActivity = (MainActivity) getActivity();
+        setHasOptionsMenu(true);
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.dining, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.dining_info_button:
+                Fragment fragment = new DiningInfoFragment();
+                Bundle args = new Bundle();
+                args.putParcelable("DiningHall", getArguments().getParcelable("DiningHall"));
+                fragment.setArguments(args);
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.dining_fragment, fragment)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .addToBackStack(null)
+                        .commit();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -68,6 +99,8 @@ public class MenuFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
+        mActivity.getActionBarToggle().syncState();
         getActivity().setTitle(mDiningHall.getName() + " Menu");
     }
 

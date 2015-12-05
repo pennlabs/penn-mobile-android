@@ -22,13 +22,15 @@ public class DiningHall implements Parcelable {
     // Refers to whether the dining hall is residential or retail
     private boolean residential;
     private HashMap<String, Interval> openHours;
+    private Venue venue;
     @SerializedName("tblDayPart") public List<Menu> menus = new ArrayList<>();
 
-    public DiningHall(int id, String name, boolean residential, HashMap<String, Interval> hours) {
+    public DiningHall(int id, String name, boolean residential, HashMap<String, Interval> hours, Venue venue) {
         this.id = id;
         this.name = name;
         this.residential = residential;
         this.openHours = hours;
+        this.venue = venue;
     }
 
     protected DiningHall(Parcel in) {
@@ -96,6 +98,11 @@ public class DiningHall implements Parcelable {
         return menus.size() > 0;
     }
 
+
+    public Venue getVenue(){
+        return venue;
+    }
+
     public String closingTime() {
         for (Interval openInterval : openHours.values()) {
             if (openInterval.containsNow()) {
@@ -105,7 +112,7 @@ public class DiningHall implements Parcelable {
         return "";
     }
 
-    private List<Map.Entry<String, Interval>> orderedHours() {
+    public List<Map.Entry<String, Interval>> orderedHours() {
         List<Map.Entry<String, Interval>> list = new ArrayList<>(openHours.entrySet());
         Collections.sort( list, new Comparator<Map.Entry<String, Interval>>() {
             public int compare( Map.Entry<String, Interval> x, Map.Entry<String, Interval> y )

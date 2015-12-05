@@ -1,0 +1,47 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/dining_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/dining_map_frame"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="180dp">
+            <FrameLayout
+                android:id="@+id/dining_map_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/gradient" />
+        </FrameLayout>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="Hours"
+                  android:layout_marginTop="10dp"
+                  android:layout_marginLeft="10dp"
+                  android:layout_marginBottom="10dp"
+                  android:textSize="12pt"
+                  android:id="@+id/info_hours" />
+
+        <RelativeLayout
+            android:id="@+id/dining_hours"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:paddingLeft="16dip"
+            android:paddingRight="16dip"
+            android:paddingBottom="20dip"
+            android:layout_weight="1">
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</ScrollView>

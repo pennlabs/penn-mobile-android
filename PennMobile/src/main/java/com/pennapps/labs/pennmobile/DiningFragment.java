@@ -99,7 +99,7 @@ public class DiningFragment extends ListFragment {
                 .flatMap(new Func1<Venue, Observable<DiningHall>>() {
                     @Override
                     public Observable<DiningHall> call(Venue venue) {
-                        DiningHall hall = new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours());
+                        DiningHall hall = new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours(), venue);
                         return Observable.just(hall);
                     }
                 })
