@@ -109,12 +109,12 @@ public class DiningInfoFragment extends Fragment {
         }
     }
 
-    private void drawMarker(LatLng courseLatLng) {
-        if (map != null && courseLatLng != null && mapFrame != null) {
+    private void drawMarker(LatLng diningHallLatLng) {
+        if (map != null && diningHallLatLng != null && mapFrame != null) {
             mapFrame.setVisibility(View.VISIBLE);
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLatLng, 17));
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(diningHallLatLng, 17));
             Marker marker = map.addMarker(new MarkerOptions()
-                    .position(courseLatLng)
+                    .position(diningHallLatLng)
                     .title(mDiningHall.getName()));
             marker.showInfoWindow();
         }
@@ -152,7 +152,6 @@ public class DiningInfoFragment extends Fragment {
             TextView mealType = new TextView(mActivity);
             mealType.setText(meal.type);
             mealType.setId(vertical.getLast().getId() + 1);
-            mealType.setTextAppearance(mActivity, R.style.DiningInfoType);
             RelativeLayout.LayoutParams layparammeal = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                     RelativeLayout.LayoutParams.WRAP_CONTENT);
             layparammeal.addRule(RelativeLayout.BELOW, vertical.getLast().getId());
@@ -168,7 +167,6 @@ public class DiningInfoFragment extends Fragment {
             TextView mealInt = new TextView(mActivity);
             String hoursString = meal.getFormattedHour(meal.open) + " - " + meal.getFormattedHour(meal.close);
             mealInt.setText(hoursString);
-            mealInt.setTextAppearance(mActivity, R.style.DiningInfoHours);
             mealInt.setId(vertical.getLast().getId() + 1);
             menuParent.addView(mealInt, layparamtimes);
             vertical.add(mealInt);

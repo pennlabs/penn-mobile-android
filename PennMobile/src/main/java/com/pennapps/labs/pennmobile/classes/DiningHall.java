@@ -18,7 +18,7 @@ import java.util.Map;
 public class DiningHall implements Parcelable {
 
     private int id;
-    private String name, location;
+    private String name;
     // Refers to whether the dining hall is residential or retail
     private boolean residential;
     private HashMap<String, Interval> openHours;
@@ -98,9 +98,6 @@ public class DiningHall implements Parcelable {
         return menus.size() > 0;
     }
 
-    public String getLocation() {
-        return location;
-    }
 
     public Venue getVenue(){
         return venue;
