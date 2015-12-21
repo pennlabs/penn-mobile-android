@@ -282,7 +282,7 @@ public class MainActivity extends AppCompatActivity {
         menu.findItem(id).setChecked(true);
     }
 
-    public void addTabs(FragmentStatePagerAdapter pageAdapter, final ViewPager pager) {
+    public void addTabs(FragmentStatePagerAdapter pageAdapter, final ViewPager pager, boolean scrollable) {
         final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
 
         final TabLayout tabLayout = (TabLayout) getLayoutInflater().inflate(R.layout.tab_layout, null);
@@ -292,6 +292,9 @@ public class MainActivity extends AppCompatActivity {
                 tabLayout.setupWithViewPager(pager);
             }
         });
+        if (!scrollable) {
+            tabLayout.setTabMode(TabLayout.MODE_FIXED);
+        }
         appBar.addView(tabLayout);
 
         pager.setAdapter(pageAdapter);

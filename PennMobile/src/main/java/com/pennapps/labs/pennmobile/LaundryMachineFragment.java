@@ -105,7 +105,7 @@ public class LaundryMachineFragment extends Fragment {
             }
         });
         v.setBackgroundColor(Color.WHITE);
-        mActivity.addTabs(pageAdapter, pager);
+        mActivity.addTabs(pageAdapter, pager, false);
         return v;
     }
 
