@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -109,18 +110,21 @@ public class MapFragment extends Fragment {
             currentMarker = marker;
 
             ImageView imageView = (ImageView) view.findViewById(R.id.building_image);
+            final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.mapProgress);
             TextView name = (TextView) view.findViewById(R.id.building_name);
             name.setText(marker.getTitle());
 
             if (marker.getSnippet().isEmpty()) {
                 imageView.setVisibility(View.GONE);
             } else if (loadedMarkers.contains(currentMarker)) {
-                Picasso.with(activity).load(marker.getSnippet()).into(imageView);
+                Picasso.with(activity).load(marker.getSnippet()).fit().centerInside().into(imageView);
             } else {
                 loadedMarkers.add(currentMarker);
-                Picasso.with(activity).load(marker.getSnippet()).into(imageView, new Callback() {
+                progressBar.setVisibility(View.VISIBLE);
+                Picasso.with(activity).load(marker.getSnippet()).fit().centerInside().into(imageView, new Callback() {
                     @Override
                     public void onSuccess() {
+                        progressBar.setVisibility(View.GONE);
                         currentMarker.hideInfoWindow();
                         currentMarker.showInfoWindow();
                     }
