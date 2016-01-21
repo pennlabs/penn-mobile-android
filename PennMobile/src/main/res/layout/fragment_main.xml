@@ -1,143 +1,200 @@
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.percent.PercentRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/button_table"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     tools:context="com.pennapps.labs.pennmobile.MainFragment">
 
-    <TableRow style="@style/MainTableLayout">
+    <android.support.percent.PercentRelativeLayout
+    style="@style/MainRelativeLayout"
+    android:id="@+id/registrar_cont"
+    app:layout_widthPercent="50%"
+    app:layout_heightPercent="25%">
 
-        <RelativeLayout
-            android:id="@+id/registrar_cont"
-            style="@style/MainRelativeLayout">
+    <ImageView
+        android:contentDescription="@string/registrar"
+        android:id="@+id/registrar_img"
+        android:src="@drawable/ic_registrar"
+        style="@style/MainIcon"
+        app:layout_widthPercent="100%"
+        app:layout_heightPercent="60%"
+        app:layout_marginTopPercent="10%"
+        />
 
-            <ImageView
-                android:contentDescription="@string/registrar"
-                android:id="@+id/registrar_img"
-                android:src="@drawable/ic_registrar"
-                style="@style/MainIcon" />
+    <TextView
+        android:id="@+id/registrar_button"
+        android:layout_below="@+id/registrar_img"
+        android:text="@string/registrar"
+        style="@style/MainText"
+        app:layout_widthPercent="100%"
+        app:layout_heightPercent="25%"/>
 
-            <TextView
-                android:id="@+id/registrar_button"
-                android:layout_below="@+id/registrar_img"
-                android:text="@string/registrar"
-                style="@style/MainText"/>
+</android.support.percent.PercentRelativeLayout>
 
-        </RelativeLayout>
+    <android.support.percent.PercentRelativeLayout
+        style="@style/MainRelativeLayout"
+        android:layout_toRightOf="@id/registrar_cont"
+        android:id="@+id/directory_cont"
+        app:layout_widthPercent="50%"
+        app:layout_heightPercent="25%">
 
-        <RelativeLayout
-            android:id="@+id/directory_cont"
-            style="@style/MainRelativeLayout">
+        <ImageView
+            android:contentDescription="@string/directory"
+            android:id="@+id/directory_img"
+            android:src="@drawable/ic_directory"
+            style="@style/MainIcon"
+            app:layout_widthPercent="100%"
+            app:layout_heightPercent="60%"
+            app:layout_marginTopPercent="10%"
+            />
 
+        <TextView
+            android:id="@+id/directory_button"
+            android:layout_below="@id/directory_img"
+            android:text="@string/directory"
+            style="@style/MainText"
+            app:layout_widthPercent="100%"
+            app:layout_heightPercent="25%"/>
 
-            <ImageView
-                android:contentDescription="@string/directory"
-                android:id="@+id/directory_img"
-                android:src="@drawable/ic_directory"
-                style="@style/MainIcon" />
+    </android.support.percent.PercentRelativeLayout>
 
-            <TextView
-                android:id="@+id/directory_button"
-                android:layout_below="@id/directory_img"
-                android:text="@string/directory"
-                style="@style/MainText"/>
-        </RelativeLayout>
-    </TableRow>
+    <android.support.percent.PercentRelativeLayout
+        style="@style/MainRelativeLayout"
+        android:id="@+id/dining_cont"
+        app:layout_widthPercent="50%"
+        app:layout_heightPercent="25%"
+        android:layout_below="@id/registrar_cont">
 
-    <TableRow style="@style/MainTableLayout">
+        <ImageView
+            android:contentDescription="@string/dining"
+            android:id="@+id/dining_img"
+            android:src="@drawable/ic_dining"
+            style="@style/MainIcon"
+            app:layout_widthPercent="100%"
+            app:layout_heightPercent="60%"
+            app:layout_marginTopPercent="10%"
+            />
 
-        <RelativeLayout
-            android:id="@+id/dining_cont"
-            style="@style/MainRelativeLayout">
+        <TextView
+            android:id="@+id/dining_button"
+            android:layout_below="@+id/dining_img"
+            android:text="@string/dining"
+            style="@style/MainText"
+            app:layout_widthPercent="100%"
+            app:layout_heightPercent="25%"/>
 
-            <ImageView
-                android:contentDescription="@string/dining"
-                android:id="@+id/dining_img"
-                android:src="@drawable/ic_dining"
-                style="@style/MainIcon" />
+    </android.support.percent.PercentRelativeLayout>
 
-            <TextView
-                android:id="@+id/dining_button"
-                android:layout_below="@+id/dining_img"
-                android:text="@string/dining"
-                style="@style/MainText"/>
-        </RelativeLayout>
+    <android.support.percent.PercentRelativeLayout
+        style="@style/MainRelativeLayout"
+        android:layout_toRightOf="@id/dining_cont"
+        android:layout_below="@id/registrar_cont"
+        android:id="@+id/transit_cont"
+        app:layout_widthPercent="50%"
+        app:layout_heightPercent="25%">
 
-        <RelativeLayout
-            android:id="@+id/transit_cont"
-            style="@style/MainRelativeLayout">
+        <ImageView
+            android:contentDescription="@string/transit"
+            android:id="@+id/transit_img"
+            android:src="@drawable/ic_transit"
+            style="@style/MainIcon"
+            app:layout_widthPercent="100%"
+            app:layout_heightPercent="60%"
+            app:layout_marginTopPercent="10%"
+            />
 
-            <ImageView
-                android:contentDescription="@string/transit"
-                android:id="@+id/transit_img"
-                android:src="@drawable/ic_transit"
-                style="@style/MainIcon" />
+        <TextView
+            android:id="@+id/transit_button"
+            android:layout_below="@+id/transit_img"
+            android:text="@string/transit"
+            style="@style/MainText"
+            app:layout_widthPercent="100%"
+            app:layout_heightPercent="25%"/>
 
-            <TextView
-                android:id="@+id/transit_button"
-                android:layout_below="@+id/transit_img"
-                android:text="@string/transit"
-                style="@style/MainText"/>
-        </RelativeLayout>
-    </TableRow>
+    </android.support.percent.PercentRelativeLayout>
 
-    <TableRow style="@style/MainTableLayout">
+    <android.support.percent.PercentRelativeLayout
+        style="@style/MainRelativeLayout"
+        android:id="@+id/news_cont"
+        app:layout_widthPercent="50%"
+        app:layout_heightPercent="25%"
+        android:layout_below="@id/dining_cont">
 
-        <RelativeLayout
-            android:id="@+id/news_cont"
-            style="@style/MainRelativeLayout">
+        <ImageView
+            android:contentDescription="@string/news"
+            android:id="@+id/news_img"
+            android:src="@drawable/ic_news"
+            style="@style/MainIcon"
+            app:layout_widthPercent="100%"
+            app:layout_heightPercent="60%"
+            app:layout_marginTopPercent="10%"
+            />
 
-            <ImageView
-                android:contentDescription="@string/news"
-                android:id="@+id/news_img"
-                android:src="@drawable/ic_news"
-                style="@style/MainIcon" />
+        <TextView
+            android:id="@+id/news_button"
+            android:layout_below="@+id/news_img"
+            android:text="@string/news"
+            style="@style/MainText"
+            app:layout_widthPercent="100%"
+            app:layout_heightPercent="25%"/>
 
-            <TextView
-                android:id="@+id/news_button"
-                android:layout_below="@+id/news_img"
-                android:text="@string/news"
-                style="@style/MainText"/>
-        </RelativeLayout>
+    </android.support.percent.PercentRelativeLayout>
 
+    <android.support.percent.PercentRelativeLayout
+        style="@style/MainRelativeLayout"
+        android:layout_toRightOf="@id/news_cont"
+        android:layout_below="@id/dining_cont"
+        android:id="@+id/map_cont"
+        app:layout_widthPercent="50%"
+        app:layout_heightPercent="25%">
 
-        <RelativeLayout
-            android:id="@+id/map_cont"
-            style="@style/MainRelativeLayout">
+        <ImageView
+            android:contentDescription="@string/map"
+            android:id="@+id/map_img"
+            android:src="@drawable/ic_maps"
+            style="@style/MainIcon"
+            app:layout_widthPercent="100%"
+            app:layout_heightPercent="60%"
+            app:layout_marginTopPercent="10%"
+            />
 
-            <ImageView
-                android:contentDescription="@string/map"
-                android:id="@+id/map_img"
-                android:src="@drawable/ic_maps"
-                style="@style/MainIcon" />
+        <TextView
+            android:id="@+id/map_button"
+            android:layout_below="@+id/map_img"
+            android:text="@string/map"
+            style="@style/MainText"
+            app:layout_widthPercent="100%"
+            app:layout_heightPercent="25%"/>
 
-            <TextView
-                android:id="@+id/map_button"
-                android:layout_below="@+id/map_img"
-                android:text="@string/map"
-                style="@style/MainText"/>
-        </RelativeLayout>
-    </TableRow>
+    </android.support.percent.PercentRelativeLayout>
 
-    <TableRow style="@style/MainTableLayout">
-        <RelativeLayout
-            android:id="@+id/laundry_cont"
-            android:paddingTop="-15dp"
-            android:layout_marginBottom="10dp"
-            style="@style/MainRelativeLayout">
+    <android.support.percent.PercentRelativeLayout
+        style="@style/MainRelativeLayout"
+        android:layout_below="@id/news_cont"
+        android:id="@+id/laundry_cont"
+        app:layout_widthPercent="50%"
+        app:layout_heightPercent="25%"
+        android:layout_centerHorizontal="true"
+        >
 
-            <ImageView
-                android:contentDescription="@string/laundry"
-                android:id="@+id/laundry_img"
-                android:src="@drawable/ic_laundry"
-                style="@style/MainIcon" />
+        <ImageView
+            android:contentDescription="@string/laundry"
+            android:id="@+id/laundry_img"
+            android:src="@drawable/ic_laundry"
+            app:layout_widthPercent="100%"
+            app:layout_heightPercent="60%"
+            app:layout_marginTopPercent="10%"
+            style="@style/MainIcon" />
 
-            <TextView
-                android:id="@+id/laundry_button"
-                android:layout_below="@+id/laundry_img"
-                android:text="@string/laundry"
-                style="@style/MainText"/>
-        </RelativeLayout>
-    </TableRow>
+        <TextView
+            android:id="@+id/laundry_button"
+            android:layout_below="@+id/laundry_img"
+            android:text="@string/laundry"
+            style="@style/MainText"
+            app:layout_widthPercent="100%"
+            app:layout_heightPercent="25%"/>
 
-</TableLayout>
+    </android.support.percent.PercentRelativeLayout>
+</android.support.percent.PercentRelativeLayout>
