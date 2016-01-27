@@ -32,6 +32,7 @@
         tools:visibility="visible"
         android:id="@+id/dining_hall_open_close"
         android:layout_below="@+id/dining_hall_open_meal"
+        android:fontFamily="sans-serif-light"
         style="@style/Menu"/>
 
     <ImageView
