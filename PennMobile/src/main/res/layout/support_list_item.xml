@@ -19,13 +19,24 @@
         android:textStyle="bold"
         android:textColor="#000000" />
 
+    <ImageView
+        android:id="@+id/support_phone_icon"
+        android:visibility="visible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_phone"
+        android:layout_below="@+id/support_name"/>
+
     <TextView
         tools:text="(215) 898-7297"
         android:id="@+id/support_phone"
         android:layout_below="@+id/support_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/support_phone_icon"
         android:textSize="16sp"
-        android:textColor="#002C77"/>
+        android:textColor="#3F51B5"/>
+
+
 
 </RelativeLayout>

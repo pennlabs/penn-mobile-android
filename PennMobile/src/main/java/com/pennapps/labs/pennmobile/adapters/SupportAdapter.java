@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.R;
@@ -44,6 +45,9 @@ public class SupportAdapter extends ArrayAdapter<Person> {
             holder.phone.setText(currentPerson.phone_words + " (" + currentPerson.phone + ")");
         }
 
+        if (!Character.isDigit(currentPerson.phone.charAt(1))){
+           holder.icon.setVisibility(View.GONE);
+        }
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,6 +71,7 @@ public class SupportAdapter extends ArrayAdapter<Person> {
     public static class ViewHolder {
         @Bind(R.id.support_name) TextView name;
         @Bind(R.id.support_phone) TextView phone;
+        @Bind(R.id.support_phone_icon) ImageView icon;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);
