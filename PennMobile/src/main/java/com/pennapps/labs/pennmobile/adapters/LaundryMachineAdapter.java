@@ -98,7 +98,7 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
             TextView description = (TextView) view.findViewById(R.id.laundry_machine_description);
             Switch mSwitch = (Switch) view.findViewById(R.id.laundry_notification_button);
 
-            if (machine.available) {
+            if (machine.available && machine.getTimeInMilli() > 0) {
                 description.setText(R.string.laundry_available);
                 mSwitch.setVisibility(View.GONE);
             } else {
