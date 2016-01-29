@@ -51,6 +51,9 @@ public class LaundryMachine implements Parcelable {
         while(Character.isDigit(time_left.charAt(i))){
             i++;
         }
+        if (time_left.substring(0, i).isEmpty()) {
+            return 0;
+        }
         answer = Integer.parseInt(time_left.substring(0,i));
         answer *= MINUTE_TO_MILL;
         return answer;
