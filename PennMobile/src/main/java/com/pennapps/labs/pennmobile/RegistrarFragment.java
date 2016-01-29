@@ -15,8 +15,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.adapters.RegistrarAdapter;
@@ -64,6 +67,7 @@ public class RegistrarFragment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
         listView = getListView();
+        searchSuggestion(true, false);
     }
 
     @Override
@@ -88,7 +92,7 @@ public class RegistrarFragment extends ListFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.registrar, menu);
         loadingPanel.setVisibility(View.GONE);
-        MenuItem searchMenuItem = menu.findItem(R.id.registrar_search);
+        final MenuItem searchMenuItem = menu.findItem(R.id.registrar_search);
         searchMenuItem.expandActionView();
 
         searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
@@ -110,7 +114,28 @@ public class RegistrarFragment extends ListFragment {
                 return true;
             }
         };
+
+        final View.OnFocusChangeListener focusListener = new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange (View v, boolean hasFocus) {
+                if (hasFocus) {
+                    searchSuggestion(true, false);
+                }
+            }
+        };
+
+        final SearchView.OnCloseListener closeListener = new SearchView.OnCloseListener() {
+
+            @Override
+            public boolean onClose() {
+                searchSuggestion(false, false);
+                return false;
+            }
+        };
         searchView.setOnQueryTextListener(queryListener);
+        searchView.setOnQueryTextFocusChangeListener(focusListener);
+        searchView.setOnCloseListener(closeListener);
     }
 
     private void searchCourses(String query) {
@@ -119,11 +144,12 @@ public class RegistrarFragment extends ListFragment {
                 .subscribe(new Action1<List<Course>>() {
                     @Override
                     public void call(List<Course> courses) {
-                        if(loadingPanel != null) {
+                        if (loadingPanel != null) {
                             loadingPanel.setVisibility(View.GONE);
                             if (courses == null || courses.size() == 0) {
                                 no_results.setVisibility(View.VISIBLE);
                                 listView.setVisibility(View.GONE);
+                                searchSuggestion(false, true);
                             } else {
                                 mAdapter = new RegistrarAdapter(mActivity, filterCourses(courses));
                                 listView.setVisibility(View.VISIBLE);
@@ -134,17 +160,52 @@ public class RegistrarFragment extends ListFragment {
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        if(loadingPanel != null) {
+                        if (loadingPanel != null) {
                             loadingPanel.setVisibility(View.GONE);
                             no_results.setVisibility(View.VISIBLE);
                             listView.setVisibility(View.GONE);
                         }
                     }
                 });
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        int index = sharedPref.getInt(getString(R.string.registrar_search_count), -1);
+        String[] previouskey = getResources().getStringArray(R.array.previous_course_array);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        if (index != -1) {
+            boolean changed = false;
+            for (int i = 4; i >= 0; i--) {
+                int id = (index + 5 - i) % 5;
+                String s = sharedPref.getString(previouskey[id], "");
+                if (s.equals(query)) {
+                    changed = true;
+                }
+                if (changed && i > 0) {
+                    int prev = (index + 5 - i + 1) % 5;
+                    editor.putString(previouskey[id], sharedPref.getString(previouskey[prev], ""));
+                }
+            }
+            if (changed) {
+                editor.putString(previouskey[index], query);
+                editor.apply();
+                return;
+            }
+        }
+        index = (index + 1) % 5;
+        editor.putInt(getString(R.string.registrar_search_count), index);
+        editor.putString(previouskey[index], query);
+        editor.apply();
+        mActivity.closeKeyboard();
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+        if (!(listView.getAdapter() instanceof RegistrarAdapter)) {
+            String s = listView.getAdapter().getItem(position).toString();
+            searchCourses(s);
+            mActivity.closeKeyboard();
+            return;
+        }
         Fragment fragment = new CourseFragment();
         Course course = ((RegistrarAdapter.ViewHolder) v.getTag()).course;
         mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
@@ -187,10 +248,56 @@ public class RegistrarFragment extends ListFragment {
                     }
                 }
             return courses_filt;
-            }else{
-                return courses;
+        }else{
+            return courses;
+        }
+    }
+
+    private void searchSuggestion(boolean show, boolean gone){
+        if (show) {
+            final ArrayList<String> list = new ArrayList<>(5);
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            int index = sharedPref.getInt(getString(R.string.registrar_search_count), -1);
+            if (index != -1) {
+                String[] previouskey = getResources().getStringArray(R.array.previous_course_array);
+                for (int i = 0; i < 5; i++){
+                    int id = (index + 5 - i) % 5;
+                    String previous = sharedPref.getString(previouskey[id], "");
+                    if (!previous.isEmpty()) {
+                        list.add(previous);
+                    }
+                }
+            }
+            if (!list.isEmpty()) {
+                mActivity.runOnUiThread(new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (loadingPanel != null) {
+                            loadingPanel.setVisibility(View.GONE);
+                        }
+                        if (no_results != null){
+                            no_results.setVisibility(View.GONE);
+                        }
+                        if (listView != null) {
+                            listView.setVisibility(View.VISIBLE);
+                            listView.setAdapter(new ArrayAdapter(mActivity, android.R.layout.simple_list_item_1, list));
+                        }
+                        if (registrar_instructions != null) {
+                            registrar_instructions.setVisibility(View.GONE);
+                        }
+                        mActivity.closeKeyboard();
+                    }
+                }));
+            }
+        } else {
+            if (mAdapter != null && !gone) {
+                listView.setAdapter(mAdapter);
+            } else {
+                listView.setVisibility(View.GONE);
+                no_results.setVisibility(View.VISIBLE);
             }
         }
+    }
 }
 
 

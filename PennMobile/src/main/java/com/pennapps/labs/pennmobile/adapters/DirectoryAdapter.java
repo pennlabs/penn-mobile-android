@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.google.gson.Gson;
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.classes.Person;
 
@@ -101,13 +102,13 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
         }
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(view.getContext());
-        Set<String> starredContacts = sharedPref.getStringSet("starred", new HashSet<String>());
+        Set<String> starredContacts = sharedPref.getStringSet(mContext.getResources().getString(R.string.search_dir_star), new HashSet<String>());
         holder.star.setChecked(starredContacts.contains(currentPerson.name));
         holder.star.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(v.getContext());
-                Set<String> buffer = sharedPref.getStringSet("starred", new HashSet<String>());
+                Set<String> buffer = sharedPref.getStringSet(mContext.getResources().getString(R.string.search_dir_star), new HashSet<String>());
                 Set<String> starredContacts = new HashSet<>(buffer);
                 SharedPreferences.Editor editedPreferences = sharedPref.edit();
                 ToggleButton star = (ToggleButton) v;
@@ -116,16 +117,16 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
                 if (starred) {
                     if (currentName != null) {
                         starredContacts.add(currentName);
-                        editedPreferences.putString(currentName + ".data",
+                        editedPreferences.putString(currentName + mContext.getResources().getString(R.string.search_dir_star),
                                 getDataString(currentPerson));
                     }
                 } else {
                     starredContacts.remove(currentName);
                     if(currentName != null) {
-                        editedPreferences.remove(currentName + ".data");
+                        editedPreferences.remove(currentName + mContext.getResources().getString(R.string.search_dir_star));
                     }
                 }
-                editedPreferences.putStringSet("starred", starredContacts);
+                editedPreferences.putStringSet(mContext.getResources().getString(R.string.search_dir_star), starredContacts);
                 editedPreferences.apply();
             }
         });
@@ -134,14 +135,7 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
     }
 
     private String getDataString(Person currentPerson){
-        String delim = mContext.getString(R.string.directory_delim);
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(currentPerson.affiliation);
-        stringBuilder.append(delim);
-        stringBuilder.append(currentPerson.phone);
-        stringBuilder.append(delim);
-        stringBuilder.append(currentPerson.email);
-        return stringBuilder.toString();
+        return (new Gson()).toJson(currentPerson, Person.class);
     }
 
     static class ViewHolder {

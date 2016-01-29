@@ -1,0 +1,21 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        tools:visibility="gone"
+        android:id="@+id/search_instructions"
+        style="@style/SearchInstructions" />
+
+    <include layout="@layout/no_results" />
+
+    <include layout="@layout/loading_panel" />
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

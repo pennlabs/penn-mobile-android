@@ -12,15 +12,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.pennapps.labs.pennmobile.adapters.DirectoryAdapter;
+import com.pennapps.labs.pennmobile.adapters.RegistrarAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Person;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -71,6 +75,7 @@ public class DirectoryFragment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
         mListView = getListView();
+        searchSuggestion(true, false);
     }
 
     @Override
@@ -105,12 +110,7 @@ public class DirectoryFragment extends ListFragment {
                         for (String s : starred) {
                             String details = sharedPref.getString(s + ".data", "");
                             if (!details.isEmpty()) {
-                                Person person = new Person(s, "");
-                                person.affiliation = details.substring(0, details.indexOf("|#|"));
-                                details = details.substring(details.indexOf("|#|") + 3);
-                                person.phone = details.substring(0, details.indexOf("|#|"));
-                                details = details.substring(details.indexOf("|#|") + 3);
-                                person.email = details;
+                                Person person = (new Gson()).fromJson(details, Person.class);
                                 people.add(person);
                             }
                         }
@@ -166,6 +166,7 @@ public class DirectoryFragment extends ListFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.directory, menu);
         searchView = (SearchView) menu.findItem(R.id.directory_search).getActionView();
+        searchView.setIconified(false);
         final SearchView.OnQueryTextListener queryListener = new SearchView.OnQueryTextListener() {
 
             @Override
@@ -187,6 +188,26 @@ public class DirectoryFragment extends ListFragment {
         };
         searchView.setOnQueryTextListener(queryListener);
         mMenu = menu;
+        final View.OnFocusChangeListener focusListener = new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange (View v, boolean hasFocus) {
+                if (hasFocus) {
+                    searchSuggestion(true, false);
+                }
+            }
+        };
+
+        final SearchView.OnCloseListener closeListener = new SearchView.OnCloseListener() {
+
+            @Override
+            public boolean onClose() {
+                searchSuggestion(false, false);
+                return false;
+            }
+        };
+        searchView.setOnQueryTextFocusChangeListener(focusListener);
+        searchView.setOnCloseListener(closeListener);
     }
 
     private void processQuery(String query) {
@@ -205,6 +226,7 @@ public class DirectoryFragment extends ListFragment {
                                 if (no_results != null) {
                                     no_results.setVisibility(View.VISIBLE);
                                     stateOfScreen = NO_STATE;
+                                    searchSuggestion(false, true);
                                 }
                             } else {
                                 if (mListView != null) {
@@ -228,9 +250,41 @@ public class DirectoryFragment extends ListFragment {
                         }
                     }
                 });
+        SharedPreferences sharedPref = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(getActivity());
+        int index = sharedPref.getInt(getString(R.string.directory_search_count), -1);
+        String[] previouskey = getResources().getStringArray(R.array.previous_directory_array);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        if (index != -1) {
+            boolean changed = false;
+            for (int i = 4; i >= 0; i--) {
+                int id = (index + 5 - i) % 5;
+                String s = sharedPref.getString(previouskey[id], "");
+                if (s.equals(query)) {
+                    changed = true;
+                }
+                if (changed && i > 0) {
+                    int prev = (index + 5 - i + 1) % 5;
+                    editor.putString(previouskey[id], sharedPref.getString(previouskey[prev], ""));
+                }
+            }
+            if (changed) {
+                editor.putString(previouskey[index], query);
+                editor.apply();
+                return;
+            }
+        }
+        index = (index + 1) % 5;
+        editor.putInt(getString(R.string.directory_search_count), index);
+        editor.putString(previouskey[index], query);
+        editor.apply();
+        mActivity.closeKeyboard();
     }
 
     private void saveAdapter(){
+        if (!(mListView.getAdapter() instanceof DirectoryAdapter)) {
+            mainAdapter = null;
+            return;
+        }
         DirectoryAdapter current = (DirectoryAdapter) mListView.getAdapter();
         if (current != null) {
             mainAdapter = current;
@@ -253,4 +307,58 @@ public class DirectoryFragment extends ListFragment {
         ButterKnife.unbind(this);
     }
 
+
+    private void searchSuggestion(boolean show, boolean gone){
+        if (show) {
+            final ArrayList<String> list = new ArrayList<>(5);
+            SharedPreferences sharedPref = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(getActivity());
+            int index = sharedPref.getInt(getString(R.string.directory_search_count), -1);
+            if (index != -1) {
+                String[] previouskey = getResources().getStringArray(R.array.previous_directory_array);
+                for (int i = 0; i < 5; i++){
+                    int id = (index + 5 - i) % 5;
+                    String previous = sharedPref.getString(previouskey[id], "");
+                    if (!previous.isEmpty()) {
+                        list.add(previous);
+                    }
+                }
+            }
+            if (!list.isEmpty()) {
+                mActivity.runOnUiThread(new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (loadingPanel != null) {
+                            loadingPanel.setVisibility(View.GONE);
+                        }
+                        if (no_results != null){
+                            no_results.setVisibility(View.GONE);
+                        }
+                        if (mListView != null) {
+                            mListView.setVisibility(View.VISIBLE);
+                            mListView.setAdapter(new ArrayAdapter(mActivity, android.R.layout.simple_list_item_1, list));
+                        }
+                        if (directory_instructions != null) {
+                            directory_instructions.setVisibility(View.GONE);
+                        }
+                        mActivity.closeKeyboard();
+                    }
+                }));
+            }
+        } else {
+            if (mainAdapter != null && !gone) {
+                mListView.setAdapter(mainAdapter);
+            } else {
+                mListView.setVisibility(View.GONE);
+                no_results.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        if (!(mListView.getAdapter() instanceof DirectoryAdapter)) {
+            String s = mListView.getAdapter().getItem(position).toString();
+            processQuery(s);
+        }
+    }
 }
