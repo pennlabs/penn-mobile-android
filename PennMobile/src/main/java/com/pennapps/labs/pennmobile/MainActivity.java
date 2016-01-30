@@ -234,13 +234,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, fragment)
-                .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit();
-        mDrawerLayout.closeDrawer(mDrawerList);
+        fragmentTransact(fragment);
     }
 
     public void onHomeButtonClick(View v) {
@@ -334,22 +328,26 @@ public class MainActivity extends AppCompatActivity {
                     fragment = new TransitFragment();
                     break;
             }
-            if (fragment != null) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.content_frame, fragment)
-                        .addToBackStack(null)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .commit();
-            }
-            mDrawerLayout.closeDrawer(mDrawerList);
+            fragmentTransact(fragment);
         }
+    }
+
+    private void fragmentTransact(Fragment fragment) {
+        if (fragment != null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, fragment)
+                    .addToBackStack(null)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .commit();
+        }
+        mDrawerLayout.closeDrawer(mDrawerList);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         if (grantResults.length == 0 || grantResults[0] == PackageManager.PERMISSION_DENIED) {
-            //um so couldn't get permission...
+            Toast.makeText(this, "Access of your location is required to use this feature.", Toast.LENGTH_LONG).show();
             return;
         }
         final int code = requestCode;
