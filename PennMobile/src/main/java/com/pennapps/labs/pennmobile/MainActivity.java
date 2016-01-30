@@ -1,7 +1,9 @@
 package com.pennapps.labs.pennmobile;
 
+import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -9,10 +11,12 @@ import android.support.annotation.AnyRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -54,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private static Labs mLabs;
     private boolean from_alarm;
+    private static final int CODE_MAP = 1, CODE_TRANSIT = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,16 +203,16 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.nav_transit:
             case R.id.transit_cont:
-                fragment = new TransitFragment();
-                break;
+                getPermission(CODE_TRANSIT);
+                return;
             case R.id.nav_news:
             case R.id.news_cont:
                 fragment = new NewsFragment();
                 break;
             case R.id.nav_map:
             case R.id.map_cont:
-                fragment = new MapFragment();
-                break;
+                getPermission(CODE_MAP);
+                return;
             case R.id.nav_laundry:
             case R.id.laundry_cont:
                 fragment = new LaundryFragment();
@@ -229,13 +234,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, fragment)
-                .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit();
-        mDrawerLayout.closeDrawer(mDrawerList);
+        fragmentTransact(fragment);
     }
 
     public void onHomeButtonClick(View v) {
@@ -308,5 +307,72 @@ public class MainActivity extends AppCompatActivity {
         if (appBar != null) {
             appBar.removeViewAt(1);
         }
+    }
+
+    private void getPermission(int code) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                        PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat
+                    .requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION}, code);
+        } else {
+            Fragment fragment = null;
+            switch(code) {
+                case CODE_MAP:
+                    fragment = new MapFragment();
+                    break;
+                case CODE_TRANSIT:
+                    fragment = new TransitFragment();
+                    break;
+            }
+            fragmentTransact(fragment);
+        }
+    }
+
+    private void fragmentTransact(Fragment fragment) {
+        if (fragment != null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, fragment)
+                    .addToBackStack(null)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .commit();
+        }
+        mDrawerLayout.closeDrawer(mDrawerList);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (grantResults.length == 0 || grantResults[0] == PackageManager.PERMISSION_DENIED) {
+            Toast.makeText(this, "Access of your location is required to use this feature.", Toast.LENGTH_LONG).show();
+            return;
+        }
+        final int code = requestCode;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Fragment fragment = null;
+                switch(code) {
+                    case CODE_MAP:
+                        fragment = new MapFragment();
+                        break;
+                    case CODE_TRANSIT:
+                        fragment = new TransitFragment();
+                        break;
+                }
+                if (fragment != null) {
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.content_frame, fragment)
+                            .addToBackStack(null)
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .commitAllowingStateLoss();
+                }
+                mDrawerLayout.closeDrawer(mDrawerList);
+            }
+        });
     }
 }
