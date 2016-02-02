@@ -4,31 +4,47 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.preference.PreferenceManager;
+import android.util.Log;
+import android.view.View;
+
+import com.pennapps.labs.pennmobile.adapters.DirectoryAdapter;
+import com.pennapps.labs.pennmobile.classes.Person;
+
+import java.util.List;
+
+import butterknife.ButterKnife;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 /**
  * Created by Jason on 1/26/2016.
  */
 public class DirectoryFragmentV2 extends SearchFavoriteFragment {
 
+    private DirectoryAdapter adapter;
+
     protected class DirectoryAdapter extends ListTabAdapter {
 
-        SearchFavoriteTab[] array;
+        DirectoryTab[] array;
 
         public DirectoryAdapter(FragmentManager fm) {
             super(fm);
-            array = new SearchFavoriteTab[2];
+            array = new DirectoryTab[2];
         }
 
         @Override
-        public void onReceiveQuery(String query) {
-            array[0].processQuery(query);
-            setIndex(R.string.directory_search_count, R.array.previous_directory_array, query);
+        public boolean onReceiveQuery(String query) {
+            if (array[0] != null) {
+                array[0].processQuery(query);
+                setIndex(R.string.directory_search_count, R.array.previous_directory_array, query);
+            }
+            return array[0] != null;
         }
 
         @Override
         public Fragment getItem(int position) {
             if (array[position] == null) {
-                SearchFavoriteTab fragment = new SearchFavoriteTab();
+                DirectoryTab fragment = new DirectoryTab();
                 Bundle args = new Bundle();
                 args.putBoolean(getString(R.string.search_favorite), position == 1);
                 args.putString(getString(R.string.search_list), getString(R.string.directory));
@@ -41,7 +57,10 @@ public class DirectoryFragmentV2 extends SearchFavoriteFragment {
 
     @Override
     protected ListTabAdapter getAdapter() {
-        return new DirectoryAdapter(mActivity.getSupportFragmentManager());
+        if (adapter == null){
+            adapter = new DirectoryAdapter(mActivity.getSupportFragmentManager());
+        }
+        return adapter;
     }
 
     @Override
@@ -53,4 +72,18 @@ public class DirectoryFragmentV2 extends SearchFavoriteFragment {
     protected int searchCount() {
         return PreferenceManager.getDefaultSharedPreferences(mActivity).getInt(getString(R.string.directory_search_count), -1);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(R.string.directory);
+        mActivity.setNav(R.id.nav_directory);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
+
 }

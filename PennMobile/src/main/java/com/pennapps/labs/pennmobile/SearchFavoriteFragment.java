@@ -47,8 +47,9 @@ public abstract class SearchFavoriteFragment extends ListFragment {
         /**
          * This function implements what the adapter will do given a query
          * @param query the query passed in from the search view
+         * @return bol changed or not, the return value hasn't been used yet.
          */
-        public abstract void onReceiveQuery (String query);
+        public abstract boolean onReceiveQuery (String query);
 
         protected void setIndex(int indexkey, int arraykey, String query) {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -80,6 +81,14 @@ public abstract class SearchFavoriteFragment extends ListFragment {
             editor.apply();
             mActivity.closeKeyboard();
         }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            if (position == 0) {
+                return getString(R.string.search_all);
+            }
+            return getString(R.string.search_favorite);
+        }
     }
 
     @Override
@@ -93,23 +102,26 @@ public abstract class SearchFavoriteFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_search_favorite, container, false);
-        viewPager = (ViewPager) v.findViewById(R.id.search_viewpager);
+        viewPager = (ViewPager) v.findViewById(R.id.pager);
         tabAdapter = getAdapter();
         viewPager.setAdapter(tabAdapter);
+        mActivity.addTabs(getAdapter(), viewPager, false);
         return v;
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+        searchSuggestion(false);
         String s = mListView.getAdapter().getItem(position).toString();
+        tabAdapter.notifyDataSetChanged();
         tabAdapter.onReceiveQuery(s);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mActivity.closeKeyboard();
         mListView = getListView();
+        mListView.setVisibility(View.GONE);
         setHasOptionsMenu(true);
     }
 
@@ -144,6 +156,7 @@ public abstract class SearchFavoriteFragment extends ListFragment {
 
             @Override
             public boolean onQueryTextSubmit(String arg0) {
+                searchSuggestion(false);
                 tabAdapter.onReceiveQuery(arg0);
                 return true;
             }
@@ -173,6 +186,7 @@ public abstract class SearchFavoriteFragment extends ListFragment {
 
     protected void searchSuggestion(boolean show) {
         if (show) {
+            mActivity.removeTabs();
             final ArrayList<String> list = new ArrayList<>(5);
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mActivity);
             int index = searchCount();
@@ -197,6 +211,7 @@ public abstract class SearchFavoriteFragment extends ListFragment {
                 }));
             }
         } else {
+            mActivity.addTabs(getAdapter(), viewPager, false);
             viewPager.setVisibility(View.VISIBLE);
             mListView.setVisibility(View.GONE);
         }
@@ -213,4 +228,27 @@ public abstract class SearchFavoriteFragment extends ListFragment {
      * @return index   index of the most recent search entry, -1 if there is none.
      */
     protected abstract int searchCount();
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                searchSuggestion(true);
+            }
+        });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mActivity.removeTabs();
+    }
+
+    @Override
+    public void onDestroyView() {
+        mActivity.removeTabs();
+        super.onDestroyView();
+    }
 }

@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private static Labs mLabs;
     private boolean from_alarm;
+    private boolean tab_showed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,11 +187,11 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.nav_registrar:
             case R.id.registrar_cont:
-                fragment = new RegistrarFragment();
+                fragment = new RegistrarFragmentV2();
                 break;
             case R.id.nav_directory:
             case R.id.directory_cont:
-                fragment = new DirectoryFragment();
+                fragment = new DirectoryFragmentV2();
                 break;
             case R.id.nav_dining:
             case R.id.dining_cont:
@@ -284,6 +285,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addTabs(FragmentStatePagerAdapter pageAdapter, final ViewPager pager, boolean scrollable) {
+        if (tab_showed) {
+            return;
+        }
         final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
 
         final TabLayout tabLayout = (TabLayout) getLayoutInflater().inflate(R.layout.tab_layout, null);
@@ -299,13 +303,15 @@ public class MainActivity extends AppCompatActivity {
         appBar.addView(tabLayout);
 
         pager.setAdapter(pageAdapter);
+        tab_showed = true;
     }
 
 
 
     public void removeTabs() {
+        tab_showed = false;
         final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
-        if (appBar != null) {
+        if (appBar != null && appBar.getChildCount() >= 2) {
             appBar.removeViewAt(1);
         }
     }
