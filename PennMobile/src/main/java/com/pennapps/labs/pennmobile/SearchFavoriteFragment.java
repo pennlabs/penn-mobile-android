@@ -8,7 +8,6 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.pennapps.labs.pennmobile.api.Labs;
@@ -168,6 +168,8 @@ public abstract class SearchFavoriteFragment extends ListFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.registrar, menu);
         searchView = (SearchView) menu.findItem(R.id.registrar_search).getActionView();
+        ImageView cross = (ImageView) searchView.findViewById(R.id.search_close_btn); //here is the button
+        cross.setImageAlpha(100);
         final SearchView.OnQueryTextListener queryListener = new SearchView.OnQueryTextListener() {
 
             @Override

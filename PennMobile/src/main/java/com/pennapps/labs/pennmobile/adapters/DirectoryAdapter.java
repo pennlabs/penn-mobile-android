@@ -15,8 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.daimajia.swipe.SwipeLayout;
 import com.google.gson.Gson;
-import com.pennapps.labs.pennmobile.DirectoryTab;
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.classes.Person;
 
@@ -47,6 +47,11 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
             holder = new ViewHolder(view);
             view.setTag(holder);
         }
+
+        SwipeLayout swipeLayout = (SwipeLayout) view.findViewById(R.id.directory_swipe);
+        swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
+        swipeLayout.addDrag(SwipeLayout.DragEdge.Right, view.findViewById(R.id.directory_swipe_drawer));
+
         Person person = getItem(position);
         final Person currentPerson = person;
 
@@ -67,12 +72,12 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
         });
 
         holder.tvName.setText(person.getName());
-        holder.tvAffiliation.setText(person.affiliation);
+        holder.tvAffiliation.setText(person.getAffiliation());
 
         if (person.email.length() == 0) {
             holder.tvEmail.setVisibility(View.GONE);
         } else {
-            holder.tvEmail.setText(person.email);
+            holder.tvEmail.setText(person.getEmail());
             holder.tvEmail.setPaintFlags(holder.tvEmail.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
             holder.tvEmail.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -86,21 +91,6 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
             });
         }
 
-        if (person.phone.length() == 0) {
-            holder.tvPhone.setVisibility(View.GONE);
-        } else {
-            holder.tvPhone.setText(person.phone);
-            holder.tvPhone.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String uri = "tel:" + currentPerson.phone;
-                    Intent intent = new Intent(Intent.ACTION_DIAL);
-                    intent.setData(Uri.parse(uri));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    v.getContext().startActivity(intent);
-                }
-            });
-        }
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(view.getContext());
         Set<String> starredContacts = sharedPref.getStringSet(mContext.getResources().getString(R.string.search_dir_star), new HashSet<String>());
@@ -143,9 +133,9 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
         @Bind(R.id.tv_person_name) TextView tvName;
         @Bind(R.id.tv_person_affiliation) TextView tvAffiliation;
         @Bind(R.id.tv_person_email) TextView tvEmail;
-        @Bind(R.id.tv_person_phone) TextView tvPhone;
         @Bind(R.id.star_contact) ToggleButton star;
         @Bind(R.id.contact_icon) ImageView contact;
+
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);

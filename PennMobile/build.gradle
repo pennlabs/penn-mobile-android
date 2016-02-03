@@ -49,5 +49,8 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
         transitive = true;
     }
+    compile 'com.android.support:recyclerview-v7:21.0.0'
+    compile 'com.android.support:support-v4:20.+'
+    compile "com.daimajia.swipelayout:library:1.2.0@aar"
     testCompile 'junit:junit:4.12'
 }
