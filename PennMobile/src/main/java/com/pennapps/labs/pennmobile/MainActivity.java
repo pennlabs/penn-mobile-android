@@ -187,11 +187,11 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.nav_registrar:
             case R.id.registrar_cont:
-                fragment = new RegistrarFragmentV2();
+                fragment = new RegistrarFragment();
                 break;
             case R.id.nav_directory:
             case R.id.directory_cont:
-                fragment = new DirectoryFragmentV2();
+                fragment = new DirectoryFragment();
                 break;
             case R.id.nav_dining:
             case R.id.dining_cont:

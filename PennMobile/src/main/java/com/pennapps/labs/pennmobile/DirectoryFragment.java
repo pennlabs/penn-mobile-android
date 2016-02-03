@@ -10,7 +10,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Jason on 1/26/2016.
  */
-public class DirectoryFragmentV2 extends SearchFavoriteFragment {
+public class DirectoryFragment extends SearchFavoriteFragment {
 
     private DirectoryTabAdapter adapter;
 

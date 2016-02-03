@@ -15,7 +15,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Jason on 1/25/2016.
  */
-public class RegistrarFragmentV2 extends SearchFavoriteFragment {
+public class RegistrarFragment extends SearchFavoriteFragment {
 
     private RegistrarTabAdapter adapter;
 
