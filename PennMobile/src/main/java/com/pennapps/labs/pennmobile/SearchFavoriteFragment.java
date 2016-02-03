@@ -8,6 +8,7 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,6 +33,7 @@ public abstract class SearchFavoriteFragment extends ListFragment {
     protected ViewPager viewPager;
     protected SearchView searchView;
     protected ListTabAdapter tabAdapter;
+    protected String lastQuery;
 
     protected abstract class ListTabAdapter extends FragmentStatePagerAdapter {
 
@@ -96,6 +98,7 @@ public abstract class SearchFavoriteFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         mActivity = (MainActivity) getActivity();
         mLabs = MainActivity.getLabsInstance();
+        lastQuery = "";
     }
 
     @Override
@@ -105,16 +108,35 @@ public abstract class SearchFavoriteFragment extends ListFragment {
         viewPager = (ViewPager) v.findViewById(R.id.pager);
         tabAdapter = getAdapter();
         viewPager.setAdapter(tabAdapter);
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(final int position) {
+                if (position == 1) {
+                    ((SearchFavoriteTab) getAdapter().getItem(1)).initList();
+                } else {
+                    ((SearchFavoriteTab) getAdapter().getItem(0)).processQuery(lastQuery);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         mActivity.addTabs(getAdapter(), viewPager, false);
         return v;
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        searchSuggestion(false);
         String s = mListView.getAdapter().getItem(position).toString();
-        tabAdapter.notifyDataSetChanged();
-        tabAdapter.onReceiveQuery(s);
+        lastQuery = s;
+        searchSuggestion(false);
     }
 
     @Override
@@ -146,7 +168,6 @@ public abstract class SearchFavoriteFragment extends ListFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.registrar, menu);
         searchView = (SearchView) menu.findItem(R.id.registrar_search).getActionView();
-        searchView.setIconified(false);
         final SearchView.OnQueryTextListener queryListener = new SearchView.OnQueryTextListener() {
 
             @Override
@@ -156,6 +177,7 @@ public abstract class SearchFavoriteFragment extends ListFragment {
 
             @Override
             public boolean onQueryTextSubmit(String arg0) {
+                lastQuery = arg0;
                 searchSuggestion(false);
                 tabAdapter.onReceiveQuery(arg0);
                 return true;
@@ -213,6 +235,7 @@ public abstract class SearchFavoriteFragment extends ListFragment {
         } else {
             mActivity.addTabs(getAdapter(), viewPager, false);
             viewPager.setVisibility(View.VISIBLE);
+            tabAdapter.onReceiveQuery(lastQuery);
             mListView.setVisibility(View.GONE);
         }
     }
@@ -228,17 +251,6 @@ public abstract class SearchFavoriteFragment extends ListFragment {
      * @return index   index of the most recent search entry, -1 if there is none.
      */
     protected abstract int searchCount();
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                searchSuggestion(true);
-            }
-        });
-    }
 
     @Override
     public void onDestroy() {

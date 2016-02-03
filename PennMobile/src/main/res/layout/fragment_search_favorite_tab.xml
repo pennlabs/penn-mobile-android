@@ -13,9 +13,15 @@
 
     <include layout="@layout/loading_panel" />
 
-    <ListView
-        android:id="@android:id/list"
+    <FrameLayout
+        android:id="@+id/search_fav_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@android:id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
 
 </LinearLayout>

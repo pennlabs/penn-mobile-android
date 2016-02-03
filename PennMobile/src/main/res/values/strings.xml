@@ -27,8 +27,6 @@
     <string name="transit_search">Search for destinations</string>
     <string name="directory_search">Search for people</string>
     <string name="building_search">Search for buildings</string>
-    <string name="directory_instructions">Search for Penn faculty</string>
-    <string name="registrar_instructions">Search for courses</string>
     <string name="building_instructions">Search for Penn buildings</string>
     <string-array name="previous_course_array">
         <item>course1</item>
@@ -113,4 +111,7 @@
     <string name="search_list">listing</string>
     <string name="search_dir_star">search_dir_star</string>
     <string name="search_reg_star">search_reg_star</string>
+    <string name="search_no_fav">No favorites found.</string>
+    <string name="directory_instructions">Search for Penn faculty</string>
+    <string name="registrar_instructions">Search for courses</string>
 </resources>

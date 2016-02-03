@@ -6,6 +6,7 @@ import android.support.v7.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -27,18 +28,63 @@ import rx.functions.Action1;
  */
 public class DirectoryTab extends SearchFavoriteTab {
 
+    private DirectoryAdapter mAdapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_search_favorite_tab, container, false);
         ButterKnife.bind(this, v);
         mListView = (ListView) v.findViewById(android.R.id.list);
+        initList();
+        return v;
+    }
+
+    @Override
+    public void processQuery (String query) {
+        super.processQuery(query);
+        processDirectoryQuery(query);
+    }
+
+    private void processDirectoryQuery(String query) {
+        if (query.isEmpty()) {
+            return;
+        }
+        mLabs.people(query)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<Person>>() {
+                    @Override
+                    public void call(final List<Person> people) {
+                        if (loadingPanel != null) {
+                            loadingPanel.setVisibility(View.GONE);
+                            if (people.isEmpty()) {
+                                if (no_results != null) {
+                                    no_results.setVisibility(View.VISIBLE);
+                                }
+                            } else {
+                                if (mListView != null) {
+                                    mAdapter = new DirectoryAdapter(mActivity, people);
+                                    mListView.setAdapter(mAdapter);
+                                    mListView.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        noResults();
+                    }
+                });
+    }
+
+    public void initList() {
         if (fav) {
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mActivity);
             Gson gson = new Gson();
             Set<String> starred = sp.getStringSet(getString(R.string.search_dir_star), new HashSet<String>());
             if (starred.isEmpty()) {
-                Toast.makeText(mActivity, "No favorites found.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity, getString(R.string.search_no_fav), Toast.LENGTH_SHORT).show();
                 notFavoriteInit();
             } else {
                 if (loadingPanel.getVisibility() == View.VISIBLE) {
@@ -61,49 +107,22 @@ public class DirectoryTab extends SearchFavoriteTab {
                         people.add(person);
                     }
                 }
-                DirectoryAdapter adapter = new DirectoryAdapter(mActivity, people, this);
-                mListView.setAdapter(adapter);
+                mAdapter = new DirectoryAdapter(mActivity, people);
+                mListView.setAdapter(mAdapter);
             }
             ((MainActivity) getActivity()).closeKeyboard();
         } else {
             notFavoriteInit();
         }
-        return v;
     }
 
     @Override
-    public void processQuery (String query) {
-        super.processQuery(query);
-        processDirectoryQuery(query);
-    }
-
-    private void processDirectoryQuery(String query) {
-        mLabs.people(query)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<Person>>() {
-                    @Override
-                    public void call(final List<Person> people) {
-                        if (loadingPanel != null) {
-                            loadingPanel.setVisibility(View.GONE);
-                            if (people.isEmpty()) {
-                                if (no_results != null) {
-                                    no_results.setVisibility(View.VISIBLE);
-                                }
-                            } else {
-                                if (mListView != null) {
-                                    DirectoryAdapter mAdapter = new DirectoryAdapter(mActivity, people);
-                                    mListView.setAdapter(mAdapter);
-                                    mListView.setVisibility(View.VISIBLE);
-
-                                }
-                            }
-                        }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        noResults();
-                    }
-                });
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (fav) {
+            search_instructions.setText(getString(R.string.search_no_fav));
+        } else {
+            search_instructions.setText(getString(R.string.directory_instructions));
+        }
     }
 }

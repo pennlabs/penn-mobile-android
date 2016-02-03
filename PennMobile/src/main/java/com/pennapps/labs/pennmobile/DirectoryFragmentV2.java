@@ -4,30 +4,21 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.preference.PreferenceManager;
-import android.util.Log;
-import android.view.View;
-
-import com.pennapps.labs.pennmobile.adapters.DirectoryAdapter;
-import com.pennapps.labs.pennmobile.classes.Person;
-
-import java.util.List;
 
 import butterknife.ButterKnife;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 /**
  * Created by Jason on 1/26/2016.
  */
 public class DirectoryFragmentV2 extends SearchFavoriteFragment {
 
-    private DirectoryAdapter adapter;
+    private DirectoryTabAdapter adapter;
 
-    protected class DirectoryAdapter extends ListTabAdapter {
+    protected class DirectoryTabAdapter extends ListTabAdapter {
 
         DirectoryTab[] array;
 
-        public DirectoryAdapter(FragmentManager fm) {
+        public DirectoryTabAdapter(FragmentManager fm) {
             super(fm);
             array = new DirectoryTab[2];
         }
@@ -58,7 +49,7 @@ public class DirectoryFragmentV2 extends SearchFavoriteFragment {
     @Override
     protected ListTabAdapter getAdapter() {
         if (adapter == null){
-            adapter = new DirectoryAdapter(mActivity.getSupportFragmentManager());
+            adapter = new DirectoryTabAdapter(mActivity.getSupportFragmentManager());
         }
         return adapter;
     }

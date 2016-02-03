@@ -7,6 +7,7 @@ import android.support.v7.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,14 +35,13 @@ import rx.functions.Action1;
 /**
  * Created by Jason on 1/26/2016.
  */
-public class SearchFavoriteTab extends ListFragment {
+public abstract class SearchFavoriteTab extends ListFragment {
 
     protected boolean fav;
     protected String type;
     protected ListView mListView;
     protected MainActivity mActivity;
     protected Labs mLabs;
-    protected boolean update;
 
     protected @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
     protected @Bind(R.id.no_results) TextView no_results;
@@ -62,8 +62,11 @@ public class SearchFavoriteTab extends ListFragment {
     }
 
     public void processQuery(String query) {
-        if (search_instructions.getVisibility() == View.VISIBLE) {
+        if (search_instructions.getVisibility() == View.VISIBLE && !query.equals("")) {
             search_instructions.setVisibility(View.GONE);
+            if(loadingPanel != null) {
+                loadingPanel.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -72,6 +75,7 @@ public class SearchFavoriteTab extends ListFragment {
             loadingPanel.setVisibility(View.GONE);
             no_results.setVisibility(View.VISIBLE);
             mListView.setVisibility(View.GONE);
+            search_instructions.setVisibility(View.GONE);
         }
     }
 
@@ -79,16 +83,8 @@ public class SearchFavoriteTab extends ListFragment {
         search_instructions.setVisibility(View.VISIBLE);
         no_results.setVisibility(View.GONE);
         loadingPanel.setVisibility(View.GONE);
+        mListView.setVisibility(View.GONE);
     }
 
-    public void updateFav() {
-        update = true;
-    }
-
-    public boolean getUpdate() {
-        boolean temp = update;
-        update = false;
-        return temp;
-    }
-
+    public abstract void initList();
 }

@@ -30,19 +30,11 @@ import butterknife.ButterKnife;
 public class DirectoryAdapter extends ArrayAdapter<Person> {
     private final LayoutInflater inflater;
     private Context mContext;
-    private DirectoryTab tab;
 
     public DirectoryAdapter(Context context, List<Person> persons) {
         super(context, R.layout.directory_list_item, persons);
         inflater = LayoutInflater.from(context);
         mContext = context;
-    }
-
-    public DirectoryAdapter(Context context, List<Person> persons, DirectoryTab tab) {
-        super(context, R.layout.directory_list_item, persons);
-        inflater = LayoutInflater.from(context);
-        mContext = context;
-        this.tab = tab;
     }
 
     @Override
@@ -116,9 +108,6 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
         holder.star.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (tab != null) {
-                    tab.updateFav();
-                }
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(v.getContext());
                 Set<String> buffer = sharedPref.getStringSet(mContext.getResources().getString(R.string.search_dir_star), new HashSet<String>());
                 Set<String> starredContacts = new HashSet<>(buffer);

@@ -113,7 +113,6 @@ public class CourseFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         getActivity().setTitle(R.string.registrar);
-        RegistrarFragment.hideSearchView = true;
         ButterKnife.unbind(this);
     }
 

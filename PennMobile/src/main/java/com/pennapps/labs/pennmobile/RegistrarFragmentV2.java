@@ -3,8 +3,12 @@ package com.pennapps.labs.pennmobile;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.PreferenceManager;
-import android.util.Log;
+import android.view.View;
+
+import com.pennapps.labs.pennmobile.adapters.RegistrarAdapter;
+import com.pennapps.labs.pennmobile.classes.Course;
 
 import butterknife.ButterKnife;
 
@@ -13,13 +17,13 @@ import butterknife.ButterKnife;
  */
 public class RegistrarFragmentV2 extends SearchFavoriteFragment {
 
-    private RegistrarAdapter adapter;
+    private RegistrarTabAdapter adapter;
 
-    protected class RegistrarAdapter extends ListTabAdapter {
+    protected class RegistrarTabAdapter extends ListTabAdapter {
 
         RegistrarTab[] array;
 
-        public RegistrarAdapter(FragmentManager fm) {
+        public RegistrarTabAdapter(FragmentManager fm) {
             super(fm);
             array = new RegistrarTab[2];
         }
@@ -50,18 +54,18 @@ public class RegistrarFragmentV2 extends SearchFavoriteFragment {
     @Override
     protected ListTabAdapter getAdapter() {
         if (adapter == null){
-            adapter = new RegistrarAdapter(mActivity.getSupportFragmentManager());
+            adapter = new RegistrarTabAdapter(mActivity.getSupportFragmentManager());
         }
         return adapter;
     }
 
     @Override
-    protected int previousArrayKey() {
+    public int previousArrayKey() {
         return R.array.previous_course_array;
     }
 
     @Override
-    protected int searchCount() {
+    public int searchCount() {
         return PreferenceManager.getDefaultSharedPreferences(mActivity).getInt(getString(R.string.registrar_search_count), -1);
     }
 
