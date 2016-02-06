@@ -63,7 +63,6 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
         holder.hallNameTV.setText(WordUtils.capitalizeFully(diningHall.getName()));
 
         if (diningHall.isResidential() && !diningHall.hasMenu()) {
-            Log.d("residential", diningHall.getName());
             holder.infoIcon.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
             mLabs.daily_menu(diningHall.getId())
@@ -71,27 +70,12 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
                     .subscribe(new Action1<DiningHall>() {
                         @Override
                         public void call(DiningHall newDiningHall) {
-                            Log.d("call", "yay");
                             diningHall.sortMeals(newDiningHall.menus);
                             holder.infoIcon.setVisibility(View.GONE);
                             if (diningHall.hasMenu()) {
-                                Log.d("menu call", diningHall.getName());
                                 holder.infoIcon.setVisibility(View.GONE);
                                 progressBar.setVisibility(View.GONE);
                                 holder.menuArrow.setVisibility(View.VISIBLE);
-                                /*Picasso.with(getContext()).load(R.drawable.ic_chevron_right_black_36dp).fit().centerInside().into(holder.menuArrow, new Callback() {
-                                    @Override
-                                    public void onSuccess() {
-                                        Log.d("menu", "yay");
-                                        progressBar.setVisibility(View.GONE);
-                                        //holder.menuArrow.setVisibility(View.INVISIBLE);
-                                        holder.menuArrow.setVisibility(View.VISIBLE);
-                                    }
-
-                                    @Override
-                                    public void onError() {
-                                    }
-                                });*/
                             }
                             else{
                                 Log.d("no menu call", diningHall.getName());
@@ -134,13 +118,11 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
         }
 
         if (diningHall.hasMenu()) {
-            Log.d("menu", diningHall.getName());
             holder.infoIcon.setVisibility(View.GONE);
             progressBar.setVisibility(View.GONE);
             holder.menuArrow.setVisibility(View.VISIBLE);
         }
         else{
-            Log.d("no menu", diningHall.getName());
             progressBar.setVisibility(View.INVISIBLE);
             holder.menuArrow.setVisibility(View.GONE);
             holder.infoIcon.setVisibility(View.VISIBLE);
