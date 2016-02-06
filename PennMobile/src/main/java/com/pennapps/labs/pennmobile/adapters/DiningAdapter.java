@@ -62,34 +62,7 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
 
         holder.hallNameTV.setText(WordUtils.capitalizeFully(diningHall.getName()));
 
-        if (diningHall.isResidential() && !diningHall.hasMenu()) {
-            holder.infoIcon.setVisibility(View.GONE);
-            progressBar.setVisibility(View.VISIBLE);
-            mLabs.daily_menu(diningHall.getId())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<DiningHall>() {
-                        @Override
-                        public void call(DiningHall newDiningHall) {
-                            diningHall.sortMeals(newDiningHall.menus);
-                            holder.infoIcon.setVisibility(View.GONE);
-                            if (diningHall.hasMenu()) {
-                                holder.infoIcon.setVisibility(View.GONE);
-                                progressBar.setVisibility(View.GONE);
-                                holder.menuArrow.setVisibility(View.VISIBLE);
-                            }
-                            else{
-                                Log.d("no menu call", diningHall.getName());
-                                progressBar.setVisibility(View.GONE);
-                                holder.infoIcon.setVisibility(View.VISIBLE);
-                                holder.menuArrow.setVisibility(View.GONE);
-                            }
-                        }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
-                        }
-                    });
-        }
+
 
         if (diningHall.isOpen()) {
             holder.hallStatus.setText(R.string.dining_hall_open);
@@ -118,14 +91,51 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
         }
 
         if (diningHall.hasMenu()) {
+            Log.d("menu", diningHall.getName());
             holder.infoIcon.setVisibility(View.GONE);
             progressBar.setVisibility(View.GONE);
             holder.menuArrow.setVisibility(View.VISIBLE);
         }
         else{
-            progressBar.setVisibility(View.INVISIBLE);
-            holder.menuArrow.setVisibility(View.GONE);
-            holder.infoIcon.setVisibility(View.VISIBLE);
+            if (diningHall.isResidential()) {
+                Log.d("residential, no menu", diningHall.getName());
+                holder.infoIcon.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
+                mLabs.daily_menu(diningHall.getId())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<DiningHall>() {
+                            @Override
+                            public void call(DiningHall newDiningHall) {
+                                Log.d("call", diningHall.getName());
+                                diningHall.sortMeals(newDiningHall.menus);
+                                holder.infoIcon.setVisibility(View.GONE);
+                                if (diningHall.hasMenu()) {
+                                    Log.d("menu call", diningHall.getName());
+                                    holder.infoIcon.setVisibility(View.GONE);
+                                    progressBar.setVisibility(View.GONE);
+                                    holder.menuArrow.setVisibility(View.VISIBLE);
+                                } else {
+                                    Log.d("no menu call", diningHall.getName());
+                                    progressBar.setVisibility(View.GONE);
+                                    holder.infoIcon.setVisibility(View.VISIBLE);
+                                    holder.menuArrow.setVisibility(View.GONE);
+                                }
+                            }
+                        }, new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                progressBar.setVisibility(View.GONE);
+                                holder.infoIcon.setVisibility(View.VISIBLE);
+                                holder.menuArrow.setVisibility(View.GONE);
+                            }
+                        });
+            }
+            else {
+                Log.d("no menu", diningHall.getName());
+                progressBar.setVisibility(View.GONE);
+                holder.menuArrow.setVisibility(View.GONE);
+                holder.infoIcon.setVisibility(View.VISIBLE);
+            }
         }
         this.sort(new MenuComparator());
         return view;
