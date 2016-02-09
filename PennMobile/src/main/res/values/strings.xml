@@ -94,7 +94,7 @@
     <string name="pref_vegan">Show only vegan items</string>
     <string name="pref_vegan_summ">Display only vegan food items in the dining menus</string>
 
-    <!-- Directories star -->
+    <!-- Search favorites -->
     <string name="directory_show">Show favorites</string>
     <string name="directory_all">Show all</string>
     <string name="directory_delim">|#|</string>

@@ -136,7 +136,6 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
         @Bind(R.id.star_contact) ToggleButton star;
         @Bind(R.id.contact_icon) ImageView contact;
 
-
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);
         }

@@ -14,10 +14,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.pennapps.labs.pennmobile.adapters.SearchSuggestionAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 
 import java.util.ArrayList;
@@ -230,7 +230,7 @@ public abstract class SearchFavoriteFragment extends ListFragment {
                 public void run() {
                     viewPager.setVisibility(View.GONE);
                     mListView.setVisibility(View.VISIBLE);
-                    mListView.setAdapter(new ArrayAdapter(mActivity, android.R.layout.simple_list_item_1, list));
+                    mListView.setAdapter(new SearchSuggestionAdapter(mActivity, list));
                 }
             }));
         }
