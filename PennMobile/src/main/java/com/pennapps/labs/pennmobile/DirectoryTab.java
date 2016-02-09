@@ -6,9 +6,7 @@ import android.support.v7.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.pennapps.labs.pennmobile.adapters.DirectoryAdapter;
@@ -61,12 +59,10 @@ public class DirectoryTab extends SearchFavoriteTab {
                                 if (no_results != null) {
                                     no_results.setVisibility(View.VISIBLE);
                                 }
-                            } else {
-                                if (mListView != null) {
-                                    mAdapter = new DirectoryAdapter(mActivity, people);
-                                    mListView.setAdapter(mAdapter);
-                                    mListView.setVisibility(View.VISIBLE);
-                                }
+                        } else if (mListView != null) {
+                                mAdapter = new DirectoryAdapter(mActivity, people);
+                                mListView.setAdapter(mAdapter);
+                                mListView.setVisibility(View.VISIBLE);
                             }
                         }
                     }
@@ -84,7 +80,6 @@ public class DirectoryTab extends SearchFavoriteTab {
             Gson gson = new Gson();
             Set<String> starred = sp.getStringSet(getString(R.string.search_dir_star), new HashSet<String>());
             if (starred.isEmpty()) {
-                Toast.makeText(mActivity, getString(R.string.search_no_fav), Toast.LENGTH_SHORT).show();
                 notFavoriteInit();
             } else {
                 if (loadingPanel.getVisibility() == View.VISIBLE) {

@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile;
 
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,9 +10,8 @@ import android.support.v7.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.pennapps.labs.pennmobile.adapters.RegistrarAdapter;
@@ -34,12 +34,21 @@ public class RegistrarTab extends SearchFavoriteTab {
 
     private RegistrarAdapter mAdapter;
     private boolean favorites;
+    private int frameID;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         favorites = getArguments().getBoolean(getString(R.string.search_favorite), false);
-        View v = inflater.inflate(favorites ? R.layout.fragment_search_favorite_tab : R.layout.fragment_search_favorite_tab2, container, false);
+        View v = inflater.inflate(R.layout.fragment_search_favorite_tab, container, false);
+        FrameLayout frameLayout = (FrameLayout) v.findViewById(R.id.search_fav_frame);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            frameID = generateViewId();
+        } else {
+            frameID = View.generateViewId();
+        }
+        frameLayout.setId(frameID);
+
         ButterKnife.bind(this, v);
         mListView = (ListView) v.findViewById(android.R.id.list);
         initList();
@@ -64,7 +73,7 @@ public class RegistrarTab extends SearchFavoriteTab {
 
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(favorites ? R.id.search_fav_frame : R.id.search_fav_frame_2, fragment)
+                .replace(frameID, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
                 .commit();
@@ -130,7 +139,6 @@ public class RegistrarTab extends SearchFavoriteTab {
             Gson gson = new Gson();
             Set<String> starred = sp.getStringSet(getString(R.string.search_reg_star), new HashSet<String>());
             if (starred.isEmpty()) {
-                Toast.makeText(mActivity, getString(R.string.search_no_fav), Toast.LENGTH_SHORT).show();
                 notFavoriteInit();
             } else {
                 if (loadingPanel.getVisibility() == View.VISIBLE) {

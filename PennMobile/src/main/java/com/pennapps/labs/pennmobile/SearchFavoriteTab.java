@@ -1,35 +1,16 @@
 package com.pennapps.labs.pennmobile;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.support.v7.preference.PreferenceManager;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.pennapps.labs.pennmobile.adapters.DirectoryAdapter;
-import com.pennapps.labs.pennmobile.adapters.RegistrarAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
-import com.pennapps.labs.pennmobile.classes.Course;
-import com.pennapps.labs.pennmobile.classes.Person;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 
 /**
@@ -42,6 +23,8 @@ public abstract class SearchFavoriteTab extends ListFragment {
     protected ListView mListView;
     protected MainActivity mActivity;
     protected Labs mLabs;
+
+    private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
 
     protected @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
     protected @Bind(R.id.no_results) TextView no_results;
@@ -87,4 +70,16 @@ public abstract class SearchFavoriteTab extends ListFragment {
     }
 
     public abstract void initList();
+
+    public static int generateViewId() {
+        for (;;) {
+            final int result = sNextGeneratedId.get();
+            // aapt-generated IDs have the high byte nonzero; clamp to the range under that.
+            int newValue = result + 1;
+            if (newValue > 0x00FFFFFF) newValue = 1; // Roll over to 1, not 0.
+            if (sNextGeneratedId.compareAndSet(result, newValue)) {
+                return result;
+            }
+        }
+    }
 }

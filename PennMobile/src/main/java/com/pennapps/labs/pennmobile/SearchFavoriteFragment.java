@@ -35,6 +35,8 @@ public abstract class SearchFavoriteFragment extends ListFragment {
     protected ListTabAdapter tabAdapter;
     protected String lastQuery;
 
+    protected final static int MAX_SUGGESTION_SIZE = 5;
+
     protected abstract class ListTabAdapter extends FragmentStatePagerAdapter {
 
         public ListTabAdapter(FragmentManager fm) {
@@ -53,33 +55,33 @@ public abstract class SearchFavoriteFragment extends ListFragment {
          */
         public abstract boolean onReceiveQuery (String query);
 
-        protected void setIndex(int indexkey, int arraykey, String query) {
+        protected void setIndex(int indexKey, int arrayKey, String query) {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            int index = sharedPref.getInt(getString(indexkey), -1);
-            String[] previouskey = getResources().getStringArray(arraykey);
+            int index = sharedPref.getInt(getString(indexKey), -1);
+            String[] previousKey = getResources().getStringArray(arrayKey);
             SharedPreferences.Editor editor = sharedPref.edit();
             if (index != -1) {
                 boolean changed = false;
-                for (int i = 4; i >= 0; i--) {
-                    int id = (index + 5 - i) % 5;
-                    String s = sharedPref.getString(previouskey[id], "");
+                for (int i = MAX_SUGGESTION_SIZE-1; i >= 0; i--) {
+                    int id = (index + MAX_SUGGESTION_SIZE - i) % MAX_SUGGESTION_SIZE;
+                    String s = sharedPref.getString(previousKey[id], "");
                     if (s.equals(query)) {
                         changed = true;
                     }
                     if (changed && i > 0) {
-                        int prev = (index + 5 - i + 1) % 5;
-                        editor.putString(previouskey[id], sharedPref.getString(previouskey[prev], ""));
+                        int prev = (index + MAX_SUGGESTION_SIZE - i + 1) % MAX_SUGGESTION_SIZE;
+                        editor.putString(previousKey[id], sharedPref.getString(previousKey[prev], ""));
                     }
                 }
                 if (changed) {
-                    editor.putString(previouskey[index], query);
+                    editor.putString(previousKey[index], query);
                     editor.apply();
                     return;
                 }
             }
-            index = (index + 1) % 5;
-            editor.putInt(getString(indexkey), index);
-            editor.putString(previouskey[index], query);
+            index = (index + 1) % MAX_SUGGESTION_SIZE;
+            editor.putInt(getString(indexKey), index);
+            editor.putString(previousKey[index], query);
             editor.apply();
             mActivity.closeKeyboard();
         }
@@ -134,9 +136,8 @@ public abstract class SearchFavoriteFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        String s = mListView.getAdapter().getItem(position).toString();
-        lastQuery = s;
-        searchSuggestion(false);
+        lastQuery = mListView.getAdapter().getItem(position).toString();
+        hideSuggestion();
     }
 
     @Override
@@ -180,7 +181,7 @@ public abstract class SearchFavoriteFragment extends ListFragment {
             @Override
             public boolean onQueryTextSubmit(String arg0) {
                 lastQuery = arg0;
-                searchSuggestion(false);
+                hideSuggestion();
                 tabAdapter.onReceiveQuery(arg0);
                 return true;
             }
@@ -191,7 +192,7 @@ public abstract class SearchFavoriteFragment extends ListFragment {
             @Override
             public void onFocusChange (View v, boolean hasFocus) {
                 if (hasFocus) {
-                    searchSuggestion(true);
+                    showSuggestion();
                 }
             }
         };
@@ -200,7 +201,7 @@ public abstract class SearchFavoriteFragment extends ListFragment {
 
             @Override
             public boolean onClose() {
-                searchSuggestion(false);
+                hideSuggestion();
                 return false;
             }
         };
@@ -208,38 +209,38 @@ public abstract class SearchFavoriteFragment extends ListFragment {
         searchView.setOnCloseListener(closeListener);
     }
 
-    protected void searchSuggestion(boolean show) {
-        if (show) {
-            mActivity.removeTabs();
-            final ArrayList<String> list = new ArrayList<>(5);
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mActivity);
-            int index = searchCount();
-            if (index != -1) {
-                String[] previouskey = getResources().getStringArray(previousArrayKey());
-                for (int i = 0; i < 5; i++){
-                    int id = (index + 5 - i) % 5;
-                    String previous = sharedPref.getString(previouskey[id], "");
-                    if (!previous.isEmpty()) {
-                        list.add(previous);
-                    }
+    protected void showSuggestion() {
+        mActivity.removeTabs();
+        final ArrayList<String> list = new ArrayList<>(5);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        int index = searchCount();
+        if (index != -1) {
+            String[] previouskey = getResources().getStringArray(previousArrayKey());
+            for (int i = 0; i < MAX_SUGGESTION_SIZE; i++){
+                int id = (index + MAX_SUGGESTION_SIZE - i) % MAX_SUGGESTION_SIZE;
+                String previous = sharedPref.getString(previouskey[id], "");
+                if (!previous.isEmpty()) {
+                    list.add(previous);
                 }
             }
-            if (!list.isEmpty()) {
-                mActivity.runOnUiThread(new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        viewPager.setVisibility(View.GONE);
-                        mListView.setVisibility(View.VISIBLE);
-                        mListView.setAdapter(new ArrayAdapter(mActivity, android.R.layout.simple_list_item_1, list));
-                    }
-                }));
-            }
-        } else {
-            mActivity.addTabs(getAdapter(), viewPager, false);
-            viewPager.setVisibility(View.VISIBLE);
-            tabAdapter.onReceiveQuery(lastQuery);
-            mListView.setVisibility(View.GONE);
         }
+        if (!list.isEmpty()) {
+            mActivity.runOnUiThread(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    viewPager.setVisibility(View.GONE);
+                    mListView.setVisibility(View.VISIBLE);
+                    mListView.setAdapter(new ArrayAdapter(mActivity, android.R.layout.simple_list_item_1, list));
+                }
+            }));
+        }
+    }
+
+    protected void hideSuggestion() {
+        mActivity.addTabs(getAdapter(), viewPager, false);
+        viewPager.setVisibility(View.VISIBLE);
+        tabAdapter.onReceiveQuery(lastQuery);
+        mListView.setVisibility(View.GONE);
     }
 
     /**
