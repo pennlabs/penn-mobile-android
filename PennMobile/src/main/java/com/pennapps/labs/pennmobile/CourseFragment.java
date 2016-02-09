@@ -98,7 +98,18 @@ public class CourseFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle(course.getName());
+        if (containsNum(getActivity().getTitle())) {
+            StringBuilder builder = new StringBuilder(getActivity().getTitle());
+            boolean fav = getArguments().getBoolean(getString(R.string.registrar_search, false));
+            if (fav) {
+                builder.append(" - ").append(course.getName());
+            } else {
+                builder.insert(0, " - ").insert(0, course.getName());
+            }
+            getActivity().setTitle(builder.toString());
+        } else {
+            getActivity().setTitle(course.getName());
+        }
         if (map == null) {
             map = mapFragment.getMap();
             if (map != null) {
@@ -112,7 +123,18 @@ public class CourseFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        getActivity().setTitle(R.string.registrar);
+        if (getActivity().getTitle().toString().contains("-")) {
+            StringBuilder builder = new StringBuilder(getActivity().getTitle());
+            boolean fav = getArguments().getBoolean(getString(R.string.registrar_search, false));
+            if (fav) {
+                builder.delete(builder.indexOf(" - "), builder.length());
+            } else {
+                builder.delete(0, builder.indexOf(" - ") + 2);
+            }
+            getActivity().setTitle(builder.toString());
+        } else {
+            getActivity().setTitle(R.string.registrar);
+        }
         ButterKnife.unbind(this);
     }
 
@@ -203,5 +225,15 @@ public class CourseFragment extends Fragment {
         }
 
         findCourseReviews();
+    }
+
+    private boolean containsNum(CharSequence cs){
+        String s = cs.toString();
+        for (char c: s.toCharArray()) {
+            if (Character.isDigit(c)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

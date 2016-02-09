@@ -1,8 +1,10 @@
 package com.pennapps.labs.pennmobile.adapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.preference.PreferenceManager;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -12,11 +14,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
+import com.google.gson.Gson;
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.classes.Course;
+import com.pennapps.labs.pennmobile.classes.Person;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -24,15 +31,17 @@ import butterknife.ButterKnife;
 public class RegistrarAdapter extends ArrayAdapter<Course> {
     private final LayoutInflater inflater;
     private List<Course> courses;
+    private Context mContext;
 
     public RegistrarAdapter(Context context, List<Course> courses) {
         super(context, R.layout.registrar_list_item, courses);
         this.courses = courses;
+        mContext = context;
         inflater = LayoutInflater.from(context);
     }
     @Override
     public View getView(int position, View view, ViewGroup parent) {
-        Course course = getItem(position);
+        final Course course = getItem(position);
         String courseName = course.getName();
         ViewHolder holder;
         if (view != null) {
@@ -63,6 +72,36 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
         holder.courseTitle.setText(course.course_title);
         holder.courseActivity.setText(course.activity);
 
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(view.getContext());
+        Set<String> starredCourses = sharedPref.getStringSet(mContext.getResources().getString(R.string.search_reg_star), new HashSet<String>());
+        holder.star.setChecked(starredCourses.contains(course.getId()));
+        holder.star.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(v.getContext());
+                Set<String> buffer = sharedPref.getStringSet(mContext.getResources().getString(R.string.search_reg_star), new HashSet<String>());
+                Set<String> starredContacts = new HashSet<>(buffer);
+                SharedPreferences.Editor editedPreferences = sharedPref.edit();
+                ToggleButton star = (ToggleButton) v;
+                boolean starred = star.isChecked();
+                String currentCourse = course.getId();
+                if (starred) {
+                    if (currentCourse != null) {
+                        starredContacts.add(currentCourse);
+                        editedPreferences.putString(currentCourse + mContext.getResources().getString(R.string.search_reg_star),
+                                getDataString(course));
+                    }
+                } else {
+                    starredContacts.remove(currentCourse);
+                    if(currentCourse != null) {
+                        editedPreferences.remove(currentCourse + mContext.getResources().getString(R.string.search_reg_star));
+                    }
+                }
+                editedPreferences.putStringSet(mContext.getResources().getString(R.string.search_reg_star), starredContacts);
+                editedPreferences.apply();
+            }
+        });
+
         return view;
     }
 
@@ -70,6 +109,7 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
         @Bind(R.id.course_id_text) TextView courseId;
         @Bind(R.id.course_instr_text) TextView courseInstr;
         @Bind(R.id.course_title_text) TextView courseTitle;
+        @Bind(R.id.star_course) ToggleButton star;
         @Bind(R.id.course_activity) TextView courseActivity;
         public Course course;
 
@@ -82,5 +122,9 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
     @Override
     public int getCount() {
         return courses != null ? courses.size() : 0;
+    }
+
+    private String getDataString(Course currentCourse){
+        return (new Gson()).toJson(currentCourse, Course.class);
     }
 }

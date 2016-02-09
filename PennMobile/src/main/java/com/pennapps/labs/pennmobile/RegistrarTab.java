@@ -69,6 +69,7 @@ public class RegistrarTab extends SearchFavoriteTab {
         mActivity.getActionBarToggle().syncState();
         Bundle args = new Bundle();
         args.putParcelable("CourseFragment", course);
+        args.putBoolean(getString(R.string.registrar_search), favorites);
         fragment.setArguments(args);
 
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();

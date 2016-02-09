@@ -43,9 +43,9 @@
     <string name="dining_info">Dining Hall Hours</string>
 
     <!-- Courses -->
-    <string name="course">Course</string>
-    <string name="instructor">Instructor</string>
-    <string name="difficulty">Difficulty</string>
+    <string name="course">Average Course</string>
+    <string name="instructor">Average Instructor</string>
+    <string name="difficulty">Average Difficulty</string>
     <string name="professor_missing">No professor listed</string>
 
     <!-- Map -->
