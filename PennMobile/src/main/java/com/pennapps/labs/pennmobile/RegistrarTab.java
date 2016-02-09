@@ -33,11 +33,13 @@ import rx.functions.Action1;
 public class RegistrarTab extends SearchFavoriteTab {
 
     private RegistrarAdapter mAdapter;
+    private boolean favorites;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View v = inflater.inflate(R.layout.fragment_search_favorite_tab, container, false);
+        favorites = getArguments().getBoolean(getString(R.string.search_favorite), false);
+        View v = inflater.inflate(favorites ? R.layout.fragment_search_favorite_tab : R.layout.fragment_search_favorite_tab2, container, false);
         ButterKnife.bind(this, v);
         mListView = (ListView) v.findViewById(android.R.id.list);
         initList();
@@ -62,7 +64,7 @@ public class RegistrarTab extends SearchFavoriteTab {
 
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.search_fav_frame, fragment)
+                .replace(favorites ? R.id.search_fav_frame : R.id.search_fav_frame_2, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
                 .commit();
