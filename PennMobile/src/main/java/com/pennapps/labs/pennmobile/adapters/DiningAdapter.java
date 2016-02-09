@@ -2,7 +2,6 @@ package com.pennapps.labs.pennmobile.adapters;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +14,6 @@ import com.pennapps.labs.pennmobile.MainActivity;
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -91,14 +88,12 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
         }
 
         if (diningHall.hasMenu()) {
-            Log.d("menu", diningHall.getName());
             holder.infoIcon.setVisibility(View.GONE);
             progressBar.setVisibility(View.GONE);
             holder.menuArrow.setVisibility(View.VISIBLE);
         }
         else{
             if (diningHall.isResidential()) {
-                Log.d("residential, no menu", diningHall.getName());
                 holder.infoIcon.setVisibility(View.INVISIBLE);
                 progressBar.setVisibility(View.VISIBLE);
                 mLabs.daily_menu(diningHall.getId())
@@ -106,16 +101,13 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
                         .subscribe(new Action1<DiningHall>() {
                             @Override
                             public void call(DiningHall newDiningHall) {
-                                Log.d("call", diningHall.getName());
                                 diningHall.sortMeals(newDiningHall.menus);
                                 holder.infoIcon.setVisibility(View.GONE);
                                 if (diningHall.hasMenu()) {
-                                    Log.d("menu call", diningHall.getName());
                                     holder.infoIcon.setVisibility(View.GONE);
                                     progressBar.setVisibility(View.GONE);
                                     holder.menuArrow.setVisibility(View.VISIBLE);
                                 } else {
-                                    Log.d("no menu call", diningHall.getName());
                                     progressBar.setVisibility(View.GONE);
                                     holder.infoIcon.setVisibility(View.VISIBLE);
                                     holder.menuArrow.setVisibility(View.GONE);
@@ -131,7 +123,6 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
                         });
             }
             else {
-                Log.d("no menu", diningHall.getName());
                 progressBar.setVisibility(View.GONE);
                 holder.menuArrow.setVisibility(View.GONE);
                 holder.infoIcon.setVisibility(View.VISIBLE);
