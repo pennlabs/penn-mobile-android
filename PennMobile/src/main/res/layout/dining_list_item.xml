@@ -34,7 +34,18 @@
         android:layout_below="@+id/dining_hall_open_meal"
         android:fontFamily="sans-serif-light"
         style="@style/Menu"/>
-
+    <ProgressBar
+        android:indeterminateTint="@color/color_primary"
+        android:indeterminateTintMode="src_in"
+        style="@android:style/Widget.ProgressBar.Small"
+        android:id="@+id/dining_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/dining_hall_status"
+        android:layout_below="@id/dining_hall_status"
+        android:layout_marginTop="4dp"
+        android:adjustViewBounds="true"
+        android:indeterminate="true"/>
     <ImageView
         android:id="@+id/dining_hall_menu_indicator"
         android:layout_width="wrap_content"
@@ -43,5 +54,13 @@
         android:layout_below="@id/dining_hall_status"
         android:layout_marginTop="4dp"
         android:src="@drawable/ic_chevron_right_black_36dp"/>
+    <ImageView
+        android:id="@+id/dining_hall_info_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/dining_hall_status"
+        android:layout_below="@id/dining_hall_status"
+        android:layout_marginTop="4dp"
+        android:src="@drawable/ic_info"/>
 
 </RelativeLayout>
