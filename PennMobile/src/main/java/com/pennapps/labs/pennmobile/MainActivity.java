@@ -120,6 +120,10 @@ public class MainActivity extends AppCompatActivity {
         } catch (NullPointerException ignored) {
             // No webview exists currently
             super.onBackPressed();
+            if (CourseFragment.containsNum(getTitle())) {
+                getActionBarToggle().setDrawerIndicatorEnabled(false);
+                getActionBarToggle().syncState();
+            }
         }
     }
 

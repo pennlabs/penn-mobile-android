@@ -227,7 +227,7 @@ public class CourseFragment extends Fragment {
         findCourseReviews();
     }
 
-    private boolean containsNum(CharSequence cs){
+    public static boolean containsNum(CharSequence cs){
         String s = cs.toString();
         for (char c: s.toCharArray()) {
             if (Character.isDigit(c)) {
