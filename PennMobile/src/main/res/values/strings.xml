@@ -73,6 +73,7 @@
 
     <!-- News -->
     <string name="open_browser">Open in Browser</string>
+    <string name="news_sharing">Share link</string>
 
     <!-- About -->
     <string name="licenses">Licenses</string>

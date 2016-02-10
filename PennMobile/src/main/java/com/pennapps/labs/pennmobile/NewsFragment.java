@@ -89,14 +89,23 @@ public class NewsFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
+        String url;
         switch (item.getItemId()) {
             case R.id.news_browser:
-                String url = getCurrentTab();
+                url = getCurrentTab();
                 if (url != null) {
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                     startActivity(browserIntent);
                 }
                 return true;
+            case R.id.news_share:
+                url = getCurrentTab();
+                if (url != null) {
+                    Intent share = new Intent(Intent.ACTION_SEND);
+                    share.setType("text/plain");
+                    share.putExtra(Intent.EXTRA_TEXT, url);
+                    startActivity(Intent.createChooser(share, "Share link!"));
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -4,4 +4,9 @@
         android:icon="@drawable/ic_launch_white_24dp"
         app:showAsAction="ifRoom"
         android:title="@string/open_browser"/>
+
+    <item android:id="@+id/news_share"
+        android:icon="@drawable/ic_share_white_24dp"
+        app:showAsAction="ifRoom"
+        android:title="@string/news_sharing"/>
 </menu>
