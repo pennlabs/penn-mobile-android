@@ -225,14 +225,9 @@ public abstract class SearchFavoriteFragment extends ListFragment {
             }
         }
         if (!list.isEmpty()) {
-            mActivity.runOnUiThread(new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    viewPager.setVisibility(View.GONE);
-                    mListView.setVisibility(View.VISIBLE);
-                    mListView.setAdapter(new SearchSuggestionAdapter(mActivity, list));
-                }
-            }));
+            viewPager.setVisibility(View.GONE);
+            mListView.setVisibility(View.VISIBLE);
+            mListView.setAdapter(new SearchSuggestionAdapter(mActivity, list));
         }
     }
 
