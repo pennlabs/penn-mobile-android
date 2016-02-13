@@ -2,7 +2,6 @@ package com.pennapps.labs.pennmobile;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.StyleRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -11,13 +10,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
+import com.pennapps.labs.pennmobile.adapters.MenuAdapter;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -66,34 +69,31 @@ public class MenuFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_menu, container, false);
+        ExpandableListView elv = (ExpandableListView) v.findViewById(R.id.station_list);
+        List<String> headers = new ArrayList<String>();
+        HashMap<String,List<String>> stationInfo = new HashMap<String,List<String>>();
+        for (DiningHall.Menu menu: mDiningHall.menus) {
+            stationInfo.putAll(getStations(menu));
+            headers.addAll(stationInfo.keySet());
+        }
+        elv.setAdapter(new MenuAdapter(getActivity(), headers, stationInfo));
         v.setBackgroundColor(Color.WHITE);
         ButterKnife.bind(this, v);
-        fillDescriptions();
         return v;
     }
-
-    public void fillDescriptions() {
-        for (DiningHall.Menu menu : mDiningHall.menus) {
-            addDiningTextView(R.style.MealName, StringUtils.capitalize(menu.name));
-            for (DiningHall.DiningStation station : menu.stations) {
-                addDiningTextView(R.style.DiningStation, StringUtils.capitalize(station.name));
-                for (DiningHall.FoodItem item : station.items) {
-                    addDiningTextView(R.style.FoodItem, StringEscapeUtils.unescapeXml(item.title));
-                }
+    public HashMap<String,List<String>> getStations(DiningHall.Menu menu){
+        HashMap<String, List<String>> stations = new HashMap<String, List<String>>();
+        for (DiningHall.DiningStation station : menu.stations) {
+            List<String> foods = new ArrayList<String>();
+            StringBuilder food = new StringBuilder();
+            for (DiningHall.FoodItem item: station.items){
+                food.append(item.title);
+                food.append("\n");
             }
+            foods.add(food.toString());
+            stations.put(StringUtils.capitalize(station.name), foods);
         }
-    }
-
-    private void addDiningTextView(@StyleRes int style, String text) {
-        TextView textView = new TextView(mActivity);
-        textView.setTextAppearance(mActivity, style);
-        textView.setText(text);
-        if (style == R.style.FoodItem) {
-            textView.setPadding(50, 0, 0, 0);
-        } else if (style == R.style.MealName) {
-            textView.setPadding(0, 25, 0, 25);
-        }
-        menuParent.addView(textView);
+        return stations;
     }
 
     @Override

@@ -69,15 +69,19 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="DiningStation" parent="TextAppearance.AppCompat.Small">
+    <style name="DiningStation">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">20dp</item>
+        <item name="android:textSize">20dp</item>
         <item name="android:textColor">@color/black</item>
     </style>
 
-    <style name="FoodItem" parent="TextAppearance.AppCompat.Caption">
+    <style name="FoodItem">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:textSize">12dp</item>
         <item name="android:textColor">@color/black</item>
     </style>
 
