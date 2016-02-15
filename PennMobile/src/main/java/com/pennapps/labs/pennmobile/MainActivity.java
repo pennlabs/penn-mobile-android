@@ -183,7 +183,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void navigateLayout(@AnyRes int id) {
-        final Menu menu = mDrawerList.getMenu();
         Fragment fragment = null;
         switch (id) {
             case R.id.nav_home:
