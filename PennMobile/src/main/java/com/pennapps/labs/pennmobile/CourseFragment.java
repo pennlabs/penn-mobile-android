@@ -51,7 +51,7 @@ public class CourseFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        course = getArguments().getParcelable("CourseFragment");
+        course = getArguments().getParcelable(getString(R.string.course_bundle_arg));
         mLabs = MainActivity.getLabsInstance();
         ((MainActivity) getActivity()).closeKeyboard();
     }

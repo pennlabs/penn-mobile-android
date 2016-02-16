@@ -47,6 +47,7 @@
     <string name="instructor">Average Instructor</string>
     <string name="difficulty">Average Difficulty</string>
     <string name="professor_missing">No professor listed</string>
+    <string name="course_bundle_arg">CourseFragment</string>
 
     <!-- Map -->
     <string name="image_description">Photo</string>

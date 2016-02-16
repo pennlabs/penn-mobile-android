@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/fragment_container"
+    android:background="@color/background_material_light"
     android:clickable="true" >
 
     <LinearLayout
@@ -11,7 +12,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:clickable="true"
-        android:background="@color/background_material_light"
         >
 
         <FrameLayout
