@@ -1,166 +1,68 @@
 package com.pennapps.labs.pennmobile;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.ArrayRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.ListFragment;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.preference.PreferenceManager;
-import android.support.v7.widget.SearchView;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.pennapps.labs.pennmobile.adapters.RegistrarAdapter;
-import com.pennapps.labs.pennmobile.api.Labs;
-import com.pennapps.labs.pennmobile.classes.Course;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
-public class RegistrarFragment extends ListFragment {
+/**
+ * Created by Jason on 1/25/2016.
+ */
+public class RegistrarFragment extends SearchFavoriteFragment {
 
-    private Labs mLabs;
-    private ListView listView;
-    private MainActivity mActivity;
-    private RegistrarAdapter mAdapter;
-    public static SearchView searchView;
-    public static boolean hideSearchView = false;
+    private RegistrarTabAdapter adapter;
 
-    @Bind(R.id.no_results) TextView no_results;
-    @Bind(R.id.registrar_instructions) TextView registrar_instructions;
-    @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
+    protected class RegistrarTabAdapter extends ListTabAdapter {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mActivity = (MainActivity) getActivity();
-        mLabs = MainActivity.getLabsInstance();
-    }
+        RegistrarTab[] array;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        View v = inflater.inflate(R.layout.fragment_registrar, container, false);
-        ButterKnife.bind(this, v);
-        return v;
-    }
+        public RegistrarTabAdapter(FragmentManager fm) {
+            super(fm);
+            array = new RegistrarTab[2];
+        }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
-        listView = getListView();
-    }
+        @Override
+        public boolean onReceiveQuery(String query) {
+            if (array[0] != null) {
+                array[0].processQuery(query);
+                setIndex(R.string.registrar_search_count, R.array.previous_course_array, query);
+            }
+            return array[0] != null;
+        }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
-        switch (item.getItemId()) {
-            case R.id.registrar_search:
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        @Override
+        public Fragment getItem(int position) {
+            if (array[position] == null) {
+                RegistrarTab fragment = new RegistrarTab();
+                Bundle args = new Bundle();
+                args.putBoolean(getString(R.string.search_favorite), position == 1);
+                args.putString(getString(R.string.search_list), getString(R.string.registrar));
+                fragment.setArguments(args);
+                array[position] = fragment;
+            }
+            return array[position];
         }
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        if (hideSearchView) {
-            searchView.clearFocus();
+    protected ListTabAdapter getAdapter() {
+        if (adapter == null){
+            adapter = new RegistrarTabAdapter(mActivity.getSupportFragmentManager());
         }
+        return adapter;
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.registrar, menu);
-        loadingPanel.setVisibility(View.GONE);
-        MenuItem searchMenuItem = menu.findItem(R.id.registrar_search);
-        searchMenuItem.expandActionView();
-
-        searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
-        searchView.setIconified(false);
-        final SearchView.OnQueryTextListener queryListener = new SearchView.OnQueryTextListener() {
-
-            @Override
-            public boolean onQueryTextChange(String arg0) {
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextSubmit(String input) {
-                searchView.clearFocus();
-                registrar_instructions.setVisibility(View.GONE);
-                no_results.setVisibility(View.GONE);
-                loadingPanel.setVisibility(View.VISIBLE);
-                searchCourses(input);
-                return true;
-            }
-        };
-        searchView.setOnQueryTextListener(queryListener);
-    }
-
-    private void searchCourses(String query) {
-        mLabs.courses(query)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<Course>>() {
-                    @Override
-                    public void call(List<Course> courses) {
-                        if(loadingPanel != null) {
-                            loadingPanel.setVisibility(View.GONE);
-                            if (courses == null || courses.size() == 0) {
-                                no_results.setVisibility(View.VISIBLE);
-                                listView.setVisibility(View.GONE);
-                            } else {
-                                mAdapter = new RegistrarAdapter(mActivity, filterCourses(courses));
-                                listView.setVisibility(View.VISIBLE);
-                                listView.setAdapter(mAdapter);
-                            }
-                        }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        if(loadingPanel != null) {
-                            loadingPanel.setVisibility(View.GONE);
-                            no_results.setVisibility(View.VISIBLE);
-                            listView.setVisibility(View.GONE);
-                        }
-                    }
-                });
+    protected @ArrayRes int previousArrayKey() {
+        return R.array.previous_course_array;
     }
 
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        Fragment fragment = new CourseFragment();
-        Course course = ((RegistrarAdapter.ViewHolder) v.getTag()).course;
-        mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
-        mActivity.getActionBarToggle().syncState();
-        Bundle args = new Bundle();
-        args.putParcelable("CourseFragment", course);
-        fragment.setArguments(args);
-
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.registrar_fragment, fragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .addToBackStack(null)
-                .commit();
-        getActivity().findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-        onResume();
+    protected int searchCount() {
+        return PreferenceManager.getDefaultSharedPreferences(mActivity).getInt(getString(R.string.registrar_search_count), -1);
     }
 
     @Override
@@ -175,22 +77,4 @@ public class RegistrarFragment extends ListFragment {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
-
-    private List<Course> filterCourses(List<Course> courses){
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        boolean recitations = sharedPref.getBoolean("pref_recitations", true);
-        if (!recitations) {
-            List<Course> courses_filt = new ArrayList<>();
-            for (Course course : courses) {
-                if (course.activity.equals("LEC")) {
-                    courses_filt.add(course);
-                    }
-                }
-            return courses_filt;
-            }else{
-                return courses;
-            }
-        }
 }
-
-

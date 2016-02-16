@@ -126,4 +126,8 @@ public class Course implements Parcelable {
         }
         return "";
     }
+
+    public String getId() {
+        return new StringBuilder().append(course_department).append(course_number).append(section_number).toString();
+    }
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/image_description"
+        android:src="@drawable/ic_search_black_24dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="14dp"
+        android:id="@+id/search_item_image"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignTop="@id/search_item_image"
+        android:layout_alignBottom="@id/search_item_image"
+        android:id="@+id/search_item_text"
+        android:layout_toRightOf="@id/search_item_image"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:textSize="17sp"
+        />
+
+</RelativeLayout>

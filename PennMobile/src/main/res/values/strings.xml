@@ -27,9 +27,15 @@
     <string name="transit_search">Search for destinations</string>
     <string name="directory_search">Search for people</string>
     <string name="building_search">Search for buildings</string>
-    <string name="directory_instructions">Search for Penn faculty</string>
-    <string name="registrar_instructions">Search for courses</string>
     <string name="building_instructions">Search for Penn buildings</string>
+    <string-array name="previous_course_array">
+        <item>course1</item>
+        <item>course2</item>
+        <item>course3</item>
+        <item>course4</item>
+        <item>course5</item>
+    </string-array>
+    <string name="registrar_search_count">register_count</string>
 
     <!-- Dining -->
     <string name="dining_hall_open">Open</string>
@@ -37,10 +43,11 @@
     <string name="dining_info">Dining Hall Hours</string>
 
     <!-- Courses -->
-    <string name="course">Course</string>
-    <string name="instructor">Instructor</string>
-    <string name="difficulty">Difficulty</string>
+    <string name="course">Average Course</string>
+    <string name="instructor">Average Instructor</string>
+    <string name="difficulty">Average Difficulty</string>
     <string name="professor_missing">No professor listed</string>
+    <string name="course_bundle_arg">CourseFragment</string>
 
     <!-- Map -->
     <string name="image_description">Photo</string>
@@ -89,9 +96,24 @@
     <string name="pref_vegan">Show only vegan items</string>
     <string name="pref_vegan_summ">Display only vegan food items in the dining menus</string>
 
-    <!-- Directories star -->
+    <!-- Search favorites -->
     <string name="directory_show">Show favorites</string>
     <string name="directory_all">Show all</string>
     <string name="directory_delim">|#|</string>
-
+    <string-array name="previous_directory_array">
+        <item>dir1</item>
+        <item>dir2</item>
+        <item>dir3</item>
+        <item>dir4</item>
+        <item>dir5</item>
+    </string-array>
+    <string name="directory_search_count">dir_count</string>
+    <string name="search_all">ALL</string>
+    <string name="search_favorite">FAVORITES</string>
+    <string name="search_list">listing</string>
+    <string name="search_dir_star">search_dir_star</string>
+    <string name="search_reg_star">search_reg_star</string>
+    <string name="search_no_fav">No favorites found.</string>
+    <string name="directory_instructions">Search for Penn faculty</string>
+    <string name="registrar_instructions">Search for courses</string>
 </resources>

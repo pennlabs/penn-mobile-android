@@ -39,4 +39,37 @@ public class Person {
         int firstComma = name.indexOf(",");
         return WordUtils.capitalizeFully(name.substring(firstComma + 1).trim() + " " + name.substring(0, firstComma).trim());
     }
+
+    /**
+     * Get a person's affiliation into a better format.
+     * Ex: "Faculty - ASSOC PROF ENG" -> "Assoc Prof Eng"
+     * @return Person's affiliation in ordered format
+     */
+    public String getAffiliation() {
+        String answer = affiliation.toLowerCase();
+        if (answer.indexOf("faculty") == 0) {
+            answer = affiliation.toLowerCase().substring(7);
+            while (!Character.isLetter(answer.charAt(0))) {
+                answer = answer.substring(1);
+            }
+        }
+        if (answer.contains("assoc ")) {
+            answer = answer.replace("assoc", "associate");
+        }
+        if (answer.contains("prof ")) {
+            answer = answer.replace("prof", "professor");
+        }
+        if (answer.contains("asst ")) {
+            answer = answer.replace("asst", "assistant");
+        }
+        return WordUtils.capitalizeFully(answer);
+    }
+
+    /**
+     * Get a person's email into lower case.
+     * @return Person's email in ordered format
+     */
+    public String getEmail() {
+        return email.toLowerCase();
+    }
 }

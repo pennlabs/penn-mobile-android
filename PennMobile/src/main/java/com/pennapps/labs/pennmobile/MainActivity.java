@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private static Labs mLabs;
     private boolean from_alarm;
     private static final int CODE_MAP = 1, CODE_TRANSIT = 2;
+    private boolean tab_showed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +126,10 @@ public class MainActivity extends AppCompatActivity {
         } catch (NullPointerException ignored) {
             // No webview exists currently
             super.onBackPressed();
+            if (CourseFragment.containsNum(getTitle())) {
+                getActionBarToggle().setDrawerIndicatorEnabled(false);
+                getActionBarToggle().syncState();
+            }
         }
     }
 
@@ -283,6 +288,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addTabs(FragmentStatePagerAdapter pageAdapter, final ViewPager pager, boolean scrollable) {
+        if (tab_showed) {
+            return;
+        }
         final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
 
         final TabLayout tabLayout = (TabLayout) getLayoutInflater().inflate(R.layout.tab_layout, null);
@@ -298,13 +306,15 @@ public class MainActivity extends AppCompatActivity {
         appBar.addView(tabLayout);
 
         pager.setAdapter(pageAdapter);
+        tab_showed = true;
     }
 
 
 
     public void removeTabs() {
+        tab_showed = false;
         final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
-        if (appBar != null) {
+        if (appBar != null && appBar.getChildCount() >= 2) {
             appBar.removeViewAt(1);
         }
     }
