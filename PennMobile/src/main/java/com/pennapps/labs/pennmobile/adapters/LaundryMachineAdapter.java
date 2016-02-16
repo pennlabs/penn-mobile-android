@@ -130,7 +130,6 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 final AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
-                final CompoundButton button = buttonView;
                 if (isChecked) {
                     final PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), laundryRoom.name.hashCode() + machine.number,
                             intent, PendingIntent.FLAG_CANCEL_CURRENT);

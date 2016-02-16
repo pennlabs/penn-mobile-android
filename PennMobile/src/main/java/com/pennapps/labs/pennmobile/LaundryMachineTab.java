@@ -56,7 +56,11 @@ public class LaundryMachineTab extends ListFragment {
         if (getArguments() != null && getArguments().getParcelableArray(getString(R.string.laundry_machine_intent)) != null) {
             LaundryMachine[] array = (LaundryMachine[])getArguments()
                     .getParcelableArray(getString(R.string.laundry_machine_intent));
-            machines = new LinkedList<>(Arrays.asList(array));
+            if (array != null) {
+                machines = new LinkedList<>(Arrays.asList(array));
+            } else {
+                machines = new LinkedList<>();
+            }
         }
         if (machines == null || machines.isEmpty()) {
             getMachines();
