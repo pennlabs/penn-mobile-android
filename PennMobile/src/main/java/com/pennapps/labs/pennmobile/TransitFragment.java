@@ -29,6 +29,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -52,7 +53,7 @@ import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-public class TransitFragment extends Fragment {
+public class TransitFragment extends Fragment implements OnMapReadyCallback {
 
     @Bind(R.id.mapView) MapView mapView;
     @Bind(R.id.transit_starting_location) EditText startingLoc;
@@ -65,6 +66,7 @@ public class TransitFragment extends Fragment {
     private RoutesAdapter adapter;
     private MainActivity activity;
     public static HashSet<BusRoute> selectedRoutes;
+    private LayoutInflater inflater;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,20 +94,10 @@ public class TransitFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_transit, container, false);
         ButterKnife.bind(this, v);
 
+        this.inflater = inflater;
         mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
 
-        googleMap = mapView.getMap();
-        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-        googleMap.setMyLocationEnabled(true);
-        googleMap.setInfoWindowAdapter(new CustomWindowAdapter(inflater));
-
-        try {
-            MapsInitializer.initialize(activity);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        LatLng myLocation = mapCallBacks.getLatLng();
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));
         startingLoc.setOnEditorActionListener(new OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -119,6 +111,24 @@ public class TransitFragment extends Fragment {
         });
 
         return v;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        this.googleMap = googleMap;
+        if (googleMap != null) {
+            googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+            googleMap.setMyLocationEnabled(true);
+            googleMap.setInfoWindowAdapter(new CustomWindowAdapter(inflater));
+
+            try {
+                MapsInitializer.initialize(activity);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            LatLng myLocation = mapCallBacks.getLatLng();
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));
+        }
     }
 
     @Override
@@ -203,6 +213,9 @@ public class TransitFragment extends Fragment {
                 .setPositiveButton(R.string.routes_ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
+                        if (googleMap == null) {
+                            return;
+                        }
                         googleMap.clear();
                         LatLngBounds.Builder builder = new LatLngBounds.Builder();
                         for (BusRoute busRoute : selectedRoutes) {
@@ -314,6 +327,9 @@ public class TransitFragment extends Fragment {
                         new Action1<BusRoute>() {
                             @Override
                             public void call(BusRoute route) {
+                                if (googleMap == null) {
+                                    return;
+                                }
                                 googleMap.clear();
                                 if (route == null || route.stops.size() == 0) {
                                     activity.showErrorToast(R.string.no_path_found);
@@ -343,6 +359,7 @@ public class TransitFragment extends Fragment {
                                     .position(destLatLng)
                                     .title(query));
                                 MapFragment.changeZoomLevel(googleMap, builder.build());
+
                             }
                         },
                         new Action1<Throwable>() {
@@ -375,7 +392,7 @@ public class TransitFragment extends Fragment {
     }
 
     private void addMapMarker(BusRoute route, BusStop busStop, LatLng latLngBuff) {
-        if (busStop.getName() != null) {
+        if (busStop.getName() != null && googleMap != null) {
             if (route.stops.indexOf(busStop) != 0
                     && route.stops.indexOf(busStop) != route.stops.size() - 1) {
                 googleMap.addMarker(new MarkerOptions()
@@ -393,6 +410,9 @@ public class TransitFragment extends Fragment {
     }
 
     private void addWalkingPath(LatLng startWalking, BusStop busStop) {
+        if (googleMap == null) {
+            return;
+        }
         PolylineOptions walkingPath = new PolylineOptions();
         walkingPath.add(busStop.getLatLng());
         walkingPath.add(startWalking);
@@ -409,6 +429,9 @@ public class TransitFragment extends Fragment {
     }
 
     private void drawOfficialRoute(LatLngBounds.Builder builder, BusRoute busRoute) {
+        if (googleMap == null) {
+            return;
+        }
         PolylineOptions options = busRoute.getPolylineOptions();
         for (MarkerOptions markerOptions : busRoute.markers) {
             googleMap.addMarker(markerOptions);

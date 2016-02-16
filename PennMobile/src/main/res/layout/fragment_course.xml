@@ -1,4 +1,4 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -7,144 +7,151 @@
     android:background="@color/background_material_light"
     android:clickable="true">
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/registrar_map_frame"
+        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="180dp">
+        <FrameLayout
+            android:id="@+id/registrar_map_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/gradient" />
+    </FrameLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:clickable="true">
 
-        <FrameLayout
-            android:id="@+id/registrar_map_frame"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="180dp">
-            <FrameLayout
-                android:id="@+id/registrar_map_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/gradient" />
-        </FrameLayout>
-
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="20dp"
-            android:background="@color/color_primary_dark">
-
-            <TextView
-                tools:text="Introduction to Computer Programming"
-                android:id="@+id/course_title"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
-                android:textColor="@color/white"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
+            android:clickable="true">
 
             <RelativeLayout
-                android:orientation="horizontal"
-                android:layout_below="@+id/course_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="20dp"
+                    android:background="@color/color_primary_dark">
 
                 <TextView
-                    tools:text="Benedict Brown"
-                    android:id="@+id/instructor"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                    tools:text="Introduction to Computer Programming"
+                    android:id="@+id/course_title"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
                     android:textColor="@color/white"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
 
-                <TextView
-                    tools:text="LEC"
-                    android:id="@+id/course_activity"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/color_primary_light"
-                    android:layout_alignParentRight="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                <RelativeLayout
+                    android:orientation="horizontal"
+                    android:layout_below="@+id/course_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        tools:text="Benedict Brown"
+                        android:id="@+id/instructor"
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+
+                    <TextView
+                        tools:text="LEC"
+                        android:id="@+id/course_activity"
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/color_primary_light"
+                        android:layout_alignParentRight="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
             </RelativeLayout>
-        </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/pcr_layout"
-            android:visibility="gone"
-            tools:visibility="visible"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <LinearLayout
-                android:background="#6DCFF6"
-                style="@style/PCRBox">
-                <TextView
-                    tools:text="2.7"
-                    android:id="@+id/course_avg_course"
-                    style="@style/RatingFont"
-                    android:textSize="40sp" />
-                <TextView
-                    style="@style/RatingFont"
-                    android:text="@string/course" />
-            </LinearLayout>
 
             <LinearLayout
-                android:background="#9DDCF9"
-                style="@style/PCRBox">
-                <TextView
-                    tools:text="2.5"
-                    android:id="@+id/course_avg_instr"
-                    style="@style/RatingFont"
-                    android:textSize="40sp" />
-                <TextView
-                    style="@style/RatingFont"
-                    android:text="@string/instructor" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:background="#A2B7DF"
-                style="@style/PCRBox">
-                <TextView
-                    tools:text="2.8"
-                    android:id="@+id/course_avg_diff"
-                    style="@style/RatingFont"
-                    android:textSize="40sp" />
-                <TextView
-                    style="@style/RatingFont"
-                    android:text="@string/difficulty" />
-            </LinearLayout>
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:paddingBottom="20dp">
-            <TextView
-                tools:visibility="visible"
-                android:id="@+id/course_desc_title"
+                android:id="@+id/pcr_layout"
                 android:visibility="gone"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
-                android:textStyle="bold"
-                android:text="@string/course_desc_title"
+                tools:visibility="visible"
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:background="#6DCFF6"
+                    style="@style/PCRBox">
+                    <TextView
+                        tools:text="2.7"
+                        android:id="@+id/course_avg_course"
+                        style="@style/RatingFont"
+                        android:textSize="40sp" />
+                    <TextView
+                        style="@style/RatingFont"
+                        android:text="@string/course" />
+                </LinearLayout>
 
-            <TextView
-                tools:text="Introduction to Computer Programming is the first course in our series."
-                android:id="@+id/course_desc"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+                <LinearLayout
+                    android:background="#9DDCF9"
+                    style="@style/PCRBox">
+                    <TextView
+                        tools:text="2.5"
+                        android:id="@+id/course_avg_instr"
+                        style="@style/RatingFont"
+                        android:textSize="40sp" />
+                    <TextView
+                        style="@style/RatingFont"
+                        android:text="@string/instructor" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:background="#A2B7DF"
+                    style="@style/PCRBox">
+                    <TextView
+                        tools:text="2.8"
+                        android:id="@+id/course_avg_diff"
+                        style="@style/RatingFont"
+                        android:textSize="40sp" />
+                    <TextView
+                        style="@style/RatingFont"
+                        android:text="@string/difficulty" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:paddingBottom="20dp">
+                <TextView
+                    tools:visibility="visible"
+                    android:id="@+id/course_desc_title"
+                    android:visibility="gone"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                    android:textStyle="bold"
+                    android:text="@string/course_desc_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    tools:text="Introduction to Computer Programming is the first course in our series."
+                    android:id="@+id/course_desc"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
+</LinearLayout>

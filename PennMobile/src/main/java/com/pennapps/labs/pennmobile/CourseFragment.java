@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -31,7 +32,7 @@ import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-public class CourseFragment extends Fragment {
+public class CourseFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap map;
     private SupportMapFragment mapFragment;
@@ -112,13 +113,18 @@ public class CourseFragment extends Fragment {
             getActivity().setTitle(course.getName());
         }
         if (map == null) {
-            map = mapFragment.getMap();
-            if (map != null) {
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(MapCallbacks.DEFAULT_LATLNG, 17));
-                map.getUiSettings().setZoomControlsEnabled(false);
-            }
+            mapFragment.getMapAsync(this);
         }
         processCourse();
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
+        if (map != null) {
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(MapCallbacks.DEFAULT_LATLNG, 17));
+            map.getUiSettings().setZoomControlsEnabled(false);
+        }
     }
 
     @Override
