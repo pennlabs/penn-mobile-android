@@ -1,14 +1,10 @@
 package com.pennapps.labs.pennmobile;
 
 import android.os.Bundle;
+import android.support.annotation.ArrayRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.PreferenceManager;
-import android.view.View;
-
-import com.pennapps.labs.pennmobile.adapters.RegistrarAdapter;
-import com.pennapps.labs.pennmobile.classes.Course;
 
 import butterknife.ButterKnife;
 
@@ -60,12 +56,12 @@ public class RegistrarFragment extends SearchFavoriteFragment {
     }
 
     @Override
-    public int previousArrayKey() {
+    protected @ArrayRes int previousArrayKey() {
         return R.array.previous_course_array;
     }
 
     @Override
-    public int searchCount() {
+    protected int searchCount() {
         return PreferenceManager.getDefaultSharedPreferences(mActivity).getInt(getString(R.string.registrar_search_count), -1);
     }
 

@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.ArrayRes;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.ListFragment;
@@ -242,7 +243,7 @@ public abstract class SearchFavoriteFragment extends ListFragment {
      * Returns the R.id for getStringArray call
      * @return id
      */
-    protected abstract int previousArrayKey();
+    protected abstract @ArrayRes int previousArrayKey();
 
     /**
      * Returns the index of saved entries.

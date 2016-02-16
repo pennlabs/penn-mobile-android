@@ -19,7 +19,6 @@ import android.widget.ToggleButton;
 import com.google.gson.Gson;
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.classes.Course;
-import com.pennapps.labs.pennmobile.classes.Person;
 
 import java.util.HashSet;
 import java.util.List;
@@ -80,24 +79,24 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
             public void onClick(View v) {
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(v.getContext());
                 Set<String> buffer = sharedPref.getStringSet(mContext.getResources().getString(R.string.search_reg_star), new HashSet<String>());
-                Set<String> starredContacts = new HashSet<>(buffer);
+                Set<String> starredCourses = new HashSet<>(buffer);
                 SharedPreferences.Editor editedPreferences = sharedPref.edit();
                 ToggleButton star = (ToggleButton) v;
                 boolean starred = star.isChecked();
                 String currentCourse = course.getId();
                 if (starred) {
                     if (currentCourse != null) {
-                        starredContacts.add(currentCourse);
+                        starredCourses.add(currentCourse);
                         editedPreferences.putString(currentCourse + mContext.getResources().getString(R.string.search_reg_star),
                                 getDataString(course));
                     }
                 } else {
-                    starredContacts.remove(currentCourse);
-                    if(currentCourse != null) {
+                    starredCourses.remove(currentCourse);
+                    if (currentCourse != null) {
                         editedPreferences.remove(currentCourse + mContext.getResources().getString(R.string.search_reg_star));
                     }
                 }
-                editedPreferences.putStringSet(mContext.getResources().getString(R.string.search_reg_star), starredContacts);
+                editedPreferences.putStringSet(mContext.getResources().getString(R.string.search_reg_star), starredCourses);
                 editedPreferences.apply();
             }
         });
