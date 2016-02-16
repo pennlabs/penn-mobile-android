@@ -18,7 +18,7 @@ public class MapCallbacks implements LocationListener, GoogleApiClient.Connectio
     public GoogleApiClient mGoogleApiClient;
     public LocationRequest mLocationRequest;
     public boolean waiting, called, connected;
-    public LatLng DEFAULT_LATLNG = new LatLng(39.9529, -75.197098);
+    public static LatLng DEFAULT_LATLNG = new LatLng(39.9529, -75.197098);
 
     public MapCallbacks() {
         createLocationRequest();

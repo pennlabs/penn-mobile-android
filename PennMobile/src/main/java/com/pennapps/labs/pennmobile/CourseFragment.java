@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.Course;
+import com.pennapps.labs.pennmobile.classes.MapCallbacks;
 import com.pennapps.labs.pennmobile.classes.Review;
 
 import java.util.List;
@@ -113,7 +114,7 @@ public class CourseFragment extends Fragment {
         if (map == null) {
             map = mapFragment.getMap();
             if (map != null) {
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(39.95198, -75.19368), 17));
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(MapCallbacks.DEFAULT_LATLNG, 17));
                 map.getUiSettings().setZoomControlsEnabled(false);
             }
         }
