@@ -105,7 +105,7 @@ public class DirectoryTab extends SearchFavoriteTab {
                 mAdapter = new DirectoryAdapter(mActivity, people);
                 mListView.setAdapter(mAdapter);
             }
-            ((MainActivity) getActivity()).closeKeyboard();
+            mActivity.closeKeyboard();
         } else {
             notFavoriteInit();
         }

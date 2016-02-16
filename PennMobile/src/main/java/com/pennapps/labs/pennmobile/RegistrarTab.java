@@ -165,7 +165,7 @@ public class RegistrarTab extends SearchFavoriteTab {
                 mAdapter = new RegistrarAdapter(mActivity, filterCourses(courses));
                 mListView.setAdapter(mAdapter);
             }
-            ((MainActivity) getActivity()).closeKeyboard();
+            mActivity.closeKeyboard();
         } else {
             notFavoriteInit();
         }

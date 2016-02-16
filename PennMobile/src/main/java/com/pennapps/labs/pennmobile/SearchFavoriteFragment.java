@@ -169,7 +169,7 @@ public abstract class SearchFavoriteFragment extends ListFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.registrar, menu);
         searchView = (SearchView) menu.findItem(R.id.registrar_search).getActionView();
-        ImageView cross = (ImageView) searchView.findViewById(R.id.search_close_btn); //here is the button
+        ImageView cross = (ImageView) searchView.findViewById(R.id.search_close_btn);
         cross.setImageAlpha(100);
         final SearchView.OnQueryTextListener queryListener = new SearchView.OnQueryTextListener() {
 
@@ -215,10 +215,10 @@ public abstract class SearchFavoriteFragment extends ListFragment {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mActivity);
         int index = searchCount();
         if (index != -1) {
-            String[] previouskey = getResources().getStringArray(previousArrayKey());
+            String[] previousKey = getResources().getStringArray(previousArrayKey());
             for (int i = 0; i < MAX_SUGGESTION_SIZE; i++){
                 int id = (index + MAX_SUGGESTION_SIZE - i) % MAX_SUGGESTION_SIZE;
-                String previous = sharedPref.getString(previouskey[id], "");
+                String previous = sharedPref.getString(previousKey[id], "");
                 if (!previous.isEmpty()) {
                     list.add(previous);
                 }
