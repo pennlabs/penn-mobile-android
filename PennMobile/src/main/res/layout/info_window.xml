@@ -7,7 +7,7 @@
     <ProgressBar
         android:indeterminateTint="@color/color_primary"
         android:indeterminateTintMode="src_in"
-        style="@android:style/Widget.ProgressBar.Small"
+        style="@android:style/Widget.ProgressBar.Large"
         android:layout_gravity="center"
         android:id="@+id/mapProgress"
         android:layout_width="wrap_content"
