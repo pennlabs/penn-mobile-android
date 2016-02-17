@@ -118,6 +118,17 @@ public class TransitFragment extends Fragment {
             }
         });
 
+        v.findViewById(R.id.route_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (adapter == null) {
+                    loadRouteAdapter();
+                } else {
+                    showRouteDialogBox();
+                }
+            }
+        });
+
         return v;
     }
 
@@ -167,13 +178,6 @@ public class TransitFragment extends Fragment {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.transit_search:
-                return true;
-            case R.id.transit_route:
-                if (adapter == null) {
-                    loadRouteAdapter();
-                } else {
-                    showRouteDialogBox();
-                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

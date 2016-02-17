@@ -1,51 +1,80 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <com.google.android.gms.maps.MapView android:id="@+id/mapView"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
-
+    android:layout_height="match_parent">
     <RelativeLayout
-        android:id="@+id/transit_from_bar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_alignParentTop="true"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:background="?attr/colorPrimary" >
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/location_home"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_margin="16dp"
-            android:tint="@color/white"
-            android:src="@drawable/ic_home"
-            android:layout_alignParentLeft="true"/>
-
-        <EditText
+        <com.google.android.gms.maps.MapView android:id="@+id/mapView"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:layout_toLeftOf="@+id/clear_location"
-            android:layout_toRightOf="@+id/location_home"
-            android:layout_marginBottom="8dp"
-            android:hint="@string/starting_location_hint"
-            android:id="@+id/transit_starting_location"
-            android:textColor="@color/white"
-            android:background="?attr/colorPrimary"
-            android:singleLine="true" />
-        <Button
-            android:id="@+id/clear_location"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_margin="16dp"
-            android:background="@drawable/abc_ic_clear_mtrl_alpha"
-            android:layout_alignParentRight="true"/>
+            android:layout_height="fill_parent" />
 
+        <RelativeLayout
+            android:id="@+id/transit_from_bar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentTop="true"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:background="?attr/colorPrimary" >
+
+            <ImageView
+                android:id="@+id/location_home"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_margin="16dp"
+                android:tint="@color/white"
+                android:src="@drawable/ic_home"
+                android:layout_alignParentLeft="true"/>
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:layout_toLeftOf="@+id/clear_location"
+                android:layout_toRightOf="@+id/location_home"
+                android:layout_marginBottom="8dp"
+                android:hint="@string/starting_location_hint"
+                android:id="@+id/transit_starting_location"
+                android:textColor="@color/white"
+                android:background="?attr/colorPrimary"
+                android:singleLine="true" />
+            <Button
+                android:id="@+id/clear_location"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_margin="16dp"
+                android:background="@drawable/abc_ic_clear_mtrl_alpha"
+                android:layout_alignParentRight="true"/>
+
+        </RelativeLayout>
     </RelativeLayout>
 
-</RelativeLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginEnd="100dp"
+        app:layout_anchor="@id/mapView"
+        app:layout_anchorGravity="bottom|right|end"
+        app:backgroundTint="@color/fuchsia"
+        android:src="@drawable/ic_search_white_24dp"
+        android:clickable="true"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/route_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        app:layout_anchor="@id/mapView"
+        app:layout_anchorGravity="bottom|right|end"
+        app:backgroundTint="@color/fuchsia"
+        android:src="@drawable/ic_layers_white_24dp"
+        android:clickable="true"/>
+
+</android.support.design.widget.CoordinatorLayout>
