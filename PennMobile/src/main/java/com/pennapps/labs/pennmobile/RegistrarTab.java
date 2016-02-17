@@ -100,12 +100,14 @@ public class RegistrarTab extends SearchFavoriteTab {
                             if (courses.isEmpty()) {
                                 if (no_results != null) {
                                     no_results.setVisibility(View.VISIBLE);
+                                    mListView.setVisibility(View.GONE);
                                 }
                             } else {
                                 if (mListView != null) {
                                     mAdapter = new RegistrarAdapter(mActivity, filterCourses(courses));
                                     mListView.setVisibility(View.VISIBLE);
                                     mListView.setAdapter(mAdapter);
+                                    no_results.setVisibility(View.GONE);
                                 }
                             }
                         }
