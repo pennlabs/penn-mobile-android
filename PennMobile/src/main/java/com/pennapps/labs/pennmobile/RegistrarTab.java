@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.PreferenceManager;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ public class RegistrarTab extends SearchFavoriteTab {
     private RegistrarAdapter mAdapter;
     private boolean favorites;
     private int frameID;
+    private CourseFragment fragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,6 +54,20 @@ public class RegistrarTab extends SearchFavoriteTab {
         ButterKnife.bind(this, v);
         mListView = (ListView) v.findViewById(android.R.id.list);
         initList();
+        frameLayout.setFocusableInTouchMode(true);
+        frameLayout.requestFocus();
+        frameLayout.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN && fragment != null) {
+                    FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
+                    fragmentManager.beginTransaction().remove(fragment).commit();
+                    fragment = null;
+                    return true;
+                }
+                return false;
+            }
+        });
         return v;
     }
 
@@ -63,7 +79,7 @@ public class RegistrarTab extends SearchFavoriteTab {
             mActivity.closeKeyboard();
             return;
         }
-        Fragment fragment = new CourseFragment();
+        fragment = new CourseFragment();
         Course course = ((RegistrarAdapter.ViewHolder) v.getTag()).course;
         mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
         mActivity.getActionBarToggle().syncState();
@@ -72,11 +88,10 @@ public class RegistrarTab extends SearchFavoriteTab {
         args.putBoolean(getString(R.string.registrar_search), favorites);
         fragment.setArguments(args);
 
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(frameID, fragment)
+                .add(frameID, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .addToBackStack(null)
                 .commit();
     }
 
