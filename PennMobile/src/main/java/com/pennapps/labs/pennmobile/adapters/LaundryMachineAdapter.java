@@ -105,7 +105,11 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
                 stringBuilder = new StringBuilder();
                 stringBuilder.append("Busy – ").append(machine.time_left);
                 description.setText(stringBuilder);
-                mSwitch.setVisibility(View.VISIBLE);
+                if (machine.getTimeInMilli() > 0) {
+                    mSwitch.setVisibility(View.VISIBLE);
+                } else {
+                    mSwitch.setVisibility(View.GONE);
+                }
                 setSwitchState(machine, mSwitch);
             }
         }
