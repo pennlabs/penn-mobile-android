@@ -54,6 +54,11 @@ public class RegistrarTab extends SearchFavoriteTab {
         ButterKnife.bind(this, v);
         mListView = (ListView) v.findViewById(android.R.id.list);
         initList();
+        setBackButton(frameLayout);
+        return v;
+    }
+
+    private void setBackButton(FrameLayout frameLayout) {
         frameLayout.setFocusableInTouchMode(true);
         frameLayout.requestFocus();
         frameLayout.setOnKeyListener(new View.OnKeyListener() {
@@ -68,7 +73,6 @@ public class RegistrarTab extends SearchFavoriteTab {
                 return false;
             }
         });
-        return v;
     }
 
     @Override
