@@ -97,10 +97,17 @@ public class CourseFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                int pos = SearchFavoriteFragment.getPagePosition();
+                if (RegistrarTab.fragments[pos] == null) {
+                    pos = (pos + 1) % 2;
+                }
                 FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
-                fragmentManager.beginTransaction().remove(RegistrarTab.fragments[fav ? 1 : 0]).commit();
-                mActivity.getActionBarToggle().setDrawerIndicatorEnabled(true);
-                mActivity.getActionBarToggle().syncState();
+                fragmentManager.beginTransaction().remove(RegistrarTab.fragments[pos]).commit();
+                RegistrarTab.fragments[pos] = null;
+                if (RegistrarTab.fragments[0] == null && RegistrarTab.fragments[1] == null) {
+                    mActivity.getActionBarToggle().setDrawerIndicatorEnabled(true);
+                    mActivity.getActionBarToggle().syncState();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

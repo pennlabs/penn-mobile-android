@@ -89,18 +89,19 @@ public class RegistrarTab extends SearchFavoriteTab {
             mActivity.closeKeyboard();
             return;
         }
-        fragments[fav ? 1 : 0] = new CourseFragment();
+        int pos = fav ? 1 : 0;
+        fragments[pos] = new CourseFragment();
         Course course = ((RegistrarAdapter.ViewHolder) v.getTag()).course;
         mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
         mActivity.getActionBarToggle().syncState();
         Bundle args = new Bundle();
         args.putParcelable(getString(R.string.course_bundle_arg), course);
         args.putBoolean(getString(R.string.registrar_search), fav);
-        fragments[fav ? 1 : 0].setArguments(args);
+        fragments[pos].setArguments(args);
 
         FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .add(frameID, fragments[fav ? 1 : 0])
+                .add(frameID, fragments[pos])
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit();
     }
