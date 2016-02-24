@@ -3,7 +3,6 @@ package com.pennapps.labs.pennmobile;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.PreferenceManager;
@@ -34,14 +33,15 @@ import rx.functions.Action1;
 public class RegistrarTab extends SearchFavoriteTab {
 
     private RegistrarAdapter mAdapter;
-    private boolean favorites;
     private int frameID;
-    private CourseFragment fragment;
+    public static CourseFragment[] fragments;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        favorites = getArguments().getBoolean(getString(R.string.search_favorite), false);
+        if (fragments == null) {
+            fragments = new CourseFragment[2];
+        }
         View v = inflater.inflate(R.layout.fragment_search_favorite_tab, container, false);
         FrameLayout frameLayout = (FrameLayout) v.findViewById(R.id.search_fav_frame);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -64,11 +64,17 @@ public class RegistrarTab extends SearchFavoriteTab {
         frameLayout.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN && fragment != null) {
+                if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN && fragments[fav ? 1 : 0] != null) {
                     FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
-                    fragmentManager.beginTransaction().remove(fragment).commit();
-                    fragment = null;
+                    fragmentManager.beginTransaction().remove(fragments[fav ? 1 : 0]).commit();
+                    fragments[fav ? 1 : 0] = null;
                     return true;
+                }
+                if (((fav && fragments[0] != null && fragments[1] == null) || (!fav && fragments[0] == null && fragments[1] != null)) &&
+                        (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN)) {
+                    FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
+                    fragmentManager.beginTransaction().remove(fragments[fav ? 0 : 1]).commit();
+                    fragments[fav ? 0 : 1] = null;
                 }
                 return false;
             }
@@ -83,18 +89,18 @@ public class RegistrarTab extends SearchFavoriteTab {
             mActivity.closeKeyboard();
             return;
         }
-        fragment = new CourseFragment();
+        fragments[fav ? 1 : 0] = new CourseFragment();
         Course course = ((RegistrarAdapter.ViewHolder) v.getTag()).course;
         mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
         mActivity.getActionBarToggle().syncState();
         Bundle args = new Bundle();
         args.putParcelable(getString(R.string.course_bundle_arg), course);
-        args.putBoolean(getString(R.string.registrar_search), favorites);
-        fragment.setArguments(args);
+        args.putBoolean(getString(R.string.registrar_search), fav);
+        fragments[fav ? 1 : 0].setArguments(args);
 
         FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .add(frameID, fragment)
+                .add(frameID, fragments[fav ? 1 : 0])
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit();
     }

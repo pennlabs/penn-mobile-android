@@ -37,6 +37,8 @@ public class CourseFragment extends Fragment {
     private SupportMapFragment mapFragment;
     private Course course;
     private Labs mLabs;
+    private MainActivity mActivity;
+    private boolean fav;
 
     @Bind(R.id.course_activity) TextView courseActivityTextView;
     @Bind(R.id.course_title) TextView courseTitleTextView;
@@ -54,7 +56,9 @@ public class CourseFragment extends Fragment {
         super.onCreate(savedInstanceState);
         course = getArguments().getParcelable(getString(R.string.course_bundle_arg));
         mLabs = MainActivity.getLabsInstance();
-        ((MainActivity) getActivity()).closeKeyboard();
+        mActivity = (MainActivity) getActivity();
+        mActivity.closeKeyboard();
+        fav = getArguments().getBoolean(getString(R.string.search_favorite), false);
     }
 
     @Override
@@ -93,7 +97,10 @@ public class CourseFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                getActivity().onBackPressed();
+                FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
+                fragmentManager.beginTransaction().remove(RegistrarTab.fragments[fav ? 1 : 0]).commit();
+                mActivity.getActionBarToggle().setDrawerIndicatorEnabled(true);
+                mActivity.getActionBarToggle().syncState();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

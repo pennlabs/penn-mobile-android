@@ -127,8 +127,8 @@ public class MainActivity extends AppCompatActivity {
             // No webview exists currently
             super.onBackPressed();
             if (CourseFragment.containsNum(getTitle())) {
-                getActionBarToggle().setDrawerIndicatorEnabled(false);
-                getActionBarToggle().syncState();
+                mDrawerToggle.setDrawerIndicatorEnabled(false);
+                mDrawerToggle.syncState();
             }
         }
     }
