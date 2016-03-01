@@ -35,4 +35,6 @@
 
     <color name="circle_color_red">#E52025</color>
     <color name="circle_color_green">#66CC00</color>
+
+    <color name="map_divider">#FAFAFA</color>
 </resources>

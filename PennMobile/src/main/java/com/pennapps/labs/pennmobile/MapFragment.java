@@ -1,17 +1,28 @@
 package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
+import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.Transformation;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -21,6 +32,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -47,6 +59,7 @@ public class MapFragment extends Fragment {
     private SearchView searchView;
     private String query;
     private MainActivity activity;
+    private LinearLayout card;
     private static Marker currentMarker;
     private static Set<Marker> loadedMarkers;
     private static MapCallbacks mapCallbacks;
@@ -74,6 +87,8 @@ public class MapFragment extends Fragment {
 
         mapView = (MapView) v.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
+
+        card = (LinearLayout) v.findViewById(R.id.map_card);
 
         googleMap = mapView.getMap();
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -246,17 +261,23 @@ public class MapFragment extends Fragment {
             return;
         }
         LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+        Building first = buildings.remove(0);
+        googleMap.addMarker(new MarkerOptions()
+                .position(first.getLatLng())
+                .title(first.title)
+                .snippet(first.getImageURL()));
         for (Building building : buildings) {
-            double latitude = Double.parseDouble(building.latitude);
-            double longitude = Double.parseDouble(building.longitude);
-            LatLng point = new LatLng(latitude, longitude);
-            boundsBuilder.include(point);
-            googleMap.addMarker(new MarkerOptions()
-                    .position(point)
-                    .title(building.title)
-                    .snippet(building.getImageURL()));
+            boundsBuilder.include(building.getLatLng());
+            googleMap.addCircle(new CircleOptions()
+                    .center(building.getLatLng())
+                    .visible(true)
+                    .radius(5)
+                    .fillColor(Color.RED)
+                    .strokeWidth(0));
         }
         changeZoomLevel(googleMap, boundsBuilder.build());
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.cardscaleloc);
+        card.startAnimation(animation);
     }
 
     public static void changeZoomLevel(GoogleMap googleMap, LatLngBounds bounds){
