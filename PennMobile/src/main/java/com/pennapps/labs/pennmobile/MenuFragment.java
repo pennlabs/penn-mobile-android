@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,7 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ViewFlipper;
+import android.widget.ExpandableListView;
 
+import com.pennapps.labs.pennmobile.adapters.MenuAdapter;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,6 +26,9 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class MenuFragment extends Fragment {
 
@@ -101,10 +107,17 @@ public class MenuFragment extends Fragment {
         pageAdapter = new TabAdapter(getActivity().getSupportFragmentManager());
         pageAdapter.addTabs(mDiningHall);
         pager = (ViewPager) v.findViewById(R.id.menu_pager);
-        if (pager==null){
-            Log.d("null", "pager");
-        }
         pager.setAdapter(pageAdapter);
+        ExpandableListView elv = (ExpandableListView) v.findViewById(R.id.station_list);
+        List<String> headers = new ArrayList<String>();
+        HashMap<String,List<String>> stationInfo = new HashMap<String,List<String>>();
+        for (DiningHall.Menu menu: mDiningHall.menus) {
+            stationInfo.putAll(getStations(menu));
+            headers.addAll(stationInfo.keySet());
+        }
+        elv.setAdapter(new MenuAdapter(getActivity(), headers, stationInfo));
+        v.setBackgroundColor(Color.WHITE);
+        ButterKnife.bind(this, v);
         ((MainActivity) getActivity()).addTabs(pageAdapter, pager, true);
         return v;
     }
@@ -112,6 +125,21 @@ public class MenuFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.dining, menu);
         super.onCreateOptionsMenu(menu, inflater);
+
+    }
+    public HashMap<String,List<String>> getStations(DiningHall.Menu menu){
+        HashMap<String, List<String>> stations = new HashMap<String, List<String>>();
+        for (DiningHall.DiningStation station : menu.stations) {
+            List<String> foods = new ArrayList<String>();
+            StringBuilder food = new StringBuilder();
+            for (DiningHall.FoodItem item: station.items){
+                food.append(item.title);
+                food.append("\n");
+            }
+            foods.add(food.toString());
+            stations.put(StringUtils.capitalize(station.name), foods);
+        }
+        return stations;
     }
 
     @Override
