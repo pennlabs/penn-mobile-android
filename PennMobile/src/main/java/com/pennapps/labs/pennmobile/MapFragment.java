@@ -21,6 +21,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -38,7 +39,7 @@ import java.util.Set;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private Labs mLabs;
     private MapView mapView;
@@ -50,6 +51,7 @@ public class MapFragment extends Fragment {
     private static Marker currentMarker;
     private static Set<Marker> loadedMarkers;
     private static MapCallbacks mapCallbacks;
+    private LayoutInflater inflater;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,24 +74,31 @@ public class MapFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_map, container, false);
 
+        this.inflater = inflater;
+
         mapView = (MapView) v.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
-
-        googleMap = mapView.getMap();
-        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-        googleMap.setMyLocationEnabled(true);
-
-        googleMap.setInfoWindowAdapter(new CustomWindowAdapter(inflater));
-
-        try {
-            MapsInitializer.initialize(activity);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mapCallbacks.getLatLng(), 14));
-
-
+        mapView.getMapAsync(this);
         return v;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        this.googleMap = googleMap;
+        if (googleMap != null) {
+            googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+            googleMap.setMyLocationEnabled(true);
+
+            googleMap.setInfoWindowAdapter(new CustomWindowAdapter(inflater));
+
+            try {
+                MapsInitializer.initialize(activity);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mapCallbacks.getLatLng(), 14));
+
+        }
     }
 
     private class CustomWindowAdapter implements GoogleMap.InfoWindowAdapter {
@@ -226,20 +235,23 @@ public class MapFragment extends Fragment {
         mLabs.buildings(query)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<List<Building>>() {
-                    @Override
-                    public void call(List<Building> buildings) {
-                        drawResults(buildings);
-                    }
-                },
-                new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        activity.showErrorToast(R.string.location_not_found);
-                    }
-                });
+                               @Override
+                               public void call(List<Building> buildings) {
+                                   drawResults(buildings);
+                               }
+                           },
+                        new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                activity.showErrorToast(R.string.location_not_found);
+                            }
+                        });
     }
 
     private void drawResults(List<Building> buildings) {
+        if (googleMap == null) {
+            return;
+        }
         googleMap.clear();
         if (buildings.isEmpty()) {
             activity.showErrorToast(R.string.location_not_found);
@@ -257,9 +269,13 @@ public class MapFragment extends Fragment {
                     .snippet(building.getImageURL()));
         }
         changeZoomLevel(googleMap, boundsBuilder.build());
+
     }
 
     public static void changeZoomLevel(GoogleMap googleMap, LatLngBounds bounds){
+        if (googleMap == null) {
+            return;
+        }
         Location NECorner = new Location("");
         Location SWCorner = new Location("");
         LatLng northeast = bounds.northeast;
