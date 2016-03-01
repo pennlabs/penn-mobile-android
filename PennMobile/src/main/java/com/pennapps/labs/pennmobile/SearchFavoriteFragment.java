@@ -35,6 +35,7 @@ public abstract class SearchFavoriteFragment extends ListFragment {
     protected SearchView searchView;
     protected ListTabAdapter tabAdapter;
     protected String lastQuery;
+    private static int pagePosition;
 
     protected final static int MAX_SUGGESTION_SIZE = 5;
 
@@ -124,6 +125,7 @@ public abstract class SearchFavoriteFragment extends ListFragment {
                 } else {
                     ((SearchFavoriteTab) getAdapter().getItem(0)).processQuery(lastQuery);
                 }
+                pagePosition = position;
             }
 
             @Override
@@ -261,5 +263,9 @@ public abstract class SearchFavoriteFragment extends ListFragment {
     public void onDestroyView() {
         mActivity.removeTabs();
         super.onDestroyView();
+    }
+
+    public static int getPagePosition() {
+        return pagePosition;
     }
 }

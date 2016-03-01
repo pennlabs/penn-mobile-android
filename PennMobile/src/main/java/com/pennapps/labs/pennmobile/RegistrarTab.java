@@ -3,10 +3,10 @@ package com.pennapps.labs.pennmobile;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.PreferenceManager;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,13 +33,15 @@ import rx.functions.Action1;
 public class RegistrarTab extends SearchFavoriteTab {
 
     private RegistrarAdapter mAdapter;
-    private boolean favorites;
     private int frameID;
+    public static CourseFragment[] fragments;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        favorites = getArguments().getBoolean(getString(R.string.search_favorite), false);
+        if (fragments == null) {
+            fragments = new CourseFragment[2];
+        }
         View v = inflater.inflate(R.layout.fragment_search_favorite_tab, container, false);
         FrameLayout frameLayout = (FrameLayout) v.findViewById(R.id.search_fav_frame);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -52,7 +54,37 @@ public class RegistrarTab extends SearchFavoriteTab {
         ButterKnife.bind(this, v);
         mListView = (ListView) v.findViewById(android.R.id.list);
         initList();
+        setBackButton(frameLayout);
         return v;
+    }
+
+    private void setBackButton(FrameLayout frameLayout) {
+        frameLayout.setFocusableInTouchMode(true);
+        frameLayout.requestFocus();
+        frameLayout.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN && fragments[fav ? 1 : 0] != null) {
+                    backRemove(fav ? 1 : 0);
+                    return true;
+                }
+                if (((fav && fragments[0] != null && fragments[1] == null) || (!fav && fragments[0] == null && fragments[1] != null)) &&
+                        (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN)) {
+                    backRemove(fav ? 0 : 1);
+                }
+                return false;
+            }
+        });
+    }
+
+    public void backRemove(int id) {
+        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
+        fragmentManager.beginTransaction().remove(fragments[id]).commit();
+        fragments[id] = null;
+        if (fragments[0] == null && fragments[1] == null) {
+            mActivity.getActionBarToggle().setDrawerIndicatorEnabled(true);
+            mActivity.getActionBarToggle().syncState();
+        }
     }
 
     @Override
@@ -63,20 +95,20 @@ public class RegistrarTab extends SearchFavoriteTab {
             mActivity.closeKeyboard();
             return;
         }
-        Fragment fragment = new CourseFragment();
+        int pos = fav ? 1 : 0;
+        fragments[pos] = new CourseFragment();
         Course course = ((RegistrarAdapter.ViewHolder) v.getTag()).course;
         mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
         mActivity.getActionBarToggle().syncState();
         Bundle args = new Bundle();
         args.putParcelable(getString(R.string.course_bundle_arg), course);
-        args.putBoolean(getString(R.string.registrar_search), favorites);
-        fragment.setArguments(args);
+        args.putBoolean(getString(R.string.registrar_search), fav);
+        fragments[pos].setArguments(args);
 
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(frameID, fragment)
+                .add(frameID, fragments[pos])
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .addToBackStack(null)
                 .commit();
     }
 

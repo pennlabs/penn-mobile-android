@@ -38,6 +38,8 @@ public class CourseFragment extends Fragment implements OnMapReadyCallback {
     private SupportMapFragment mapFragment;
     private Course course;
     private Labs mLabs;
+    private MainActivity mActivity;
+    private boolean fav;
 
     @Bind(R.id.course_activity) TextView courseActivityTextView;
     @Bind(R.id.course_title) TextView courseTitleTextView;
@@ -55,7 +57,9 @@ public class CourseFragment extends Fragment implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         course = getArguments().getParcelable(getString(R.string.course_bundle_arg));
         mLabs = MainActivity.getLabsInstance();
-        ((MainActivity) getActivity()).closeKeyboard();
+        mActivity = (MainActivity) getActivity();
+        mActivity.closeKeyboard();
+        fav = getArguments().getBoolean(getString(R.string.search_favorite), false);
     }
 
     @Override
@@ -79,18 +83,32 @@ public class CourseFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        MenuItem searchMenuItem = menu.findItem(R.id.registrar_search);
-        SearchView searchView = (SearchView) searchMenuItem.getActionView();
-        searchView.setEnabled(false);
-        searchMenuItem.setVisible(false);
-        searchView.clearFocus();
+        if (menu != null) {
+            MenuItem searchMenuItem = menu.findItem(R.id.registrar_search);
+            if (searchMenuItem != null) {
+                SearchView searchView = (SearchView) searchMenuItem.getActionView();
+                searchView.setEnabled(false);
+                searchMenuItem.setVisible(false);
+                searchView.clearFocus();
+            }
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                getActivity().onBackPressed();
+                int pos = SearchFavoriteFragment.getPagePosition();
+                if (RegistrarTab.fragments[pos] == null) {
+                    pos = (pos + 1) % 2;
+                }
+                FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
+                fragmentManager.beginTransaction().remove(RegistrarTab.fragments[pos]).commit();
+                RegistrarTab.fragments[pos] = null;
+                if (RegistrarTab.fragments[0] == null && RegistrarTab.fragments[1] == null) {
+                    mActivity.getActionBarToggle().setDrawerIndicatorEnabled(true);
+                    mActivity.getActionBarToggle().syncState();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
