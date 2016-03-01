@@ -65,20 +65,26 @@ public class RegistrarTab extends SearchFavoriteTab {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN && fragments[fav ? 1 : 0] != null) {
-                    FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
-                    fragmentManager.beginTransaction().remove(fragments[fav ? 1 : 0]).commit();
-                    fragments[fav ? 1 : 0] = null;
+                    backRemove(fav ? 1 : 0);
                     return true;
                 }
                 if (((fav && fragments[0] != null && fragments[1] == null) || (!fav && fragments[0] == null && fragments[1] != null)) &&
                         (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN)) {
-                    FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
-                    fragmentManager.beginTransaction().remove(fragments[fav ? 0 : 1]).commit();
-                    fragments[fav ? 0 : 1] = null;
+                    backRemove(fav ? 0 : 1);
                 }
                 return false;
             }
         });
+    }
+
+    public void backRemove(int id) {
+        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
+        fragmentManager.beginTransaction().remove(fragments[id]).commit();
+        fragments[id] = null;
+        if (fragments[0] == null && fragments[1] == null) {
+            mActivity.getActionBarToggle().setDrawerIndicatorEnabled(true);
+            mActivity.getActionBarToggle().syncState();
+        }
     }
 
     @Override
