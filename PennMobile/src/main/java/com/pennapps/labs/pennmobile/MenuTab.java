@@ -38,7 +38,7 @@ public class MenuTab extends Fragment {
         name = args.getString("name");
         meal = args.getString("meal");
         stations = args.getStringArrayList("stations");
-        for (String station: stations){
+        for (String station : stations) {
             stationInfo.put(station, args.getStringArrayList(station));
         }
     }
@@ -46,64 +46,28 @@ public class MenuTab extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
-        switch (item.getItemId()) {
-            case R.id.dining_info_button:
-                Fragment fragment = new DiningInfoFragment();
-                Bundle args = new Bundle();
-                args.putParcelable("DiningHall", getArguments().getParcelable("DiningHall"));
-                fragment.setArguments(args);
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.dining_fragment, fragment)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .addToBackStack(null)
-                        .commit();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        return super.onOptionsItemSelected(item);
+
     }@Override
      public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_menu_tab, container, false);
         ExpandableListView elv = (ExpandableListView) v.findViewById(R.id.station_list);
-        List<String> headers = new ArrayList<String>();
-        //HashMap<String,List<String>> stationInfo = new HashMap<String,List<String>>();
-        /*for (String station: stations) {
-            stationInfo.put(station, );
-            headers.add(station);
-        }*/
-
-        elv.setAdapter(new MenuAdapter(getActivity(), headers, stationInfo));
+        elv.setAdapter(new MenuAdapter(getActivity(), stations, stationInfo));
         v.setBackgroundColor(Color.WHITE);
         ButterKnife.bind(this, v);
         return v;
-    }
-    public HashMap<String,List<String>> getStations(DiningHall.Menu menu){
-        HashMap<String, List<String>> stations = new HashMap<String, List<String>>();
-        for (DiningHall.DiningStation station : menu.stations) {
-            List<String> foods = new ArrayList<String>();
-            StringBuilder food = new StringBuilder();
-            for (DiningHall.FoodItem item: station.items){
-                food.append(item.title);
-                food.append("\n");
-            }
-            foods.add(food.toString());
-            stations.put(StringUtils.capitalize(station.name), foods);
-        }
-        return stations;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        /*mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
-        mActivity.getActionBarToggle().syncState();*/
-        getActivity().setTitle(name + " Menu");
+        getActivity().setTitle(name);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        getActivity().setTitle(R.string.dining);
+        getActivity().setTitle(name);
         ButterKnife.unbind(this);
     }
 
