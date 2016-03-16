@@ -79,10 +79,12 @@ public class CourseFragment extends Fragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         MenuItem searchMenuItem = menu.findItem(R.id.registrar_search);
-        SearchView searchView = (SearchView) searchMenuItem.getActionView();
-        searchView.setEnabled(false);
-        searchMenuItem.setVisible(false);
-        searchView.clearFocus();
+        if (searchMenuItem != null) {
+            SearchView searchView = (SearchView) searchMenuItem.getActionView();
+            searchView.setEnabled(false);
+            searchMenuItem.setVisible(false);
+            searchView.clearFocus();
+        }
     }
 
     @Override

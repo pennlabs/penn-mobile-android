@@ -4,23 +4,16 @@ import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
-import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.ScaleAnimation;
-import android.view.animation.Transformation;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -32,6 +25,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -47,6 +41,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
@@ -59,16 +55,25 @@ public class MapFragment extends Fragment {
     private SearchView searchView;
     private String query;
     private MainActivity activity;
-    private LinearLayout card;
+
+    @Bind(R.id.map_initial_card) LinearLayout initCard;
+    @Bind(R.id.map_search_card) LinearLayout searchCard;
+    @Bind(R.id.map_search_name) TextView searchName;
+    @Bind(R.id.map_search_location) TextView searchLoc;
+    private static Building currentBuilding;
     private static Marker currentMarker;
+    private static Set<Circle> displayCircles;
+    private static Set<Building> searchedBuildings;
     private static Set<Marker> loadedMarkers;
     private static MapCallbacks mapCallbacks;
+    private final static int CIRCLE_SIZE = 5;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLabs = MainActivity.getLabsInstance();
         activity = (MainActivity) getActivity();
+        displayCircles = new HashSet<>();
         loadedMarkers = new HashSet<>();
         mapCallbacks = new MapCallbacks();
         Context context = activity.getApplicationContext();
@@ -88,11 +93,50 @@ public class MapFragment extends Fragment {
         mapView = (MapView) v.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
 
-        card = (LinearLayout) v.findViewById(R.id.map_card);
+        ButterKnife.bind(this, v);
 
         googleMap = mapView.getMap();
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         googleMap.setMyLocationEnabled(true);
+
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                boolean changed = false;
+                for (Circle c : displayCircles) {
+                    float[] results = new float[1];
+                    Location.distanceBetween(latLng.latitude, latLng.longitude, c.getCenter().latitude,c.getCenter().longitude, results);
+                    if (results[0] <= CIRCLE_SIZE) {
+                        changed = true;
+                        displayCircles.remove(c);
+                        c.remove();
+                        break;
+                    }
+                }
+                if (!changed) {
+                    return;
+                }
+                for (Building b : searchedBuildings) {
+                    float[] results = new float[1];
+                    Location.distanceBetween(latLng.latitude, latLng.longitude, b.getLatLng().latitude, b.getLatLng().longitude, results);
+                    if (results[0] <= CIRCLE_SIZE) {
+                        currentBuilding = b;
+                    }
+                }
+                displayCircles.add(googleMap.addCircle(new CircleOptions()
+                        .center(currentMarker.getPosition())
+                        .visible(true)
+                        .radius(CIRCLE_SIZE)
+                        .fillColor(Color.RED)
+                        .strokeWidth(0)));
+                currentMarker.remove();
+                currentMarker = googleMap.addMarker(new MarkerOptions()
+                        .position(currentBuilding.getLatLng())
+                        .title(currentBuilding.title)
+                        .snippet(currentBuilding.getImageURL()));
+
+            }
+        });
 
         googleMap.setInfoWindowAdapter(new CustomWindowAdapter(inflater));
 
@@ -187,6 +231,12 @@ public class MapFragment extends Fragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
+
+    @Override
     public void onLowMemory() {
         super.onLowMemory();
         mapView.onLowMemory();
@@ -241,17 +291,18 @@ public class MapFragment extends Fragment {
         mLabs.buildings(query)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<List<Building>>() {
-                    @Override
-                    public void call(List<Building> buildings) {
-                        drawResults(buildings);
-                    }
-                },
-                new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        activity.showErrorToast(R.string.location_not_found);
-                    }
-                });
+                               @Override
+                               public void call(List<Building> buildings) {
+                                   searchedBuildings = new HashSet<>(buildings);
+                                   drawResults(buildings);
+                               }
+                           },
+                        new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                activity.showErrorToast(R.string.location_not_found);
+                            }
+                        });
     }
 
     private void drawResults(List<Building> buildings) {
@@ -261,23 +312,42 @@ public class MapFragment extends Fragment {
             return;
         }
         LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
-        Building first = buildings.remove(0);
-        googleMap.addMarker(new MarkerOptions()
-                .position(first.getLatLng())
-                .title(first.title)
-                .snippet(first.getImageURL()));
+        currentBuilding = buildings.remove(0);
+        currentMarker = googleMap.addMarker(new MarkerOptions()
+                .position(currentBuilding.getLatLng())
+                .title(currentBuilding.title)
+                .snippet(currentBuilding.getImageURL()));
         for (Building building : buildings) {
             boundsBuilder.include(building.getLatLng());
-            googleMap.addCircle(new CircleOptions()
+            displayCircles.add(googleMap.addCircle(new CircleOptions()
                     .center(building.getLatLng())
                     .visible(true)
-                    .radius(5)
+                    .radius(CIRCLE_SIZE)
                     .fillColor(Color.RED)
-                    .strokeWidth(0));
+                    .strokeWidth(0)));
         }
         changeZoomLevel(googleMap, boundsBuilder.build());
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.cardscaleloc);
-        card.startAnimation(animation);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                initCard.removeAllViews();
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                initCard.setVisibility(View.GONE);
+                searchCard.setVisibility(View.VISIBLE);
+                searchName.setText(currentBuilding.title);
+                searchLoc.setText(currentBuilding.address);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        initCard.startAnimation(animation);
     }
 
     public static void changeZoomLevel(GoogleMap googleMap, LatLngBounds bounds){
