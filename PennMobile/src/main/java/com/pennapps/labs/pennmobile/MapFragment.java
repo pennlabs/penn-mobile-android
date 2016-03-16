@@ -1,10 +1,12 @@
 package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,6 +18,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -31,12 +34,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.pennapps.labs.pennmobile.adapters.SearchSuggestionAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.MapCallbacks;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -60,6 +65,7 @@ public class MapFragment extends Fragment {
     @Bind(R.id.map_search_card) LinearLayout searchCard;
     @Bind(R.id.map_search_name) TextView searchName;
     @Bind(R.id.map_search_location) TextView searchLoc;
+    @Bind(R.id.map_suggestion) ListView suggestionList;
     private static Building currentBuilding;
     private static Marker currentMarker;
     private static Set<Circle> displayCircles;
@@ -280,11 +286,51 @@ public class MapFragment extends Fragment {
             public boolean onQueryTextSubmit(String arg0) {
                 searchView.clearFocus();
                 query = arg0;
+                SearchFavoriteFragment.addSearchQuery(R.string.map_search_count, R.array.previous_map_array, query, activity, true);
                 searchBuildings(query);
                 return true;
             }
         };
         searchView.setOnQueryTextListener(queryListener);
+        final View.OnFocusChangeListener focusListener = new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    showSuggestion();
+                }
+            }
+        };
+        searchView.setOnQueryTextFocusChangeListener(focusListener);
+
+        final SearchView.OnCloseListener closeListener = new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                suggestionList.setVisibility(View.GONE);
+                return false;
+            }
+        };
+        searchView.setOnCloseListener(closeListener);
+    }
+
+    private void showSuggestion() {
+        final ArrayList<String> list = new ArrayList<>(5);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+        int index = sharedPref.getInt(getString(R.string.map_search_count), -1);
+        if (index != -1) {
+            String[] previousKey = getResources().getStringArray(R.array.previous_map_array);
+            for (int i = 0; i < SearchFavoriteFragment.MAX_SUGGESTION_SIZE; i++){
+                int id = (index + SearchFavoriteFragment.MAX_SUGGESTION_SIZE - i) % SearchFavoriteFragment.MAX_SUGGESTION_SIZE;
+                String previous = sharedPref.getString(previousKey[id], "");
+                if (!previous.isEmpty()) {
+                    list.add(previous);
+                }
+            }
+        }
+        if (!list.isEmpty() && suggestionList != null) {
+            suggestionList.setVisibility(View.VISIBLE);
+            suggestionList.setAdapter(new SearchSuggestionAdapter(activity, list));
+        }
     }
 
     private void searchBuildings(String query) {
@@ -348,6 +394,7 @@ public class MapFragment extends Fragment {
             }
         });
         initCard.startAnimation(animation);
+        suggestionList.setVisibility(View.GONE);
     }
 
     public static void changeZoomLevel(GoogleMap googleMap, LatLngBounds bounds){

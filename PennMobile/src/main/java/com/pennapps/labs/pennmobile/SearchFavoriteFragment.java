@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.ArrayRes;
@@ -36,9 +37,9 @@ public abstract class SearchFavoriteFragment extends ListFragment {
     protected ListTabAdapter tabAdapter;
     protected String lastQuery;
 
-    protected final static int MAX_SUGGESTION_SIZE = 5;
+    public final static int MAX_SUGGESTION_SIZE = 5;
 
-    protected abstract class ListTabAdapter extends FragmentStatePagerAdapter {
+    public abstract class ListTabAdapter extends FragmentStatePagerAdapter {
 
         public ListTabAdapter(FragmentManager fm) {
             super(fm);
@@ -56,34 +57,8 @@ public abstract class SearchFavoriteFragment extends ListFragment {
          */
         public abstract boolean onReceiveQuery (String query);
 
-        protected void setIndex(int indexKey, int arrayKey, String query) {
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            int index = sharedPref.getInt(getString(indexKey), -1);
-            String[] previousKey = getResources().getStringArray(arrayKey);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            if (index != -1) {
-                boolean changed = false;
-                for (int i = MAX_SUGGESTION_SIZE-1; i >= 0; i--) {
-                    int id = (index + MAX_SUGGESTION_SIZE - i) % MAX_SUGGESTION_SIZE;
-                    String s = sharedPref.getString(previousKey[id], "");
-                    if (s.equals(query)) {
-                        changed = true;
-                    }
-                    if (changed && i > 0) {
-                        int prev = (index + MAX_SUGGESTION_SIZE - i + 1) % MAX_SUGGESTION_SIZE;
-                        editor.putString(previousKey[id], sharedPref.getString(previousKey[prev], ""));
-                    }
-                }
-                if (changed) {
-                    editor.putString(previousKey[index], query);
-                    editor.apply();
-                    return;
-                }
-            }
-            index = (index + 1) % MAX_SUGGESTION_SIZE;
-            editor.putInt(getString(indexKey), index);
-            editor.putString(previousKey[index], query);
-            editor.apply();
+        public void setIndex(int indexKey, int arrayKey, String query) {
+            addSearchQuery(indexKey, arrayKey, query, getActivity(), false);
             mActivity.closeKeyboard();
         }
 
@@ -261,5 +236,35 @@ public abstract class SearchFavoriteFragment extends ListFragment {
     public void onDestroyView() {
         mActivity.removeTabs();
         super.onDestroyView();
+    }
+
+    public static void addSearchQuery(int indexKey, int arrayKey, String query, Activity activity, boolean caseSensitive){
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+        int index = sharedPref.getInt(activity.getString(indexKey), -1);
+        String[] previousKey = activity.getResources().getStringArray(arrayKey);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        if (index != -1) {
+            boolean changed = false;
+            for (int i = MAX_SUGGESTION_SIZE-1; i >= 0; i--) {
+                int id = (index + MAX_SUGGESTION_SIZE - i) % MAX_SUGGESTION_SIZE;
+                String s = sharedPref.getString(previousKey[id], "");
+                if (s.equals(query) || (caseSensitive && s.equalsIgnoreCase(query))) {
+                    changed = true;
+                }
+                if (changed && i > 0) {
+                    int prev = (index + MAX_SUGGESTION_SIZE - i + 1) % MAX_SUGGESTION_SIZE;
+                    editor.putString(previousKey[id], sharedPref.getString(previousKey[prev], ""));
+                }
+            }
+            if (changed) {
+                editor.putString(previousKey[index], query);
+                editor.apply();
+                return;
+            }
+        }
+        index = (index + 1) % MAX_SUGGESTION_SIZE;
+        editor.putInt(activity.getString(indexKey), index);
+        editor.putString(previousKey[index], query);
+        editor.apply();
     }
 }

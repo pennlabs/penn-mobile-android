@@ -10,6 +10,13 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
 
+    <ListView
+        android:id="@+id/map_suggestion"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:visibility="gone"/>
+
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
