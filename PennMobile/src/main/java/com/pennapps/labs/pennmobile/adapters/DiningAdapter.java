@@ -64,7 +64,12 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
             holder.hallStatus.setText(R.string.dining_hall_open);
             holder.hallStatus.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.label_green));
             if (!diningHall.openMeal().equals("all")) {
-                holder.openMeal.setText(String.format("Currently serving %s", diningHall.openMeal()));
+                if (diningHall.openMeal().equals("Breakfast/Lunch/Dinner")){
+                    holder.openMeal.setText(String.format("Currently serving all meals"));
+                }
+                else {
+                    holder.openMeal.setText(String.format("Currently serving %s", diningHall.openMeal()));
+                }
             } else {
                 view.findViewById(R.id.dining_hall_open_meal).setVisibility(View.GONE);
             }
@@ -73,9 +78,9 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
             holder.hallStatus.setText(R.string.dining_hall_closed);
             holder.hallStatus.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.label_red));
             String meal = diningHall.nextMeal();
-            if (meal.equals("")){
+            if (meal.equals("") || meal.equals("all")){
                 view.findViewById(R.id.dining_hall_open_meal).setVisibility(View.GONE);
-            } else if (meal.equals("all")) {
+            } else if (meal.equals("Breakfast/Lunch/Dinner")){
                 holder.openMeal.setText(String.format("Next serving all meals"));
             } else {
                 holder.openMeal.setText(String.format("Next serving %s", meal));
