@@ -14,6 +14,7 @@ public class Meeting implements Parcelable {
     public String section_id;
     public String meeting_days;
     public String start_time;
+    public String end_time;
 
     protected Meeting(Parcel in) {
         building_code = in.readString();
@@ -22,6 +23,7 @@ public class Meeting implements Parcelable {
         section_id = in.readString();
         meeting_days = in.readString();
         start_time = in.readString();
+        end_time = in.readString();
     }
 
     public static final Creator<Meeting> CREATOR = new Creator<Meeting>() {
@@ -49,5 +51,6 @@ public class Meeting implements Parcelable {
         parcel.writeString(section_id);
         parcel.writeString(meeting_days);
         parcel.writeString(start_time);
+        parcel.writeString(end_time);
     }
 }

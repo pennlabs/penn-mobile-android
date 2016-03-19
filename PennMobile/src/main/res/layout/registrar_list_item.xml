@@ -54,6 +54,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/registrar_lec_linearlayout"
         android:layout_below="@id/registrar_title_linearlayout"
         android:layout_toLeftOf="@id/star_course">
 
@@ -71,6 +72,36 @@
             android:id="@+id/course_title_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/registrar_lec_linearlayout"
+        android:layout_toLeftOf="@id/star_course">
+
+        <TextView
+            tools:text="MWF"
+            android:id="@+id/course_meeting_days"
+            android:paddingLeft="0sp"
+            android:paddingRight="4sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"/>
+        <TextView
+            tools:text="10:00am - "
+            android:id="@+id/course_start_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"/>
+        <TextView
+            tools:text="11:00am"
+            android:id="@+id/course_end_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"/>
+
     </LinearLayout>
 
 </RelativeLayout>

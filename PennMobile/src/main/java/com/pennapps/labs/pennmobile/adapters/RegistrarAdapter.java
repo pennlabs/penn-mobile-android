@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
@@ -62,14 +63,25 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
         courseCode.setSpan(new StyleSpan(Typeface.BOLD), 0, courseCode.length() - 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         holder.courseId.setText(courseCode);
         try {
+            holder.courseInstr.setEllipsize(TextUtils.TruncateAt.END);
+            holder.courseInstr.setMaxLines(1);
             holder.courseInstr.setText(course.instructors.get(0).name);
             holder.courseInstr.setTextColor(Color.BLACK);
         } catch (IndexOutOfBoundsException e) {
             holder.courseInstr.setText(getContext().getString(R.string.professor_missing));
             holder.courseInstr.setTextColor(Color.parseColor("#4a000000"));
         }
+
+        holder.courseTitle.setEllipsize(TextUtils.TruncateAt.END);
+        holder.courseTitle.setMaxLines(1);
         holder.courseTitle.setText(course.course_title);
         holder.courseActivity.setText(course.activity);
+        holder.courseDays.setText(course.getMeetingDays());
+        holder.courseDays.setTextColor(view.getResources().getColor(R.color.secondary_text));
+        holder.courseStartTime.setText(course.getMeetingStartTime() + " - ");
+        holder.courseStartTime.setTextColor(view.getResources().getColor(R.color.secondary_text));
+        holder.courseEndTime.setText(course.getMeetingEndTime());
+        holder.courseEndTime.setTextColor(view.getResources().getColor(R.color.secondary_text));
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(view.getContext());
         Set<String> starredCourses = sharedPref.getStringSet(mContext.getResources().getString(R.string.search_reg_star), new HashSet<String>());
@@ -108,6 +120,9 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
         @Bind(R.id.course_id_text) TextView courseId;
         @Bind(R.id.course_instr_text) TextView courseInstr;
         @Bind(R.id.course_title_text) TextView courseTitle;
+        @Bind(R.id.course_meeting_days) TextView courseDays;
+        @Bind(R.id.course_start_time) TextView courseStartTime;
+        @Bind(R.id.course_end_time) TextView courseEndTime;
         @Bind(R.id.star_course) ToggleButton star;
         @Bind(R.id.course_activity) TextView courseActivity;
         public Course course;
