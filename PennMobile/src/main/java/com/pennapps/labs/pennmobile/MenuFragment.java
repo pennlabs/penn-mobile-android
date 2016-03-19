@@ -149,6 +149,7 @@ public class MenuFragment extends Fragment {
         super.onDestroyView();
         getActivity().setTitle(R.string.dining);
         mActivity.removeTabs();
+        ButterKnife.unbind(this);
     }
     @Override
     public void onDestroy() {

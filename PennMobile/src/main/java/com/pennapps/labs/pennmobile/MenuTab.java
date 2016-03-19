@@ -71,8 +71,5 @@ public class MenuTab extends Fragment {
         ButterKnife.unbind(this);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
+
 }
