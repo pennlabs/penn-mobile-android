@@ -77,16 +77,14 @@ public class MenuFragment extends Fragment {
                 myFragment = new DiningInfoFragment();
                 Bundle args = new Bundle();
                 args.putParcelable("DiningHall",mDiningHall);
-                args.putString("name", name);
-                args.putString("type","info");
+                args.putString(getString(R.string.menu_arg_name), name);
                 myFragment.setArguments(args);
             }
             else{
                 myFragment = new MenuTab();
                 Bundle args = new Bundle();
-                args.putString("type","menu");
-                args.putString("name",name);
-                args.putStringArrayList("stations", new ArrayList<String>(foods.get(position).keySet()));
+                args.putString(getString(R.string.menu_arg_name), name);
+                args.putStringArrayList(getString(R.string.menu_arg_stations), new ArrayList<String>(foods.get(position).keySet()));
                 HashMap<String, ArrayList<String>> stations = foods.get(position);
                 for (String station: stations.keySet()){
                     args.putStringArrayList(station, stations.get(station));

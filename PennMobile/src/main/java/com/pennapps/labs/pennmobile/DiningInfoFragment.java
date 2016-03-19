@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,7 +65,13 @@ public class DiningInfoFragment extends Fragment {
         v.setBackgroundColor(Color.WHITE);
         ButterKnife.bind(this, v);
         fillInfo();
-
+        /*List<String> extras = mDiningHall.getExtras();
+        for (String extra: extras){
+            TextView textView = new TextView(mActivity);
+            textView.setText(Html.fromHtml(extra));
+            textView.setMovementMethod(LinkMovementMethod.getInstance());
+            menuParent.addView(textView);
+        }*/
         return v;
     }
     @Override
@@ -111,6 +119,7 @@ public class DiningInfoFragment extends Fragment {
         for (VenueInterval day: days){
             vertical = addDiningHour(day, vertical);
         }
+
     }
 
     public LinkedList<TextView> addDiningHour(VenueInterval day, LinkedList<TextView> vertical){

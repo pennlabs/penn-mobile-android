@@ -98,6 +98,7 @@ public class DiningHall implements Parcelable {
         return menus.size() > 0;
     }
 
+    public List<String> getExtras(){ return venue.getExtras(); }
 
     public Venue getVenue(){
         return venue;

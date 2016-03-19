@@ -41,6 +41,9 @@
     <string name="dining_hall_open">Open</string>
     <string name="dining_hall_closed">Closed</string>
     <string name="dining_info">Dining Hall Hours</string>
+    <string name="menu_arg_name">name</string>
+    <string name="menu_arg_meal">meal</string>
+    <string name="menu_arg_stations">stations</string>
 
     <!-- Courses -->
     <string name="course">Average Course</string>

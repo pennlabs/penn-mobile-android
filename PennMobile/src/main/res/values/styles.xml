@@ -63,10 +63,9 @@
         <item name="android:baselineAligned">true</item>
     </style>
 
-    <style name="MealName" parent="TextAppearance.AppCompat.Subhead">
+    <style name="MealName" parent="TextAppearance.AppCompat.Body2">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="DiningStation">
@@ -99,7 +98,6 @@
     <style name="DiningStatusLabel">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_alignParentRight">true</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textStyle">bold</item>

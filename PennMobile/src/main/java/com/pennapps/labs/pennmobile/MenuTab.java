@@ -35,9 +35,10 @@ public class MenuTab extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
-        name = args.getString("name");
-        meal = args.getString("meal");
-        stations = args.getStringArrayList("stations");
+        name = args.getString(getString(R.string.menu_arg_name), "Dining Hall");
+        meal = args.getString(getString(R.string.menu_arg_meal), "Meal");
+        stations = args.getStringArrayList(getString(R.string.menu_arg_stations,"Dining Stations"));
+        
         for (String station : stations) {
             stationInfo.put(station, args.getStringArrayList(station));
         }
