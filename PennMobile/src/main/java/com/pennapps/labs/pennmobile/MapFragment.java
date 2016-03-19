@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.SearchView;
+import android.text.Editable;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,11 +18,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -34,6 +40,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.DirectionsApi;
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.PendingResult;
+import com.google.maps.model.DirectionsResult;
 import com.pennapps.labs.pennmobile.adapters.SearchSuggestionAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Building;
@@ -72,6 +83,12 @@ public class MapFragment extends Fragment {
     private static Set<Building> searchedBuildings;
     private static Set<Marker> loadedMarkers;
     private static MapCallbacks mapCallbacks;
+
+    private RelativeLayout menuExtension;
+    private EditText from, to;
+    private ImageButton swap;
+
+    private GeoApiContext geoapi;
     private final static int CIRCLE_SIZE = 5;
 
     @Override
@@ -90,6 +107,21 @@ public class MapFragment extends Fragment {
                 .build();
         mapCallbacks.setGoogleApiClient(mGoogleApiClient);
         activity.closeKeyboard();
+
+        geoapi = new GeoApiContext().setApiKey(getString(R.string.google_api_key));
+//        DirectionsApiRequest req = DirectionsApi.getDirections(geoapi, "harnwell", "harrison");
+//        req.setCallback(new PendingResult.Callback<DirectionsResult>() {
+//
+//            @Override
+//            public void onResult(DirectionsResult result) {
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Throwable e) {
+//
+//            }
+//        });
     }
 
     @Override
@@ -111,7 +143,7 @@ public class MapFragment extends Fragment {
                 boolean changed = false;
                 for (Circle c : displayCircles) {
                     float[] results = new float[1];
-                    Location.distanceBetween(latLng.latitude, latLng.longitude, c.getCenter().latitude,c.getCenter().longitude, results);
+                    Location.distanceBetween(latLng.latitude, latLng.longitude, c.getCenter().latitude, c.getCenter().longitude, results);
                     if (results[0] <= CIRCLE_SIZE) {
                         changed = true;
                         displayCircles.remove(c);
@@ -153,6 +185,44 @@ public class MapFragment extends Fragment {
         }
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mapCallbacks.getLatLng(), 14));
 
+        v.findViewById(R.id.map_direction).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.openMapDirectionMenu();
+            }
+        });
+
+        menuExtension = activity.getMenuMapExtension();
+
+        from = (EditText) menuExtension.findViewById(R.id.menu_map_from);
+        to = (EditText) menuExtension.findViewById(R.id.menu_map_to);
+        swap = (ImageButton) menuExtension.findViewById(R.id.menu_map_swap);
+
+        swap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Editable fromText = from.getText();
+                from.setText(to.getText());
+                to.setText(fromText);
+            }
+        });
+
+        menuExtension.findViewById(android.R.id.home).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.closeMapDirectionMenu();
+            }
+        });
+
+        to.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (event != null) {
+                    Toast.makeText(activity, from.getText() + " " + to.getText(), Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        });
 
         return v;
     }

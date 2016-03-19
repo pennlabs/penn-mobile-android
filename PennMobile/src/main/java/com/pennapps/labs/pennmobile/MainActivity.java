@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
@@ -303,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
         if (!scrollable) {
             tabLayout.setTabMode(TabLayout.MODE_FIXED);
         }
-        appBar.addView(tabLayout);
+        appBar.addView(tabLayout, 1);
 
         pager.setAdapter(pageAdapter);
         tab_showed = true;
@@ -314,9 +315,25 @@ public class MainActivity extends AppCompatActivity {
     public void removeTabs() {
         tab_showed = false;
         final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
-        if (appBar != null && appBar.getChildCount() >= 2) {
+        if (appBar != null && appBar.getChildCount() >= 3) {
             appBar.removeViewAt(1);
         }
+    }
+
+    public void openMapDirectionMenu() {
+        final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
+        appBar.getChildAt(0).setVisibility(View.GONE);
+        appBar.getChildAt(1).setVisibility(View.VISIBLE);
+    }
+
+    public void closeMapDirectionMenu() {
+        final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
+        appBar.getChildAt(0).setVisibility(View.VISIBLE);
+        appBar.getChildAt(1).setVisibility(View.GONE);
+    }
+
+    public RelativeLayout getMenuMapExtension() {
+        return (RelativeLayout) findViewById(R.id.menu_map_extension);
     }
 
     private void getPermission(int code) {

@@ -24,7 +24,97 @@
                 android:background="?attr/colorPrimary"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                app:layout_scrollFlags="scroll|enterAlways"
+                android:id="@+id/menu_map_extension"
+                android:visibility="gone">
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_back_white_24dp"
+                    android:background="?attr/colorPrimary"
+                    android:layout_margin="15dp"
+                    android:id="@android:id/home"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_panorama_fish_eye_white_24dp"
+                    android:layout_toRightOf="@android:id/home"
+                    android:layout_toEndOf="@android:id/home"
+                    android:layout_marginTop="15dp"
+                    android:id="@+id/menu_map_circle"
+                    />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/menu_map_swap"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_swap_vert_white_24dp"
+                    android:background="?attr/colorPrimary"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginRight="20dp"/>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/menu_map_circle"
+                    android:layout_toRightOf="@id/menu_map_circle"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_toStartOf="@id/menu_map_swap"
+                    android:layout_toLeftOf="@id/menu_map_swap"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:id="@+id/menu_map_from"
+                    android:layout_marginTop="10dp"
+                    />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@id/menu_map_from"
+                    android:layout_alignLeft="@id/menu_map_from"
+                    android:layout_alignEnd="@id/menu_map_from"
+                    android:layout_alignRight="@id/menu_map_from"
+                    android:layout_below="@id/menu_map_from"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/menu_map_to"
+                    android:inputType="text"
+                    android:imeOptions="actionSearch"
+                    />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_more_vert_white_24dp"
+                    android:layout_alignStart="@id/menu_map_circle"
+                    android:layout_alignLeft="@id/menu_map_circle"
+                    android:layout_marginTop="2dp"
+                    android:layout_below="@id/menu_map_circle"
+                    android:id="@+id/menu_map_vert_circles"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@id/menu_map_vert_circles"
+                    android:layout_alignLeft="@id/menu_map_vert_circles"
+                    android:layout_below="@id/menu_map_vert_circles"
+                    android:layout_alignTop="@id/menu_map_to"
+                    android:layout_marginTop="9dp"
+                    android:src="@drawable/ic_place_white_24dp"/>
+
+            </RelativeLayout>
 
         </android.support.design.widget.AppBarLayout>
 
