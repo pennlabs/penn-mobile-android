@@ -65,13 +65,6 @@ public class DiningInfoFragment extends Fragment {
         v.setBackgroundColor(Color.WHITE);
         ButterKnife.bind(this, v);
         fillInfo();
-        /*List<String> extras = mDiningHall.getExtras();
-        for (String extra: extras){
-            TextView textView = new TextView(mActivity);
-            textView.setText(Html.fromHtml(extra));
-            textView.setMovementMethod(LinkMovementMethod.getInstance());
-            menuParent.addView(textView);
-        }*/
         return v;
     }
     @Override
