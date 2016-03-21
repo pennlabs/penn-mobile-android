@@ -76,9 +76,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         this.inflater = inflater;
 
-        mapView = (MapView) v.findViewById(R.id.mapView);
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(this);
+        if (v != null) {
+            mapView = (MapView) v.findViewById(R.id.mapView);
+            mapView.onCreate(savedInstanceState);
+            mapView.getMapAsync(this);
+        }
         return v;
     }
 
