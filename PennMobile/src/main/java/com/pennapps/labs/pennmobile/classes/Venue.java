@@ -70,5 +70,7 @@ public class Venue {
         return hours;
     }
 
-    public List<String> getExtras(){ return extras; }
+    public List<String> getExtras(){
+        return extras;
+    }
 }

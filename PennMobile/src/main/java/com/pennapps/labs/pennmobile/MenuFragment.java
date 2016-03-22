@@ -53,11 +53,11 @@ public class MenuFragment extends Fragment {
                 for (DiningHall.DiningStation station : menu.stations) {
                     ArrayList<String> foods = new ArrayList<>();
                     StringBuilder foodItems = new StringBuilder();      //for design purposes
-                    for (int i=0; i<station.items.size(); i++){
+                    for (int i = 0; i < station.items.size(); i++){
                         String txt = station.items.get(i).title;
                         foodItems.append(String.valueOf(txt.charAt(0)).toUpperCase());
                         foodItems.append(txt.substring(1, txt.length()));
-                        if (i<station.items.size()-1) {
+                        if (i < station.items.size()-1) {
                             foodItems.append("\n");
                         }
                     }
@@ -76,7 +76,7 @@ public class MenuFragment extends Fragment {
             if (position==0){
                 myFragment = new DiningInfoFragment();
                 Bundle args = new Bundle();
-                args.putParcelable("DiningHall",mDiningHall);
+                args.putParcelable("DiningHall", mDiningHall);
                 args.putString(getString(R.string.menu_arg_name), name);
                 myFragment.setArguments(args);
             }
@@ -86,7 +86,7 @@ public class MenuFragment extends Fragment {
                 args.putString(getString(R.string.menu_arg_name), name);
                 args.putStringArrayList(getString(R.string.menu_arg_stations), new ArrayList<String>(foods.get(position).keySet()));
                 HashMap<String, ArrayList<String>> stations = foods.get(position);
-                for (String station: stations.keySet()){
+                for (String station : stations.keySet()){
                     args.putStringArrayList(station, stations.get(station));
                 }
                 myFragment.setArguments(args);
