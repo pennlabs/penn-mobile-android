@@ -122,7 +122,7 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
         @Bind(R.id.course_id_text) TextView courseId;
         @Bind(R.id.course_instr_text) TextView courseInstr;
         @Bind(R.id.course_title_text) TextView courseTitle;
-        @Bind(R.id.course_meeting_days) TextView courseTimes;
+        @Bind(R.id.course_meeting_times) TextView courseTimes;
         @Bind(R.id.star_course) ToggleButton star;
         @Bind(R.id.course_activity) TextView courseActivity;
         public Course course;
