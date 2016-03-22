@@ -72,16 +72,18 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
             holder.courseInstr.setTextColor(Color.parseColor("#4a000000"));
         }
 
+        StringBuilder meetTimes = new StringBuilder(course.getMeetingDays());
+        meetTimes.append(" ");
+        meetTimes.append(course.getMeetingStartTime());
+        meetTimes.append(" - ");
+        meetTimes.append(course.getMeetingEndTime());
+
         holder.courseTitle.setEllipsize(TextUtils.TruncateAt.END);
         holder.courseTitle.setMaxLines(1);
         holder.courseTitle.setText(course.course_title);
         holder.courseActivity.setText(course.activity);
-        holder.courseDays.setText(course.getMeetingDays());
-        holder.courseDays.setTextColor(view.getResources().getColor(R.color.secondary_text));
-        holder.courseStartTime.setText(course.getMeetingStartTime() + " - ");
-        holder.courseStartTime.setTextColor(view.getResources().getColor(R.color.secondary_text));
-        holder.courseEndTime.setText(course.getMeetingEndTime());
-        holder.courseEndTime.setTextColor(view.getResources().getColor(R.color.secondary_text));
+        holder.courseTimes.setText(meetTimes.toString());
+        holder.courseTimes.setTextColor(view.getResources().getColor(R.color.secondary_text));
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(view.getContext());
         Set<String> starredCourses = sharedPref.getStringSet(mContext.getResources().getString(R.string.search_reg_star), new HashSet<String>());
@@ -120,9 +122,7 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
         @Bind(R.id.course_id_text) TextView courseId;
         @Bind(R.id.course_instr_text) TextView courseInstr;
         @Bind(R.id.course_title_text) TextView courseTitle;
-        @Bind(R.id.course_meeting_days) TextView courseDays;
-        @Bind(R.id.course_start_time) TextView courseStartTime;
-        @Bind(R.id.course_end_time) TextView courseEndTime;
+        @Bind(R.id.course_meeting_days) TextView courseTimes;
         @Bind(R.id.star_course) ToggleButton star;
         @Bind(R.id.course_activity) TextView courseActivity;
         public Course course;
