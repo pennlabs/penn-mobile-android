@@ -181,6 +181,9 @@ public class MainActivity extends AppCompatActivity {
     private class DrawerItemClickListener implements NavigationView.OnNavigationItemSelectedListener {
         @Override
         public boolean onNavigationItemSelected(MenuItem item) {
+            removeTabs();
+            mDrawerToggle.setDrawerIndicatorEnabled(true);
+            mDrawerToggle.syncState();
             int id = item.getItemId();
             item.setChecked(true);
             navigateLayout(id);
