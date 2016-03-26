@@ -20,6 +20,7 @@ public class Venue {
     public int id;
     public String name;
     public String venueType;
+    public ArrayList<String> extras;
     @SerializedName("dateHours")
     public List<VenueInterval> hours = new ArrayList<>();
 
@@ -67,5 +68,9 @@ public class Venue {
 
     public List<VenueInterval> allHours(){
         return hours;
+    }
+
+    public List<String> getExtras(){
+        return extras;
     }
 }

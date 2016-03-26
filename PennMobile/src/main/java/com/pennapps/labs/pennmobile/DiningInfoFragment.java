@@ -63,7 +63,6 @@ public class DiningInfoFragment extends Fragment {
         v.setBackgroundColor(Color.WHITE);
         ButterKnife.bind(this, v);
         fillInfo();
-
         return v;
     }
     @Override
@@ -78,21 +77,7 @@ public class DiningInfoFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
-        mActivity.getActionBarToggle().syncState();
-        getActivity().setTitle(mDiningHall.getName());
-        if (map == null) {
-            map = mapFragment.getMap();
-            if (map != null) {
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(39.95198, -75.19368), 17));
-                map.getUiSettings().setZoomControlsEnabled(false);
-            }
-        }
-        drawMap();
-    }
+
     private void drawMap() {
         String buildingCode = mDiningHall.getName();
         if (!buildingCode.equals("")) {
@@ -125,6 +110,7 @@ public class DiningInfoFragment extends Fragment {
         for (VenueInterval day: days){
             vertical = addDiningHour(day, vertical);
         }
+
     }
 
     public LinkedList<TextView> addDiningHour(VenueInterval day, LinkedList<TextView> vertical){
@@ -134,7 +120,7 @@ public class DiningInfoFragment extends Fragment {
         String dateString = dateTime.dayOfWeek().getAsText() + ", " + dateTime.monthOfYear().getAsString() + "/" + dateTime.dayOfMonth().getAsShortText();
         textView.setText(dateString);
         textView.setTextAppearance(mActivity, R.style.DiningInfoDate);
-        textView.setPadding(0, 10, 0, 10);
+        textView.setPadding(0, 40, 0, 0);
         if (vertical.isEmpty()){
             textView.setId(0);
             textView.setId(textView.getId()+10);
@@ -174,11 +160,31 @@ public class DiningInfoFragment extends Fragment {
         return vertical;
     }
     @Override
+    public void onResume() {
+        super.onResume();
+        mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
+        mActivity.getActionBarToggle().syncState();
+        getActivity().setTitle(mDiningHall.getName());
+        if (map == null) {
+            map = mapFragment.getMap();
+            if (map != null) {
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(39.95198, -75.19368), 17));
+                map.getUiSettings().setZoomControlsEnabled(false);
+            }
+        }
+        drawMap();
+    }
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
-        getActivity().setTitle(R.string.dining);
+        getActivity().setTitle(mDiningHall.getName());
         ButterKnife.unbind(this);
     }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
 
 }
 
