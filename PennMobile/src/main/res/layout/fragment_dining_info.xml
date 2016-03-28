@@ -23,15 +23,6 @@
                 android:background="@drawable/gradient" />
         </FrameLayout>
 
-        <TextView android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:text="Hours"
-                  android:layout_marginTop="10dp"
-                  android:layout_marginLeft="10dp"
-                  android:layout_marginBottom="10dp"
-                  android:textSize="12pt"
-                  android:id="@+id/info_hours" />
-
         <RelativeLayout
             android:id="@+id/dining_hours"
             android:layout_width="fill_parent"
