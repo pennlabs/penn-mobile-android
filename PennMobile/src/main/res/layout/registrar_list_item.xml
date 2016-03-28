@@ -54,6 +54,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/registrar_lec_linearlayout"
         android:layout_below="@id/registrar_title_linearlayout"
         android:layout_toLeftOf="@id/star_course">
 
@@ -72,5 +73,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
+
+    <TextView
+        tools:text="MWF 10:00am - 11:00am"
+        android:id="@+id/course_meeting_times"
+        android:paddingLeft="0sp"
+        android:paddingRight="4sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/registrar_lec_linearlayout"
+        android:layout_toLeftOf="@id/star_course"
+        android:textSize="12sp"/>
+
 
 </RelativeLayout>

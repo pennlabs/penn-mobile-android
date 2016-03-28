@@ -127,6 +127,14 @@ public class Course implements Parcelable {
         return "";
     }
 
+    @NonNull
+    public String getMeetingEndTime(){
+        if (!meetings.isEmpty()) {
+            return meetings.get(0).end_time;
+        }
+        return "";
+    }
+
     public String getId() {
         return new StringBuilder().append(course_department).append(course_number).append(section_number).toString();
     }
