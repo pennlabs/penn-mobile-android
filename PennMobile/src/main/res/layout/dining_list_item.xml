@@ -20,6 +20,7 @@
         tools:visibility="visible"
         android:id="@+id/dining_hall_open_meal"
         android:layout_below="@+id/dining_hall_name"
+        android:fontFamily="sans-serif-light"
         style="@style/MealName"/>
 
     <TextView
