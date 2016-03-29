@@ -70,7 +70,7 @@ public class LaundryBuildingFragment extends ListFragment {
                 .replace(R.id.laundry_fragment, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     @Override
