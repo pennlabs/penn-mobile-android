@@ -84,7 +84,7 @@ public class DiningFragment extends ListFragment {
                 .replace(R.id.dining_fragment, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     private void getDiningHalls() {
