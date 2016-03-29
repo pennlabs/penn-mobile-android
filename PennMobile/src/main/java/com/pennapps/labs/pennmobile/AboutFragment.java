@@ -30,7 +30,7 @@ public class AboutFragment extends Fragment {
         TextView featureRequest = (TextView) v.findViewById(R.id.about_desc);
         featureRequest.setMovementMethod(LinkMovementMethod.getInstance());
         String text = "PennMobile was developed by Penn Labs, with funding<br>" +
-                "and support from the Undergraduate Assembly. Special thanks to Vishwa Patel. <br><br> &copy; 2015 Penn Labs <br><br>" +
+                "and support from the Undergraduate Assembly. Special thanks to Vishwa Patel. <br><br> &copy; 2016 Penn Labs <br><br>" +
                 "<a href='mailto:contact@pennlabs.org?subject=[Penn Mobile Android]'>Request a feature</a><br><br>" +
                 "<a href='http://pennlabs.org'>More information</a>";
         featureRequest.setText(Html.fromHtml(text));
