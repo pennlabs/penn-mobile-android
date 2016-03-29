@@ -77,6 +77,9 @@
                     android:layout_marginEnd="10dp"
                     android:id="@+id/menu_map_from"
                     android:layout_marginTop="10dp"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:textColor="@color/white"
                     />
 
                 <EditText
@@ -92,6 +95,7 @@
                     android:id="@+id/menu_map_to"
                     android:inputType="text"
                     android:imeOptions="actionSearch"
+                    android:textColor="@color/white"
                     />
 
                 <ImageView

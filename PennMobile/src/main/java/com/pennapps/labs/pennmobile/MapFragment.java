@@ -3,9 +3,14 @@ package com.pennapps.labs.pennmobile;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.SearchView;
 import android.text.Editable;
@@ -18,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -34,28 +40,38 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.DirectionsApi;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.PendingResult;
 import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.DirectionsRoute;
+import com.google.maps.model.EncodedPolyline;
+import com.google.maps.model.TravelMode;
 import com.pennapps.labs.pennmobile.adapters.SearchSuggestionAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Building;
+import com.pennapps.labs.pennmobile.classes.BusRoute;
+import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.MapCallbacks;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Semaphore;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -77,12 +93,25 @@ public class MapFragment extends Fragment {
     @Bind(R.id.map_search_name) TextView searchName;
     @Bind(R.id.map_search_location) TextView searchLoc;
     @Bind(R.id.map_suggestion) ListView suggestionList;
-    private static Building currentBuilding;
-    private static Marker currentMarker;
-    private static Set<Circle> displayCircles;
-    private static Set<Building> searchedBuildings;
-    private static Set<Marker> loadedMarkers;
+    private SearchSuggestionAdapter adapter;
+    private Building currentBuilding;
+    private Marker currentMarker;
+    private Set<Circle> displayCircles;
+    private Set<Building> searchedBuildings;
+    private Set<Marker> loadedMarkers;
     private static MapCallbacks mapCallbacks;
+
+    private BuildingWindowAdapter buildingAdpater;
+    private TransitWindowAdapter transitAdapter;
+
+    private LatLng startQueryLatLng;
+    private Polyline startPolyline;
+    private Set<Polyline> allStartPolylines;
+
+    private LatLng endQueryLatLng;
+    private Polyline endPolyline;
+    private Set<Polyline> allEndPolylines;
+    private Semaphore semaphore;
 
     private RelativeLayout menuExtension;
     private EditText from, to;
@@ -109,19 +138,9 @@ public class MapFragment extends Fragment {
         activity.closeKeyboard();
 
         geoapi = new GeoApiContext().setApiKey(getString(R.string.google_api_key));
-//        DirectionsApiRequest req = DirectionsApi.getDirections(geoapi, "harnwell", "harrison");
-//        req.setCallback(new PendingResult.Callback<DirectionsResult>() {
-//
-//            @Override
-//            public void onResult(DirectionsResult result) {
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Throwable e) {
-//
-//            }
-//        });
+        allStartPolylines = new HashSet<>();
+        allEndPolylines = new HashSet<>();
+        query = null;
     }
 
     @Override
@@ -135,7 +154,18 @@ public class MapFragment extends Fragment {
 
         googleMap = mapView.getMap();
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-        googleMap.setMyLocationEnabled(true);
+        try {
+            googleMap.setMyLocationEnabled(true);
+        } catch (SecurityException e) {
+            //No permission -> go back to main
+            Toast.makeText(activity, "Permission not granted for using Google Map", Toast.LENGTH_SHORT).show();
+            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.laundry_fragment, new MainFragment())
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .addToBackStack(null)
+                    .commit();
+        }
 
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -172,11 +202,11 @@ public class MapFragment extends Fragment {
                         .position(currentBuilding.getLatLng())
                         .title(currentBuilding.title)
                         .snippet(currentBuilding.getImageURL()));
-
             }
         });
-
-        googleMap.setInfoWindowAdapter(new CustomWindowAdapter(inflater));
+        buildingAdpater = new BuildingWindowAdapter(inflater);
+        transitAdapter = new TransitWindowAdapter(inflater);
+        googleMap.setInfoWindowAdapter(buildingAdpater);
 
         try {
             MapsInitializer.initialize(activity);
@@ -185,10 +215,21 @@ public class MapFragment extends Fragment {
         }
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mapCallbacks.getLatLng(), 14));
 
-        v.findViewById(R.id.map_direction).setOnClickListener(new View.OnClickListener() {
+        googleMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener() {
             @Override
-            public void onClick(View v) {
-                activity.openMapDirectionMenu();
+            public void onPolylineClick(Polyline polyline) {
+                if (polyline.equals(startPolyline) || polyline.equals(endPolyline)) {
+                    //this is ignored because the current polyline is already selected
+                    return;
+                }
+                if (allStartPolylines.contains(polyline)) {
+                    startPolyline.setColor(Color.GRAY);
+                    startPolyline = polyline;
+                } else if (allEndPolylines.contains(polyline)) {
+                    endPolyline.setColor(Color.GRAY);
+                    endPolyline = polyline;
+                }
+                polyline.setColor(Color.BLUE);
             }
         });
 
@@ -197,6 +238,16 @@ public class MapFragment extends Fragment {
         from = (EditText) menuExtension.findViewById(R.id.menu_map_from);
         to = (EditText) menuExtension.findViewById(R.id.menu_map_to);
         swap = (ImageButton) menuExtension.findViewById(R.id.menu_map_swap);
+
+        v.findViewById(R.id.map_direction).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.openMapDirectionMenu();
+                to.setText(query);
+                googleMap.setInfoWindowAdapter(transitAdapter);
+                ((FloatingActionButton) v).setImageResource(R.drawable.ic_directions_bus_white_24dp);
+            }
+        });
 
         swap.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -214,63 +265,29 @@ public class MapFragment extends Fragment {
             }
         });
 
-        to.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        from.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (event != null) {
-                    Toast.makeText(activity, from.getText() + " " + to.getText(), Toast.LENGTH_SHORT).show();
+                    to.requestFocus();
                 }
                 return false;
             }
         });
 
+        to.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (event != null) {
+                    drawUserRoute(from.getText().toString(), to.getText().toString());
+                }
+                return false;
+            }
+        });
         return v;
     }
 
-    private class CustomWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
-        private View view;
-
-        public CustomWindowAdapter(LayoutInflater inflater) {
-            view = inflater.inflate(R.layout.info_window, null);
-        }
-
-        @Override
-        public View getInfoWindow(Marker arg0) {
-            return null;
-        }
-
-        @Override
-        public View getInfoContents(final Marker marker) {
-            currentMarker = marker;
-
-            ImageView imageView = (ImageView) view.findViewById(R.id.building_image);
-            final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.mapProgress);
-            TextView name = (TextView) view.findViewById(R.id.building_name);
-            name.setText(marker.getTitle());
-
-            if (marker.getSnippet().isEmpty()) {
-                imageView.setVisibility(View.GONE);
-            } else if (loadedMarkers.contains(currentMarker)) {
-                Picasso.with(activity).load(marker.getSnippet()).fit().centerInside().into(imageView);
-            } else {
-                loadedMarkers.add(currentMarker);
-                progressBar.setVisibility(View.VISIBLE);
-                Picasso.with(activity).load(marker.getSnippet()).fit().centerInside().into(imageView, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        progressBar.setVisibility(View.GONE);
-                        currentMarker.hideInfoWindow();
-                        currentMarker.showInfoWindow();
-                    }
-
-                    @Override
-                    public void onError() {}
-                });
-            }
-            return view;
-        }
-    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -399,7 +416,15 @@ public class MapFragment extends Fragment {
         }
         if (!list.isEmpty() && suggestionList != null) {
             suggestionList.setVisibility(View.VISIBLE);
-            suggestionList.setAdapter(new SearchSuggestionAdapter(activity, list));
+            adapter = new SearchSuggestionAdapter(activity, list);
+            suggestionList.setAdapter(adapter);
+            suggestionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    suggestionList.setVisibility(View.GONE);
+                    searchView.setQuery(adapter.getItem(position), true);
+                }
+            });
         }
     }
 
@@ -410,7 +435,7 @@ public class MapFragment extends Fragment {
                                @Override
                                public void call(List<Building> buildings) {
                                    searchedBuildings = new HashSet<>(buildings);
-                                   drawResults(buildings);
+                                   drawBuildingResults(buildings);
                                }
                            },
                         new Action1<Throwable>() {
@@ -421,7 +446,7 @@ public class MapFragment extends Fragment {
                         });
     }
 
-    private void drawResults(List<Building> buildings) {
+    private void drawBuildingResults(List<Building> buildings) {
         googleMap.clear();
         if (buildings.isEmpty()) {
             activity.showErrorToast(R.string.location_not_found);
@@ -467,6 +492,237 @@ public class MapFragment extends Fragment {
         suggestionList.setVisibility(View.GONE);
     }
 
+    private void drawUserRoute(final String from, final String to) {
+        activity.closeKeyboard();
+        startQueryLatLng = null;
+        endQueryLatLng = null;
+        semaphore = new Semaphore(1);
+        query = to;
+        mLabs.buildings(to).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                new Action1<List<Building>>() {
+                    @Override
+                    public void call(List<Building> buildings) {
+                        final LatLng destLatLng = getLocationLatLng(buildings, to);
+                        if (destLatLng == null) {
+                            activity.showErrorToast(R.string.no_destination_found);
+                        } else {
+                            endQueryLatLng = destLatLng;
+                            getRouteWithLoc();
+                        }
+                    }
+                },
+                new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        activity.showErrorToast(R.string.no_destination_found);
+                    }
+                });
+        if (from.equals(getString(R.string.starting_location_hint)) || from.equals("")) {
+            startQueryLatLng = mapCallbacks.getLatLng();
+            getRouteWithLoc();
+        } else {
+            mLabs.buildings(from).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                    new Action1<List<Building>>() {
+                        @Override
+                        public void call(List<Building> buildings) {
+                            LatLng startLatLng = getLocationLatLng(buildings, from);
+                            if (startLatLng == null) {
+                                activity.showErrorToast(R.string.no_origin_found);
+                            } else {
+                                startQueryLatLng = startLatLng;
+                                getRouteWithLoc();
+                            }
+                        }
+                    },
+                    new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            activity.showErrorToast(R.string.no_origin_found);
+                        }
+                    }
+            );
+        }
+    }
+
+    public void getRouteWithLoc() {
+        try {
+            semaphore.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (endQueryLatLng == null || startQueryLatLng == null) {
+            semaphore.release();
+            return;
+        }
+        semaphore.release();
+        retrieveRoute(startQueryLatLng, endQueryLatLng);
+    }
+
+    private void retrieveRoute(final LatLng startLatLng, final LatLng destLatLng) {
+        String latBegin = String.valueOf(startLatLng.latitude);
+        String longBegin = Double.toString(startLatLng.longitude);
+        String latEnd = String.valueOf(destLatLng.latitude);
+        String longEnd = Double.toString(destLatLng.longitude);
+        mLabs.routing(latBegin, latEnd, longBegin, longEnd).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<BusRoute>() {
+                            @Override
+                            public void call(BusRoute route) {
+                                googleMap.clear();
+                                displayCircles.clear();
+                                searchedBuildings.clear();
+                                loadedMarkers.clear();
+                                searchLoc.setText("");
+                                if (route == null || route.stops.size() == 0) {
+                                    addWalkingPath(startLatLng, destLatLng, true);
+                                    return;
+                                }
+                                PolylineOptions options = new PolylineOptions();
+                                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+                                for (BusStop busStop : route.stops) {
+                                    LatLng latLngBuff = busStop.getLatLng();
+                                    addMapMarker(route, busStop, latLngBuff);
+                                    options.add(latLngBuff);
+                                    builder.include(latLngBuff);
+                                }
+                                builder.include(startLatLng);
+                                builder.include(destLatLng);
+                                options.width(15).color(Color.BLUE);
+
+                                googleMap.addPolyline(options);
+                                addWalkingPath(startLatLng, route.stops.get(0).getLatLng(), true);
+                                addWalkingPath(destLatLng, route.stops.get(route.stops.size() - 1).getLatLng(), false);
+                                googleMap.addMarker(new MarkerOptions()
+                                        .position(destLatLng)
+                                        .title(query));
+                                changeZoomLevel(googleMap, builder.build());
+                            }
+                        },
+                        new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                googleMap.clear();
+                                displayCircles.clear();
+                                searchedBuildings.clear();
+                                loadedMarkers.clear();
+                                searchLoc.setText("");
+                                activity.showErrorToast(R.string.no_bus_route);
+                                addWalkingPath(startLatLng, destLatLng, true);
+                            }
+                        });
+    }
+
+
+    private LatLng getLocationLatLng(List<Building> buildings, String locationName) {
+        if (buildings != null && !buildings.isEmpty()) {
+            return buildings.get(0).getLatLng();
+        }
+        Geocoder geocoder = new Geocoder(activity.getApplicationContext());
+        try {
+            List<Address> locations = geocoder.getFromLocationName(locationName, 1);
+            if (locations.size() != 0) {
+                return new LatLng(locations.get(0).getLatitude(), locations.get(0).getLongitude());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        activity.showErrorToast(R.string.no_path_found);
+        return null;
+    }
+
+    private void addWalkingPath(LatLng startWalking, LatLng endWalking, final boolean start) {
+        StringBuilder from = new StringBuilder();
+        from.append(startWalking.latitude).append(',').append(startWalking.longitude);
+        StringBuilder to = new StringBuilder();
+        to.append(endWalking.latitude).append(',').append(endWalking.longitude);
+        DirectionsApiRequest req = DirectionsApi.getDirections(geoapi, from.toString(), to.toString());
+        req.mode(TravelMode.WALKING);
+        req.setCallback(new PendingResult.Callback<DirectionsResult>() {
+
+            @Override
+            public void onResult(final DirectionsResult result) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        DirectionsRoute[] routes = result.routes;
+                        EncodedPolyline polyline = routes[0].overviewPolyline;
+                        PolylineOptions options = new PolylineOptions();
+                        for (com.google.maps.model.LatLng latLng : polyline.decodePath()) {
+                            options.add(new LatLng(latLng.lat, latLng.lng));
+                        }
+                        options.color(Color.BLUE).width(15);
+                        Polyline line = googleMap.addPolyline(options);
+                        if (start) {
+                            startPolyline = line;
+                            allStartPolylines.add(startPolyline);
+                        } else {
+                            endPolyline = line;
+                            allEndPolylines.add(endPolyline);
+                        }
+                        for (int i = 1; i < routes.length; i++) {
+                            PolylineOptions opt = new PolylineOptions();
+                            for (com.google.maps.model.LatLng latLng : routes[i].overviewPolyline.decodePath()) {
+                                opt.add(new LatLng(latLng.lat, latLng.lng));
+                            }
+                            opt.color(Color.GRAY).width(15);
+                            Polyline poly = googleMap.addPolyline(opt);
+                            if (start) {
+                                allStartPolylines.add(poly);
+                            } else {
+                                allEndPolylines.add(poly);
+                            }
+                        }
+                        StringBuilder builder = new StringBuilder(searchLoc.getText());
+                        for (DirectionsRoute r : result.routes) {
+                            if (!builder.toString().contains(r.copyrights)) {
+                                if (builder.length() > 0) {
+                                    builder.append(" ");
+                                }
+                                builder.append(r.copyrights);
+                            }
+                        }
+                        boolean added = false;
+                        for (DirectionsRoute r : result.routes) {
+                            for (String s : r.warnings) {
+                                if (!builder.toString().contains(s)) {
+                                    if (!added) {
+                                        added = true;
+                                        builder.append("\n");
+                                    }
+                                    builder.append(s);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                activity.showErrorToast(R.string.google_map_fail);
+            }
+        });
+    }
+
+
+    private void addMapMarker(BusRoute route, BusStop busStop, LatLng latLngBuff) {
+        if (busStop.getName() != null) {
+            if (route.stops.indexOf(busStop) != 0
+                    && route.stops.indexOf(busStop) != route.stops.size() - 1) {
+                googleMap.addMarker(new MarkerOptions()
+                        .position(latLngBuff)
+                        .title(busStop.getName())
+                        .anchor(0.5f, 0.5f)
+                        .icon(BitmapDescriptorFactory
+                                .fromResource(R.drawable.ic_brightness_1_black_18dp)));
+            } else {
+                googleMap.addMarker(new MarkerOptions()
+                        .position(latLngBuff)
+                        .title(busStop.getName()));
+            }
+        }
+    }
     public static void changeZoomLevel(GoogleMap googleMap, LatLngBounds bounds){
         Location NECorner = new Location("");
         Location SWCorner = new Location("");
@@ -481,5 +737,71 @@ public class MapFragment extends Fragment {
             padding = 500;
         }
         googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+    }
+
+    private class BuildingWindowAdapter implements GoogleMap.InfoWindowAdapter {
+
+        private View view;
+
+        public BuildingWindowAdapter(LayoutInflater inflater) {
+            view = inflater.inflate(R.layout.info_window, null);
+        }
+
+        @Override
+        public View getInfoWindow(Marker arg0) {
+            return null;
+        }
+
+        @Override
+        public View getInfoContents(final Marker marker) {
+            currentMarker = marker;
+
+            ImageView imageView = (ImageView) view.findViewById(R.id.building_image);
+            final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.mapProgress);
+            TextView name = (TextView) view.findViewById(R.id.building_name);
+            name.setText(marker.getTitle());
+
+            if (marker.getSnippet().isEmpty()) {
+                imageView.setVisibility(View.GONE);
+            } else if (loadedMarkers.contains(currentMarker)) {
+                Picasso.with(activity).load(marker.getSnippet()).fit().centerInside().into(imageView);
+            } else {
+                loadedMarkers.add(currentMarker);
+                progressBar.setVisibility(View.VISIBLE);
+                Picasso.with(activity).load(marker.getSnippet()).fit().centerInside().into(imageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        progressBar.setVisibility(View.GONE);
+                        currentMarker.hideInfoWindow();
+                        currentMarker.showInfoWindow();
+                    }
+
+                    @Override
+                    public void onError() {}
+                });
+            }
+            return view;
+        }
+    }
+
+    private static class TransitWindowAdapter implements GoogleMap.InfoWindowAdapter {
+
+        private View view;
+
+        public TransitWindowAdapter(LayoutInflater inflater) {
+            view = inflater.inflate(R.layout.busstop_info_window, null);
+        }
+
+        @Override
+        public View getInfoWindow(Marker arg0) {
+            return null;
+        }
+
+        @Override
+        public View getInfoContents(final Marker arg0) {
+            TextView name = (TextView) view.findViewById(R.id.bus_stop_name);
+            name.setText(arg0.getTitle());
+            return view;
+        }
     }
 }

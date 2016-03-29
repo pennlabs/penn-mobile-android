@@ -61,6 +61,8 @@
         <item>map4</item>
         <item>map5</item>
     </string-array>
+    <string name="google_api_origin">origin</string>
+    <string name="google_api_dest">destination</string>
 
     <!-- Transit search -->
     <string name="starting_location_hint">Using current location</string>
@@ -68,6 +70,10 @@
     <string name="routes_ok">OK</string>
     <string name="location_not_found">Location not found, please try again</string>
     <string name="no_path_found">No path found</string>
+    <string name="no_origin_found">No origin found</string>
+    <string name="no_destination_found">No destination found</string>
+    <string name="no_bus_route">No bus route found</string>
+    <string name="google_map_fail">Google map fails to find a path</string>
 
     <!-- LaundryRoom -->
     <string name="laundry_washer">Washers</string>
