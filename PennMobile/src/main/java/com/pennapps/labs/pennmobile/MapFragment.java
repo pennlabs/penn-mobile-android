@@ -67,10 +67,16 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.Semaphore;
 
 import butterknife.Bind;
@@ -568,31 +574,27 @@ public class MapFragment extends Fragment {
                         new Action1<BusRoute>() {
                             @Override
                             public void call(BusRoute route) {
-                                googleMap.clear();
-                                displayCircles.clear();
-                                searchedBuildings.clear();
-                                loadedMarkers.clear();
-                                searchLoc.setText("");
                                 if (route == null || route.stops.size() == 0) {
-                                    addWalkingPath(startLatLng, destLatLng, true);
+                                    addWalkingPath(startLatLng, destLatLng, true, true);
                                     return;
                                 }
+                                clearMap();
                                 PolylineOptions options = new PolylineOptions();
                                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
                                 for (BusStop busStop : route.stops) {
                                     LatLng latLngBuff = busStop.getLatLng();
-                                    addMapMarker(route, busStop, latLngBuff);
+                                    addMapMarker(route, busStop);
                                     options.add(latLngBuff);
                                     builder.include(latLngBuff);
                                 }
                                 builder.include(startLatLng);
                                 builder.include(destLatLng);
-                                options.width(15).color(Color.BLUE);
+                                options.width(15).color(getResources().getColor(R.color.color_primary));
 
                                 googleMap.addPolyline(options);
-                                addWalkingPath(startLatLng, route.stops.get(0).getLatLng(), true);
-                                addWalkingPath(destLatLng, route.stops.get(route.stops.size() - 1).getLatLng(), false);
+                                addWalkingPath(startLatLng, route.stops.get(0).getLatLng(), true, false);
+                                addWalkingPath(destLatLng, route.stops.get(route.stops.size() - 1).getLatLng(), false, false);
                                 googleMap.addMarker(new MarkerOptions()
                                         .position(destLatLng)
                                         .title(query));
@@ -602,17 +604,18 @@ public class MapFragment extends Fragment {
                         new Action1<Throwable>() {
                             @Override
                             public void call(Throwable throwable) {
-                                googleMap.clear();
-                                displayCircles.clear();
-                                searchedBuildings.clear();
-                                loadedMarkers.clear();
-                                searchLoc.setText("");
-                                activity.showErrorToast(R.string.no_bus_route);
-                                addWalkingPath(startLatLng, destLatLng, true);
+                                findBusRoute(startLatLng, destLatLng);
                             }
                         });
     }
 
+    private void clearMap() {
+        googleMap.clear();
+        displayCircles.clear();
+        searchedBuildings.clear();
+        loadedMarkers.clear();
+        searchLoc.setText("");
+    }
 
     private LatLng getLocationLatLng(List<Building> buildings, String locationName) {
         if (buildings != null && !buildings.isEmpty()) {
@@ -631,12 +634,9 @@ public class MapFragment extends Fragment {
         return null;
     }
 
-    private void addWalkingPath(LatLng startWalking, LatLng endWalking, final boolean start) {
-        StringBuilder from = new StringBuilder();
-        from.append(startWalking.latitude).append(',').append(startWalking.longitude);
-        StringBuilder to = new StringBuilder();
-        to.append(endWalking.latitude).append(',').append(endWalking.longitude);
-        DirectionsApiRequest req = DirectionsApi.getDirections(geoapi, from.toString(), to.toString());
+    private void addWalkingPath(final LatLng startWalking, final LatLng endWalking, final boolean start, final boolean clearOnSuccess) {
+        DirectionsApiRequest req = DirectionsApi.getDirections(geoapi, startWalking.latitude + "," + startWalking.longitude,
+                endWalking.latitude + "," + endWalking.longitude);
         req.mode(TravelMode.WALKING);
         req.setCallback(new PendingResult.Callback<DirectionsResult>() {
 
@@ -645,6 +645,9 @@ public class MapFragment extends Fragment {
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        if (clearOnSuccess) {
+                            clearMap();
+                        }
                         DirectionsRoute[] routes = result.routes;
                         EncodedPolyline polyline = routes[0].overviewPolyline;
                         PolylineOptions options = new PolylineOptions();
@@ -694,6 +697,12 @@ public class MapFragment extends Fragment {
                                 }
                             }
                         }
+                        if (clearOnSuccess) {
+                            LatLngBounds.Builder bounds = new LatLngBounds.Builder();
+                            bounds.include(startWalking);
+                            bounds.include(endWalking);
+                            changeZoomLevel(googleMap, bounds.build());
+                        }
                     }
                 });
             }
@@ -706,19 +715,19 @@ public class MapFragment extends Fragment {
     }
 
 
-    private void addMapMarker(BusRoute route, BusStop busStop, LatLng latLngBuff) {
+    private void addMapMarker(BusRoute route, BusStop busStop) {
         if (busStop.getName() != null) {
             if (route.stops.indexOf(busStop) != 0
                     && route.stops.indexOf(busStop) != route.stops.size() - 1) {
                 googleMap.addMarker(new MarkerOptions()
-                        .position(latLngBuff)
+                        .position(busStop.getLatLng())
                         .title(busStop.getName())
                         .anchor(0.5f, 0.5f)
                         .icon(BitmapDescriptorFactory
                                 .fromResource(R.drawable.ic_brightness_1_black_18dp)));
             } else {
                 googleMap.addMarker(new MarkerOptions()
-                        .position(latLngBuff)
+                        .position(busStop.getLatLng())
                         .title(busStop.getName()));
             }
         }
@@ -802,6 +811,220 @@ public class MapFragment extends Fragment {
             TextView name = (TextView) view.findViewById(R.id.bus_stop_name);
             name.setText(arg0.getTitle());
             return view;
+        }
+    }
+
+    private void findBusRoute (final LatLng startLatLng, final LatLng destLatLng) {
+        mLabs.bus_stops().observeOn(AndroidSchedulers.mainThread()).subscribe(
+                new Action1<List<BusStop>>() {
+                    @Override
+                    public void call(List<BusStop> busStops) {
+                        HashMap<String, TreeSet<BusStop>> map = new HashMap<>();
+                        String west = getString(R.string.bus_west);
+                        String east = getString(R.string.bus_east);
+                        map.put(east, new TreeSet<>(new BusStopComparator(east)));
+                        map.put(west, new TreeSet<>(new BusStopComparator(west)));
+                        for (BusStop bs : busStops) {
+                            generateBusRouteMap(bs);
+                            for (Map.Entry<String, Integer> e : bs.routesMap.entrySet()) {
+                                if (map.containsKey(e.getKey())) {
+                                    map.get(e.getKey()).add(bs);
+                                }
+                            }
+                        }
+                        float[] res = new float[1];
+                        BusStop eastStart = null, eastEnd = null, westStart = null, westEnd = null;
+                        double minStartBuffer = Double.MAX_VALUE, minEndBuffer = Double.MAX_VALUE, total;
+                        for (BusStop bs : map.get(east)) {
+                            Location.distanceBetween(startLatLng.latitude, startLatLng.longitude, bs.getLatLng().latitude, bs.getLatLng().longitude, res);
+                            if (res[0] < minStartBuffer) {
+                                minStartBuffer = res[0];
+                                eastStart = bs;
+                            }
+                            Location.distanceBetween(destLatLng.latitude, destLatLng.longitude, bs.getLatLng().latitude, bs.getLatLng().longitude, res);
+                            if (res[0] < minEndBuffer) {
+                                minEndBuffer = res[0];
+                                eastEnd = bs;
+                            }
+                        }
+                        total = minStartBuffer + minEndBuffer;
+                        minStartBuffer = Double.MAX_VALUE;
+                        minEndBuffer = Double.MAX_VALUE;
+                        for (BusStop bs : map.get(west)) {
+                            Location.distanceBetween(startLatLng.latitude, startLatLng.longitude, bs.getLatLng().latitude, bs.getLatLng().longitude, res);
+                            if (res[0] < minStartBuffer) {
+                                minStartBuffer = res[0];
+                                westStart = bs;
+                            }
+                            Location.distanceBetween(destLatLng.latitude, destLatLng.longitude, bs.getLatLng().latitude, bs.getLatLng().longitude, res);
+                            if (res[0] < minEndBuffer) {
+                                minEndBuffer = res[0];
+                                westEnd = bs;
+                            }
+                        }
+                        DirectionsApiRequest req;
+                        final LinkedList<BusStop> interStops = new LinkedList<>();
+                        if (total > minStartBuffer + minEndBuffer) {
+                            //west
+                            if (westStart == null || westEnd == null) {
+                                activity.showErrorToast(R.string.no_bus_route);
+                                addWalkingPath(startLatLng, destLatLng, true, true);
+                                return;
+                            }
+                            req = getGoogleBusRoute(map, west, westStart, westEnd, interStops);
+                        } else {
+                            //east
+                            if (eastStart == null || eastEnd == null) {
+                                activity.showErrorToast(R.string.no_bus_route);
+                                addWalkingPath(startLatLng, destLatLng, true, true);
+                                return;
+                            }
+                            req = getGoogleBusRoute(map, east, eastStart, eastEnd, interStops);
+                        }
+                        if (interStops.isEmpty() && eastStart.equals(eastEnd) && westStart.equals(westEnd)) {
+                            activity.showErrorToast(R.string.no_bus_route);
+                            addWalkingPath(startLatLng, destLatLng, true, true);
+                            return;
+                        }
+                        final BusStop startStop = total > minStartBuffer + minEndBuffer ? westStart : eastStart;
+                        final BusStop endStop = total > minStartBuffer + minEndBuffer ? westEnd : eastEnd;
+                        req.mode(TravelMode.DRIVING).optimizeWaypoints(false);
+                        req.setCallback(new PendingResult.Callback<DirectionsResult>() {
+                            @Override
+                            public void onResult(final DirectionsResult result) {
+                                activity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        clearMap();
+                                        DirectionsRoute[] routes = result.routes;
+                                        EncodedPolyline polyline = routes[0].overviewPolyline;
+                                        PolylineOptions options = new PolylineOptions();
+                                        for (com.google.maps.model.LatLng latLng : polyline.decodePath()) {
+                                            options.add(new LatLng(latLng.lat, latLng.lng));
+                                        }
+                                        options.color(getResources().getColor(R.color.color_primary)).width(15);
+                                        googleMap.addPolyline(options);
+                                        StringBuilder builder = new StringBuilder(searchLoc.getText());
+                                        for (DirectionsRoute r : result.routes) {
+                                            if (!builder.toString().contains(r.copyrights)) {
+                                                if (builder.length() > 0) {
+                                                    builder.append(" ");
+                                                }
+                                                builder.append(r.copyrights);
+                                            }
+                                        }
+                                        boolean added = false;
+                                        for (DirectionsRoute r : result.routes) {
+                                            for (String s : r.warnings) {
+                                                if (!builder.toString().contains(s)) {
+                                                    if (!added) {
+                                                        added = true;
+                                                        builder.append("\n");
+                                                    }
+                                                    builder.append(s);
+                                                }
+                                            }
+                                        }
+                                        LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+                                        for (BusStop bs : interStops) {
+                                            googleMap.addMarker(new MarkerOptions()
+                                                    .position(bs.getLatLng())
+                                                    .title(bs.getName())
+                                                    .anchor(0.5f, 0.5f)
+                                                    .icon(BitmapDescriptorFactory
+                                                            .fromResource(R.drawable.ic_brightness_1_black_18dp)));
+                                            boundsBuilder.include(bs.getLatLng());
+                                        }
+                                        googleMap.addMarker(new MarkerOptions()
+                                                .position(startStop.getLatLng())
+                                                .title(startStop.getName()));
+                                        googleMap.addMarker(new MarkerOptions()
+                                                .position(endStop.getLatLng())
+                                                .title(endStop.getName()));
+                                        boundsBuilder.include(startStop.getLatLng());
+                                        boundsBuilder.include(endStop.getLatLng());
+                                        boundsBuilder.include(startLatLng);
+                                        boundsBuilder.include(destLatLng);
+                                        changeZoomLevel(googleMap, boundsBuilder.build());
+                                        addWalkingPath(startLatLng, startStop.getLatLng(), true, false);
+                                        addWalkingPath(destLatLng, endStop.getLatLng(), false, false);
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onFailure(Throwable e) {
+                                activity.showErrorToast(R.string.no_bus_route);
+                                addWalkingPath(startLatLng, destLatLng, true, true);
+                            }
+                        });
+                    }
+                },
+                new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        addWalkingPath(startLatLng, destLatLng, true, true);
+                    }
+                });
+    }
+
+    private DirectionsApiRequest getGoogleBusRoute(HashMap<String, TreeSet<BusStop>> map, String s, BusStop start, BusStop end, LinkedList<BusStop> stops) {
+        DirectionsApiRequest req;
+        LinkedList<String> waypoints = new LinkedList<>();
+        int startID = start.routesMap.get(s), endID = end.routesMap.get(s);
+        if (startID < endID) {
+            //start before end, so just return stuff in the middle
+            for (BusStop bs : map.get(s)) {
+                if (bs.routesMap.get(s) > startID && endID > bs.routesMap.get(s)) {
+                    waypoints.add(bs.getLatLng().latitude + "," + bs.getLatLng().longitude);
+                    stops.add(bs);
+                }
+            }
+        } else {
+            //start bigger, so wrap around
+            for (BusStop bs : map.get(s)) {
+                if (bs.routesMap.get(s) > startID || endID > bs.routesMap.get(s)) {
+                    waypoints.add(bs.getLatLng().latitude + "," + bs.getLatLng().longitude);
+                    stops.add(bs);
+                }
+            }
+        }
+        req = DirectionsApi.getDirections(geoapi, start.getLatLng().latitude + "," + start.getLatLng().longitude,
+                end.getLatLng().latitude + "," + end.getLatLng().longitude);
+        if (!waypoints.isEmpty()) {
+            req.waypoints(waypoints.toArray(new String[waypoints.size()]));
+        }
+        return req;
+    }
+
+    private void generateBusRouteMap(BusStop bs) {
+        if (bs.routesMap == null) {
+            bs.routesMap = new HashMap<>();
+            Map<String, Double> bufferMap = (Map<String, Double>) bs.routes;
+            if (bufferMap != null) {
+                for (Map.Entry<String, Double> e : bufferMap.entrySet()) {
+                    bs.routesMap.put(e.getKey(), ((int) (double) e.getValue()));
+                }
+            }
+        }
+    }
+
+    private class BusStopComparator implements Comparator<BusStop>, Serializable {
+        private String name;
+        public BusStopComparator (String name) {
+            this.name = name;
+        }
+        public int compare(BusStop b1, BusStop b2) {
+            if (b1.routesMap == null) {
+                generateBusRouteMap(b1);
+            }
+            if (b2.routesMap == null) {
+                generateBusRouteMap(b1);
+            }
+            if (!b1.routesMap.containsKey(name) || !b2.routesMap.containsKey(name)) {
+                return (int) (b1.getLatLng().latitude - b2.getLatLng().latitude);
+            }
+            return b1.routesMap.get(name) - b2.routesMap.get(name);
         }
     }
 }

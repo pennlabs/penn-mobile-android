@@ -74,6 +74,8 @@
     <string name="no_destination_found">No destination found</string>
     <string name="no_bus_route">No bus route found</string>
     <string name="google_map_fail">Google map fails to find a path</string>
+    <string name="bus_west">PennBUS West</string>
+    <string name="bus_east">PennBUS East</string>
 
     <!-- LaundryRoom -->
     <string name="laundry_washer">Washers</string>
