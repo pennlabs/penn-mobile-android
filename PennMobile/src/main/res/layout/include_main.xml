@@ -42,13 +42,14 @@
                     android:layout_margin="15dp"
                     android:id="@android:id/home"/>
 
-                <ImageView
+                <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_panorama_fish_eye_white_24dp"
                     android:layout_toRightOf="@android:id/home"
                     android:layout_toEndOf="@android:id/home"
                     android:layout_marginTop="15dp"
+                    android:background="?attr/colorPrimary"
                     android:id="@+id/menu_map_circle"
                     />
 
@@ -80,6 +81,8 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:hint="@string/starting_location_hint"
                     />
 
                 <EditText
@@ -96,6 +99,8 @@
                     android:inputType="text"
                     android:imeOptions="actionSearch"
                     android:textColor="@color/white"
+                    android:hint="@string/starting_location_hint"
+                    android:textColorHint="@color/white"
                     />
 
                 <ImageView
