@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.ArrayRes;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -38,6 +40,7 @@ public abstract class SearchFavoriteFragment extends ListFragment {
     private static int pagePosition;
 
     protected final static int MAX_SUGGESTION_SIZE = 5;
+    private final static int ALPHA = 73;
 
     protected abstract class ListTabAdapter extends FragmentStatePagerAdapter {
 
@@ -172,12 +175,14 @@ public abstract class SearchFavoriteFragment extends ListFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.registrar, menu);
         searchView = (SearchView) menu.findItem(R.id.registrar_search).getActionView();
-        ImageView cross = (ImageView) searchView.findViewById(R.id.search_close_btn);
-        cross.setImageAlpha(100);
+        final ImageView cross = (ImageView) searchView.findViewById(R.id.search_close_btn);
+        cross.setImageResource(R.drawable.ic_clear_white_24dp);
+        cross.setImageAlpha(ALPHA);
         final SearchView.OnQueryTextListener queryListener = new SearchView.OnQueryTextListener() {
 
             @Override
             public boolean onQueryTextChange(String arg0) {
+                cross.setImageAlpha(255);
                 return true;
             }
 
@@ -205,14 +210,31 @@ public abstract class SearchFavoriteFragment extends ListFragment {
             @Override
             public boolean onClose() {
                 hideSuggestion();
+                mActivity.setTitle(getTitle());
                 return false;
             }
         };
         searchView.setOnQueryTextFocusChangeListener(focusListener);
         searchView.setOnCloseListener(closeListener);
+
+        cross.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event != null && event.getActionMasked() == MotionEvent.ACTION_UP) {
+                    (new Handler()).postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            cross.setImageAlpha(ALPHA);
+                        }
+                    }, 100);
+                }
+                return false;
+            }
+        });
     }
 
     protected void showSuggestion() {
+        mActivity.setTitle("");
         mActivity.removeTabs();
         final ArrayList<String> list = new ArrayList<>(5);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mActivity);
@@ -268,4 +290,10 @@ public abstract class SearchFavoriteFragment extends ListFragment {
     public static int getPagePosition() {
         return pagePosition;
     }
+
+    /**
+     * Get the title of the page
+     * @return the string to be set as title
+     */
+    protected abstract String getTitle();
 }
