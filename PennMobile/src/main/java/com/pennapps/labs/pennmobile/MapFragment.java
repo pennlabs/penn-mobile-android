@@ -266,6 +266,7 @@ public class MapFragment extends Fragment {
                     to.setText(query);
                     googleMap.setInfoWindowAdapter(transitAdapter);
                     button.setImageResource(R.drawable.ic_directions_walk_white_24dp);
+                    useBus = false;
                     transit = true;
                 } else if (useBus) {
                     button.setImageResource(R.drawable.ic_directions_bus_white_24dp);
@@ -293,6 +294,7 @@ public class MapFragment extends Fragment {
                 transit = false;
                 transitMode.setImageResource(R.drawable.ic_directions_white_24dp);
                 googleMap.setInfoWindowAdapter(buildingAdpater);
+                googleMap.clear();
             }
         });
 
@@ -1110,6 +1112,11 @@ public class MapFragment extends Fragment {
                         dialog.cancel();
                         googleMap.clear();
                         LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                        if (selectedRoutes.isEmpty()) {
+                            googleMap.setInfoWindowAdapter(buildingAdpater);
+                        } else {
+                            googleMap.setInfoWindowAdapter(transitAdapter);
+                        }
                         for (BusRoute busRoute : selectedRoutes) {
                             drawOfficialRoute(builder, busRoute);
                         }
