@@ -7,4 +7,9 @@
         android:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="ifRoom"
         android:title="@string/search_title"/>
+
+    <item android:id="@+id/transit_route"
+        android:icon="@drawable/ic_layers_white_24dp"
+        app:showAsAction="ifRoom"
+        android:title="@string/routes_list"/>
 </menu>

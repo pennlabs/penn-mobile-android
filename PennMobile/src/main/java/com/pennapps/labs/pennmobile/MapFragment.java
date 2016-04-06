@@ -1,6 +1,8 @@
 package com.pennapps.labs.pennmobile;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Address;
@@ -32,7 +34,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -57,6 +58,7 @@ import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.EncodedPolyline;
 import com.google.maps.model.TravelMode;
+import com.pennapps.labs.pennmobile.adapters.RoutesAdapter;
 import com.pennapps.labs.pennmobile.adapters.SearchSuggestionAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Building;
@@ -99,7 +101,7 @@ public class MapFragment extends Fragment {
     @Bind(R.id.map_search_name) TextView searchName;
     @Bind(R.id.map_search_location) TextView searchLoc;
     @Bind(R.id.map_suggestion) ListView suggestionList;
-    private FloatingActionButton transitMode, currentLocButton;
+    private FloatingActionButton transitMode;
     private SearchSuggestionAdapter adapter;
     private Building currentBuilding;
     private Marker currentMarker;
@@ -120,13 +122,15 @@ public class MapFragment extends Fragment {
     private Set<Polyline> allEndPolylines;
     private Semaphore semaphore;
 
-    private RelativeLayout menuExtension;
     private EditText from, to;
-    private ImageButton swap;
 
     private GeoApiContext geoapi;
     private boolean useBus, transit;
     private final static int CIRCLE_SIZE = 5;
+    private final static double BOUND_EXPAND_CONSTANT = 0.004;
+
+    public static HashSet<BusRoute> selectedRoutes;
+    private RoutesAdapter routesAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -151,6 +155,7 @@ public class MapFragment extends Fragment {
         query = null;
         transit = false;
         useBus = true;
+        selectedRoutes = new HashSet<>();
     }
 
     @Override
@@ -168,7 +173,7 @@ public class MapFragment extends Fragment {
             googleMap.setMyLocationEnabled(true);
         } catch (SecurityException e) {
             //No permission -> go back to main
-            Toast.makeText(activity, "Permission not granted for using Google Map", Toast.LENGTH_SHORT).show();
+            activity.showErrorToast(R.string.no_permission_map);
             FragmentManager fragmentManager = activity.getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.laundry_fragment, new MainFragment())
@@ -243,14 +248,14 @@ public class MapFragment extends Fragment {
             }
         });
 
-        menuExtension = activity.getMenuMapExtension();
+        RelativeLayout menuExtension = activity.getMenuMapExtension();
 
         from = (EditText) menuExtension.findViewById(R.id.menu_map_from);
         to = (EditText) menuExtension.findViewById(R.id.menu_map_to);
-        swap = (ImageButton) menuExtension.findViewById(R.id.menu_map_swap);
+        ImageButton swap = (ImageButton) menuExtension.findViewById(R.id.menu_map_swap);
         ImageButton useCurrent = (ImageButton) menuExtension.findViewById(R.id.menu_map_circle);
         transitMode = (FloatingActionButton) v.findViewById(R.id.map_direction);
-        currentLocButton = (FloatingActionButton) v.findViewById(R.id.map_current_loc);
+        FloatingActionButton currentLocButton = (FloatingActionButton) v.findViewById(R.id.map_current_loc);
 
         transitMode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -263,12 +268,11 @@ public class MapFragment extends Fragment {
                     button.setImageResource(R.drawable.ic_directions_walk_white_24dp);
                     transit = true;
                 } else if (useBus) {
-                    useBus = !useBus;
                     button.setImageResource(R.drawable.ic_directions_bus_white_24dp);
                 } else {
-                    useBus = !useBus;
                     button.setImageResource(R.drawable.ic_directions_walk_white_24dp);
                 }
+                useBus = !useBus;
             }
         });
 
@@ -288,6 +292,7 @@ public class MapFragment extends Fragment {
                 suggestionList.setVisibility(View.GONE);
                 transit = false;
                 transitMode.setImageResource(R.drawable.ic_directions_white_24dp);
+                googleMap.setInfoWindowAdapter(buildingAdpater);
             }
         });
 
@@ -363,12 +368,14 @@ public class MapFragment extends Fragment {
         super.onDestroy();
         mapView.onDestroy();
         mapCallbacks.stopLocationUpdates();
+        activity.closeMapDirectionMenu();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+        activity.closeMapDirectionMenu();
     }
 
     @Override
@@ -382,6 +389,13 @@ public class MapFragment extends Fragment {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.building_search:
+                return true;
+            case R.id.transit_route:
+                if (routesAdapter == null) {
+                    loadRouteAdapter();
+                } else {
+                    showRouteDialogBox();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -771,9 +785,10 @@ public class MapFragment extends Fragment {
         SWCorner.setLatitude(southwest.longitude);
         int padding = 100;
         if (SWCorner.distanceTo(NECorner) < 40) {
-            bounds = bounds.including(new LatLng(northeast.latitude + 0.004, northeast.longitude - 0.004));
-            bounds = bounds.including(new LatLng(southwest.latitude - 0.004, southwest.longitude + 0.004));
+            bounds = bounds.including(new LatLng(northeast.latitude + BOUND_EXPAND_CONSTANT, northeast.longitude - BOUND_EXPAND_CONSTANT));
+            bounds = bounds.including(new LatLng(southwest.latitude - BOUND_EXPAND_CONSTANT, southwest.longitude + BOUND_EXPAND_CONSTANT));
         }
+        bounds = bounds.including(new LatLng(southwest.latitude - 0.0005, southwest.longitude));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
     }
 
@@ -910,7 +925,7 @@ public class MapFragment extends Fragment {
                             }
                             req = getGoogleBusRoute(map, east, eastStart, eastEnd, interStops);
                         }
-                        if (interStops.isEmpty() && eastStart.equals(eastEnd) && westStart.equals(westEnd)) {
+                        if (eastStart == null || westStart == null || (interStops.isEmpty() && eastStart.equals(eastEnd) && westStart.equals(westEnd))) {
                             activity.showErrorToast(R.string.no_bus_route);
                             addWalkingPath(startLatLng, destLatLng, true, true);
                             return;
@@ -1061,4 +1076,66 @@ public class MapFragment extends Fragment {
             return b1.routesMap.get(name) - b2.routesMap.get(name);
         }
     }
+
+    public static void toggleRouteSelection(BusRoute busRoute) {
+        if (selectedRoutes.contains(busRoute)) {
+            selectedRoutes.remove(busRoute);
+        } else {
+            selectedRoutes.add(busRoute);
+        }
+    }
+
+    private void loadRouteAdapter() {
+        mLabs.routes().observeOn(AndroidSchedulers.mainThread()).subscribe(
+                new Action1<List<BusRoute>>() {
+                    @Override
+                    public void call(List<BusRoute> routes) {
+                        routesAdapter = new RoutesAdapter(activity.getApplicationContext(), routes);
+                        showRouteDialogBox();
+                    }
+                },
+                new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        activity.showErrorToast(R.string.no_path_found);
+                    }
+                });
+    }
+
+    private void showRouteDialogBox() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(R.string.routes_list).setAdapter(routesAdapter, null)
+                .setPositiveButton(R.string.routes_ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        googleMap.clear();
+                        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                        for (BusRoute busRoute : selectedRoutes) {
+                            drawOfficialRoute(builder, busRoute);
+                        }
+                        if (!selectedRoutes.isEmpty()) {
+                            MapFragment.changeZoomLevel(googleMap, builder.build());
+                        }
+                    }
+                }).show();
+    }
+
+    private void drawOfficialRoute(LatLngBounds.Builder builder, BusRoute busRoute) {
+        PolylineOptions options = busRoute.getPolylineOptions();
+        for (MarkerOptions markerOptions : busRoute.markers) {
+            googleMap.addMarker(markerOptions);
+        }
+        for (BusStop busStop : busRoute.stops) {
+            for (BusStop bs : busStop.path_to) {
+                builder.include(bs.getLatLng());
+            }
+            builder.include(busStop.getLatLng());
+        }
+        for (BusStop bs : busRoute.stops.get(0).path_to) {
+            builder.include(bs.getLatLng());
+        }
+        googleMap.addPolyline(options);
+    }
+
+
 }
