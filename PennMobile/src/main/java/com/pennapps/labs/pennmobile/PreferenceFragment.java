@@ -2,8 +2,8 @@ package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.internal.view.ContextThemeWrapper;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
