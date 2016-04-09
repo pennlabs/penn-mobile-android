@@ -17,8 +17,8 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_expand"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="30dp"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"/>
     <ImageView
         android:id="@+id/station_collapse"
         android:layout_width="wrap_content"
@@ -26,6 +26,6 @@
         android:src="@drawable/ic_collapse"
         android:visibility="gone"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"/>
 </RelativeLayout>
