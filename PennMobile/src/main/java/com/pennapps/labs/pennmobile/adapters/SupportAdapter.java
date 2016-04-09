@@ -45,14 +45,15 @@ public class SupportAdapter extends ArrayAdapter<Person> {
             holder.phone.setText(currentPerson.phone_words + " (" + currentPerson.phone + ")");
         }
 
-        if (!Character.isDigit(currentPerson.phone.charAt(1))){
+        if (currentPerson.isURL()) {
            holder.icon.setVisibility(View.GONE);
         }
+
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent;
-                if (currentPerson.phone.startsWith("http")) {
+                if (currentPerson.isURL()) {
                     intent = new Intent(Intent.ACTION_VIEW);
                     intent.setData(Uri.parse(currentPerson.phone));
                 } else {
