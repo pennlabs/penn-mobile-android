@@ -10,11 +10,18 @@
         android:id="@+id/laundry_fragment"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
-        <ListView
-            tools:visibility="visible"
-            android:id="@android:id/list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/laundry_building_swiperefresh"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent">
+
+            <ListView
+                tools:visibility="visible"
+                android:id="@android:id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </android.support.v4.widget.SwipeRefreshLayout>
     </FrameLayout>
 
 </RelativeLayout>

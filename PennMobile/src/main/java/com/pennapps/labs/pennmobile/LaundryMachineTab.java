@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ public class LaundryMachineTab extends ListFragment {
     private LaundryRoom laundryRoom;
     @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
     @Bind(R.id.no_results) TextView no_results;
+    SwipeRefreshLayout swipeRefreshLayout;
     private List<LaundryMachine> machines;
     private ListView mListView;
     private boolean wash;
@@ -53,6 +55,14 @@ public class LaundryMachineTab extends ListFragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.laundry_machine_tab, container, false);
         ButterKnife.bind(this, v);
+        swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.laundry_machine_swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getMachines();
+            }
+        });
+        swipeRefreshLayout.setColorSchemeResources(R.color.color_accent, R.color.color_primary);
         if (getArguments() != null && getArguments().getParcelableArray(getString(R.string.laundry_machine_intent)) != null) {
             LaundryMachine[] array = (LaundryMachine[])getArguments()
                     .getParcelableArray(getString(R.string.laundry_machine_intent));
@@ -84,6 +94,7 @@ public class LaundryMachineTab extends ListFragment {
                                 }
                                 try {
                                     setMachines(machines, laundryRoom);
+                                    swipeRefreshLayout.setRefreshing(false);
                                 } catch (NullPointerException ignore) {
                                     //it has gone to another page.
                                 }
@@ -101,6 +112,11 @@ public class LaundryMachineTab extends ListFragment {
                                 }
                                 if (no_results != null) {
                                     no_results.setVisibility(View.VISIBLE);
+                                }
+                                try {
+                                    swipeRefreshLayout.setRefreshing(false);
+                                } catch (NullPointerException ignore) {
+                                    //it has gone to another page
                                 }
                             }
                         });
