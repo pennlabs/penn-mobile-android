@@ -460,7 +460,7 @@ public class MapFragment extends Fragment {
     }
 
     private void showSuggestion() {
-        final ArrayList<String> list = new ArrayList<>(5);
+        final ArrayList<String> list = new ArrayList<>(SearchFavoriteFragment.MAX_SUGGESTION_SIZE);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
         int index = sharedPref.getInt(getString(R.string.map_search_count), -1);
         if (index != -1) {
