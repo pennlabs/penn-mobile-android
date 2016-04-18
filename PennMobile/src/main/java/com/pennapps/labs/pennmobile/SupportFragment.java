@@ -16,10 +16,13 @@ import java.util.List;
 
 public class SupportFragment extends ListFragment {
 
+    private MainActivity mActivity;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((MainActivity) getActivity()).closeKeyboard();
+        mActivity = (MainActivity) getActivity();
+        mActivity.closeKeyboard();
     }
 
     @Override
@@ -53,6 +56,8 @@ public class SupportFragment extends ListFragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle(R.string.support);
-        ((MainActivity) getActivity()).setNav(R.id.nav_support);
+        mActivity.getActionBarToggle().setDrawerIndicatorEnabled(true);
+        mActivity.getActionBarToggle().syncState();
+        mActivity.setNav(R.id.nav_support);
     }
 }
