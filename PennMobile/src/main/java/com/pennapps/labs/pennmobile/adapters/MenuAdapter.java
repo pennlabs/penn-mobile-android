@@ -73,7 +73,7 @@ public class MenuAdapter extends BaseExpandableListAdapter {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.menu_station, null);
         }
-        convertView.setPadding(0, 0, 0, 0);
+        convertView.setPadding(-10, 0, 0, 0);
         TextView listHeader = (TextView) convertView
                 .findViewById(R.id.station_name);
         listHeader.setTypeface(null, Typeface.BOLD);
