@@ -28,11 +28,13 @@ import rx.functions.Action1;
 public class DiningAdapter extends ArrayAdapter<DiningHall> {
     private final LayoutInflater inflater;
     private Labs mLabs;
+    private boolean[] loaded;
 
     public DiningAdapter(Context context, List<DiningHall> diningHalls) {
         super(context, R.layout.dining_list_item, diningHalls);
         inflater = LayoutInflater.from(context);
         mLabs = MainActivity.getLabsInstance();
+        loaded = new boolean[diningHalls.size()];
     }
 
     @Override
@@ -92,7 +94,8 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
                 holder.openClose.setText(String.format("Opens at %s", diningHall.openingTime()));
             }
         }
-        if (diningHall.isResidential()) {
+        final int pos = position;
+        if (diningHall.isResidential() && !loaded[pos]) {
             progressBar.setVisibility(View.VISIBLE);
             mLabs.daily_menu(diningHall.getId())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -100,8 +103,9 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
                         @Override
                         public void call(DiningHall newDiningHall) {
                             diningHall.sortMeals(newDiningHall.menus);
-                                progressBar.setVisibility(View.INVISIBLE);
-                                holder.menuArrow.setVisibility(View.VISIBLE);
+                            progressBar.setVisibility(View.INVISIBLE);
+                            holder.menuArrow.setVisibility(View.VISIBLE);
+                            loaded[pos] = true;
                         }
                     }, new Action1<Throwable>() {
                         @Override
