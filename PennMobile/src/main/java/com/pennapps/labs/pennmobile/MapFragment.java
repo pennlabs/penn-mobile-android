@@ -41,7 +41,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -101,6 +100,7 @@ public class MapFragment extends Fragment {
     @Bind(R.id.map_search_name) TextView searchName;
     @Bind(R.id.map_search_location) TextView searchLoc;
     @Bind(R.id.map_suggestion) ListView suggestionList;
+    @Bind(R.id.map_bus_card) TextView busStopName;
     private FloatingActionButton transitMode;
     private SearchSuggestionAdapter adapter;
     private Building currentBuilding;
@@ -109,6 +109,10 @@ public class MapFragment extends Fragment {
     private Set<Building> searchedBuildings;
     private Set<Marker> loadedMarkers;
     private static MapCallbacks mapCallbacks;
+
+    private Set<Circle> busStopCircles;
+    private Set<BusStop> busStopAdded;
+    private Circle currentBusStop;
 
     private BuildingWindowAdapter buildingAdpater;
     private TransitWindowAdapter transitAdapter;
@@ -126,8 +130,9 @@ public class MapFragment extends Fragment {
 
     private GeoApiContext geoapi;
     private boolean useBus, transit;
-    private final static int CIRCLE_SIZE = 5;
+    private final static int CIRCLE_SIZE = 10;
     private final static double BOUND_EXPAND_CONSTANT = 0.004;
+    private final static double SENSITIVITY_MULTIPLIER = 1.5;
 
     public static HashSet<BusRoute> selectedRoutes;
     private RoutesAdapter routesAdapter;
@@ -156,6 +161,8 @@ public class MapFragment extends Fragment {
         transit = false;
         useBus = true;
         selectedRoutes = new HashSet<>();
+        busStopCircles = new HashSet<>();
+        busStopAdded = new HashSet<>();
     }
 
     @Override
@@ -189,7 +196,7 @@ public class MapFragment extends Fragment {
                 for (Circle c : displayCircles) {
                     float[] results = new float[1];
                     Location.distanceBetween(latLng.latitude, latLng.longitude, c.getCenter().latitude, c.getCenter().longitude, results);
-                    if (results[0] <= CIRCLE_SIZE) {
+                    if (results[0] <= SENSITIVITY_MULTIPLIER * CIRCLE_SIZE) {
                         changed = true;
                         displayCircles.remove(c);
                         c.remove();
@@ -197,12 +204,13 @@ public class MapFragment extends Fragment {
                     }
                 }
                 if (!changed) {
+                    checkBusStopClicked(latLng);
                     return;
                 }
                 for (Building b : searchedBuildings) {
                     float[] results = new float[1];
                     Location.distanceBetween(latLng.latitude, latLng.longitude, b.getLatLng().latitude, b.getLatLng().longitude, results);
-                    if (results[0] <= CIRCLE_SIZE) {
+                    if (results[0] <= SENSITIVITY_MULTIPLIER * CIRCLE_SIZE) {
                         currentBuilding = b;
                     }
                 }
@@ -268,10 +276,13 @@ public class MapFragment extends Fragment {
                     button.setImageResource(R.drawable.ic_directions_walk_white_24dp);
                     useBus = false;
                     transit = true;
+                    drawUserRoute("", query);
                 } else if (useBus) {
                     button.setImageResource(R.drawable.ic_directions_bus_white_24dp);
+                    drawUserRoute(from.getText().toString(), to.getText().toString());
                 } else {
                     button.setImageResource(R.drawable.ic_directions_walk_white_24dp);
+                    drawUserRoute(from.getText().toString(), to.getText().toString());
                 }
                 useBus = !useBus;
             }
@@ -295,6 +306,29 @@ public class MapFragment extends Fragment {
                 transitMode.setImageResource(R.drawable.ic_directions_white_24dp);
                 googleMap.setInfoWindowAdapter(buildingAdpater);
                 googleMap.clear();
+                Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.cardscalesmaller);
+                animation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                        searchName.setVisibility(View.GONE);
+                        searchLoc.setVisibility(View.GONE);
+                        initCard.setVisibility(View.VISIBLE);
+                        searchCard.setVisibility(View.GONE);
+                        busStopName.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        busStopName.setVisibility(View.VISIBLE);
+                        busStopName.setText(currentBuilding == null ? "" : currentBuilding.title);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                initCard.startAnimation(animation);
             }
         });
 
@@ -527,11 +561,11 @@ public class MapFragment extends Fragment {
                     .strokeWidth(0)));
         }
         changeZoomLevel(googleMap, boundsBuilder.build());
-        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.cardscaleloc);
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.cardscalebigger);
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                initCard.removeAllViews();
+                busStopName.setVisibility(View.GONE);
             }
 
             @Override
@@ -540,6 +574,8 @@ public class MapFragment extends Fragment {
                 searchCard.setVisibility(View.VISIBLE);
                 searchName.setText(currentBuilding.title);
                 searchLoc.setText(currentBuilding.address);
+                searchName.setVisibility(View.VISIBLE);
+                searchLoc.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -676,9 +712,14 @@ public class MapFragment extends Fragment {
     private void clearMap() {
         googleMap.clear();
         displayCircles.clear();
-        searchedBuildings.clear();
+        if (searchedBuildings != null) {
+            searchedBuildings.clear();
+        }
         loadedMarkers.clear();
         searchLoc.setText("");
+        busStopCircles.clear();
+        busStopAdded.clear();
+        currentBusStop = null;
     }
 
     private LatLng getLocationLatLng(List<Building> buildings, String locationName) {
@@ -763,12 +804,7 @@ public class MapFragment extends Fragment {
         if (busStop.getName() != null) {
             if (route.stops.indexOf(busStop) != 0
                     && route.stops.indexOf(busStop) != route.stops.size() - 1) {
-                googleMap.addMarker(new MarkerOptions()
-                        .position(busStop.getLatLng())
-                        .title(busStop.getName())
-                        .anchor(0.5f, 0.5f)
-                        .icon(BitmapDescriptorFactory
-                                .fromResource(R.drawable.ic_brightness_1_black_18dp)));
+                drawBusStop(busStop);
             } else {
                 googleMap.addMarker(new MarkerOptions()
                         .position(busStop.getLatLng())
@@ -935,55 +971,7 @@ public class MapFragment extends Fragment {
                         final BusStop startStop = total > minStartBuffer + minEndBuffer ? westStart : eastStart;
                         final BusStop endStop = total > minStartBuffer + minEndBuffer ? westEnd : eastEnd;
                         req.mode(TravelMode.DRIVING).optimizeWaypoints(false);
-                        req.setCallback(new PendingResult.Callback<DirectionsResult>() {
-                            @Override
-                            public void onResult(final DirectionsResult result) {
-                                activity.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        clearMap();
-                                        DirectionsRoute[] routes = result.routes;
-                                        EncodedPolyline polyline = routes[0].overviewPolyline;
-                                        PolylineOptions options = new PolylineOptions();
-                                        for (com.google.maps.model.LatLng latLng : polyline.decodePath()) {
-                                            options.add(new LatLng(latLng.lat, latLng.lng));
-                                        }
-                                        options.color(getResources().getColor(R.color.color_primary)).width(15);
-                                        googleMap.addPolyline(options);
-                                        addGoogleWarning(result);
-                                        LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
-                                        for (BusStop bs : interStops) {
-                                            googleMap.addMarker(new MarkerOptions()
-                                                    .position(bs.getLatLng())
-                                                    .title(bs.getName())
-                                                    .anchor(0.5f, 0.5f)
-                                                    .icon(BitmapDescriptorFactory
-                                                            .fromResource(R.drawable.ic_brightness_1_black_18dp)));
-                                            boundsBuilder.include(bs.getLatLng());
-                                        }
-                                        googleMap.addMarker(new MarkerOptions()
-                                                .position(startStop.getLatLng())
-                                                .title(startStop.getName()));
-                                        googleMap.addMarker(new MarkerOptions()
-                                                .position(endStop.getLatLng())
-                                                .title(endStop.getName()));
-                                        boundsBuilder.include(startStop.getLatLng());
-                                        boundsBuilder.include(endStop.getLatLng());
-                                        boundsBuilder.include(startLatLng);
-                                        boundsBuilder.include(destLatLng);
-                                        changeZoomLevel(googleMap, boundsBuilder.build());
-                                        addWalkingPath(startLatLng, startStop.getLatLng(), true, false);
-                                        addWalkingPath(destLatLng, endStop.getLatLng(), false, false);
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void onFailure(Throwable e) {
-                                activity.showErrorToast(R.string.no_bus_route);
-                                addWalkingPath(startLatLng, destLatLng, true, true);
-                            }
-                        });
+                        req.setCallback(getBusRouteCallback(interStops, startStop, endStop, startLatLng, destLatLng));
                     }
                 },
                 new Action1<Throwable>() {
@@ -992,6 +980,54 @@ public class MapFragment extends Fragment {
                         addWalkingPath(startLatLng, destLatLng, true, true);
                     }
                 });
+    }
+
+    private PendingResult.Callback<DirectionsResult> getBusRouteCallback(final List<BusStop> interStops, final BusStop startStop, final BusStop endStop
+                                                                        , final LatLng startLatLng, final LatLng destLatLng) {
+        return new PendingResult.Callback<DirectionsResult>() {
+            @Override
+            public void onResult(final DirectionsResult result) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        clearMap();
+                        DirectionsRoute[] routes = result.routes;
+                        EncodedPolyline polyline = routes[0].overviewPolyline;
+                        PolylineOptions options = new PolylineOptions();
+                        for (com.google.maps.model.LatLng latLng : polyline.decodePath()) {
+                            options.add(new LatLng(latLng.lat, latLng.lng));
+                        }
+                        options.color(getResources().getColor(R.color.color_primary)).width(15);
+                        googleMap.addPolyline(options);
+                        addGoogleWarning(result);
+                        LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+                        for (BusStop bs : interStops) {
+                            drawBusStop(bs);
+                            boundsBuilder.include(bs.getLatLng());
+                        }
+                        googleMap.addMarker(new MarkerOptions()
+                                .position(startStop.getLatLng())
+                                .title(startStop.getName()));
+                        googleMap.addMarker(new MarkerOptions()
+                                .position(endStop.getLatLng())
+                                .title(endStop.getName()));
+                        boundsBuilder.include(startStop.getLatLng());
+                        boundsBuilder.include(endStop.getLatLng());
+                        boundsBuilder.include(startLatLng);
+                        boundsBuilder.include(destLatLng);
+                        changeZoomLevel(googleMap, boundsBuilder.build());
+                        addWalkingPath(startLatLng, startStop.getLatLng(), true, false);
+                        addWalkingPath(destLatLng, endStop.getLatLng(), false, false);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                activity.showErrorToast(R.string.no_bus_route);
+                addWalkingPath(startLatLng, destLatLng, true, true);
+            }
+        };
     }
 
     private void addGoogleWarning(DirectionsResult result) {
@@ -1110,7 +1146,7 @@ public class MapFragment extends Fragment {
                 .setPositiveButton(R.string.routes_ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
-                        googleMap.clear();
+                        clearMap();
                         LatLngBounds.Builder builder = new LatLngBounds.Builder();
                         if (selectedRoutes.isEmpty()) {
                             googleMap.setInfoWindowAdapter(buildingAdpater);
@@ -1129,8 +1165,8 @@ public class MapFragment extends Fragment {
 
     private void drawOfficialRoute(LatLngBounds.Builder builder, BusRoute busRoute) {
         PolylineOptions options = busRoute.getPolylineOptions();
-        for (MarkerOptions markerOptions : busRoute.markers) {
-            googleMap.addMarker(markerOptions);
+        for (BusStop bs : busRoute.stops) {
+            drawBusStop(bs);
         }
         for (BusStop busStop : busRoute.stops) {
             for (BusStop bs : busStop.path_to) {
@@ -1144,5 +1180,51 @@ public class MapFragment extends Fragment {
         googleMap.addPolyline(options);
     }
 
+    private void drawBusStop(BusStop busStop) {
+        busStopCircles.add(googleMap.addCircle(new CircleOptions()
+                .center(busStop.getLatLng())
+                .visible(true)
+                .radius(CIRCLE_SIZE)
+                .fillColor(getResources().getColor(R.color.white))
+                .strokeWidth(3)
+                .strokeColor(getResources().getColor(R.color.secondary_text))
+                .zIndex(1)));
+        busStopAdded.add(busStop);
+    }
+
+    private void checkBusStopClicked(LatLng pressed) {
+        BusStop current = null;
+        for (BusStop bs : busStopAdded) {
+            float[] results = new float[1];
+            Location.distanceBetween(pressed.latitude, pressed.longitude, bs.getLatLng().latitude, bs.getLatLng().longitude, results);
+            if (results[0] <= SENSITIVITY_MULTIPLIER * CIRCLE_SIZE) {
+                current = bs;
+                busStopName.setText(current.getName());
+                searchName.setText(current.getName());
+                searchLoc.setText("");
+                break;
+            }
+        }
+        if (current != null) {
+            for (Circle c : busStopCircles) {
+                if (c.getCenter().equals(current.getLatLng())) {
+                    if (c.equals(currentBusStop)) {
+                        c.setFillColor(getResources().getColor(R.color.white));
+                        currentBusStop = null;
+                        searchName.setText(currentBuilding == null ? "" : currentBuilding.title);
+                        searchLoc.setText(currentBuilding == null ? "" : currentBuilding.address);
+                        busStopName.setText("");
+                    } else {
+                        c.setFillColor(getResources().getColor(R.color.red));
+                        if (currentBusStop != null) {
+                            currentBusStop.setFillColor(getResources().getColor(R.color.white));
+                        }
+                        currentBusStop = c;
+                    }
+                    return;
+                }
+            }
+        }
+    }
 
 }

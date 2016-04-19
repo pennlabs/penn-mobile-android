@@ -3,15 +3,10 @@ package com.pennapps.labs.pennmobile.classes;
 import android.graphics.Color;
 import android.support.annotation.AnyRes;
 
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.pennapps.labs.pennmobile.R;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Class for bus routes for a given route.
@@ -23,12 +18,10 @@ public class BusRoute {
     public double walkingDistanceBefore;
     public String route_name;
     public PolylineOptions polylineOptions;
-    public Set<MarkerOptions> markers;
     public int color;
 
     public BusRoute() {
         stops = new ArrayList<>();
-        markers = new HashSet<>();
     }
 
     /**
@@ -57,16 +50,7 @@ public class BusRoute {
             for (BusStop bs : busStop.path_to) {
                 polylineOptions.add(bs.getLatLng());
             }
-            LatLng latLngBuff = busStop.getLatLng();
-            if (busStop.getName() != null) {
-                markers.add(new MarkerOptions()
-                        .position(latLngBuff)
-                        .title(busStop.getName())
-                        .anchor(0.5f, 0.5f)
-                        .icon(BitmapDescriptorFactory
-                                .fromResource(R.drawable.ic_brightness_1_black_18dp)));
-            }
-            polylineOptions.add(latLngBuff);
+            polylineOptions.add(busStop.getLatLng());
         }
 
         for (BusStop bs : stops.get(0).path_to) {
