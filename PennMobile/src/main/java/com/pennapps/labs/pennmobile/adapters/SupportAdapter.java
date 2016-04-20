@@ -46,7 +46,9 @@ public class SupportAdapter extends ArrayAdapter<Person> {
         }
 
         if (currentPerson.isURL()) {
-           holder.icon.setVisibility(View.GONE);
+            holder.icon.setVisibility(View.GONE);
+        } else {
+            holder.icon.setVisibility(View.VISIBLE);
         }
 
         view.setOnClickListener(new View.OnClickListener() {
