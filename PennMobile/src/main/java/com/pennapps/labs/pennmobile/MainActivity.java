@@ -349,15 +349,19 @@ public class MainActivity extends AppCompatActivity {
     private void fragmentTransact(Fragment fragment) {
         if (fragment != null) {
             final Fragment frag = fragment;
-            new Handler().post(new Runnable() {
+            runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.content_frame, frag)
-                            .addToBackStack(null)
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .commit();
+                    try {
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.content_frame, frag)
+                                .addToBackStack(null)
+                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                .commit();
+                    } catch (IllegalStateException e) {
+                        //ignore because the onSaveInstanceState etc states are called when activity is going to background etc
+                    }
                 }
             });
         }

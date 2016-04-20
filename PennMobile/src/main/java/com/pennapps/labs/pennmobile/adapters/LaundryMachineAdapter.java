@@ -158,6 +158,9 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
                     stringBuilder.append(activity.getString(R.string.laundry_notification_snackbar_off))
                             .append(" ").append(machine.machine_type).append(" ")
                             .append(machine.number);
+                    if (buttonView.getContext() == null) {
+                        return;
+                    }
                     Snackbar snackbar = Snackbar.make(buttonView,stringBuilder, Snackbar.LENGTH_SHORT);
                     View subView = snackbar.getView();
                     TextView snackTextView = (TextView) subView.findViewById(android.support.design.R.id.snackbar_text);
