@@ -100,10 +100,11 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
 
             if (machine.available) {
                 description.setText(R.string.laundry_available);
+                description.setTextColor(activity.getResources().getColor(R.color.avail_color_green));
                 mSwitch.setVisibility(View.GONE);
             } else {
                 stringBuilder = new StringBuilder();
-                stringBuilder.append("Busy – ").append(machine.time_left);
+                stringBuilder.append("Busy – ").append(machine.getTimeLeft(activity));
                 description.setText(stringBuilder);
                 if (machine.getTimeInMilli() > 0) {
                     mSwitch.setVisibility(View.VISIBLE);
@@ -111,6 +112,7 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
                     mSwitch.setVisibility(View.GONE);
                 }
                 setSwitchState(machine, mSwitch);
+                description.setTextColor(activity.getResources().getColor(R.color.avail_color_red));
             }
         }
         return view;
