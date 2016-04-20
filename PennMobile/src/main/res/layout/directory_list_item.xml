@@ -39,9 +39,7 @@
             android:id="@+id/tv_person_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="2dp"
-            android:textSize="20sp"
-            android:textStyle="bold"
+            android:textSize="17sp"
             android:textColor="@color/text_color" />
 
         <ToggleButton
@@ -67,8 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="32dp"
-            android:paddingBottom="2dp"
-            android:textSize="16sp"
+            android:textSize="13sp"
             android:textColor="@color/text_color" />
 
         <TextView
@@ -77,8 +74,7 @@
             android:layout_below="@+id/tv_person_affiliation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="2dp"
-            android:textSize="16sp"
+            android:textSize="13sp"
             android:textColor="@color/secondary_text" />
 
     </RelativeLayout>
