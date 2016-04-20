@@ -80,6 +80,8 @@
     <string name="laundry_position">position</string>
     <string name="laundry_machine_intent">machines</string>
     <string name="laundry_hall_arg">Laundry Hall</string>
+    <string name="laundry_not_update">not updating status</string>
+    <string name="laundry_status_unavailable">status unavailable</string>
 
     <!-- News -->
     <string name="open_browser">Open in Browser</string>

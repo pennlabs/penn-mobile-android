@@ -1,7 +1,10 @@
 package com.pennapps.labs.pennmobile.classes;
 
+import android.app.Activity;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.pennapps.labs.pennmobile.R;
 
 /**
  * Created by Jason on 10/21/2015.
@@ -57,5 +60,12 @@ public class LaundryMachine implements Parcelable {
         answer = Integer.parseInt(time_left.substring(0,i));
         answer *= MINUTE_TO_MILL;
         return answer;
+    }
+
+    public String getTimeLeft(Activity activity) {
+        if (time_left.equalsIgnoreCase(activity.getString(R.string.laundry_not_update))) {
+            return activity.getString(R.string.laundry_status_unavailable);
+        }
+        return time_left;
     }
 }
