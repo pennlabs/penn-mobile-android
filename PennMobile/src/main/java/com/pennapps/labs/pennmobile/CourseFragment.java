@@ -25,6 +25,7 @@ import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.MapCallbacks;
 import com.pennapps.labs.pennmobile.classes.Review;
 
+
 import java.util.List;
 
 import butterknife.Bind;
