@@ -97,7 +97,8 @@
                         android:textSize="40sp" />
                     <TextView
                         style="@style/RatingFont"
-                        android:text="@string/course" />
+                        android:text="@string/course"
+                        android:textSize="12sp"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -110,7 +111,8 @@
                         android:textSize="40sp" />
                     <TextView
                         style="@style/RatingFont"
-                        android:text="@string/instructor" />
+                        android:text="@string/instructor"
+                        android:textSize="12sp"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -123,7 +125,8 @@
                         android:textSize="40sp" />
                     <TextView
                         style="@style/RatingFont"
-                        android:text="@string/difficulty" />
+                        android:text="@string/difficulty"
+                        android:textSize="12sp"/>
                 </LinearLayout>
             </LinearLayout>
 
