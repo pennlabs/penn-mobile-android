@@ -65,4 +65,9 @@ public interface Labs {
     @GET("/laundry/hall/{id}")
     Observable<List<LaundryMachine>> laundryMachines(
         @Path("id") int id);
+
+    @GET("/athletics")
+    Observable<List<String>> sports();
+
+
 }

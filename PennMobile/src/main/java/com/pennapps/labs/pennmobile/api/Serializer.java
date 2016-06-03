@@ -131,4 +131,13 @@ public class Serializer {
             return new Gson().fromJson(content, new TypeToken<List<LaundryMachine>>(){}.getType());
         }
     }
+
+    public static class SportSerializer implements JsonDeserializer<List<String>> {
+        @Override
+        public List<String> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+                throws JsonParseException {
+            JsonElement content = je.getAsJsonObject().get("sports");
+            return new Gson().fromJson(content, new TypeToken<List<String>>(){}.getType());
+        }
+    }
 }
