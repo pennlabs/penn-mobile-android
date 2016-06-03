@@ -34,4 +34,7 @@
 
     <color name="circle_color_red">#E52025</color>
     <color name="circle_color_green">#66CC00</color>
+
+    <color name="avail_color_green">#8BC34A</color>
+    <color name="avail_color_red">#F44336</color>
 </resources>

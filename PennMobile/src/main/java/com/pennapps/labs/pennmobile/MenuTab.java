@@ -53,6 +53,8 @@ public class MenuTab extends Fragment {
      public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_menu_tab, container, false);
         ExpandableListView elv = (ExpandableListView) v.findViewById(R.id.station_list);
+        elv.setFooterDividersEnabled(true);
+        elv.addFooterView(new View(elv.getContext()));
         elv.setAdapter(new MenuAdapter(getActivity(), stations, stationInfo));
         v.setBackgroundColor(Color.WHITE);
         ButterKnife.bind(this, v);
