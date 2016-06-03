@@ -37,6 +37,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.api.Serializer;
+import com.pennapps.labs.pennmobile.classes.Athlete;
 import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
@@ -264,6 +265,7 @@ public class MainActivity extends AppCompatActivity {
             gsonBuilder.registerTypeAdapter(new TypeToken<List<LaundryRoom>>(){}.getType(), new Serializer.LaundryListSerializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<List<LaundryMachine>>(){}.getType(), new Serializer.LaundryMachineSerializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<List<String>>(){}.getType(), new Serializer.SportSerializer());
+            gsonBuilder.registerTypeAdapter(new TypeToken<List<Athlete>>(){}.getType(), new Serializer.RosterSerializer());
             Gson gson = gsonBuilder.create();
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setConverter(new GsonConverter(gson))

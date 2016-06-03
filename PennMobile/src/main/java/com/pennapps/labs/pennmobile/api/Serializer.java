@@ -7,6 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+import com.pennapps.labs.pennmobile.classes.Athlete;
 import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
@@ -137,6 +138,15 @@ public class Serializer {
         public List<String> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
                 throws JsonParseException {
             JsonElement content = je.getAsJsonObject().get("sports");
+            return new Gson().fromJson(content, new TypeToken<List<String>>(){}.getType());
+        }
+    }
+
+    public static class RosterSerializer implements JsonDeserializer<List<Athlete>> {
+        @Override
+        public List<Athlete> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+                throws JsonParseException {
+            JsonElement content = je.getAsJsonObject().get("athletes");
             return new Gson().fromJson(content, new TypeToken<List<String>>(){}.getType());
         }
     }

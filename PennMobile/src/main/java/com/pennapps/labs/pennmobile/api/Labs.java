@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.api;
 
+import com.pennapps.labs.pennmobile.classes.Athlete;
 import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
@@ -69,5 +70,8 @@ public interface Labs {
     @GET("/athletics")
     Observable<List<String>> sports();
 
-
+    @GET("/athletics/{sportid}/{year}/roster")
+    Observable<List<Athlete>> athletes(
+        @Path("sportid") String sportid,
+        @Path("year") String year);
 }
