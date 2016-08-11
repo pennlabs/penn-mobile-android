@@ -76,6 +76,7 @@ public class DirectoryTab extends SearchFavoriteTab {
                 });
     }
 
+    @Override
     public void initList() {
         if (fav) {
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mActivity);

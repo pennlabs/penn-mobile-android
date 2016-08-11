@@ -120,7 +120,7 @@ public class CourseFragment extends Fragment implements OnMapReadyCallback {
         super.onResume();
         if (containsNum(getActivity().getTitle())) {
             StringBuilder builder = new StringBuilder(getActivity().getTitle());
-            boolean fav = getArguments().getBoolean(getString(R.string.registrar_search, false));
+            boolean fav = getString(R.string.registrar_search) != null && getArguments().getBoolean(getString(R.string.registrar_search), false);
             if (fav) {
                 builder.append(" - ").append(course.getName());
             } else {
@@ -150,7 +150,7 @@ public class CourseFragment extends Fragment implements OnMapReadyCallback {
         super.onDestroyView();
         if (getActivity().getTitle().toString().contains("-")) {
             StringBuilder builder = new StringBuilder(getActivity().getTitle());
-            boolean fav = getArguments().getBoolean(getString(R.string.registrar_search, false));
+            boolean fav = getString(R.string.registrar_search) != null && getArguments().getBoolean(getString(R.string.registrar_search), false);
             if (fav) {
                 builder.delete(builder.indexOf(" - "), builder.length());
             } else {

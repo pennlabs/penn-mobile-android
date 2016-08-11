@@ -14,6 +14,7 @@
     <string name="directory">Directory</string>
     <string name="news">News</string>
     <string name="laundry">Laundry</string>
+    <string name="nso">NSO</string>
     <string name="support">Campus Help</string>
     <string name="about">About</string>
     <string name="labs_icon">Penn Labs</string>
@@ -121,4 +122,17 @@
     <string name="search_no_fav">No favorites found.</string>
     <string name="directory_instructions">Search for Penn faculty</string>
     <string name="registrar_instructions">Search for courses</string>
+
+    <!-- NSO -->
+    <string-array name="previous_nso_array">
+        <item>nso1</item>
+        <item>nso2</item>
+        <item>nso3</item>
+        <item>nso4</item>
+        <item>nso5</item>
+    </string-array>
+    <string name="nso_search_count">nso_count</string>
+    <string name="add_event">Add event to calendar</string>
+    <string name="search_nso_star">search_nso_star</string>
+    <string name="nso_instructions">Search for instructions</string>
 </resources>
