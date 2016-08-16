@@ -36,7 +36,6 @@ public class NewsFragment extends Fragment {
             addTab("http://www.thedp.com/", "The DP");
             addTab("http://www.34st.com/", "34th Street");
             addTab("http://www.thedp.com/blog/under-the-button/", "UTB");
-            addTab("http://eventsatpenn.com/", "Events");
         }
 
         private void addTab(String url, String title) {
