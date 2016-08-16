@@ -13,7 +13,6 @@ import android.widget.ListView;
 import com.google.gson.Gson;
 import com.pennapps.labs.pennmobile.adapters.NsoAdapter;
 
-import org.mcsoxford.rss.RSSFeed;
 import org.mcsoxford.rss.RSSItem;
 import org.mcsoxford.rss.RSSReader;
 import org.mcsoxford.rss.RSSReaderException;
@@ -110,47 +109,44 @@ public class NsoTab extends SearchFavoriteTab {
             return items;
         } catch (RSSReaderException e) {
             Log.d("NSO", "error reading rss", e);
-            return new LinkedList<RSSItem>();
+            return new LinkedList<>();
         }
     }
 
 
     @Override
     public void initList() {
-        if (fav) {
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mActivity);
-            Gson gson = new Gson();
-            Set<String> starred = sp.getStringSet(getString(R.string.search_nso_star), new HashSet<String>());
-            if (starred.isEmpty()) {
-                notFavoriteInit();
-            } else {
-                if (loadingPanel.getVisibility() == View.VISIBLE) {
-                    loadingPanel.setVisibility(View.GONE);
-                }
-                if (mListView.getVisibility() == View.GONE) {
-                    mListView.setVisibility(View.VISIBLE);
-                }
-                if (no_results.getVisibility() == View.VISIBLE) {
-                    no_results.setVisibility(View.GONE);
-                }
-                if (search_instructions.getVisibility() == View.VISIBLE) {
-                    search_instructions.setVisibility(View.GONE);
-                }
-                List<RSSItem> items = new LinkedList<>();
-                for (String s : starred) {
-                    String details = sp.getString(s + getString(R.string.search_nso_star), "");
-                    if (!details.isEmpty()) {
-                        RSSItem item = gson.fromJson(details, RSSItem.class);
-                        items.add(item);
-                    }
-                }
-                adapter = new NsoAdapter(mActivity, items);
-                mListView.setAdapter(adapter);
-            }
-            mActivity.closeKeyboard();
-        } else {
-            notFavoriteInit();
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        Gson gson = new Gson();
+        Set<String> starred = sp.getStringSet(getString(R.string.search_nso_star), new HashSet<String>());
+        if (loadingPanel.getVisibility() == View.VISIBLE) {
+            loadingPanel.setVisibility(View.GONE);
         }
+        if (mListView.getVisibility() == View.GONE) {
+            mListView.setVisibility(View.VISIBLE);
+        }
+        if (no_results.getVisibility() == View.VISIBLE) {
+            no_results.setVisibility(View.GONE);
+        }
+        if (search_instructions.getVisibility() == View.VISIBLE) {
+            search_instructions.setVisibility(View.GONE);
+        }
+        List<RSSItem> items = new LinkedList<>();
+        if (fav) {
+            for (String s : starred) {
+                String details = sp.getString(s + getString(R.string.search_nso_star), "");
+                if (!details.isEmpty()) {
+                    RSSItem item = gson.fromJson(details, RSSItem.class);
+                    items.add(item);
+                }
+            }
+        } else {
+            items = getRSSFeed("");
+        }
+        adapter = new NsoAdapter(mActivity, items);
+        mListView.setAdapter(adapter);
+        mActivity.closeKeyboard();
+
     }
 
     @Override

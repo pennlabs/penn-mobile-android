@@ -18,11 +18,11 @@ public class NsoFragment extends SearchFavoriteFragment {
 
     protected class NsoTabAdapter extends ListTabAdapter {
 
-        RegistrarTab[] array;
+        NsoTab[] array;
 
         public NsoTabAdapter(FragmentManager fm) {
             super(fm);
-            array = new RegistrarTab[2];
+            array = new NsoTab[2];
         }
 
         @Override
@@ -37,10 +37,10 @@ public class NsoFragment extends SearchFavoriteFragment {
         @Override
         public Fragment getItem(int position) {
             if (array[position] == null) {
-                RegistrarTab fragment = new RegistrarTab();
+                NsoTab fragment = new NsoTab();
                 Bundle args = new Bundle();
                 args.putBoolean(getString(R.string.search_favorite), position == 1);
-                args.putString(getString(R.string.search_list), getString(R.string.registrar));
+                args.putString(getString(R.string.search_list), getString(R.string.nso));
                 fragment.setArguments(args);
                 array[position] = fragment;
             }
