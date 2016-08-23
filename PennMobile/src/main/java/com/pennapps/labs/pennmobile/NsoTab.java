@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.google.gson.Gson;
 import com.pennapps.labs.pennmobile.adapters.NsoAdapter;
 
 import org.mcsoxford.rss.RSSItem;
@@ -123,7 +122,6 @@ public class NsoTab extends SearchFavoriteTab {
     @Override
     public void initList() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mActivity);
-        Gson gson = new Gson();
         Set<String> starred = sp.getStringSet(getString(R.string.search_nso_star), new HashSet<String>());
         if (loadingPanel.getVisibility() == View.VISIBLE) {
             loadingPanel.setVisibility(View.GONE);

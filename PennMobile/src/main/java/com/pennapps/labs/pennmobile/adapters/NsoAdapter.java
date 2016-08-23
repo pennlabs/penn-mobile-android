@@ -62,6 +62,7 @@ public class NsoAdapter extends ArrayAdapter<RSSItem> {
             @Override
             public void onClick(View view) {
                 //to be implemented
+
             }
         });
 
@@ -136,13 +137,14 @@ public class NsoAdapter extends ArrayAdapter<RSSItem> {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HHmmss", Locale.US);
         cal.setTime(sdf.parse(starttime));
-        SimpleDateFormat out = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+        SimpleDateFormat out = new SimpleDateFormat("EEE M/dd K:mm a", Locale.US);
         String answer = out.format(cal.getTime());
         if (time.length() < 18) {
             return answer;
         }
-        answer += " - ";
+        answer += " – ";
         String endtime = time.substring(18);
+        out = new SimpleDateFormat("K:mm a", Locale.US);
         cal.setTime(sdf.parse(endtime));
         answer += out.format(cal.getTime());
         return answer;

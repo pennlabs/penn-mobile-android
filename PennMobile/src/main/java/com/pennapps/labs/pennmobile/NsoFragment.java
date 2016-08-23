@@ -2,9 +2,11 @@ package com.pennapps.labs.pennmobile;
 
 import android.os.Bundle;
 import android.support.annotation.ArrayRes;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.preference.PreferenceManager;
+import android.view.View;
 
 import butterknife.ButterKnife;
 
@@ -82,5 +84,19 @@ public class NsoFragment extends SearchFavoriteFragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    protected void fabInit(FloatingActionButton fab) {
+        fab.setVisibility(View.VISIBLE);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewPager.setCurrentItem(0);
+                lastQuery = "";
+                hideSuggestion();
+                adapter.onReceiveQuery("");
+            }
+        });
     }
 }
