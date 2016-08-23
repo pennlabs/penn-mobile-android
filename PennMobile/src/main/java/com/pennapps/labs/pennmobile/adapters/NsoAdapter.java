@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.daimajia.swipe.SwipeLayout;
-import com.google.gson.Gson;
 import com.pennapps.labs.pennmobile.R;
 
 import org.mcsoxford.rss.RSSItem;
@@ -53,9 +52,9 @@ public class NsoAdapter extends ArrayAdapter<RSSItem> {
             view.setTag(holder);
         }
 
-        SwipeLayout swipeLayout = (SwipeLayout) view.findViewById(R.id.directory_swipe);
+        SwipeLayout swipeLayout = (SwipeLayout) view.findViewById(R.id.nso_swipe);
         swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
-        swipeLayout.addDrag(SwipeLayout.DragEdge.Right, view.findViewById(R.id.directory_swipe_drawer));
+        swipeLayout.addDrag(SwipeLayout.DragEdge.Right, view.findViewById(R.id.nso_swipe_drawer));
 
         final RSSItem item = getItem(position);
 
@@ -73,8 +72,7 @@ public class NsoAdapter extends ArrayAdapter<RSSItem> {
             //ignore
             Log.d("NSO", "parse error:", e);
         }
-        holder.tvDescription.setText(item.getDescription());
-
+        holder.tvDescription.setText(getDescription(item));
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(view.getContext());
         Set<String> starredContacts = sharedPref.getStringSet(mContext.getResources().getString(R.string.search_nso_star), new HashSet<String>());
@@ -93,7 +91,7 @@ public class NsoAdapter extends ArrayAdapter<RSSItem> {
                     if (currentTitle != null) {
                         starredContacts.add(currentTitle);
                         editedPreferences.putString(currentTitle + mContext.getResources().getString(R.string.search_nso_star),
-                                (new Gson()).toJson(item, RSSItem.class));
+                                currentTitle);
                     }
                 } else {
                     starredContacts.remove(currentTitle);
@@ -116,8 +114,11 @@ public class NsoAdapter extends ArrayAdapter<RSSItem> {
      */
     public static String getTitleName(RSSItem item) {
         String title = item.getTitle();
-        title = title.substring(title.indexOf("&gt;")+4);
-        title = title.substring(0, title.indexOf("&lt;"));
+        title = title.substring(title.indexOf("\">")+2);
+        title = title.substring(0, title.indexOf("</a>"));
+        while (title.contains("&amp;")) {
+            title = title.replace("&amp;", "&");
+        }
         return title;
     }
 
@@ -144,12 +145,26 @@ public class NsoAdapter extends ArrayAdapter<RSSItem> {
         return answer;
     }
 
+    /**
+     * returns a parsed version of the description
+     * @param item the item to be parsed
+     * @return the string to be displayed as description
+     */
+    private String getDescription(RSSItem item) {
+        String description = item.getDescription();
+        description = description.substring(3);
+        while (description.contains("&amp;")) {
+            description = description.replace("&amp;", "&");
+        }
+        return description;
+    }
+
     static class ViewHolder {
         @Bind(R.id.tv_event_name)
         TextView tvName;
         @Bind(R.id.tv_event_time) TextView tvTime;
         @Bind(R.id.tv_event_description) TextView tvDescription;
-        @Bind(R.id.star_contact) ToggleButton star;
+        @Bind(R.id.star_event) ToggleButton star;
         @Bind(R.id.event_icon)
         ImageView event;
 

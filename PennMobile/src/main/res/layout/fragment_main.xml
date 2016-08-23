@@ -207,7 +207,7 @@
         >
 
         <ImageView
-            android:contentDescription="@string/laundry"
+            android:contentDescription="@string/nso"
             android:id="@+id/nso_img"
             android:src="@drawable/ic_nso"
             app:layout_widthPercent="100%"
@@ -218,7 +218,7 @@
         <TextView
             android:id="@+id/nso_button"
             android:layout_below="@+id/nso_img"
-            android:text="@string/laundry"
+            android:text="@string/nso"
             style="@style/MainText"
             app:layout_widthPercent="100%"
             app:layout_heightPercent="25%"/>

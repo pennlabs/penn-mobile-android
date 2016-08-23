@@ -23,7 +23,6 @@ public abstract class SearchFavoriteTab extends ListFragment {
     protected ListView mListView;
     protected MainActivity mActivity;
     protected Labs mLabs;
-    protected boolean queryEmptiable;
 
     private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
 
@@ -43,11 +42,10 @@ public abstract class SearchFavoriteTab extends ListFragment {
         type = getArguments().getString(getString(R.string.search_list), "");
         mActivity = (MainActivity) getActivity();
         mLabs = MainActivity.getLabsInstance();
-        queryEmptiable = false;
     }
 
     public void processQuery(String query) {
-        if (search_instructions.getVisibility() == View.VISIBLE && (queryEmptiable || !query.isEmpty())) {
+        if (search_instructions.getVisibility() == View.VISIBLE && !query.isEmpty()) {
             search_instructions.setVisibility(View.GONE);
             if(loadingPanel != null) {
                 loadingPanel.setVisibility(View.VISIBLE);

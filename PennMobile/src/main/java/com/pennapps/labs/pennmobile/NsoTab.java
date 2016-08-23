@@ -17,8 +17,8 @@ import org.mcsoxford.rss.RSSItem;
 import org.mcsoxford.rss.RSSReader;
 import org.mcsoxford.rss.RSSReaderException;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +34,8 @@ public class NsoTab extends SearchFavoriteTab {
 
     private NsoAdapter adapter;
 
+    private List<RSSItem> fullList;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -41,7 +43,6 @@ public class NsoTab extends SearchFavoriteTab {
         ButterKnife.bind(this, v);
         mListView = (ListView) v.findViewById(android.R.id.list);
         initList();
-        queryEmptiable = true;
         return v;
     }
 
@@ -93,20 +94,25 @@ public class NsoTab extends SearchFavoriteTab {
     @NonNull
     private List<RSSItem> getRSSFeed(String query) {
         try {
-            RSSReader reader = new RSSReader();
-            String uri = "https://www.nso.upenn.edu/event-calendar.rss";
-            List<RSSItem> items = reader.load(uri).getItems();
+            List<RSSItem> items;
+            if (fullList == null) {
+                RSSReader reader = new RSSReader();
+                String uri = "http://api.pennlabs.org/nso";
+                items = reader.load(uri).getItems();
+                fullList = new ArrayList<>(items);
+            } else {
+                items = new ArrayList<>(fullList);
+            }
             if (query.isEmpty()) {
                 return items;
             }
-            Iterator<RSSItem> iterator = items.iterator();
-            while (iterator.hasNext()) {
-                RSSItem item = iterator.next();
-                if (!NsoAdapter.getTitleName(item).contains(query)) {
-                    iterator.remove();
+            List<RSSItem> answer = new LinkedList<>();
+            for (RSSItem item : items) {
+                if (item.getTitle().contains(query)) {
+                    answer.add(item);
                 }
             }
-            return items;
+            return answer;
         } catch (RSSReaderException e) {
             Log.d("NSO", "error reading rss", e);
             return new LinkedList<>();
@@ -131,17 +137,22 @@ public class NsoTab extends SearchFavoriteTab {
         if (search_instructions.getVisibility() == View.VISIBLE) {
             search_instructions.setVisibility(View.GONE);
         }
-        List<RSSItem> items = new LinkedList<>();
+        List<RSSItem> items = getRSSFeed("");
         if (fav) {
+            // need to improve runtime later (worst case O(n^2) smh
+            List<RSSItem> favItems = new LinkedList<>();
             for (String s : starred) {
                 String details = sp.getString(s + getString(R.string.search_nso_star), "");
                 if (!details.isEmpty()) {
-                    RSSItem item = gson.fromJson(details, RSSItem.class);
-                    items.add(item);
+                    for (RSSItem item : items) {
+                        if (item.getTitle().equals(details)) {
+                            favItems.add(item);
+                            break;
+                        }
+                    }
                 }
             }
-        } else {
-            items = getRSSFeed("");
+            items = favItems;
         }
         adapter = new NsoAdapter(mActivity, items);
         mListView.setAdapter(adapter);

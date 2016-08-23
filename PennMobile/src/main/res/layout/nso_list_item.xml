@@ -74,9 +74,10 @@
         <TextView
             tools:text="Sign up here to take a trip to bank and phone companies with the ePHINS and iPHINS to get settled in Philadelphia."
             android:id="@+id/tv_event_description"
-            android:layout_below="@+id/tv_event_name"
+            android:layout_below="@+id/tv_event_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/star_event"
             android:paddingBottom="2dp"
             android:textSize="16sp"
             android:textColor="@color/secondary_text" />
