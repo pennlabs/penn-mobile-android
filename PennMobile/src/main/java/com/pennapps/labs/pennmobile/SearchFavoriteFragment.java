@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.ArrayRes;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.ListFragment;
@@ -137,6 +138,8 @@ public abstract class SearchFavoriteFragment extends ListFragment {
             }
         });
         mActivity.addTabs(getAdapter(), viewPager, false);
+        FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.search_fav_fab);
+        fabInit(fab);
         return v;
     }
 
@@ -296,4 +299,12 @@ public abstract class SearchFavoriteFragment extends ListFragment {
      * @return the string to be set as title
      */
     protected abstract String getTitle();
+
+    /**
+     * Set up the floating action button if necessary.  Default visibility gone
+     * @param fab the floating action button
+     */
+    protected void fabInit(FloatingActionButton fab) {
+        //Default nothing (visibility gone)
+    }
 }

@@ -42,6 +42,11 @@
             android:title="@string/laundry"/>
 
         <item
+            android:id="@+id/nav_nso"
+            android:icon="@drawable/ic_event_black_24dp"
+            android:title="@string/nso"/>
+
+        <item
             android:id="@+id/nav_support"
             android:icon="@drawable/ic_face_unlock_black_24dp"
             android:title="@string/support"/>
