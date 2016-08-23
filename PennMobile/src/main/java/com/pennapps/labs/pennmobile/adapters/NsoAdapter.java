@@ -133,13 +133,16 @@ public class NsoAdapter extends ArrayAdapter<RSSItem> {
         time = time.substring(time.indexOf("event/") + 6);
         time = time.substring(0, time.indexOf("/"));
         String starttime = time.substring(0, 17);
-        String endtime = time.substring(18);
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HHmmss", Locale.US);
         cal.setTime(sdf.parse(starttime));
         SimpleDateFormat out = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         String answer = out.format(cal.getTime());
+        if (time.length() < 18) {
+            return answer;
+        }
         answer += " - ";
+        String endtime = time.substring(18);
         cal.setTime(sdf.parse(endtime));
         answer += out.format(cal.getTime());
         return answer;
