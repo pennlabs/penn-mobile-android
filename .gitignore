@@ -19,3 +19,6 @@ local.properties
 # android studio
 .idea/
 /*/local.properties
+
+# ignore api keys
+PennMobile/src/main/res/values/api-keys.xml
