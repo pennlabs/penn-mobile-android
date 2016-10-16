@@ -127,6 +127,21 @@ public class MenuFragment extends Fragment {
         ((MainActivity) getActivity()).addTabs(pageAdapter, pager, true);
         return v;
     }
+
+    private void setPagerPosition() {
+        String meal = mDiningHall.isOpen() ? mDiningHall.openMeal() : mDiningHall.nextMeal();
+        for (final DiningHall.Menu menu : mDiningHall.menus) {
+            if (menu.name.equalsIgnoreCase(meal)) {
+                mActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        pager.setCurrentItem(mDiningHall.menus.indexOf(menu) + 1);
+                    }
+                });
+            }
+        }
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.dining, menu);
@@ -140,6 +155,7 @@ public class MenuFragment extends Fragment {
         mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
         mActivity.getActionBarToggle().syncState();
         mActivity.setTitle(mDiningHall.getName());
+        setPagerPosition();
     }
 
     @Override
