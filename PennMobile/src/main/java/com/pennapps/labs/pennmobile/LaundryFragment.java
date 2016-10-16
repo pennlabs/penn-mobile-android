@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +37,7 @@ public class LaundryFragment extends ListFragment {
     private final static int ROW_CAP = 15;
     @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
     @Bind(R.id.no_results) TextView no_results;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +58,14 @@ public class LaundryFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_laundry, container, false);
         ButterKnife.bind(this, v);
-
+        swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.laundry_swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getLaundryHall();
+            }
+        });
+        swipeRefreshLayout.setColorSchemeResources(R.color.color_accent, R.color.color_primary);
         getLaundryHall();
         return v;
     }
@@ -89,6 +98,11 @@ public class LaundryFragment extends ListFragment {
                                         }
                                     }
                                 }
+                                try {
+                                    swipeRefreshLayout.setRefreshing(false);
+                                } catch (NullPointerException e){
+                                    //it has gone to another page.
+                                }
                             }
                         });
                     }
@@ -103,6 +117,11 @@ public class LaundryFragment extends ListFragment {
                                 }
                                 if (no_results != null) {
                                     no_results.setVisibility(View.VISIBLE);
+                                }
+                                try {
+                                    swipeRefreshLayout.setRefreshing(false);
+                                } catch (NullPointerException e){
+                                    //it has gone to another page.
                                 }
                             }
                         });
