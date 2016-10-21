@@ -125,9 +125,7 @@ public class NewsFragment extends Fragment {
 
     private String getCurrentTab() {
         try {
-            ViewFlipper flipper = (ViewFlipper) pager.getChildAt(pager.getCurrentItem());
-            WebView tab = (WebView) ((NestedScrollView) flipper.getChildAt(1)).getChildAt(0);
-            return tab.getUrl();
+            return (String) pageAdapter.getItem(pager.getCurrentItem()).getArguments().get("url");
         } catch (Exception e) {
             return null;
         }
