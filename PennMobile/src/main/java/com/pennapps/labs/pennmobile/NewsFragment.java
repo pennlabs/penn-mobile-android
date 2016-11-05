@@ -1,8 +1,10 @@
 package com.pennapps.labs.pennmobile;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -93,8 +95,23 @@ public class NewsFragment extends Fragment {
             case R.id.news_browser:
                 url = getCurrentTab();
                 if (url != null) {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(browserIntent);
+//                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//                    startActivity(browserIntent);
+                    CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                    Intent share = new Intent(Intent.ACTION_SEND);
+                    share.setType("text/plain");
+                    share.putExtra(Intent.EXTRA_TEXT, url);
+                    builder.addMenuItem("Share", PendingIntent.getActivity(getContext(), 0,
+                            share, PendingIntent.FLAG_CANCEL_CURRENT));
+                    builder.setToolbarColor(0x3E50B4);
+                    builder.setStartAnimations(getContext(),
+                            android.support.design.R.anim.abc_popup_enter,
+                            android.support.design.R.anim.abc_popup_exit);
+//                    builder.setExitAnimations(getContext(),
+//                            android.support.design.R.anim.abc_popup_exit,
+//                            android.support.design.R.anim.abc_popup_enter);
+                    CustomTabsIntent customTabsIntent = builder.build();
+                    customTabsIntent.launchUrl(getActivity(), Uri.parse(url));
                 }
                 return true;
             case R.id.news_share:
