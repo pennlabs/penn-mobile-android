@@ -232,10 +232,10 @@ public class MainActivity extends AppCompatActivity {
                     fragment.setArguments(arg);
                 }
                 break;
-            case R.id.nav_nso:
-            case R.id.nso_cont:
-                fragment = new NsoFragment();
-                break;
+//            case R.id.nav_nso:
+//            case R.id.nso_cont:
+//                fragment = new NsoFragment();
+//                break;
             case R.id.nav_support:
                 fragment = new SupportFragment();
                 break;
