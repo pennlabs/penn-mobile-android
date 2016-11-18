@@ -60,7 +60,6 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
                 courseCode.length() - 3,
                 courseCode.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        courseCode.setSpan(new StyleSpan(Typeface.BOLD), 0, courseCode.length() - 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         holder.courseId.setText(courseCode);
         try {
             holder.courseInstr.setEllipsize(TextUtils.TruncateAt.END);
