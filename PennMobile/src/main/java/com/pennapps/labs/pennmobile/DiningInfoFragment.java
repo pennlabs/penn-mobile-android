@@ -105,12 +105,13 @@ public class DiningInfoFragment extends Fragment {
         }
     }
     public void fillInfo(){
-        List<VenueInterval> days = mDiningHall.getVenue().allHours();
-        LinkedList<TextView> vertical = new LinkedList<>();
-        for (VenueInterval day: days){
-            vertical = addDiningHour(day, vertical);
+        if (mDiningHall.getVenue() != null) {
+            List<VenueInterval> days = mDiningHall.getVenue().allHours();
+            LinkedList<TextView> vertical = new LinkedList<>();
+            for (VenueInterval day: days){
+                vertical = addDiningHour(day, vertical);
+            }
         }
-
     }
 
     public LinkedList<TextView> addDiningHour(VenueInterval day, LinkedList<TextView> vertical){
