@@ -1,15 +1,26 @@
 package com.pennapps.labs.pennmobile;
 
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.support.customtabs.CustomTabsCallback;
+import android.support.customtabs.CustomTabsClient;
 import android.support.customtabs.CustomTabsIntent;
+import android.support.customtabs.CustomTabsService;
+import android.support.customtabs.CustomTabsServiceConnection;
+import android.support.customtabs.CustomTabsSession;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.ListFragment;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,52 +28,112 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.ViewFlipper;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
-public class NewsFragment extends Fragment {
+import butterknife.ButterKnife;
 
-    TabAdapter pageAdapter;
-    ViewPager pager;
+public class NewsFragment extends ListFragment {
 
-    class TabAdapter extends FragmentStatePagerAdapter {
+    private ListView mListView;
+    private CustomTabsClient mCustomTabsClient;
+    private CustomTabsIntent customTabsIntent;
+    private Intent share;
+    private CustomTabsSession session;
 
-        ArrayList<String> URLs;
-        ArrayList<String> titles;
+    class NewsSite {
+        String name, url;
 
-        public TabAdapter(FragmentManager fm) {
-            super(fm);
-            URLs = new ArrayList<>();
-            titles = new ArrayList<>();
-            addTab("http://www.thedp.com/", "The DP");
-            addTab("http://www.34st.com/", "34th Street");
-            addTab("http://www.thedp.com/blog/under-the-button/", "UTB");
+        public NewsSite(String name, String url) {
+            this.name = name;
+            this.url = url;
         }
 
-        private void addTab(String url, String title) {
-            URLs.add(url);
-            titles.add(title);
+        public String getName() {
+            return name;
         }
 
-        @Override
-        public Fragment getItem(int position) {
-            Fragment myFragment = new NewsTab();
-            Bundle args = new Bundle();
-            args.putString("url", URLs.get(position));
-            myFragment.setArguments(args);
-            return myFragment;
+        public String getUrl() {
+            return url;
         }
 
         @Override
-        public CharSequence getPageTitle(int position) {
-            return titles.get(position);
+        public String toString() {
+            return name;
+        }
+    }
+
+    class NewsCustomTabsServiceConnection extends CustomTabsServiceConnection {
+        public static final String CUSTOM_TAB_PACKAGE_NAME = "com.android.chrome";
+        @Override
+        public void onCustomTabsServiceConnected(ComponentName name, CustomTabsClient client) {
+            mCustomTabsClient = client;
+            mCustomTabsClient.warmup(0);
+            session = mCustomTabsClient.newSession(null);
         }
 
         @Override
-        public int getCount() {
-            return URLs.size();
+        public void onServiceDisconnected(ComponentName name) {
+            mCustomTabsClient = null;
+            session = null;
+            customTabsIntent = null;
         }
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+        mListView = getListView();
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        share = new Intent(Intent.ACTION_SEND);
+        share.setType("text/plain");
+        builder.addMenuItem("Share", PendingIntent.getActivity(getContext(), 0,
+                share, PendingIntent.FLAG_CANCEL_CURRENT));
+        builder.setToolbarColor(0x3E50B4);
+        builder.setStartAnimations(getContext(),
+                android.support.design.R.anim.abc_popup_enter,
+                android.support.design.R.anim.abc_popup_exit);
+//                    builder.setExitAnimations(getContext(),
+//                            android.support.design.R.anim.abc_popup_exit,
+//                            android.support.design.R.anim.abc_popup_enter);
+        CustomTabsServiceConnection connection = new NewsCustomTabsServiceConnection();
+        final ArrayList<String> URLs = new ArrayList<>();
+        ArrayList<String> titles = new ArrayList<>();
+        URLs.add("http://www.thedp.com/");
+        URLs.add("http://www.34st.com/");
+        URLs.add("http://www.thedp.com/blog/under-the-button/");
+        titles.add("The Daily Pennsylvanian");
+        titles.add("34th Street");
+        titles.add("Under the Button");
+        ArrayList<Bundle> urlList = new ArrayList<>();
+        for (int i = 0; i < URLs.size(); i++) {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(CustomTabsService.KEY_URL, new Parcelable() {
+                @Override
+                public int describeContents() {
+                    return 0;
+                }
+
+                @Override
+                public void writeToParcel(Parcel parcel, int i) {
+                    parcel.writeString(URLs.get(i));
+                }
+            });
+            urlList.add(bundle);
+        }
+//        Log.d("Is savedInstance null?", Boolean.toString(savedInstanceState == null));
+        // TODO fix null pointer exception for second argument in mayLaunchUrl
+//        session.mayLaunchUrl(Uri.parse(URLs.get(0)), null, urlList);
+        CustomTabsClient.bindCustomTabsService(getContext(),
+                NewsCustomTabsServiceConnection.CUSTOM_TAB_PACKAGE_NAME, connection);
+        customTabsIntent = builder.build();
+        addNews();
     }
 
     @Override
@@ -75,55 +146,31 @@ public class NewsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_news, container, false);
-        pageAdapter = new TabAdapter(getActivity().getSupportFragmentManager());
-        pager = (ViewPager) v.findViewById(R.id.pager);
-        ((MainActivity) getActivity()).addTabs(pageAdapter, pager, true);
+        ButterKnife.bind(this, v);
+//        getDiningHalls();
         return v;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.news, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+    private void addNews() {
+        NewsSite dp = new NewsSite("The Daily Pennsylvanian", "http://www.thedp.com/");
+        NewsSite thirtyFour = new NewsSite("34th Street", "http://www.34st.com/");
+        NewsSite utb = new NewsSite("Under the Button",
+                "http://www.thedp.com/blog/under-the-button/");
+        NewsSite[] allSites = {dp, thirtyFour, utb};
+        ArrayAdapter<NewsSite> adapter = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_list_item_1, allSites);
+
+        mListView.setAdapter(adapter);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
-        String url;
-        switch (item.getItemId()) {
-            case R.id.news_browser:
-                url = getCurrentTab();
-                if (url != null) {
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        String url = ((NewsSite) l.getItemAtPosition(position)).getUrl();
+        if (url != null) {
 //                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 //                    startActivity(browserIntent);
-                    CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-                    Intent share = new Intent(Intent.ACTION_SEND);
-                    share.setType("text/plain");
-                    share.putExtra(Intent.EXTRA_TEXT, url);
-                    builder.addMenuItem("Share", PendingIntent.getActivity(getContext(), 0,
-                            share, PendingIntent.FLAG_CANCEL_CURRENT));
-                    builder.setToolbarColor(0x3E50B4);
-                    builder.setStartAnimations(getContext(),
-                            android.support.design.R.anim.abc_popup_enter,
-                            android.support.design.R.anim.abc_popup_exit);
-//                    builder.setExitAnimations(getContext(),
-//                            android.support.design.R.anim.abc_popup_exit,
-//                            android.support.design.R.anim.abc_popup_enter);
-                    CustomTabsIntent customTabsIntent = builder.build();
-                    customTabsIntent.launchUrl(getActivity(), Uri.parse(url));
-                }
-                return true;
-            case R.id.news_share:
-                url = getCurrentTab();
-                if (url != null) {
-                    Intent share = new Intent(Intent.ACTION_SEND);
-                    share.setType("text/plain");
-                    share.putExtra(Intent.EXTRA_TEXT, url);
-                    startActivity(Intent.createChooser(share, "Share link!"));
-                }
-            default:
-                return super.onOptionsItemSelected(item);
+            share.putExtra(Intent.EXTRA_TEXT, url);
+            customTabsIntent.launchUrl(getActivity(), Uri.parse(url));
         }
     }
 
@@ -138,13 +185,6 @@ public class NewsFragment extends Fragment {
     public void onDestroyView() {
         ((MainActivity) getActivity()).removeTabs();
         super.onDestroyView();
-    }
 
-    private String getCurrentTab() {
-        try {
-            return (String) pageAdapter.getItem(pager.getCurrentItem()).getArguments().get("url");
-        } catch (Exception e) {
-            return null;
-        }
     }
 }
