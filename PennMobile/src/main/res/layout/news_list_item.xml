@@ -5,36 +5,41 @@
     android:paddingRight="4dp"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/news_logo"
-        android:layout_width="695dp"
-        android:layout_height="410.26dp"
+        android:layout_width="160dp"
+        android:layout_height="140dp"
+        android:paddingRight="16dp"
         android:src="@drawable/thedp"/>
 
-    <RelativeLayout
-        android:layout_width="745dp"
-        android:layout_height="410.26dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="140dp"
         android:id="@+id/news_info"
         android:layout_alignParentRight="true"
         android:layout_toRightOf="@+id/news_logo"
         android:paddingRight="4dp"
+        android:orientation="vertical"
         >
         <TextView
             tools:text="Daily Pennsylvanian"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
             android:id="@+id/news_name"
-            style="@style/HallName" />
+            android:layout_centerVertical="true"
+            android:textSize="15sp"
+            android:textStyle="bold"/>
         <TextView
             android:id="@+id/news_details"
-            tools:text="Open"
-            tools:background="@drawable/label_green"
-            android:layout_centerVertical="true"
-            android:layout_below="@id/news_name"
-            style="@style/DiningStatusLabel" />
+            tools:text="description"
+            android:layout_width="match_parent"
+            android:textSize="13sp"
+            android:layout_height="100dp" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
 
 </RelativeLayout>

@@ -3,41 +3,28 @@ package com.pennapps.labs.pennmobile;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.customtabs.CustomTabsCallback;
 import android.support.customtabs.CustomTabsClient;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.customtabs.CustomTabsService;
 import android.support.customtabs.CustomTabsServiceConnection;
 import android.support.customtabs.CustomTabsSession;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.ListFragment;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.NestedScrollView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.ViewFlipper;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 import butterknife.ButterKnife;
 
@@ -50,57 +37,59 @@ public class NewsFragment extends ListFragment {
     private CustomTabsSession session;
     private CustomTabsIntent.Builder builder;
 
-    class CustomListAdapter extends ArrayAdapter<String> { //TODO figure out custom list adapter
+    class CustomListAdapter extends ArrayAdapter<String> {
 
-        private final Activity context;
-        private final String[] itemname;
+        private final Context context;
         private NewsSite[] news;
 
-        public CustomListAdapter(Activity context, String[] itemname, NewsSite[] news) {
-            super(context, R.layout.fragment_news, itemname);
-            // TODO Auto-generated constructor stub
-
+        public CustomListAdapter(Context context, String[] newsNames, NewsSite[] news) {
+            super(context, R.layout.fragment_news, newsNames);
+            this.news = news;
             this.context=context;
-            this.itemname=itemname;
         }
 
         public View getView(int position,View view,ViewGroup parent) {
-            LayoutInflater inflater=context.getLayoutInflater();
-            View rowView=inflater.inflate(R.layout.fragment_news, null,true);
+            LayoutInflater inflater = LayoutInflater.from(context);
+            View rowView=inflater.inflate(R.layout.news_list_item, null,true);
+//            View innerView = inflater.inflate(rowRi)
 
             TextView newsName = (TextView) rowView.findViewById(R.id.news_name);
             ImageView newsLogo = (ImageView) rowView.findViewById(R.id.news_logo);
             TextView newsDetails = (TextView) rowView.findViewById(R.id.news_details);
 
             newsName.setText(news[position].getName());
-//            newsLogo.setImageResource(imgid[position]);
-            newsDetails.setText("Description "+itemname[position]);
+            newsLogo.setImageResource(news[position].getImage());
+            newsDetails.setText(news[position].getDescription());
             return rowView;
 
         };
     }
 
     class NewsSite {
-        private String name, url, image;
+        private String name, url, description;
+        private int image;
 
 
-        public NewsSite(String name, String url, String image) {
+        public NewsSite(String name, String url, String description, int image) {
             this.name = name;
             this.url = url;
             this.image = image;
+            this.description = description;
         }
 
         public String getName() {
             return name;
         }
 
-        public String getImage() {
+        public int getImage() {
             return image;
         }
 
         public String getUrl() {
             return url;
         }
+
+        public String getDescription() { return description; }
 
         @Override
         public String toString() {
@@ -188,19 +177,32 @@ public class NewsFragment extends ListFragment {
     }
 
     private void addNews() {
-        NewsSite dp = new NewsSite("The Daily Pennsylvanian", "http://www.thedp.com/", "thedp");
-        NewsSite thirtyFour = new NewsSite("34th Street", "http://www.34st.com/", "thirtyfour");
+        String dpDescription = "The Daily Pennsylvanian is the independent student newspaper of " +
+                "the University of Pennsylvania.";
+        String thirtyFourDescription = "34th Street Magazine is the DP's arts and " +
+                "entertainment weekly magazine.";
+        String utbDescription = "Under The Button is Penn's 24/7 news and entertainment blog, " +
+                "known for its signature humor, gossip and snarky features.";
+        NewsSite dp = new NewsSite("The Daily Pennsylvanian", "http://www.thedp.com/",
+                dpDescription, R.drawable.thedp);
+        NewsSite thirtyFour = new NewsSite("34th Street", "http://www.34st.com/",
+                thirtyFourDescription, R.drawable.thirtyfour);
         NewsSite utb = new NewsSite("Under the Button",
-                "http://www.thedp.com/blog/under-the-button/", "utb");
+                "http://www.thedp.com/blog/under-the-button/", utbDescription, R.drawable.utb);
         NewsSite[] allSites = {dp, thirtyFour, utb};
-        ArrayAdapter<NewsSite> adapter = new ArrayAdapter<>(getContext(),
-                R.layout.fragment_news, R.id.news_name, allSites);
+        String[] newsUrls = new String[allSites.length];
+        for (int i = 0; i < newsUrls.length; i++) {
+            newsUrls[i] = allSites[i].getUrl();
+        }
+        CustomListAdapter adapter = new CustomListAdapter(getContext(), newsUrls, allSites);
+//        ArrayAdapter<NewsSite> adapter = new ArrayAdapter<>(getContext(),
+//                R.layout.fragment_news, R.id.news_name, allSites);
         mListView.setAdapter(adapter);
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        String url = ((NewsSite) l.getItemAtPosition(position)).getUrl();
+        String url = (String) l.getItemAtPosition(position);
         if (url != null) {
 //                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 //                    startActivity(browserIntent);
