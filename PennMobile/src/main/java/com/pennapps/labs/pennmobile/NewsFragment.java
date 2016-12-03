@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -30,7 +31,9 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import java.util.ArrayList;
@@ -45,17 +48,54 @@ public class NewsFragment extends ListFragment {
     private CustomTabsIntent customTabsIntent;
     private Intent share;
     private CustomTabsSession session;
+    private CustomTabsIntent.Builder builder;
+
+    class CustomListAdapter extends ArrayAdapter<String> { //TODO figure out custom list adapter
+
+        private final Activity context;
+        private final String[] itemname;
+        private NewsSite[] news;
+
+        public CustomListAdapter(Activity context, String[] itemname, NewsSite[] news) {
+            super(context, R.layout.fragment_news, itemname);
+            // TODO Auto-generated constructor stub
+
+            this.context=context;
+            this.itemname=itemname;
+        }
+
+        public View getView(int position,View view,ViewGroup parent) {
+            LayoutInflater inflater=context.getLayoutInflater();
+            View rowView=inflater.inflate(R.layout.fragment_news, null,true);
+
+            TextView newsName = (TextView) rowView.findViewById(R.id.news_name);
+            ImageView newsLogo = (ImageView) rowView.findViewById(R.id.news_logo);
+            TextView newsDetails = (TextView) rowView.findViewById(R.id.news_details);
+
+            newsName.setText(news[position].getName());
+//            newsLogo.setImageResource(imgid[position]);
+            newsDetails.setText("Description "+itemname[position]);
+            return rowView;
+
+        };
+    }
 
     class NewsSite {
-        String name, url;
+        private String name, url, image;
 
-        public NewsSite(String name, String url) {
+
+        public NewsSite(String name, String url, String image) {
             this.name = name;
             this.url = url;
+            this.image = image;
         }
 
         public String getName() {
             return name;
+        }
+
+        public String getImage() {
+            return image;
         }
 
         public String getUrl() {
@@ -90,11 +130,9 @@ public class NewsFragment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
         mListView = getListView();
-        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        builder = new CustomTabsIntent.Builder();
         share = new Intent(Intent.ACTION_SEND);
         share.setType("text/plain");
-        builder.addMenuItem("Share", PendingIntent.getActivity(getContext(), 0,
-                share, PendingIntent.FLAG_CANCEL_CURRENT));
         builder.setToolbarColor(0x3E50B4);
         builder.setStartAnimations(getContext(),
                 android.support.design.R.anim.abc_popup_enter,
@@ -132,7 +170,6 @@ public class NewsFragment extends ListFragment {
 //        session.mayLaunchUrl(Uri.parse(URLs.get(0)), null, urlList);
         CustomTabsClient.bindCustomTabsService(getContext(),
                 NewsCustomTabsServiceConnection.CUSTOM_TAB_PACKAGE_NAME, connection);
-        customTabsIntent = builder.build();
         addNews();
     }
 
@@ -147,19 +184,17 @@ public class NewsFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_news, container, false);
         ButterKnife.bind(this, v);
-//        getDiningHalls();
         return v;
     }
 
     private void addNews() {
-        NewsSite dp = new NewsSite("The Daily Pennsylvanian", "http://www.thedp.com/");
-        NewsSite thirtyFour = new NewsSite("34th Street", "http://www.34st.com/");
+        NewsSite dp = new NewsSite("The Daily Pennsylvanian", "http://www.thedp.com/", "thedp");
+        NewsSite thirtyFour = new NewsSite("34th Street", "http://www.34st.com/", "thirtyfour");
         NewsSite utb = new NewsSite("Under the Button",
-                "http://www.thedp.com/blog/under-the-button/");
+                "http://www.thedp.com/blog/under-the-button/", "utb");
         NewsSite[] allSites = {dp, thirtyFour, utb};
         ArrayAdapter<NewsSite> adapter = new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_list_item_1, allSites);
-
+                R.layout.fragment_news, R.id.news_name, allSites);
         mListView.setAdapter(adapter);
     }
 
@@ -170,6 +205,9 @@ public class NewsFragment extends ListFragment {
 //                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 //                    startActivity(browserIntent);
             share.putExtra(Intent.EXTRA_TEXT, url);
+            builder.addMenuItem("Share", PendingIntent.getActivity(getContext(), 0,
+                    share, PendingIntent.FLAG_CANCEL_CURRENT));
+            customTabsIntent = builder.build();
             customTabsIntent.launchUrl(getActivity(), Uri.parse(url));
         }
     }
