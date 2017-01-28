@@ -1,10 +1,10 @@
 package com.pennapps.labs.pennmobile;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -15,7 +15,6 @@ import android.support.customtabs.CustomTabsService;
 import android.support.customtabs.CustomTabsServiceConnection;
 import android.support.customtabs.CustomTabsSession;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +24,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 
@@ -36,6 +36,7 @@ public class NewsFragment extends ListFragment {
     private Intent share;
     private CustomTabsSession session;
     private CustomTabsIntent.Builder builder;
+    private boolean isCustomTabsSupported;
 
     class CustomListAdapter extends ArrayAdapter<String> {
 
@@ -62,7 +63,7 @@ public class NewsFragment extends ListFragment {
             newsDetails.setText(news[position].getDescription());
             return rowView;
 
-        };
+        }
     }
 
     class NewsSite {
@@ -104,6 +105,31 @@ public class NewsFragment extends ListFragment {
             mCustomTabsClient = client;
             mCustomTabsClient.warmup(0);
             session = mCustomTabsClient.newSession(null);
+            final ArrayList<String> URLs = new ArrayList<>();
+            ArrayList<String> titles = new ArrayList<>();
+            URLs.add("http://www.thedp.com/");
+            URLs.add("http://www.34st.com/");
+            URLs.add("http://www.thedp.com/blog/under-the-button/");
+            titles.add("The Daily Pennsylvanian");
+            titles.add("34th Street");
+            titles.add("Under the Button");
+            ArrayList<Bundle> urlList = new ArrayList<>();
+            for (int i = 0; i < URLs.size(); i++) {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(CustomTabsService.KEY_URL, new Parcelable() {
+                    @Override
+                    public int describeContents() {
+                        return 0;
+                    }
+
+                    @Override
+                    public void writeToParcel(Parcel parcel, int i) {
+                        parcel.writeString(URLs.get(i));
+                    }
+                });
+                urlList.add(bundle);
+            }
+            session.mayLaunchUrl(Uri.parse(URLs.get(0)), null, urlList);
         }
 
         @Override
@@ -114,9 +140,19 @@ public class NewsFragment extends ListFragment {
         }
     }
 
+    private static boolean isChromeCustomTabsSupported(final Context context) {
+        String SERVICE_ACTION = "android.support.customtabs.action.CustomTabsService";
+        Intent serviceIntent = new Intent(SERVICE_ACTION);
+        serviceIntent.setPackage("com.android.chrome");
+        List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentServices(serviceIntent, 0);
+        return !(resolveInfos == null || resolveInfos.isEmpty());
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        CustomTabsServiceConnection connection = new NewsCustomTabsServiceConnection();
+        isCustomTabsSupported = isChromeCustomTabsSupported(getContext());
         setHasOptionsMenu(true);
         mListView = getListView();
         builder = new CustomTabsIntent.Builder();
@@ -129,34 +165,7 @@ public class NewsFragment extends ListFragment {
 //                    builder.setExitAnimations(getContext(),
 //                            android.support.design.R.anim.abc_popup_exit,
 //                            android.support.design.R.anim.abc_popup_enter);
-        CustomTabsServiceConnection connection = new NewsCustomTabsServiceConnection();
-        final ArrayList<String> URLs = new ArrayList<>();
-        ArrayList<String> titles = new ArrayList<>();
-        URLs.add("http://www.thedp.com/");
-        URLs.add("http://www.34st.com/");
-        URLs.add("http://www.thedp.com/blog/under-the-button/");
-        titles.add("The Daily Pennsylvanian");
-        titles.add("34th Street");
-        titles.add("Under the Button");
-        ArrayList<Bundle> urlList = new ArrayList<>();
-        for (int i = 0; i < URLs.size(); i++) {
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(CustomTabsService.KEY_URL, new Parcelable() {
-                @Override
-                public int describeContents() {
-                    return 0;
-                }
 
-                @Override
-                public void writeToParcel(Parcel parcel, int i) {
-                    parcel.writeString(URLs.get(i));
-                }
-            });
-            urlList.add(bundle);
-        }
-//        Log.d("Is savedInstance null?", Boolean.toString(savedInstanceState == null));
-        // TODO fix null pointer exception for second argument in mayLaunchUrl
-//        session.mayLaunchUrl(Uri.parse(URLs.get(0)), null, urlList);
         CustomTabsClient.bindCustomTabsService(getContext(),
                 NewsCustomTabsServiceConnection.CUSTOM_TAB_PACKAGE_NAME, connection);
         addNews();
@@ -204,13 +213,16 @@ public class NewsFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         String url = (String) l.getItemAtPosition(position);
         if (url != null) {
-//                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-//                    startActivity(browserIntent);
-            share.putExtra(Intent.EXTRA_TEXT, url);
-            builder.addMenuItem("Share", PendingIntent.getActivity(getContext(), 0,
-                    share, PendingIntent.FLAG_CANCEL_CURRENT));
-            customTabsIntent = builder.build();
-            customTabsIntent.launchUrl(getActivity(), Uri.parse(url));
+            if (isCustomTabsSupported) {
+                share.putExtra(Intent.EXTRA_TEXT, url);
+                builder.addMenuItem("Share", PendingIntent.getActivity(getContext(), 0,
+                        share, PendingIntent.FLAG_CANCEL_CURRENT));
+                customTabsIntent = builder.build();
+                customTabsIntent.launchUrl(getActivity(), Uri.parse(url));
+            } else {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(browserIntent);
+            }
         }
     }
 
