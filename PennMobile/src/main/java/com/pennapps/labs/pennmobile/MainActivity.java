@@ -29,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
+import android.widget.RelativeLayout;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private static Labs mLabs;
     private boolean from_alarm;
-    private static final int CODE_MAP = 1, CODE_TRANSIT = 2;
+    private static final int CODE_MAP = 1;
     private boolean tab_showed;
 
     @Override
@@ -210,17 +211,13 @@ public class MainActivity extends AppCompatActivity {
             case R.id.dining_cont:
                 fragment = new DiningFragment();
                 break;
-            case R.id.nav_transit:
-            case R.id.transit_cont:
-                getPermission(CODE_TRANSIT);
-                return;
             case R.id.nav_news:
             case R.id.news_cont:
                 fragment = new NewsFragment();
                 break;
             case R.id.nav_map:
             case R.id.map_cont:
-                getPermission(CODE_MAP);
+                getPermission();
                 return;
             case R.id.nav_laundry:
             case R.id.laundry_cont:
@@ -311,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
         if (!scrollable) {
             tabLayout.setTabMode(TabLayout.MODE_FIXED);
         }
-        appBar.addView(tabLayout);
+        appBar.addView(tabLayout, 1);
 
         pager.setAdapter(pageAdapter);
         tab_showed = true;
@@ -322,12 +319,28 @@ public class MainActivity extends AppCompatActivity {
     public void removeTabs() {
         tab_showed = false;
         final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
-        if (appBar != null && appBar.getChildCount() >= 2) {
+        if (appBar != null && appBar.getChildCount() >= 3) {
             appBar.removeViewAt(1);
         }
     }
 
-    private void getPermission(int code) {
+    public void openMapDirectionMenu() {
+        final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
+        appBar.getChildAt(0).setVisibility(View.GONE);
+        appBar.getChildAt(1).setVisibility(View.VISIBLE);
+    }
+
+    public void closeMapDirectionMenu() {
+        final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.appbar);
+        appBar.getChildAt(0).setVisibility(View.VISIBLE);
+        appBar.getChildAt(1).setVisibility(View.GONE);
+    }
+
+    public RelativeLayout getMenuMapExtension() {
+        return (RelativeLayout) findViewById(R.id.menu_map_extension);
+    }
+
+    private void getPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) !=
@@ -335,17 +348,9 @@ public class MainActivity extends AppCompatActivity {
 
             ActivityCompat
                     .requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION}, code);
+                            Manifest.permission.ACCESS_COARSE_LOCATION}, CODE_MAP);
         } else {
-            Fragment fragment = null;
-            switch(code) {
-                case CODE_MAP:
-                    fragment = new MapFragment();
-                    break;
-                case CODE_TRANSIT:
-                    fragment = new TransitFragment();
-                    break;
-            }
+            Fragment fragment =  new MapFragment();
             fragmentTransact(fragment);
         }
     }
@@ -375,32 +380,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         if (grantResults.length == 0 || grantResults[0] == PackageManager.PERMISSION_DENIED) {
-            Toast.makeText(this, "Access of your location is required to use this feature.", Toast.LENGTH_LONG).show();
+            showErrorToast(R.string.ask_permission_fail);
             return;
         }
-        final int code = requestCode;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Fragment fragment = null;
-                switch(code) {
-                    case CODE_MAP:
-                        fragment = new MapFragment();
-                        break;
-                    case CODE_TRANSIT:
-                        fragment = new TransitFragment();
-                        break;
-                }
-                if (fragment != null) {
+        if (requestCode == CODE_MAP) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Fragment fragment = new MapFragment();
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     fragmentManager.beginTransaction()
                             .replace(R.id.content_frame, fragment)
                             .addToBackStack(null)
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                             .commitAllowingStateLoss();
+                    mDrawerLayout.closeDrawer(mDrawerList);
                 }
-                mDrawerLayout.closeDrawer(mDrawerList);
-            }
-        });
+            });
+        }
     }
 }

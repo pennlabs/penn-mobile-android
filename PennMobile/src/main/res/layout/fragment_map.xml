@@ -1,9 +1,91 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/map_parent"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-    <com.google.android.gms.maps.MapView android:id="@+id/mapView"
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
 
-</LinearLayout>
+    <ListView
+        android:id="@+id/map_suggestion"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:visibility="gone"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="150dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginEnd="150dp"
+        app:layout_anchor="@id/mapView"
+        app:layout_anchorGravity="bottom|right|end"
+        app:backgroundTint="@color/white"
+        android:src="@drawable/ic_my_location_gray_24dp"
+        android:id="@+id/map_current_loc"
+        android:clickable="true"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="75dp"
+        android:layout_marginEnd="75dp"
+        app:layout_anchor="@id/mapView"
+        app:layout_anchorGravity="bottom|right|end"
+        app:backgroundTint="@color/pink"
+        android:src="@drawable/ic_directions_white_24dp"
+        android:id="@+id/map_direction"
+        android:clickable="true"/>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="@color/map_card"
+        android:orientation="vertical"
+        app:layout_anchor="@id/mapView"
+        app:layout_anchorGravity="bottom"
+        android:id="@+id/map_initial_card">
+
+        <TextView
+            android:id="@+id/map_bus_card"
+            android:textSize="20dp"
+            android:layout_margin="10dp"
+            android:textColor="@color/text_color"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="104dp"
+        android:orientation="vertical"
+        android:background="@color/map_card"
+        app:layout_anchor="@id/mapView"
+        app:layout_anchorGravity="bottom"
+        android:id="@+id/map_search_card"
+        android:visibility="gone"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/map_search_name"
+            android:textSize="20sp"
+            android:textColor="@color/text_color"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:id="@+id/map_search_location"
+            android:textColor="@color/secondary_text"/>
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

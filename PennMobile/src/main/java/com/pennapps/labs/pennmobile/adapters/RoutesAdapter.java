@@ -16,8 +16,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.pennapps.labs.pennmobile.MapFragment;
 import com.pennapps.labs.pennmobile.R;
-import com.pennapps.labs.pennmobile.TransitFragment;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
 
 import java.util.List;
@@ -35,7 +35,7 @@ public class RoutesAdapter extends ArrayAdapter<BusRoute> {
         this.routes = routes;
         inflater = LayoutInflater.from(context);
         this.context = context;
-        this.selectedRoutes = TransitFragment.selectedRoutes;
+        this.selectedRoutes = MapFragment.selectedRoutes;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class RoutesAdapter extends ArrayAdapter<BusRoute> {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TransitFragment.toggleRouteSelection(busRoute);
+                MapFragment.toggleRouteSelection(busRoute);
                 updateCheckbox(busRoute, v);
             }
         });

@@ -56,13 +56,32 @@
     <!-- Map -->
     <string name="image_description">Photo</string>
     <string name="map">Map</string>
+    <string name="map_searches">map_search</string>
+    <string name="map_search_count">map_search_count</string>
+    <string-array name="previous_map_array">
+        <item>map1</item>
+        <item>map2</item>
+        <item>map3</item>
+        <item>map4</item>
+        <item>map5</item>
+    </string-array>
+    <string name="google_api_origin">origin</string>
+    <string name="google_api_dest">destination</string>
+    <string name="no_permission_map">Permission not granted for using Google Map</string>
+    <string name="ask_permission_fail">Access of your location is required to use this feature.</string>
 
     <!-- Transit search -->
-    <string name="starting_location_hint">Using current location</string>
+    <string name="starting_location_hint">Current location</string>
     <string name="routes_list">Routes</string>
     <string name="routes_ok">OK</string>
     <string name="location_not_found">Location not found, please try again</string>
     <string name="no_path_found">No path found</string>
+    <string name="no_origin_found">No origin found</string>
+    <string name="no_destination_found">No destination found</string>
+    <string name="no_bus_route">No bus route found</string>
+    <string name="google_map_fail">Google map fails to find a path</string>
+    <string name="bus_west">PennBUS West</string>
+    <string name="bus_east">PennBUS East</string>
 
     <!-- LaundryRoom -->
     <string name="laundry_washer">Washers</string>

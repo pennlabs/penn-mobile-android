@@ -22,9 +22,9 @@
             android:title="@string/dining"/>
 
         <item
-            android:id="@+id/nav_transit"
-            android:icon="@drawable/ic_directions_bus"
-            android:title="@string/transit"/>
+            android:id="@+id/nav_laundry"
+            android:icon="@drawable/ic_local_laundry_service"
+            android:title="@string/laundry"/>
 
         <item
             android:id="@+id/nav_news"
@@ -35,11 +35,6 @@
             android:id="@+id/nav_map"
             android:icon="@drawable/ic_map"
             android:title="@string/map"/>
-
-        <item
-            android:id="@+id/nav_laundry"
-            android:icon="@drawable/ic_local_laundry_service"
-            android:title="@string/laundry"/>
 
         <!--<item-->
             <!--android:id="@+id/nav_nso"-->
