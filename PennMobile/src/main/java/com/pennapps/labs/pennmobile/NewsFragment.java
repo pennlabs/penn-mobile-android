@@ -52,7 +52,6 @@ public class NewsFragment extends ListFragment {
         public View getView(int position,View view,ViewGroup parent) {
             LayoutInflater inflater = LayoutInflater.from(context);
             View rowView=inflater.inflate(R.layout.news_list_item, null,true);
-//            View innerView = inflater.inflate(rowRi)
 
             TextView newsName = (TextView) rowView.findViewById(R.id.news_name);
             ImageView newsLogo = (ImageView) rowView.findViewById(R.id.news_logo);
@@ -162,9 +161,6 @@ public class NewsFragment extends ListFragment {
         builder.setStartAnimations(getContext(),
                 android.support.design.R.anim.abc_popup_enter,
                 android.support.design.R.anim.abc_popup_exit);
-//                    builder.setExitAnimations(getContext(),
-//                            android.support.design.R.anim.abc_popup_exit,
-//                            android.support.design.R.anim.abc_popup_enter);
 
         CustomTabsClient.bindCustomTabsService(getContext(),
                 NewsCustomTabsServiceConnection.CUSTOM_TAB_PACKAGE_NAME, connection);
@@ -186,12 +182,9 @@ public class NewsFragment extends ListFragment {
     }
 
     private void addNews() {
-        String dpDescription = "The Daily Pennsylvanian is the independent student newspaper of " +
-                "the University of Pennsylvania.";
-        String thirtyFourDescription = "34th Street Magazine is the DP's arts and " +
-                "entertainment weekly magazine.";
-        String utbDescription = "Under The Button is Penn's 24/7 news and entertainment blog, " +
-                "known for its signature humor, gossip and snarky features.";
+        String dpDescription = "The Daily Pennsylvanian is the independent student newspaper of the University of Pennsylvania.";
+        String thirtyFourDescription = "34th Street Magazine is the DP's arts and entertainment weekly magazine.";
+        String utbDescription = "Under The Button is Penn's 24/7 news and entertainment blog, known for its signature humor, gossip and snarky features.";
         NewsSite dp = new NewsSite("The Daily Pennsylvanian", "http://www.thedp.com/",
                 dpDescription, R.drawable.thedp);
         NewsSite thirtyFour = new NewsSite("34th Street", "http://www.34st.com/",
@@ -204,8 +197,6 @@ public class NewsFragment extends ListFragment {
             newsUrls[i] = allSites[i].getUrl();
         }
         CustomListAdapter adapter = new CustomListAdapter(getContext(), newsUrls, allSites);
-//        ArrayAdapter<NewsSite> adapter = new ArrayAdapter<>(getContext(),
-//                R.layout.fragment_news, R.id.news_name, allSites);
         mListView.setAdapter(adapter);
     }
 

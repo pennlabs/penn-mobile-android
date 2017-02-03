@@ -50,7 +50,6 @@ public class NewsTab extends Fragment {
     }
 
     public void loadNews() {
-//        mIsWebViewAvailable = true;
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int progress)
@@ -99,16 +98,6 @@ public class NewsTab extends Fragment {
     }
 
     /**
-     * Called when the WebView has been detached from the fragment.
-     * The WebView is no longer available after this time.
-     */
-//    @Override
-//    public void onDestroyView() {
-//        mIsWebViewAvailable = false;
-//        super.onDestroyView();
-//    }
-
-    /**
      * Called when the fragment is no longer in use. Destroys the internal state of the WebView.
      */
     @Override
@@ -119,11 +108,4 @@ public class NewsTab extends Fragment {
         }
         super.onDestroy();
     }
-
-    /**
-     * Gets the WebView.
-     */
-//    public WebView getWebView() {
-//        return mIsWebViewAvailable ? mWebView : null;
-//    }
 }

@@ -117,8 +117,6 @@ public class MainActivity extends AppCompatActivity {
             mDrawerLayout.closeDrawer(mDrawerList);
             return;
         }
-//        super.onBackPressed();
-        // TODO slight bit of flickering when opening in browser (aka custom chrome tab)
         try {
             WebView webView = NewsTab.currentWebView;
             if (webView.canGoBack()) {
