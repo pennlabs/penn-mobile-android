@@ -8,10 +8,16 @@
 
     <include layout="@layout/loading_panel" />
 
-    <ListView
-        tools:visibility="visible"
-        android:id="@android:id/list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/laundry_machine_swiperefresh"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+
+        <ListView
+            tools:visibility="visible"
+            android:id="@android:id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

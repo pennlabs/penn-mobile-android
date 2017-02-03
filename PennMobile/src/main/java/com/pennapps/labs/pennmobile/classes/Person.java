@@ -72,4 +72,8 @@ public class Person {
     public String getEmail() {
         return email.toLowerCase();
     }
+
+    public boolean isURL() {
+        return this.phone.startsWith("http");
+    }
 }

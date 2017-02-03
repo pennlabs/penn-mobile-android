@@ -36,7 +36,6 @@ public class NewsFragment extends Fragment {
             addTab("http://www.thedp.com/", "The DP");
             addTab("http://www.34st.com/", "34th Street");
             addTab("http://www.thedp.com/blog/under-the-button/", "UTB");
-            addTab("http://eventsatpenn.com/", "Events");
         }
 
         private void addTab(String url, String title) {
@@ -126,9 +125,7 @@ public class NewsFragment extends Fragment {
 
     private String getCurrentTab() {
         try {
-            ViewFlipper flipper = (ViewFlipper) pager.getChildAt(pager.getCurrentItem());
-            WebView tab = (WebView) ((NestedScrollView) flipper.getChildAt(1)).getChildAt(0);
-            return tab.getUrl();
+            return (String) pageAdapter.getItem(pager.getCurrentItem()).getArguments().get("url");
         } catch (Exception e) {
             return null;
         }

@@ -100,13 +100,19 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
 
             if (machine.available) {
                 description.setText(R.string.laundry_available);
+                description.setTextColor(activity.getResources().getColor(R.color.avail_color_green));
                 mSwitch.setVisibility(View.GONE);
             } else {
                 stringBuilder = new StringBuilder();
-                stringBuilder.append("Busy – ").append(machine.time_left);
+                stringBuilder.append("Busy – ").append(machine.getTimeLeft(activity));
                 description.setText(stringBuilder);
-                mSwitch.setVisibility(View.VISIBLE);
+                if (machine.getTimeInMilli() > 0) {
+                    mSwitch.setVisibility(View.VISIBLE);
+                } else {
+                    mSwitch.setVisibility(View.GONE);
+                }
                 setSwitchState(machine, mSwitch);
+                description.setTextColor(activity.getResources().getColor(R.color.avail_color_red));
             }
         }
         return view;
@@ -154,6 +160,9 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
                     stringBuilder.append(activity.getString(R.string.laundry_notification_snackbar_off))
                             .append(" ").append(machine.machine_type).append(" ")
                             .append(machine.number);
+                    if (buttonView.getContext() == null) {
+                        return;
+                    }
                     Snackbar snackbar = Snackbar.make(buttonView,stringBuilder, Snackbar.LENGTH_SHORT);
                     View subView = snackbar.getView();
                     TextView snackTextView = (TextView) subView.findViewById(android.support.design.R.id.snackbar_text);

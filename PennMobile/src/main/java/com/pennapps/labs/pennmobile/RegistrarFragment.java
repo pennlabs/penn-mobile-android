@@ -73,6 +73,11 @@ public class RegistrarFragment extends SearchFavoriteFragment {
     }
 
     @Override
+    protected String getTitle() {
+        return getString(R.string.registrar);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);

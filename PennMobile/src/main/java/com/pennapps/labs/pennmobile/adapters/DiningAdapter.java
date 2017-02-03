@@ -28,11 +28,13 @@ import rx.functions.Action1;
 public class DiningAdapter extends ArrayAdapter<DiningHall> {
     private final LayoutInflater inflater;
     private Labs mLabs;
+    private boolean[] loaded;
 
     public DiningAdapter(Context context, List<DiningHall> diningHalls) {
         super(context, R.layout.dining_list_item, diningHalls);
         inflater = LayoutInflater.from(context);
         mLabs = MainActivity.getLabsInstance();
+        loaded = new boolean[diningHalls.size()];
     }
 
     @Override
@@ -52,7 +54,6 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
         holder.hall = diningHall;
 
         holder.menuArrow.setVisibility(View.GONE);
-        holder.infoIcon.setVisibility(View.GONE);
         holder.openMeal.setVisibility(View.VISIBLE);
         holder.openClose.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
@@ -65,7 +66,12 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
             holder.hallStatus.setText(R.string.dining_hall_open);
             holder.hallStatus.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.label_green));
             if (!diningHall.openMeal().equals("all")) {
-                holder.openMeal.setText(String.format("Currently serving %s", diningHall.openMeal()));
+                if (diningHall.openMeal().equals("Breakfast/Lunch/Dinner")){
+                    holder.openMeal.setText(String.format("Currently serving all meals"));
+                }
+                else {
+                    holder.openMeal.setText(String.format("Currently serving %s", diningHall.openMeal()));
+                }
             } else {
                 view.findViewById(R.id.dining_hall_open_meal).setVisibility(View.GONE);
             }
@@ -74,8 +80,10 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
             holder.hallStatus.setText(R.string.dining_hall_closed);
             holder.hallStatus.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.label_red));
             String meal = diningHall.nextMeal();
-            if (meal.equals("") || meal.equals("all")) {
+            if (meal.equals("") || meal.equals("all")){
                 view.findViewById(R.id.dining_hall_open_meal).setVisibility(View.GONE);
+            } else if (meal.equals("Breakfast/Lunch/Dinner")){
+                holder.openMeal.setText(String.format("Next serving all meals"));
             } else {
                 holder.openMeal.setText(String.format("Next serving %s", meal));
             }
@@ -86,47 +94,30 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
                 holder.openClose.setText(String.format("Opens at %s", diningHall.openingTime()));
             }
         }
-
-        if (diningHall.hasMenu()) {
-            holder.infoIcon.setVisibility(View.GONE);
+        final int pos = position;
+        if (diningHall.isResidential() && !loaded[pos]) {
+            progressBar.setVisibility(View.VISIBLE);
+            mLabs.daily_menu(diningHall.getId())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<DiningHall>() {
+                        @Override
+                        public void call(DiningHall newDiningHall) {
+                            diningHall.sortMeals(newDiningHall.menus);
+                            progressBar.setVisibility(View.INVISIBLE);
+                            holder.menuArrow.setVisibility(View.VISIBLE);
+                            loaded[pos] = true;
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            progressBar.setVisibility(View.VISIBLE);
+                            holder.menuArrow.setVisibility(View.GONE);
+                        }
+                    });
+        }
+        else {
             progressBar.setVisibility(View.GONE);
             holder.menuArrow.setVisibility(View.VISIBLE);
-        }
-        else{
-            if (diningHall.isResidential()) {
-                holder.infoIcon.setVisibility(View.INVISIBLE);
-                progressBar.setVisibility(View.VISIBLE);
-                mLabs.daily_menu(diningHall.getId())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<DiningHall>() {
-                            @Override
-                            public void call(DiningHall newDiningHall) {
-                                diningHall.sortMeals(newDiningHall.menus);
-                                holder.infoIcon.setVisibility(View.GONE);
-                                if (diningHall.hasMenu()) {
-                                    holder.infoIcon.setVisibility(View.GONE);
-                                    progressBar.setVisibility(View.GONE);
-                                    holder.menuArrow.setVisibility(View.VISIBLE);
-                                } else {
-                                    progressBar.setVisibility(View.GONE);
-                                    holder.infoIcon.setVisibility(View.VISIBLE);
-                                    holder.menuArrow.setVisibility(View.GONE);
-                                }
-                            }
-                        }, new Action1<Throwable>() {
-                            @Override
-                            public void call(Throwable throwable) {
-                                progressBar.setVisibility(View.GONE);
-                                holder.infoIcon.setVisibility(View.VISIBLE);
-                                holder.menuArrow.setVisibility(View.GONE);
-                            }
-                        });
-            }
-            else {
-                progressBar.setVisibility(View.GONE);
-                holder.menuArrow.setVisibility(View.GONE);
-                holder.infoIcon.setVisibility(View.VISIBLE);
-            }
         }
         this.sort(new MenuComparator());
         return view;
@@ -151,7 +142,6 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
         @Bind(R.id.dining_hall_open_meal) TextView openMeal;
         @Bind(R.id.dining_hall_open_close) TextView openClose;
         @Bind(R.id.dining_hall_menu_indicator) ImageView menuArrow;
-        @Bind(R.id.dining_hall_info_icon) ImageView infoIcon;
         public DiningHall hall;
 
         public ViewHolder(View view, DiningHall hall) {

@@ -58,11 +58,13 @@ public class DirectoryTab extends SearchFavoriteTab {
                             if (people.isEmpty()) {
                                 if (no_results != null) {
                                     no_results.setVisibility(View.VISIBLE);
+                                    mListView.setVisibility(View.GONE);
                                 }
                         } else if (mListView != null) {
                                 mAdapter = new DirectoryAdapter(mActivity, people);
                                 mListView.setAdapter(mAdapter);
                                 mListView.setVisibility(View.VISIBLE);
+                                no_results.setVisibility(View.GONE);
                             }
                         }
                     }
@@ -74,6 +76,7 @@ public class DirectoryTab extends SearchFavoriteTab {
                 });
     }
 
+    @Override
     public void initList() {
         if (fav) {
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mActivity);

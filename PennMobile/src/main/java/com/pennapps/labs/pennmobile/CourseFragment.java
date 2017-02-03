@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -31,12 +32,14 @@ import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-public class CourseFragment extends Fragment {
+public class CourseFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap map;
     private SupportMapFragment mapFragment;
     private Course course;
     private Labs mLabs;
+    private MainActivity mActivity;
+    private boolean fav;
 
     @Bind(R.id.course_activity) TextView courseActivityTextView;
     @Bind(R.id.course_title) TextView courseTitleTextView;
@@ -54,7 +57,9 @@ public class CourseFragment extends Fragment {
         super.onCreate(savedInstanceState);
         course = getArguments().getParcelable(getString(R.string.course_bundle_arg));
         mLabs = MainActivity.getLabsInstance();
-        ((MainActivity) getActivity()).closeKeyboard();
+        mActivity = (MainActivity) getActivity();
+        mActivity.closeKeyboard();
+        fav = getArguments().getBoolean(getString(R.string.search_favorite), false);
     }
 
     @Override
@@ -78,12 +83,14 @@ public class CourseFragment extends Fragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        MenuItem searchMenuItem = menu.findItem(R.id.registrar_search);
-        if (searchMenuItem != null) {
-            SearchView searchView = (SearchView) searchMenuItem.getActionView();
-            searchView.setEnabled(false);
-            searchMenuItem.setVisible(false);
-            searchView.clearFocus();
+        if (menu != null) {
+            MenuItem searchMenuItem = menu.findItem(R.id.registrar_search);
+            if (searchMenuItem != null) {
+                SearchView searchView = (SearchView) searchMenuItem.getActionView();
+                searchView.setEnabled(false);
+                searchMenuItem.setVisible(false);
+                searchView.clearFocus();
+            }
         }
     }
 
@@ -91,7 +98,17 @@ public class CourseFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                getActivity().onBackPressed();
+                int pos = SearchFavoriteFragment.getPagePosition();
+                if (RegistrarTab.fragments[pos] == null) {
+                    pos = (pos + 1) % 2;
+                }
+                FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
+                fragmentManager.beginTransaction().remove(RegistrarTab.fragments[pos]).commit();
+                RegistrarTab.fragments[pos] = null;
+                if (RegistrarTab.fragments[0] == null && RegistrarTab.fragments[1] == null) {
+                    mActivity.getActionBarToggle().setDrawerIndicatorEnabled(true);
+                    mActivity.getActionBarToggle().syncState();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -103,7 +120,7 @@ public class CourseFragment extends Fragment {
         super.onResume();
         if (containsNum(getActivity().getTitle())) {
             StringBuilder builder = new StringBuilder(getActivity().getTitle());
-            boolean fav = getArguments().getBoolean(getString(R.string.registrar_search, false));
+            boolean fav = getString(R.string.registrar_search) != null && getArguments().getBoolean(getString(R.string.registrar_search), false);
             if (fav) {
                 builder.append(" - ").append(course.getName());
             } else {
@@ -114,13 +131,18 @@ public class CourseFragment extends Fragment {
             getActivity().setTitle(course.getName());
         }
         if (map == null) {
-            map = mapFragment.getMap();
-            if (map != null) {
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(MapCallbacks.DEFAULT_LATLNG, 17));
-                map.getUiSettings().setZoomControlsEnabled(false);
-            }
+            mapFragment.getMapAsync(this);
         }
         processCourse();
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
+        if (map != null) {
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(MapCallbacks.DEFAULT_LATLNG, 17));
+            map.getUiSettings().setZoomControlsEnabled(false);
+        }
     }
 
     @Override
@@ -128,7 +150,7 @@ public class CourseFragment extends Fragment {
         super.onDestroyView();
         if (getActivity().getTitle().toString().contains("-")) {
             StringBuilder builder = new StringBuilder(getActivity().getTitle());
-            boolean fav = getArguments().getBoolean(getString(R.string.registrar_search, false));
+            boolean fav = getString(R.string.registrar_search) != null && getArguments().getBoolean(getString(R.string.registrar_search), false);
             if (fav) {
                 builder.delete(builder.indexOf(" - "), builder.length());
             } else {

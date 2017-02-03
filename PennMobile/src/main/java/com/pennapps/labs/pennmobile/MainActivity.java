@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.support.annotation.AnyRes;
 import android.support.annotation.NonNull;
@@ -128,8 +129,8 @@ public class MainActivity extends AppCompatActivity {
             // No webview exists currently
             super.onBackPressed();
             if (CourseFragment.containsNum(getTitle())) {
-                getActionBarToggle().setDrawerIndicatorEnabled(false);
-                getActionBarToggle().syncState();
+                mDrawerToggle.setDrawerIndicatorEnabled(false);
+                mDrawerToggle.syncState();
             }
         }
     }
@@ -182,6 +183,9 @@ public class MainActivity extends AppCompatActivity {
     private class DrawerItemClickListener implements NavigationView.OnNavigationItemSelectedListener {
         @Override
         public boolean onNavigationItemSelected(MenuItem item) {
+            removeTabs();
+            mDrawerToggle.setDrawerIndicatorEnabled(true);
+            mDrawerToggle.syncState();
             int id = item.getItemId();
             item.setChecked(true);
             navigateLayout(id);
@@ -225,6 +229,10 @@ public class MainActivity extends AppCompatActivity {
                     fragment.setArguments(arg);
                 }
                 break;
+//            case R.id.nav_nso:
+//            case R.id.nso_cont:
+//                fragment = new NsoFragment();
+//                break;
             case R.id.nav_support:
                 fragment = new SupportFragment();
                 break;
@@ -349,12 +357,22 @@ public class MainActivity extends AppCompatActivity {
 
     private void fragmentTransact(Fragment fragment) {
         if (fragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, fragment)
-                    .addToBackStack(null)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .commit();
+            final Fragment frag = fragment;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.content_frame, frag)
+                                .addToBackStack(null)
+                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                .commit();
+                    } catch (IllegalStateException e) {
+                        //ignore because the onSaveInstanceState etc states are called when activity is going to background etc
+                    }
+                }
+            });
         }
         mDrawerLayout.closeDrawer(mDrawerList);
     }

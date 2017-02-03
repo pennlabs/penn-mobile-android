@@ -45,7 +45,7 @@ public abstract class SearchFavoriteTab extends ListFragment {
     }
 
     public void processQuery(String query) {
-        if (search_instructions.getVisibility() == View.VISIBLE && !query.equals("")) {
+        if (search_instructions.getVisibility() == View.VISIBLE && !query.isEmpty()) {
             search_instructions.setVisibility(View.GONE);
             if(loadingPanel != null) {
                 loadingPanel.setVisibility(View.VISIBLE);

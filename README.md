@@ -14,6 +14,7 @@ Penn's mobile app for Android, created in a partnership between Penn Labs and th
 * Read Penn News from multiple sources (mobile websites)
 * View transit routes, static
 * Navigate using Penn Transit system
+* View college house laundry machine availability
 * Call campus help support resources
 
 ## Contributing

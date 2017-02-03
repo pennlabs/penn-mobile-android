@@ -71,36 +71,20 @@ public class DiningFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        DiningHall diningHall = ((DiningAdapter.ViewHolder) v.getTag()).hall;
-        if (diningHall.hasMenu()) {
-            mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
-            mActivity.getActionBarToggle().syncState();
-            Fragment fragment = new MenuFragment();
+        mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
+        mActivity.getActionBarToggle().syncState();
+        Fragment fragment = new MenuFragment();
 
-            Bundle args = new Bundle();
-            args.putParcelable("DiningHall", ((DiningAdapter.ViewHolder) v.getTag()).hall);
-            fragment.setArguments(args);
+        Bundle args = new Bundle();
+        args.putParcelable("DiningHall", ((DiningAdapter.ViewHolder) v.getTag()).hall);
+        fragment.setArguments(args);
 
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.dining_fragment, fragment)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .addToBackStack(null)
-                    .commit();
-        }
-        else{
-            mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
-            mActivity.getActionBarToggle().syncState();
-            Fragment fragment = new DiningInfoFragment();
-            Bundle args = new Bundle();
-            args.putParcelable("DiningHall", ((DiningAdapter.ViewHolder) v.getTag()).hall);
-            fragment.setArguments(args);
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            ft.replace(R.id.dining_fragment, fragment)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .addToBackStack(null)
-                    .commit();
-        }
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.dining_fragment, fragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .addToBackStack(null)
+                .commitAllowingStateLoss();
     }
 
     private void getDiningHalls() {

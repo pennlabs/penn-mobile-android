@@ -2,31 +2,108 @@ package com.pennapps.labs.pennmobile;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.StyleRes;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import butterknife.Bind;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import butterknife.ButterKnife;
 
 public class MenuFragment extends Fragment {
 
+    TabAdapter pageAdapter;
+    ViewPager pager;
+
     private DiningHall mDiningHall;
     private MainActivity mActivity;
-    @Bind(R.id.menu_parent) LinearLayout menuParent;
+
+    class TabAdapter extends FragmentStatePagerAdapter {
+
+        ArrayList<HashMap<String, ArrayList<String>>> foods;  //for each meal: {name of station: arraylist of foods at the station}
+        ArrayList<String> headers;
+        String name;
+
+        public TabAdapter(FragmentManager fm) {
+            super(fm);
+            foods = new ArrayList<HashMap<String, ArrayList<String>>>();
+            headers = new ArrayList<>();
+        }
+
+        private void addTabs(DiningHall hall) {
+            List<DiningHall.Menu> menus = hall.menus;
+            name = hall.getName();
+            headers.add("HOURS");
+            foods.add(new HashMap<String, ArrayList<String>>());    //first menu is empty for dining hall info tab
+            for (DiningHall.Menu menu: menus) {
+                HashMap<String, ArrayList<String>> stations = new HashMap<String, ArrayList<String>>();
+                headers.add(menu.name);
+                for (DiningHall.DiningStation station : menu.stations) {
+                    ArrayList<String> foods = new ArrayList<>();
+                    StringBuilder foodItems = new StringBuilder();      //for design purposes
+                    for (int i = 0; i < station.items.size(); i++){
+                        String txt = station.items.get(i).title;
+                        foodItems.append(String.valueOf(txt.charAt(0)).toUpperCase());
+                        foodItems.append(txt.substring(1, txt.length()));
+                        if (i < station.items.size()-1) {
+                            foodItems.append("\n");
+                        }
+                    }
+
+                    foods.add(foodItems.toString());
+                    stations.put(StringUtils.capitalize(station.name), foods);
+                }
+                foods.add(stations);
+            }
+        }
+
+
+        @Override
+        public Fragment getItem(int position) {
+            Fragment myFragment;
+            if (position==0){
+                myFragment = new DiningInfoFragment();
+                Bundle args = new Bundle();
+                args.putParcelable("DiningHall", mDiningHall);
+                args.putString(getString(R.string.menu_arg_name), name);
+                myFragment.setArguments(args);
+            }
+            else{
+                myFragment = new MenuTab();
+                Bundle args = new Bundle();
+                args.putString(getString(R.string.menu_arg_name), name);
+                args.putStringArrayList(getString(R.string.menu_arg_stations), new ArrayList<String>(foods.get(position).keySet()));
+                HashMap<String, ArrayList<String>> stations = foods.get(position);
+                for (String station : stations.keySet()){
+                    args.putStringArrayList(station, stations.get(station));
+                }
+                myFragment.setArguments(args);
+            }
+            return myFragment;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return headers.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return foods.size();
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,62 +115,38 @@ public class MenuFragment extends Fragment {
 
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.dining, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
-        switch (item.getItemId()) {
-            case R.id.dining_info_button:
-                Fragment fragment = new DiningInfoFragment();
-                Bundle args = new Bundle();
-                args.putParcelable("DiningHall", getArguments().getParcelable("DiningHall"));
-                fragment.setArguments(args);
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.dining_fragment, fragment)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .addToBackStack(null)
-                        .commit();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_menu, container, false);
+        pageAdapter = new TabAdapter(getActivity().getSupportFragmentManager());
+        pageAdapter.addTabs(mDiningHall);
+        pager = (ViewPager) v.findViewById(R.id.menu_pager);
+        pager.setAdapter(pageAdapter);
+
         v.setBackgroundColor(Color.WHITE);
         ButterKnife.bind(this, v);
-        fillDescriptions();
+        ((MainActivity) getActivity()).addTabs(pageAdapter, pager, true);
         return v;
     }
 
-    public void fillDescriptions() {
-        for (DiningHall.Menu menu : mDiningHall.menus) {
-            addDiningTextView(R.style.MealName, StringUtils.capitalize(menu.name));
-            for (DiningHall.DiningStation station : menu.stations) {
-                addDiningTextView(R.style.DiningStation, StringUtils.capitalize(station.name));
-                for (DiningHall.FoodItem item : station.items) {
-                    addDiningTextView(R.style.FoodItem, StringEscapeUtils.unescapeXml(item.title));
-                }
+    private void setPagerPosition() {
+        String meal = mDiningHall.isOpen() ? mDiningHall.openMeal() : mDiningHall.nextMeal();
+        for (final DiningHall.Menu menu : mDiningHall.menus) {
+            if (menu.name.equalsIgnoreCase(meal)) {
+                mActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        pager.setCurrentItem(mDiningHall.menus.indexOf(menu) + 1);
+                    }
+                });
             }
         }
     }
 
-    private void addDiningTextView(@StyleRes int style, String text) {
-        TextView textView = new TextView(mActivity);
-        textView.setTextAppearance(mActivity, style);
-        textView.setText(text);
-        if (style == R.style.FoodItem) {
-            textView.setPadding(50, 0, 0, 0);
-        } else if (style == R.style.MealName) {
-            textView.setPadding(0, 25, 0, 25);
-        }
-        menuParent.addView(textView);
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.dining, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+
     }
 
     @Override
@@ -101,13 +154,20 @@ public class MenuFragment extends Fragment {
         super.onResume();
         mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
         mActivity.getActionBarToggle().syncState();
-        getActivity().setTitle(mDiningHall.getName() + " Menu");
+        mActivity.setTitle(mDiningHall.getName());
+        setPagerPosition();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         getActivity().setTitle(R.string.dining);
+        mActivity.removeTabs();
         ButterKnife.unbind(this);
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mActivity.removeTabs();
     }
 }

@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,21 +14,29 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.adapters.LaundryRoomAdapter;
+import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryHall;
 
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.functions.Action1;
 
 public class LaundryBuildingFragment extends ListFragment {
 
     private MainActivity mActivity;
+    private Labs mLabs;
     private LaundryHall lh;
+    private LaundryRoomAdapter adapter;
     @Bind(R.id.no_results) TextView no_results;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mLabs = MainActivity.getLabsInstance();
         mActivity = (MainActivity) getActivity();
         mActivity.closeKeyboard();
         lh = getArguments().getParcelable(getString(R.string.laundry_hall_arg));
@@ -45,11 +54,57 @@ public class LaundryBuildingFragment extends ListFragment {
         v.setBackgroundColor(Color.WHITE);
         ButterKnife.bind(this, v);
         if (lh != null) {
-            LaundryRoomAdapter adapter = new LaundryRoomAdapter(mActivity, lh.getIds());
+            adapter = new LaundryRoomAdapter(mActivity, lh.getIds());
             setListAdapter(adapter);
             no_results.setVisibility(View.GONE);
         }
+        swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.laundry_building_swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getRefreshedLaundryHall();
+            }
+        });
+        swipeRefreshLayout.setColorSchemeResources(R.color.color_accent, R.color.color_primary);
         return v;
+    }
+
+    private void getRefreshedLaundryHall() {
+        mLabs.laundries()
+                .subscribe(new Action1<List<LaundryRoom>>() {
+                    @Override
+                    public void call(final List<LaundryRoom> rooms) {
+                        mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                List<LaundryHall> halls = LaundryHall.getLaundryHall(rooms);
+                                for (LaundryHall hall : halls) {
+                                    if (hall.getName().equals(lh.getName())) {
+                                        lh = hall;
+                                        adapter = new LaundryRoomAdapter(mActivity, lh.getIds());
+                                        setListAdapter(adapter);
+                                        break;
+                                    }
+                                }
+                                try {
+                                    swipeRefreshLayout.setRefreshing(false);
+                                } catch (NullPointerException e) {
+                                    //it has gone to another page.
+                                }
+                            }
+                        });
+                    }
+                },  new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        //do nothing because the view without refresh is our best bet
+                        try {
+                            swipeRefreshLayout.setRefreshing(false);
+                        } catch (NullPointerException e){
+                            //it has gone to another page.
+                        }
+                    }
+                });
     }
 
     @Override
@@ -70,7 +125,7 @@ public class LaundryBuildingFragment extends ListFragment {
                 .replace(R.id.laundry_fragment, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     @Override
