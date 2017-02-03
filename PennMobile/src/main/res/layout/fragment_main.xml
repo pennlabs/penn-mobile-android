@@ -170,4 +170,23 @@
 
     </android.support.percent.PercentRelativeLayout>
 
+
+
+        <!--<ImageView-->
+            <!--android:contentDescription="@string/nso"-->
+            <!--android:id="@+id/nso_img"-->
+            <!--android:src="@drawable/ic_nso"-->
+            <!--app:layout_widthPercent="100%"-->
+            <!--app:layout_heightPercent="60%"-->
+            <!--app:layout_marginTopPercent="10%"-->
+            <!--style="@style/MainIcon" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/nso_button"-->
+            <!--android:layout_below="@+id/nso_img"-->
+            <!--android:text="@string/nso"-->
+            <!--style="@style/MainText"-->
+            <!--app:layout_widthPercent="100%"-->
+            <!--app:layout_heightPercent="25%"/>-->
+
 </android.support.percent.PercentRelativeLayout>

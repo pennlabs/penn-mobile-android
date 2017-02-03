@@ -38,7 +38,8 @@
             android:id="@+id/course_id_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Title" />
+            android:textSize="17sp"
+            android:textColor="@color/text_color" />
 
         <TextView
             tools:text="Benedict Brown"
@@ -46,7 +47,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Title" />
+            android:textSize="17sp"
+            android:textColor="@color/text_color" />
 
     </LinearLayout>
 
@@ -65,10 +67,11 @@
             android:paddingRight="4sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp" />
+            android:textSize="13sp" />
 
         <TextView
             tools:text="Introduction to Computer Programming"
+            android:textSize="13sp"
             android:id="@+id/course_title_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -83,7 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/registrar_lec_linearlayout"
         android:layout_toLeftOf="@id/star_course"
-        android:textSize="12sp"/>
+        android:textSize="13sp"/>
 
 
 </RelativeLayout>

@@ -14,7 +14,6 @@ apply plugin: 'io.fabric'
 repositories {
     mavenCentral()
     maven { url 'https://maven.fabric.io/public' }
-    maven { url "https://jitpack.io" }
 }
 
 android {
@@ -48,12 +47,12 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'io.reactivex:rxandroid:0.25.0'
+    compile 'com.android.support:customtabs:23.3.0'
     compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
         transitive = true;
     }
     compile 'com.android.support:recyclerview-v7:23.3.0'
     compile 'com.android.support:support-v4:23.3.0'
     compile "com.daimajia.swipelayout:library:1.2.0@aar"
-    compile 'com.github.ahorn:android-rss:v1.0-rc1'
     testCompile 'junit:junit:4.12'
 }
