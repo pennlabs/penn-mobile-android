@@ -17,13 +17,11 @@ import butterknife.ButterKnife;
 
 public class NewsTab extends Fragment {
 
-    static WebView currentWebView;
-    private boolean mIsWebViewAvailable;
-    boolean isVisibleToUser = false;
-    private boolean newsLoaded;
     private String mUrl = "http://www.thedp.com/";
-
+    static WebView currentWebView;
     @Bind(R.id.webview) WebView mWebView;
+    private boolean newsLoaded;
+
     @Bind(R.id.flipper) ViewFlipper mFlipper;
 
     @Override
@@ -52,7 +50,6 @@ public class NewsTab extends Fragment {
     }
 
     public void loadNews() {
-        mIsWebViewAvailable = true;
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int progress)
@@ -64,16 +61,6 @@ public class NewsTab extends Fragment {
         });
         mWebView.setWebViewClient(new WebViewClient()); // forces it to open in app
         mWebView.loadUrl(mUrl);
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        boolean isVisible = getUserVisibleHint();
-        if (isVisible) {
-            currentWebView = mWebView;
-        }
-        this.isVisibleToUser = isVisible;
     }
 
     @Override
@@ -101,14 +88,13 @@ public class NewsTab extends Fragment {
         super.onResume();
     }
 
-    /**
-     * Called when the WebView has been detached from the fragment.
-     * The WebView is no longer available after this time.
-     */
     @Override
-    public void onDestroyView() {
-        mIsWebViewAvailable = false;
-        super.onDestroyView();
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        boolean isVisible = getUserVisibleHint();
+        if (isVisible) {
+            currentWebView = mWebView;
+        }
     }
 
     /**
@@ -121,12 +107,5 @@ public class NewsTab extends Fragment {
             mWebView = null;
         }
         super.onDestroy();
-    }
-
-    /**
-     * Gets the WebView.
-     */
-    public WebView getWebView() {
-        return mIsWebViewAvailable ? mWebView : null;
     }
 }
