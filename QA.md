@@ -44,21 +44,6 @@ behavior is being done.
   3. Cross-reference with the [Commons menu](http://cms.business-services.upenn.edu/dining/hours-locations-a-menus/residential-dining/1920-commons.html)
      to confirm that the menu is correct
 
-## Transit
-
-* Confirm that navigating works
-  1. Open transit
-  2. Search for `parc`
-  3. **Confirm** that it has selected the correct Parc restaurant
-  4. Edit current location to `harnwell`
-  5. Confirm that route is correct according to pennrides.com
-
-* Confirm that transit layers work
-  1. Open transit
-  2. Click on layers
-  3. Select `Campus Loop`
-  4. Confirm that campus loop is complete and accurate
-
 ## News
 
 * Confirm that opening the news works
@@ -75,6 +60,19 @@ behavior is being done.
 * Confirm that search for campus buildings works
   1. Search for `harnwell`
   2. **Confirm** that Harnwell College House is in search results and has an appropriate image
+  
+* Confirm that navigating works
+  1. Open Map
+  2. Search for `parc`
+  3. **Confirm** that it has selected the correct Parc restaurant
+  4. Edit current location to `harnwell`
+  5. Confirm that route is correct according to pennrides.com
+
+* Confirm that transit layers work
+  1. Open Map
+  2. Click on layers
+  3. Select `Campus Loop`
+  4. Confirm that campus loop is complete and accurate
 
 ## Campus Help
 
