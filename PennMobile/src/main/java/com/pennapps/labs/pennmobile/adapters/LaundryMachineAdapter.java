@@ -19,6 +19,12 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.pennapps.labs.pennmobile.LaundryBroadcastReceiver;
 import com.pennapps.labs.pennmobile.LaundryFragment;
 import com.pennapps.labs.pennmobile.MainActivity;
@@ -27,6 +33,7 @@ import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryMachine;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -63,10 +70,12 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
             item.setVisibility(View.GONE);
             summary.setVisibility(View.VISIBLE);
             ImageView imageView = (ImageView) view.findViewById(R.id.laundry_machine_iv);
+//            ImageView tempImageView = (ImageView) view.findViewById(R.id.laundry_graph_temp);
             RelativeLayout summary_rl = (RelativeLayout) view.findViewById(R.id.laundry_machine_summary_rl);
             TextView description = (TextView) view.findViewById(R.id.laundry_building_description);
             description.setText(laundryRoom.name);
             TextView availcount = (TextView) view.findViewById(R.id.laundry_machine_summary);
+            BarChart laundryChart = (BarChart) view.findViewById(R.id.laundry_chart);
             int avail = 0;
             for (LaundryMachine machine: machines) {
                 if (machine.available) {
@@ -81,6 +90,24 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
             Point size = new Point();
             display.getSize(size);
             int width = size.x / 4;
+//            Picasso.with(activity).load(R.drawable.washer).resize(width, width).into(tempImageView);
+            List<BarEntry> dataEntries = new ArrayList<>();
+            dataEntries.add(new BarEntry(1, 2));
+            dataEntries.add(new BarEntry(2, 4));
+            dataEntries.add(new BarEntry(3, 3));
+            dataEntries.add(new BarEntry(4, 1));
+            BarDataSet data = new BarDataSet(dataEntries, "Traffic");
+            data.setDrawValues(true);
+            // TODO get the bars to show up again
+            laundryChart.getXAxis().setDrawGridLines(false);
+            laundryChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+            laundryChart.getAxisLeft().setEnabled(false);
+            laundryChart.getAxisRight().setEnabled(false);
+            laundryChart.setDrawValueAboveBar(true);
+            laundryChart.setDrawBorders(false);
+            laundryChart.setDescription(null);
+            laundryChart.setData(new BarData(data));
+            laundryChart.invalidate();
             if (wash) {
                 Picasso.with(activity).load(R.drawable.washer).resize(width, width).into(imageView);
                 LaundryFragment.setSummary(laundryRoom.washers_available, laundryRoom.washers_in_use, 10, summary_rl, activity);

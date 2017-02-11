@@ -7,63 +7,80 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/lightgray"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:padding="15dp"
         android:visibility="gone"
         android:id="@+id/laundry_machine_list_summary">
 
         <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:contentDescription="@string/laundry_summary"
-                android:id="@+id/laundry_machine_iv"/>
-
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/laundry_chart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center" />
         </RelativeLayout>
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:padding="5dp"
-            android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/laundry_summary"
-                android:textStyle="bold"
-                android:textSize="18sp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/laundry_building_description"
-                android:textSize="14sp"/>
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/laundry_summary"
+                    android:id="@+id/laundry_machine_iv"/>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:padding="5dp"
+                    android:orientation="vertical">
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/laundry_machine_summary_rl"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/laundry_summary"
+                        android:textStyle="bold"
+                        android:textSize="18sp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/laundry_machine_summary"
-                android:textSize="14sp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/laundry_building_description"
+                        android:textSize="14sp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/laundry_switch"
-                android:textSize="14sp"
-                android:textStyle="italic"/>
-        </LinearLayout>
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/laundry_machine_summary_rl"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/laundry_machine_summary"
+                        android:textSize="14sp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/laundry_switch"
+                        android:textSize="14sp"
+                        android:textStyle="italic"/>
+                </LinearLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
     </LinearLayout>
 
     <RelativeLayout

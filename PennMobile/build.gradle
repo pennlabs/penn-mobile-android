@@ -1,7 +1,8 @@
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://maven.fabric.io/public' }
+        maven { url 'https://maven.fabric.io/public'}
+        maven { url "https://jitpack.io"}
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.0.0'
@@ -13,7 +14,8 @@ apply plugin: 'io.fabric'
 
 repositories {
     mavenCentral()
-    maven { url 'https://maven.fabric.io/public' }
+    maven { url 'https://maven.fabric.io/public'}
+    maven { url "https://jitpack.io"}
 }
 
 android {
@@ -48,6 +50,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'io.reactivex:rxandroid:0.25.0'
     compile 'com.android.support:customtabs:23.3.0'
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
     compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
         transitive = true;
     }
