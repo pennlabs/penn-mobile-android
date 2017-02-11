@@ -20,11 +20,13 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.pennapps.labs.pennmobile.LaundryBroadcastReceiver;
 import com.pennapps.labs.pennmobile.LaundryFragment;
 import com.pennapps.labs.pennmobile.MainActivity;
@@ -48,6 +50,24 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
     private MainActivity activity;
     private boolean wash;
     private LaundryRoom laundryRoom;
+
+    private class TimeXAxisValueFormatter implements IAxisValueFormatter {
+
+        @Override
+        public String getFormattedValue(float value, AxisBase axis) {
+            int time = (int) (value % 12);
+            if (value > 12) {
+                return time + "p";
+            }
+            if (value >= 12 && time == 0) {
+                return "12p";
+            }
+            if (time == 0) {
+                return "12a";
+            }
+            return time + "a";
+        }
+    }
 
     public LaundryMachineAdapter(MainActivity activity, List<LaundryMachine> machines, boolean wash, LaundryRoom laundryRoom) {
         super(activity, R.layout.laundry_list_item, machines);
@@ -90,23 +110,25 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
             Point size = new Point();
             display.getSize(size);
             int width = size.x / 4;
-//            Picasso.with(activity).load(R.drawable.washer).resize(width, width).into(tempImageView);
             List<BarEntry> dataEntries = new ArrayList<>();
-            dataEntries.add(new BarEntry(1, 2));
-            dataEntries.add(new BarEntry(2, 4));
-            dataEntries.add(new BarEntry(3, 3));
-            dataEntries.add(new BarEntry(4, 1));
-            BarDataSet data = new BarDataSet(dataEntries, "Traffic");
-            data.setDrawValues(true);
-            // TODO get the bars to show up again
+            for (int i = 0; i < 24; i++) {
+                dataEntries.add(new BarEntry(i, (int) (Math.random() * 5)));
+            }
+            BarDataSet barDataSet = new BarDataSet(dataEntries, "Traffic");
+            barDataSet.setDrawValues(false);
+            laundryChart.setDoubleTapToZoomEnabled(false);
+            laundryChart.setPinchZoom(false);
             laundryChart.getXAxis().setDrawGridLines(false);
             laundryChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+            laundryChart.getXAxis().setValueFormatter(new TimeXAxisValueFormatter());
             laundryChart.getAxisLeft().setEnabled(false);
             laundryChart.getAxisRight().setEnabled(false);
-            laundryChart.setDrawValueAboveBar(true);
             laundryChart.setDrawBorders(false);
             laundryChart.setDescription(null);
-            laundryChart.setData(new BarData(data));
+            BarData barData = new BarData(barDataSet);
+            barData.setBarWidth(0.5f);
+            laundryChart.setData(barData);
+            laundryChart.fitScreen();
             laundryChart.invalidate();
             if (wash) {
                 Picasso.with(activity).load(R.drawable.washer).resize(width, width).into(imageView);

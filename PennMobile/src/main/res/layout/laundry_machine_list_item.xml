@@ -19,8 +19,7 @@
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/laundry_chart"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center" />
+                android:layout_height="100dp" />
         </RelativeLayout>
 
         <RelativeLayout
