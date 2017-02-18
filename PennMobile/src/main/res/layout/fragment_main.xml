@@ -168,10 +168,6 @@
             app:layout_widthPercent="100%"
             app:layout_heightPercent="25%"/>
 
-    </android.support.percent.PercentRelativeLayout>
-
-
-
         <!--<ImageView-->
             <!--android:contentDescription="@string/nso"-->
             <!--android:id="@+id/nso_img"-->
