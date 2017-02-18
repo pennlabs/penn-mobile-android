@@ -91,7 +91,6 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
             item.setVisibility(View.GONE);
             summary.setVisibility(View.VISIBLE);
             ImageView imageView = (ImageView) view.findViewById(R.id.laundry_machine_iv);
-//            ImageView tempImageView = (ImageView) view.findViewById(R.id.laundry_graph_temp);
             RelativeLayout summary_rl = (RelativeLayout) view.findViewById(R.id.laundry_machine_summary_rl);
             TextView description = (TextView) view.findViewById(R.id.laundry_building_description);
             description.setText(laundryRoom.name);
@@ -117,7 +116,6 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
             }
             int timeOfDay = new GregorianCalendar().get(Calendar.HOUR_OF_DAY);
             BarDataSet barDataSet = new BarDataSet(dataEntries, "Traffic");
-            //TODO move the stupid bars down a few pixels (or move the x axis up a bit)
             barDataSet.setDrawValues(false);
             laundryChart.setTouchEnabled(false);
             laundryChart.getXAxis().setDrawGridLines(false);
