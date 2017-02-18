@@ -169,7 +169,27 @@ public class MapFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_map, container, false);
 
-        mapView = (MapView) v.findViewById(R.id.mapView);
+//        mapView = (MapView) v.findViewById(R.id.mapView);
+        mapView = null;
+        if (mapView == null) {
+            v = inflater.inflate(R.layout.fragment_map_fail, container, false);
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+            int numberOfClicks = sharedPref.getInt(getString(R.string.no_map_count_key), 0);
+            if (numberOfClicks > 5) {
+                ImageView iv = (ImageView) v.findViewById(R.id.no_map_iv);
+                iv.setImageResource(R.drawable.device_no_map_meme);
+                v.findViewById(R.id.no_map_tv).setVisibility(View.GONE);
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+                iv.setLayoutParams(params);
+            } else {
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putInt(getString(R.string.no_map_count_key), numberOfClicks+1);
+                editor.apply();
+            }
+            return v;
+        }
         mapView.onCreate(savedInstanceState);
 
         ButterKnife.bind(this, v);
@@ -387,6 +407,9 @@ public class MapFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if (mapView == null) {
+            return;
+        }
         mapView.onResume();
         mapCallbacks.requestLocationUpdates();
         activity.setTitle(R.string.map);
@@ -402,6 +425,9 @@ public class MapFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (mapView == null) {
+            return;
+        }
         mapView.onDestroy();
         mapCallbacks.stopLocationUpdates();
         activity.closeMapDirectionMenu();
@@ -417,6 +443,9 @@ public class MapFragment extends Fragment {
     @Override
     public void onLowMemory() {
         super.onLowMemory();
+        if (mapView == null) {
+            return;
+        }
         mapView.onLowMemory();
     }
 
@@ -440,9 +469,11 @@ public class MapFragment extends Fragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        searchView = (SearchView) menu.findItem(R.id.building_search).getActionView();
-        searchView.setIconifiedByDefault(true);
-        searchView.setIconified(true);
+        if (menu != null && menu.findItem(R.id.building_search) != null) {
+            searchView = (SearchView) menu.findItem(R.id.building_search).getActionView();
+            searchView.setIconifiedByDefault(true);
+            searchView.setIconified(true);
+        }
     }
 
     public static MapCallbacks getMapCallbacks(){
@@ -451,6 +482,9 @@ public class MapFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (mapView == null) {
+            return;
+        }
         inflater.inflate(R.menu.building, menu);
 
         searchView = (SearchView) menu.findItem(R.id.building_search).getActionView();
