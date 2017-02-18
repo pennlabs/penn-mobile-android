@@ -117,36 +117,8 @@
 
     <android.support.percent.PercentRelativeLayout
         style="@style/MainRelativeLayout"
-        android:id="@+id/news_cont"
-        app:layout_widthPercent="50%"
-        app:layout_heightPercent="33%"
-        android:layout_below="@id/dining_cont">
-
-        <ImageView
-            android:contentDescription="@string/news"
-            android:id="@+id/news_img"
-            android:src="@drawable/ic_news"
-            style="@style/MainIcon"
-            app:layout_widthPercent="100%"
-            app:layout_heightPercent="60%"
-            app:layout_marginTopPercent="10%"
-            />
-
-        <TextView
-            android:id="@+id/news_button"
-            android:layout_below="@+id/news_img"
-            android:text="@string/news"
-            style="@style/MainText"
-            app:layout_widthPercent="100%"
-            app:layout_heightPercent="25%"/>
-
-    </android.support.percent.PercentRelativeLayout>
-
-    <android.support.percent.PercentRelativeLayout
-        style="@style/MainRelativeLayout"
-        android:layout_toRightOf="@id/news_cont"
-        android:layout_below="@id/dining_cont"
         android:id="@+id/map_cont"
+        android:layout_below="@id/dining_cont"
         app:layout_widthPercent="50%"
         app:layout_heightPercent="33%">
 
@@ -164,6 +136,34 @@
             android:id="@+id/map_button"
             android:layout_below="@+id/map_img"
             android:text="@string/map"
+            style="@style/MainText"
+            app:layout_widthPercent="100%"
+            app:layout_heightPercent="25%"/>
+
+    </android.support.percent.PercentRelativeLayout>
+
+    <android.support.percent.PercentRelativeLayout
+        style="@style/MainRelativeLayout"
+        android:id="@+id/news_cont"
+        app:layout_widthPercent="50%"
+        app:layout_heightPercent="33%"
+        android:layout_toRightOf="@id/map_cont"
+        android:layout_below="@id/laundry_cont">
+
+        <ImageView
+            android:contentDescription="@string/news"
+            android:id="@+id/news_img"
+            android:src="@drawable/ic_news"
+            style="@style/MainIcon"
+            app:layout_widthPercent="100%"
+            app:layout_heightPercent="60%"
+            app:layout_marginTopPercent="10%"
+            />
+
+        <TextView
+            android:id="@+id/news_button"
+            android:layout_below="@+id/news_img"
+            android:text="@string/news"
             style="@style/MainText"
             app:layout_widthPercent="100%"
             app:layout_heightPercent="25%"/>
