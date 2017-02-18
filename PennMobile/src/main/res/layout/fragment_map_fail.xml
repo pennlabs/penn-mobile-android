@@ -16,18 +16,21 @@
         android:textSize="10pt"
         android:layout_centerHorizontal="true"
         android:textColor="@color/secondary_text"
-        android:layout_below="@id/no_map_center"/>
+        android:layout_below="@id/no_map_center"
+        android:gravity="center"/>
+
     <ImageView
         android:id="@+id/no_map_iv"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:src="@drawable/beardedman"
         android:contentDescription="@string/no_map_beardman"
-        android:layout_above="@id/no_map_tv"
+        android:cropToPadding="false"
+        android:layout_alignRight="@id/no_map_tv"
+        android:layout_marginTop="100dp"
         android:layout_alignEnd="@id/no_map_tv"
-        android:layout_alignStart="@id/no_map_tv"
+        android:layout_above="@id/no_map_tv"
         android:layout_alignLeft="@id/no_map_tv"
-        android:layout_alignRight="@id/no_map_tv" />
+        android:layout_alignStart="@id/no_map_tv" />
 
 </RelativeLayout>
