@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -31,11 +30,13 @@ import com.pennapps.labs.pennmobile.LaundryBroadcastReceiver;
 import com.pennapps.labs.pennmobile.LaundryFragment;
 import com.pennapps.labs.pennmobile.MainActivity;
 import com.pennapps.labs.pennmobile.R;
-import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryMachine;
+import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -114,21 +115,25 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
             for (int i = 0; i < 24; i++) {
                 dataEntries.add(new BarEntry(i, (int) (Math.random() * 5)));
             }
+            int timeOfDay = new GregorianCalendar().get(Calendar.HOUR_OF_DAY);
             BarDataSet barDataSet = new BarDataSet(dataEntries, "Traffic");
+            //TODO move the stupid bars down a few pixels (or move the x axis up a bit)
             barDataSet.setDrawValues(false);
-            laundryChart.setDoubleTapToZoomEnabled(false);
-            laundryChart.setPinchZoom(false);
+            laundryChart.setTouchEnabled(false);
             laundryChart.getXAxis().setDrawGridLines(false);
             laundryChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
             laundryChart.getXAxis().setValueFormatter(new TimeXAxisValueFormatter());
-            laundryChart.getAxisLeft().setEnabled(false);
             laundryChart.getAxisRight().setEnabled(false);
+            laundryChart.getAxisLeft().setEnabled(false);
             laundryChart.setDrawBorders(false);
             laundryChart.setDescription(null);
             BarData barData = new BarData(barDataSet);
             barData.setBarWidth(0.5f);
             laundryChart.setData(barData);
+            laundryChart.highlightValue(timeOfDay, 0);
+            laundryChart.getAxisLeft().setAxisMinimum(0);
             laundryChart.fitScreen();
+            laundryChart.animateXY(500, 500);
             laundryChart.invalidate();
             if (wash) {
                 Picasso.with(activity).load(R.drawable.washer).resize(width, width).into(imageView);
