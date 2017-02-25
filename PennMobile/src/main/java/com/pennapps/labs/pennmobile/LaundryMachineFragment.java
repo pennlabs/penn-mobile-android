@@ -127,15 +127,16 @@ public class LaundryMachineFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
-        mActivity.setTitle(R.string.laundry);
-        mActivity.removeTabs();
-        ButterKnife.unbind(this);
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean(laundryRoom.name + "_isFavorite", favoriteState);
         editor.commit();
+
+        super.onDestroyView();
+        mActivity.setTitle(R.string.laundry);
+        mActivity.removeTabs();
+        ButterKnife.unbind(this);
     }
 
     @Override

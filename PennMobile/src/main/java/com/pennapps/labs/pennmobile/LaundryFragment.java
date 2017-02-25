@@ -93,7 +93,7 @@ public class LaundryFragment extends ListFragment {
                             public void run() {
                                 if (loadingPanel != null) {
                                     List<LaundryHall> halls = LaundryHall.getLaundryHall(rooms);
-                                    List<LaundryHall> hallsOrdered = new ArrayList<LaundryHall>();
+                                    List<LaundryHall> hallsOrdered = new ArrayList<>();
                                     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
                                     Iterator<LaundryHall> iter = halls.iterator();
                                     while(iter.hasNext()){
@@ -104,9 +104,6 @@ public class LaundryFragment extends ListFragment {
                                         }
                                     }
                                     hallsOrdered.addAll(halls);
-                                    for(LaundryHall hall: hallsOrdered){
-                                        System.out.println(hall.getName());
-                                    }
                                     LaundryHallAdapter adapter = new LaundryHallAdapter(mActivity, hallsOrdered);
                                     mListView.setAdapter(adapter);
                                     loadingPanel.setVisibility(View.GONE);
@@ -115,7 +112,7 @@ public class LaundryFragment extends ListFragment {
                                     if (args != null) {
                                         int hall_no = args.getInt(getString(R.string.laundry_hall_no), -1);
                                         if (hall_no != -1) {
-                                            for (LaundryHall hall : halls) {
+                                            for (LaundryHall hall : hallsOrdered) {
                                                 for (LaundryRoom laundryRoom : hall.getIds()) {
                                                     if (laundryRoom.hall_no == hall_no) {
                                                         toLaundryHall(hall);
