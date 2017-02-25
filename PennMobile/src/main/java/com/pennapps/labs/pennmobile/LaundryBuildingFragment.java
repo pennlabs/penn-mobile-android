@@ -59,19 +59,27 @@ public class LaundryBuildingFragment extends ListFragment {
         v.setBackgroundColor(Color.WHITE);
         ButterKnife.bind(this, v);
         if (lh != null) {
-            List<LaundryRoom> laundries = lh.getIds();
+            List<LaundryRoom> laundries = new ArrayList<>(lh.getIds());
             laundriesOrdered = new ArrayList<>();
+            for(LaundryRoom room: laundries){
+                System.out.println(room.name);
+            }
+            System.out.println("-------");
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
             Iterator<LaundryRoom> iter = laundries.iterator();
             while(iter.hasNext()){
                 LaundryRoom next = iter.next();
                 if(sp.getBoolean(next.name + "_isFavorite",false)){
+                    System.out.println(next.name);
                     laundriesOrdered.add(next);
                     iter.remove();
                 }
             }
+            System.out.println("-------");
             laundriesOrdered.addAll(laundries);
-
+            for(LaundryRoom room: laundriesOrdered){
+                System.out.println(room.name);
+            }
             adapter = new LaundryRoomAdapter(mActivity, laundriesOrdered);
             setListAdapter(adapter);
             no_results.setVisibility(View.GONE);
@@ -141,7 +149,7 @@ public class LaundryBuildingFragment extends ListFragment {
         fragment.setArguments(args);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .add(R.id.laundry_fragment, fragment)
+                .replace(R.id.laundry_fragment, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
                 .commitAllowingStateLoss();

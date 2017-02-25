@@ -92,7 +92,7 @@ public class LaundryFragment extends ListFragment {
                             @Override
                             public void run() {
                                 if (loadingPanel != null) {
-                                    List<LaundryHall> halls = LaundryHall.getLaundryHall(rooms);
+                                    List<LaundryHall> halls = new ArrayList<>(LaundryHall.getLaundryHall(rooms));
                                     List<LaundryHall> hallsOrdered = new ArrayList<>();
                                     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
                                     Iterator<LaundryHall> iter = halls.iterator();
