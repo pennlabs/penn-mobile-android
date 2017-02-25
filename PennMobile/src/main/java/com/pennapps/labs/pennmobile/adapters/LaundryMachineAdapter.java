@@ -31,9 +31,6 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 
-/**
- * Created by Jason on 11/18/2015.
- */
 public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
 
     private List<LaundryMachine> machines;
@@ -50,6 +47,7 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
         this.wash = wash;
         this.laundryRoom = laundryRoom;
     }
+
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         if (view == null) {

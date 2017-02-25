@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by Jason on 10/21/2015.
- */
 public class LaundryHall implements Parcelable{
     private String name;
     private ArrayList<LaundryRoom> laundries;

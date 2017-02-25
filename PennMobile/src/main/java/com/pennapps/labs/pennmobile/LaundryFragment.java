@@ -1,7 +1,9 @@
 package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -21,6 +23,9 @@ import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryHall;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,12 +44,20 @@ public class LaundryFragment extends ListFragment {
     @Bind(R.id.no_results) TextView no_results;
     SwipeRefreshLayout swipeRefreshLayout;
 
+    private SharedPreferences sharedPref;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLabs = MainActivity.getLabsInstance();
         mActivity = (MainActivity) getActivity();
         mActivity.closeKeyboard();
+
+        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+    }
+
+    public SharedPreferences getPref(){
+        return sharedPref;
     }
 
     @Override
@@ -80,7 +93,21 @@ public class LaundryFragment extends ListFragment {
                             public void run() {
                                 if (loadingPanel != null) {
                                     List<LaundryHall> halls = LaundryHall.getLaundryHall(rooms);
-                                    LaundryHallAdapter adapter = new LaundryHallAdapter(mActivity, halls);
+                                    List<LaundryHall> hallsOrdered = new ArrayList<LaundryHall>();
+                                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                                    Iterator<LaundryHall> iter = halls.iterator();
+                                    while(iter.hasNext()){
+                                        LaundryHall next = iter.next();
+                                        if(sp.getBoolean(next.getName() + "_isFavorite",false)){
+                                            hallsOrdered.add(next);
+                                            iter.remove();
+                                        }
+                                    }
+                                    hallsOrdered.addAll(halls);
+                                    for(LaundryHall hall: hallsOrdered){
+                                        System.out.println(hall.getName());
+                                    }
+                                    LaundryHallAdapter adapter = new LaundryHallAdapter(mActivity, hallsOrdered);
                                     mListView.setAdapter(adapter);
                                     loadingPanel.setVisibility(View.GONE);
                                     no_results.setVisibility(View.GONE);
