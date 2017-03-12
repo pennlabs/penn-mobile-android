@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile.classes;
 import com.google.gson.annotations.SerializedName;
 
 import org.joda.time.DateTime;
+import org.joda.time.IllegalInstantException;
 import org.joda.time.Interval;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -58,7 +59,14 @@ public class VenueInterval {
                 closeTime = date + " " + "23:59:59";
             }
             DateTime openInstant = DateTime.parse(openTime, DATEFORMAT);
-            DateTime closeInstant = DateTime.parse(closeTime, DATEFORMAT);
+            DateTime closeInstant;
+            try {
+                closeInstant = DateTime.parse(closeTime, DATEFORMAT);
+            } catch (IllegalInstantException e) {
+                closeTime = date + " " + "01:00:00";
+                closeInstant = DateTime.parse(closeTime, DATEFORMAT);
+            }
+
             // Close hours sometimes given in AM hours of next day
             // Cutoff for "early morning" hours was decided to be 6AM
             if (closeInstant.getHourOfDay() < 6) {
