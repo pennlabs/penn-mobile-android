@@ -1,5 +1,7 @@
 package com.pennapps.labs.pennmobile.api;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -7,6 +9,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+import com.pennapps.labs.pennmobile.LaundryUsage;
 import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
@@ -120,6 +123,15 @@ public class Serializer {
                 throws JsonParseException {
             JsonElement content = je.getAsJsonObject().get("halls");
             return new Gson().fromJson(content, new TypeToken<List<LaundryRoom>>(){}.getType());
+        }
+    }
+
+    public static class LaundryUsageSerializer implements  JsonDeserializer<LaundryUsage> {
+        @Override
+        public LaundryUsage deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+                throws JsonParseException {
+            JsonElement content = je.getAsJsonObject().get("days");
+            return new Gson().fromJson(content, LaundryUsage.class);
         }
     }
 

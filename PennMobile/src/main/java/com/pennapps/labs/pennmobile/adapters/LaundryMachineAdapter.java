@@ -51,6 +51,7 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
     private MainActivity activity;
     private boolean wash;
     private LaundryRoom laundryRoom;
+    private int[] traffic;
 
     private class TimeXAxisValueFormatter implements IAxisValueFormatter {
 
@@ -70,13 +71,14 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
         }
     }
 
-    public LaundryMachineAdapter(MainActivity activity, List<LaundryMachine> machines, boolean wash, LaundryRoom laundryRoom) {
+    public LaundryMachineAdapter(MainActivity activity, List<LaundryMachine> machines, boolean wash, int[] laundryTraffic, LaundryRoom laundryRoom) {
         super(activity, R.layout.laundry_list_item, machines);
         this.machines = machines;
         inflater = LayoutInflater.from(activity);
         this.activity = activity;
         this.wash = wash;
         this.laundryRoom = laundryRoom;
+        traffic = laundryTraffic;
     }
     @Override
     public View getView(int position, View view, ViewGroup parent) {
@@ -112,7 +114,7 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
             int width = size.x / 4;
             List<BarEntry> dataEntries = new ArrayList<>();
             for (int i = 0; i < 24; i++) {
-                dataEntries.add(new BarEntry(i, (int) (Math.random() * 5)));
+                dataEntries.add(new BarEntry(i, traffic[i]));
             }
             int timeOfDay = new GregorianCalendar().get(Calendar.HOUR_OF_DAY);
             BarDataSet barDataSet = new BarDataSet(dataEntries, "Traffic");

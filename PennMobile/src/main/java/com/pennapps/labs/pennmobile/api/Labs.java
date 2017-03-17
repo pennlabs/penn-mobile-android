@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.api;
 
+import com.pennapps.labs.pennmobile.LaundryUsage;
 import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
@@ -65,4 +66,8 @@ public interface Labs {
     @GET("/laundry/hall/{id}")
     Observable<List<LaundryMachine>> laundryMachines(
         @Path("id") int id);
+
+    @GET("/laundry/usage/{hall_no}")
+    Observable<LaundryUsage> laundryMachinesUsage(
+        @Path("hall_no") int hallno);
 }

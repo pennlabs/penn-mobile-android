@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.StrictMode;
 import android.support.annotation.AnyRes;
 import android.support.annotation.NonNull;
@@ -30,7 +29,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.widget.RelativeLayout;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
@@ -264,6 +262,7 @@ public class MainActivity extends AppCompatActivity {
             gsonBuilder.registerTypeAdapter(new TypeToken<List<BusRoute>>(){}.getType(), new Serializer.BusRouteListSerializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<List<LaundryRoom>>(){}.getType(), new Serializer.LaundryListSerializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<List<LaundryMachine>>(){}.getType(), new Serializer.LaundryMachineSerializer());
+            gsonBuilder.registerTypeAdapter(new TypeToken<LaundryUsage>(){}.getType(), new Serializer.LaundryUsageSerializer());
             Gson gson = gsonBuilder.create();
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setConverter(new GsonConverter(gson))

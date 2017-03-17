@@ -4,6 +4,7 @@ package com.pennapps.labs.pennmobile;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +18,10 @@ import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryMachine;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -35,6 +38,7 @@ public class LaundryMachineTab extends ListFragment {
     private List<LaundryMachine> machines;
     private ListView mListView;
     private boolean wash;
+    private int[] laundryTraffic;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +78,7 @@ public class LaundryMachineTab extends ListFragment {
         }
         if (machines == null || machines.isEmpty()) {
             getMachines();
+            getMachinesUsages();
         } else {
             v.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
             setMachines(machines, laundryRoom);
@@ -124,6 +129,78 @@ public class LaundryMachineTab extends ListFragment {
                 });
     }
 
+    private void getMachinesUsages() {
+        mLabs.laundryMachinesUsage(laundryRoom.hall_no)
+                .subscribe(new Action1<LaundryUsage>() {
+                    @Override
+                    public void call(final LaundryUsage usage) {
+                        mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (loadingPanel != null) {
+                                    loadingPanel.setVisibility(View.GONE);
+                                }
+                                try {
+                                    swipeRefreshLayout.setRefreshing(false);
+                                    Calendar sCalendar = Calendar.getInstance();
+                                    String currentDay = sCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+                                    laundryTraffic = new int[24];
+                                    String[] day;
+                                    if (currentDay.equals("Friday")) {
+                                        day = usage.Friday;
+                                    } else if (currentDay.equals("Saturday")) {
+                                        day = usage.Saturday;
+                                    } else if (currentDay.equals("Sunday")) {
+                                        day = usage.Sunday;
+                                    } else if (currentDay.equals("Monday")) {
+                                        day = usage.Monday;
+                                    } else if (currentDay.equals("Tuesday")) {
+                                        day = usage.Tuesday;
+                                    } else if (currentDay.equals("Wednesday")) {
+                                        day = usage.Wednesday;
+                                    } else {
+                                        day = usage.Thursday;
+                                    }
+                                    for (int i = 0; i < laundryTraffic.length; i++) {
+                                        if (day[i].equals("High")) {
+                                            laundryTraffic[i] = 3;
+                                        } else if (day[i].equals("Medium")) {
+                                            laundryTraffic[i] = 2;
+                                        } else {
+                                            laundryTraffic[i] = 1;
+                                        }
+                                    }
+                                } catch (NullPointerException ignore) {
+                                    //it has gone to another page.
+                                    Log.d("error!", "lul", ignore);
+                                }
+                            }
+                        });
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(final Throwable throwable) {
+                        mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (loadingPanel != null) {
+                                    loadingPanel.setVisibility(View.GONE);
+                                }
+                                if (no_results != null) {
+                                    no_results.setVisibility(View.VISIBLE);
+                                }
+                                try {
+                                    Log.d("rip", "thrown", throwable);
+                                    swipeRefreshLayout.setRefreshing(false);
+                                } catch (NullPointerException ignore) {
+                                    //it has gone to another page
+                                }
+                            }
+                        });
+                    }
+                });
+    }
+
     private void setMachines(List<LaundryMachine> machines, LaundryRoom laundryRoom) {
         this.machines = machines;
         LinkedList<LaundryMachine> filtered = new LinkedList<>();
@@ -138,7 +215,7 @@ public class LaundryMachineTab extends ListFragment {
                 filtered.add(machine);
             }
         }
-        LaundryMachineAdapter adapter = new LaundryMachineAdapter(mActivity, filtered, wash, laundryRoom);
+        LaundryMachineAdapter adapter = new LaundryMachineAdapter(mActivity, filtered, wash, laundryTraffic, laundryRoom);
         mListView.setAdapter(adapter);
     }
 
