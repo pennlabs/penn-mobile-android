@@ -4,7 +4,6 @@ package com.pennapps.labs.pennmobile;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -191,7 +190,6 @@ public class LaundryMachineTab extends ListFragment {
                                 try {
                                     swipeRefreshLayout.setRefreshing(false);
                                 } catch (NullPointerException ignore) {
-                                    Log.d("null pointer", "exception", ignore);
                                     //it has gone to another page
                                 }
                             }
