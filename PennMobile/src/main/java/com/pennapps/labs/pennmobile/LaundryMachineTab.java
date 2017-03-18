@@ -163,16 +163,15 @@ public class LaundryMachineTab extends ListFragment {
                                     }
                                     for (int i = 0; i < laundryTraffic.length; i++) {
                                         if (day[i].equals("High")) {
-                                            laundryTraffic[i] = 3;
+                                            laundryTraffic[i] = 6;
                                         } else if (day[i].equals("Medium")) {
-                                            laundryTraffic[i] = 2;
+                                            laundryTraffic[i] = 4;
                                         } else {
-                                            laundryTraffic[i] = 1;
+                                            laundryTraffic[i] = 2;
                                         }
                                     }
                                 } catch (NullPointerException ignore) {
                                     //it has gone to another page.
-                                    Log.d("error!", "lul", ignore);
                                 }
                             }
                         });
@@ -190,9 +189,9 @@ public class LaundryMachineTab extends ListFragment {
                                     no_results.setVisibility(View.VISIBLE);
                                 }
                                 try {
-                                    Log.d("rip", "thrown", throwable);
                                     swipeRefreshLayout.setRefreshing(false);
                                 } catch (NullPointerException ignore) {
+                                    Log.d("null pointer", "exception", ignore);
                                     //it has gone to another page
                                 }
                             }
@@ -213,6 +212,12 @@ public class LaundryMachineTab extends ListFragment {
         for (LaundryMachine machine: machines) {
             if(machine.machine_type.contains(type)){
                 filtered.add(machine);
+            }
+        }
+        if (laundryTraffic == null) {
+            laundryTraffic = new int[24];
+            for (int i = 0; i < laundryTraffic.length; i++) {
+                laundryTraffic[i] = 0;
             }
         }
         LaundryMachineAdapter adapter = new LaundryMachineAdapter(mActivity, filtered, wash, laundryTraffic, laundryRoom);

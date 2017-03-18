@@ -79,7 +79,22 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
         this.wash = wash;
         this.laundryRoom = laundryRoom;
         traffic = laundryTraffic;
+        smoothTrafficData();
     }
+
+    private void smoothTrafficData() {
+        int[] copyTraffic = new int[traffic.length];
+        for (int i = 0; i < copyTraffic.length; i++) {
+            copyTraffic[i] = traffic[i];
+        }
+        for (int i = 1; i < traffic.length - 1; i++) {
+            if (Math.abs(copyTraffic[i] - (copyTraffic[i - 1] + copyTraffic[i + 1]) / 2) <=
+                    Math.abs(copyTraffic[i - 1] - copyTraffic[i + 1]) / 2) {
+                traffic[i] = (copyTraffic[i - 1] + copyTraffic[i + 1]) / 2;
+            }
+        }
+    }
+
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         if (view == null) {
@@ -132,6 +147,7 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
             laundryChart.setData(barData);
             laundryChart.highlightValue(timeOfDay, 0);
             laundryChart.getAxisLeft().setAxisMinimum(0);
+            laundryChart.getAxisLeft().setAxisMaximum(6);
             laundryChart.fitScreen();
             laundryChart.animateXY(500, 500);
             laundryChart.invalidate();
