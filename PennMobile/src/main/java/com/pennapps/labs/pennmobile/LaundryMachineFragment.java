@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +23,8 @@ import com.pennapps.labs.pennmobile.classes.LaundryMachine;
 import java.util.List;
 
 import butterknife.ButterKnife;
+
+import static android.content.ContentValues.TAG;
 
 public class LaundryMachineFragment extends Fragment {
     private Labs mLabs;
@@ -79,6 +82,11 @@ public class LaundryMachineFragment extends Fragment {
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         favoriteState = sp.getBoolean(laundryRoom.name + "_isFavorite", false);
+
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        for(int entry = 0; entry < fragmentManager.getBackStackEntryCount(); entry++){
+            Log.i(TAG, "Found fragment: " + fragmentManager.getBackStackEntryAt(entry).getName());
+        }
     }
 
     @Override
@@ -131,11 +139,14 @@ public class LaundryMachineFragment extends Fragment {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean(laundryRoom.name + "_isFavorite", favoriteState);
+        if(laundryRoom.name.contains("-")) {
+            editor.putBoolean(laundryRoom.name.substring(0, laundryRoom.name.indexOf("-")) + "_isFavorite", favoriteState);
+        }
         editor.commit();
 
-        super.onDestroyView();
-        mActivity.setTitle(R.string.laundry);
         mActivity.removeTabs();
+        mActivity.setTitle("Laundry");
+        super.onDestroyView();
         ButterKnife.unbind(this);
     }
 
@@ -159,7 +170,9 @@ public class LaundryMachineFragment extends Fragment {
                 favoriteState = !favoriteState;
 
                 return true;
-
+            case android.R.id.home:
+                getActivity().getSupportFragmentManager().popBackStack();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
 

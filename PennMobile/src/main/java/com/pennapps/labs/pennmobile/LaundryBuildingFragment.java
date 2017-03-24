@@ -9,7 +9,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -27,6 +29,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.functions.Action1;
+
+import static android.content.ContentValues.TAG;
 
 public class LaundryBuildingFragment extends ListFragment {
 
@@ -61,28 +65,24 @@ public class LaundryBuildingFragment extends ListFragment {
         if (lh != null) {
             List<LaundryRoom> laundries = new ArrayList<>(lh.getIds());
             laundriesOrdered = new ArrayList<>();
-            for(LaundryRoom room: laundries){
-                System.out.println(room.name);
-            }
-            System.out.println("-------");
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
             Iterator<LaundryRoom> iter = laundries.iterator();
             while(iter.hasNext()){
                 LaundryRoom next = iter.next();
                 if(sp.getBoolean(next.name + "_isFavorite",false)){
-                    System.out.println(next.name);
                     laundriesOrdered.add(next);
                     iter.remove();
                 }
             }
-            System.out.println("-------");
             laundriesOrdered.addAll(laundries);
-            for(LaundryRoom room: laundriesOrdered){
-                System.out.println(room.name);
-            }
             adapter = new LaundryRoomAdapter(mActivity, laundriesOrdered);
             setListAdapter(adapter);
             no_results.setVisibility(View.GONE);
+
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            for(int entry = 0; entry < fragmentManager.getBackStackEntryCount(); entry++){
+                Log.i(TAG, "Found fragment: " + fragmentManager.getBackStackEntryAt(entry).getName());
+            }
         }
         swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.laundry_building_swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -92,6 +92,7 @@ public class LaundryBuildingFragment extends ListFragment {
             }
         });
         swipeRefreshLayout.setColorSchemeResources(R.color.color_accent, R.color.color_primary);
+        getRefreshedLaundryHall();
         return v;
     }
 
@@ -103,8 +104,7 @@ public class LaundryBuildingFragment extends ListFragment {
                         mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                List<LaundryHall> halls = LaundryHall.getLaundryHall(rooms);
-                                System.out.println("ASDIAJSDIAJDIJAIDJAISJDIASDJASD");
+                                List<LaundryHall> halls = new ArrayList<LaundryHall>(LaundryHall.getLaundryHall(rooms));
                                 for (LaundryHall hall : halls) {
                                     if (hall.getName().equals(lh.getName())) {
                                         lh = hall;
@@ -149,9 +149,9 @@ public class LaundryBuildingFragment extends ListFragment {
         fragment.setArguments(args);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.laundry_fragment, fragment)
+                .replace(R.id.content_frame, fragment)
+                .addToBackStack("Laundry Building List")
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .addToBackStack(null)
                 .commitAllowingStateLoss();
     }
 
@@ -173,6 +173,18 @@ public class LaundryBuildingFragment extends ListFragment {
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                getActivity().getSupportFragmentManager().popBackStack();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
         }
     }
 

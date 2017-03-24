@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +34,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.functions.Action1;
 
+import static android.content.ContentValues.TAG;
+
 
 public class LaundryFragment extends ListFragment {
 
@@ -45,6 +48,11 @@ public class LaundryFragment extends ListFragment {
     SwipeRefreshLayout swipeRefreshLayout;
 
     private SharedPreferences sharedPref;
+
+    @Override
+    public void onStart(){
+        super.onStart();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -176,7 +184,6 @@ public class LaundryFragment extends ListFragment {
         mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
         mActivity.getActionBarToggle().syncState();
         Bundle args = new Bundle();
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         if (lh.getIds().size() >= 1) {
             Fragment fragment;
             if (lh.getIds().size() == 1) {
@@ -194,11 +201,12 @@ public class LaundryFragment extends ListFragment {
                 }
             }
             fragment.setArguments(args);
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.laundry_fragment, fragment)
+                    .replace(R.id.content_frame, fragment, "TAG1")
+                    .addToBackStack("Laundry Main")
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .addToBackStack(null)
-                    .commit();
+                    .commitAllowingStateLoss();
         }
     }
 

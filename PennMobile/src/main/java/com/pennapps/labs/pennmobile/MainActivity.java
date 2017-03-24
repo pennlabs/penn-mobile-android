@@ -24,6 +24,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -54,6 +55,8 @@ import java.util.List;
 import io.fabric.sdk.android.Fabric;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
+
+import static android.content.ContentValues.TAG;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -122,6 +125,8 @@ public class MainActivity extends AppCompatActivity {
             WebView webView = NewsTab.currentWebView;
             if (webView.canGoBack()) {
                 webView.goBack();
+            } else if (getSupportFragmentManager().getBackStackEntryCount() > 0){
+                getSupportFragmentManager().popBackStack();
             } else {
                 super.onBackPressed();
             }
@@ -365,9 +370,9 @@ public class MainActivity extends AppCompatActivity {
                         FragmentManager fragmentManager = getSupportFragmentManager();
                         fragmentManager.beginTransaction()
                                 .replace(R.id.content_frame, frag)
-                                .addToBackStack(null)
+                                .addToBackStack("Main Activity")
                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                .commit();
+                                .commitAllowingStateLoss();
                     } catch (IllegalStateException e) {
                         //ignore because the onSaveInstanceState etc states are called when activity is going to background etc
                     }
