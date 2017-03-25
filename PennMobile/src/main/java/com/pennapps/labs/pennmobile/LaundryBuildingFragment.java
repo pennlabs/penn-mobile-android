@@ -19,8 +19,8 @@ import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.adapters.LaundryRoomAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
-import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryHall;
+import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 
 import java.util.ArrayList;
 import java.util.Iterator;
