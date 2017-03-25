@@ -3,9 +3,6 @@ package com.pennapps.labs.pennmobile.classes;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by Jason on 10/21/2015.
- */
 public class LaundryRoom implements Parcelable {
     public int dryers_available;
     public int dryers_in_use;

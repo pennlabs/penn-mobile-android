@@ -8,9 +8,6 @@ import android.support.v7.preference.PreferenceManager;
 
 import butterknife.ButterKnife;
 
-/**
- * Created by Jason on 1/26/2016.
- */
 public class DirectoryFragment extends SearchFavoriteFragment {
 
     private DirectoryTabAdapter adapter;

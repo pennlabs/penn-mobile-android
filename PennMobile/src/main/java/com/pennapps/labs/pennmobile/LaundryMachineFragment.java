@@ -1,26 +1,31 @@
 package com.pennapps.labs.pennmobile;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.pennapps.labs.pennmobile.api.Labs;
-import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryMachine;
+import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 
 import java.util.List;
 
 import butterknife.ButterKnife;
 
-/**
- * Created by Jason on 11/4/2015.
- */
+import static android.content.ContentValues.TAG;
+
 public class LaundryMachineFragment extends Fragment {
     private Labs mLabs;
     private MainActivity mActivity;
@@ -28,6 +33,8 @@ public class LaundryMachineFragment extends Fragment {
     private List<LaundryMachine> machines;
     private TabAdapter pageAdapter;
     private ViewPager pager;
+
+    private boolean favoriteState = false;
 
     class TabAdapter extends FragmentStatePagerAdapter {
         public TabAdapter(FragmentManager fm) {
@@ -71,6 +78,15 @@ public class LaundryMachineFragment extends Fragment {
         mActivity.closeKeyboard();
         Bundle args = getArguments();
         laundryRoom = args.getParcelable(getString(R.string.laundry));
+        setHasOptionsMenu(true);
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        favoriteState = sp.getBoolean(laundryRoom.name + "_isFavorite", false);
+
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        for(int entry = 0; entry < fragmentManager.getBackStackEntryCount(); entry++){
+            Log.i(TAG, "Found fragment: " + fragmentManager.getBackStackEntryAt(entry).getName());
+        }
     }
 
     @Override
@@ -119,9 +135,47 @@ public class LaundryMachineFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
-        mActivity.setTitle(R.string.laundry);
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(laundryRoom.name + "_isFavorite", favoriteState);
+        if(laundryRoom.name.contains("-")) {
+            editor.putBoolean(laundryRoom.name.substring(0, laundryRoom.name.indexOf("-")) + "_isFavorite", favoriteState);
+        }
+        editor.commit();
+
         mActivity.removeTabs();
+        mActivity.setTitle("Laundry");
+        super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.laundry_favorite, menu);
+        if(favoriteState){
+            menu.findItem(R.id.action_favorite).setIcon(R.drawable.ic_star_white_48dp);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_favorite:
+                if(!favoriteState) {
+                    item.setIcon(R.drawable.ic_star_white_48dp);
+                } else {
+                    item.setIcon(R.drawable.ic_star_border_white_48dp);
+                }
+                favoriteState = !favoriteState;
+
+                return true;
+            case android.R.id.home:
+                getActivity().getSupportFragmentManager().popBackStack();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 }
