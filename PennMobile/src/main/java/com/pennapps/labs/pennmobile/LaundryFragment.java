@@ -202,7 +202,7 @@ public class LaundryFragment extends ListFragment {
                     .replace(R.id.content_frame, fragment, "TAG1")
                     .addToBackStack("Laundry Main")
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .commitAllowingStateLoss();
+                    .commit();
         }
     }
 

@@ -367,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
                                 .replace(R.id.content_frame, frag)
                                 .addToBackStack("Main Activity")
                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                .commitAllowingStateLoss();
+                                .commit();
                     } catch (IllegalStateException e) {
                         //ignore because the onSaveInstanceState etc states are called when activity is going to background etc
                     }
