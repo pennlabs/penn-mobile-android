@@ -1,17 +1,20 @@
 package com.pennapps.labs.pennmobile;
 
 
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pennapps.labs.pennmobile.adapters.LaundryMachineAdapter;
+import com.pennapps.labs.pennmobile.adapters.LaundryRecyclerAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryMachine;
@@ -26,7 +29,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.functions.Action1;
 
-public class LaundryMachineTab extends ListFragment {
+public class LaundryMachineTab extends Fragment {
 
     private Labs mLabs;
     private MainActivity mActivity;
@@ -35,7 +38,7 @@ public class LaundryMachineTab extends ListFragment {
     @Bind(R.id.no_results) TextView no_results;
     SwipeRefreshLayout swipeRefreshLayout;
     private List<LaundryMachine> machines;
-    private ListView mListView;
+    private RecyclerView recyclerView;
     private boolean wash;
     private int[] laundryTraffic;
     @Override
@@ -50,7 +53,6 @@ public class LaundryMachineTab extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mListView = getListView();
     }
 
     @Override
@@ -58,6 +60,10 @@ public class LaundryMachineTab extends ListFragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.laundry_machine_tab, container, false);
         ButterKnife.bind(this, v);
+        recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(mActivity);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(layoutManager);
         swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.laundry_machine_swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -218,8 +224,9 @@ public class LaundryMachineTab extends ListFragment {
                 laundryTraffic[i] = 0;
             }
         }
-        LaundryMachineAdapter adapter = new LaundryMachineAdapter(mActivity, filtered, wash, laundryTraffic, laundryRoom);
-        mListView.setAdapter(adapter);
+//        LaundryMachineAdapter adapter = new LaundryMachineAdapter(mActivity, filtered, wash, laundryTraffic, laundryRoom);
+        LaundryRecyclerAdapter adapter = new LaundryRecyclerAdapter(mActivity, filtered, wash, laundryTraffic, laundryRoom);
+        recyclerView.setAdapter(adapter);
     }
 
     public List<LaundryMachine> returnMachines() {

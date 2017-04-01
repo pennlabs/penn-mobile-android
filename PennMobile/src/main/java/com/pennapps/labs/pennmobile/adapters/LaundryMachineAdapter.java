@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.os.SystemClock;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +54,7 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
     private boolean wash;
     private LaundryRoom laundryRoom;
     private int[] traffic;
+    private LaundryRecyclerAdapter lrAdapter;
 
     private class TimeXAxisValueFormatter implements IAxisValueFormatter {
 
@@ -101,8 +104,31 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
             view = inflater.inflate(R.layout.laundry_machine_list_item, parent, false);
         }
         ButterKnife.bind(this, view);
-        LinearLayout summary = (LinearLayout) view.findViewById(R.id.laundry_machine_list_summary);
-        RelativeLayout item = (RelativeLayout) view.findViewById(R.id.laundry_machine_list_normal);
+        LinearLayout summary = (LinearLayout) view.findViewById(R.id.registrar_lec_linearlayout);
+        RecyclerView item = (RecyclerView) view.findViewById(R.id.recyclerView);
+//        LinearLayout summary = (LinearLayout) view.findViewById(R.id.laundry_machine_list_summary);
+//        RecyclerView item = (RecyclerView) view.findViewById(R.id.laundry_machine_list_normal);
+
+//        item.setLayoutManager(new LinearLayoutManager(getContext()));
+//        List<LaundryRecyclerAdapter.MachineStatus> statuses = new ArrayList<>();
+//        for (LaundryMachine machine : machines) {
+//            StringBuilder stringBuilder = new StringBuilder();
+//            stringBuilder.append(machine.machine_type).append(" ").append(machine.number);
+//            String description, title;
+//            title = stringBuilder.toString();
+//            boolean available;
+//            if (machine.available) {
+//                description = "Available";
+//                available = true;
+//            } else {
+//                StringBuilder sb = new StringBuilder();
+//                sb.append("Busy – ").append(machine.getTimeLeft(activity));
+//                description = sb.toString();
+//                available = false;
+//            }
+//            statuses.add(new LaundryRecyclerAdapter.MachineStatus(title, description, available));
+//        }
+//        lrAdapter = new LaundryRecyclerAdapter(statuses, activity);
         StringBuilder stringBuilder = new StringBuilder();
         if (position == 0) {
             item.setVisibility(View.GONE);
@@ -161,29 +187,29 @@ public class LaundryMachineAdapter extends ArrayAdapter<LaundryMachine> {
         } else{
             summary.setVisibility(View.GONE);
             item.setVisibility(View.VISIBLE);
-            TextView title = (TextView) view.findViewById(R.id.laundry_machine_title);
-            final LaundryMachine machine = machines.get(position-1);
-            stringBuilder.append(machine.machine_type).append(" ").append(machine.number);
-            title.setText(stringBuilder);
-            TextView description = (TextView) view.findViewById(R.id.laundry_machine_description);
-            Switch mSwitch = (Switch) view.findViewById(R.id.laundry_notification_button);
-
-            if (machine.available) {
-                description.setText(R.string.laundry_available);
-                description.setTextColor(activity.getResources().getColor(R.color.avail_color_green));
-                mSwitch.setVisibility(View.GONE);
-            } else {
-                stringBuilder = new StringBuilder();
-                stringBuilder.append("Busy – ").append(machine.getTimeLeft(activity));
-                description.setText(stringBuilder);
-                if (machine.getTimeInMilli() > 0) {
-                    mSwitch.setVisibility(View.VISIBLE);
-                } else {
-                    mSwitch.setVisibility(View.GONE);
-                }
-                setSwitchState(machine, mSwitch);
-                description.setTextColor(activity.getResources().getColor(R.color.avail_color_red));
-            }
+//            TextView title = (TextView) view.findViewById(R.id.laundry_machine_title);
+//            final LaundryMachine machine = machines.get(position-1);
+//            stringBuilder.append(machine.machine_type).append(" ").append(machine.number);
+//            title.setText(stringBuilder);
+//            TextView description = (TextView) view.findViewById(R.id.laundry_machine_description);
+//            Switch mSwitch = (Switch) view.findViewById(R.id.laundry_notification_button);
+//
+//            if (machine.available) {
+//                description.setText(R.string.laundry_available);
+//                description.setTextColor(activity.getResources().getColor(R.color.avail_color_green));
+//                mSwitch.setVisibility(View.GONE);
+//            } else {
+//                stringBuilder = new StringBuilder();
+//                stringBuilder.append("Busy – ").append(machine.getTimeLeft(activity));
+//                description.setText(stringBuilder);
+//                if (machine.getTimeInMilli() > 0) {
+//                    mSwitch.setVisibility(View.VISIBLE);
+//                } else {
+//                    mSwitch.setVisibility(View.GONE);
+//                }
+//                setSwitchState(machine, mSwitch);
+//                description.setTextColor(activity.getResources().getColor(R.color.avail_color_red));
+//            }
         }
         return view;
     }
