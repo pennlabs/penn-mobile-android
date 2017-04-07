@@ -36,6 +36,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -46,11 +47,11 @@ public class LaundryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     static class SummaryHolder extends RecyclerView.ViewHolder {
 
-        private static ImageView imageView;
-        private static RelativeLayout summary_rl;
-        private static TextView description;
-        private static TextView availcount;
-        private static BarChart laundryChart;
+        private ImageView imageView;
+        private RelativeLayout summary_rl;
+        private TextView description;
+        private TextView availcount;
+        private BarChart laundryChart;
 
         public SummaryHolder(View itemView) {
             super(itemView);
@@ -114,9 +115,9 @@ public class LaundryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     static class MachineHolder extends RecyclerView.ViewHolder {
 
-        private static TextView title, description;
-        private static Switch notification;
-        private static MainActivity activity;
+        private TextView title, description;
+        private Switch notification;
+        private MainActivity activity;
 
         public MachineHolder(View itemView, MainActivity activity) {
             super(itemView);
@@ -226,6 +227,15 @@ public class LaundryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             }
             return time + "a";
         }
+    }
+
+    public LaundryRecyclerAdapter(MainActivity activity, LaundryRoom laundryRoom) {
+        super();
+        this.machines = new LinkedList<>();
+        this.activity = activity;
+        wash = false;
+        this.laundryRoom = laundryRoom;
+        traffic = new int[24];
     }
 
     public LaundryRecyclerAdapter(MainActivity activity, List<LaundryMachine> machines, boolean wash, int[] laundryTraffic, LaundryRoom laundryRoom) {

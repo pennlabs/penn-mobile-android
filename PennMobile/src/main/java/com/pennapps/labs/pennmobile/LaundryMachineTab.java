@@ -1,10 +1,8 @@
 package com.pennapps.labs.pennmobile;
 
 
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,8 +14,8 @@ import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.adapters.LaundryRecyclerAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
-import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryMachine;
+import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -41,6 +39,8 @@ public class LaundryMachineTab extends Fragment {
     private RecyclerView recyclerView;
     private boolean wash;
     private int[] laundryTraffic;
+    LaundryRecyclerAdapter adapter;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +61,8 @@ public class LaundryMachineTab extends Fragment {
         View v = inflater.inflate(R.layout.laundry_machine_tab, container, false);
         ButterKnife.bind(this, v);
         recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
+        adapter = new LaundryRecyclerAdapter(mActivity, laundryRoom);
+        recyclerView.setAdapter(adapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mActivity);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
@@ -224,8 +226,7 @@ public class LaundryMachineTab extends Fragment {
                 laundryTraffic[i] = 0;
             }
         }
-//        LaundryMachineAdapter adapter = new LaundryMachineAdapter(mActivity, filtered, wash, laundryTraffic, laundryRoom);
-        LaundryRecyclerAdapter adapter = new LaundryRecyclerAdapter(mActivity, filtered, wash, laundryTraffic, laundryRoom);
+        adapter = new LaundryRecyclerAdapter(mActivity, filtered, wash, laundryTraffic, laundryRoom);
         recyclerView.setAdapter(adapter);
     }
 
