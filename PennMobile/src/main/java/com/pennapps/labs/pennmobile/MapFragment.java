@@ -169,7 +169,7 @@ public class MapFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_map, container, false);
 
-        mapView = null;
+        mapView = (MapView) v.findViewById(R.id.mapView);
         if (mapView == null) {
             v = inflater.inflate(R.layout.fragment_map_fail, container, false);
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
