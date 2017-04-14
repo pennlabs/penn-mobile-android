@@ -153,20 +153,21 @@ public class LaundryMachineTab extends Fragment {
                                     String currentDay = sCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
                                     laundryTraffic = new int[24];
                                     String[] day;
-                                    if (currentDay.equals("Friday")) {
-                                        day = usage.Friday;
-                                    } else if (currentDay.equals("Saturday")) {
-                                        day = usage.Saturday;
-                                    } else if (currentDay.equals("Sunday")) {
-                                        day = usage.Sunday;
-                                    } else if (currentDay.equals("Monday")) {
-                                        day = usage.Monday;
-                                    } else if (currentDay.equals("Tuesday")) {
-                                        day = usage.Tuesday;
-                                    } else if (currentDay.equals("Wednesday")) {
-                                        day = usage.Wednesday;
-                                    } else {
-                                        day = usage.Thursday;
+                                    switch (currentDay) {
+                                        case "Friday": day = usage.Friday;
+                                            break;
+                                        case "Saturday": day = usage.Saturday;
+                                            break;
+                                        case "Sunday": day = usage.Sunday;
+                                            break;
+                                        case "Monday": day = usage.Monday;
+                                            break;
+                                        case "Tuesday": day = usage.Tuesday;
+                                            break;
+                                        case "Wednesday": day = usage.Wednesday;
+                                            break;
+                                        default: day = usage.Thursday;
+                                            break;
                                     }
                                     for (int i = 0; i < laundryTraffic.length; i++) {
                                         if (day[i].equals("High")) {
