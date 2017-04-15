@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,8 +22,6 @@ import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import java.util.List;
 
 import butterknife.ButterKnife;
-
-import static android.content.ContentValues.TAG;
 
 public class LaundryMachineFragment extends Fragment {
     private Labs mLabs;
@@ -82,11 +79,6 @@ public class LaundryMachineFragment extends Fragment {
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         favoriteState = sp.getBoolean(laundryRoom.name + "_isFavorite", false);
-
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        for(int entry = 0; entry < fragmentManager.getBackStackEntryCount(); entry++){
-            Log.i(TAG, "Found fragment: " + fragmentManager.getBackStackEntryAt(entry).getName());
-        }
     }
 
     @Override
@@ -136,14 +128,6 @@ public class LaundryMachineFragment extends Fragment {
     @Override
     public void onDestroyView() {
 
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putBoolean(laundryRoom.name + "_isFavorite", favoriteState);
-        if(laundryRoom.name.contains("-")) {
-            editor.putBoolean(laundryRoom.name.substring(0, laundryRoom.name.indexOf("-")) + "_isFavorite", favoriteState);
-        }
-        editor.commit();
-
         mActivity.removeTabs();
         mActivity.setTitle("Laundry");
         super.onDestroyView();
@@ -168,6 +152,14 @@ public class LaundryMachineFragment extends Fragment {
                     item.setIcon(R.drawable.ic_star_border_white_48dp);
                 }
                 favoriteState = !favoriteState;
+
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putBoolean(laundryRoom.name + "_isFavorite", favoriteState);
+                if(laundryRoom.name.contains("-")) {
+                    editor.putBoolean(laundryRoom.name.substring(0, laundryRoom.name.indexOf("-")) + "_isFavorite", favoriteState);
+                }
+                editor.apply();
 
                 return true;
             case android.R.id.home:

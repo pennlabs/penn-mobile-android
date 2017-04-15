@@ -46,11 +46,6 @@ public class LaundryFragment extends ListFragment {
     private SharedPreferences sharedPref;
 
     @Override
-    public void onStart(){
-        super.onStart();
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLabs = MainActivity.getLabsInstance();
@@ -58,10 +53,6 @@ public class LaundryFragment extends ListFragment {
         mActivity.closeKeyboard();
 
         sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-    }
-
-    public SharedPreferences getPref(){
-        return sharedPref;
     }
 
     @Override
