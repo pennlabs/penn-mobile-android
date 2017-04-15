@@ -197,7 +197,10 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = null;
         switch (id) {
             case R.id.nav_home:
-                fragment = new MainFragment();
+                FragmentManager fm = getSupportFragmentManager();
+                if(fm.getBackStackEntryCount() != 0) {
+                    fragment = new MainFragment();
+                }
                 break;
             case R.id.nav_registrar:
             case R.id.registrar_cont:
