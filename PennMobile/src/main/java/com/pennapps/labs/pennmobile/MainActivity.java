@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.StrictMode;
 import android.support.annotation.AnyRes;
 import android.support.annotation.NonNull;
@@ -30,7 +29,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.widget.RelativeLayout;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
@@ -44,8 +42,8 @@ import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
-import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryMachine;
+import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
@@ -122,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
             WebView webView = NewsTab.currentWebView;
             if (webView.canGoBack()) {
                 webView.goBack();
+            } else if (getSupportFragmentManager().getBackStackEntryCount() > 0){
+                getSupportFragmentManager().popBackStack();
             } else {
                 super.onBackPressed();
             }
@@ -197,7 +197,9 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = null;
         switch (id) {
             case R.id.nav_home:
-                fragment = new MainFragment();
+                if(getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                    fragment = new MainFragment();
+                }
                 break;
             case R.id.nav_registrar:
             case R.id.registrar_cont:
@@ -365,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
                         FragmentManager fragmentManager = getSupportFragmentManager();
                         fragmentManager.beginTransaction()
                                 .replace(R.id.content_frame, frag)
-                                .addToBackStack(null)
+                                .addToBackStack("Main Activity")
                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                 .commit();
                     } catch (IllegalStateException e) {

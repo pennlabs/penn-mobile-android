@@ -12,9 +12,6 @@ import com.pennapps.labs.pennmobile.classes.LaundryHall;
 
 import java.util.List;
 
-/**
- * Created by Jason on 10/21/2015.
- */
 public class LaundryHallAdapter extends ArrayAdapter<LaundryHall> {
     private List<LaundryHall> laundries;
     private final LayoutInflater inflater;

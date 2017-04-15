@@ -102,6 +102,7 @@
     <string name="laundry_hall_arg">Laundry Hall</string>
     <string name="laundry_not_update">not updating status</string>
     <string name="laundry_status_unavailable">status unavailable</string>
+    <string name="favorite_title">Favorite</string>
 
     <!-- News -->
     <string name="open_browser">Open in Browser</string>

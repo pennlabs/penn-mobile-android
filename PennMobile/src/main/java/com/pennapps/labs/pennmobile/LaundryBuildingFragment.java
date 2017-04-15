@@ -1,13 +1,16 @@
 package com.pennapps.labs.pennmobile;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -15,9 +18,11 @@ import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.adapters.LaundryRoomAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
-import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryHall;
+import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.Bind;
@@ -30,6 +35,7 @@ public class LaundryBuildingFragment extends ListFragment {
     private Labs mLabs;
     private LaundryHall lh;
     private LaundryRoomAdapter adapter;
+    private List<LaundryRoom> laundriesOrdered;
     @Bind(R.id.no_results) TextView no_results;
     SwipeRefreshLayout swipeRefreshLayout;
 
@@ -54,9 +60,22 @@ public class LaundryBuildingFragment extends ListFragment {
         v.setBackgroundColor(Color.WHITE);
         ButterKnife.bind(this, v);
         if (lh != null) {
-            adapter = new LaundryRoomAdapter(mActivity, lh.getIds());
+            List<LaundryRoom> laundries = new ArrayList<>(lh.getIds());
+            laundriesOrdered = new ArrayList<>();
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            Iterator<LaundryRoom> iter = laundries.iterator();
+            while(iter.hasNext()){
+                LaundryRoom next = iter.next();
+                if(sp.getBoolean(next.name + "_isFavorite",false)){
+                    laundriesOrdered.add(next);
+                    iter.remove();
+                }
+            }
+            laundriesOrdered.addAll(laundries);
+            adapter = new LaundryRoomAdapter(mActivity, laundriesOrdered);
             setListAdapter(adapter);
             no_results.setVisibility(View.GONE);
+
         }
         swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.laundry_building_swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -66,6 +85,7 @@ public class LaundryBuildingFragment extends ListFragment {
             }
         });
         swipeRefreshLayout.setColorSchemeResources(R.color.color_accent, R.color.color_primary);
+        getRefreshedLaundryHall();
         return v;
     }
 
@@ -77,11 +97,11 @@ public class LaundryBuildingFragment extends ListFragment {
                         mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                List<LaundryHall> halls = LaundryHall.getLaundryHall(rooms);
+                                List<LaundryHall> halls = new ArrayList<>(LaundryHall.getLaundryHall(rooms));
                                 for (LaundryHall hall : halls) {
                                     if (hall.getName().equals(lh.getName())) {
                                         lh = hall;
-                                        adapter = new LaundryRoomAdapter(mActivity, lh.getIds());
+                                        adapter = new LaundryRoomAdapter(mActivity, laundriesOrdered);
                                         setListAdapter(adapter);
                                         break;
                                     }
@@ -109,7 +129,7 @@ public class LaundryBuildingFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        LaundryRoom laundryRoom = lh.getIds().get(position);
+        LaundryRoom laundryRoom = laundriesOrdered.get(position);
         toLaundryMachine(laundryRoom);
     }
 
@@ -122,10 +142,10 @@ public class LaundryBuildingFragment extends ListFragment {
         fragment.setArguments(args);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.laundry_fragment, fragment)
+                .replace(R.id.content_frame, fragment)
+                .addToBackStack("Laundry Building List")
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .addToBackStack(null)
-                .commitAllowingStateLoss();
+                .commit();
     }
 
     @Override
@@ -139,13 +159,25 @@ public class LaundryBuildingFragment extends ListFragment {
         if (getArguments() != null) {
             int hall_no = getArguments().getInt(getString(R.string.laundry_hall_no), -1);
             if (hall_no != -1) {
-                for (LaundryRoom laundryRoom : lh.getIds()) {
+                for (LaundryRoom laundryRoom : laundriesOrdered) {
                     if (laundryRoom.hall_no == hall_no) {
                         getArguments().putInt(getString(R.string.laundry_hall_no), -1);
                         toLaundryMachine(laundryRoom);
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                getActivity().getSupportFragmentManager().popBackStack();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
         }
     }
 

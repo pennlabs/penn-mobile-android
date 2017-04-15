@@ -1,7 +1,9 @@
 package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -18,9 +20,11 @@ import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.adapters.LaundryHallAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
-import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryHall;
+import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -79,8 +83,19 @@ public class LaundryFragment extends ListFragment {
                             @Override
                             public void run() {
                                 if (loadingPanel != null) {
-                                    List<LaundryHall> halls = LaundryHall.getLaundryHall(rooms);
-                                    LaundryHallAdapter adapter = new LaundryHallAdapter(mActivity, halls);
+                                    List<LaundryHall> halls = new ArrayList<>(LaundryHall.getLaundryHall(rooms));
+                                    List<LaundryHall> hallsOrdered = new ArrayList<>();
+                                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                                    Iterator<LaundryHall> iter = halls.iterator();
+                                    while(iter.hasNext()){
+                                        LaundryHall next = iter.next();
+                                        if(sp.getBoolean(next.getName() + "_isFavorite",false)){
+                                            hallsOrdered.add(next);
+                                            iter.remove();
+                                        }
+                                    }
+                                    hallsOrdered.addAll(halls);
+                                    LaundryHallAdapter adapter = new LaundryHallAdapter(mActivity, hallsOrdered);
                                     mListView.setAdapter(adapter);
                                     loadingPanel.setVisibility(View.GONE);
                                     no_results.setVisibility(View.GONE);
@@ -88,7 +103,7 @@ public class LaundryFragment extends ListFragment {
                                     if (args != null) {
                                         int hall_no = args.getInt(getString(R.string.laundry_hall_no), -1);
                                         if (hall_no != -1) {
-                                            for (LaundryHall hall : halls) {
+                                            for (LaundryHall hall : hallsOrdered) {
                                                 for (LaundryRoom laundryRoom : hall.getIds()) {
                                                     if (laundryRoom.hall_no == hall_no) {
                                                         toLaundryHall(hall);
@@ -152,7 +167,6 @@ public class LaundryFragment extends ListFragment {
         mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
         mActivity.getActionBarToggle().syncState();
         Bundle args = new Bundle();
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         if (lh.getIds().size() >= 1) {
             Fragment fragment;
             if (lh.getIds().size() == 1) {
@@ -170,10 +184,11 @@ public class LaundryFragment extends ListFragment {
                 }
             }
             fragment.setArguments(args);
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.laundry_fragment, fragment)
+                    .replace(R.id.content_frame, fragment, "TAG1")
+                    .addToBackStack("Laundry Main")
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .addToBackStack(null)
                     .commit();
         }
     }
