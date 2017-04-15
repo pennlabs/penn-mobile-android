@@ -43,16 +43,12 @@ public class LaundryFragment extends ListFragment {
     @Bind(R.id.no_results) TextView no_results;
     SwipeRefreshLayout swipeRefreshLayout;
 
-    private SharedPreferences sharedPref;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLabs = MainActivity.getLabsInstance();
         mActivity = (MainActivity) getActivity();
         mActivity.closeKeyboard();
-
-        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
     }
 
     @Override
