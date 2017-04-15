@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,8 +28,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.functions.Action1;
-
-import static android.content.ContentValues.TAG;
 
 public class LaundryBuildingFragment extends ListFragment {
 
@@ -79,10 +76,6 @@ public class LaundryBuildingFragment extends ListFragment {
             setListAdapter(adapter);
             no_results.setVisibility(View.GONE);
 
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            for(int entry = 0; entry < fragmentManager.getBackStackEntryCount(); entry++){
-                Log.i(TAG, "Found fragment: " + fragmentManager.getBackStackEntryAt(entry).getName());
-            }
         }
         swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.laundry_building_swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
