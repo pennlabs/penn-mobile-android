@@ -97,7 +97,7 @@ public class LaundryBuildingFragment extends ListFragment {
                         mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                List<LaundryHall> halls = new ArrayList<LaundryHall>(LaundryHall.getLaundryHall(rooms));
+                                List<LaundryHall> halls = new ArrayList<>(LaundryHall.getLaundryHall(rooms));
                                 for (LaundryHall hall : halls) {
                                     if (hall.getName().equals(lh.getName())) {
                                         lh = hall;
