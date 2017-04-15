@@ -57,6 +57,7 @@
             android:src="@drawable/ic_chevron_right_black_24dp"/>
     </RelativeLayout>
 
+
     <TextView
         android:id="@+id/dining_hall_status"
         tools:text="Open"
