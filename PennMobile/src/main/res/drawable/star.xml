@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- When selected, use golden -->
-    <item android:state_checked="true">
-        <bitmap
-            android:src="@drawable/abc_btn_rating_star_on_mtrl_alpha"
-            android:tint="@color/star_color_on" />
+    <item
+        android:drawable="@drawable/ic_star_24dp"
+        android:state_checked="true">
     </item>
     <!-- When not selected, use gray -->
-    <item android:state_checked="false">
-        <bitmap
-            android:src="@drawable/abc_btn_rating_star_off_mtrl_alpha"
-            android:tint="@color/star_color_off" />
+    <item
+        android:drawable="@drawable/ic_star_border_24dp"
+        android:state_checked="false">
     </item>
 </selector>
