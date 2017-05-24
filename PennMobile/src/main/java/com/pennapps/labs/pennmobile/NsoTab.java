@@ -1,14 +1,9 @@
 package com.pennapps.labs.pennmobile;
 
-import android.content.SharedPreferences;
-import android.os.Bundle;
 //import android.support.annotation.NonNull;
 //import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListView;
 
 import com.pennapps.labs.pennmobile.adapters.NsoAdapter;
 
@@ -16,13 +11,9 @@ import com.pennapps.labs.pennmobile.adapters.NsoAdapter;
 //import org.mcsoxford.rss.RSSReader;
 //import org.mcsoxford.rss.RSSReaderException;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
-import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Subscriber;
 
