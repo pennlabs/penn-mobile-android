@@ -13,11 +13,9 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:contentDescription="@string/labs_icon"
-            android:paddingBottom="40dp"
-            android:paddingLeft="40dp"
-            android:paddingRight="40dp"
-            android:paddingTop="20dp"
-            android:src="@drawable/app_shared_logo" />
+            android:paddingTop="30dp"
+            android:paddingBottom="30dp"
+            android:src="@drawable/pl_logo_cropped_uncompressed" />
 
         <TextView
             tools:text="PennMobile was developed by Penn Labs, with funding and support from the Undergraduate Assembly"
