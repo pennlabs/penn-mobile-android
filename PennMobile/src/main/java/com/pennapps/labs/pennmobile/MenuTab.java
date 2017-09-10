@@ -3,7 +3,6 @@ package com.pennapps.labs.pennmobile;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,9 +11,6 @@ import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 
 import com.pennapps.labs.pennmobile.adapters.MenuAdapter;
-import com.pennapps.labs.pennmobile.classes.DiningHall;
-
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
