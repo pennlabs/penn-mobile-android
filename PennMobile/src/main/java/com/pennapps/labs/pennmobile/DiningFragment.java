@@ -44,8 +44,6 @@ public class DiningFragment extends ListFragment {
         mLabs = MainActivity.getLabsInstance();
         mActivity = (MainActivity) getActivity();
         mActivity.closeKeyboard();
-
-        setHasOptionsMenu(true);
     }
 
     @Override

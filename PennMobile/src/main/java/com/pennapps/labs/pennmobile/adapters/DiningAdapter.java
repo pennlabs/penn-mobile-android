@@ -41,6 +41,8 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sortBy = sp.getString("dining_sortBy", "RESIDENTIAL");
+
+        this.sort(new MenuComparator());
     }
 
     @Override
@@ -125,7 +127,6 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
             progressBar.setVisibility(View.GONE);
             holder.menuArrow.setVisibility(View.VISIBLE);
         }
-        this.sort(new MenuComparator());
         return view;
     }
 
