@@ -1,7 +1,9 @@
 package com.pennapps.labs.pennmobile.adapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,12 +31,16 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
     private final LayoutInflater inflater;
     private Labs mLabs;
     private boolean[] loaded;
+    private String sortBy;
 
     public DiningAdapter(Context context, List<DiningHall> diningHalls) {
         super(context, R.layout.dining_list_item, diningHalls);
         inflater = LayoutInflater.from(context);
         mLabs = MainActivity.getLabsInstance();
         loaded = new boolean[diningHalls.size()];
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sortBy = sp.getString("dining_sortBy", "RESIDENTIAL");
     }
 
     @Override
@@ -126,13 +132,25 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
     private class MenuComparator implements Comparator<DiningHall> {
         @Override
         public int compare(DiningHall diningHall, DiningHall diningHall2) {
-            if (diningHall.isResidential() && !diningHall2.isResidential()) {
-                return -1;
-            } else if (diningHall2.isResidential() && !diningHall.isResidential()) {
-                return 1;
-            } else {
-                return 0;
+            if (sortBy.equals("OPEN")) {
+                if (diningHall.isOpen() && !diningHall2.isOpen()) {
+                    return -1;
+                } else if (diningHall2.isOpen() && !diningHall.isOpen()) {
+                    return 1;
+                }
             }
+
+            if (!sortBy.equals("NAME")) {
+                if (diningHall.isResidential() && !diningHall2.isResidential()) {
+                    return -1;
+                } else if (diningHall2.isResidential() && !diningHall.isResidential()) {
+                    return 1;
+                } else if (sortBy.equals("RESIDENTIAL")) {
+                    return 0;
+                }
+            }
+
+            return diningHall.getName().compareTo(diningHall2.getName());
         }
     }
 

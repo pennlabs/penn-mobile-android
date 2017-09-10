@@ -1,11 +1,15 @@
 package com.pennapps.labs.pennmobile;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,11 +62,48 @@ public class DiningFragment extends ListFragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.dining_sort, menu);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String order = sp.getString("dining_sortBy", "RESIDENTIAL");
+        if (order.equals("RESIDENTIAL")) {
+            menu.findItem(R.id.action_sort_residential).setChecked(true);
+        }
+        else if (order.equals("NAME")) {
+            menu.findItem(R.id.action_sort_name).setChecked(true);
+        }
+        else {
+            menu.findItem(R.id.action_sort_open).setChecked(true);
+        }
+    }
+
+    private void setSortByMethod(String method) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("dining_sortBy", method);
+        editor.apply();
+
+        getDiningHalls();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case android.R.id.home:
                 mActivity.onBackPressed();
+                return true;
+            case R.id.action_sort_open:
+                setSortByMethod("OPEN");
+                item.setChecked(true);
+                return true;
+            case R.id.action_sort_residential:
+                setSortByMethod("RESIDENTIAL");
+                item.setChecked(true);
+                return true;
+            case R.id.action_sort_name:
+                setSortByMethod("NAME");
+                item.setChecked(true);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

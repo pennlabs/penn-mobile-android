@@ -45,6 +45,9 @@
     <string name="menu_arg_name">name</string>
     <string name="menu_arg_meal">meal</string>
     <string name="menu_arg_stations">stations</string>
+    <string name="sort_by_name">Order by Name</string>
+    <string name="sort_by_residential">Order by Residential Hall</string>
+    <string name="sort_by_open">Order by Open Status</string>
 
     <!-- Courses -->
     <string name="course">Average Course</string>
