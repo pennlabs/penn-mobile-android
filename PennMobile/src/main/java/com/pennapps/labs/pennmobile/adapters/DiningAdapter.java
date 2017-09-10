@@ -149,9 +149,7 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
                     else {
                         return diningHall.getName().compareTo(diningHall2.getName());
                     }
-                case "NAME":
-                    return diningHall.getName().compareTo(diningHall2.getName());
-                default:
+                case "RESIDENTIAL":
                     if (diningHall.isResidential() && !diningHall2.isResidential()) {
                         return -1;
                     } else if (diningHall2.isResidential() && !diningHall.isResidential()) {
@@ -160,6 +158,8 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
                     else {
                         return 0;
                     }
+                default:
+                    return diningHall.getName().compareTo(diningHall2.getName());
             }
         }
     }
