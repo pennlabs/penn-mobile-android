@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,6 +38,7 @@ public class DiningFragment extends ListFragment {
     private MainActivity mActivity;
     @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
     @Bind(R.id.no_results) TextView no_results;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,14 @@ public class DiningFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dining, container, false);
         ButterKnife.bind(this, v);
+        swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.dining_swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getDiningHalls();
+            }
+        });
+        swipeRefreshLayout.setColorSchemeResources(R.color.color_accent, R.color.color_primary);
         getDiningHalls();
         return v;
     }
@@ -157,6 +167,11 @@ public class DiningFragment extends ListFragment {
                                     mListView.setAdapter(adapter);
                                     loadingPanel.setVisibility(View.GONE);
                                 }
+                                try {
+                                    swipeRefreshLayout.setRefreshing(false);
+                                } catch (NullPointerException e){
+                                    //it has gone to another page.
+                                }
                             }
                         });
                     }
@@ -171,6 +186,11 @@ public class DiningFragment extends ListFragment {
                                 }
                                 if (no_results != null) {
                                     no_results.setVisibility(View.VISIBLE);
+                                }
+                                try {
+                                    swipeRefreshLayout.setRefreshing(false);
+                                } catch (NullPointerException e){
+                                    //it has gone to another page.
                                 }
                             }
                         });
