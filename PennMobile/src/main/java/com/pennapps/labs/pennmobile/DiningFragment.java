@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,6 +45,8 @@ public class DiningFragment extends ListFragment {
         mLabs = MainActivity.getLabsInstance();
         mActivity = (MainActivity) getActivity();
         mActivity.closeKeyboard();
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -75,6 +78,8 @@ public class DiningFragment extends ListFragment {
         else {
             menu.findItem(R.id.action_sort_open).setChecked(true);
         }
+        Fragment diningInfoFragment = getFragmentManager().findFragmentByTag("DINING_INFO_FRAGMENT");
+        menu.setGroupVisible(R.id.action_sort_by, diningInfoFragment == null || !diningInfoFragment.isVisible());
     }
 
     private void setSortByMethod(String method) {
@@ -122,7 +127,7 @@ public class DiningFragment extends ListFragment {
 
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.dining_fragment, fragment)
+                .replace(R.id.dining_fragment, fragment, "DINING_INFO_FRAGMENT")
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
                 .commitAllowingStateLoss();
