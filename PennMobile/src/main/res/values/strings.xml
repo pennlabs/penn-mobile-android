@@ -69,6 +69,9 @@
     <string name="google_api_dest">destination</string>
     <string name="no_permission_map">Permission not granted for using Google Map</string>
     <string name="ask_permission_fail">Access of your location is required to use this feature.</string>
+    <string name="no_map_beardman">Map is not provided by the phone.</string>
+    <string name="no_map_description">We were unable to\nload your map.</string>
+    <string name="no_map_count_key">no_map_count_key</string>
 
     <!-- Transit search -->
     <string name="starting_location_hint">Current location</string>
