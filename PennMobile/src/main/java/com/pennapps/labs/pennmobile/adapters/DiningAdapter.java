@@ -134,12 +134,10 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
         public int compare(DiningHall diningHall, DiningHall diningHall2) {
             switch (sortBy) {
                 case "OPEN":
-                    if (sortBy.equals("OPEN")) {
-                        if (diningHall.isOpen() && !diningHall2.isOpen()) {
-                            return -1;
-                        } else if (diningHall2.isOpen() && !diningHall.isOpen()) {
-                            return 1;
-                        }
+                    if (diningHall.isOpen() && !diningHall2.isOpen()) {
+                        return -1;
+                    } else if (diningHall2.isOpen() && !diningHall.isOpen()) {
+                        return 1;
                     }
                     if (diningHall.isResidential() && !diningHall2.isResidential()) {
                         return -1;
