@@ -132,25 +132,35 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
     private class MenuComparator implements Comparator<DiningHall> {
         @Override
         public int compare(DiningHall diningHall, DiningHall diningHall2) {
-            if (sortBy.equals("OPEN")) {
-                if (diningHall.isOpen() && !diningHall2.isOpen()) {
-                    return -1;
-                } else if (diningHall2.isOpen() && !diningHall.isOpen()) {
-                    return 1;
-                }
+            switch (sortBy) {
+                case "OPEN":
+                    if (sortBy.equals("OPEN")) {
+                        if (diningHall.isOpen() && !diningHall2.isOpen()) {
+                            return -1;
+                        } else if (diningHall2.isOpen() && !diningHall.isOpen()) {
+                            return 1;
+                        }
+                    }
+                    if (diningHall.isResidential() && !diningHall2.isResidential()) {
+                        return -1;
+                    } else if (diningHall2.isResidential() && !diningHall.isResidential()) {
+                        return 1;
+                    }
+                    else {
+                        return diningHall.getName().compareTo(diningHall2.getName());
+                    }
+                case "NAME":
+                    return diningHall.getName().compareTo(diningHall2.getName());
+                default:
+                    if (diningHall.isResidential() && !diningHall2.isResidential()) {
+                        return -1;
+                    } else if (diningHall2.isResidential() && !diningHall.isResidential()) {
+                        return 1;
+                    }
+                    else {
+                        return 0;
+                    }
             }
-
-            if (!sortBy.equals("NAME")) {
-                if (diningHall.isResidential() && !diningHall2.isResidential()) {
-                    return -1;
-                } else if (diningHall2.isResidential() && !diningHall.isResidential()) {
-                    return 1;
-                } else if (sortBy.equals("RESIDENTIAL")) {
-                    return 0;
-                }
-            }
-
-            return diningHall.getName().compareTo(diningHall2.getName());
         }
     }
 
