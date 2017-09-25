@@ -12,6 +12,7 @@
     <string name="dining">Dining</string>
     <string name="transit">Transit</string>
     <string name="directory">Directory</string>
+    <string name="gsr">GSR</string>
     <string name="news">News</string>
     <string name="laundry">Laundry</string>
     <string name="nso">NSO</string>
@@ -22,6 +23,8 @@
     <string name="add_contact">Add contact</string>
     <string name="no_results">No results found.</string>
     <string name="action_licenses">Open Source Licenses</string>
+
+    <string name="google_api_key">AIzaSyCpDvcQB70eSw_GUE300k7gFlxzxx-jOP0</string>
 
     <!-- Search -->
     <string name="registrar_search">Search for courses</string>
