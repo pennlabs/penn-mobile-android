@@ -166,6 +166,9 @@ public class DiningFragment extends ListFragment {
                                     DiningAdapter adapter = new DiningAdapter(mActivity, diningHalls);
                                     mListView.setAdapter(adapter);
                                     loadingPanel.setVisibility(View.GONE);
+                                    if (diningHalls.size() > 0) {
+                                        no_results.setVisibility(View.GONE);
+                                    }
                                 }
                                 try {
                                     swipeRefreshLayout.setRefreshing(false);
@@ -185,6 +188,7 @@ public class DiningFragment extends ListFragment {
                                     loadingPanel.setVisibility(View.GONE);
                                 }
                                 if (no_results != null) {
+                                    mListView.setAdapter(null);
                                     no_results.setVisibility(View.VISIBLE);
                                 }
                                 try {
