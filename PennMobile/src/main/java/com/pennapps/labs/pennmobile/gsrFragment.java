@@ -1,15 +1,45 @@
 package com.pennapps.labs.pennmobile;
 
+import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.pennapps.labs.pennmobile.classes.GSR;
+
+import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import butterknife.ButterKnife;
+
+import static android.R.id.message;
 
 /**
  * Created by MikeD on 9/24/2017.
@@ -17,11 +47,17 @@ import butterknife.ButterKnife;
 
 public class gsrFragment extends Fragment {
 
+    ArrayList<GSR> mGSRS = new ArrayList<GSR>();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((MainActivity) getActivity()).closeKeyboard();
         getActivity().setTitle(R.string.gsr);
+
+        //execute Asynctask to get hours
+        new getHours().execute();
+
     }
 
     @Override
@@ -36,4 +72,176 @@ public class gsrFragment extends Fragment {
         getActivity().setTitle(R.string.gsr);
         ((MainActivity) getActivity()).setNav(R.id.nav_gsr);
     }
+
+
+    public class getHours extends AsyncTask<String, Void, String> {
+
+        protected void onPreExecute(){}
+
+        protected String doInBackground(String... arg0) {
+
+            try {
+
+                URL url = new URL("http://libcal.library.upenn.edu/process_roombookings.php?m=calscroll&date=Saturday&gid=1722");
+
+                //post request is needed to get available rooms
+                JSONObject postDataParams = new JSONObject();
+                postDataParams.put("m", "calscroll");
+                postDataParams.put("date", "Saturday");
+                postDataParams.put("gid", "1722");
+
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestProperty("Referer","http://libcal.library.upenn.edu/booking/vpdlc");
+                conn.setReadTimeout(15000);
+                conn.setConnectTimeout(15000);
+                conn.setRequestMethod("POST");
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                //get the response
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(getPostDataString(postDataParams));
+                writer.flush();
+                writer.close();
+                os.close();
+
+                int responseCode=conn.getResponseCode();
+
+                if (responseCode == HttpsURLConnection.HTTP_OK) {
+
+                    //put the information into a string builder
+                    BufferedReader in=new BufferedReader(new
+                            InputStreamReader(
+                            conn.getInputStream()));
+
+
+                    StringBuilder total = new StringBuilder();
+                    String line;
+                    while ((line = in.readLine()) != null) {
+                        total.append(line).append('\n');
+                    }
+
+                    //return a string for do in background
+                    in.close();
+                    return total.toString();
+
+                }
+                else {
+                    return new String("false : "+responseCode);
+                }
+            }
+            catch(Exception e){
+                return new String("Exception: " + e.getMessage());
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            //parse the data
+            Document doc = Jsoup.parse(result);
+            //just return the names of all attributes
+            Elements elements = doc.body().select("a.lc_rm_a");
+
+            for (Element element : elements) {
+                //parse element entry
+                String element_entry = element.attr("onclick") + "\n";
+
+                //get main attribute data
+                String[] parsed_data = parseEntry(element_entry).split("&");
+
+                String gsrName = parsed_data[0].replace("'", "");
+
+                String dateTime = parsed_data[1].replace("'", "");
+
+                String elementId = element.attr("id") + "\n";
+
+                //parse datetime further
+                String[] dateDataBrokenUp = parseEntry(element_entry).split(",");
+
+                String timeRange = dateDataBrokenUp[0].split("&")[1];
+
+                String dayDate = dateDataBrokenUp[1];
+
+                String dateNum = dateDataBrokenUp[2];
+
+                String duration = parsed_data[2].replace("'", "");
+
+
+
+                //now popular mGSRs
+                insertGSRSlot(gsrName, dateTime, timeRange, dayDate, dateNum, duration, elementId);
+
+            }
+
+            //test the get information
+            String test_string = mGSRS.get(1).getAvailableGSRSlots().get(1).getElementId();
+            Toast.makeText(getActivity(), "First ID session of first GSR: " + test_string,
+                    Toast.LENGTH_LONG).show();
+
+        }
+    }
+
+    //helper function to parse response
+    public String getPostDataString(JSONObject params) throws Exception {
+
+        StringBuilder result = new StringBuilder();
+        boolean first = true;
+
+        Iterator<String> itr = params.keys();
+
+        while(itr.hasNext()){
+
+            String key= itr.next();
+            Object value = params.get(key);
+
+            if (first)
+                first = false;
+            else
+                result.append("&");
+
+            result.append(URLEncoder.encode(key, "UTF-8"));
+            result.append("=");
+            result.append(URLEncoder.encode(value.toString(), "UTF-8"));
+
+        }
+        return result.toString();
+    }
+
+    //helper function to parse the HTML response
+    public String parseEntry(String gsr_entry) {
+        //get the name of gsr
+        Pattern p = Pattern.compile("([\"'])(?:(?=(\\\\?))\\2.)*?\\1");
+        Matcher m = p.matcher(gsr_entry);
+        String final_return = "";
+        while(m.find()) {
+            if (final_return.equals("")) {
+                final_return = m.group();
+            }
+            else {
+                final_return = final_return + "&" + m.group();
+            }
+        }
+        return final_return;
+
+    }
+
+    //function that takes all available GSR sessions and populates mGSRs
+    public void insertGSRSlot(String gsrName, String GSRTimeRange, String GSRDateTime,
+                              String GSRDayDate, String GSRDateNum, String GSRDuration, String GSRElementId) {
+        for(int i=0; i<mGSRS.size(); i++) {
+            GSR currentGSR = mGSRS.get(i);
+            //if there is GSR, add the available session to the GSR Object
+            if (currentGSR.getGsrName().equals(gsrName)) {
+                currentGSR.addGSRSlot(GSRTimeRange, GSRDateTime, GSRDayDate, GSRDateNum, GSRDuration, GSRElementId);
+            }
+        }
+        //can't find existing GSR. Create new object
+        GSR newGSRObject = new GSR(gsrName, GSRTimeRange, GSRDateTime, GSRDayDate, GSRDateNum, GSRDuration, GSRElementId);
+        mGSRS.add(newGSRObject);
+    }
+
 }

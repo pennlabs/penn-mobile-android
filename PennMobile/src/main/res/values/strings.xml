@@ -24,7 +24,7 @@
     <string name="no_results">No results found.</string>
     <string name="action_licenses">Open Source Licenses</string>
 
-    <string name="google_api_key">AIzaSyCpDvcQB70eSw_GUE300k7gFlxzxx-jOP0</string>
+    <string name="google_api_key"></string>
 
     <!-- Search -->
     <string name="registrar_search">Search for courses</string>
