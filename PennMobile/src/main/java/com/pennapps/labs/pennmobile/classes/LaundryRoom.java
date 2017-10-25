@@ -3,11 +3,21 @@ package com.pennapps.labs.pennmobile.classes;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class LaundryRoom implements Parcelable {
     public int dryers_available;
     public int dryers_in_use;
     public int hall_no;
+
+    @SerializedName("hall_name")
+    @Expose
     public String name;
+    @SerializedName("machines")
+    @Expose
+    private Machines machines;
+
     public int washers_available;
     public int washers_in_use;
 
@@ -45,5 +55,21 @@ public class LaundryRoom implements Parcelable {
         dest.writeString(name);
         dest.writeInt(washers_available);
         dest.writeInt(washers_in_use);
+    }
+
+    public String getHallName() {
+        return name;
+    }
+
+    public void setHallName(String hallName) {
+        this.name = hallName;
+    }
+
+    public Machines getMachines() {
+        return machines;
+    }
+
+    public void setMachines(Machines machines) {
+        this.machines = machines;
     }
 }

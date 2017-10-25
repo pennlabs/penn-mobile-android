@@ -30,7 +30,8 @@ public class Serializer {
         public List<Course> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
                 throws JsonParseException {
             JsonElement content = je.getAsJsonObject().get("courses");
-            return new Gson().fromJson(content, new TypeToken<List<Course>>(){}.getType());
+            return new Gson().fromJson(content, new TypeToken<List<Course>>() {
+            }.getType());
         }
     }
 
@@ -39,7 +40,8 @@ public class Serializer {
         public List<Building> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
                 throws JsonParseException {
             JsonElement content = je.getAsJsonObject().get("result_data");
-            return new Gson().fromJson(content, new TypeToken<List<Building>>(){}.getType());
+            return new Gson().fromJson(content, new TypeToken<List<Building>>() {
+            }.getType());
         }
     }
 
@@ -59,7 +61,8 @@ public class Serializer {
             JsonElement content = je
                     .getAsJsonObject().get("document")
                     .getAsJsonObject().get("venue");
-            return new Gson().fromJson(content, new TypeToken<List<Venue>>(){}.getType());
+            return new Gson().fromJson(content, new TypeToken<List<Venue>>() {
+            }.getType());
         }
     }
 
@@ -81,7 +84,8 @@ public class Serializer {
                 throws JsonParseException {
             JsonElement content = je.getAsJsonObject().get("result_data");
 
-            return new Gson().fromJson(content, new TypeToken<List<BusStop>>(){}.getType());
+            return new Gson().fromJson(content, new TypeToken<List<BusStop>>() {
+            }.getType());
         }
     }
 
@@ -110,7 +114,8 @@ public class Serializer {
         public List<BusRoute> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
                 throws JsonParseException {
             JsonElement content = je.getAsJsonObject().get("result_data");
-            return new Gson().fromJson(content, new TypeToken<List<BusRoute>>(){}.getType());
+            return new Gson().fromJson(content, new TypeToken<List<BusRoute>>() {
+            }.getType());
         }
     }
 
@@ -119,7 +124,18 @@ public class Serializer {
         public List<LaundryRoom> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
                 throws JsonParseException {
             JsonElement content = je.getAsJsonObject().get("halls");
-            return new Gson().fromJson(content, new TypeToken<List<LaundryRoom>>(){}.getType());
+            return new Gson().fromJson(content, new TypeToken<List<LaundryRoom>>() {
+            }.getType());
+        }
+    }
+
+    public static class LaundryRoomSerializer implements JsonDeserializer<LaundryRoom> {
+        @Override
+        public LaundryRoom deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+                throws JsonParseException {
+            JsonElement content = je.getAsJsonObject();
+            return new Gson().fromJson(content, new TypeToken<LaundryRoom>() {
+            }.getType());
         }
     }
 
@@ -128,7 +144,8 @@ public class Serializer {
         public List<LaundryMachine> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
                 throws JsonParseException {
             JsonElement content = je.getAsJsonObject().get("machines");
-            return new Gson().fromJson(content, new TypeToken<List<LaundryMachine>>(){}.getType());
+            return new Gson().fromJson(content, new TypeToken<List<LaundryMachine>>() {
+            }.getType());
         }
     }
 }

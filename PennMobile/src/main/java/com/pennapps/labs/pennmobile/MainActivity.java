@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile;
 import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -223,6 +224,8 @@ public class MainActivity extends AppCompatActivity {
                 return;
             case R.id.nav_laundry:
             case R.id.laundry_cont:
+
+                /*
                 fragment = new LaundryFragment();
                 if (from_alarm) {
                     from_alarm = false;
@@ -230,6 +233,11 @@ public class MainActivity extends AppCompatActivity {
                     arg.putInt(getString(R.string.laundry_hall_no), getIntent().getIntExtra(getString(R.string.laundry_hall_no), -1));
                     fragment.setArguments(arg);
                 }
+                */
+
+                Intent intent = new Intent(this, LaundryActivity.class);
+                startActivity(intent);
+
                 break;
 //            case R.id.nav_nso:
 //            case R.id.nso_cont:
@@ -266,6 +274,7 @@ public class MainActivity extends AppCompatActivity {
             gsonBuilder.registerTypeAdapter(new TypeToken<List<BusRoute>>(){}.getType(), new Serializer.BusRouteListSerializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<List<LaundryRoom>>(){}.getType(), new Serializer.LaundryListSerializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<List<LaundryMachine>>(){}.getType(), new Serializer.LaundryMachineSerializer());
+            gsonBuilder.registerTypeAdapter(new TypeToken<LaundryRoom>(){}.getType(), new Serializer.LaundryRoomSerializer());
             Gson gson = gsonBuilder.create();
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setConverter(new GsonConverter(gson))
@@ -315,8 +324,6 @@ public class MainActivity extends AppCompatActivity {
         pager.setAdapter(pageAdapter);
         tab_showed = true;
     }
-
-
 
     public void removeTabs() {
         tab_showed = false;

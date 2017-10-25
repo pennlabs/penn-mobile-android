@@ -54,6 +54,7 @@
     <string name="course_bundle_arg">CourseFragment</string>
 
     <!-- Map -->
+    <string name="google_api_key">AIzaSyDlaI9Y0VU3ymQHQi20R9A1X_rxXszNw84</string>
     <string name="image_description">Photo</string>
     <string name="map">Map</string>
     <string name="map_searches">map_search</string>
@@ -106,6 +107,7 @@
     <string name="laundry_not_update">not updating status</string>
     <string name="laundry_status_unavailable">status unavailable</string>
     <string name="favorite_title">Favorite</string>
+    <string name="laundry_settings">Settings</string>
 
     <!-- News -->
     <string name="open_browser">Open in Browser</string>
@@ -158,4 +160,5 @@
     <string name="add_event">Add event to calendar</string>
     <string name="search_nso_star">search_nso_star</string>
     <string name="nso_instructions">Search for instructions</string>
+
 </resources>

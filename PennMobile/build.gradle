@@ -4,7 +4,7 @@ buildscript {
         maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.2'
+        classpath 'com.android.tools.build:gradle:2.3.3'
         classpath 'io.fabric.tools:gradle:1.21.6'
     }
 }
@@ -33,6 +33,9 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
+        transitive = true;
+    }
     compile 'com.google.maps:google-maps-services:0.1.11'
     compile 'com.android.support:percent:25.3.1'
     compile 'com.android.support:appcompat-v7:25.3.1'
@@ -48,11 +51,9 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'io.reactivex:rxandroid:0.25.0'
     compile 'com.android.support:customtabs:25.3.1'
-    compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
-        transitive = true;
-    }
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
-    compile "com.daimajia.swipelayout:library:1.2.0@aar"
+    compile 'com.daimajia.swipelayout:library:1.2.0@aar'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
 }
