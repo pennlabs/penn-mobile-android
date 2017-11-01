@@ -9,4 +9,6 @@
         android:title="@string/laundry_settings"
         app:showAsAction="ifRoom" />
 
+
+
 </menu>

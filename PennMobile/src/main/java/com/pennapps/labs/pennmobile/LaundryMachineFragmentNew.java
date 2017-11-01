@@ -98,16 +98,19 @@ public class LaundryMachineFragmentNew extends android.support.v4.app.Fragment {
     private void updateRooms() {
 
         laundryRooms.clear();
+        boolean addedRoom = false;
 
         // TODO don't hard code number of rooms
         for (int i = 0; i < 48; i++) {
             if (sp.getBoolean(Integer.toString(i), false)) {
                 addRoom(i);
+                addedRoom = true;
             }
         }
 
-        // fix it so that loadingPanel stays until loaded
-        loadingPanel.setVisibility(View.GONE);
+        if (!addedRoom) {
+            loadingPanel.setVisibility(View.GONE);
+        }
     }
 
     private void addRoom(int i) {

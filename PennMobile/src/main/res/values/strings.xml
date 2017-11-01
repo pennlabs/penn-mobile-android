@@ -107,7 +107,7 @@
     <string name="laundry_not_update">not updating status</string>
     <string name="laundry_status_unavailable">status unavailable</string>
     <string name="favorite_title">Favorite</string>
-    <string name="laundry_settings">Settings</string>
+    <string name="laundry_settings">Laundry Settings</string>
 
     <!-- News -->
     <string name="open_browser">Open in Browser</string>

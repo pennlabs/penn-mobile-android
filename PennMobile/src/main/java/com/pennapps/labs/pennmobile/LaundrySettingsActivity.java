@@ -7,6 +7,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.ExpandableListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -155,6 +156,7 @@ public class LaundrySettingsActivity extends AppCompatActivity {
 
         LaundryBuildingAdapter adapter = new LaundryBuildingAdapter(mContext, hashMap, hallList);
         mExpandableListView.setAdapter(adapter);
+        mExpandableListView.setFriction(ViewConfiguration.getScrollFriction() * 2);
 
         loadingPanel.setVisibility(View.GONE);
         no_results.setVisibility(View.GONE);

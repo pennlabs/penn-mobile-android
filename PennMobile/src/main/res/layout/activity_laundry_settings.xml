@@ -9,7 +9,7 @@
 
     <include layout="@layout/no_results" />
 
-   <include layout="@layout/loading_panel" />
+    <include layout="@layout/loading_panel" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/laundry_settings_swiperefresh"
@@ -19,7 +19,8 @@
         <ExpandableListView
             android:id="@+id/laundry_building_expandable_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:groupIndicator="@null">
 
         </ExpandableListView>
 
