@@ -3,13 +3,11 @@ package com.pennapps.labs.pennmobile;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.pennapps.labs.pennmobile.classes.GSR;
@@ -22,8 +20,6 @@ import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -31,15 +27,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
-
-import butterknife.ButterKnife;
-
-import static android.R.id.message;
 
 /**
  * Created by MikeD on 9/24/2017.
@@ -63,6 +56,49 @@ public class gsrFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_gsr, container, false);
+        Button calendarButton = (Button) v.findViewById(R.id.select_date);
+        Button startButton = (Button) v.findViewById(R.id.select_start_time);
+        Button endButton = (Button) v.findViewById(R.id.select_end_time);
+
+        // Get calendar time and date
+        Calendar calendar = Calendar.getInstance();
+        int minutes = calendar.get(Calendar.MINUTE);
+        int hour = calendar.get(Calendar.HOUR);
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+        int ampm = calendar.get(Calendar.AM_PM);
+
+        // Determine month, day of week, AM/PM
+        String monthName = getMonthName(month);
+        String date = getDayOfWeek(dayOfWeek) + ", " + monthName + " " + day + ", " + year;
+        String strampm = "PM";
+        if (ampm == 0) {
+            strampm = "AM";
+        }
+        calendarButton.setText(date);
+
+        // Set default start/end times for GSR booking
+        if (minutes < 10) {
+            startButton.setText(hour + ":0" + minutes + " " + strampm);
+            if (hour == 11 && strampm.equals("AM")) {
+                endButton.setText("12:0" + minutes + " PM");
+            } else if (hour == 11 && strampm.equals("PM")) {
+                endButton.setText("12:0" + minutes + " AM");
+            } else {
+                endButton.setText(Integer.toString(hour + 1) + ":0" + minutes + " " + strampm);
+            }
+        } else {
+            startButton.setText(hour + ":" + minutes + " " + strampm);
+            if (hour == 11 && strampm.equals("AM")) {
+                endButton.setText("12:" + minutes + " PM");
+            } else if (hour == 11 && strampm.equals("PM")) {
+                endButton.setText("12:" + minutes + " AM");
+            } else {
+                endButton.setText(Integer.toString(hour + 1) + ":" + minutes + " " + strampm);
+            }
+        }
         return v;
     }
 
@@ -71,6 +107,58 @@ public class gsrFragment extends Fragment {
         super.onResume();
         getActivity().setTitle(R.string.gsr);
         ((MainActivity) getActivity()).setNav(R.id.nav_gsr);
+    }
+
+    private String getDayOfWeek(int dayOfWeek) {
+        switch (dayOfWeek) {
+            case 1:
+                return "Sun";
+            case 2:
+                return "Mon";
+            case 3:
+                return "Tue";
+            case 4:
+                return "Wed";
+            case 5:
+                return "Thu";
+            case 6:
+                return "Fri";
+            case 7:
+                return "Sat";
+            default:
+                return "Sat";
+        }
+    }
+
+    private String getMonthName(int month) {
+        switch (month) {
+            case 0:
+                return "January";
+            case 1:
+                return "February";
+            case 2:
+                return "March";
+            case 3:
+                return "April";
+            case 4:
+                return "May";
+            case 5:
+                return "June";
+            case 6:
+                return "July";
+            case 7:
+                return "August";
+            case 8:
+                return "September";
+            case 9:
+                return "October";
+            case 10:
+                return "November";
+            case 11:
+                return "December";
+            default:
+                return "March";
+        }
     }
 
 

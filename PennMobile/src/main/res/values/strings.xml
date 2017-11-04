@@ -161,4 +161,10 @@
     <string name="add_event">Add event to calendar</string>
     <string name="search_nso_star">search_nso_star</string>
     <string name="nso_instructions">Search for instructions</string>
+
+    <!-- GSR -->
+    <string name="search_range">Select GSR Search Range</string>
+    <string name="search_start_time">Start: </string>
+    <string name="search_end_time">End: </string>
+    <string name="calendar_button">Something went wrong</string>
 </resources>
