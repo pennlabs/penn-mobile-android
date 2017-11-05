@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_centerHorizontal="true"
     android:gravity="center_horizontal"
     android:layout_height="match_parent">
@@ -8,8 +10,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
         android:text="@string/search_range"
         android:textColor="@color/black" />
 
@@ -63,5 +65,11 @@
                 android:background="@android:color/transparent"/>
         </LinearLayout>
     </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/gsr_rooms_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:list_item="@layout/gsr_building"/>
 
 </LinearLayout>

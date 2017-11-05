@@ -3,6 +3,8 @@ package com.pennapps.labs.pennmobile;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,32 +75,20 @@ public class gsrFragment extends Fragment {
         // Determine month, day of week, AM/PM
         String monthName = getMonthName(month);
         String date = getDayOfWeek(dayOfWeek) + ", " + monthName + " " + day + ", " + year;
-        String strampm = "PM";
-        if (ampm == 0) {
-            strampm = "AM";
-        }
         calendarButton.setText(date);
 
         // Set default start/end times for GSR booking
-        if (minutes < 10) {
-            startButton.setText(hour + ":0" + minutes + " " + strampm);
-            if (hour == 11 && strampm.equals("AM")) {
-                endButton.setText("12:0" + minutes + " PM");
-            } else if (hour == 11 && strampm.equals("PM")) {
-                endButton.setText("12:0" + minutes + " AM");
-            } else {
-                endButton.setText(Integer.toString(hour + 1) + ":0" + minutes + " " + strampm);
-            }
-        } else {
-            startButton.setText(hour + ":" + minutes + " " + strampm);
-            if (hour == 11 && strampm.equals("AM")) {
-                endButton.setText("12:" + minutes + " PM");
-            } else if (hour == 11 && strampm.equals("PM")) {
-                endButton.setText("12:" + minutes + " AM");
-            } else {
-                endButton.setText(Integer.toString(hour + 1) + ":" + minutes + " " + strampm);
-            }
-        }
+        String[] ampmTimes = getStartEndTimes(hour, minutes, ampm);
+        startButton.setText(ampmTimes[0]);
+        endButton.setText(ampmTimes[1]);
+
+        // Set up recycler view for list of GSR rooms
+        RecyclerView gsrRoomListRecylerView = (RecyclerView) v.findViewById(R.id.gsr_rooms_list);
+        LinearLayoutManager gsrRoomListLayoutManager = new LinearLayoutManager(getContext());
+        gsrRoomListLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        gsrRoomListRecylerView.setLayoutManager(gsrRoomListLayoutManager);
+        gsrRoomListRecylerView.setAdapter(new GsrBuildingAdapter(getContext()));
+
         return v;
     }
 
@@ -107,6 +97,38 @@ public class gsrFragment extends Fragment {
         super.onResume();
         getActivity().setTitle(R.string.gsr);
         ((MainActivity) getActivity()).setNav(R.id.nav_gsr);
+    }
+
+    // Parameters: the starting time's hour, minutes, and AM/PM as formatted by Java.utils.Calendar
+    // AM = 0, PM = 1
+    // Returns a string array of length 2 where first element is properly formatted starting time
+    // Second element is properly formatted ending time, which is one hour after starting time
+    public static String[] getStartEndTimes(int hour, int minutes, int ampm) {
+        String[] results = new String[2];
+        String strampm = (ampm == 0) ? "AM" : "PM";
+        // Add 0 if minutes < 10
+        if (minutes < 10) {
+            results[0] = hour + ":0" + minutes + " " + strampm;
+            // Change AM to PM and vice versa if start time hour is 11
+            if (hour == 11 && strampm.equals("AM")) {
+                results[1] = "12:0" + minutes + " PM";
+            } else if (hour == 11 && strampm.equals("PM")) {
+                results[1] = "12:0" + minutes + " AM";
+            } else {
+                results[1] = Integer.toString((hour + 1) % 12) + ":0" + minutes + " " + strampm;
+            }
+        } else {
+            results[0] = hour + ":" + minutes + " " + strampm;
+            // Change AM to PM and vice versa if start time hour is 11
+            if (hour == 11 && strampm.equals("AM")) {
+                results[1] = "12:" + minutes + " PM";
+            } else if (hour == 11 && strampm.equals("PM")) {
+                results[1] = "12:" + minutes + " AM";
+            } else {
+                results[1] = Integer.toString((hour + 1) % 12) + ":" + minutes + " " + strampm;
+            }
+        }
+        return results;
     }
 
     private String getDayOfWeek(int dayOfWeek) {
