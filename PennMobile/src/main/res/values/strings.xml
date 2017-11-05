@@ -167,5 +167,8 @@
     <string name="search_start_time">Start: </string>
     <string name="search_end_time">End: </string>
     <string name="calendar_button">Something went wrong</string>
+    <string name="search_GSRs">Search</string>
+    <string name="quitBook">&lt;- Back</string>
+    <string name="select_intrusctions">Select an open time slot</string>
     <string name="to">to</string>
 </resources>

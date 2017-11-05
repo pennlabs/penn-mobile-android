@@ -8,22 +8,32 @@
     android:layout_marginStart="5dp"
     android:layout_marginRight="5dp"
     android:layout_marginEnd="5dp"
-    android:background="@color/avail_color_green">
+    android:background="@color/avail_color_green"
+    >
 
     <TextView
-        android:id="@+id/start_time"
+        android:id="@+id/gsr_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/search_start_time"/>
+        android:layout_gravity="center"
+        android:padding="3dp"
+        android:text="Time"/>
 
     <TextView
+        android:id="@+id/gsr_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/to"/>
+        android:visibility="gone"
+        android:text=""
+        android:clickable="true"/>
 
     <TextView
-        android:id="@+id/end_time"
+        android:id="@+id/locationId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/search_end_time"/>
+        android:visibility="gone"
+        android:text=""
+        android:clickable="true"/>
+
+
 </LinearLayout>

@@ -1,5 +1,9 @@
 package com.pennapps.labs.pennmobile;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -9,7 +13,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.pennapps.labs.pennmobile.classes.GSR;
@@ -22,14 +31,17 @@ import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,12 +49,17 @@ import java.util.regex.Pattern;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
- * Created by MikeD on 9/24/2017.
+ * Created by Mike Abelar on 9/24/2017.
  */
 
 public class gsrFragment extends Fragment {
 
     ArrayList<GSR> mGSRS = new ArrayList<GSR>();
+
+    RecyclerView gsrRoomListRecylerView;
+
+
+    TextView instructions;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,17 +67,39 @@ public class gsrFragment extends Fragment {
         ((MainActivity) getActivity()).closeKeyboard();
         getActivity().setTitle(R.string.gsr);
 
-        //execute Asynctask to get hours
-        new getHours().execute();
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_gsr, container, false);
-        Button calendarButton = (Button) v.findViewById(R.id.select_date);
-        Button startButton = (Button) v.findViewById(R.id.select_start_time);
-        Button endButton = (Button) v.findViewById(R.id.select_end_time);
+        final Button calendarButton = (Button) v.findViewById(R.id.select_date);
+        final Button startButton = (Button) v.findViewById(R.id.select_start_time);
+        final Button endButton = (Button) v.findViewById(R.id.select_end_time);
+        Button searchGSR = (Button) v.findViewById(R.id.search_GSR);
+        final Spinner gsrDropDown = (Spinner) v.findViewById(R.id.gsr_building_selection);
+        instructions = (TextView) v.findViewById(R.id.instructions);
+
+        //set dropdown
+        String[] gsrs = new String[]{
+                "Weigle",
+                "VP GSR",
+                "Lippincott",
+                "Edu Commons",
+                "Levin Building",
+                "VP Sem. Rooms",
+                "Lippincott Sem. Rooms",
+                "Glossberg Recording Room",
+                //"Dental Sem",
+                "Biomedical Lib."
+        };
+        //create an adapter to describe how the items are displayed, adapters are used in several places in android.
+        //There are multiple variations of this, but this is the basic variant.
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, gsrs);
+        //set the spinners adapter to the previously created one.
+        gsrDropDown.setAdapter(adapter);
+
+
 
         // Get calendar time and date
         Calendar calendar = Calendar.getInstance();
@@ -68,14 +107,13 @@ public class gsrFragment extends Fragment {
         int hour = calendar.get(Calendar.HOUR);
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-        int month = calendar.get(Calendar.MONTH);
+        int month = calendar.get(Calendar.MONTH) + 1;
         int year = calendar.get(Calendar.YEAR);
         int ampm = calendar.get(Calendar.AM_PM);
 
-        // Determine month, day of week, AM/PM
-        String monthName = getMonthName(month);
-        String date = getDayOfWeek(dayOfWeek) + ", " + monthName + " " + day + ", " + year;
-        calendarButton.setText(date);
+
+        calendarButton.setText(year + "-" + month + "-" + day);
+
 
         // Set default start/end times for GSR booking
         String[] ampmTimes = getStartEndTimes(hour, minutes, ampm);
@@ -83,11 +121,174 @@ public class gsrFragment extends Fragment {
         endButton.setText(ampmTimes[1]);
 
         // Set up recycler view for list of GSR rooms
-        RecyclerView gsrRoomListRecylerView = (RecyclerView) v.findViewById(R.id.gsr_rooms_list);
-        LinearLayoutManager gsrRoomListLayoutManager = new LinearLayoutManager(getContext());
-        gsrRoomListLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        gsrRoomListRecylerView.setLayoutManager(gsrRoomListLayoutManager);
-        gsrRoomListRecylerView.setAdapter(new GsrBuildingAdapter(getContext()));
+         gsrRoomListRecylerView = (RecyclerView) v.findViewById(R.id.gsr_rooms_list);
+
+
+
+        //on clicks
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get Current Time
+                final Calendar c = Calendar.getInstance();
+                int mHour = c.get(Calendar.HOUR_OF_DAY);
+                int mMinute = c.get(Calendar.MINUTE);
+
+                // Launch Time Picker Dialog
+                TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(),
+                        new TimePickerDialog.OnTimeSetListener() {
+
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay,
+                                                  int minute) {
+
+                                String AM_PM ;
+                                if(hourOfDay < 12) {
+                                    AM_PM = "AM";
+                                } else {
+                                    AM_PM = "PM";
+                                }
+
+                                String hourString = Integer.toString(hourOfDay);
+                                if (hourOfDay == 0) {
+                                    hourString = "12";
+                                }
+                                if (hourOfDay > 12) {
+                                    hourString = Integer.toString(hourOfDay - 12);
+                                }
+
+
+                                //strign version of minute
+                                String minuteString = Integer.toString(minute);
+
+                                if (minute < 10) {
+                                    minuteString = "0" + minute;
+                                }
+
+                                startButton.setText(hourString + ":" + minuteString + " " + AM_PM);
+                            }
+                        }, mHour, mMinute, false);
+                timePickerDialog.show();
+            }
+
+        });
+
+        endButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get Current Time
+                final Calendar c = Calendar.getInstance();
+                int mHour = c.get(Calendar.HOUR_OF_DAY);
+                int mMinute = c.get(Calendar.MINUTE);
+
+                // Launch Time Picker Dialog
+                TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(),
+                        new TimePickerDialog.OnTimeSetListener() {
+
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay,
+                                                  int minute) {
+
+                                String AM_PM ;
+                                if(hourOfDay < 12) {
+                                    AM_PM = "AM";
+                                } else {
+                                    AM_PM = "PM";
+                                }
+
+                                String hourString = Integer.toString(hourOfDay);
+                                if (hourOfDay == 0) {
+                                    hourString = "12";
+                                }
+                                if (hourOfDay > 12) {
+                                    hourString = Integer.toString(hourOfDay - 12);
+                                }
+
+
+                                //strign version of minute
+                                String minuteString = Integer.toString(minute);
+
+                                if (minute < 10) {
+                                    minuteString = "0" + minute;
+                                }
+
+                                endButton.setText(hourString + ":" + minuteString + " " + AM_PM);
+                            }
+                        }, mHour, mMinute, false);
+
+                timePickerDialog.show();
+            }
+
+        });
+
+
+
+
+        calendarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // Get Current Date
+                final Calendar c = Calendar.getInstance();
+                int mYear = c.get(Calendar.YEAR);
+                int mMonth = c.get(Calendar.MONTH);
+                int mDay = c.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
+                        new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+
+
+                                //acount for index
+                                int entryMonth = monthOfYear + 1;
+
+                                calendarButton.setText(year + "-" + entryMonth + "-" + dayOfMonth);
+
+                            }
+                        }, mYear, mMonth, mDay);
+
+                //set min and max choices
+
+                Date today = new Date();
+                c.setTime(today);
+                long minDate = c.getTime().getTime();
+
+                c.setTime(today);
+                c.add( Calendar.DAY_OF_MONTH, +6 );
+                long maxDate = c.getTime().getTime();
+
+                datePickerDialog.getDatePicker().setMaxDate(maxDate);
+                datePickerDialog.getDatePicker().setMinDate(minDate);
+                datePickerDialog.show();
+            }
+
+        });
+
+        searchGSR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                instructions.setText(getString(R.string.select_intrusctions));
+
+                //get vars
+                String dateBooking = calendarButton.getText().toString();
+                String startTime = startButton.getText().toString();
+                String endTime = endButton.getText().toString();
+                int location = mapGSR(gsrDropDown.getSelectedItem().toString());
+                if (location == -1) {
+                    Toast.makeText(getActivity(), "Sorry, an error has occured", Toast.LENGTH_LONG);
+                }
+                else {
+                    String[] asyncTaskParams = { Integer.toString(location), dateBooking};
+                    new getHours().execute(asyncTaskParams);
+                }
+
+            }
+
+        });
 
         return v;
     }
@@ -97,6 +298,39 @@ public class gsrFragment extends Fragment {
         super.onResume();
         getActivity().setTitle(R.string.gsr);
         ((MainActivity) getActivity()).setNav(R.id.nav_gsr);
+    }
+
+    //takes the name of the gsr and returns an int for the corresponding code
+    public int mapGSR(String name) {
+        switch (name) {
+            case "Weigle":
+                return 1722;
+            case "VP GSR":
+                return 1799;
+            case "Lippincott":
+                return 1768;
+            case "Edu Commons":
+                return 848;
+            case "Levin Building":
+                return 13489;
+            case "VP Sem. Rooms":
+                return 4409;
+            case "Lippincott Sem. Rooms":
+                return 2587;
+            case "Glossberg Recording Room":
+                return 1819;
+            case "Dental Sem":
+                return 13532;
+            case "Biomedical Lib.":
+                return 505;
+            default:
+                return -1;
+        }
+    }
+
+    public int mapGSRSlot(String name) {
+        if (name.contains("VP WIC")) {return 1722;}
+        return -1;
     }
 
     // Parameters: the starting time's hour, minutes, and AM/PM as formatted by Java.utils.Calendar
@@ -134,21 +368,21 @@ public class gsrFragment extends Fragment {
     private String getDayOfWeek(int dayOfWeek) {
         switch (dayOfWeek) {
             case 1:
-                return "Sun";
+                return "Sunday";
             case 2:
-                return "Mon";
+                return "Monday";
             case 3:
-                return "Tue";
+                return "Tuesday";
             case 4:
-                return "Wed";
+                return "Wednesday";
             case 5:
-                return "Thu";
+                return "Thursday";
             case 6:
-                return "Fri";
+                return "Friday";
             case 7:
-                return "Sat";
+                return "Saturday";
             default:
-                return "Sat";
+                return "Saturday";
         }
     }
 
@@ -184,21 +418,18 @@ public class gsrFragment extends Fragment {
     }
 
 
-    public class getHours extends AsyncTask<String, Void, String> {
+    public class getHours extends AsyncTask<String, Void, String[]> {
 
         protected void onPreExecute(){}
 
-        protected String doInBackground(String... arg0) {
+        protected String[] doInBackground(String... pParams) {
 
             try {
 
-                URL url = new URL("http://libcal.library.upenn.edu/process_roombookings.php?m=calscroll&date=Saturday&gid=1722");
+                String gsrCode = pParams[0];
+                String date = pParams[1];
 
-                //post request is needed to get available rooms
-                JSONObject postDataParams = new JSONObject();
-                postDataParams.put("m", "calscroll");
-                postDataParams.put("date", "Saturday");
-                postDataParams.put("gid", "1722");
+                URL url = new URL("http://libcal.library.upenn.edu/process_roombookings.php?m=calscroll&gid=" + gsrCode + "&date=" + date);
 
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestProperty("Referer","http://libcal.library.upenn.edu/booking/vpdlc");
@@ -208,14 +439,6 @@ public class gsrFragment extends Fragment {
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
 
-                //get the response
-                OutputStream os = conn.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(
-                        new OutputStreamWriter(os, "UTF-8"));
-                writer.write(getPostDataString(postDataParams));
-                writer.flush();
-                writer.close();
-                os.close();
 
                 int responseCode=conn.getResponseCode();
 
@@ -235,65 +458,92 @@ public class gsrFragment extends Fragment {
 
                     //return a string for do in background
                     in.close();
-                    return total.toString();
+                    String[] returnArray = {total.toString(), gsrCode, date};
+                    return returnArray;
 
                 }
                 else {
-                    return new String("false : "+responseCode);
+                    String[] returnArray = {"failed"};
+                    return returnArray;
                 }
             }
             catch(Exception e){
-                return new String("Exception: " + e.getMessage());
+                String[] returnArray = {"failed"};
+                return returnArray;
             }
 
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(String[] result) {
+
+
+            String gsrCode = result[1];
+            String dayOfWeek = result[2];
+
 
             //parse the data
-            Document doc = Jsoup.parse(result);
+            Document doc = Jsoup.parse(result[0]);
             //just return the names of all attributes
             Elements elements = doc.body().select("a.lc_rm_a");
 
-            for (Element element : elements) {
-                //parse element entry
-                String element_entry = element.attr("onclick") + "\n";
+            Log.e("hey", "" + elements.size());
 
-                //get main attribute data
-                String[] parsed_data = parseEntry(element_entry).split("&");
+            if (elements.size() == 0) {
 
-                String gsrName = parsed_data[0].replace("'", "");
+                Toast.makeText(getActivity(), "No GSRs available", Toast.LENGTH_LONG).show();
+                LinearLayoutManager gsrRoomListLayoutManager = new LinearLayoutManager(getContext());
+                gsrRoomListLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                gsrRoomListRecylerView.setLayoutManager(gsrRoomListLayoutManager);
+                gsrRoomListRecylerView.setAdapter(new GsrBuildingAdapter(getContext(), mGSRS, gsrCode));
+            } else {
+                for (Element element : elements) {
+                    //parse element entry
+                    String element_entry = element.attr("onclick") + "\n";
 
-                String dateTime = parsed_data[1].replace("'", "");
+                    //get main attribute data
+                    String[] parsed_data = parseEntry(element_entry).split("&");
 
-                String elementId = element.attr("id") + "\n";
+                    String gsrName = parsed_data[0].replace("'", "");
 
-                //parse datetime further
-                String[] dateDataBrokenUp = parseEntry(element_entry).split(",");
+                    String dateTime = parsed_data[1].replace("'", "");
 
-                String timeRange = dateDataBrokenUp[0].split("&")[1];
+                    String elementId = element.attr("id") + "\n";
 
-                String dayDate = dateDataBrokenUp[1];
+                    //parse datetime further
+                    String[] dateDataBrokenUp = parseEntry(element_entry).split(",");
 
-                String dateNum = dateDataBrokenUp[2];
+                    String timeRange = dateDataBrokenUp[0].split("&")[1];
 
-                String duration = parsed_data[2].replace("'", "");
+                    String dayDate = dateDataBrokenUp[1];
+
+                    String dateNum = dateDataBrokenUp[2];
+
+                    String duration = parsed_data[2].replace("'", "");
+
+
+                    //now popular mGSRs
+                    insertGSRSlot(gsrName, dateTime, timeRange, dayDate, dateNum, duration, elementId);
+
+                }
+
+                //now change the ui
 
 
 
-                //now popular mGSRs
-                insertGSRSlot(gsrName, dateTime, timeRange, dayDate, dateNum, duration, elementId);
+
+                LinearLayoutManager gsrRoomListLayoutManager = new LinearLayoutManager(getContext());
+                gsrRoomListLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                gsrRoomListRecylerView.setLayoutManager(gsrRoomListLayoutManager);
+                gsrRoomListRecylerView.setAdapter(new GsrBuildingAdapter(getContext(), mGSRS, gsrCode));
+
+                mGSRS = new ArrayList<GSR>();
 
             }
-
-            //test the get information
-            String test_string = mGSRS.get(1).getAvailableGSRSlots().get(1).getElementId();
-            Toast.makeText(getActivity(), "First ID session of first GSR: " + test_string,
-                    Toast.LENGTH_LONG).show();
-
         }
     }
+
+
 
     //helper function to parse response
     public String getPostDataString(JSONObject params) throws Exception {
@@ -342,16 +592,22 @@ public class gsrFragment extends Fragment {
     //function that takes all available GSR sessions and populates mGSRs
     public void insertGSRSlot(String gsrName, String GSRTimeRange, String GSRDateTime,
                               String GSRDayDate, String GSRDateNum, String GSRDuration, String GSRElementId) {
+
+        boolean encountered = false;
+
         for(int i=0; i<mGSRS.size(); i++) {
             GSR currentGSR = mGSRS.get(i);
             //if there is GSR, add the available session to the GSR Object
             if (currentGSR.getGsrName().equals(gsrName)) {
                 currentGSR.addGSRSlot(GSRTimeRange, GSRDateTime, GSRDayDate, GSRDateNum, GSRDuration, GSRElementId);
+                encountered = true;
             }
         }
         //can't find existing GSR. Create new object
-        GSR newGSRObject = new GSR(gsrName, GSRTimeRange, GSRDateTime, GSRDayDate, GSRDateNum, GSRDuration, GSRElementId);
-        mGSRS.add(newGSRObject);
+        if (encountered == false) {
+            GSR newGSRObject = new GSR(gsrName, GSRTimeRange, GSRDateTime, GSRDayDate, GSRDateNum, GSRDuration, GSRElementId);
+            mGSRS.add(newGSRObject);
+        }
     }
 
 }

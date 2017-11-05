@@ -7,6 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.pennapps.labs.pennmobile.classes.GSR;
+import com.pennapps.labs.pennmobile.classes.GSRSlot;
+
+import java.util.ArrayList;
+
 /**
  * Created by Andrew on 11/5/2017.
  * RecylerView Adapter for a specific building with GSRs.
@@ -15,10 +20,13 @@ import android.view.ViewGroup;
 public class GsrBuildingAdapter extends RecyclerView.Adapter<GsrBuildingHolder> {
 
     Context context;
+    ArrayList<GSR> gsrs;
+    String gsrLocationCode;
 
-
-    public GsrBuildingAdapter(Context context) {
+    public GsrBuildingAdapter(Context context, ArrayList<GSR> _gsrs, String _gsrLocationCode) {
         this.context = context;
+        this.gsrs = _gsrs;
+        this.gsrLocationCode = _gsrLocationCode;
     }
 
     @Override
@@ -36,14 +44,26 @@ public class GsrBuildingAdapter extends RecyclerView.Adapter<GsrBuildingHolder> 
                 LinearLayoutManager gsrRoomsLayoutManager = new LinearLayoutManager(context,
                         LinearLayoutManager.HORIZONTAL, false);
                 gsrRoomsRecyclerView.setLayoutManager(gsrRoomsLayoutManager);
-                gsrRoomsRecyclerView.setAdapter(new GsrRoomAdapter());
-                holder.gsrBuildingName.setText("Building number " + position);
+
+                //now define arrays
+                ArrayList<String> times = new ArrayList<String>();
+                ArrayList<String> ids = new ArrayList<String>();
+
+                for (int j = 0; j < gsrs.get(position).getAvailableGSRSlots().size(); j++)
+                {
+                    GSRSlot gsrslot = gsrs.get(position).getAvailableGSRSlots().get(j);
+                    times.add(gsrslot.getTimeRange());
+                    ids.add(gsrslot.getElementId());
+                }
+
+                gsrRoomsRecyclerView.setAdapter(new GsrRoomAdapter(times, ids, gsrLocationCode, context));
+                holder.gsrBuildingName.setText(gsrs.get(position).getGsrName());
             }
         }
     }
 
     @Override
     public int getItemCount() {
-        return 8;
+        return gsrs.size();
     }
 }
