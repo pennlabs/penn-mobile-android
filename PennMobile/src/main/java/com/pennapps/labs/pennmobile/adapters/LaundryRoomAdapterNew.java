@@ -64,14 +64,16 @@ public class LaundryRoomAdapterNew extends RecyclerView.Adapter<LaundryRoomAdapt
             // laundry availability
             int open = washers.getOpen();
             int running = washers.getRunning();
+            // todo specify offline in text
+            int offline = washers.getOffline();
+            // todo include out of order?
             holder.availability.setText(open + " out of " + (open + running));
             holder.availability.setTextColor(ContextCompat.getColor(mContext, R.color.teal));
 
             // create an array of time remaining (length is number of machines)
-            int totalMachines = open + running;
+            int totalMachines = open + running + offline;
             List<Integer> timeRemaining = washers.getTimeRemaining();
             int[] times = new int[totalMachines];
-            // TODO handle case where the time remaining is "not updating status"
             Iterator iterator = timeRemaining.iterator();
             for (int i = 0; i < timeRemaining.size(); i++) {
                 times[i] = (int) iterator.next();
@@ -90,11 +92,12 @@ public class LaundryRoomAdapterNew extends RecyclerView.Adapter<LaundryRoomAdapt
             // laundry availability
             int open = dryers.getOpen();
             int running = dryers.getRunning();
+            int offline = dryers.getOffline();
             holder.availability.setText(open + " out of " + (open + running));
             holder.availability.setTextColor(ContextCompat.getColor(mContext, R.color.star_color_on));
 
             // create an array of time remaining (length is number of machines)
-            int totalMachines = open + running;
+            int totalMachines = open + running + offline;
             List<Integer> timeRemaining = dryers.getTimeRemaining();
             int[] times = new int[totalMachines];
             Iterator iterator = timeRemaining.iterator();

@@ -105,7 +105,7 @@ public class LaundryBuildingAdapter extends BaseExpandableListAdapter {
             final LaundryRoomSimple laundryRoom = laundryRooms.get(laundryHallName).get(0);
 
             // set the Switch to the correct on or off
-            buildingSwitch.setChecked(sp.getBoolean(laundryRoom.id, false));
+            buildingSwitch.setChecked(sp.getBoolean(Integer.toString(laundryRoom.id), false));
 
             // add the switch to the list - to aid with disabling
             if (!switches.contains(buildingSwitch)) {
@@ -126,7 +126,7 @@ public class LaundryBuildingAdapter extends BaseExpandableListAdapter {
                 public void onClick(View view) {
                     boolean isChecked = buildingSwitch.isChecked();
                     SharedPreferences.Editor editor = sp.edit();
-                    editor.putBoolean(laundryRoom.id, isChecked);
+                    editor.putBoolean(Integer.toString(laundryRoom.id), isChecked);
                     editor.apply();
 
                     // update the numRoomSelected
@@ -176,7 +176,7 @@ public class LaundryBuildingAdapter extends BaseExpandableListAdapter {
         final Switch favoriteSwitch = (Switch) view.findViewById(R.id.laundry_favorite_switch);
 
         // set the Switch to the correct on or off
-        favoriteSwitch.setChecked(sp.getBoolean(laundryRoom.id, false));
+        favoriteSwitch.setChecked(sp.getBoolean(Integer.toString(laundryRoom.id), false));
 
         // add the switch to the list - to aid with disabling
         if (!switches.contains(favoriteSwitch)) {
@@ -197,7 +197,7 @@ public class LaundryBuildingAdapter extends BaseExpandableListAdapter {
             public void onClick(View view) {
                 boolean isChecked = favoriteSwitch.isChecked();
                 SharedPreferences.Editor editor = sp.edit();
-                editor.putBoolean(laundryRoom.id, isChecked);
+                editor.putBoolean(Integer.toString(laundryRoom.id), isChecked);
                 editor.apply();
 
                 // update the numRoomSelected

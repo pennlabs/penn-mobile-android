@@ -5,10 +5,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class Machines {
 
-    @SerializedName("Dryers")
+    @SerializedName("dryers")
     @Expose
     private Dryers dryers;
-    @SerializedName("Washers")
+    @SerializedName("washers")
     @Expose
     private Washers washers;
 

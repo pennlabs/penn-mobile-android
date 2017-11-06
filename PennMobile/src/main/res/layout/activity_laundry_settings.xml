@@ -11,6 +11,31 @@
 
     <include layout="@layout/loading_panel" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/laundry_settings_help_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Please select up to 3 laundry rooms" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/laundry_settings_help_text"
+            android:text="Click RESET to reset your selections" />
+
+        <Button
+            android:id="@+id/laundry_room_reset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="Reset" />
+    </RelativeLayout>
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/laundry_settings_swiperefresh"
         android:layout_width="match_parent"

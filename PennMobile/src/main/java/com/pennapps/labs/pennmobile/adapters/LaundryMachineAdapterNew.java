@@ -42,15 +42,26 @@ public class LaundryMachineAdapterNew extends RecyclerView.Adapter<LaundryMachin
 
         int time = mTimes[position];
         String timeString;
-        if (time <= 0) {
+        // open
+        if (time == 0) {
             timeString = "Open";
             holder.button.setText(timeString);
             holder.button.setBackgroundColor(ContextCompat.getColor(mContext, mColor));
             holder.button.setTextColor(Color.WHITE);
             holder.textView.setVisibility(View.INVISIBLE);
-        } else {
+        }
+        // time left
+        else if (time >= 0) {
             timeString = Integer.toString(time);
             holder.button.setText(timeString);
+            holder.button.setBackgroundColor(ContextCompat.getColor(mContext, R.color.star_color_off));
+            holder.button.setTextColor(ContextCompat.getColor(mContext, mColor));
+            holder.textView.setVisibility(View.VISIBLE);
+        }
+        // not updating status
+        else {
+            // todo add to string resources
+            holder.button.setText("Not Updating Status");
             holder.button.setBackgroundColor(ContextCompat.getColor(mContext, R.color.star_color_off));
             holder.button.setTextColor(ContextCompat.getColor(mContext, mColor));
             holder.textView.setVisibility(View.VISIBLE);

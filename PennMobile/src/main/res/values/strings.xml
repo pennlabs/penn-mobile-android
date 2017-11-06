@@ -54,7 +54,7 @@
     <string name="course_bundle_arg">CourseFragment</string>
 
     <!-- Map -->
-    <string name="google_api_key">AIzaSyDlaI9Y0VU3ymQHQi20R9A1X_rxXszNw84</string>
+    <string name="google_api_key"></string>
     <string name="image_description">Photo</string>
     <string name="map">Map</string>
     <string name="map_searches">map_search</string>

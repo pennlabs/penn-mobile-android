@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -100,8 +101,9 @@ public class LaundryMachineFragmentNew extends android.support.v4.app.Fragment {
         laundryRooms.clear();
         boolean addedRoom = false;
 
-        // TODO don't hard code number of rooms
-        for (int i = 0; i < 48; i++) {
+        Intent mIntent = getActivity().getIntent();
+        int numRooms = mIntent.getIntExtra("numRooms", 48);
+        for (int i = 0; i < numRooms; i++) {
             if (sp.getBoolean(Integer.toString(i), false)) {
                 addRoom(i);
                 addedRoom = true;

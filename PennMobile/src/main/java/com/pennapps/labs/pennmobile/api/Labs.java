@@ -5,8 +5,9 @@ import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
-import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryMachine;
+import com.pennapps.labs.pennmobile.classes.LaundryRoom;
+import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Review;
 import com.pennapps.labs.pennmobile.classes.Venue;
@@ -59,14 +60,21 @@ public interface Labs {
     Observable<Review> course_review(
         @Path("id") String id);
 
-    @GET("/laundry/hall/0/2")
-    Observable<List<LaundryRoom>> laundries();
+    // new
+    @GET("/laundry/halls/ids")
+    Observable<List<LaundryRoomSimple>> laundryRooms();
 
+    // new
     @GET("/laundry/hall/{id}")
     Observable<LaundryRoom> room(
             @Path("id") int id);
 
+    // old
     @GET("/laundry/hall/{id}")
     Observable<List<LaundryMachine>> laundryMachines(
         @Path("id") int id);
+
+    // old
+    @GET("/laundry/hall/0/2")
+    Observable<List<LaundryRoom>> laundries();
 }
