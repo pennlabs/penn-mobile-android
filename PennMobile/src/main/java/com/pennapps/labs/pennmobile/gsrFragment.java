@@ -38,6 +38,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -282,7 +283,7 @@ public class gsrFragment extends Fragment {
                     Toast.makeText(getActivity(), "Sorry, an error has occured", Toast.LENGTH_LONG);
                 }
                 else {
-                    String[] asyncTaskParams = { Integer.toString(location), dateBooking};
+                    String[] asyncTaskParams = { Integer.toString(location), dateBooking, startTime, endTime};
                     new getHours().execute(asyncTaskParams);
                 }
 
@@ -428,6 +429,8 @@ public class gsrFragment extends Fragment {
 
                 String gsrCode = pParams[0];
                 String date = pParams[1];
+                String startTime = pParams[2];
+                String endTime = pParams[3];
 
                 URL url = new URL("http://libcal.library.upenn.edu/process_roombookings.php?m=calscroll&gid=" + gsrCode + "&date=" + date);
 
@@ -458,7 +461,7 @@ public class gsrFragment extends Fragment {
 
                     //return a string for do in background
                     in.close();
-                    String[] returnArray = {total.toString(), gsrCode, date};
+                    String[] returnArray = {total.toString(), gsrCode, date, startTime, endTime};
                     return returnArray;
 
                 }
@@ -480,14 +483,13 @@ public class gsrFragment extends Fragment {
 
             String gsrCode = result[1];
             String dayOfWeek = result[2];
-
+            String startTime = result[3];
+            String endTime = result[4];
 
             //parse the data
             Document doc = Jsoup.parse(result[0]);
             //just return the names of all attributes
             Elements elements = doc.body().select("a.lc_rm_a");
-
-            Log.e("hey", "" + elements.size());
 
             if (elements.size() == 0) {
 
@@ -521,16 +523,79 @@ public class gsrFragment extends Fragment {
 
                     String duration = parsed_data[2].replace("'", "");
 
+                    String AMPM = "";
+                    if (timeRange.contains("AM")) {
+                        AMPM = "AM";
+                    }
+                    else {AMPM = "PM";}
 
-                    //now popular mGSRs
-                    insertGSRSlot(gsrName, dateTime, timeRange, dayDate, dateNum, duration, elementId);
+
+
+                    String localStartTime = timeRange.split("-")[0].replace("'", "");
+                    String localEndTime = timeRange.split("-")[1];
+
+                    Boolean startDateCondition = false;
+                    Boolean endDateCondition = false;
+
+                    //now parse
+                    SimpleDateFormat localFormat = new SimpleDateFormat("hh:mmaa");
+                    SimpleDateFormat globalFormat = new SimpleDateFormat("hh:mm aa");
+
+                    try {
+                        Date localStartDate = localFormat.parse(localStartTime);
+
+                        Date glogbalStartDate = globalFormat.parse(startTime);
+
+                        Date localEndDate = localFormat.parse(localEndTime);
+
+                        Date glogbalEndDate = globalFormat.parse(endTime);
+
+                        //Log.e("1", Integer.toString(localStartDate.compareTo(glogbalStartDate)));
+                        //Log.e("2", Integer.toString(localEndDate.compareTo(glogbalEndDate)));
+
+                        //now compare
+                        Calendar calendarLocalStart = Calendar.getInstance();
+                        Calendar calendarGlobalStart = Calendar.getInstance();
+                        Calendar calendarLocalEnd = Calendar.getInstance();
+                        Calendar calendarGlobalEnd = Calendar.getInstance();
+
+                        calendarLocalEnd.setTime(localEndDate);
+
+                        calendarGlobalEnd.setTime(glogbalEndDate);
+
+                        calendarLocalStart.setTime(localStartDate);
+
+                        calendarGlobalStart.setTime(glogbalStartDate);
+
+                        if (calendarGlobalEnd.getTimeInMillis() - calendarLocalEnd.getTimeInMillis() >= 0 )
+                        {
+                             endDateCondition = true;
+
+                        }
+
+                        if ((calendarLocalStart.after(calendarGlobalStart)) || calendarLocalStart.equals(calendarGlobalStart)) {
+                            startDateCondition = true;
+
+                        }
+
+
+                    } catch (ParseException e) {
+                    }
+
+                    if (startDateCondition == true && endDateCondition == true) {
+                        //now populate mGSRs
+                        insertGSRSlot(gsrName, dateTime, timeRange, dayDate, dateNum, duration, elementId);
+                    }
 
                 }
 
                 //now change the ui
 
 
-
+                if (mGSRS.size() == 0)
+                {
+                    Toast.makeText(getActivity(), "No GSRs available", Toast.LENGTH_LONG).show();
+                }
 
                 LinearLayoutManager gsrRoomListLayoutManager = new LinearLayoutManager(getContext());
                 gsrRoomListLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
