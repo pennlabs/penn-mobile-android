@@ -60,11 +60,10 @@ public class LaundryMachineAdapterNew extends RecyclerView.Adapter<LaundryMachin
         }
         // not updating status
         else {
-            // todo add to string resources
-            holder.button.setText("Not Updating Status");
+            holder.button.setText(R.string.not_updating_status);
             holder.button.setBackgroundColor(ContextCompat.getColor(mContext, R.color.star_color_off));
             holder.button.setTextColor(ContextCompat.getColor(mContext, mColor));
-            holder.textView.setVisibility(View.VISIBLE);
+            holder.textView.setVisibility(View.INVISIBLE);
         }
     }
 

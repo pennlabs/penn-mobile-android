@@ -30,8 +30,8 @@ public class LaundryRoomAdapterNew extends RecyclerView.Adapter<LaundryRoomAdapt
 
     public LaundryRoomAdapterNew(Context context, ArrayList<LaundryRoom> rooms, String machineType) {
         mContext = context;
-        mRooms = rooms;
         mMachineType = machineType;
+        mRooms = rooms;
     }
 
     // update data in this adapter

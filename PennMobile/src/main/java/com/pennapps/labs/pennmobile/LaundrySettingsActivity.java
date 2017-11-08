@@ -39,6 +39,8 @@ public class LaundrySettingsActivity extends AppCompatActivity {
     TextView no_results;
     @Bind(R.id.laundry_building_expandable_list)
     ExpandableListView mExpandableListView;
+    @Bind(R.id.laundry_settings_help_layout)
+    RelativeLayout mHelpLayout;
 
     private SharedPreferences sp;
     private Button mButton;
@@ -67,7 +69,6 @@ public class LaundrySettingsActivity extends AppCompatActivity {
         // set up shared preferences
         sp = PreferenceManager.getDefaultSharedPreferences(mContext);
 
-        // TODO set up button
         // reset laundry rooms button
         mButton = (Button) findViewById(R.id.laundry_room_reset);
         mButton.setOnClickListener(new View.OnClickListener() {
@@ -171,6 +172,9 @@ public class LaundrySettingsActivity extends AppCompatActivity {
                                 }
                                 if (no_results != null) {
                                     no_results.setVisibility(View.VISIBLE);
+                                }
+                                if (mHelpLayout != null) {
+                                    mHelpLayout.setVisibility(View.GONE);
                                 }
                                 try {
                                     mSwipeRefreshLayout.setRefreshing(false);

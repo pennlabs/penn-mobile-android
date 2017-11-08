@@ -12,6 +12,7 @@
     <include layout="@layout/loading_panel" />
 
     <RelativeLayout
+        android:id="@+id/laundry_settings_help_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp">

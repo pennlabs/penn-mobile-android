@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -53,6 +56,8 @@ public class LaundryMachineFragmentNew extends android.support.v4.app.Fragment {
 
     // washer or dryer
     private String machineType;
+
+    private int count = 0;
 
     // empty constructor
     public LaundryMachineFragmentNew() {
@@ -99,12 +104,14 @@ public class LaundryMachineFragmentNew extends android.support.v4.app.Fragment {
     private void updateRooms() {
 
         laundryRooms.clear();
+        count = 0;
         boolean addedRoom = false;
 
         Intent mIntent = getActivity().getIntent();
         int numRooms = mIntent.getIntExtra("numRooms", 48);
         for (int i = 0; i < numRooms; i++) {
             if (sp.getBoolean(Integer.toString(i), false)) {
+                count += 1;
                 addRoom(i);
                 addedRoom = true;
             }
@@ -124,13 +131,27 @@ public class LaundryMachineFragmentNew extends android.support.v4.app.Fragment {
                             @Override
                             public void run() {
                                 if (loadingPanel != null) {
+
+                                    Log.i("LaundryMachineFragment", "" + laundryRooms.size());
+                                    Log.i("Count", "" + count);
+
                                     laundryRooms.add(room);
 
-                                    mAdapter = new LaundryRoomAdapterNew(mContext, laundryRooms, machineType);
-                                    mRecyclerView.setAdapter(mAdapter);
+                                    if (laundryRooms.size() == count) {
+                                        // sort laundry rooms by name
+                                        Collections.sort(laundryRooms, new Comparator<LaundryRoom>() {
+                                            @Override
+                                            public int compare(LaundryRoom room1, LaundryRoom room2) {
+                                                return room1.name.compareTo(room2.name);
+                                            }
+                                        });
 
-                                    loadingPanel.setVisibility(View.GONE);
-                                    mTextView.setVisibility(View.INVISIBLE);
+                                        mAdapter = new LaundryRoomAdapterNew(mContext, laundryRooms, machineType);
+                                        mRecyclerView.setAdapter(mAdapter);
+
+                                        loadingPanel.setVisibility(View.GONE);
+                                        mTextView.setVisibility(View.INVISIBLE);
+                                    }
                                 }
                                 try {
                                     swipeRefreshLayout.setRefreshing(false);
@@ -151,6 +172,9 @@ public class LaundryMachineFragmentNew extends android.support.v4.app.Fragment {
                                 }
                                 if (no_results != null) {
                                     no_results.setVisibility(View.VISIBLE);
+                                }
+                                if (mTextView != null) {
+                                    mTextView.setVisibility(View.GONE);
                                 }
                                 try {
                                     swipeRefreshLayout.setRefreshing(false);
