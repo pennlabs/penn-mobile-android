@@ -84,7 +84,7 @@ public class LaundryBuildingAdapter extends BaseExpandableListAdapter {
     // view for the laundry buildings
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
 
-        String laundryHallName = (String) this.getGroup(i);
+        final String laundryHallName = (String) this.getGroup(i);
 
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

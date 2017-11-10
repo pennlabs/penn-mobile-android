@@ -44,26 +44,28 @@ public class LaundryMachineAdapterNew extends RecyclerView.Adapter<LaundryMachin
         String timeString;
         // open
         if (time == 0) {
-            timeString = "Open";
-            holder.button.setText(timeString);
+            timeString = "OPEN";
             holder.button.setBackgroundColor(ContextCompat.getColor(mContext, mColor));
-            holder.button.setTextColor(Color.WHITE);
-            holder.textView.setVisibility(View.INVISIBLE);
-        }
-        // time left
-        else if (time >= 0) {
-            timeString = Integer.toString(time);
-            holder.button.setText(timeString);
-            holder.button.setBackgroundColor(ContextCompat.getColor(mContext, R.color.star_color_off));
-            holder.button.setTextColor(ContextCompat.getColor(mContext, mColor));
-            holder.textView.setVisibility(View.VISIBLE);
+            holder.timeTextView.setText(timeString);
+            holder.timeTextView.setTextColor(Color.WHITE);
+            holder.textView.setVisibility(View.GONE);
         }
         // not updating status
-        else {
-            holder.button.setText(R.string.not_updating_status);
+        else if (time == 400) {
             holder.button.setBackgroundColor(ContextCompat.getColor(mContext, R.color.star_color_off));
-            holder.button.setTextColor(ContextCompat.getColor(mContext, mColor));
-            holder.textView.setVisibility(View.INVISIBLE);
+            holder.timeTextView.setText(R.string.not_updating_status);
+            holder.timeTextView.setTextColor(ContextCompat.getColor(mContext, mColor));
+            holder.textView.setVisibility(View.VISIBLE);
+            holder.textView.setText("no status");
+        }
+        // time left
+        else {
+            timeString = Integer.toString(time);
+            holder.button.setBackgroundColor(ContextCompat.getColor(mContext, R.color.star_color_off));
+            holder.timeTextView.setText(timeString);
+            holder.timeTextView.setTextColor(ContextCompat.getColor(mContext, mColor));
+            holder.textView.setVisibility(View.VISIBLE);
+            holder.textView.setText("min left");
         }
     }
 
@@ -78,6 +80,7 @@ public class LaundryMachineAdapterNew extends RecyclerView.Adapter<LaundryMachin
         int[] times;
         Button button;
         TextView textView;
+        TextView timeTextView;
 
         public CustomViewHolder(View view, Context context, int[] times) {
             super(view);
@@ -86,6 +89,7 @@ public class LaundryMachineAdapterNew extends RecyclerView.Adapter<LaundryMachin
             this.times = times;
             button = (Button) view.findViewById(R.id.laundry_machine_button);
             textView = (TextView) view.findViewById(R.id.min_left);
+            timeTextView = (TextView) view.findViewById(R.id.min_left_time);
         }
     }
 }

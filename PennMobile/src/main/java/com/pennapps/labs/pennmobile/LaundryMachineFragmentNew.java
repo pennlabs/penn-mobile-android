@@ -8,7 +8,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -131,9 +130,6 @@ public class LaundryMachineFragmentNew extends android.support.v4.app.Fragment {
                             @Override
                             public void run() {
                                 if (loadingPanel != null) {
-
-                                    Log.i("LaundryMachineFragment", "" + laundryRooms.size());
-                                    Log.i("Count", "" + count);
 
                                     laundryRooms.add(room);
 

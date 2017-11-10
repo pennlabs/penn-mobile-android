@@ -76,7 +76,13 @@ public class LaundryRoomAdapterNew extends RecyclerView.Adapter<LaundryRoomAdapt
             int[] times = new int[totalMachines];
             Iterator iterator = timeRemaining.iterator();
             for (int i = 0; i < timeRemaining.size(); i++) {
-                times[i] = (int) iterator.next();
+                int time = (int) iterator.next();
+                // not updating status
+                if (time == -1) {
+                    times[i] = 400;
+                } else {
+                    times[i] = time;
+                }
             }
 
             // recycler view for the time remaining
@@ -102,7 +108,13 @@ public class LaundryRoomAdapterNew extends RecyclerView.Adapter<LaundryRoomAdapt
             int[] times = new int[totalMachines];
             Iterator iterator = timeRemaining.iterator();
             for (int i = 0; i < timeRemaining.size(); i++) {
-                times[i] = (int) iterator.next();
+                int time = (int) iterator.next();
+                // not updating status
+                if (time == -1) {
+                    times[i] = 400;
+                } else {
+                    times[i] = time;
+                }
             }
 
             // recycler view for the time remaining

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -46,7 +45,7 @@ public class LaundrySettingsActivity extends AppCompatActivity {
     private Button mButton;
 
     private LaundryBuildingAdapter mAdapter;
-    private int numRooms = 0;
+    private int numRooms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +79,6 @@ public class LaundrySettingsActivity extends AppCompatActivity {
                 editor.putInt("numRoomsSelected", 0);
                 editor.apply();
 
-                Log.i("LaundrySettingsActivity", "" + numRooms);
                 for (int i = 0; i < numRooms; i++) {
                     editor.remove(Integer.toString(i)).apply();
                 }
@@ -106,37 +104,34 @@ public class LaundrySettingsActivity extends AppCompatActivity {
                             public void run() {
                                 if (loadingPanel != null) {
 
-                                    // todo use String.split instead of "_" to get building names
+                                    numRooms = rooms.size();
+
                                     HashMap<String, List<LaundryRoomSimple>> hashMap = new HashMap<>();
                                     List<String> hallList = new ArrayList<>();
 
                                     int i = 0;
                                     // go through all the rooms
                                     while (i < rooms.size()) {
-                                        numRooms += 1;
-
-                                        String roomName = rooms.get(i).name;
-                                        String hallName = roomName;
 
                                         // new list for the rooms in the hall
                                         List<LaundryRoomSimple> roomList = new ArrayList<>();
 
-                                        // if there is more than one room
-                                        if (roomName.contains("_")) {
-                                            hallName = roomName.substring(0, roomName.indexOf("_"));
+                                        // if hall name already exists, get the list of rooms and add to that
+                                        String hallName = rooms.get(i).location;
 
-                                            while (hallName.equals(rooms.get(i).name.substring(0, rooms.get(i).name.indexOf("_")))) {
-                                                roomList.add(rooms.get(i));
-                                                i += 1;
-                                                if (rooms.get(i).name.contains("_")) {
-                                                    break;
-                                                }
-                                            }
+                                        if (hallList.contains(hallName)) {
+                                            roomList = hashMap.get(hallName);
+                                            hashMap.remove(hallName);
+                                            hallList.remove(hallName);
                                         }
-                                        // if there is only one room
-                                        else {
+
+                                        while (hallName.equals(rooms.get(i).location)) {
                                             roomList.add(rooms.get(i));
+
                                             i += 1;
+                                            if (i >= rooms.size()) {
+                                                break;
+                                            }
                                         }
 
                                         // add the hall name to the list
