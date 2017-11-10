@@ -29,11 +29,11 @@
 
         <Button
             android:id="@+id/select_date"
-            android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/calendar_button"
-            android:background="@android:color/transparent"/>
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:text="@string/calendar_button" />
     </LinearLayout>
 
     <LinearLayout
@@ -85,12 +85,18 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
-            android:background="@android:color/darker_gray"
             android:text="@string/search_GSRs"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:background="@drawable/gsr_button"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
+            />
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:paddingTop="4dp"
         android:id="@+id/gsr_rooms_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -36,6 +36,7 @@ public class bookGSRActivity extends AppCompatActivity {
 
         backButton = (Button) findViewById(R.id.quitBookButton);
 
+        //if user clicks back button, quit activity
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,20 +46,13 @@ public class bookGSRActivity extends AppCompatActivity {
         });
 
 
-
-
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-
-        StrictMode.setThreadPolicy(policy);
-
-
         webView = (WebView) findViewById(R.id.webView);
 
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
+        //send post request
         webView.setWebViewClient(new WebViewClient());
-
         String postData = "tc=done&p1=" + gsrId + "&p2=" + gsrLocationCode + "&p3=8&p4=0&iid=335";
         webView.postUrl("http://libcal.library.upenn.edu/libauth_s_r.php", EncodingUtils.getBytes(postData, "base64"));
 

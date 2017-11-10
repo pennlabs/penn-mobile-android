@@ -48,6 +48,7 @@ public class GsrRoomAdapter extends RecyclerView.Adapter<GsrRoomHolder> {
             holder.gsr_time.setText(times.get(position).substring(0, times.get(position).indexOf(",")));
             holder.gsrId.setText(ids.get(position));
             holder.locationId.setText(gsrLocationCode);
+            //whenever a time slot is clicked
             holder.gsr_time.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -8,7 +8,8 @@
     android:layout_marginStart="5dp"
     android:layout_marginRight="5dp"
     android:layout_marginEnd="5dp"
-    android:background="@color/avail_color_green"
+    android:background="@color/teal"
+
     >
 
     <TextView
@@ -16,8 +17,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:color="#FFF"
         android:padding="3dp"
-        android:text="Time"/>
+        android:text="Time"
+        android:textColor="#FFF" />
 
     <TextView
         android:id="@+id/gsr_id"
@@ -25,12 +28,14 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:text=""
+        android:color="#FFF"
         android:clickable="true"/>
 
     <TextView
         android:id="@+id/locationId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:color="#FFF"
         android:visibility="gone"
         android:text=""
         android:clickable="true"/>

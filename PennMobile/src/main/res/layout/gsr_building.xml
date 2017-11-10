@@ -11,7 +11,8 @@
         android:id="@+id/gsr_building_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/laundry" />
+        android:text="@string/laundry"
+        android:layout_marginLeft="7dp"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/gsr_availability_in_building"
