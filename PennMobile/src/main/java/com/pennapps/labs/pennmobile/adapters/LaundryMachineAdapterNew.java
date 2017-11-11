@@ -43,36 +43,20 @@ public class LaundryMachineAdapterNew extends RecyclerView.Adapter<LaundryMachin
         int time = mTimes[position];
         String timeString;
         // open
-        if (time == 0) {
+        if (time == LaundryRoomAdapterNew.OPEN_LABEL) {
             timeString = "OPEN";
             holder.button.setBackgroundColor(ContextCompat.getColor(mContext, mColor));
             holder.timeTextView.setText(timeString);
             holder.timeTextView.setTextColor(Color.WHITE);
             holder.textView.setVisibility(View.GONE);
         }
-        // not updating status
-        else if (time == LaundryRoomAdapterNew.NOT_UPDATING_STATUS_LABEL) {
+        // not updating status/offline/out of order
+        else if (time == LaundryRoomAdapterNew.NOT_UPDATING_STATUS_LABEL || time == LaundryRoomAdapterNew.OFFLINE_LABEL || time == LaundryRoomAdapterNew.OUT_OF_ORDER_LABEL) {
             holder.button.setBackgroundColor(ContextCompat.getColor(mContext, R.color.star_color_off));
             holder.timeTextView.setText(R.string.not_updating_status);
             holder.timeTextView.setTextColor(ContextCompat.getColor(mContext, mColor));
             holder.textView.setVisibility(View.VISIBLE);
-            holder.textView.setText("no status");
-        }
-        // offline
-        else if (time == LaundryRoomAdapterNew.OFFLINE_LABEL) {
-            holder.button.setBackgroundColor(ContextCompat.getColor(mContext, R.color.star_color_off));
-            holder.timeTextView.setText(R.string.not_updating_status);
-            holder.timeTextView.setTextColor(ContextCompat.getColor(mContext, mColor));
-            holder.textView.setVisibility(View.VISIBLE);
-            holder.textView.setText("offline");
-        }
-        // offline
-        else if (time == LaundryRoomAdapterNew.OUT_OF_ORDER_LABEL) {
-            holder.button.setBackgroundColor(ContextCompat.getColor(mContext, R.color.star_color_off));
-            holder.timeTextView.setText(R.string.not_updating_status);
-            holder.timeTextView.setTextColor(ContextCompat.getColor(mContext, mColor));
-            holder.textView.setVisibility(View.VISIBLE);
-            holder.textView.setText("out of order");
+            holder.textView.setText("not available");
         }
         // time left
         else {

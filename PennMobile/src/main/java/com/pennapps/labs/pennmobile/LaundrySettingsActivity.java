@@ -9,7 +9,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.RelativeLayout;
@@ -141,9 +140,6 @@ public class LaundrySettingsActivity extends AppCompatActivity {
 
                                     mAdapter = new LaundryBuildingAdapter(mContext, hashMap, hallList);
                                     mExpandableListView.setAdapter(mAdapter);
-
-                                    // todo change friction?
-                                    mExpandableListView.setFriction(ViewConfiguration.getScrollFriction() * 2);
 
                                     loadingPanel.setVisibility(View.GONE);
                                     no_results.setVisibility(View.GONE);

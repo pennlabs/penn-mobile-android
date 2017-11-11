@@ -33,7 +33,6 @@ public class LaundryActivity extends AppCompatActivity {
         return true;
     }
 
-    // TODO add left side menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
