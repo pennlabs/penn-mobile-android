@@ -20,11 +20,9 @@
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="150dp"
+        android:layout_gravity="bottom|end"
         android:layout_marginRight="20dp"
-        android:layout_marginEnd="150dp"
-        app:layout_anchor="@id/mapView"
-        app:layout_anchorGravity="bottom|right|end"
+        android:layout_marginBottom="140dp"
         app:backgroundTint="@color/white"
         android:src="@drawable/ic_my_location_gray_24dp"
         android:id="@+id/map_current_loc"
@@ -33,16 +31,14 @@
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
         android:layout_marginRight="20dp"
-        android:layout_marginBottom="75dp"
-        android:layout_marginEnd="75dp"
-        app:layout_anchor="@id/mapView"
-        app:layout_anchorGravity="bottom|right|end"
+        android:layout_marginBottom="70dp"
         app:backgroundTint="@color/pink"
         android:src="@drawable/ic_directions_white_24dp"
         android:id="@+id/map_direction"
         android:clickable="true"/>
-    
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="52dp"
