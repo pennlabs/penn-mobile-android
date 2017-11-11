@@ -2,6 +2,9 @@ package com.pennapps.labs.pennmobile.classes;
 
 public class Washers extends Machine {
 
-    String type = "washer";
+    private String type = "washers";
 
+    public String getType() {
+        return type;
+    }
 }

@@ -51,12 +51,28 @@ public class LaundryMachineAdapterNew extends RecyclerView.Adapter<LaundryMachin
             holder.textView.setVisibility(View.GONE);
         }
         // not updating status
-        else if (time == 400) {
+        else if (time == LaundryRoomAdapterNew.NOT_UPDATING_STATUS_LABEL) {
             holder.button.setBackgroundColor(ContextCompat.getColor(mContext, R.color.star_color_off));
             holder.timeTextView.setText(R.string.not_updating_status);
             holder.timeTextView.setTextColor(ContextCompat.getColor(mContext, mColor));
             holder.textView.setVisibility(View.VISIBLE);
             holder.textView.setText("no status");
+        }
+        // offline
+        else if (time == LaundryRoomAdapterNew.OFFLINE_LABEL) {
+            holder.button.setBackgroundColor(ContextCompat.getColor(mContext, R.color.star_color_off));
+            holder.timeTextView.setText(R.string.not_updating_status);
+            holder.timeTextView.setTextColor(ContextCompat.getColor(mContext, mColor));
+            holder.textView.setVisibility(View.VISIBLE);
+            holder.textView.setText("offline");
+        }
+        // offline
+        else if (time == LaundryRoomAdapterNew.OUT_OF_ORDER_LABEL) {
+            holder.button.setBackgroundColor(ContextCompat.getColor(mContext, R.color.star_color_off));
+            holder.timeTextView.setText(R.string.not_updating_status);
+            holder.timeTextView.setTextColor(ContextCompat.getColor(mContext, mColor));
+            holder.textView.setVisibility(View.VISIBLE);
+            holder.textView.setText("out of order");
         }
         // time left
         else {
