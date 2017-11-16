@@ -1,6 +1,8 @@
 package com.pennapps.labs.pennmobile.adapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +27,7 @@ public class LaundryRoomAdapterNew extends RecyclerView.Adapter<LaundryRoomAdapt
     Context mContext;
     ArrayList<LaundryRoom> mRooms;
     String mMachineType;
+    SharedPreferences sp;
 
     public static final int OPEN_LABEL = 400;
     public static final int NOT_UPDATING_STATUS_LABEL = 401;
@@ -35,6 +38,7 @@ public class LaundryRoomAdapterNew extends RecyclerView.Adapter<LaundryRoomAdapt
         mContext = context;
         mMachineType = machineType;
         mRooms = rooms;
+        sp = PreferenceManager.getDefaultSharedPreferences(mContext);
     }
 
     @Override
@@ -50,8 +54,11 @@ public class LaundryRoomAdapterNew extends RecyclerView.Adapter<LaundryRoomAdapt
 
         // update name of laundry room and type of machine
         // todo have title as room and name as location?
-        holder.title.setText("Laundry Room " + (position + 1));
-        holder.name.setText(room.name);
+        int hall_no = room.hall_no;
+        String location = sp.getString(hall_no + "location", "");
+        String roomName = room.name;
+        holder.title.setText(roomName);
+        holder.name.setText(location);
         holder.machine.setText(mMachineType + "s " + "available");
 
         Machine machines;

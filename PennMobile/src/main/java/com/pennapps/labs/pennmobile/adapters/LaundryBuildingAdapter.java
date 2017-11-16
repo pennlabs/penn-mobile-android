@@ -30,6 +30,7 @@ public class LaundryBuildingAdapter extends BaseExpandableListAdapter {
     private SharedPreferences sp;
     private String s = "numRoomsSelected";
     private List<Switch> switches = new ArrayList<>();
+    private int maxNumRooms = 3;
 
     public LaundryBuildingAdapter(Context context, HashMap<String, List<LaundryRoomSimple>> laundryRooms, List<String> laundryHalls) {
         this.mContext = context;
@@ -113,7 +114,7 @@ public class LaundryBuildingAdapter extends BaseExpandableListAdapter {
             }
 
             // max number of rooms
-            if (sp.getInt(s, -1) >= 3) {
+            if (sp.getInt(s, -1) >= maxNumRooms) {
                 if (!buildingSwitch.isChecked()) {
                     buildingSwitch.setEnabled(false);
                 } else {
@@ -126,11 +127,13 @@ public class LaundryBuildingAdapter extends BaseExpandableListAdapter {
                 public void onClick(View view) {
                     boolean isChecked = buildingSwitch.isChecked();
                     SharedPreferences.Editor editor = sp.edit();
-                    editor.putBoolean(Integer.toString(laundryRoom.id), isChecked);
+                    String id = Integer.toString(laundryRoom.id);
+                    editor.putBoolean(id, isChecked);
                     editor.apply();
 
                     // update the numRoomSelected
                     if (isChecked) {
+                        editor.putString(id + "location", laundryRoom.location);
                         editor.putInt(s, sp.getInt(s, -1) + 1);
                         editor.apply();
                     } else {
@@ -167,11 +170,8 @@ public class LaundryBuildingAdapter extends BaseExpandableListAdapter {
 
         TextView textView = (TextView) view.findViewById(R.id.laundry_room_name);
         String name = laundryRoom.name;
-        if (name.contains("_")) {
-            textView.setText(name.substring(name.indexOf("_") + 1, name.length()));
-        } else {
-            textView.setText(name);
-        }
+        textView.setText(name);
+
 
         final Switch favoriteSwitch = (Switch) view.findViewById(R.id.laundry_favorite_switch);
 
@@ -184,7 +184,7 @@ public class LaundryBuildingAdapter extends BaseExpandableListAdapter {
         }
 
         // max number of rooms
-        if (sp.getInt(s, -1) >= 3) {
+        if (sp.getInt(s, -1) >= maxNumRooms) {
             if (!favoriteSwitch.isChecked()) {
                 favoriteSwitch.setEnabled(false);
             } else {
@@ -197,11 +197,13 @@ public class LaundryBuildingAdapter extends BaseExpandableListAdapter {
             public void onClick(View view) {
                 boolean isChecked = favoriteSwitch.isChecked();
                 SharedPreferences.Editor editor = sp.edit();
-                editor.putBoolean(Integer.toString(laundryRoom.id), isChecked);
+                String id = Integer.toString(laundryRoom.id);
+                editor.putBoolean(id, isChecked);
                 editor.apply();
 
                 // update the numRoomSelected
                 if (isChecked) {
+                    editor.putString(id + "location", laundryRoom.location);
                     editor.putInt(s, sp.getInt(s, -1) + 1);
                     editor.apply();
                 } else {
@@ -224,7 +226,7 @@ public class LaundryBuildingAdapter extends BaseExpandableListAdapter {
     private void updateSwitches() {
 
         // maximum 3 rooms selected - disable all other switches
-        if (sp.getInt(s, -1) >= 3) {
+        if (sp.getInt(s, -1) >= maxNumRooms) {
             Iterator<Switch> iter = switches.iterator();
             while (iter.hasNext()) {
                 Switch nextSwitch = iter.next();

@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -56,7 +55,8 @@ public class LaundryMachineFragmentNew extends android.support.v4.app.Fragment {
     // washer or dryer
     private String machineType;
 
-    private int count = 0;
+    private int count;
+    private int numRooms;
 
     // empty constructor
     public LaundryMachineFragmentNew() {
@@ -88,6 +88,7 @@ public class LaundryMachineFragmentNew extends android.support.v4.app.Fragment {
         swipeRefreshLayout.setColorSchemeResources(R.color.color_accent, R.color.color_primary);
 
         sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+        numRooms = sp.getInt("numRooms", 48);
 
         updateRooms();
 
@@ -106,8 +107,6 @@ public class LaundryMachineFragmentNew extends android.support.v4.app.Fragment {
         count = 0;
         boolean addedRoom = false;
 
-        Intent mIntent = getActivity().getIntent();
-        int numRooms = mIntent.getIntExtra("numRooms", 48);
         for (int i = 0; i < numRooms; i++) {
             if (sp.getBoolean(Integer.toString(i), false)) {
                 count += 1;
@@ -121,7 +120,7 @@ public class LaundryMachineFragmentNew extends android.support.v4.app.Fragment {
         }
     }
 
-    private void addRoom(int i) {
+    private void addRoom(final int i) {
         mLabs.room(i)
                 .subscribe(new Action1<LaundryRoom>() {
                     @Override
@@ -132,6 +131,7 @@ public class LaundryMachineFragmentNew extends android.support.v4.app.Fragment {
                                 if (loadingPanel != null) {
 
                                     laundryRooms.add(room);
+                                    room.hall_no = i;
 
                                     if (laundryRooms.size() == count) {
                                         // sort laundry rooms by name

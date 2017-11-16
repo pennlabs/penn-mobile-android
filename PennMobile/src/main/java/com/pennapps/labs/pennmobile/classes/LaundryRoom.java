@@ -57,19 +57,8 @@ public class LaundryRoom implements Parcelable {
         dest.writeInt(washers_in_use);
     }
 
-    public String getHallName() {
-        return name;
-    }
-
-    public void setHallName(String hallName) {
-        this.name = hallName;
-    }
-
     public Machines getMachines() {
         return machines;
     }
 
-    public void setMachines(Machines machines) {
-        this.machines = machines;
-    }
 }

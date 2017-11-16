@@ -104,6 +104,10 @@ public class LaundrySettingsActivity extends AppCompatActivity {
                                 if (loadingPanel != null) {
 
                                     numRooms = rooms.size();
+                                    // save number of rooms
+                                    SharedPreferences.Editor editor = sp.edit();
+                                    editor.putInt("numRooms", numRooms);
+                                    editor.apply();
 
                                     HashMap<String, List<LaundryRoomSimple>> hashMap = new HashMap<>();
                                     List<String> hallList = new ArrayList<>();
@@ -182,7 +186,6 @@ public class LaundrySettingsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = new Intent(this, com.pennapps.labs.pennmobile.LaundryActivity.class);
-        intent.putExtra("numRooms", numRooms);
         startActivity(intent);
         return true;
     }

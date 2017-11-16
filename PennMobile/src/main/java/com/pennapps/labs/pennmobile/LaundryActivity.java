@@ -25,6 +25,7 @@ public class LaundryActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setElevation(0);
     }
 
     @Override
