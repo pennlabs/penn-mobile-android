@@ -49,6 +49,7 @@
     <string name="sort_by_name">Order by Name</string>
     <string name="sort_by_residential">Order by Residential Hall</string>
     <string name="sort_by_open">Order by Open Status</string>
+    <string name="no_data_msg">Cannot display Map: wifi/data not enabled</string>
 
     <!-- Courses -->
     <string name="course">Average Course</string>
