@@ -1,6 +1,9 @@
 package com.pennapps.labs.pennmobile;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -70,11 +74,13 @@ public class DiningInfoFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
         FragmentManager fm = getChildFragmentManager();
-        if (mapFragment == null) {
-            mapFragment = SupportMapFragment.newInstance();
-            fm.beginTransaction().add(R.id.dining_map_container, mapFragment).commit();
-            fm.executePendingTransactions();
-        }
+
+            if (mapFragment == null) {
+                mapFragment = SupportMapFragment.newInstance();
+                fm.beginTransaction().add(R.id.dining_map_container, mapFragment).commit();
+                fm.executePendingTransactions();
+            }
+
     }
 
 
@@ -160,6 +166,15 @@ public class DiningInfoFragment extends Fragment {
         }
         return vertical;
     }
+
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -173,7 +188,12 @@ public class DiningInfoFragment extends Fragment {
                 map.getUiSettings().setZoomControlsEnabled(false);
             }
         }
-        drawMap();
+        if (isNetworkAvailable()) {
+            drawMap();
+        }
+        else {
+            Toast.makeText(getActivity(), getResources().getString(R.string.no_data_msg), Toast.LENGTH_LONG).show();
+        }
     }
     @Override
     public void onDestroyView() {
