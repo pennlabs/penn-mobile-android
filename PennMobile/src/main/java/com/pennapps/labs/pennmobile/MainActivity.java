@@ -206,9 +206,8 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new RegistrarFragment();
                 break;
             case R.id.nav_directory:
-//            case R.id.directory_cont:
-//                fragment = new DirectoryFragment();
-//                break;
+                fragment = new DirectoryFragment();
+                break;
             case R.id.nav_gsr:
             case R.id.gsr_cont:
                 fragment = new gsrFragment();
