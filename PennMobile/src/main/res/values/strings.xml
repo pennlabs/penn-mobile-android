@@ -48,7 +48,9 @@
     <string name="menu_arg_name">name</string>
     <string name="menu_arg_meal">meal</string>
     <string name="menu_arg_stations">stations</string>
-    <string name="no_data_msg">Cannot display Map: wifi/data not enabled</string>
+    <string name="sort_by_name">Order by Name</string>
+    <string name="sort_by_residential">Order by Residential Hall</string>
+    <string name="sort_by_open">Order by Open Status</string>
 
     <!-- Courses -->
     <string name="course">Average Course</string>
@@ -76,6 +78,7 @@
     <string name="no_map_beardman">Map is not provided by the phone.</string>
     <string name="no_map_description">We were unable to\nload your map.</string>
     <string name="no_map_count_key">no_map_count_key</string>
+    <string name="no_data_msg">Cannot display Map: wifi/data not enabled</string>
 
     <!-- Transit search -->
     <string name="starting_location_hint">Current location</string>
