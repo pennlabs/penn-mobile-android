@@ -8,6 +8,7 @@ import org.joda.time.Interval;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
  * Interval for venues with meal name and Joda Intervals
  * Created by Adel on 7/13/15.
  */
-public class VenueInterval {
+public class VenueInterval implements Serializable {
     public String date;
     @SerializedName("meal") public List<MealInterval> meals;
 
@@ -32,7 +33,7 @@ public class VenueInterval {
         return openHours;
     }
 
-    public static class MealInterval {
+    public static class MealInterval implements Serializable {
         public String open;
         public String close;
         public String type;

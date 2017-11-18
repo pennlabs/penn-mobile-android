@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 import org.joda.time.Interval;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DiningHall implements Parcelable {
+public class DiningHall implements Parcelable, Serializable {
 
     private int id;
     private String name;
@@ -171,7 +172,7 @@ public class DiningHall implements Parcelable {
     * Created by Adel on 12/18/14.
             * Class for a single menu, ie. Lunch, Dinner
     */
-    public static class Menu implements Parcelable{
+    public static class Menu implements Parcelable, Serializable {
         @SerializedName("txtDayPartDescription") public String name;
         @SerializedName("tblStation") public List<DiningStation> stations = new ArrayList<>();
 
@@ -206,7 +207,7 @@ public class DiningHall implements Parcelable {
      * Created by Adel on 12/18/14.
      * Class for a station at a dining hall
      */
-    public static class DiningStation {
+    public static class DiningStation implements Serializable {
         @SerializedName("txtStationDescription") public String name;
         @SerializedName("tblItem") public List<FoodItem> items = new ArrayList<>();
     }
@@ -215,7 +216,7 @@ public class DiningHall implements Parcelable {
      * Created by Adel on 12/18/14.
      * Class for Food items in Dining menus
      */
-    public static class FoodItem {
+    public static class FoodItem implements Serializable {
         @SerializedName("txtTitle") public String title;
         @SerializedName("txtDescription") String description;
     }

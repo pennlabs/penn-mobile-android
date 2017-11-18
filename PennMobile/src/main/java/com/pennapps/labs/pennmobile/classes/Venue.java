@@ -7,6 +7,7 @@ import org.joda.time.Interval;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.Map;
  * Created by Adel on 12/16/14.
  * Class for Dining Venues from Business Services API
  */
-public class Venue {
+public class Venue implements Serializable {
     public int id;
     public String name;
     public String venueType;

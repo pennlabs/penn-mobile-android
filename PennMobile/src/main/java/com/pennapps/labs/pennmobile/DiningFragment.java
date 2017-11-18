@@ -23,6 +23,12 @@ import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 import butterknife.Bind;
@@ -126,6 +132,7 @@ public class DiningFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
         mActivity.getActionBarToggle().syncState();
+
         Fragment fragment = new MenuFragment();
 
         Bundle args = new Bundle();
@@ -168,6 +175,7 @@ public class DiningFragment extends ListFragment {
                                     loadingPanel.setVisibility(View.GONE);
                                     if (diningHalls.size() > 0) {
                                         no_results.setVisibility(View.GONE);
+                                        saveCache(diningHalls);
                                     }
                                 }
                                 try {
@@ -184,22 +192,68 @@ public class DiningFragment extends ListFragment {
                         mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if (loadingPanel != null) {
-                                    loadingPanel.setVisibility(View.GONE);
+                                List<DiningHall> cachedInfo = loadCache();
+                                if (cachedInfo == null) {
+                                    if (loadingPanel != null) {
+                                        loadingPanel.setVisibility(View.GONE);
+                                    }
+                                    if (no_results != null) {
+                                        mListView.setAdapter(null);
+                                        no_results.setVisibility(View.VISIBLE);
+                                    }
                                 }
-                                if (no_results != null) {
-                                    mListView.setAdapter(null);
-                                    no_results.setVisibility(View.VISIBLE);
+                                else {
+                                    if (loadingPanel != null) {
+                                        DiningAdapter adapter = new DiningAdapter(mActivity, cachedInfo);
+                                        mListView.setAdapter(adapter);
+                                        loadingPanel.setVisibility(View.GONE);
+                                        if (cachedInfo.size() > 0) {
+                                            no_results.setVisibility(View.GONE);
+                                        }
+                                    }
                                 }
                                 try {
                                     swipeRefreshLayout.setRefreshing(false);
-                                } catch (NullPointerException e){
+                                } catch (NullPointerException e) {
                                     //it has gone to another page.
                                 }
                             }
                         });
                     }
                 });
+    }
+
+    private void saveCache(List<DiningHall> data) {
+        try {
+            String cacheFile = new File(getContext().getCacheDir().getPath(), "dining.ser").getPath();
+            FileOutputStream outFile = new FileOutputStream(cacheFile);
+            ObjectOutputStream out = new ObjectOutputStream(outFile);
+            out.writeObject(data);
+            out.close();
+            outFile.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private List<DiningHall> loadCache() {
+        try {
+            String cacheFile = new File(getContext().getCacheDir().getPath(), "dining.ser").getPath();
+            if (!new File(cacheFile).isFile()) {
+                return null;
+            }
+            FileInputStream inFile = new FileInputStream(cacheFile);
+            ObjectInputStream in = new ObjectInputStream(inFile);
+            List<DiningHall> data = (List<DiningHall>) in.readObject();
+            in.close();
+            inFile.close();
+            return data;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
