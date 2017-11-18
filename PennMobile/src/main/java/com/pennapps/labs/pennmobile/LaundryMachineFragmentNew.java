@@ -131,14 +131,14 @@ public class LaundryMachineFragmentNew extends android.support.v4.app.Fragment {
                                 if (loadingPanel != null) {
 
                                     laundryRooms.add(room);
-                                    room.hall_no = i;
+                                    room.setId(i);
 
                                     if (laundryRooms.size() == count) {
                                         // sort laundry rooms by name
                                         Collections.sort(laundryRooms, new Comparator<LaundryRoom>() {
                                             @Override
                                             public int compare(LaundryRoom room1, LaundryRoom room2) {
-                                                return room1.name.compareTo(room2.name);
+                                                return room1.getName().compareTo(room2.getName());
                                             }
                                         });
 

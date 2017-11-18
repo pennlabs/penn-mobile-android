@@ -109,7 +109,11 @@
     <string name="favorite_title">Favorite</string>
     <string name="laundry_settings">Laundry Settings</string>
     <string name="not_updating_status">N/A</string>
-
+    <string name="laundry_reset">RESET</string>
+    <string name="laundry_help_text">Please click the settings icon to choose laundry rooms</string>
+    <string name="laundry_settings_help1">Please select up to 3 laundry rooms</string>
+    <string name="laundry_settings_help2">Click RESET to reset your selections</string>
+    <string name="laundry_machines_available">machines available</string>
     <!-- News -->
     <string name="open_browser">Open in Browser</string>
     <string name="news_sharing">Share link</string>

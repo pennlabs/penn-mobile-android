@@ -9,9 +9,9 @@ import android.support.v4.app.FragmentPagerAdapter;
  * Created by Jackie on 2017-10-22.
  */
 
-public class FragmentAdapter extends FragmentPagerAdapter {
+public class LaundryFragmentAdapter extends FragmentPagerAdapter {
 
-    public FragmentAdapter (FragmentManager fm) {
+    public LaundryFragmentAdapter(FragmentManager fm) {
         super(fm);
     }
 
@@ -25,8 +25,7 @@ public class FragmentAdapter extends FragmentPagerAdapter {
             Fragment fragment = new LaundryMachineFragmentNew();
             fragment.setArguments(bundle);
             return fragment;
-        }
-        else {
+        } else {
             bundle.putString("machineType", "dryer");
             Fragment fragment = new LaundryMachineFragmentNew();
             fragment.setArguments(bundle);

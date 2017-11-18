@@ -17,7 +17,7 @@ public class LaundryActivity extends AppCompatActivity {
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
 
-        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
+        LaundryFragmentAdapter adapter = new LaundryFragmentAdapter(getSupportFragmentManager());
 
         viewPager.setAdapter(adapter);
 

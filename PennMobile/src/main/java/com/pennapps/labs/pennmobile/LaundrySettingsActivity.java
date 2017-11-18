@@ -14,7 +14,7 @@ import android.widget.ExpandableListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pennapps.labs.pennmobile.adapters.LaundryBuildingAdapter;
+import com.pennapps.labs.pennmobile.adapters.LaundrySettingsAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 
@@ -43,7 +43,7 @@ public class LaundrySettingsActivity extends AppCompatActivity {
     private SharedPreferences sp;
     private Button mButton;
 
-    private LaundryBuildingAdapter mAdapter;
+    private LaundrySettingsAdapter mAdapter;
     private int numRooms;
 
     @Override
@@ -114,7 +114,7 @@ public class LaundrySettingsActivity extends AppCompatActivity {
 
                                     int i = 0;
                                     // go through all the rooms
-                                    while (i < rooms.size()) {
+                                    while (i < numRooms) {
 
                                         // new list for the rooms in the hall
                                         List<LaundryRoomSimple> roomList = new ArrayList<>();
@@ -142,7 +142,7 @@ public class LaundrySettingsActivity extends AppCompatActivity {
                                         hashMap.put(hallName, roomList);
                                     }
 
-                                    mAdapter = new LaundryBuildingAdapter(mContext, hashMap, hallList);
+                                    mAdapter = new LaundrySettingsAdapter(mContext, hashMap, hallList);
                                     mExpandableListView.setAdapter(mAdapter);
 
                                     loadingPanel.setVisibility(View.GONE);

@@ -16,16 +16,7 @@ public class Machines {
         return dryers;
     }
 
-    public void setDryers(Dryers dryers) {
-        this.dryers = dryers;
-    }
-
     public Washers getWashers() {
         return washers;
     }
-
-    public void setWashers(Washers washers) {
-        this.washers = washers;
-    }
-
 }

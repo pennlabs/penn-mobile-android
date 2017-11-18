@@ -43,7 +43,7 @@ public class LaundryRoomAdapterNew extends RecyclerView.Adapter<LaundryRoomAdapt
 
     @Override
     public LaundryRoomAdapterNew.CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.laundry_preview_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.laundry_room_item, parent, false);
         return new CustomViewHolder(view, mContext, mRooms);
     }
 
@@ -53,10 +53,9 @@ public class LaundryRoomAdapterNew extends RecyclerView.Adapter<LaundryRoomAdapt
         LaundryRoom room = mRooms.get(position);
 
         // update name of laundry room and type of machine
-        // todo have title as room and name as location?
-        int hall_no = room.hall_no;
+        int hall_no = room.getId();
         String location = sp.getString(hall_no + "location", "");
-        String roomName = room.name;
+        String roomName = room.getName();
         holder.title.setText(roomName);
         holder.name.setText(location);
         holder.machine.setText(mMachineType + "s " + "available");
@@ -111,7 +110,7 @@ public class LaundryRoomAdapterNew extends RecyclerView.Adapter<LaundryRoomAdapt
         if (mMachineType.equals("washer")) {
             // recycler view for the time remaining
             holder.availability.setTextColor(ContextCompat.getColor(mContext, R.color.teal));
-            LaundryMachineAdapterNew adapter = new LaundryMachineAdapterNew(mContext, times, R.color.teal);
+            LaundryMachineAdapterNew adapter = new LaundryMachineAdapterNew(mContext, times, mMachineType, roomName);
             holder.recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
             holder.recyclerView.setAdapter(adapter);
         }
@@ -119,7 +118,7 @@ public class LaundryRoomAdapterNew extends RecyclerView.Adapter<LaundryRoomAdapt
         else {
             // recycler view for the time remaining
             holder.availability.setTextColor(ContextCompat.getColor(mContext, R.color.star_color_on));
-            LaundryMachineAdapterNew adapter = new LaundryMachineAdapterNew(mContext, times, R.color.star_color_on);
+            LaundryMachineAdapterNew adapter = new LaundryMachineAdapterNew(mContext, times, mMachineType, roomName);
             holder.recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
             holder.recyclerView.setAdapter(adapter);
         }

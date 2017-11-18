@@ -23,7 +23,7 @@ import java.util.List;
  * Created by Jackie on 2017-10-13.
  */
 
-public class LaundryBuildingAdapter extends BaseExpandableListAdapter {
+public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
     private List<String> laundryHalls;
     private HashMap<String, List<LaundryRoomSimple>> laundryRooms;
     private Context mContext;
@@ -32,7 +32,7 @@ public class LaundryBuildingAdapter extends BaseExpandableListAdapter {
     private List<Switch> switches = new ArrayList<>();
     private int maxNumRooms = 3;
 
-    public LaundryBuildingAdapter(Context context, HashMap<String, List<LaundryRoomSimple>> laundryRooms, List<String> laundryHalls) {
+    public LaundrySettingsAdapter(Context context, HashMap<String, List<LaundryRoomSimple>> laundryRooms, List<String> laundryHalls) {
         this.mContext = context;
         this.laundryHalls = laundryHalls;
         this.laundryRooms = laundryRooms;
@@ -89,7 +89,7 @@ public class LaundryBuildingAdapter extends BaseExpandableListAdapter {
 
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.laundry_building_item, null);
+            view = inflater.inflate(R.layout.laundry_settings_parent_item, null);
         }
 
         TextView textView = (TextView) view.findViewById(R.id.laundry_building_name);
@@ -165,7 +165,7 @@ public class LaundryBuildingAdapter extends BaseExpandableListAdapter {
 
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.laundry_room_picker_item, null);
+            view = inflater.inflate(R.layout.laundry_settings_child_item, null);
         }
 
         TextView textView = (TextView) view.findViewById(R.id.laundry_room_name);

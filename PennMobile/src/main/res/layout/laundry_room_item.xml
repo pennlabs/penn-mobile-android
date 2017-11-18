@@ -9,17 +9,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:text="My Laundry Room"
         android:textColor="@color/black"
-        android:textSize="20dp" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/fav_laundry_room_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/laundry_room_title"
-        android:padding="8dp"
-        android:text="Harrison 16 Floor" />
+        android:padding="8dp" />
 
     <TextView
         android:id="@+id/laundry_availability"
@@ -27,8 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:padding="8dp"
-        android:text="x out of x"
-        android:textSize="20dp" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/machine_type"
@@ -37,14 +34,12 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/laundry_availability"
         android:padding="8dp"
-        android:text="machines available" />
+        android:text="@string/laundry_machines_available" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/laundry_machine_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/fav_laundry_room_name">
-
-    </android.support.v7.widget.RecyclerView>
+        android:layout_below="@+id/fav_laundry_room_name" />
 
 </RelativeLayout>

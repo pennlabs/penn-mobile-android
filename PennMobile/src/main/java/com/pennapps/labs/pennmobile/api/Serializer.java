@@ -12,7 +12,6 @@ import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
-import com.pennapps.labs.pennmobile.classes.LaundryMachine;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.Venue;
@@ -136,30 +135,8 @@ public class Serializer {
         @Override
         public List<LaundryRoomSimple> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
                 throws JsonParseException {
-            JsonElement content = je.getAsJsonObject().get("result");
-            return new Gson().fromJson(content, new TypeToken<List<LaundryRoomSimple>>() {
-            }.getType());
-        }
-    }
-
-    // old
-    public static class LaundryListSerializer implements JsonDeserializer<List<LaundryRoom>> {
-        @Override
-        public List<LaundryRoom> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-                throws JsonParseException {
             JsonElement content = je.getAsJsonObject().get("halls");
-            return new Gson().fromJson(content, new TypeToken<List<LaundryRoom>>() {
-            }.getType());
-        }
-    }
-
-    // old
-    public static class LaundryMachineSerializer implements JsonDeserializer<List<LaundryMachine>> {
-        @Override
-        public List<LaundryMachine> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-                throws JsonParseException {
-            JsonElement content = je.getAsJsonObject().get("machines");
-            return new Gson().fromJson(content, new TypeToken<List<LaundryMachine>>() {
+            return new Gson().fromJson(content, new TypeToken<List<LaundryRoomSimple>>() {
             }.getType());
         }
     }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="120dp"
-    android:layout_height="120dp"
+    android:layout_width="@dimen/laundry_machine_view"
+    android:layout_height="@dimen/laundry_machine_view"
     android:background="@android:drawable/dialog_holo_dark_frame">
 
-    <Button
-        android:id="@+id/laundry_machine_button"
+    <View
+        android:id="@+id/laundry_machine_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -13,7 +13,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:elevation="100dp"
         android:orientation="vertical">
 
         <TextView
@@ -21,16 +20,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="OPEN"
             android:textSize="20sp" />
 
         <TextView
             android:id="@+id/min_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="min left" />
+            android:layout_gravity="center_horizontal" />
 
     </LinearLayout>
+
+    <!-- todo add this back for alarm
+    <Switch
+        android:id="@+id/laundry_alarm_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="2dp"
+        android:layout_marginTop="2dp" /> -->
 
 </RelativeLayout>

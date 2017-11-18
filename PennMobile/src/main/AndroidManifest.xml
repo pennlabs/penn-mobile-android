@@ -16,6 +16,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <!-- todo for laundry notification
+    <uses-permission android:name="android.permission.VIBRATE" /> -->
+
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
@@ -35,8 +38,7 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyDFOB7fgIQubKyOjjrmsgNoDt-xRvlBDrk" />
+            android:name="com.google.android.maps.v2.API_KEY" />
 
         <activity
             android:name=".MainActivity"
@@ -53,11 +55,6 @@
             android:name="com.crashlytics.ApiKey"
             android:value="18a765536e6539a73a15dd36c369ed29cfb91aa1" />
 
-        <receiver
-            android:name=".LaundryBroadcastReceiver"
-            android:enabled="true"
-            android:exported="false" />
-
         <activity
             android:name=".LaundryActivity"
             android:label="@string/laundry"
@@ -68,8 +65,13 @@
             android:label="@string/laundry_settings"
             android:screenOrientation="portrait"
             android:theme="@style/LaundryTheme" />
-        <activity android:name=".LaundryWasherActivity" />
-        <activity android:name=".LaundryDryerActivity" />
+
+        <!-- todo receiver for laundry alarm
+        <receiver
+            android:name=".LaundryBroadcastReceiverNew"
+            android:enabled="true"
+            android:exported="true">
+        </receiver> -->
     </application>
 
 </manifest>
