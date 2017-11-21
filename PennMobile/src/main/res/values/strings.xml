@@ -114,6 +114,9 @@
     <string name="laundry_settings_help1">Please select up to 3 laundry rooms</string>
     <string name="laundry_settings_help2">Click RESET to reset your selections</string>
     <string name="laundry_machines_available">machines available</string>
+    <string name="skip">SKIP</string>
+    <string name="ok">GOT IT</string>
+
     <!-- News -->
     <string name="open_browser">Open in Browser</string>
     <string name="news_sharing">Share link</string>
@@ -165,5 +168,8 @@
     <string name="add_event">Add event to calendar</string>
     <string name="search_nso_star">search_nso_star</string>
     <string name="nso_instructions">Search for instructions</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

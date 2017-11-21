@@ -16,8 +16,10 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <!-- todo for laundry notification
-    <uses-permission android:name="android.permission.VIBRATE" /> -->
+    <!--
+    todo for laundry notification
+    <uses-permission android:name="android.permission.VIBRATE" />
+    -->
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -65,13 +67,19 @@
             android:label="@string/laundry_settings"
             android:screenOrientation="portrait"
             android:theme="@style/LaundryTheme" />
-
-        <!-- todo receiver for laundry alarm
+        <activity
+            android:name=".LaundryOnboardingActivity"
+            android:label="@string/laundry"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <!--
+        todo receiver for laundry alarm
         <receiver
             android:name=".LaundryBroadcastReceiverNew"
             android:enabled="true"
             android:exported="true">
-        </receiver> -->
+        </receiver>
+        -->
     </application>
 
 </manifest>
