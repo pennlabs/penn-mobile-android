@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -44,7 +45,8 @@ public class DiningFragment extends ListFragment {
     private MainActivity mActivity;
     @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
     @Bind(R.id.no_results) TextView no_results;
-    SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.dining_swiperefresh) SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.dining_cache_warning) TextView cache_warning;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,13 +61,30 @@ public class DiningFragment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
         mListView = getListView();
+
+        // this prevents the refresh from being called when the list is not
+        // scrolled to the top, which allows the user to scroll up
+        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+                int topRowVerticalPosition = 0;
+                if (mListView != null && mListView.getChildCount() != 0) {
+                    topRowVerticalPosition = mListView.getChildAt(0).getTop();
+                }
+                swipeRefreshLayout.setEnabled(i == 0 && topRowVerticalPosition >= 0);
+            }
+        });
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dining, container, false);
         ButterKnife.bind(this, v);
-        swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.dining_swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -179,6 +198,7 @@ public class DiningFragment extends ListFragment {
                                     });
                                     mListView.setAdapter(adapter);
                                     loadingPanel.setVisibility(View.GONE);
+                                    cache_warning.setVisibility(View.GONE);
                                     if (diningHalls.size() > 0) {
                                         no_results.setVisibility(View.GONE);
                                     }
@@ -209,6 +229,7 @@ public class DiningFragment extends ListFragment {
                                 }
                                 else {
                                     if (loadingPanel != null) {
+                                        cache_warning.setVisibility(View.VISIBLE);
                                         DiningAdapter adapter = new DiningAdapter(mActivity, cachedInfo);
                                         mListView.setAdapter(adapter);
                                         loadingPanel.setVisibility(View.GONE);

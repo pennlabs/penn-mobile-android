@@ -50,6 +50,7 @@
     <string name="sort_by_residential">Order by Residential Hall</string>
     <string name="sort_by_open">Order by Open Status</string>
     <string name="no_data_msg">Cannot display Map: wifi/data not enabled</string>
+    <string name="cache_warning">The data shown below is not up to date. Connect to the internet to retrieve the latest dining hall information.</string>
 
     <!-- Courses -->
     <string name="course">Average Course</string>

@@ -17,12 +17,27 @@
             android:id="@+id/dining_swiperefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <ListView
+            <LinearLayout
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:clickable="true"
+                android:orientation="vertical">
+                <TextView
+                    tools:visibility="gone"
+                    android:id="@+id/dining_cache_warning"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#FFEB3B"
+                    android:padding="10dp"
+                    android:textSize="18sp"
+                    android:text="@string/cache_warning" />
+                <ListView
                 tools:visibility="visible"
                 tools:listitem="@layout/dining_list_item"
                 android:id="@android:id/list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+            </LinearLayout>
         </android.support.v4.widget.SwipeRefreshLayout>
     </FrameLayout>
 
