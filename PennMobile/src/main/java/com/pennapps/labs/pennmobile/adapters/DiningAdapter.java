@@ -20,6 +20,7 @@ import com.pennapps.labs.pennmobile.classes.DiningHall;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -33,6 +34,12 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
     private boolean[] loaded;
     private String sortBy;
 
+    public interface MenuLoadListener {
+        void onLoad();
+    }
+
+    private List<MenuLoadListener> menuLoadListeners;
+
     public DiningAdapter(Context context, List<DiningHall> diningHalls) {
         super(context, R.layout.dining_list_item, diningHalls);
         inflater = LayoutInflater.from(context);
@@ -42,7 +49,13 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sortBy = sp.getString("dining_sortBy", "RESIDENTIAL");
 
+        menuLoadListeners = new LinkedList<MenuLoadListener>();
+
         this.sort(new MenuComparator());
+    }
+
+    public void addMenuLoadListener(MenuLoadListener listener) {
+        menuLoadListeners.add(listener);
     }
 
     @Override
@@ -114,6 +127,20 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
                             progressBar.setVisibility(View.INVISIBLE);
                             holder.menuArrow.setVisibility(View.VISIBLE);
                             loaded[pos] = true;
+
+                            boolean allLoaded = true;
+                            for (boolean b : loaded) {
+                                if (!b) {
+                                    allLoaded = false;
+                                    break;
+                                }
+                            }
+
+                            if (allLoaded) {
+                                for (MenuLoadListener l : menuLoadListeners) {
+                                    l.onLoad();
+                                }
+                            }
                         }
                     }, new Action1<Throwable>() {
                         @Override
@@ -124,6 +151,7 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
                     });
         }
         else {
+            loaded[pos] = true;
             progressBar.setVisibility(View.GONE);
             holder.menuArrow.setVisibility(View.VISIBLE);
         }

@@ -171,11 +171,16 @@ public class DiningFragment extends ListFragment {
                             public void run() {
                                 if (loadingPanel != null) {
                                     DiningAdapter adapter = new DiningAdapter(mActivity, diningHalls);
+                                    adapter.addMenuLoadListener(new DiningAdapter.MenuLoadListener() {
+                                        @Override
+                                        public void onLoad() {
+                                            saveCache(diningHalls);
+                                        }
+                                    });
                                     mListView.setAdapter(adapter);
                                     loadingPanel.setVisibility(View.GONE);
                                     if (diningHalls.size() > 0) {
                                         no_results.setVisibility(View.GONE);
-                                        saveCache(diningHalls);
                                     }
                                 }
                                 try {
