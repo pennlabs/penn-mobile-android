@@ -43,11 +43,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
+
+import static butterknife.ButterKnife.findById;
 
 /**
  * Created by Mike Abelar on 9/24/2017.
@@ -65,6 +69,8 @@ public class gsrFragment extends Fragment {
 
     Button searchGSR;
 
+    private Map<String, Integer> gsrHashMap = new HashMap<String, Integer>();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,12 +82,14 @@ public class gsrFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_gsr, container, false);
 
-        final Button calendarButton = (Button) v.findViewById(R.id.select_date);
-        final Button startButton = (Button) v.findViewById(R.id.select_start_time);
-        final Button endButton = (Button) v.findViewById(R.id.select_end_time);
-        searchGSR = (Button) v.findViewById(R.id.search_GSR);
-        final Spinner gsrDropDown = (Spinner) v.findViewById(R.id.gsr_building_selection);
-        instructions = (TextView) v.findViewById(R.id.instructions);
+        final Button calendarButton = findById(v, R.id.select_date);
+        final Button startButton = findById(v, R.id.select_start_time);
+        final Button endButton = findById(v, R.id.select_end_time);
+        searchGSR = findById(v, R.id.search_GSR);
+        final Spinner gsrDropDown = findById(v, R.id.gsr_building_selection);
+        instructions = findById(v, R.id.instructions);
+
+        setUpHashMap();
 
         //gsr location options. Dental sem does not work right now
         String[] gsrs = new String[]{
@@ -319,32 +327,23 @@ public class gsrFragment extends Fragment {
         ((MainActivity) getActivity()).setNav(R.id.nav_gsr);
     }
 
+
+    public void setUpHashMap() {
+        gsrHashMap.put("Weigle", 1722);
+        gsrHashMap.put("VP GSR", 1799);
+        gsrHashMap.put("Lippincott", 1768);
+        gsrHashMap.put("Edu Commons", 848);
+        gsrHashMap.put("Levin Building", 13489);
+        gsrHashMap.put("VP Sem. Rooms", 4409);
+        gsrHashMap.put("Lippincott Sem. Rooms", 2587);
+        gsrHashMap.put("Glossberg Recording Room", 1819);
+        //gsrHashMap.put("Dental Sem", 13532);
+        gsrHashMap.put("Biomedical Lib.", 505);
+    }
+
     //takes the name of the gsr and returns an int for the corresponding code
     public int mapGSR(String name) {
-        switch (name) {
-            case "Weigle":
-                return 1722;
-            case "VP GSR":
-                return 1799;
-            case "Lippincott":
-                return 1768;
-            case "Edu Commons":
-                return 848;
-            case "Levin Building":
-                return 13489;
-            case "VP Sem. Rooms":
-                return 4409;
-            case "Lippincott Sem. Rooms":
-                return 2587;
-            case "Glossberg Recording Room":
-                return 1819;
-            case "Dental Sem":
-                return 13532;
-            case "Biomedical Lib.":
-                return 505;
-            default:
-                return -1;
-        }
+        return gsrHashMap.get(name);
     }
 
     // Parameters: the starting time's hour, minutes, and AM/PM as formatted by Java.utils.Calendar
@@ -354,14 +353,8 @@ public class gsrFragment extends Fragment {
     public static String[] getStartEndTimes(int hour, int minutes, int ampm) {
         String[] results = new String[2];
         String strampm = (ampm == 0) ? "AM" : "PM";
-        // Add 0 if minutes < 10
-        if (minutes < 10) {
-            results[0] = hour + ":00" + " " + strampm;
-            results[1] = "11:59 PM";
-        } else {
-            results[0] = hour + ":00" + " " + strampm;
-            results[1] = "11:59 PM";
-        }
+        results[0] = hour + ":00" + " " + strampm;
+        results[1] = "11:59 PM";
         return results;
     }
 
