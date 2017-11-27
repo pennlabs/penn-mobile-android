@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pennapps.labs.pennmobile.adapters.LaundryRoomAdapterNew;
+import com.pennapps.labs.pennmobile.adapters.LaundryRoomAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 
@@ -29,7 +29,7 @@ import rx.functions.Action1;
  * Created by Jackie on 2017-10-22.
  */
 
-public class LaundryMachineFragmentNew extends android.support.v4.app.Fragment {
+public class LaundryMachineFragment extends android.support.v4.app.Fragment {
 
     private Labs mLabs;
     private Context mContext;
@@ -50,7 +50,7 @@ public class LaundryMachineFragmentNew extends android.support.v4.app.Fragment {
     // list of favorite laundry rooms
     private ArrayList<LaundryRoom> laundryRooms = new ArrayList<>();
 
-    private LaundryRoomAdapterNew mAdapter;
+    private LaundryRoomAdapter mAdapter;
 
     // washer or dryer
     private String machineType;
@@ -59,7 +59,7 @@ public class LaundryMachineFragmentNew extends android.support.v4.app.Fragment {
     private int numRooms;
 
     // empty constructor
-    public LaundryMachineFragmentNew() {
+    public LaundryMachineFragment() {
 
     }
 
@@ -68,12 +68,12 @@ public class LaundryMachineFragmentNew extends android.support.v4.app.Fragment {
         super.onCreate(savedInstanceState);
         mLabs = MainActivity.getLabsInstance();
         mContext = getActivity();
-        machineType = getArguments().getString("machineType");
+        machineType = getArguments().getString(mContext.getString(R.string.laundry_machine_type));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_laundry_machine_new, container, false);
+        View view = inflater.inflate(R.layout.fragment_laundry_machine, container, false);
 
         ButterKnife.bind(this, view);
 
@@ -88,7 +88,7 @@ public class LaundryMachineFragmentNew extends android.support.v4.app.Fragment {
         swipeRefreshLayout.setColorSchemeResources(R.color.color_accent, R.color.color_primary);
 
         sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-        numRooms = sp.getInt("numRooms", 48);
+        numRooms = sp.getInt(mContext.getString(R.string.num_rooms_pref), 48);
 
         return view;
     }
@@ -122,7 +122,7 @@ public class LaundryMachineFragmentNew extends android.support.v4.app.Fragment {
         if (count == 0) {
             loadingPanel.setVisibility(View.GONE);
             mTextView.setVisibility(View.VISIBLE);
-            mAdapter = new LaundryRoomAdapterNew(mContext, laundryRooms, machineType);
+            mAdapter = new LaundryRoomAdapter(mContext, laundryRooms, machineType);
             mRecyclerView.setAdapter(mAdapter);
         }
     }
@@ -149,7 +149,7 @@ public class LaundryMachineFragmentNew extends android.support.v4.app.Fragment {
                                             }
                                         });
 
-                                        mAdapter = new LaundryRoomAdapterNew(mContext, laundryRooms, machineType);
+                                        mAdapter = new LaundryRoomAdapter(mContext, laundryRooms, machineType);
                                         mRecyclerView.setAdapter(mAdapter);
 
                                         loadingPanel.setVisibility(View.GONE);

@@ -75,7 +75,7 @@ public class LaundrySettingsActivity extends AppCompatActivity {
 
                 // remove shared preferences
                 SharedPreferences.Editor editor = sp.edit();
-                editor.putInt("numRoomsSelected", 0);
+                editor.putInt(getString(R.string.num_rooms_selected_pref), 0);
                 editor.apply();
 
                 for (int i = 0; i < numRooms; i++) {
@@ -106,7 +106,7 @@ public class LaundrySettingsActivity extends AppCompatActivity {
                                     numRooms = rooms.size();
                                     // save number of rooms
                                     SharedPreferences.Editor editor = sp.edit();
-                                    editor.putInt("numRooms", numRooms);
+                                    editor.putInt(getString(R.string.num_rooms_pref), numRooms);
                                     editor.apply();
 
                                     HashMap<String, List<LaundryRoomSimple>> hashMap = new HashMap<>();

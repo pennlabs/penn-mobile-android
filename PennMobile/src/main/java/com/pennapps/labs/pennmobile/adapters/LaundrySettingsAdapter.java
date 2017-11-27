@@ -28,7 +28,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
     private HashMap<String, List<LaundryRoomSimple>> laundryRooms;
     private Context mContext;
     private SharedPreferences sp;
-    private String s = "numRoomsSelected";
+    private String s;
     private List<Switch> switches = new ArrayList<>();
     private int maxNumRooms = 3;
 
@@ -37,6 +37,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
         this.laundryHalls = laundryHalls;
         this.laundryRooms = laundryRooms;
         sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+        s = mContext.getString(R.string.num_rooms_selected_pref);
 
         // first time
         if (sp.getInt(s, -1) == -1) {
@@ -133,7 +134,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
 
                     // update the numRoomSelected
                     if (isChecked) {
-                        editor.putString(id + "location", laundryRoom.location);
+                        editor.putString(id + mContext.getString(R.string.location), laundryRoom.location);
                         editor.putInt(s, sp.getInt(s, -1) + 1);
                         editor.apply();
                     } else {
@@ -203,7 +204,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
 
                 // update the numRoomSelected
                 if (isChecked) {
-                    editor.putString(id + "location", laundryRoom.location);
+                    editor.putString(id + mContext.getString(R.string.location), laundryRoom.location);
                     editor.putInt(s, sp.getInt(s, -1) + 1);
                     editor.apply();
                 } else {

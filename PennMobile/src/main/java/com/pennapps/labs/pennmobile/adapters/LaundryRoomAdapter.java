@@ -13,16 +13,19 @@ import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
-import com.pennapps.labs.pennmobile.classes.Machine;
+import com.pennapps.labs.pennmobile.classes.MachineList;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * Created by Jackie on 2017-10-21.
  */
 
-public class LaundryRoomAdapterNew extends RecyclerView.Adapter<LaundryRoomAdapterNew.CustomViewHolder> {
+public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.CustomViewHolder> {
 
     Context mContext;
     ArrayList<LaundryRoom> mRooms;
@@ -34,7 +37,7 @@ public class LaundryRoomAdapterNew extends RecyclerView.Adapter<LaundryRoomAdapt
     public static final int OFFLINE_LABEL = 402;
     public static final int OUT_OF_ORDER_LABEL = 403;
 
-    public LaundryRoomAdapterNew(Context context, ArrayList<LaundryRoom> rooms, String machineType) {
+    public LaundryRoomAdapter(Context context, ArrayList<LaundryRoom> rooms, String machineType) {
         mContext = context;
         mMachineType = machineType;
         mRooms = rooms;
@@ -42,28 +45,28 @@ public class LaundryRoomAdapterNew extends RecyclerView.Adapter<LaundryRoomAdapt
     }
 
     @Override
-    public LaundryRoomAdapterNew.CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public LaundryRoomAdapter.CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.laundry_room_item, parent, false);
         return new CustomViewHolder(view, mContext, mRooms);
     }
 
     @Override
-    public void onBindViewHolder(LaundryRoomAdapterNew.CustomViewHolder holder, int position) {
+    public void onBindViewHolder(LaundryRoomAdapter.CustomViewHolder holder, int position) {
 
         LaundryRoom room = mRooms.get(position);
 
         // update name of laundry room and type of machine
         int hall_no = room.getId();
-        String location = sp.getString(hall_no + "location", "");
+        String location = sp.getString(hall_no + mContext.getString(R.string.location), "");
         String roomName = room.getName();
         holder.title.setText(roomName);
         holder.name.setText(location);
-        holder.machine.setText(mMachineType + "s " + "available");
+        holder.machine.setText(mMachineType + mContext.getString(R.string.s) + " " + mContext.getString(R.string.available));
 
-        Machine machines;
+        MachineList machines;
 
         // if washer
-        if (mMachineType.equals("washer")) {
+        if (mMachineType.equals(mContext.getString(R.string.washer))) {
             machines = room.getMachines().getWashers();
         }
         // if dryer
@@ -77,7 +80,7 @@ public class LaundryRoomAdapterNew extends RecyclerView.Adapter<LaundryRoomAdapt
         int offline = machines.getOffline();
         int outOfOrder = machines.getOutOfOrder();
         int totalMachines = open + running + offline + outOfOrder;
-        holder.availability.setText(open + " out of " + totalMachines);
+        holder.availability.setText(open + " " + mContext.getString(R.string.out_of) + " " + totalMachines);
 
         // create an array of time remaining/availability (length is number of machines)
         List<Integer> timeRemaining = machines.getTimeRemaining();
@@ -107,10 +110,10 @@ public class LaundryRoomAdapterNew extends RecyclerView.Adapter<LaundryRoomAdapt
         }
 
         // if washer
-        if (mMachineType.equals("washer")) {
+        if (mMachineType.equals(mContext.getString(R.string.washer))) {
             // recycler view for the time remaining
             holder.availability.setTextColor(ContextCompat.getColor(mContext, R.color.teal));
-            LaundryMachineAdapterNew adapter = new LaundryMachineAdapterNew(mContext, times, mMachineType, roomName);
+            LaundryMachineAdapter adapter = new LaundryMachineAdapter(mContext, times, mMachineType, roomName);
             holder.recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
             holder.recyclerView.setAdapter(adapter);
         }
@@ -118,7 +121,7 @@ public class LaundryRoomAdapterNew extends RecyclerView.Adapter<LaundryRoomAdapt
         else {
             // recycler view for the time remaining
             holder.availability.setTextColor(ContextCompat.getColor(mContext, R.color.star_color_on));
-            LaundryMachineAdapterNew adapter = new LaundryMachineAdapterNew(mContext, times, mMachineType, roomName);
+            LaundryMachineAdapter adapter = new LaundryMachineAdapter(mContext, times, mMachineType, roomName);
             holder.recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
             holder.recyclerView.setAdapter(adapter);
         }
@@ -134,10 +137,15 @@ public class LaundryRoomAdapterNew extends RecyclerView.Adapter<LaundryRoomAdapt
         Context mContext;
         ArrayList<LaundryRoom> mRooms;
 
+        @Bind(R.id.laundry_room_title)
         TextView title;
+        @Bind(R.id.fav_laundry_room_name)
         TextView name;
+        @Bind(R.id.laundry_availability)
         TextView availability;
+        @Bind(R.id.machine_type)
         TextView machine;
+        @Bind(R.id.laundry_machine_list)
         RecyclerView recyclerView;
 
         public CustomViewHolder(View view, Context context, ArrayList<LaundryRoom> rooms) {
@@ -146,11 +154,7 @@ public class LaundryRoomAdapterNew extends RecyclerView.Adapter<LaundryRoomAdapt
             mContext = context;
             mRooms = rooms;
 
-            name = (TextView) view.findViewById(R.id.fav_laundry_room_name);
-            availability = (TextView) view.findViewById(R.id.laundry_availability);
-            recyclerView = (RecyclerView) view.findViewById(R.id.laundry_machine_list);
-            machine = (TextView) view.findViewById(R.id.machine_type);
-            title = (TextView) view.findViewById(R.id.laundry_room_title);
+            ButterKnife.bind(this, view);
         }
     }
 }

@@ -7,16 +7,16 @@ public class Machines {
 
     @SerializedName("dryers")
     @Expose
-    private Dryers dryers;
+    private MachineList dryers;
     @SerializedName("washers")
     @Expose
-    private Washers washers;
+    private MachineList washers;
 
-    public Dryers getDryers() {
+    public MachineList getDryers() {
         return dryers;
     }
 
-    public Washers getWashers() {
+    public MachineList getWashers() {
         return washers;
     }
 }

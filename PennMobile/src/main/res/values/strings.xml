@@ -114,8 +114,19 @@
     <string name="laundry_settings_help1">Please select up to 3 laundry rooms</string>
     <string name="laundry_settings_help2">Click RESET to reset your selections</string>
     <string name="laundry_machines_available">machines available</string>
-    <string name="skip">SKIP</string>
-    <string name="ok">GOT IT</string>
+    <string name="washer">washer</string>
+    <string name="dryer">dryer</string>
+    <string name="open">OPEN</string>
+    <string name="not_available">not available</string>
+    <string name="min_left">min left</string>
+    <string name="num_rooms_selected_pref">numRoomsSelected</string>
+    <string name="num_rooms_pref">numRooms</string>
+    <string name="location">location</string>
+    <string name="available">available</string>
+    <string name="s">s</string>
+    <string name="out_of">out of</string>
+    <string name="machines">machines</string>
+    <string name="laundry_machine_type">machineType</string>
 
     <!-- News -->
     <string name="open_browser">Open in Browser</string>

@@ -10,31 +10,14 @@ import android.view.MenuItem;
 
 public class LaundryActivity extends AppCompatActivity {
 
-    //private SharedPreferences sp;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_laundry);
 
-        /* TODO onboarding
-        // onboarding
-        sp = PreferenceManager.getDefaultSharedPreferences(this);
-
-        // first time
-        if (sp.getBoolean("laundryNew", true)) {
-            SharedPreferences.Editor editor = sp.edit();
-            editor.putBoolean("laundryNew", false);
-            editor.apply();
-
-            Intent intent = new Intent(this, LaundryOnboardingActivity.class);
-            startActivity(intent);
-            finish();
-        }*/
-
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
 
-        LaundryFragmentAdapter adapter = new LaundryFragmentAdapter(getSupportFragmentManager());
+        LaundryFragmentAdapter adapter = new LaundryFragmentAdapter(getSupportFragmentManager(), this);
 
         viewPager.setAdapter(adapter);
 

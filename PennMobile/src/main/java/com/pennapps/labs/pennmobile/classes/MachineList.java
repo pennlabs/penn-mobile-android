@@ -9,7 +9,7 @@ import java.util.List;
  * Created by Jackie on 2017-10-22.
  */
 
-public class Machine {
+public class MachineList {
 
     @SerializedName("offline")
     @Expose
