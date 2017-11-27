@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile;
 import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -42,8 +43,8 @@ import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
-import com.pennapps.labs.pennmobile.classes.LaundryMachine;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
+import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
@@ -120,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
             WebView webView = NewsTab.currentWebView;
             if (webView.canGoBack()) {
                 webView.goBack();
-            } else if (getSupportFragmentManager().getBackStackEntryCount() > 0){
+            } else if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
                 getSupportFragmentManager().popBackStack();
             } else {
                 super.onBackPressed();
@@ -197,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = null;
         switch (id) {
             case R.id.nav_home:
-                if(getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
                     fragment = new MainFragment();
                 }
                 break;
@@ -226,6 +227,8 @@ public class MainActivity extends AppCompatActivity {
                 return;
             case R.id.nav_laundry:
             case R.id.laundry_cont:
+
+                /*
                 fragment = new LaundryFragment();
                 if (from_alarm) {
                     from_alarm = false;
@@ -233,6 +236,11 @@ public class MainActivity extends AppCompatActivity {
                     arg.putInt(getString(R.string.laundry_hall_no), getIntent().getIntExtra(getString(R.string.laundry_hall_no), -1));
                     fragment.setArguments(arg);
                 }
+                */
+
+                Intent intent = new Intent(this, LaundryActivity.class);
+                startActivity(intent);
+
                 break;
 //            case R.id.nav_nso:
 //            case R.id.nso_cont:
@@ -259,16 +267,26 @@ public class MainActivity extends AppCompatActivity {
     public static Labs getLabsInstance() {
         if (mLabs == null) {
             GsonBuilder gsonBuilder = new GsonBuilder();
-            gsonBuilder.registerTypeAdapter(new TypeToken<List<Course>>(){}.getType(), new Serializer.CourseSerializer());
-            gsonBuilder.registerTypeAdapter(new TypeToken<List<Building>>(){}.getType(), new Serializer.BuildingSerializer());
-            gsonBuilder.registerTypeAdapter(new TypeToken<List<Person>>(){}.getType(), new Serializer.DataSerializer());
-            gsonBuilder.registerTypeAdapter(new TypeToken<List<Venue>>(){}.getType(), new Serializer.VenueSerializer());
-            gsonBuilder.registerTypeAdapter(new TypeToken<List<BusStop>>(){}.getType(), new Serializer.BusStopSerializer());
+            gsonBuilder.registerTypeAdapter(new TypeToken<List<Course>>() {
+            }.getType(), new Serializer.CourseSerializer());
+            gsonBuilder.registerTypeAdapter(new TypeToken<List<Building>>() {
+            }.getType(), new Serializer.BuildingSerializer());
+            gsonBuilder.registerTypeAdapter(new TypeToken<List<Person>>() {
+            }.getType(), new Serializer.DataSerializer());
+            gsonBuilder.registerTypeAdapter(new TypeToken<List<Venue>>() {
+            }.getType(), new Serializer.VenueSerializer());
+            gsonBuilder.registerTypeAdapter(new TypeToken<List<BusStop>>() {
+            }.getType(), new Serializer.BusStopSerializer());
             gsonBuilder.registerTypeAdapter(DiningHall.class, new Serializer.MenuSerializer());
             gsonBuilder.registerTypeAdapter(BusRoute.class, new Serializer.BusRouteSerializer());
-            gsonBuilder.registerTypeAdapter(new TypeToken<List<BusRoute>>(){}.getType(), new Serializer.BusRouteListSerializer());
-            gsonBuilder.registerTypeAdapter(new TypeToken<List<LaundryRoom>>(){}.getType(), new Serializer.LaundryListSerializer());
-            gsonBuilder.registerTypeAdapter(new TypeToken<List<LaundryMachine>>(){}.getType(), new Serializer.LaundryMachineSerializer());
+            gsonBuilder.registerTypeAdapter(new TypeToken<List<BusRoute>>() {
+            }.getType(), new Serializer.BusRouteListSerializer());
+            // new - gets room
+            gsonBuilder.registerTypeAdapter(new TypeToken<LaundryRoom>() {
+            }.getType(), new Serializer.LaundryRoomSerializer());
+            // new - gets laundry room list
+            gsonBuilder.registerTypeAdapter(new TypeToken<List<LaundryRoomSimple>>() {
+            }.getType(), new Serializer.LaundryRoomListSerializer());
             Gson gson = gsonBuilder.create();
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setConverter(new GsonConverter(gson))
@@ -292,7 +310,7 @@ public class MainActivity extends AppCompatActivity {
         return mDrawerToggle;
     }
 
-    public void setNav(int id){
+    public void setNav(int id) {
         final Menu menu = mDrawerList.getMenu();
         menu.findItem(id).setChecked(true);
     }
@@ -318,8 +336,6 @@ public class MainActivity extends AppCompatActivity {
         pager.setAdapter(pageAdapter);
         tab_showed = true;
     }
-
-
 
     public void removeTabs() {
         tab_showed = false;
@@ -355,7 +371,7 @@ public class MainActivity extends AppCompatActivity {
                     .requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                             Manifest.permission.ACCESS_COARSE_LOCATION}, CODE_MAP);
         } else {
-            Fragment fragment =  new MapFragment();
+            Fragment fragment = new MapFragment();
             fragmentTransact(fragment);
         }
     }

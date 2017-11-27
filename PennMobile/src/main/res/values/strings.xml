@@ -60,6 +60,7 @@
     <string name="course_bundle_arg">CourseFragment</string>
 
     <!-- Map -->
+    <string name="google_api_key">AIzaSyDdxF-HHnZs0nJqlqWuBKIq9KAX1zN7tyM</string>
     <string name="image_description">Photo</string>
     <string name="map">Map</string>
     <string name="map_searches">map_search</string>
@@ -113,6 +114,26 @@
     <string name="laundry_not_update">not updating status</string>
     <string name="laundry_status_unavailable">status unavailable</string>
     <string name="favorite_title">Favorite</string>
+    <string name="laundry_settings">Laundry Settings</string>
+    <string name="not_updating_status">N/A</string>
+    <string name="laundry_reset">RESET</string>
+    <string name="laundry_help_text">Please click the settings icon to choose laundry rooms</string>
+    <string name="laundry_settings_help1">Please select up to 3 laundry rooms</string>
+    <string name="laundry_settings_help2">Click RESET to reset your selections</string>
+    <string name="laundry_machines_available">machines available</string>
+    <string name="washer">washer</string>
+    <string name="dryer">dryer</string>
+    <string name="open">OPEN</string>
+    <string name="not_available">not available</string>
+    <string name="min_left">min left</string>
+    <string name="num_rooms_selected_pref">numRoomsSelected</string>
+    <string name="num_rooms_pref">numRooms</string>
+    <string name="location">location</string>
+    <string name="available">available</string>
+    <string name="s">s</string>
+    <string name="out_of">out of</string>
+    <string name="machines">machines</string>
+    <string name="laundry_machine_type">machineType</string>
 
     <!-- News -->
     <string name="open_browser">Open in Browser</string>
@@ -175,4 +196,5 @@
     <string name="quitBook">&lt;- Back</string>
     <string name="select_intrusctions">Select an open GSR slot or edit the search range</string>
     <string name="to">to</string>
+
 </resources>
