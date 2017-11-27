@@ -51,6 +51,9 @@ import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 import static butterknife.ButterKnife.findById;
 
 /**
@@ -61,15 +64,21 @@ public class gsrFragment extends Fragment {
 
 
     //list that holds all GSR rooms
+    private Map<String, Integer> gsrHashMap = new HashMap<String, Integer>();
     ArrayList<GSR> mGSRS = new ArrayList<GSR>();
-
     RecyclerView gsrRoomListRecylerView;
 
-    TextView instructions;
 
-    Button searchGSR;
+    @Bind(R.id.select_date) Button calendarButton;
+    @Bind(R.id.select_start_time) Button startButton;
+    @Bind(R.id.select_end_time) Button endButton;
+    @Bind(R.id.search_GSR) Button searchGSR;
+    @Bind(R.id.gsr_building_selection) Spinner gsrDropDown;
+    @Bind(R.id.instructions) TextView instructions;
 
-    private Map<String, Integer> gsrHashMap = new HashMap<String, Integer>();
+
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -82,12 +91,7 @@ public class gsrFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_gsr, container, false);
 
-        final Button calendarButton = findById(v, R.id.select_date);
-        final Button startButton = findById(v, R.id.select_start_time);
-        final Button endButton = findById(v, R.id.select_end_time);
-        searchGSR = findById(v, R.id.search_GSR);
-        final Spinner gsrDropDown = findById(v, R.id.gsr_building_selection);
-        instructions = findById(v, R.id.instructions);
+        ButterKnife.bind(this, v);
 
         setUpHashMap();
 
