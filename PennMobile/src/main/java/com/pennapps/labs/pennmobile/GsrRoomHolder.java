@@ -1,11 +1,10 @@
 package com.pennapps.labs.pennmobile;
 
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * Created by Andrew on 11/5/2017.
@@ -14,14 +13,13 @@ import android.widget.TextView;
 
 public class GsrRoomHolder extends RecyclerView.ViewHolder {
 
-    TextView gsr_time, gsrId, locationId;
+    @Bind(R.id.gsr_time) TextView gsrTime;
+    @Bind(R.id.gsr_id)  TextView gsrId;
+    @Bind(R.id.locationId) TextView locationId;
 
     public GsrRoomHolder(View itemView) {
         super(itemView);
-        gsr_time = (TextView) itemView.findViewById(R.id.gsr_time);
-        gsrId = (TextView) itemView.findViewById(R.id.gsr_id);
-        locationId = (TextView) itemView.findViewById(R.id.locationId);
-
+        ButterKnife.bind(this, itemView);
     }
 
 

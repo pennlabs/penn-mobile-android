@@ -1,8 +1,5 @@
 package com.pennapps.labs.pennmobile;
 
-import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -45,11 +42,11 @@ public class GsrRoomAdapter extends RecyclerView.Adapter<GsrRoomHolder> {
 
             final String localGSRID = ids.get(position);
 
-            holder.gsr_time.setText(times.get(position).substring(0, times.get(position).indexOf(",")));
+            holder.gsrTime.setText(times.get(position).substring(0, times.get(position).indexOf(",")));
             holder.gsrId.setText(ids.get(position));
             holder.locationId.setText(gsrLocationCode);
             //whenever a time slot is clicked
-            holder.gsr_time.setOnClickListener(new View.OnClickListener() {
+            holder.gsrTime.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
