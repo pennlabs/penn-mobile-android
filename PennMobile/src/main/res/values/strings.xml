@@ -169,7 +169,4 @@
     <string name="search_nso_star">search_nso_star</string>
     <string name="nso_instructions">Search for instructions</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
 </resources>

@@ -1,9 +1,7 @@
 package com.pennapps.labs.pennmobile;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -12,13 +10,14 @@ import android.view.MenuItem;
 
 public class LaundryActivity extends AppCompatActivity {
 
-    private SharedPreferences sp;
+    //private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_laundry);
 
+        /* TODO onboarding
         // onboarding
         sp = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -31,7 +30,7 @@ public class LaundryActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LaundryOnboardingActivity.class);
             startActivity(intent);
             finish();
-        }
+        }*/
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
 
