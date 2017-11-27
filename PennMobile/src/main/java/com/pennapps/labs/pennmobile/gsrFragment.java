@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -407,121 +408,123 @@ public class gsrFragment extends Fragment {
         //take the html, parse it, and populate recycler views
         @Override
         protected void onPostExecute(String[] result) {
+            if (result.length > 1) {
+                String gsrCode = result[1];
+                String dayOfWeek = result[2];
+                String startTime = result[3];
+                String endTime = result[4];
 
+                Document doc = Jsoup.parse(result[0]);
+                //each time block has associated tag below:
+                Elements elements = doc.body().select("a.lc_rm_a");
 
-            String gsrCode = result[1];
-            String dayOfWeek = result[2];
-            String startTime = result[3];
-            String endTime = result[4];
+                if (elements.size() == 0) {
 
-            Document doc = Jsoup.parse(result[0]);
-            //each time block has associated tag below:
-            Elements elements = doc.body().select("a.lc_rm_a");
-
-            if (elements.size() == 0) {
-
-                Toast.makeText(getActivity(), "No GSRs available", Toast.LENGTH_LONG).show();
-
-                //populate recyclerview
-                LinearLayoutManager gsrRoomListLayoutManager = new LinearLayoutManager(getContext());
-                gsrRoomListLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                gsrRoomListRecylerView.setLayoutManager(gsrRoomListLayoutManager);
-                gsrRoomListRecylerView.setAdapter(new GsrBuildingAdapter(getContext(), mGSRS, gsrCode));
-
-            } else {
-                for (Element element : elements) {
-                    
-                    String element_entry = element.attr("onclick") + "\n";
-                    String[] parsed_data = parseEntry(element_entry).split("&");
-                    String gsrName = parsed_data[0].replace("'", "");
-                    String dateTime = parsed_data[1].replace("'", "");
-                    String elementId = element.attr("id") + "\n";
-
-                    //parse datetime further
-                    String[] dateDataBrokenUp = parseEntry(element_entry).split(",");
-                    String timeRange = dateDataBrokenUp[0].split("&")[1];
-                    String dayDate = dateDataBrokenUp[1];
-                    String dateNum = dateDataBrokenUp[2];
-                    String duration = parsed_data[2].replace("'", "");
-
-                    String AMPM = "";
-                    if (timeRange.contains("AM")) {
-                        AMPM = "AM";
-                    }
-                    else {AMPM = "PM";}
-
-                    //time block times
-                    String localStartTime = timeRange.split("-")[0].replace("'", "");
-                    String localEndTime = timeRange.split("-")[1];
-                    
-                    Boolean startDateCondition = false;
-                    Boolean endDateCondition = false;
-
-                    //convert all times
-                    //local is for time block and global refers to the user's parameters' times
-                    SimpleDateFormat localFormat = new SimpleDateFormat("hh:mmaa");
-                    SimpleDateFormat globalFormat = new SimpleDateFormat("hh:mm aa");
-
-                    try {
-                        //now convert all times to date objects to compare
-                        Date localStartDate = localFormat.parse(localStartTime);
-                        Date globalStartDate = globalFormat.parse(startTime);
-                        Date localEndDate = localFormat.parse(localEndTime);
-                        Date globalEndDate = globalFormat.parse(endTime);
-
-                        //now compare
-                        Calendar calendarLocalStart = Calendar.getInstance();
-                        Calendar calendarGlobalStart = Calendar.getInstance();
-                        Calendar calendarLocalEnd = Calendar.getInstance();
-                        Calendar calendarGlobalEnd = Calendar.getInstance();
-
-                        calendarLocalEnd.setTime(localEndDate);
-
-                        calendarGlobalEnd.setTime(globalEndDate);
-
-                        calendarLocalStart.setTime(localStartDate);
-
-                        calendarGlobalStart.setTime(globalStartDate);
-
-                        //if end time is greater than time block's end time
-                        if (calendarGlobalEnd.getTimeInMillis() - calendarLocalEnd.getTimeInMillis() >= 0 )
-                        {
-                             endDateCondition = true;
-
-                        }
-
-                        //if start time is less than time start end time
-                        if ((calendarLocalStart.after(calendarGlobalStart)) || calendarLocalStart.equals(calendarGlobalStart)) {
-                            startDateCondition = true;
-
-                        }
-
-
-                    } catch (ParseException e) {
-                    }
-
-                    if (startDateCondition && endDateCondition) {
-                        //now populate mGSRs
-                        insertGSRSlot(gsrName, dateTime, timeRange, dayDate, dateNum, duration, elementId);
-                    }
-
-                }
-
-                //now change the ui
-
-                if (mGSRS.size() == 0)
-                {
                     Toast.makeText(getActivity(), "No GSRs available", Toast.LENGTH_LONG).show();
+
+                    //populate recyclerview
+                    LinearLayoutManager gsrRoomListLayoutManager = new LinearLayoutManager(getContext());
+                    gsrRoomListLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                    gsrRoomListRecylerView.setLayoutManager(gsrRoomListLayoutManager);
+                    gsrRoomListRecylerView.setAdapter(new GsrBuildingAdapter(getContext(), mGSRS, gsrCode));
+
+                } else {
+                    for (Element element : elements) {
+
+                        String element_entry = element.attr("onclick") + "\n";
+                        String[] parsed_data = parseEntry(element_entry).split("&");
+                        String gsrName = parsed_data[0].replace("'", "");
+                        String dateTime = parsed_data[1].replace("'", "");
+                        String elementId = element.attr("id") + "\n";
+
+                        //parse datetime further
+                        String[] dateDataBrokenUp = parseEntry(element_entry).split(",");
+                        String timeRange = dateDataBrokenUp[0].split("&")[1];
+                        String dayDate = dateDataBrokenUp[1];
+                        String dateNum = dateDataBrokenUp[2];
+                        String duration = parsed_data[2].replace("'", "");
+
+                        String AMPM = "";
+                        if (timeRange.contains("AM")) {
+                            AMPM = "AM";
+                        }
+                        else {AMPM = "PM";}
+
+                        //time block times
+                        String localStartTime = timeRange.split("-")[0].replace("'", "");
+                        String localEndTime = timeRange.split("-")[1];
+
+                        Boolean startDateCondition = false;
+                        Boolean endDateCondition = false;
+
+                        //convert all times
+                        //local is for time block and global refers to the user's parameters' times
+                        SimpleDateFormat localFormat = new SimpleDateFormat("hh:mmaa");
+                        SimpleDateFormat globalFormat = new SimpleDateFormat("hh:mm aa");
+
+                        try {
+                            //now convert all times to date objects to compare
+                            Date localStartDate = localFormat.parse(localStartTime);
+                            Date globalStartDate = globalFormat.parse(startTime);
+                            Date localEndDate = localFormat.parse(localEndTime);
+                            Date globalEndDate = globalFormat.parse(endTime);
+
+                            //now compare
+                            Calendar calendarLocalStart = Calendar.getInstance();
+                            Calendar calendarGlobalStart = Calendar.getInstance();
+                            Calendar calendarLocalEnd = Calendar.getInstance();
+                            Calendar calendarGlobalEnd = Calendar.getInstance();
+
+                            calendarLocalEnd.setTime(localEndDate);
+
+                            calendarGlobalEnd.setTime(globalEndDate);
+
+                            calendarLocalStart.setTime(localStartDate);
+
+                            calendarGlobalStart.setTime(globalStartDate);
+
+                            //if end time is greater than time block's end time
+                            if (calendarGlobalEnd.getTimeInMillis() - calendarLocalEnd.getTimeInMillis() >= 0 )
+                            {
+                                endDateCondition = true;
+
+                            }
+
+                            //if start time is less than time start end time
+                            if ((calendarLocalStart.after(calendarGlobalStart)) || calendarLocalStart.equals(calendarGlobalStart)) {
+                                startDateCondition = true;
+
+                            }
+
+
+                        } catch (ParseException e) {
+                        }
+
+                        if (startDateCondition && endDateCondition) {
+                            //now populate mGSRs
+                            insertGSRSlot(gsrName, dateTime, timeRange, dayDate, dateNum, duration, elementId);
+                        }
+
+                    }
+
+                    //now change the ui
+
+                    if (mGSRS.size() == 0)
+                    {
+                        Toast.makeText(getActivity(), "No GSRs available", Toast.LENGTH_LONG).show();
+                    }
+
+                    LinearLayoutManager gsrRoomListLayoutManager = new LinearLayoutManager(getContext());
+                    gsrRoomListLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                    gsrRoomListRecylerView.setLayoutManager(gsrRoomListLayoutManager);
+                    gsrRoomListRecylerView.setAdapter(new GsrBuildingAdapter(getContext(), mGSRS, gsrCode));
+
+                    //reset var
+                    mGSRS = new ArrayList<GSR>();
+
                 }
-
-                LinearLayoutManager gsrRoomListLayoutManager = new LinearLayoutManager(getContext());
-                gsrRoomListLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                gsrRoomListRecylerView.setLayoutManager(gsrRoomListLayoutManager);
-                gsrRoomListRecylerView.setAdapter(new GsrBuildingAdapter(getContext(), mGSRS, gsrCode));
-
-                //reset var
-                mGSRS = new ArrayList<GSR>();
-
+            } else {
+                Toast.makeText(getActivity(), "Failed to retrieve GSR data", Toast.LENGTH_LONG).show();
             }
         }
     }

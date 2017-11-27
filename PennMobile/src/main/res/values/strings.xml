@@ -24,8 +24,6 @@
     <string name="no_results">No results found.</string>
     <string name="action_licenses">Open Source Licenses</string>
 
-    <string name="google_api_key"></string>
-
     <!-- Search -->
     <string name="registrar_search">Search for courses</string>
     <string name="transit_search">Search for destinations</string>
@@ -60,7 +58,7 @@
     <string name="course_bundle_arg">CourseFragment</string>
 
     <!-- Map -->
-    <string name="google_api_key">AIzaSyDdxF-HHnZs0nJqlqWuBKIq9KAX1zN7tyM</string>
+    <string name="google_api_key"></string>
     <string name="image_description">Photo</string>
     <string name="map">Map</string>
     <string name="map_searches">map_search</string>
