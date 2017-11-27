@@ -90,8 +90,6 @@ public class LaundryMachineFragmentNew extends android.support.v4.app.Fragment {
         sp = PreferenceManager.getDefaultSharedPreferences(mContext);
         numRooms = sp.getInt("numRooms", 48);
 
-        updateRooms();
-
         return view;
     }
 
@@ -101,22 +99,31 @@ public class LaundryMachineFragmentNew extends android.support.v4.app.Fragment {
         ButterKnife.unbind(this);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadingPanel.setVisibility(View.VISIBLE);
+        updateRooms();
+    }
+
     private void updateRooms() {
 
         laundryRooms.clear();
         count = 0;
-        boolean addedRoom = false;
 
         for (int i = 0; i < numRooms; i++) {
             if (sp.getBoolean(Integer.toString(i), false)) {
                 count += 1;
                 addRoom(i);
-                addedRoom = true;
             }
         }
 
-        if (!addedRoom) {
+        // no rooms chosen
+        if (count == 0) {
             loadingPanel.setVisibility(View.GONE);
+            mTextView.setVisibility(View.VISIBLE);
+            mAdapter = new LaundryRoomAdapterNew(mContext, laundryRooms, machineType);
+            mRecyclerView.setAdapter(mAdapter);
         }
     }
 
