@@ -12,6 +12,7 @@
     <string name="dining">Dining</string>
     <string name="transit">Transit</string>
     <string name="directory">Directory</string>
+    <string name="gsr">GSR</string>
     <string name="news">News</string>
     <string name="laundry">Laundry</string>
     <string name="nso">NSO</string>
@@ -22,6 +23,8 @@
     <string name="add_contact">Add contact</string>
     <string name="no_results">No results found.</string>
     <string name="action_licenses">Open Source Licenses</string>
+
+    <string name="google_api_key"></string>
 
     <!-- Search -->
     <string name="registrar_search">Search for courses</string>
@@ -75,6 +78,7 @@
     <string name="no_map_beardman">Map is not provided by the phone.</string>
     <string name="no_map_description">We were unable to\nload your map.</string>
     <string name="no_map_count_key">no_map_count_key</string>
+    <string name="no_data_msg">Cannot display Map: wifi/data not enabled</string>
 
     <!-- Transit search -->
     <string name="starting_location_hint">Current location</string>
@@ -161,4 +165,14 @@
     <string name="add_event">Add event to calendar</string>
     <string name="search_nso_star">search_nso_star</string>
     <string name="nso_instructions">Search for instructions</string>
+
+    <!-- GSR -->
+    <string name="search_range">Select GSR Search Range and click "Search"</string>
+    <string name="search_start_time">Start Time: </string>
+    <string name="search_end_time">End Time: </string>
+    <string name="calendar_button">Something went wrong</string>
+    <string name="search_GSRs">Search GSRs</string>
+    <string name="quitBook">&lt;- Back</string>
+    <string name="select_intrusctions">Select an open GSR slot or edit the search range</string>
+    <string name="to">to</string>
 </resources>
