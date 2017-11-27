@@ -19,7 +19,7 @@ public class NewsTab extends Fragment {
 
     private String mUrl = "http://www.thedp.com/";
     static WebView currentWebView;
-    @Bind(R.id.webview) WebView mWebView;
+    @Bind(R.id.webViewNews) WebView mWebView;
     private boolean newsLoaded;
 
     @Bind(R.id.flipper) ViewFlipper mFlipper;

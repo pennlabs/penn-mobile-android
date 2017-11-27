@@ -36,7 +36,8 @@
     <android.support.percent.PercentRelativeLayout
         style="@style/MainRelativeLayout"
         android:layout_toRightOf="@id/registrar_cont"
-        android:id="@+id/directory_cont"
+        android:layout_toEndOf="@+id/registrar_cont"
+        android:id="@+id/gsr_cont"
         app:layout_widthPercent="50%"
         app:layout_heightPercent="33%">
 
@@ -53,12 +54,41 @@
         <TextView
             android:id="@+id/directory_button"
             android:layout_below="@id/directory_img"
-            android:text="@string/directory"
+            android:text="@string/gsr"
             style="@style/MainText"
             app:layout_widthPercent="100%"
             app:layout_heightPercent="25%"/>
 
     </android.support.percent.PercentRelativeLayout>
+
+    <!--<android.support.percent.PercentRelativeLayout-->
+        <!--style="@style/MainRelativeLayout"-->
+        <!--android:id="@+id/gsr_cont"-->
+        <!--app:layout_widthPercent="33%"-->
+        <!--app:layout_heightPercent="33%"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_alignParentEnd="true">-->
+
+        <!--<ImageView-->
+            <!--android:contentDescription="@string/gsr"-->
+            <!--android:id="@+id/gsr_img"-->
+            <!--android:src="@drawable/ic_directory"-->
+            <!--style="@style/MainIcon"-->
+            <!--app:layout_widthPercent="100%"-->
+            <!--app:layout_heightPercent="60%"-->
+            <!--app:layout_marginTopPercent="10%"-->
+            <!--/>-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/gsr_button"-->
+            <!--android:layout_below="@id/gsr_img"-->
+            <!--android:text="@string/gsr"-->
+            <!--style="@style/MainText"-->
+            <!--app:layout_widthPercent="100%"-->
+            <!--app:layout_heightPercent="25%"/>-->
+
+    <!--</android.support.percent.PercentRelativeLayout>-->
 
     <android.support.percent.PercentRelativeLayout
         style="@style/MainRelativeLayout"
@@ -90,6 +120,7 @@
     <android.support.percent.PercentRelativeLayout
         style="@style/MainRelativeLayout"
         android:layout_toRightOf="@id/dining_cont"
+        android:layout_toEndOf="@+id/dining_cont"
         android:layout_below="@id/registrar_cont"
         android:id="@+id/laundry_cont"
         app:layout_widthPercent="50%"
@@ -147,7 +178,8 @@
         android:id="@+id/news_cont"
         app:layout_widthPercent="50%"
         app:layout_heightPercent="33%"
-        android:layout_toRightOf="@id/map_cont"
+        android:layout_toRightOf="@+id/map_cont"
+        android:layout_toEndOf="@id/map_cont"
         android:layout_below="@id/laundry_cont">
 
         <ImageView
