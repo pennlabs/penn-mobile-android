@@ -1,173 +1,192 @@
 package com.pennapps.labs.pennmobile;
 
+import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.pennapps.labs.pennmobile.adapters.LaundryRoomAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
-import com.pennapps.labs.pennmobile.classes.LaundryMachine;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.functions.Action1;
 
-public class LaundryMachineFragment extends Fragment {
+/**
+ * Created by Jackie on 2017-10-22.
+ */
+
+public class LaundryMachineFragment extends android.support.v4.app.Fragment {
+
     private Labs mLabs;
-    private MainActivity mActivity;
-    private LaundryRoom laundryRoom;
-    private List<LaundryMachine> machines;
-    private TabAdapter pageAdapter;
-    private ViewPager pager;
+    private Context mContext;
 
-    private boolean favoriteState = false;
+    private SharedPreferences sp;
 
-    class TabAdapter extends FragmentStatePagerAdapter {
-        public TabAdapter(FragmentManager fm) {
-            super(fm);
-        }
+    // views
+    @Bind(R.id.laundry_help_text)
+    TextView mTextView;
+    @Bind(R.id.loadingPanel)
+    RelativeLayout loadingPanel;
+    @Bind(R.id.no_results)
+    TextView no_results;
+    @Bind(R.id.favorite_laundry_list)
+    RecyclerView mRecyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
-        @Override
-        public Fragment getItem(int position) {
-            Fragment myFragment = new LaundryMachineTab(); //data stored into the parent fragment with Fragment.getParent();
-            Bundle args = new Bundle();
-            args.putInt(getString(R.string.laundry_position), position);
-            args.putParcelable(getString(R.string.laundry), laundryRoom);
-            if (machines != null) {
-                LaundryMachine[] array = (LaundryMachine[]) machines.toArray();
-                args.putParcelableArray(getString(R.string.laundry_machine_intent), array);
-            }
-            myFragment.setArguments(args);
-            return myFragment;
-        }
-        @Override
-        public int getCount() {
-            return 2;
-        }
+    // list of favorite laundry rooms
+    private ArrayList<LaundryRoom> laundryRooms = new ArrayList<>();
 
-        @Override
-        public CharSequence getPageTitle(int position) {
-            if (position == 0) {
-                return getString(R.string.laundry_washer);
-            }
-            return getString(R.string.laundry_dryer);
-        }
+    private LaundryRoomAdapter mAdapter;
+
+    // washer or dryer
+    private String machineType;
+
+    private int count;
+    private int numRooms;
+
+    // empty constructor
+    public LaundryMachineFragment() {
+
     }
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLabs = MainActivity.getLabsInstance();
-        mActivity = (MainActivity) getActivity();
-        mActivity.closeKeyboard();
-        Bundle args = getArguments();
-        laundryRoom = args.getParcelable(getString(R.string.laundry));
-        setHasOptionsMenu(true);
-
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        favoriteState = sp.getBoolean(laundryRoom.name + "_isFavorite", false);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mActivity.closeKeyboard();
-        setHasOptionsMenu(true);
+        mContext = getActivity();
+        machineType = getArguments().getString(mContext.getString(R.string.laundry_machine_type));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_laundry_machine, container, false);
-        ButterKnife.bind(this, v);
-        pageAdapter = new TabAdapter(getActivity().getSupportFragmentManager());
-        pager = (ViewPager) v.findViewById(R.id.pager);
-        pager.setAdapter(pageAdapter);
-        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        View view = inflater.inflate(R.layout.fragment_laundry_machine, container, false);
 
+        ButterKnife.bind(this, view);
+
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.laundry_machine_refresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                machines = ((LaundryMachineTab) ((FragmentStatePagerAdapter) pager.getAdapter()).getItem(position)).returnMachines();
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
+            public void onRefresh() {
+                updateRooms();
             }
         });
-        v.setBackgroundColor(Color.WHITE);
-        mActivity.addTabs(pageAdapter, pager, false);
-        return v;
-    }
+        swipeRefreshLayout.setColorSchemeResources(R.color.color_accent, R.color.color_primary);
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (laundryRoom.name != null) {
-            mActivity.setTitle(laundryRoom.name);
-        }
+        sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+        numRooms = sp.getInt(mContext.getString(R.string.num_rooms_pref), 48);
+
+        return view;
     }
 
     @Override
     public void onDestroyView() {
-
-        mActivity.removeTabs();
-        mActivity.setTitle("Laundry");
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.laundry_favorite, menu);
-        if(favoriteState){
-            menu.findItem(R.id.action_favorite).setIcon(R.drawable.ic_star_white_48dp);
+    public void onResume() {
+        super.onResume();
+        loadingPanel.setVisibility(View.VISIBLE);
+        updateRooms();
+    }
+
+    private void updateRooms() {
+
+        laundryRooms.clear();
+        count = 0;
+
+        for (int i = 0; i < numRooms; i++) {
+            if (sp.getBoolean(Integer.toString(i), false)) {
+                count += 1;
+                addRoom(i);
+            }
+        }
+
+        // no rooms chosen
+        if (count == 0) {
+            loadingPanel.setVisibility(View.GONE);
+            mTextView.setVisibility(View.VISIBLE);
+            mAdapter = new LaundryRoomAdapter(mContext, laundryRooms, machineType);
+            mRecyclerView.setAdapter(mAdapter);
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_favorite:
-                if(!favoriteState) {
-                    item.setIcon(R.drawable.ic_star_white_48dp);
-                } else {
-                    item.setIcon(R.drawable.ic_star_border_white_48dp);
-                }
-                favoriteState = !favoriteState;
+    private void addRoom(final int i) {
+        mLabs.room(i)
+                .subscribe(new Action1<LaundryRoom>() {
+                    @Override
+                    public void call(final LaundryRoom room) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (loadingPanel != null) {
 
-                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putBoolean(laundryRoom.name + "_isFavorite", favoriteState);
-                if(laundryRoom.name.contains("-")) {
-                    editor.putBoolean(laundryRoom.name.substring(0, laundryRoom.name.indexOf("-")) + "_isFavorite", favoriteState);
-                }
-                editor.apply();
+                                    laundryRooms.add(room);
+                                    room.setId(i);
 
-                return true;
-            case android.R.id.home:
-                getActivity().getSupportFragmentManager().popBackStack();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+                                    if (laundryRooms.size() == count) {
+                                        // sort laundry rooms by name
+                                        Collections.sort(laundryRooms, new Comparator<LaundryRoom>() {
+                                            @Override
+                                            public int compare(LaundryRoom room1, LaundryRoom room2) {
+                                                return room1.getName().compareTo(room2.getName());
+                                            }
+                                        });
 
-        }
+                                        mAdapter = new LaundryRoomAdapter(mContext, laundryRooms, machineType);
+                                        mRecyclerView.setAdapter(mAdapter);
+
+                                        loadingPanel.setVisibility(View.GONE);
+                                        mTextView.setVisibility(View.INVISIBLE);
+                                    }
+                                }
+                                try {
+                                    swipeRefreshLayout.setRefreshing(false);
+                                } catch (NullPointerException e) {
+                                    //it has gone to another page.
+                                }
+                            }
+                        });
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (loadingPanel != null) {
+                                    loadingPanel.setVisibility(View.GONE);
+                                }
+                                if (no_results != null) {
+                                    no_results.setVisibility(View.VISIBLE);
+                                }
+                                if (mTextView != null) {
+                                    mTextView.setVisibility(View.GONE);
+                                }
+                                try {
+                                    swipeRefreshLayout.setRefreshing(false);
+                                } catch (NullPointerException e) {
+                                    //it has gone to another page.
+                                }
+                            }
+                        });
+                    }
+                });
     }
 }

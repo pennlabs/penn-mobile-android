@@ -95,12 +95,18 @@ public class MapFragment extends Fragment {
     private String query;
     private MainActivity activity;
 
-    @Bind(R.id.map_initial_card) LinearLayout initCard;
-    @Bind(R.id.map_search_card) LinearLayout searchCard;
-    @Bind(R.id.map_search_name) TextView searchName;
-    @Bind(R.id.map_search_location) TextView searchLoc;
-    @Bind(R.id.map_suggestion) ListView suggestionList;
-    @Bind(R.id.map_bus_card) TextView busStopName;
+    @Bind(R.id.map_initial_card)
+    LinearLayout initCard;
+    @Bind(R.id.map_search_card)
+    LinearLayout searchCard;
+    @Bind(R.id.map_search_name)
+    TextView searchName;
+    @Bind(R.id.map_search_location)
+    TextView searchLoc;
+    @Bind(R.id.map_suggestion)
+    ListView suggestionList;
+    @Bind(R.id.map_bus_card)
+    TextView busStopName;
     private FloatingActionButton transitMode;
     private SearchSuggestionAdapter adapter;
     private Building currentBuilding;
@@ -184,7 +190,7 @@ public class MapFragment extends Fragment {
                 iv.setLayoutParams(params);
             } else {
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putInt(getString(R.string.no_map_count_key), numberOfClicks+1);
+                editor.putInt(getString(R.string.no_map_count_key), numberOfClicks + 1);
                 editor.apply();
             }
             return v;
@@ -198,11 +204,12 @@ public class MapFragment extends Fragment {
         try {
             googleMap.setMyLocationEnabled(true);
         } catch (SecurityException e) {
+
             //No permission -> go back to main
             activity.showErrorToast(R.string.no_permission_map);
             FragmentManager fragmentManager = activity.getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.laundry_fragment, new MainFragment())
+                    .replace(R.id.content_frame, new MainFragment())
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit();
@@ -378,7 +385,7 @@ public class MapFragment extends Fragment {
             }
         });
 
-        currentLocButton.setOnClickListener(new View.OnClickListener(){
+        currentLocButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
@@ -388,7 +395,6 @@ public class MapFragment extends Fragment {
         });
         return v;
     }
-
 
 
     @Override
@@ -416,7 +422,7 @@ public class MapFragment extends Fragment {
     }
 
     @Override
-    public void onStop(){
+    public void onStop() {
         super.onStop();
         mapCallbacks.stopLocationUpdates();
     }
@@ -475,7 +481,7 @@ public class MapFragment extends Fragment {
         }
     }
 
-    public static MapCallbacks getMapCallbacks(){
+    public static MapCallbacks getMapCallbacks() {
         return mapCallbacks;
     }
 
@@ -532,7 +538,7 @@ public class MapFragment extends Fragment {
         int index = sharedPref.getInt(getString(R.string.map_search_count), -1);
         if (index != -1) {
             String[] previousKey = getResources().getStringArray(R.array.previous_map_array);
-            for (int i = 0; i < SearchFavoriteFragment.MAX_SUGGESTION_SIZE; i++){
+            for (int i = 0; i < SearchFavoriteFragment.MAX_SUGGESTION_SIZE; i++) {
                 int id = (index + SearchFavoriteFragment.MAX_SUGGESTION_SIZE - i) % SearchFavoriteFragment.MAX_SUGGESTION_SIZE;
                 String previous = sharedPref.getString(previousKey[id], "");
                 if (!previous.isEmpty()) {
@@ -845,7 +851,8 @@ public class MapFragment extends Fragment {
             }
         }
     }
-    public static void changeZoomLevel(GoogleMap googleMap, LatLngBounds bounds){
+
+    public static void changeZoomLevel(GoogleMap googleMap, LatLngBounds bounds) {
         Location NECorner = new Location("");
         Location SWCorner = new Location("");
         LatLng northeast = bounds.northeast;
@@ -901,7 +908,8 @@ public class MapFragment extends Fragment {
                     }
 
                     @Override
-                    public void onError() {}
+                    public void onError() {
+                    }
                 });
             }
             return view;
@@ -929,7 +937,7 @@ public class MapFragment extends Fragment {
         }
     }
 
-    private void findBusRoute (final LatLng startLatLng, final LatLng destLatLng) {
+    private void findBusRoute(final LatLng startLatLng, final LatLng destLatLng) {
         mLabs.bus_stops().observeOn(AndroidSchedulers.mainThread()).subscribe(
                 new Action1<List<BusStop>>() {
                     @Override
@@ -1016,7 +1024,7 @@ public class MapFragment extends Fragment {
     }
 
     private PendingResult.Callback<DirectionsResult> getBusRouteCallback(final List<BusStop> interStops, final BusStop startStop, final BusStop endStop
-                                                                        , final LatLng startLatLng, final LatLng destLatLng) {
+            , final LatLng startLatLng, final LatLng destLatLng) {
         return new PendingResult.Callback<DirectionsResult>() {
             @Override
             public void onResult(final DirectionsResult result) {
@@ -1131,9 +1139,11 @@ public class MapFragment extends Fragment {
 
     private class BusStopComparator implements Comparator<BusStop>, Serializable {
         private String name;
-        public BusStopComparator (String name) {
+
+        public BusStopComparator(String name) {
             this.name = name;
         }
+
         public int compare(BusStop b1, BusStop b2) {
             if (b1.routesMap == null) {
                 generateBusRouteMap(b1);
