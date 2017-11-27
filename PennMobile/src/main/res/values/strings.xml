@@ -58,7 +58,7 @@
     <string name="course_bundle_arg">CourseFragment</string>
 
     <!-- Map -->
-    <string name="google_api_key"></string>
+    <string name="google_api_key">AIzaSyBZakK77AIuTArhHWZaILMKQfZayrFEfNI</string>
     <string name="image_description">Photo</string>
     <string name="map">Map</string>
     <string name="map_searches">map_search</string>
@@ -72,7 +72,7 @@
     </string-array>
     <string name="google_api_origin">origin</string>
     <string name="google_api_dest">destination</string>
-    <string name="no_permission_map">Permission not granted for using Google Map</string>
+    <string name="no_permissionf_map">Permission not granted for using Google Map</string>
     <string name="ask_permission_fail">Access of your location is required to use this feature.</string>
     <string name="no_map_beardman">Map is not provided by the phone.</string>
     <string name="no_map_description">We were unable to\nload your map.</string>
