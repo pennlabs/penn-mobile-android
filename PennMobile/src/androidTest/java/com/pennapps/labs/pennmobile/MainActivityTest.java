@@ -5,7 +5,6 @@ import android.support.design.widget.NavigationView;
 import android.test.ActivityUnitTestCase;
 import android.view.ContextThemeWrapper;
 
-
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
@@ -18,9 +17,6 @@ import java.util.List;
  * Unit testing for MainActivity
  * Created by Adel on 12/9/14.
  */
-
-
-
 public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
     private MainActivity activity;
     private Labs mLabs;
@@ -40,7 +36,6 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
         activity = getActivity();
         mLabs = MainActivity.getLabsInstance();
     }
-
 
     public void testMainLayout() {
         assertNotNull(activity.findViewById(R.id.navigation));

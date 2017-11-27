@@ -1,19 +1,18 @@
 package com.pennapps.labs.pennmobile;
 
-import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.TimePicker;
 
 
 import java.io.UnsupportedEncodingException;
-import java.util.Calendar;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * Created by MikeD on 11/5/2017.
@@ -21,9 +20,8 @@ import java.util.Calendar;
 
 public class bookGSRActivity extends AppCompatActivity {
 
-    WebView webView;
-
-    Button backButton;
+    @Bind(R.id.webViewGSR) WebView webView;
+    @Bind(R.id.quitBookButton) Button backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +32,7 @@ public class bookGSRActivity extends AppCompatActivity {
         String gsrId = getIntent().getStringExtra("gsrID");
         String gsrLocationCode = getIntent().getStringExtra("gsrLocationCode");
 
-        backButton = (Button) findViewById(R.id.quitBookButton);
+        ButterKnife.bind(this);
 
         //if user clicks back button, quit activity
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -45,8 +43,7 @@ public class bookGSRActivity extends AppCompatActivity {
 
         });
 
-
-        webView = (WebView) findViewById(R.id.webView);
+        webView = (WebView) findViewById(R.id.webViewGSR);
 
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);

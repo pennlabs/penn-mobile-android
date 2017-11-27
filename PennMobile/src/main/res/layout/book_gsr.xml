@@ -14,7 +14,7 @@
         android:text="@string/quitBook" />
 
     <WebView
-        android:id="@+id/webView"
+        android:id="@+id/webViewGSR"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/quitBookButton"
