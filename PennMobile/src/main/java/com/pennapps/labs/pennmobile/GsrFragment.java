@@ -115,7 +115,7 @@ public class GsrFragment extends Fragment {
         int ampm = calendar.get(Calendar.AM_PM);
 
 
-        calendarButton.setText(year + "-" + month + "-" + day);
+        calendarButton.setText(month + "-" + day + "-" + year);
 
 
         // Set default start/end times for GSR booking

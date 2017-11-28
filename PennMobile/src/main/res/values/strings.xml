@@ -58,7 +58,7 @@
     <string name="course_bundle_arg">CourseFragment</string>
 
     <!-- Map -->
-    <string name="google_api_key">AIzaSyBZakK77AIuTArhHWZaILMKQfZayrFEfNI</string>
+    <string name="google_api_key"></string>
     <string name="image_description">Photo</string>
     <string name="map">Map</string>
     <string name="map_searches">map_search</string>
@@ -187,13 +187,13 @@
 
     <!-- GSR -->
     <string name="search_range">Select GSR Search Range and click "Search"</string>
-    <string name="search_start_time">Start Time: </string>
-    <string name="search_end_time">End Time: </string>
+    <string name="search_start_time">Start Time</string>
+    <string name="search_end_time">End Time</string>
     <string name="calendar_button">Something went wrong</string>
     <string name="search_GSRs">Search GSRs</string>
     <string name="quitBook">&lt;- Back</string>
     <string name="select_intrusctions">Select an open GSR slot or edit the search range</string>
     <string name="to">to</string>
-    <string name="search_date">Date: </string>
+    <string name="search_date">Date</string>
 
 </resources>

@@ -39,4 +39,7 @@
     <color name="map_card">#FAFAFA</color>
     <color name="avail_color_green">#8BC34A</color>
     <color name="avail_color_red">#F44336</color>
+
+    <color name="gsr_purple">#6274F1</color>
+    <color name="gsr_green">#76BF96</color>
 </resources>

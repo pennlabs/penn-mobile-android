@@ -111,6 +111,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_below="@id/end_time_layout"
+            android:layout_marginTop="10dp"
             android:background="@drawable/gsr_button"
             android:text="@string/search_GSRs"
             android:textAlignment="center"
