@@ -4,7 +4,7 @@
     android:layout_height="70dp"
     android:layout_marginLeft="4dp"
     android:layout_marginRight="4dp"
-    android:background="@color/teal"
+    android:background="@color/gsr_green"
     android:gravity="center_vertical"
     android:orientation="vertical"
     android:paddingLeft="8dp">
