@@ -3,11 +3,10 @@ package com.pennapps.labs.pennmobile;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.AsyncTask;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +48,7 @@ import butterknife.ButterKnife;
  * Created by Mike Abelar on 9/24/2017.
  */
 
-public class gsrFragment extends Fragment {
+public class GsrFragment extends Fragment {
 
 
     //list that holds all GSR rooms
