@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.nav_gsr:
             case R.id.gsr_cont:
-                fragment = new gsrFragment();
+                fragment = new GsrFragment();
                 break;
             case R.id.nav_dining:
             case R.id.dining_cont:

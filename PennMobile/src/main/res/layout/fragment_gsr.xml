@@ -1,105 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_centerHorizontal="true"
-    android:gravity="center_horizontal"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
+        android:id="@+id/instructions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp"
         android:text="@string/search_range"
-        android:textColor="@color/black"
-        android:id="@+id/instructions"/>
-    <LinearLayout
-        android:layout_width="match_parent"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp">
 
         <Spinner
             android:id="@+id/gsr_building_selection"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
             android:spinnerMode="dropdown" />
 
-        <Button
-            android:id="@+id/select_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:text="@string/calendar_button" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/date_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_below="@id/gsr_building_selection">
+
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="@string/search_date"
+                android:textColor="@color/silver" />
+
+            <Button
+                android:id="@+id/select_date"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:background="@android:color/transparent"
+                android:gravity="right|center_vertical"
+                android:text="@string/calendar_button"
+                android:textColor="@color/dark_gray"
+                android:textStyle="normal" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/start_time_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/date_layout">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
                 android:text="@string/search_start_time"
-                android:textColor="@color/black" />
+                android:textColor="@color/silver" />
+
             <Button
                 android:id="@+id/select_start_time"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:background="@android:color/transparent"
+                android:gravity="right|center_vertical"
                 android:text="@string/calendar_button"
-                android:background="@android:color/transparent"/>
-        </LinearLayout>
-        <LinearLayout
+                android:textColor="@color/dark_gray"
+                android:textStyle="normal" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/end_time_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_below="@id/start_time_layout">
+
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
                 android:gravity="center_horizontal"
                 android:text="@string/search_end_time"
-                android:textColor="@color/black" />
+                android:textColor="@color/silver" />
+
             <Button
                 android:id="@+id/select_end_time"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:background="@android:color/transparent"
+                android:gravity="right|center_vertical"
                 android:text="@string/calendar_button"
-                android:background="@android:color/transparent"/>
-        </LinearLayout>
+                android:textColor="@color/dark_gray"
+                android:textStyle="normal" />
+
+        </RelativeLayout>
 
         <Button
             android:id="@+id/search_GSR"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@id/end_time_layout"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/gsr_button"
             android:text="@string/search_GSRs"
             android:textAlignment="center"
-            android:background="@drawable/gsr_button"
-            android:paddingLeft="3dp"
-            android:paddingRight="3dp"
-            />
-    </LinearLayout>
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:paddingLeft="2dp"
-        android:paddingRight="2dp"
-        android:paddingTop="4dp"
         android:id="@+id/gsr_rooms_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:list_item="@layout/gsr_building"/>
+        android:padding="16dp"
+        tools:list_item="@layout/gsr_building" />
 
 </LinearLayout>

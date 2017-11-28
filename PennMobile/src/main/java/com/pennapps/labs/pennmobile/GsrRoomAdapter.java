@@ -50,7 +50,7 @@ public class GsrRoomAdapter extends RecyclerView.Adapter<GsrRoomHolder> {
                 @Override
                 public void onClick(View v) {
 
-                    Intent intent = new Intent(context, bookGSRActivity.class);
+                    Intent intent = new Intent(context, BookGSRActivity.class);
                     intent.putExtra("gsrID", localGSRID);
                     intent.putExtra("gsrLocationCode", gsrLocationCode);
                     context.startActivity(intent);

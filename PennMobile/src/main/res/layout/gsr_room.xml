@@ -2,43 +2,38 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="70dp"
     android:layout_height="70dp"
-    android:gravity="center"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:background="@color/gsr_green"
+    android:gravity="center_vertical"
     android:orientation="vertical"
-    android:layout_marginLeft="5dp"
-    android:layout_marginStart="5dp"
-    android:layout_marginRight="5dp"
-    android:layout_marginEnd="5dp"
-    android:background="@color/teal"
-
-    >
+    android:paddingLeft="8dp">
 
     <TextView
         android:id="@+id/gsr_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:color="#FFF"
-        android:padding="3dp"
         android:text="Time"
-        android:textColor="#FFF" />
+        android:textColor="#FFF"
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/gsr_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:text=""
+        android:clickable="true"
         android:color="#FFF"
-        android:clickable="true"/>
+        android:text=""
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/locationId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="true"
         android:color="#FFF"
-        android:visibility="gone"
         android:text=""
-        android:clickable="true"/>
-
+        android:visibility="gone" />
 
 </LinearLayout>
