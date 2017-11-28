@@ -251,7 +251,7 @@ public class GsrFragment extends Fragment {
                                 //acount for index starting at 0
                                 int entryMonth = monthOfYear + 1;
 
-                                calendarButton.setText(year + "-" + entryMonth + "-" + dayOfMonth);
+                                calendarButton.setText(entryMonth + "/" + dayOfMonth + "/" + year);
 
                             }
                         }, mYear, mMonth, mDay);
