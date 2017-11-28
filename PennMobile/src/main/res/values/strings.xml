@@ -194,5 +194,6 @@
     <string name="quitBook">&lt;- Back</string>
     <string name="select_intrusctions">Select an open GSR slot or edit the search range</string>
     <string name="to">to</string>
+    <string name="search_date">Date: </string>
 
 </resources>

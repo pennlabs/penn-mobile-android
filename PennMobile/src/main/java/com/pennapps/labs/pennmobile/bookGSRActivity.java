@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
  * Created by MikeD on 11/5/2017.
  */
 
-public class bookGSRActivity extends AppCompatActivity {
+public class BookGSRActivity extends AppCompatActivity {
 
     @Bind(R.id.webViewGSR) WebView webView;
     @Bind(R.id.quitBookButton) Button backButton;
