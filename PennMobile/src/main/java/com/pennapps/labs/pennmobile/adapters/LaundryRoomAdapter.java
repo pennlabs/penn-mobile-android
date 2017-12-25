@@ -13,7 +13,9 @@ import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
+import com.pennapps.labs.pennmobile.classes.MachineDetail;
 import com.pennapps.labs.pennmobile.classes.MachineList;
+import com.pennapps.labs.pennmobile.classes.Machines;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +33,6 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
     ArrayList<LaundryRoom> mRooms;
     String mMachineType;
     SharedPreferences sp;
-
-    public static final int OPEN_LABEL = 400;
-    public static final int NOT_UPDATING_STATUS_LABEL = 401;
-    public static final int OFFLINE_LABEL = 402;
-    public static final int OUT_OF_ORDER_LABEL = 403;
 
     public LaundryRoomAdapter(Context context, ArrayList<LaundryRoom> rooms, String machineType) {
         mContext = context;
@@ -63,49 +60,17 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
         holder.name.setText(location);
         holder.machine.setText(mMachineType + mContext.getString(R.string.s) + " " + mContext.getString(R.string.available));
 
-        MachineList machines;
+        Machines machines = room.getMachines();
+        List<MachineDetail> machineDetails = machines.getMachineDetailList();
 
-        // if washer
-        if (mMachineType.equals(mContext.getString(R.string.washer))) {
-            machines = room.getMachines().getWashers();
-        }
-        // if dryer
-        else {
-            machines = room.getMachines().getDryers();
-        }
+        List<MachineDetail> washers = new ArrayList<>();
+        List<MachineDetail> dryers = new ArrayList<>();
 
-        // laundry availability
-        int open = machines.getOpen();
-        int running = machines.getRunning();
-        int offline = machines.getOffline();
-        int outOfOrder = machines.getOutOfOrder();
-        int totalMachines = open + running + offline + outOfOrder;
-        holder.availability.setText(open + " " + mContext.getString(R.string.out_of) + " " + totalMachines);
-
-        // create an array of time remaining/availability (length is number of machines)
-        List<Integer> timeRemaining = machines.getTimeRemaining();
-
-        // add the numbers so they are sorted corrected
-        for (int i = 0; i < offline; i++) {
-            timeRemaining.add(OFFLINE_LABEL);
-        }
-        for (int i = 0; i < outOfOrder; i++) {
-            timeRemaining.add(OUT_OF_ORDER_LABEL);
-        }
-        for (int i = 0; i < open; i++) {
-            timeRemaining.add(OPEN_LABEL);
-        }
-
-        int[] times = new int[totalMachines];
-
-        // change -1 to not_updating_status_label so when sorted it will be at the end
-        for (int i = 0; i < timeRemaining.size(); i++) {
-            int time = timeRemaining.get(i);
-            // not updating status
-            if (time == -1) {
-                times[i] = NOT_UPDATING_STATUS_LABEL;
+        for (MachineDetail machineDetail : machineDetails) {
+            if (machineDetail.getType().equals("washer")) {
+                washers.add(machineDetail);
             } else {
-                times[i] = time;
+                dryers.add(machineDetail);
             }
         }
 
@@ -113,7 +78,7 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
         if (mMachineType.equals(mContext.getString(R.string.washer))) {
             // recycler view for the time remaining
             holder.availability.setTextColor(ContextCompat.getColor(mContext, R.color.teal));
-            LaundryMachineAdapter adapter = new LaundryMachineAdapter(mContext, times, mMachineType, roomName);
+            LaundryMachineAdapter adapter = new LaundryMachineAdapter(mContext, washers, mMachineType, roomName);
             holder.recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
             holder.recyclerView.setAdapter(adapter);
         }
@@ -121,10 +86,30 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
         else {
             // recycler view for the time remaining
             holder.availability.setTextColor(ContextCompat.getColor(mContext, R.color.star_color_on));
-            LaundryMachineAdapter adapter = new LaundryMachineAdapter(mContext, times, mMachineType, roomName);
+            LaundryMachineAdapter adapter = new LaundryMachineAdapter(mContext, dryers, mMachineType, roomName);
             holder.recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
             holder.recyclerView.setAdapter(adapter);
         }
+
+        // overview of how many machines are availabe
+        MachineList machineList;
+
+        // if washer
+        if (mMachineType.equals(mContext.getString(R.string.washer))) {
+            machineList = room.getMachines().getWashers();
+        }
+        // if dryer
+        else {
+            machineList = room.getMachines().getDryers();
+        }
+
+        // laundry availability
+        int open = machineList.getOpen();
+        int running = machineList.getRunning();
+        int offline = machineList.getOffline();
+        int outOfOrder = machineList.getOutOfOrder();
+        int totalMachines = open + running + offline + outOfOrder;
+        holder.availability.setText(open + " " + mContext.getString(R.string.out_of) + " " + totalMachines);
     }
 
     @Override

@@ -17,6 +17,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <!-- vibration for laundry alert -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
@@ -67,6 +70,12 @@
             android:label="@string/laundry_settings"
             android:screenOrientation="portrait"
             android:theme="@style/LaundryTheme" />
+
+        <!-- receiver for laundry -->
+        <receiver
+            android:name=".LaundryBroadcastReceiverNew"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>
