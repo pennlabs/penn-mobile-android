@@ -132,6 +132,12 @@
     <string name="out_of">out of</string>
     <string name="machines">machines</string>
     <string name="laundry_machine_type">machineType</string>
+    <string name="status_out_of_order">Out of order</string>
+    <string name="status_not_online">Not online</string>
+    <string name="status_available">Available</string>
+    <string name="status_ready_to_start">Ready to start</string>
+    <string name="laundry_room_name">roomName</string>
+    <string name="laundry_machine_id">id</string>
 
     <!-- News -->
     <string name="open_browser">Open in Browser</string>
