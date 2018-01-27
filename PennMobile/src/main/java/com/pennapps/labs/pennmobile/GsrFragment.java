@@ -18,7 +18,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.GSR;
+import com.pennapps.labs.pennmobile.classes.GSRLocation;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -35,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,6 +46,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.functions.Action1;
 
 /**
  * Created by Mike Abelar on 9/24/2017.
@@ -55,6 +59,8 @@ public class GsrFragment extends Fragment {
     private Map<String, Integer> gsrHashMap = new HashMap<String, Integer>();
     ArrayList<GSR> mGSRS = new ArrayList<GSR>();
     RecyclerView gsrRoomListRecylerView;
+
+    private Labs mLabs;
 
 
     @Bind(R.id.select_date) Button calendarButton;
@@ -71,6 +77,7 @@ public class GsrFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mLabs = MainActivity.getLabsInstance();
         ((MainActivity) getActivity()).closeKeyboard();
         getActivity().setTitle(R.string.gsr);
     }
@@ -81,7 +88,6 @@ public class GsrFragment extends Fragment {
 
         ButterKnife.bind(this, v);
 
-        setUpHashMap();
 
         //gsr location options. Dental sem does not work right now
         String[] gsrs = new String[]{
@@ -319,19 +325,57 @@ public class GsrFragment extends Fragment {
         ((MainActivity) getActivity()).setNav(R.id.nav_gsr);
     }
 
+    private void populateDropDownGSR() {
+        mLabs.location()
+                .subscribe(new Action1<List<GSRLocation>>() {
+                               @Override
+                               public void call(final List<GSRLocation> locations) {
+                                   getActivity().runOnUiThread(new Runnable() {
+                                       @Override
+                                       public void run() {
 
-    public void setUpHashMap() {
-        gsrHashMap.put("Weigle", 1722);
-        gsrHashMap.put("VP GSR", 1799);
-        gsrHashMap.put("Lippincott", 1768);
-        gsrHashMap.put("Edu Commons", 848);
-        gsrHashMap.put("Levin Building", 13489);
-        gsrHashMap.put("VP Sem. Rooms", 4409);
-        gsrHashMap.put("Lippincott Sem. Rooms", 2587);
-        gsrHashMap.put("Glossberg Recording Room", 1819);
-        //gsrHashMap.put("Dental Sem", 13532);
-        gsrHashMap.put("Biomedical Lib.", 505);
+                                           int numLocations = locations.size();
+
+                                           int i = 0;
+                                           // go through all the rooms
+                                           while (i < numLocations) {
+                                               gsrHashMap.put(locations.get(i).name, locations.get(i).id);
+                                               i++;
+                                           }
+
+
+                                       }
+                                   });
+                               }
+                           }, new Action1<Throwable>() {
+                               @Override
+                               public void call(Throwable throwable) {
+                                   getActivity().runOnUiThread(new Runnable() {
+                                       @Override
+                                       public void run() {
+                                           gsrHashMap.put("Weigle", 1722);
+                                           gsrHashMap.put("VP GSR", 1086);
+                                           gsrHashMap.put("Museum Library", 2634);
+                                           gsrHashMap.put("Lippincott", 1768);
+                                           gsrHashMap.put("Edu Commons", 2495);
+                                           gsrHashMap.put("Levin Building", 1090);
+                                           gsrHashMap.put("Fisher Fine Arts Library", 2637);
+                                           gsrHashMap.put("VP Sem. Rooms", 2636);
+                                           gsrHashMap.put("Lippincott Sem. Rooms", 2587);
+                                           gsrHashMap.put("Glossberg Recording Room", 1819);
+                                           //gsrHashMap.put("Dental Sem", 13532);
+                                           gsrHashMap.put("Biomedical Lib.", 2683);
+                                       }
+                                   });
+
+                               }
+                           }
+                );
     }
+
+
+
+
 
     //takes the name of the gsr and returns an int for the corresponding code
     public int mapGSR(String name) {
@@ -364,6 +408,8 @@ public class GsrFragment extends Fragment {
                 String date = pParams[1];
                 String startTime = pParams[2];
                 String endTime = pParams[3];
+
+
                 URL url = new URL("http://libcal.library.upenn.edu/process_roombookings.php?m=calscroll&gid=" + gsrCode + "&date=" + date);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestProperty("Referer","http://libcal.library.upenn.edu/booking/vpdlc");

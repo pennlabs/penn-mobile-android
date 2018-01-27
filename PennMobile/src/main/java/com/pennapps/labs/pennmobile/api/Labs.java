@@ -5,6 +5,7 @@ import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
+import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.Person;
@@ -67,4 +68,9 @@ public interface Labs {
     @GET("/laundry/hall/{id}")
     Observable<LaundryRoom> room(
             @Path("id") int id);
+
+    @GET("/studyspaces/locations")
+    Observable<List<GSRLocation>> location ();
+
+
 }
