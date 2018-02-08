@@ -4,9 +4,11 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.IntegerRes;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +64,7 @@ public class GsrFragment extends Fragment {
 
     private Labs mLabs;
 
+    ArrayList<String> gsrLocationsArray = new ArrayList<String>();
 
     @Bind(R.id.select_date) Button calendarButton;
     @Bind(R.id.select_start_time) Button startButton;
@@ -80,6 +83,7 @@ public class GsrFragment extends Fragment {
         mLabs = MainActivity.getLabsInstance();
         ((MainActivity) getActivity()).closeKeyboard();
         getActivity().setTitle(R.string.gsr);
+
     }
 
     @Override
@@ -89,25 +93,9 @@ public class GsrFragment extends Fragment {
         ButterKnife.bind(this, v);
 
 
-        //gsr location options. Dental sem does not work right now
-        String[] gsrs = new String[]{
-                "Weigle",
-                "VP GSR",
-                "Lippincott",
-                "Edu Commons",
-                "Levin Building",
-                "VP Sem. Rooms",
-                "Lippincott Sem. Rooms",
-                "Glossberg Recording Room",
-                //"Dental Sem",
-                "Biomedical Lib."
-        };
+        populateDropDownGSR();
 
-        //create an adapter to describe how the items are displayed, adapters are used in several places in android.
-        //There are multiple variations of this, but this is the basic variant.
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, gsrs);
-        //set the spinners adapter to the previously created one.
-        gsrDropDown.setAdapter(adapter);
+
 
 
         // Get calendar time and date
@@ -334,18 +322,32 @@ public class GsrFragment extends Fragment {
                                        @Override
                                        public void run() {
 
+
                                            int numLocations = locations.size();
+
 
                                            int i = 0;
                                            // go through all the rooms
                                            while (i < numLocations) {
+
                                                gsrHashMap.put(locations.get(i).name, locations.get(i).id);
+                                               gsrLocationsArray.add(locations.get(i).name);
                                                i++;
                                            }
+
+                                           String[] gsrs = new String[gsrLocationsArray.size()];
+                                           gsrs = gsrLocationsArray.toArray(gsrs);
+
+                                           //create an adapter to describe how the items are displayed, adapters are used in several places in android.
+                                           //There are multiple variations of this, but this is the basic variant.
+                                           ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, gsrs);
+                                           //set the spinners adapter to the previously created one.
+                                           gsrDropDown.setAdapter(adapter);
 
 
                                        }
                                    });
+
                                }
                            }, new Action1<Throwable>() {
                                @Override
@@ -353,6 +355,8 @@ public class GsrFragment extends Fragment {
                                    getActivity().runOnUiThread(new Runnable() {
                                        @Override
                                        public void run() {
+
+
                                            gsrHashMap.put("Weigle", 1722);
                                            gsrHashMap.put("VP GSR", 1086);
                                            gsrHashMap.put("Museum Library", 2634);
@@ -365,6 +369,27 @@ public class GsrFragment extends Fragment {
                                            gsrHashMap.put("Glossberg Recording Room", 1819);
                                            //gsrHashMap.put("Dental Sem", 13532);
                                            gsrHashMap.put("Biomedical Lib.", 2683);
+
+
+                                           gsrLocationsArray.add("Weigle");
+                                           gsrLocationsArray.add("VP GSR");
+                                           gsrLocationsArray.add("Lippincott");
+                                           gsrLocationsArray.add("Edu Commons");
+                                           gsrLocationsArray.add("Levin Building");
+                                           gsrLocationsArray.add("VP Sem. Rooms");
+                                           gsrLocationsArray.add("Lippincott Sem. Rooms");
+                                           gsrLocationsArray.add("Glossberg Recording Room");
+                                           gsrLocationsArray.add("Biomedical Lib.");
+
+                                           String[] gsrs = new String[gsrLocationsArray.size()];
+                                           gsrs = gsrLocationsArray.toArray(gsrs);
+
+                                           //create an adapter to describe how the items are displayed, adapters are used in several places in android.
+                                           //There are multiple variations of this, but this is the basic variant.
+                                           ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, gsrs);
+                                           //set the spinners adapter to the previously created one.
+                                           gsrDropDown.setAdapter(adapter);
+
                                        }
                                    });
 
@@ -576,7 +601,7 @@ public class GsrFragment extends Fragment {
 
     //this function clicks the search button to load initial results on the screen
     public void loadInitialData() {
-        searchGSR.performClick();
+//        searchGSR.performClick();
         searchGSR.setPressed(true);
         searchGSR.invalidate();
         searchGSR.setPressed(false);
