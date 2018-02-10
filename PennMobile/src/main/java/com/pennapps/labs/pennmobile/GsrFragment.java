@@ -18,6 +18,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
 import com.pennapps.labs.pennmobile.classes.GSR;
 
 import org.jsoup.Jsoup;
@@ -43,6 +46,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by Mike Abelar on 9/24/2017.
@@ -73,6 +77,11 @@ public class GsrFragment extends Fragment {
         super.onCreate(savedInstanceState);
         ((MainActivity) getActivity()).closeKeyboard();
         getActivity().setTitle(R.string.gsr);
+        Fabric.with(getContext(), new Crashlytics());
+        Answers.getInstance().logContentView(new ContentViewEvent()
+                .putContentName("GSR")
+                .putContentType("App Feature")
+                .putContentId("0"));
     }
 
     @Override
