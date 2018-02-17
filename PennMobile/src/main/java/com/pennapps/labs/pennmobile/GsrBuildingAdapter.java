@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.pennapps.labs.pennmobile.classes.GSR;
+import com.pennapps.labs.pennmobile.classes.GSRContainer;
+import com.pennapps.labs.pennmobile.classes.GSRContainerSlot;
 import com.pennapps.labs.pennmobile.classes.GSRSlot;
 
 import java.util.ArrayList;
@@ -20,10 +22,10 @@ import java.util.ArrayList;
 public class GsrBuildingAdapter extends RecyclerView.Adapter<GsrBuildingHolder> {
 
     Context context;
-    ArrayList<GSR> gsrs;
+    ArrayList<GSRContainer> gsrs;
     String gsrLocationCode;
 
-    public GsrBuildingAdapter(Context context, ArrayList<GSR> _gsrs, String _gsrLocationCode) {
+    public GsrBuildingAdapter(Context context, ArrayList<GSRContainer> _gsrs, String _gsrLocationCode) {
         this.context = context;
         this.gsrs = _gsrs;
         this.gsrLocationCode = _gsrLocationCode;
@@ -51,7 +53,7 @@ public class GsrBuildingAdapter extends RecyclerView.Adapter<GsrBuildingHolder> 
 
                 for (int j = 0; j < gsrs.get(position).getAvailableGSRSlots().size(); j++)
                 {
-                    GSRSlot gsrslot = gsrs.get(position).getAvailableGSRSlots().get(j);
+                    GSRContainerSlot gsrslot = gsrs.get(position).getAvailableGSRSlots().get(j);
                     times.add(gsrslot.getTimeRange());
                     ids.add(gsrslot.getElementId());
                 }

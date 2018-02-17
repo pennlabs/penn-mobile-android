@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.IntegerRes;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,8 +21,14 @@ import android.widget.Toast;
 
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.GSR;
+import com.pennapps.labs.pennmobile.classes.GSRContainer;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
+import com.pennapps.labs.pennmobile.classes.GSRRoom;
+import com.pennapps.labs.pennmobile.classes.GSRSlot;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -59,12 +64,15 @@ public class GsrFragment extends Fragment {
 
     //list that holds all GSR rooms
     private Map<String, Integer> gsrHashMap = new HashMap<String, Integer>();
-    ArrayList<GSR> mGSRS = new ArrayList<GSR>();
     RecyclerView gsrRoomListRecylerView;
 
     private Labs mLabs;
 
     ArrayList<String> gsrLocationsArray = new ArrayList<String>();
+
+    ArrayList<GSRContainer> mGSRS = new ArrayList<GSRContainer>();
+
+    DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     @Bind(R.id.select_date) Button calendarButton;
     @Bind(R.id.select_start_time) Button startButton;
@@ -94,6 +102,8 @@ public class GsrFragment extends Fragment {
 
 
         populateDropDownGSR();
+
+
 
 
 
@@ -285,8 +295,8 @@ public class GsrFragment extends Fragment {
                 }
                 else {
                     //get the hours
-                    String[] asyncTaskParams = { Integer.toString(location), dateBooking, startTime, endTime};
-                    new getHours().execute(asyncTaskParams);
+                    getTimes(location, dateBooking, startTime, endTime);
+
                 }
 
             }
@@ -312,6 +322,73 @@ public class GsrFragment extends Fragment {
         getActivity().setTitle(R.string.gsr);
         ((MainActivity) getActivity()).setNav(R.id.nav_gsr);
     }
+
+    private void getTimes(final int location, String dateBooking, String startTime, String endTime) {
+        mLabs.gsrRoom(location)
+                .subscribe(new Action1<GSR>() {
+                    @Override
+                    public void call(final GSR gsr) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                GSRRoom[] gsrRooms = gsr.getRooms();
+                                for (int i = 0; i < gsrRooms.length; i++) {
+                                    GSRRoom gsrRoom = gsrRooms[i];
+                                    GSRSlot[] GSRTimeSlots = gsrRoom.getSlots();
+                                    for (int j=0; j < GSRTimeSlots.length; j++) {
+                                        GSRSlot currSlot = GSRTimeSlots[j];
+                                        if (currSlot.isAvailable()) {
+
+
+
+                                            String startString = currSlot.getStartTime();
+                                            String endString = currSlot.getEndTime();
+
+
+
+
+                                            DateTime startTime = formatter.parseDateTime(startString.substring(0,
+                                                    startString.length() - 6));
+                                            DateTime endTime = formatter.parseDateTime(endString.substring(0,
+                                                    endString.length() - 6));
+                                            String timeRange = Integer.toString(startTime.getHourOfDay()) + ":" +
+                                                    Integer.toString(startTime.getMinuteOfHour()) + "-" +
+                                                    Integer.toString(endTime.getHourOfDay()) + ":" +
+                                                    Integer.toString(endTime.getMinuteOfHour());
+
+                                            insertGSRSlot(gsrRoom.getName(), timeRange, Integer.toString(startTime.getHourOfDay()) + ":" +
+                                                            Integer.toString(startTime.getMinuteOfHour()),
+                                                    Integer.toString(startTime.getDayOfWeek()),
+                                                    Integer.toString(startTime.getDayOfMonth()), "30", Integer.toString(gsrRoom.getRoom_id()));
+
+                                        }
+                                    }
+
+
+                                }
+
+                                LinearLayoutManager gsrRoomListLayoutManager = new LinearLayoutManager(getContext());
+                                gsrRoomListLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                                gsrRoomListRecylerView.setLayoutManager(gsrRoomListLayoutManager);
+                                gsrRoomListRecylerView.setAdapter(new GsrBuildingAdapter(getContext(), mGSRS, Integer.toString(location)));
+                            }
+                        });
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(final Throwable throwable) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getActivity(), "Error: Could not retrieve GSRs", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                });
+    }
+
+
 
     private void populateDropDownGSR() {
         mLabs.location()
@@ -420,184 +497,7 @@ public class GsrFragment extends Fragment {
     }
 
     //async task that gets the hours of the given gsr and time options
-    public class getHours extends AsyncTask<String, Void, String[]> {
 
-        protected void onPreExecute(){}
-
-        //interacts with penn's servers using a post request
-        protected String[] doInBackground(String... pParams) {
-
-            try {
-
-                String gsrCode = pParams[0];
-                String date = pParams[1];
-                String startTime = pParams[2];
-                String endTime = pParams[3];
-
-
-                URL url = new URL("http://libcal.library.upenn.edu/process_roombookings.php?m=calscroll&gid=" + gsrCode + "&date=" + date);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestProperty("Referer","http://libcal.library.upenn.edu/booking/vpdlc");
-                conn.setReadTimeout(15000);
-                conn.setConnectTimeout(15000);
-                conn.setRequestMethod("POST");
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-
-
-                int responseCode=conn.getResponseCode();
-                if (responseCode == HttpsURLConnection.HTTP_OK) {
-                    //put the information into a string builder
-                    BufferedReader in=new BufferedReader(new
-                            InputStreamReader(
-                            conn.getInputStream()));
-                    StringBuilder total = new StringBuilder();
-                    String line;
-                    while ((line = in.readLine()) != null) {
-                        total.append(line).append('\n');
-                    }
-
-                    //return response and inputs for onPost
-                    in.close();
-                    String[] returnArray = {total.toString(), gsrCode, date, startTime, endTime};
-                    return returnArray;
-
-                }
-                else {
-                    String[] returnArray = {"failed"};
-                    return returnArray;
-                }
-            }
-            catch(Exception e){
-                String[] returnArray = {"failed"};
-                return returnArray;
-            }
-
-        }
-
-        //take the html, parse it, and populate recycler views
-        @Override
-        protected void onPostExecute(String[] result) {
-            if (result.length > 1) {
-                String gsrCode = result[1];
-                String dayOfWeek = result[2];
-                String startTime = result[3];
-                String endTime = result[4];
-
-                Document doc = Jsoup.parse(result[0]);
-                //each time block has associated tag below:
-                Elements elements = doc.body().select("a.lc_rm_a");
-
-                if (elements.size() == 0) {
-
-                    Toast.makeText(getActivity(), "No GSRs available", Toast.LENGTH_LONG).show();
-
-                    //populate recyclerview
-                    LinearLayoutManager gsrRoomListLayoutManager = new LinearLayoutManager(getContext());
-                    gsrRoomListLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                    gsrRoomListRecylerView.setLayoutManager(gsrRoomListLayoutManager);
-                    gsrRoomListRecylerView.setAdapter(new GsrBuildingAdapter(getContext(), mGSRS, gsrCode));
-
-                } else {
-                    for (Element element : elements) {
-
-                        String element_entry = element.attr("onclick") + "\n";
-                        String[] parsed_data = parseEntry(element_entry).split("&");
-                        String gsrName = parsed_data[0].replace("'", "");
-                        String dateTime = parsed_data[1].replace("'", "");
-                        String elementId = element.attr("id") + "\n";
-
-                        //parse datetime further
-                        String[] dateDataBrokenUp = parseEntry(element_entry).split(",");
-                        String timeRange = dateDataBrokenUp[0].split("&")[1];
-                        String dayDate = dateDataBrokenUp[1];
-                        String dateNum = dateDataBrokenUp[2];
-                        String duration = parsed_data[2].replace("'", "");
-
-                        String AMPM = "";
-                        if (timeRange.contains("AM")) {
-                            AMPM = "AM";
-                        }
-                        else {AMPM = "PM";}
-
-                        //time block times
-                        String localStartTime = timeRange.split("-")[0].replace("'", "");
-                        String localEndTime = timeRange.split("-")[1];
-
-                        Boolean startDateCondition = false;
-                        Boolean endDateCondition = false;
-
-                        //convert all times
-                        //local is for time block and global refers to the user's parameters' times
-                        SimpleDateFormat localFormat = new SimpleDateFormat("hh:mmaa");
-                        SimpleDateFormat globalFormat = new SimpleDateFormat("hh:mm aa");
-
-                        try {
-                            //now convert all times to date objects to compare
-                            Date localStartDate = localFormat.parse(localStartTime);
-                            Date globalStartDate = globalFormat.parse(startTime);
-                            Date localEndDate = localFormat.parse(localEndTime);
-                            Date globalEndDate = globalFormat.parse(endTime);
-
-                            //now compare
-                            Calendar calendarLocalStart = Calendar.getInstance();
-                            Calendar calendarGlobalStart = Calendar.getInstance();
-                            Calendar calendarLocalEnd = Calendar.getInstance();
-                            Calendar calendarGlobalEnd = Calendar.getInstance();
-
-                            calendarLocalEnd.setTime(localEndDate);
-
-                            calendarGlobalEnd.setTime(globalEndDate);
-
-                            calendarLocalStart.setTime(localStartDate);
-
-                            calendarGlobalStart.setTime(globalStartDate);
-
-                            //if end time is greater than time block's end time
-                            if (calendarGlobalEnd.getTimeInMillis() - calendarLocalEnd.getTimeInMillis() >= 0 )
-                            {
-                                endDateCondition = true;
-
-                            }
-
-                            //if start time is less than time start end time
-                            if ((calendarLocalStart.after(calendarGlobalStart)) || calendarLocalStart.equals(calendarGlobalStart)) {
-                                startDateCondition = true;
-
-                            }
-
-
-                        } catch (ParseException e) {
-                        }
-
-                        if (startDateCondition && endDateCondition) {
-                            //now populate mGSRs
-                            insertGSRSlot(gsrName, dateTime, timeRange, dayDate, dateNum, duration, elementId);
-                        }
-
-                    }
-
-                    //now change the ui
-
-                    if (mGSRS.size() == 0)
-                    {
-                        Toast.makeText(getActivity(), "No GSRs available", Toast.LENGTH_LONG).show();
-                    }
-
-                    LinearLayoutManager gsrRoomListLayoutManager = new LinearLayoutManager(getContext());
-                    gsrRoomListLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                    gsrRoomListRecylerView.setLayoutManager(gsrRoomListLayoutManager);
-                    gsrRoomListRecylerView.setAdapter(new GsrBuildingAdapter(getContext(), mGSRS, gsrCode));
-
-                    //reset var
-                    mGSRS = new ArrayList<GSR>();
-
-                }
-            } else {
-                Toast.makeText(getActivity(), "Failed to retrieve GSR data", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
 
     //this function clicks the search button to load initial results on the screen
     public void loadInitialData() {
@@ -634,7 +534,7 @@ public class GsrFragment extends Fragment {
         boolean encountered = false;
 
         for(int i=0; i<mGSRS.size(); i++) {
-            GSR currentGSR = mGSRS.get(i);
+            GSRContainer currentGSR = mGSRS.get(i);
             //if there is GSR, add the available session to the GSR Object
             if (currentGSR.getGsrName().equals(gsrName)) {
                 currentGSR.addGSRSlot(GSRTimeRange, GSRDateTime, GSRDayDate, GSRDateNum, GSRDuration, GSRElementId);
@@ -643,7 +543,7 @@ public class GsrFragment extends Fragment {
         }
         //can't find existing GSR. Create new object
         if (encountered == false) {
-            GSR newGSRObject = new GSR(gsrName, GSRTimeRange, GSRDateTime, GSRDayDate, GSRDateNum, GSRDuration, GSRElementId);
+            GSRContainer newGSRObject = new GSRContainer(gsrName, GSRTimeRange, GSRDateTime, GSRDayDate, GSRDateNum, GSRDuration, GSRElementId);
             mGSRS.add(newGSRObject);
         }
     }

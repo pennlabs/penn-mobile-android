@@ -5,6 +5,7 @@ import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
+import com.pennapps.labs.pennmobile.classes.GSR;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
@@ -12,9 +13,16 @@ import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Review;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
+import org.joda.time.DateTime;
+
 import java.util.List;
 
+import retrofit.Callback;
+import retrofit.client.Response;
+import retrofit.http.Field;
+import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
+import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
@@ -71,6 +79,25 @@ public interface Labs {
 
     @GET("/studyspaces/locations")
     Observable<List<GSRLocation>> location ();
+
+    @GET("/studyspaces/availability/{id}")
+    Observable<GSR> gsrRoom(
+            @Path("id") int id);
+
+    @FormUrlEncoded
+    @POST("/studyspaces/book")
+    public void bookGSR(
+            @Field("building") int building,
+            @Field("room") int room,
+            @Field("start") String start,
+            @Field("end") String end,
+            @Field("firstname") String firstName,
+            @Field("lastname") String lastName,
+            @Field("email") String email,
+            @Field("groupname") String groupname,
+            @Field("phone") String phone,
+            @Field("size") String size,
+            Callback<Response> callback);
 
 
 }
