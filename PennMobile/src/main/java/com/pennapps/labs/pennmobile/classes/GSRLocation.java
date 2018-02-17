@@ -12,9 +12,11 @@ public class GSRLocation {
     @SerializedName("name")
     @Expose
     public String name;
+
     @SerializedName("id")
     @Expose
     public Integer id;
+
     @SerializedName("service")
     @Expose
     public String service;

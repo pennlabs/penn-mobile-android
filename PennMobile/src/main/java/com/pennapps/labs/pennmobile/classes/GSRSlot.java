@@ -1,5 +1,8 @@
 package com.pennapps.labs.pennmobile.classes;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by MikeD on 10/9/2017.
  */
@@ -7,47 +10,28 @@ package com.pennapps.labs.pennmobile.classes;
 //class that represents an available session for a given GSR room
 public class GSRSlot {
 
-    private String timeRange;
-    private String dateTime;
-    private String dayDate;
-    private String dateNum;
-    private String duration;
-    private String elementId;
+    @SerializedName("available")
+    @Expose
+    public boolean available;
+
+    @SerializedName("start")
+    @Expose
+    public String startTime;
+
+    @SerializedName("end")
+    @Expose
+    public String endTime;
 
 
-
-    public GSRSlot (String constructorTimeRange, String constructorDateTime,
-                    String constructorDayDate, String constructorDateNum, String constructorDuration, String constructorElementId) {
-
-        timeRange = constructorTimeRange;
-        dateTime = constructorDateTime;
-        dayDate = constructorDayDate;
-        dateNum = constructorDateNum;
-        duration = constructorDuration;
-        elementId = constructorElementId;
+    public boolean isAvailable() {
+        return available;
     }
 
-    public String getTimeRange() {
-        return timeRange;
+    public String getStartTime() {
+        return startTime;
     }
 
-    public String getDateTime() {
-        return dateTime;
-    }
-
-    public String getDayDate() {
-        return dayDate;
-    }
-
-    public String getDateNum() {
-        return dateNum;
-    }
-
-    public String getDuration() {
-        return duration;
-    }
-
-    public String getElementId() {
-        return elementId;
+    public String getEndTime() {
+        return endTime;
     }
 }
