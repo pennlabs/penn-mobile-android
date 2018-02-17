@@ -18,7 +18,7 @@
 
         <item
             android:id="@+id/nav_gsr"
-            android:icon="@drawable/ic_contacts"
+            android:icon="@drawable/ic_gsr"
             android:title="@string/gsr"/>
 
         <item
