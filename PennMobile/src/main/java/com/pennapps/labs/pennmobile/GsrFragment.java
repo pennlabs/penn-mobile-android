@@ -310,8 +310,6 @@ public class GsrFragment extends Fragment {
          *
          */
 
-        //load initial data
-        loadInitialData();
 
         return v;
     }
@@ -323,8 +321,32 @@ public class GsrFragment extends Fragment {
         ((MainActivity) getActivity()).setNav(R.id.nav_gsr);
     }
 
-    private void getTimes(final int location, String dateBooking, String startTime, String endTime) {
-        mLabs.gsrRoom(location)
+    private void getTimes(final int location, final String dateBooking, String startTime, String endTime) {
+
+        //deal with exception of time starting with 0:--
+        if (startTime.charAt(0) == '0') {
+            startTime = "12" + startTime.substring(1);
+        }
+
+        if (endTime.charAt(0) == '0') {
+            endTime = "12" + endTime.substring(1);
+        }
+
+        //convert times to military
+        DateTimeFormatter toMilitaryTimeFormatter = DateTimeFormat.forPattern("hh:mm a");
+
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm:ss");
+        String startMilitary = fmt.print(toMilitaryTimeFormatter.parseDateTime(startTime));
+        String endMilitary = fmt.print(toMilitaryTimeFormatter.parseDateTime(endTime));
+
+        DateTimeFormatter originalDateFormat = DateTimeFormat.forPattern("MM/dd/yyyy");
+        DateTimeFormatter adjustedDateFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
+        String adjustedDateString = adjustedDateFormat.print(originalDateFormat.parseDateTime(dateBooking));
+
+        String startParam = adjustedDateString + "T" + startMilitary + "-0500";
+        String endParam = adjustedDateString + "T" + endMilitary + "-0500";
+
+        mLabs.gsrRoom(location, startParam, endParam)
                 .subscribe(new Action1<GSR>() {
                     @Override
                     public void call(final GSR gsr) {
@@ -333,9 +355,16 @@ public class GsrFragment extends Fragment {
                             public void run() {
 
                                 GSRRoom[] gsrRooms = gsr.getRooms();
+
+
+
+                                boolean timeSlotLengthZero = true;
+
                                 for (int i = 0; i < gsrRooms.length; i++) {
                                     GSRRoom gsrRoom = gsrRooms[i];
                                     GSRSlot[] GSRTimeSlots = gsrRoom.getSlots();
+                                    //checks if the time slots are ever nonzero
+                                    if (GSRTimeSlots.length > 0) {timeSlotLengthZero = false;}
                                     for (int j=0; j < GSRTimeSlots.length; j++) {
                                         GSRSlot currSlot = GSRTimeSlots[j];
                                         if (currSlot.isAvailable()) {
@@ -352,15 +381,19 @@ public class GsrFragment extends Fragment {
                                                     startString.length() - 6));
                                             DateTime endTime = formatter.parseDateTime(endString.substring(0,
                                                     endString.length() - 6));
-                                            String timeRange = Integer.toString(startTime.getHourOfDay()) + ":" +
-                                                    Integer.toString(startTime.getMinuteOfHour()) + "-" +
-                                                    Integer.toString(endTime.getHourOfDay()) + ":" +
-                                                    Integer.toString(endTime.getMinuteOfHour());
+                                            String stringStartTime = safeToString(startTime.getHourOfDay()) + ":" +
+                                                    safeToString(startTime.getMinuteOfHour());
+                                            String stringEndTime = safeToString(endTime.getHourOfDay()) + ":" +
+                                                    safeToString(endTime.getMinuteOfHour());
 
-                                            insertGSRSlot(gsrRoom.getName(), timeRange, Integer.toString(startTime.getHourOfDay()) + ":" +
-                                                            Integer.toString(startTime.getMinuteOfHour()),
-                                                    Integer.toString(startTime.getDayOfWeek()),
-                                                    Integer.toString(startTime.getDayOfMonth()), "30", Integer.toString(gsrRoom.getRoom_id()));
+                                            stringStartTime = convertToCivilianTime(stringStartTime);
+                                            stringEndTime = convertToCivilianTime(stringEndTime);
+
+
+                                            insertGSRSlot(gsrRoom.getName(), stringStartTime + "-" + stringEndTime, safeToString(startTime.getHourOfDay()) + ":" +
+                                                            safeToString(startTime.getMinuteOfHour()),
+                                                    safeToString(startTime.getDayOfWeek()),
+                                                    safeToString(startTime.getDayOfMonth()), "30", Integer.toString(gsrRoom.getRoom_id()));
 
                                         }
                                     }
@@ -368,10 +401,16 @@ public class GsrFragment extends Fragment {
 
                                 }
 
+                                if (timeSlotLengthZero) {
+                                    Toast.makeText(getContext(), "No GSRs available", Toast.LENGTH_LONG).show();
+                                }
+
                                 LinearLayoutManager gsrRoomListLayoutManager = new LinearLayoutManager(getContext());
                                 gsrRoomListLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                                 gsrRoomListRecylerView.setLayoutManager(gsrRoomListLayoutManager);
                                 gsrRoomListRecylerView.setAdapter(new GsrBuildingAdapter(getContext(), mGSRS, Integer.toString(location)));
+
+                                mGSRS = new ArrayList<GSRContainer>();
                             }
                         });
                     }
@@ -382,6 +421,7 @@ public class GsrFragment extends Fragment {
                             @Override
                             public void run() {
                                 Toast.makeText(getActivity(), "Error: Could not retrieve GSRs", Toast.LENGTH_LONG).show();
+                                Log.e("error", throwable.toString());
                             }
                         });
                     }
@@ -420,6 +460,7 @@ public class GsrFragment extends Fragment {
                                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, gsrs);
                                            //set the spinners adapter to the previously created one.
                                            gsrDropDown.setAdapter(adapter);
+                                           loadInitialData();
 
 
                                        }
@@ -476,8 +517,20 @@ public class GsrFragment extends Fragment {
     }
 
 
+    //helper function that turns military to civilian time
+    public String convertToCivilianTime(String input) {
+        DateTimeFormatter militaryTimeFormatter = DateTimeFormat.forPattern("HH:mm");
+        DateTimeFormatter civilianTimeFormatter = DateTimeFormat.forPattern("hh:mm a");
+        return civilianTimeFormatter.print(militaryTimeFormatter.parseDateTime(input));
+    }
 
-
+    //helper function that converts string to int but keeps zeros
+    public String safeToString (int input) {
+        if (input == 0) {
+            return "00";
+        }
+        else {return Integer.toString(input);}
+    }
 
     //takes the name of the gsr and returns an int for the corresponding code
     public int mapGSR(String name) {
@@ -501,7 +554,7 @@ public class GsrFragment extends Fragment {
 
     //this function clicks the search button to load initial results on the screen
     public void loadInitialData() {
-//        searchGSR.performClick();
+        searchGSR.performClick();
         searchGSR.setPressed(true);
         searchGSR.invalidate();
         searchGSR.setPressed(false);
@@ -509,23 +562,6 @@ public class GsrFragment extends Fragment {
     }
 
 
-    //helper function to parse the HTML response
-    public String parseEntry(String gsr_entry) {
-        //get the name of gsr
-        Pattern p = Pattern.compile("([\"'])(?:(?=(\\\\?))\\2.)*?\\1");
-        Matcher m = p.matcher(gsr_entry);
-        String final_return = "";
-        while(m.find()) {
-            if (final_return.equals("")) {
-                final_return = m.group();
-            }
-            else {
-                final_return = final_return + "&" + m.group();
-            }
-        }
-        return final_return;
-
-    }
 
     //function that takes all available GSR sessions and populates mGSRs
     public void insertGSRSlot(String gsrName, String GSRTimeRange, String GSRDateTime,

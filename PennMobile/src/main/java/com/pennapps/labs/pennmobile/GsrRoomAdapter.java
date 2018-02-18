@@ -8,6 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -70,9 +73,7 @@ public class GsrRoomAdapter extends RecyclerView.Adapter<GsrRoomHolder> {
 
     String transformStartTime(String inputTime) {
         String start = inputTime.split("-")[0];
-        if (start.length() == 4) {
-            start = start + "0";
-        }
+        start = convertToMilitaryTime(start);
         start = start.replace(":", "");
 
         Calendar c = Calendar.getInstance();
@@ -83,17 +84,22 @@ public class GsrRoomAdapter extends RecyclerView.Adapter<GsrRoomHolder> {
     }
 
     String transformEndTime(String inputTime) {
-        String start = inputTime.split("-")[1];
-        if (start.length() == 4) {
-            start = start + "0";
-        }
-        start = start.replace(":", "");
+        String end = inputTime.split("-")[1];
+        end = convertToMilitaryTime(end);
+        end = end.replace(":", "");
 
         Calendar c = Calendar.getInstance();
 
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
         String formattedDate = df.format(c.getTime());
-        return formattedDate + "T" + start + "00+0500";
+        return formattedDate + "T" + end + "00+0500";
+    }
+
+    //helper function that turns military to civilian time
+    public String convertToMilitaryTime(String input) {
+        DateTimeFormatter militaryTimeFormatter = DateTimeFormat.forPattern("HH:mm");
+        DateTimeFormatter civilianTimeFormatter = DateTimeFormat.forPattern("hh:mm a");
+        return militaryTimeFormatter.print(civilianTimeFormatter.parseDateTime(input));
     }
 
     @Override

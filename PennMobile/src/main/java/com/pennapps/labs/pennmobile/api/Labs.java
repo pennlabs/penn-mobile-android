@@ -82,7 +82,12 @@ public interface Labs {
 
     @GET("/studyspaces/availability/{id}")
     Observable<GSR> gsrRoom(
-            @Path("id") int id);
+            @Path("id") int id,
+            @Query("startTime") String startTime,
+            @Query("endTime") String endTime
+            );
+
+
 
     @FormUrlEncoded
     @POST("/studyspaces/book")

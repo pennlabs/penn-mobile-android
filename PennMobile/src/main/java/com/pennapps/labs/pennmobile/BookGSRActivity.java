@@ -113,15 +113,14 @@ public class BookGSRActivity extends Activity
                         }
 
                         //Displaying the output as a toast
-                        Toast.makeText(getApplicationContext(), output, Toast.LENGTH_LONG).show();
-                        Log.e("error", output.toString());
+                        Toast.makeText(getApplicationContext(), "GSR successfully booked", Toast.LENGTH_LONG).show();
+                        finish();
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
                         //If any error occured displaying the error as toast
-                        Toast.makeText(getApplicationContext(), error.toString(),Toast.LENGTH_LONG).show();
-                        Log.e("error", error.toString());
+                        Toast.makeText(getApplicationContext(), "An error has occurred. Please try again." ,Toast.LENGTH_LONG).show();
                     }
                 }
         );
