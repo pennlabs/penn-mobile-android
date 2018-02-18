@@ -12,6 +12,8 @@ import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
+import com.pennapps.labs.pennmobile.classes.GSR;
+import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.Venue;
@@ -137,6 +139,17 @@ public class Serializer {
                 throws JsonParseException {
             JsonElement content = je.getAsJsonObject().get("halls");
             return new Gson().fromJson(content, new TypeToken<List<LaundryRoomSimple>>() {
+            }.getType());
+        }
+    }
+
+    // new - gets laundry room list
+    public static class GsrLocationSerializer implements JsonDeserializer<List<GSRLocation>> {
+        @Override
+        public List<GSRLocation> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+                throws JsonParseException {
+            JsonElement content = je.getAsJsonObject().get("locations");
+            return new Gson().fromJson(content, new TypeToken<List<GSRLocation>>() {
             }.getType());
         }
     }
