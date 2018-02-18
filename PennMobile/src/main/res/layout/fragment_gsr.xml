@@ -37,7 +37,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:text="@string/search_date"
-                android:textColor="@color/silver" />
+                android:textColor="@color/dark_gray" />
 
             <Button
                 android:id="@+id/select_date"
@@ -47,7 +47,7 @@
                 android:background="@android:color/transparent"
                 android:gravity="right|center_vertical"
                 android:text="@string/calendar_button"
-                android:textColor="@color/dark_gray"
+                android:textColor="@color/black"
                 android:textStyle="normal" />
 
         </RelativeLayout>
@@ -64,7 +64,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:text="@string/search_start_time"
-                android:textColor="@color/silver" />
+                android:textColor="@color/dark_gray" />
 
             <Button
                 android:id="@+id/select_start_time"
@@ -74,7 +74,7 @@
                 android:background="@android:color/transparent"
                 android:gravity="right|center_vertical"
                 android:text="@string/calendar_button"
-                android:textColor="@color/dark_gray"
+                android:textColor="@color/black"
                 android:textStyle="normal" />
         </RelativeLayout>
 
@@ -91,7 +91,7 @@
                 android:layout_centerVertical="true"
                 android:gravity="center_horizontal"
                 android:text="@string/search_end_time"
-                android:textColor="@color/silver" />
+                android:textColor="@color/dark_gray" />
 
             <Button
                 android:id="@+id/select_end_time"
@@ -101,22 +101,10 @@
                 android:background="@android:color/transparent"
                 android:gravity="right|center_vertical"
                 android:text="@string/calendar_button"
-                android:textColor="@color/dark_gray"
+                android:textColor="@color/black"
                 android:textStyle="normal" />
 
         </RelativeLayout>
-
-        <Button
-            android:id="@+id/search_GSR"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_below="@id/end_time_layout"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/gsr_button"
-            android:text="@string/search_GSRs"
-            android:textAlignment="center"
-            android:textAllCaps="false"
-            android:textColor="@color/white" />
 
     </RelativeLayout>
 
@@ -124,7 +112,6 @@
         android:id="@+id/gsr_rooms_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
         tools:list_item="@layout/gsr_building" />
 
 </LinearLayout>

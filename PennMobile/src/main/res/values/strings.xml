@@ -192,8 +192,12 @@
     <string name="calendar_button">Something went wrong</string>
     <string name="search_GSRs">Search GSRs</string>
     <string name="quitBook">&lt;- Back</string>
-    <string name="select_intrusctions">Select an open GSR slot or edit the search range</string>
+    <string name="select_instructions">Select an open GSR slot or edit the search range</string>
     <string name="to">to</string>
     <string name="search_date">Date</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="email_address">Email Address</string>
+    <string name="submit">Submit</string>
 
 </resources>

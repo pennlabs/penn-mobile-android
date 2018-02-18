@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -13,7 +14,9 @@ import butterknife.ButterKnife;
 
 public class GsrRoomHolder extends RecyclerView.ViewHolder {
 
-    @Bind(R.id.gsr_time) TextView gsrTime;
+    @Bind(R.id.gsr_room) LinearLayout gsrRoom;
+    @Bind(R.id.gsr_start_time) TextView gsrStartTime;
+    @Bind(R.id.gsr_end_time) TextView gsrEndTime;
     @Bind(R.id.gsr_id)  TextView gsrId;
     @Bind(R.id.locationId) TextView locationId;
 

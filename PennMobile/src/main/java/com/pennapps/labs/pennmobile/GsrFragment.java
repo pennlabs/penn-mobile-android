@@ -2,7 +2,6 @@ package com.pennapps.labs.pennmobile;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -29,27 +29,13 @@ import com.pennapps.labs.pennmobile.classes.GSRSlot;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -77,7 +63,6 @@ public class GsrFragment extends Fragment {
     @Bind(R.id.select_date) Button calendarButton;
     @Bind(R.id.select_start_time) Button startButton;
     @Bind(R.id.select_end_time) Button endButton;
-    @Bind(R.id.search_GSR) Button searchGSR;
     @Bind(R.id.gsr_building_selection) Spinner gsrDropDown;
     @Bind(R.id.instructions) TextView instructions;
 
@@ -102,11 +87,6 @@ public class GsrFragment extends Fragment {
 
 
         populateDropDownGSR();
-
-
-
-
-
 
         // Get calendar time and date
         Calendar calendar = Calendar.getInstance();
@@ -178,6 +158,7 @@ public class GsrFragment extends Fragment {
 
                                 //display selected time
                                 startButton.setText(hourString + ":" + minuteString + " " + AM_PM);
+                                searchForGSR();
                             }
                         }, mHour, mMinute, false);
                 timePickerDialog.show();
@@ -224,6 +205,7 @@ public class GsrFragment extends Fragment {
                                 }
 
                                 endButton.setText(hourString + ":" + minuteString + " " + AM_PM);
+                                searchForGSR();
                             }
                         }, mHour, mMinute, false);
 
@@ -256,7 +238,7 @@ public class GsrFragment extends Fragment {
                                 int entryMonth = monthOfYear + 1;
 
                                 calendarButton.setText(entryMonth + "/" + dayOfMonth + "/" + year);
-
+                                searchForGSR();
                             }
                         }, mYear, mMonth, mDay);
 
@@ -276,33 +258,6 @@ public class GsrFragment extends Fragment {
 
         });
 
-        //execute the seatch
-        searchGSR.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Toast.makeText(getActivity(), "Loading...", Toast.LENGTH_SHORT).show();
-
-                instructions.setText(getString(R.string.select_intrusctions));
-
-                //get vars
-                String dateBooking = calendarButton.getText().toString();
-                String startTime = startButton.getText().toString();
-                String endTime = endButton.getText().toString();
-                int location = mapGSR(gsrDropDown.getSelectedItem().toString());
-                if (location == -1) {
-                    Toast.makeText(getActivity(), "Sorry, an error has occurred", Toast.LENGTH_LONG).show();
-                }
-                else {
-                    //get the hours
-                    getTimes(location, dateBooking, startTime, endTime);
-
-                }
-
-            }
-
-        });
-
         /**
          *
          *
@@ -312,6 +267,27 @@ public class GsrFragment extends Fragment {
 
 
         return v;
+    }
+
+    // Makes toast and performs GSR search
+    // Called whenever user changes start/end time, date, or building
+    public void searchForGSR() {
+        Toast.makeText(getActivity(), "Loading...", Toast.LENGTH_SHORT).show();
+
+        instructions.setText(getString(R.string.select_instructions));
+        //get vars
+        String dateBooking = calendarButton.getText().toString();
+        String startTime = startButton.getText().toString();
+        String endTime = endButton.getText().toString();
+        int location = mapGSR(gsrDropDown.getSelectedItem().toString());
+        if (location == -1) {
+            Toast.makeText(getActivity(), "Sorry, an error has occurred", Toast.LENGTH_LONG).show();
+        }
+        else {
+            //get the hours
+            getTimes(location, dateBooking, startTime, endTime);
+
+        }
     }
 
     @Override
@@ -457,11 +433,10 @@ public class GsrFragment extends Fragment {
                                            //create an adapter to describe how the items are displayed, adapters are used in several places in android.
                                            //There are multiple variations of this, but this is the basic variant.
                                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, gsrs);
+
                                            //set the spinners adapter to the previously created one.
                                            gsrDropDown.setAdapter(adapter);
-                                           loadInitialData();
-
-
+                                           searchForGSR();
                                        }
                                    });
 
@@ -506,13 +481,24 @@ public class GsrFragment extends Fragment {
                                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, gsrs);
                                            //set the spinners adapter to the previously created one.
                                            gsrDropDown.setAdapter(adapter);
-
+                                           searchForGSR();
                                        }
                                    });
 
                                }
                            }
                 );
+        gsrDropDown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                searchForGSR();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
 
@@ -549,20 +535,6 @@ public class GsrFragment extends Fragment {
         results[1] = "11:59 PM";
         return results;
     }
-
-    //async task that gets the hours of the given gsr and time options
-
-
-    //this function clicks the search button to load initial results on the screen
-    public void loadInitialData() {
-        searchGSR.performClick();
-        searchGSR.setPressed(true);
-        searchGSR.invalidate();
-        searchGSR.setPressed(false);
-        searchGSR.invalidate();
-    }
-
-
 
     //function that takes all available GSR sessions and populates mGSRs
     public void insertGSRSlot(String gsrName, String GSRTimeRange, String GSRDateTime,
