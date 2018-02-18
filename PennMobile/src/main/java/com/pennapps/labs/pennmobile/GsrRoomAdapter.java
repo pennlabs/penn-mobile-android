@@ -3,7 +3,6 @@ package com.pennapps.labs.pennmobile;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,22 +46,24 @@ public class GsrRoomAdapter extends RecyclerView.Adapter<GsrRoomHolder> {
         if (position < getItemCount()) {
 
             final String localGSRID = ids.get(position);
-
-            //holder.gsrTime.setText(times.get(position).substring(0, times.get(position).indexOf(",")));
-            holder.gsrTime.setText(times.get(position));
+            String time = times.get(position);
+            final String startTime = transformStartTime(time);
+            final String endTime = transformEndTime(time);
+            holder.gsrStartTime.setText(time.substring(0, time.indexOf("-")));
+            holder.gsrEndTime.setText(time.substring(time.indexOf("-") + 1));
             holder.gsrId.setText(ids.get(position));
             holder.locationId.setText(gsrLocationCode);
             //whenever a time slot is clicked
 
-            holder.gsrTime.setOnClickListener(new View.OnClickListener() {
+            holder.gsrRoom.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     Intent intent = new Intent(context, BookGSRActivity.class);
                     intent.putExtra("gsrID", localGSRID);
                     intent.putExtra("gsrLocationCode", gsrLocationCode);
-                    intent.putExtra("startTime", transformStartTime(holder.gsrTime.getText().toString()));
-                    intent.putExtra("endTime", transformEndTime(holder.gsrTime.getText().toString()));
+                    intent.putExtra("startTime", startTime);
+                    intent.putExtra("endTime", endTime);
                     context.startActivity(intent);
 
                 }
