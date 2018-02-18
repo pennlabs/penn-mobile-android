@@ -42,4 +42,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/fav_laundry_room_name" />
 
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/laundry_availability_chart"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_below="@id/laundry_machine_list" />
+
 </RelativeLayout>

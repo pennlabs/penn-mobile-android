@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -34,7 +35,6 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
 
     Context mContext;
     List<MachineDetail> mMachineDetails;
-    int mColor;
     String mRoomName;
     String mMachineType;
 
@@ -65,11 +65,6 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
 
         mMachineType = machineType;
         mRoomName = roomName;
-        if (machineType.equals(mContext.getString(R.string.washer))) {
-            mColor = R.color.teal;
-        } else {
-            mColor = R.color.star_color_on;
-        }
     }
 
     @Override
@@ -83,13 +78,16 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
 
         MachineDetail detail = mMachineDetails.get(position);
         int timeRemaining = detail.getTimeRemaining();
-        String status = detail.getStatus();
 
         // not available
         if (timeRemaining == NOT_AVAILABLE_LABEL) {
-            holder.machineView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.star_color_off));
+            if (mMachineType.equals(mContext.getString(R.string.washer))) {
+                holder.machineView.setImageResource(R.drawable.washer_na);
+            } else {
+                holder.machineView.setImageResource(R.drawable.dryer_na);
+            }
             holder.timeTextView.setText(R.string.not_updating_status);
-            holder.timeTextView.setTextColor(ContextCompat.getColor(mContext, mColor));
+            holder.timeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.gray));
             holder.textView.setVisibility(View.VISIBLE);
             holder.textView.setText(R.string.not_available);
             holder.alarmSwitch.setVisibility(View.GONE);
@@ -97,7 +95,11 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
 
         // if open
         else if (timeRemaining == OPEN_LABEL) {
-            holder.machineView.setBackgroundColor(ContextCompat.getColor(mContext, mColor));
+            if (mMachineType.equals(mContext.getString(R.string.washer))) {
+                holder.machineView.setImageResource(R.drawable.washer_available);
+            } else {
+                holder.machineView.setImageResource(R.drawable.dryer_available);
+            }
             holder.timeTextView.setText(R.string.open);
             holder.timeTextView.setTextColor(Color.WHITE);
             holder.textView.setVisibility(View.GONE);
@@ -106,9 +108,13 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
 
         // time remaining
         else {
-            holder.machineView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.star_color_off));
+            if (mMachineType.equals(mContext.getString(R.string.washer))) {
+                holder.machineView.setImageResource(R.drawable.washer_in_use);
+            } else {
+                holder.machineView.setImageResource(R.drawable.dryer_in_use);
+            }
             holder.timeTextView.setText(Integer.toString(timeRemaining));
-            holder.timeTextView.setTextColor(ContextCompat.getColor(mContext, mColor));
+            holder.timeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.gray));
             holder.textView.setVisibility(View.VISIBLE);
             holder.textView.setText(R.string.min_left);
             holder.alarmSwitch.setVisibility(View.VISIBLE);
@@ -127,8 +133,8 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
 
         Context context;
         List<MachineDetail> machineDetails;
-        @Bind(R.id.laundry_machine_view)
-        View machineView;
+        @Bind(R.id.laundry_machine_image_view)
+        ImageView machineView;
         @Bind(R.id.min_left)
         TextView textView;
         @Bind(R.id.min_left_time)
@@ -144,6 +150,7 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
         }
     }
 
+    // adds alarm to machine
     private void setSwitchState(final int time, Switch mSwitch, final int machineId) {
 
         final int id = (mRoomName + mMachineType).hashCode() + machineId;
@@ -175,13 +182,13 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
                 if (isChecked) {
 
                     final PendingIntent alarmIntent = PendingIntent.getBroadcast(mContext, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    // for testing 30 second notification
-                    alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 10000, alarmIntent);
-                    // alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + time * 60000, alarmIntent);
+                    // for testing 10 second notification
+                    // alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 10000, alarmIntent);
+                    alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + time * 60000, alarmIntent);
 
                     // snackbar
                     StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.append("alarm on: " + time + " minutes");
+                    stringBuilder.append("Alarm set for " + time + " minutes");
                     Snackbar snackbar = Snackbar.make(buttonView, stringBuilder, Snackbar.LENGTH_SHORT);
                     View subView = snackbar.getView();
                     TextView snackTextView = (TextView) subView.findViewById(android.support.design.R.id.snackbar_text);
@@ -204,7 +211,7 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
 
                     // snackbar
                     StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.append("alarm off");
+                    stringBuilder.append("Alarm off");
                     Snackbar snackbar = Snackbar.make(buttonView, stringBuilder, Snackbar.LENGTH_SHORT);
                     View subView = snackbar.getView();
                     TextView snackTextView = (TextView) subView.findViewById(android.support.design.R.id.snackbar_text);
