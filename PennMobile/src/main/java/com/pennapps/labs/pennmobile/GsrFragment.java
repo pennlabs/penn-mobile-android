@@ -532,7 +532,15 @@ public class GsrFragment extends Fragment {
 
                 }
             } else {
-                Toast.makeText(getActivity(), "Failed to retrieve GSR data", Toast.LENGTH_LONG).show();
+                //addresses getActivity() returning null
+                try {
+                    Toast.makeText(getActivity(), "Failed to retrieve GSR data", Toast.LENGTH_LONG).show();
+                }
+                catch (NullPointerException e) {
+                    if (getContext() != null) {
+                        Toast.makeText(getContext(), "Failed to retrieve GSR data", Toast.LENGTH_LONG).show();
+                    }
+                }
             }
         }
     }
