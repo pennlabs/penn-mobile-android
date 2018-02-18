@@ -429,7 +429,6 @@ public class GsrFragment extends Fragment {
     }
 
 
-
     private void populateDropDownGSR() {
         mLabs.location()
                 .subscribe(new Action1<List<GSRLocation>>() {
@@ -529,7 +528,9 @@ public class GsrFragment extends Fragment {
         if (input == 0) {
             return "00";
         }
-        else {return Integer.toString(input);}
+        else {
+          return Integer.toString(input);
+        }
     }
 
     //takes the name of the gsr and returns an int for the corresponding code
