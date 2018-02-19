@@ -13,26 +13,14 @@
             android:layout_width="@dimen/laundry_machine_view"
             android:layout_height="@dimen/laundry_machine_view" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/min_left_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:orientation="vertical">
+            android:layout_gravity="center_horizontal"
+            android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/min_left_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/min_left"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal" />
-
-        </LinearLayout>
     </RelativeLayout>
 
     <Switch

@@ -4,7 +4,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.SystemClock;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -52,13 +51,12 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
             String status = detail.getStatus();
 
             if (timeRemaining == 0) {
-                if (status.equals(mContext.getResources().getString(R.string.status_available)) || status.equals(mContext.getResources().getString(R.string.status_ready_to_start))) {
-                    // open
-                    detail.setTimeRemaining(OPEN_LABEL);
-                } else {
-                    // not available
-                    detail.setTimeRemaining(NOT_AVAILABLE_LABEL);
-                }
+                // open
+                detail.setTimeRemaining(OPEN_LABEL);
+            }
+            if (status.equals(mContext.getResources().getString(R.string.status_out_of_order))) {
+                // not available
+                detail.setTimeRemaining(NOT_AVAILABLE_LABEL);
             }
         }
         Collections.sort(mMachineDetails);
@@ -87,9 +85,6 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
                 holder.machineView.setImageResource(R.drawable.dryer_na);
             }
             holder.timeTextView.setText(R.string.not_updating_status);
-            holder.timeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.gray));
-            holder.textView.setVisibility(View.VISIBLE);
-            holder.textView.setText(R.string.not_available);
             holder.alarmSwitch.setVisibility(View.GONE);
         }
 
@@ -101,8 +96,6 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
                 holder.machineView.setImageResource(R.drawable.dryer_available);
             }
             holder.timeTextView.setText(R.string.open);
-            holder.timeTextView.setTextColor(Color.WHITE);
-            holder.textView.setVisibility(View.GONE);
             holder.alarmSwitch.setVisibility(View.GONE);
         }
 
@@ -110,13 +103,12 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
         else {
             if (mMachineType.equals(mContext.getString(R.string.washer))) {
                 holder.machineView.setImageResource(R.drawable.washer_in_use);
+                holder.timeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.washer_blue));
             } else {
                 holder.machineView.setImageResource(R.drawable.dryer_in_use);
+                holder.timeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.dryer_red));
             }
             holder.timeTextView.setText(Integer.toString(timeRemaining));
-            holder.timeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.gray));
-            holder.textView.setVisibility(View.VISIBLE);
-            holder.textView.setText(R.string.min_left);
             holder.alarmSwitch.setVisibility(View.VISIBLE);
             int time = detail.getTimeRemaining();
             int id = detail.getId();
@@ -135,8 +127,6 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
         List<MachineDetail> machineDetails;
         @Bind(R.id.laundry_machine_image_view)
         ImageView machineView;
-        @Bind(R.id.min_left)
-        TextView textView;
         @Bind(R.id.min_left_time)
         TextView timeTextView;
         Switch alarmSwitch;
