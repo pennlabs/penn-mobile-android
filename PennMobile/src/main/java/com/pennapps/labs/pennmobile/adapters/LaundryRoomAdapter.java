@@ -42,14 +42,12 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
     Context mContext;
     ArrayList<LaundryRoom> mRooms;
     List<LaundryUsage> mRoomsData;
-    String mMachineType;
     SharedPreferences sp;
 
-    public LaundryRoomAdapter(Context context, ArrayList<LaundryRoom> rooms, String machineType, List<LaundryUsage> roomsData) {
+    public LaundryRoomAdapter(Context context, ArrayList<LaundryRoom> rooms, List<LaundryUsage> roomsData) {
         mContext = context;
         mRooms = rooms;
         mRoomsData = roomsData;
-        mMachineType = machineType;
         sp = PreferenceManager.getDefaultSharedPreferences(mContext);
     }
 
@@ -70,7 +68,6 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
         String roomName = room.getName();
         holder.title.setText(roomName);
         holder.name.setText(location);
-        holder.machine.setText(mMachineType + mContext.getString(R.string.s) + " " + mContext.getString(R.string.available));
 
         Machines machines = room.getMachines();
         List<MachineDetail> machineDetails = machines.getMachineDetailList();
@@ -86,51 +83,45 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
             }
         }
 
-        // if washer
-        if (mMachineType.equals(mContext.getString(R.string.washer))) {
-            // recycler view for the time remaining
-            LaundryMachineAdapter adapter = new LaundryMachineAdapter(mContext, washers, mMachineType, roomName);
-            holder.recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
-            holder.recyclerView.setAdapter(adapter);
-        }
-        // if dryer
-        else {
-            // recycler view for the time remaining
-            LaundryMachineAdapter adapter = new LaundryMachineAdapter(mContext, dryers, mMachineType, roomName);
-            holder.recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
-            holder.recyclerView.setAdapter(adapter);
-        }
+        // add washer info
+        // recycler view for the time remaining
+        LaundryMachineAdapter washerAdapter = new LaundryMachineAdapter(mContext, washers, mContext.getString(R.string.washer), roomName);
+        holder.washerRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
+        holder.washerRecyclerView.setAdapter(washerAdapter);
 
-        // overview of how many machines are availabe
-        MachineList machineList;
+        // add dryer info
+        // recycler view for the time remaining
+        LaundryMachineAdapter adapter = new LaundryMachineAdapter(mContext, dryers, mContext.getString(R.string.dryer), roomName);
+        holder.dryerRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
+        holder.dryerRecyclerView.setAdapter(adapter);
 
-        // if washer
-        if (mMachineType.equals(mContext.getString(R.string.washer))) {
-            machineList = room.getMachines().getWashers();
-        }
-        // if dryer
-        else {
-            machineList = room.getMachines().getDryers();
-        }
+        // overview of how many machines are available
+        MachineList washerList = room.getMachines().getWashers();
+        int openWashers = washerList.getOpen();
+        int runningWashers = washerList.getRunning();
+        int offlineWashers = washerList.getOffline();
+        int outOfOrderWashers = washerList.getOutOfOrder();
+        int totalWashers = openWashers + runningWashers + offlineWashers + outOfOrderWashers;
+        holder.washerAvailability.setText(openWashers + " / " + totalWashers + " open");
 
-        // laundry availability
-        int open = machineList.getOpen();
-        int running = machineList.getRunning();
-        int offline = machineList.getOffline();
-        int outOfOrder = machineList.getOutOfOrder();
-        int totalMachines = open + running + offline + outOfOrder;
-        holder.availability.setText(open + " " + mContext.getString(R.string.out_of) + " " + totalMachines);
+        MachineList dryerList = room.getMachines().getDryers();
+        int openDryers = dryerList.getOpen();
+        int runningDryers = dryerList.getRunning();
+        int offlineDryers = dryerList.getOffline();
+        int outOfOrderDryers = dryerList.getOutOfOrder();
+        int totalDryers = openDryers + runningDryers + offlineDryers + outOfOrderDryers;
+        holder.dryerAvailability.setText(openDryers + " / " + totalDryers + " open");
 
+        // Laundry availability chart
         LaundryUsage roomUsage = mRoomsData.get(position);
 
-        List<Double> roomData;
-        // if washer
-        if (mMachineType.equals(mContext.getString(R.string.washer))) {
-            roomData = roomUsage.getWasherData().getAdjustedData();
-        }
-        // if dryer
-        else {
-            roomData = roomUsage.getDryerData().getAdjustedData();
+        List<Double> washerData = roomUsage.getWasherData().getAdjustedData();
+        List<Double> dryerData = roomUsage.getDryerData().getAdjustedData();
+        List<Double> roomData = new ArrayList<>();
+
+        for (int i = 0; i < washerData.size(); i++) {
+            double average = washerData.get(i).doubleValue() + dryerData.get(i).doubleValue();
+            roomData.add(average);
         }
 
         Double[] roomDataArr = new Double[roomData.size()];
@@ -194,12 +185,14 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
         TextView title;
         @Bind(R.id.fav_laundry_room_name)
         TextView name;
-        @Bind(R.id.laundry_availability)
-        TextView availability;
-        @Bind(R.id.machine_type)
-        TextView machine;
-        @Bind(R.id.laundry_machine_list)
-        RecyclerView recyclerView;
+        @Bind(R.id.washer_availability)
+        TextView washerAvailability;
+        @Bind(R.id.dryer_availability)
+        TextView dryerAvailability;
+        @Bind(R.id.laundry_washer_machine_list)
+        RecyclerView washerRecyclerView;
+        @Bind(R.id.laundry_dryer_machine_list)
+        RecyclerView dryerRecyclerView;
         @Bind(R.id.laundry_availability_chart)
         LineChart lineChart;
 

@@ -1,51 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:layout_marginBottom="16dp"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/laundry_room_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:textColor="@color/black"
-        android:textSize="20sp" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/gray" />
 
-    <TextView
-        android:id="@+id/fav_laundry_room_name"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/laundry_info_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/laundry_room_title"
-        android:padding="8dp" />
+        android:background="@color/lightgray"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <TextView
-        android:id="@+id/laundry_availability"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:padding="8dp"
-        android:textSize="20sp" />
+        <TextView
+            android:id="@+id/laundry_room_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/machine_type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/laundry_availability"
-        android:padding="8dp"
-        android:text="@string/laundry_machines_available" />
+        <TextView
+            android:id="@+id/fav_laundry_room_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/laundry_machine_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/fav_laundry_room_name" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/washer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="24dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/laundry_washer"
+                android:textColor="@color/black"
+                android:textSize="@dimen/laundry_font_small"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/washer_availability"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/laundry_font_small" />
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/laundry_washer_machine_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="100dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/dryer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="24dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/laundry_dryer"
+                android:textColor="@color/black"
+                android:textSize="@dimen/laundry_font_small"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/dryer_availability"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/laundry_font_small" />
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/laundry_dryer_machine_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="100dp" />
+
+    </RelativeLayout>
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/laundry_availability_chart"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_below="@id/laundry_machine_list" />
+        android:layout_height="100dp" />
 
-</RelativeLayout>
+</LinearLayout>
