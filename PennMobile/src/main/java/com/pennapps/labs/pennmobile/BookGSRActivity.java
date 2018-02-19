@@ -67,7 +67,13 @@ public class BookGSRActivity extends Activity
 
         submit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                bookGSR(Integer.parseInt(gsrId), Integer.parseInt(gsrLocationCode), startTime, endTime);
+                if (firstName.getText().toString().matches("") || lastName.getText().toString().matches("")
+                        || email.getText().toString().matches("")) {
+                    Toast.makeText(getApplicationContext(), "Please fill in all fields before booking",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    bookGSR(Integer.parseInt(gsrId), Integer.parseInt(gsrLocationCode), startTime, endTime);
+                }
             }
         });
 
