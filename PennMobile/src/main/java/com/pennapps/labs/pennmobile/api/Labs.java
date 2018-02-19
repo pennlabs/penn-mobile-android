@@ -83,8 +83,8 @@ public interface Labs {
     @GET("/studyspaces/availability/{id}")
     Observable<GSR> gsrRoom(
             @Path("id") int id,
-            @Query("startTime") String startTime,
-            @Query("endTime") String endTime
+            @Query("start") String startTime,
+            @Query("end") String endTime
             );
 
 
