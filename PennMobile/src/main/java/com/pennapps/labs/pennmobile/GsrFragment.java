@@ -49,7 +49,7 @@ public class GsrFragment extends Fragment {
 
 
     //list that holds all GSR rooms
-    private Map<String, Integer> gsrHashMap = new HashMap<String, Integer>();
+    private Map<String, Integer> gsrHashMap = new HashMap<>();
     RecyclerView gsrRoomListRecylerView;
 
     private Labs mLabs;
@@ -449,29 +449,35 @@ public class GsrFragment extends Fragment {
                                        public void run() {
 
 
-                                           gsrHashMap.put("Weigle", 1722);
-                                           gsrHashMap.put("VP GSR", 1086);
-                                           gsrHashMap.put("Museum Library", 2634);
-                                           gsrHashMap.put("Lippincott", 1768);
-                                           gsrHashMap.put("Edu Commons", 2495);
+                                           //hard coded in case runs into error
+                                           gsrHashMap.put("Weigle", 1086);
+                                           gsrHashMap.put("VP Ground Floor", 1086);
+                                           gsrHashMap.put("VP 3rd Floor", 1086);
+                                           gsrHashMap.put("VP 4th Floor", 1086);
+                                           gsrHashMap.put("Lippincott", 2587);
+                                           gsrHashMap.put("Education Commons", 2495);
+                                           gsrHashMap.put("Biomedical Library", 2683);
+                                           gsrHashMap.put("Fisher Fine Arts", 2637);
                                            gsrHashMap.put("Levin Building", 1090);
-                                           gsrHashMap.put("Fisher Fine Arts Library", 2637);
-                                           gsrHashMap.put("VP Sem. Rooms", 2636);
-                                           gsrHashMap.put("Lippincott Sem. Rooms", 2587);
-                                           gsrHashMap.put("Glossberg Recording Room", 1819);
+                                           gsrHashMap.put("Museum Library", 2634);
                                            //gsrHashMap.put("Dental Sem", 13532);
-                                           gsrHashMap.put("Biomedical Lib.", 2683);
+                                           gsrHashMap.put("VP Seminar", 2636);
+                                           gsrHashMap.put("VP Special Use", 2611);
 
 
                                            gsrLocationsArray.add("Weigle");
-                                           gsrLocationsArray.add("VP GSR");
+                                           gsrLocationsArray.add("VP Ground Floor");
+                                           gsrLocationsArray.add("VP 3rd Floor");
+                                           gsrLocationsArray.add("VP 4th Floor");
                                            gsrLocationsArray.add("Lippincott");
-                                           gsrLocationsArray.add("Edu Commons");
+                                           gsrLocationsArray.add("Education Commons");
+                                           gsrLocationsArray.add("Biomedical Library");
+                                           gsrLocationsArray.add("Fisher Fine Arts");
                                            gsrLocationsArray.add("Levin Building");
-                                           gsrLocationsArray.add("VP Sem. Rooms");
-                                           gsrLocationsArray.add("Lippincott Sem. Rooms");
-                                           gsrLocationsArray.add("Glossberg Recording Room");
-                                           gsrLocationsArray.add("Biomedical Lib.");
+                                           gsrLocationsArray.add("Museum Library");
+                                           gsrLocationsArray.add("VP Seminar");
+                                           gsrLocationsArray.add("VP Special Use");
+
 
                                            String[] gsrs = new String[gsrLocationsArray.size()];
                                            gsrs = gsrLocationsArray.toArray(gsrs);
@@ -521,7 +527,7 @@ public class GsrFragment extends Fragment {
 
     //takes the name of the gsr and returns an int for the corresponding code
     public int mapGSR(String name) {
-        return gsrHashMap.get(name);
+        return  gsrHashMap.get(name);
     }
 
     // Parameters: the starting time's hour, minutes, and AM/PM as formatted by Java.utils.Calendar
