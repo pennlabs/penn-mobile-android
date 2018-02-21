@@ -13,9 +13,9 @@ public class GSRLocation {
     @Expose
     public String name;
 
-    @SerializedName("id")
+    @SerializedName("lid")
     @Expose
-    public Integer id;
+    public int id;
 
     @SerializedName("service")
     @Expose
