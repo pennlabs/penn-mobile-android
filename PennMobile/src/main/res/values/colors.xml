@@ -42,4 +42,7 @@
 
     <color name="gsr_purple">#6274F1</color>
     <color name="gsr_green">#76BF96</color>
+
+    <color name="washer_blue">#3498db</color>
+    <color name="dryer_red">#d35400</color>
 </resources>

@@ -7,6 +7,7 @@ import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
+import com.pennapps.labs.pennmobile.classes.LaundryUsage;
 import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Review;
 import com.pennapps.labs.pennmobile.classes.Venue;
@@ -66,5 +67,9 @@ public interface Labs {
     // new
     @GET("/laundry/hall/{id}")
     Observable<LaundryRoom> room(
+            @Path("id") int id);
+
+    @GET("/laundry/usage/{id}")
+    Observable<LaundryUsage> usage(
             @Path("id") int id);
 }
