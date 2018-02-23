@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ public class GsrRoomAdapter extends RecyclerView.Adapter<GsrRoomHolder> {
 
     ArrayList<String> times;
     ArrayList<String> ids;
+    ArrayList<String> dates;
     String gsrLocationCode;
     Context context;
 
@@ -34,9 +36,11 @@ public class GsrRoomAdapter extends RecyclerView.Adapter<GsrRoomHolder> {
         return new GsrRoomHolder(view);
     }
 
-    public GsrRoomAdapter(ArrayList<String> _times, ArrayList<String> _ids, String _gsrLocationCode, Context _context) {
+    public GsrRoomAdapter(ArrayList<String> _times, ArrayList<String> _ids, String _gsrLocationCode, Context _context,
+                          ArrayList<String> _dates) {
         this.times = _times;
         this.ids = _ids;
+        this.dates = _dates;
         this.gsrLocationCode = _gsrLocationCode;
         this.context = _context;
 
@@ -48,9 +52,10 @@ public class GsrRoomAdapter extends RecyclerView.Adapter<GsrRoomHolder> {
         if (position < getItemCount()) {
 
             final String localGSRID = ids.get(position);
-            String time = times.get(position);
-            final String startTime = transformStartTime(time);
-            final String endTime = transformEndTime(time);
+            final String time = times.get(position);
+            final String date = dates.get(position);
+            final String startTime = transformStartTime(time, date);
+            final String endTime = transformEndTime(time, date);
             holder.gsrStartTime.setText(time.substring(0, time.indexOf("-")));
             holder.gsrEndTime.setText(time.substring(time.indexOf("-") + 1));
             holder.gsrId.setText(ids.get(position));
@@ -60,6 +65,7 @@ public class GsrRoomAdapter extends RecyclerView.Adapter<GsrRoomHolder> {
             holder.gsrRoom.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
 
                     BookGsrFragment bookGsrFragment = BookGsrFragment.newInstance(localGSRID, gsrLocationCode, startTime, endTime);
                     FragmentManager fragmentManager = ((MainActivity) context).getSupportFragmentManager();
@@ -75,24 +81,37 @@ public class GsrRoomAdapter extends RecyclerView.Adapter<GsrRoomHolder> {
         }
     }
 
-    String transformStartTime(String inputTime) {
+    String transformStartTime(String inputTime, String date) {
         String start = inputTime.split("-")[0];
         start = convertToMilitaryTime(start);
         start = start.replace(":", "");
 
         Calendar c = Calendar.getInstance();
 
+        //date is numerical number of our date
+        if (Integer.parseInt(date) < c.get(Calendar.DAY_OF_MONTH)) {
+            c.set(Calendar.MONTH, c.get(Calendar.MONTH) + 1);
+        }
+        c.set(Calendar.DAY_OF_MONTH, Integer.parseInt(date));
+
+
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
         String formattedDate = df.format(c.getTime());
         return formattedDate + "T" + start + "00+0500";
     }
 
-    String transformEndTime(String inputTime) {
+    String transformEndTime(String inputTime, String date) {
         String end = inputTime.split("-")[1];
         end = convertToMilitaryTime(end);
         end = end.replace(":", "");
 
         Calendar c = Calendar.getInstance();
+
+        //date is numerical number of our date
+        if (Integer.parseInt(date) < c.get(Calendar.DAY_OF_MONTH)) {
+            c.set(Calendar.MONTH, c.get(Calendar.MONTH) + 1);
+        }
+        c.set(Calendar.DAY_OF_MONTH, Integer.parseInt(date));
 
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
         String formattedDate = df.format(c.getTime());
