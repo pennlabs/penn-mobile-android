@@ -68,6 +68,13 @@ public class BookGsrFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(R.string.gsr);
+        ((MainActivity) getActivity()).setNav(R.id.nav_gsr);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.gsr_details_book, container, false);
