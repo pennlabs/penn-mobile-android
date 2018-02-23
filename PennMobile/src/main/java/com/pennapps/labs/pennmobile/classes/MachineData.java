@@ -164,8 +164,13 @@ public class MachineData {
         int maxIndex = originalData.indexOf(Collections.max(originalData));
         double maxData = originalData.get(maxIndex).doubleValue();
 
-        for (Double data: originalData) {
-            adjustedData.add((maxData - data.doubleValue()) / (maxData - minData));
+        // in case there is no data
+        if (maxData - minData == 0) {
+            adjustedData = originalData;
+        } else {
+            for (Double data : originalData) {
+                adjustedData.add((maxData - data.doubleValue()) / (maxData - minData));
+            }
         }
         return adjustedData;
     }
