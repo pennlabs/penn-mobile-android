@@ -113,7 +113,7 @@
     <string name="laundry_status_unavailable">status unavailable</string>
     <string name="favorite_title">Favorite</string>
     <string name="laundry_settings">Laundry Settings</string>
-    <string name="not_updating_status">N/A</string>
+    <string name="not_updating_status"></string>
     <string name="laundry_reset">RESET</string>
     <string name="laundry_help_text">Please click the settings icon to choose laundry rooms</string>
     <string name="laundry_settings_help1">Please select up to 3 laundry rooms</string>
@@ -121,7 +121,7 @@
     <string name="laundry_machines_available">machines available</string>
     <string name="washer">washer</string>
     <string name="dryer">dryer</string>
-    <string name="open">OPEN</string>
+    <string name="open"></string>
     <string name="not_available">not available</string>
     <string name="min_left">min left</string>
     <string name="num_rooms_selected_pref">numRoomsSelected</string>
@@ -129,9 +129,15 @@
     <string name="location">location</string>
     <string name="available">available</string>
     <string name="s">s</string>
-    <string name="out_of">out of</string>
     <string name="machines">machines</string>
     <string name="laundry_machine_type">machineType</string>
+    <string name="status_out_of_order">Out of order</string>
+    <string name="status_not_online">Not online</string>
+    <string name="status_available">Available</string>
+    <string name="status_ready_to_start">Ready to start</string>
+    <string name="status_end_of_cycle">End of cycle</string>
+    <string name="laundry_room_name">roomName</string>
+    <string name="laundry_machine_id">id</string>
 
     <!-- News -->
     <string name="open_browser">Open in Browser</string>
