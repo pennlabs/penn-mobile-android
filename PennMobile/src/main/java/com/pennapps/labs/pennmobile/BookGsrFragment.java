@@ -4,6 +4,7 @@ package com.pennapps.labs.pennmobile;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,6 +74,8 @@ public class BookGsrFragment extends Fragment {
         ButterKnife.bind(this, v);
         submit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
+
                 if (firstName.getText().toString().matches("") || lastName.getText().toString().matches("")
                         || email.getText().toString().matches("")) {
                     Toast.makeText(getActivity(), "Please fill in all fields before booking",

@@ -49,16 +49,18 @@ public class GsrBuildingAdapter extends RecyclerView.Adapter<GsrBuildingHolder> 
 
                 //now define arrays
                 ArrayList<String> times = new ArrayList<String>();
+                ArrayList<String> dates = new ArrayList<String>();
                 ArrayList<String> ids = new ArrayList<String>();
 
                 for (int j = 0; j < gsrs.get(position).getAvailableGSRSlots().size(); j++)
                 {
                     GSRContainerSlot gsrslot = gsrs.get(position).getAvailableGSRSlots().get(j);
                     times.add(gsrslot.getTimeRange());
+                    dates.add(gsrslot.getDateNum());
                     ids.add(gsrslot.getElementId());
                 }
 
-                gsrRoomsRecyclerView.setAdapter(new GsrRoomAdapter(times, ids, gsrLocationCode, context));
+                gsrRoomsRecyclerView.setAdapter(new GsrRoomAdapter(times, ids, gsrLocationCode, context, dates));
                 holder.gsrBuildingName.setText(gsrs.get(position).getGsrName());
             }
         }

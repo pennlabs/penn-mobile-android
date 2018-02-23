@@ -414,6 +414,12 @@ public class GsrFragment extends Fragment {
                                        @Override
                                        public void run() {
 
+                                           //reset the drop down
+                                           String[] emptyArray = new String[0];
+                                           ArrayAdapter<String> emptyAdapter = new ArrayAdapter<String>(getActivity(),
+                                                   android.R.layout.simple_spinner_dropdown_item, emptyArray);
+                                           gsrDropDown.setAdapter(emptyAdapter);
+
 
                                            int numLocations = locations.size();
 
