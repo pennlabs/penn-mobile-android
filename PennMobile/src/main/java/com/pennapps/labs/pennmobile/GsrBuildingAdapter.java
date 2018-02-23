@@ -7,10 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.pennapps.labs.pennmobile.classes.GSR;
 import com.pennapps.labs.pennmobile.classes.GSRContainer;
 import com.pennapps.labs.pennmobile.classes.GSRContainerSlot;
-import com.pennapps.labs.pennmobile.classes.GSRSlot;
 
 import java.util.ArrayList;
 
