@@ -12,7 +12,7 @@
     <string name="dining">Dining</string>
     <string name="transit">Transit</string>
     <string name="directory">Directory</string>
-    <string name="gsr">GSR</string>
+    <string name="gsr">GSR Booking</string>
     <string name="news">News</string>
     <string name="laundry">Laundry</string>
     <string name="nso">NSO</string>
@@ -199,5 +199,8 @@
     <string name="last_name">Last name</string>
     <string name="email_address">Email Address</string>
     <string name="submit">Submit</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -2,6 +2,8 @@ package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,12 +61,13 @@ public class GsrRoomAdapter extends RecyclerView.Adapter<GsrRoomHolder> {
                 @Override
                 public void onClick(View v) {
 
-                    Intent intent = new Intent(context, BookGSRActivity.class);
-                    intent.putExtra("gsrID", localGSRID);
-                    intent.putExtra("gsrLocationCode", gsrLocationCode);
-                    intent.putExtra("startTime", startTime);
-                    intent.putExtra("endTime", endTime);
-                    context.startActivity(intent);
+                    BookGsrFragment bookGsrFragment = BookGsrFragment.newInstance(localGSRID, gsrLocationCode, startTime, endTime);
+                    FragmentManager fragmentManager = ((MainActivity) context).getSupportFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.content_frame, bookGsrFragment)
+                            .addToBackStack("GSR Fragment")
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .commit();
 
                 }
             });
