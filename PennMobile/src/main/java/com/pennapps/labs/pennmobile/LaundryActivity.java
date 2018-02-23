@@ -87,9 +87,6 @@ public class LaundryActivity extends AppCompatActivity {
                 count += 1;
             }
         }
-      
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.setupWithViewPager(viewPager);
         Fabric.with(this, new Crashlytics());
         Answers.getInstance().logContentView(new ContentViewEvent()
                 .putContentName("Laundry")
