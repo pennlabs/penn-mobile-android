@@ -1,6 +1,10 @@
 package com.pennapps.labs.pennmobile.classes;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by MikeD on 10/9/2017.
@@ -9,37 +13,29 @@ import java.util.ArrayList;
 //class that keeps track of all the GSR rooms themselves
 public class GSR {
 
-    private String gsrName;
-    //used to keep track availability of the given room
-    private ArrayList<GSRSlot> gsrAvailableSlots = new ArrayList<GSRSlot>();
+
+    @SerializedName("location_id")
+    @Expose
+    public Integer location_id;
+
+    @SerializedName("date")
+    @Expose
+    public String date;
+
+    @SerializedName("rooms")
+    @Expose
+    public GSRRoom[] rooms;
 
 
-    public GSR (String constructorGsrName, String constructorTimeRange, String constructorDateTime,
-                String constructorDayDate, String constructorDateNum, String constructorDuration, String constructorElementId) {
-
-        gsrName = constructorGsrName;
-
-        GSRSlot newGSRSlot = new GSRSlot(constructorTimeRange, constructorDateTime, constructorDayDate, constructorDateNum, constructorDuration, constructorElementId);
-
-        gsrAvailableSlots.add(newGSRSlot);
-
+    public Integer getLocation_id() {
+        return location_id;
     }
 
-    public void addGSRSlot(String constructorTimeRange, String constructorDateTime,
-                      String constructorDayDate, String constructorDateNum, String constructorDuration, String constructorElementId) {
-
-        //created new GSR time slot object
-        GSRSlot newGSRSlot = new GSRSlot(constructorTimeRange, constructorDateTime, constructorDayDate, constructorDateNum, constructorDuration, constructorElementId);
-
-        gsrAvailableSlots.add(newGSRSlot);
+    public String getDate() {
+        return date;
     }
 
-    public String getGsrName() {
-        return gsrName;
+    public GSRRoom[] getRooms() {
+        return rooms;
     }
-
-    public ArrayList<GSRSlot>  getAvailableGSRSlots () {
-        return gsrAvailableSlots;
-    }
-
 }

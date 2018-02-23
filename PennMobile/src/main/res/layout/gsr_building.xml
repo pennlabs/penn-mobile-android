@@ -7,17 +7,24 @@
     android:paddingBottom="8dp"
     android:paddingTop="8dp">
 
-    <TextView
-        android:id="@+id/gsr_building_name"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="4dp" />
+        android:padding="10dp"
+        android:background="@color/gsr_background_gray"
+        android:layout_marginBottom="4dp">
+        <TextView
+            android:id="@+id/gsr_building_name"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/gsr_availability_in_building"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="10dp"
         tools:list_item="gsr_room" />
 
 </LinearLayout>
