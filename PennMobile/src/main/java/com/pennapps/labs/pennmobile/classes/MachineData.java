@@ -161,10 +161,11 @@ public class MachineData {
         List<Double> originalData = getData();
         int minIndex = originalData.indexOf(Collections.min(originalData));
         double minData = originalData.get(minIndex).doubleValue();
+        int maxIndex = originalData.indexOf(Collections.max(originalData));
+        double maxData = originalData.get(maxIndex).doubleValue();
+
         for (Double data: originalData) {
-            double difference = data.doubleValue() - minData;
-            double percentDifference = (difference / minData) * 100;
-            adjustedData.add(percentDifference);
+            adjustedData.add((maxData - data.doubleValue()) / (maxData - minData));
         }
         return adjustedData;
     }

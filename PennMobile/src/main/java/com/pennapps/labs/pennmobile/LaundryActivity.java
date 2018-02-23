@@ -72,7 +72,7 @@ public class LaundryActivity extends AppCompatActivity {
         mContext = this;
 
         sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-        numRooms = sp.getInt(mContext.getString(R.string.num_rooms_pref), 48);
+        numRooms = sp.getInt(mContext.getString(R.string.num_rooms_pref), 100);
 
         // get num rooms to display
         count = 0;
@@ -93,6 +93,14 @@ public class LaundryActivity extends AppCompatActivity {
             }
         });
         swipeRefreshLayout.setColorSchemeResources(R.color.color_accent, R.color.color_primary);
+
+        // no rooms chosen
+        if (count == 0) {
+            loadingPanel.setVisibility(View.GONE);
+            mTextView.setVisibility(View.VISIBLE);
+            mAdapter = new LaundryRoomAdapter(mContext, laundryRooms, roomsData);
+            mRecyclerView.setAdapter(mAdapter);
+        }
     }
 
     @Override
@@ -125,12 +133,25 @@ public class LaundryActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        numRooms = sp.getInt(mContext.getString(R.string.num_rooms_pref), 100);
+
+        // get num rooms to display
+        count = 0;
+        for (int i = 0; i < numRooms; i++) {
+            if (sp.getBoolean(Integer.toString(i), false)) {
+                count += 1;
+            }
+        }
+
         loadingPanel.setVisibility(View.VISIBLE);
         updateRooms();
     }
 
     private void updateRooms() {
 
+        laundryRooms = new ArrayList<>();
+        roomsData = new ArrayList<>();
         roomsDataResult = new ArrayList<>();
         laundryRoomsResult = new ArrayList<>();
 
@@ -184,6 +205,12 @@ public class LaundryActivity extends AppCompatActivity {
                                     return room2.getId() - room1.getId();
                                 }
                             });
+
+                            boolean loading = false;
+                            // make sure results are finished loading
+                            while (roomsDataResult.size() != count) {
+                                loading = true;
+                            }
 
                             // update UI
                             runOnUiThread(new Runnable() {
