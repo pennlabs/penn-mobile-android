@@ -35,6 +35,9 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -82,6 +85,7 @@ import java.util.concurrent.Semaphore;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.fabric.sdk.android.Fabric;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
@@ -159,6 +163,12 @@ public class MapFragment extends Fragment {
                 .build();
         mapCallbacks.setGoogleApiClient(mGoogleApiClient);
         activity.closeKeyboard();
+
+        Fabric.with(getContext(), new Crashlytics());
+        Answers.getInstance().logContentView(new ContentViewEvent()
+                .putContentName("Maps")
+                .putContentType("App Feature")
+                .putContentId("4"));
 
         geoapi = new GeoApiContext().setApiKey(getString(R.string.google_api_key));
         allStartPolylines = new HashSet<>();

@@ -29,6 +29,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.functions.Action1;
 
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
+
+import io.fabric.sdk.android.Fabric;
+
 public class LaundryActivity extends AppCompatActivity {
 
     private Labs mLabs;
@@ -73,7 +79,7 @@ public class LaundryActivity extends AppCompatActivity {
 
         sp = PreferenceManager.getDefaultSharedPreferences(mContext);
         numRooms = sp.getInt(mContext.getString(R.string.num_rooms_pref), 100);
-
+      
         // get num rooms to display
         count = 0;
         for (int i = 0; i < numRooms; i++) {
@@ -81,6 +87,14 @@ public class LaundryActivity extends AppCompatActivity {
                 count += 1;
             }
         }
+      
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager);
+        Fabric.with(this, new Crashlytics());
+        Answers.getInstance().logContentView(new ContentViewEvent()
+                .putContentName("Laundry")
+                .putContentType("App Feature")
+                .putContentId("3"));
 
         ButterKnife.bind(this);
 
