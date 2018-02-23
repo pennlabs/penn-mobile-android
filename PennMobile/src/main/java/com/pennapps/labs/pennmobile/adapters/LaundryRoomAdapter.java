@@ -120,7 +120,7 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
         List<Double> roomData = new ArrayList<>();
 
         for (int i = 0; i < washerData.size(); i++) {
-            double average = washerData.get(i).doubleValue() + dryerData.get(i).doubleValue();
+            double average = (washerData.get(i).doubleValue() + dryerData.get(i).doubleValue()) / 2;
             roomData.add(average);
         }
 

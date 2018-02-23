@@ -67,7 +67,14 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
 
     @Override
     public LaundryMachineAdapter.CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.laundry_machine_item, parent, false);
+
+        View view;
+        if (mMachineType.equals(mContext.getResources().getString(R.string.washer))) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.laundry_machine_item, parent, false);
+        } else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.laundry_dryer_item, parent, false);
+        }
+
         return new CustomViewHolder(view, mContext, mMachineDetails);
     }
 
