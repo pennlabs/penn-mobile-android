@@ -46,6 +46,7 @@ import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
+import com.pennapps.labs.pennmobile.classes.LaundryUsage;
 import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
@@ -290,6 +291,9 @@ public class MainActivity extends AppCompatActivity {
             }.getType(), new Serializer.LaundryRoomListSerializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<List<GSRLocation>>() {
             }.getType(), new Serializer.GsrLocationSerializer());
+            // new - gets laundry usage
+            gsonBuilder.registerTypeAdapter(new TypeToken<LaundryUsage>() {
+            }.getType(), new Serializer.LaundryUsageSerializer());
             Gson gson = gsonBuilder.create();
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setConverter(new GsonConverter(gson))

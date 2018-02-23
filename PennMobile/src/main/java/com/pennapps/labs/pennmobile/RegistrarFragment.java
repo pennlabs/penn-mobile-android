@@ -6,7 +6,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.preference.PreferenceManager;
 
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
+
 import butterknife.ButterKnife;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by Jason on 1/25/2016.
@@ -63,6 +68,16 @@ public class RegistrarFragment extends SearchFavoriteFragment {
     @Override
     protected int searchCount() {
         return PreferenceManager.getDefaultSharedPreferences(mActivity).getInt(getString(R.string.registrar_search_count), -1);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Fabric.with(getContext(), new Crashlytics());
+        Answers.getInstance().logContentView(new ContentViewEvent()
+                .putContentName("Courses")
+                .putContentType("App Feature")
+                .putContentId("2"));
     }
 
     @Override
