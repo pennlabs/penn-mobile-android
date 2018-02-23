@@ -1,39 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="70dp"
-    android:layout_height="70dp"
-    android:layout_marginLeft="4dp"
-    android:layout_marginRight="4dp"
-    android:background="@color/gsr_green"
+    android:id="@+id/gsr_room"
+    android:layout_width="80dp"
+    android:layout_height="80dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:background="@drawable/gsr_room_background"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:paddingLeft="8dp">
+    android:padding="4dp">
 
     <TextView
-        android:id="@+id/gsr_time"
+        android:id="@+id/gsr_start_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:color="#FFF"
+        android:layout_gravity="center_horizontal"
+        android:color="@color/gsr_white"
         android:text="Time"
-        android:textColor="#FFF"
-        android:textSize="12sp" />
+        android:textColor="@color/gsr_green"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:color="@color/gsr_white"
+        android:text="-"
+        android:textColor="@color/gsr_green"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/gsr_end_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:color="@color/gsr_white"
+        android:text="Time"
+        android:textColor="@color/gsr_green"
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/gsr_id"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:color="#FFF"
+        android:layout_gravity="center_horizontal"
+        android:color="@color/gsr_white"
         android:text=""
+        android:textColor="@color/gsr_green"
+        android:textSize="14sp"
         android:visibility="gone" />
 
     <TextView
         android:id="@+id/locationId"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:color="#FFF"
+        android:gravity="center_horizontal"
+        android:color="@color/gsr_white"
         android:text=""
+        android:textSize="14sp"
+        android:textColor="@color/gsr_green"
         android:visibility="gone" />
 
 </LinearLayout>

@@ -2,7 +2,6 @@ package com.pennapps.labs.pennmobile;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -17,35 +17,30 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
+import com.pennapps.labs.pennmobile.api.Labs;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
 import com.pennapps.labs.pennmobile.classes.GSR;
+import com.pennapps.labs.pennmobile.classes.GSRContainer;
+import com.pennapps.labs.pennmobile.classes.GSRLocation;
+import com.pennapps.labs.pennmobile.classes.GSRRoom;
+import com.pennapps.labs.pennmobile.classes.GSRSlot;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.functions.Action1;
 import io.fabric.sdk.android.Fabric;
 
 /**
@@ -56,15 +51,20 @@ public class GsrFragment extends Fragment {
 
 
     //list that holds all GSR rooms
-    private Map<String, Integer> gsrHashMap = new HashMap<String, Integer>();
-    ArrayList<GSR> mGSRS = new ArrayList<GSR>();
+    private Map<String, Integer> gsrHashMap = new HashMap<>();
     RecyclerView gsrRoomListRecylerView;
 
+    private Labs mLabs;
+
+    ArrayList<String> gsrLocationsArray = new ArrayList<String>();
+
+    ArrayList<GSRContainer> mGSRS = new ArrayList<GSRContainer>();
+
+    DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     @Bind(R.id.select_date) Button calendarButton;
     @Bind(R.id.select_start_time) Button startButton;
     @Bind(R.id.select_end_time) Button endButton;
-    @Bind(R.id.search_GSR) Button searchGSR;
     @Bind(R.id.gsr_building_selection) Spinner gsrDropDown;
     @Bind(R.id.instructions) TextView instructions;
 
@@ -75,6 +75,7 @@ public class GsrFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mLabs = MainActivity.getLabsInstance();
         ((MainActivity) getActivity()).closeKeyboard();
         getActivity().setTitle(R.string.gsr);
         Fabric.with(getContext(), new Crashlytics());
@@ -90,28 +91,8 @@ public class GsrFragment extends Fragment {
 
         ButterKnife.bind(this, v);
 
-        setUpHashMap();
 
-        //gsr location options. Dental sem does not work right now
-        String[] gsrs = new String[]{
-                "Weigle",
-                "VP GSR",
-                "Lippincott",
-                "Edu Commons",
-                "Levin Building",
-                "VP Sem. Rooms",
-                "Lippincott Sem. Rooms",
-                "Glossberg Recording Room",
-                //"Dental Sem",
-                "Biomedical Lib."
-        };
-
-        //create an adapter to describe how the items are displayed, adapters are used in several places in android.
-        //There are multiple variations of this, but this is the basic variant.
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, gsrs);
-        //set the spinners adapter to the previously created one.
-        gsrDropDown.setAdapter(adapter);
-
+        populateDropDownGSR();
 
         // Get calendar time and date
         Calendar calendar = Calendar.getInstance();
@@ -183,6 +164,7 @@ public class GsrFragment extends Fragment {
 
                                 //display selected time
                                 startButton.setText(hourString + ":" + minuteString + " " + AM_PM);
+                                searchForGSR();
                             }
                         }, mHour, mMinute, false);
                 timePickerDialog.show();
@@ -229,6 +211,7 @@ public class GsrFragment extends Fragment {
                                 }
 
                                 endButton.setText(hourString + ":" + minuteString + " " + AM_PM);
+                                searchForGSR();
                             }
                         }, mHour, mMinute, false);
 
@@ -261,7 +244,7 @@ public class GsrFragment extends Fragment {
                                 int entryMonth = monthOfYear + 1;
 
                                 calendarButton.setText(entryMonth + "/" + dayOfMonth + "/" + year);
-
+                                searchForGSR();
                             }
                         }, mYear, mMonth, mDay);
 
@@ -281,33 +264,6 @@ public class GsrFragment extends Fragment {
 
         });
 
-        //execute the seatch
-        searchGSR.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Toast.makeText(getActivity(), "Loading...", Toast.LENGTH_SHORT).show();
-
-                instructions.setText(getString(R.string.select_intrusctions));
-
-                //get vars
-                String dateBooking = calendarButton.getText().toString();
-                String startTime = startButton.getText().toString();
-                String endTime = endButton.getText().toString();
-                int location = mapGSR(gsrDropDown.getSelectedItem().toString());
-                if (location == -1) {
-                    Toast.makeText(getActivity(), "Sorry, an error has occurred", Toast.LENGTH_LONG).show();
-                }
-                else {
-                    //get the hours
-                    String[] asyncTaskParams = { Integer.toString(location), dateBooking, startTime, endTime};
-                    new getHours().execute(asyncTaskParams);
-                }
-
-            }
-
-        });
-
         /**
          *
          *
@@ -315,10 +271,29 @@ public class GsrFragment extends Fragment {
          *
          */
 
-        //load initial data
-        loadInitialData();
 
         return v;
+    }
+
+    // Makes toast and performs GSR search
+    // Called whenever user changes start/end time, date, or building
+    public void searchForGSR() {
+        Toast.makeText(getActivity(), "Loading...", Toast.LENGTH_SHORT).show();
+
+        instructions.setText(getString(R.string.select_instructions));
+        //get vars
+        String dateBooking = calendarButton.getText().toString();
+        String startTime = startButton.getText().toString();
+        String endTime = endButton.getText().toString();
+        int location = mapGSR(gsrDropDown.getSelectedItem().toString());
+        if (location == -1) {
+            Toast.makeText(getActivity(), "Sorry, an error has occurred", Toast.LENGTH_LONG).show();
+        }
+        else {
+            //get the hours
+            getTimes(location, dateBooking, startTime, endTime);
+
+        }
     }
 
     @Override
@@ -328,23 +303,242 @@ public class GsrFragment extends Fragment {
         ((MainActivity) getActivity()).setNav(R.id.nav_gsr);
     }
 
+    private void getTimes(final int location, final String dateBooking, String startTime, String endTime) {
 
-    public void setUpHashMap() {
-        gsrHashMap.put("Weigle", 1722);
-        gsrHashMap.put("VP GSR", 1799);
-        gsrHashMap.put("Lippincott", 1768);
-        gsrHashMap.put("Edu Commons", 848);
-        gsrHashMap.put("Levin Building", 13489);
-        gsrHashMap.put("VP Sem. Rooms", 4409);
-        gsrHashMap.put("Lippincott Sem. Rooms", 2587);
-        gsrHashMap.put("Glossberg Recording Room", 1819);
-        //gsrHashMap.put("Dental Sem", 13532);
-        gsrHashMap.put("Biomedical Lib.", 505);
+        //deal with exception of time starting with 0:--
+        if (startTime.charAt(0) == '0') {
+            startTime = "12" + startTime.substring(1);
+        }
+
+        if (endTime.charAt(0) == '0') {
+            endTime = "12" + endTime.substring(1);
+        }
+
+        //convert times to military
+        DateTimeFormatter toMilitaryTimeFormatter = DateTimeFormat.forPattern("hh:mm a");
+
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm:ss");
+        String startMilitary = fmt.print(toMilitaryTimeFormatter.parseDateTime(startTime));
+        String endMilitary = fmt.print(toMilitaryTimeFormatter.parseDateTime(endTime));
+
+        DateTimeFormatter originalDateFormat = DateTimeFormat.forPattern("MM/dd/yyyy");
+        DateTimeFormatter adjustedDateFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
+        String adjustedDateString = adjustedDateFormat.print(originalDateFormat.parseDateTime(dateBooking));
+
+        String startParam = adjustedDateString + "T" + startMilitary + "-0500";
+        String endParam = adjustedDateString + "T" + endMilitary + "-0500";
+
+        mLabs.gsrRoom(location, startParam, endParam)
+                .subscribe(new Action1<GSR>() {
+                    @Override
+                    public void call(final GSR gsr) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                GSRRoom[] gsrRooms = gsr.getRooms();
+
+
+
+                                boolean timeSlotLengthZero = true;
+
+                                for (int i = 0; i < gsrRooms.length; i++) {
+                                    GSRRoom gsrRoom = gsrRooms[i];
+                                    GSRSlot[] GSRTimeSlots = gsrRoom.getSlots();
+                                    //checks if the time slots are ever nonzero
+                                    if (GSRTimeSlots.length > 0) {timeSlotLengthZero = false;}
+                                    for (int j=0; j < GSRTimeSlots.length; j++) {
+                                        GSRSlot currSlot = GSRTimeSlots[j];
+                                        if (currSlot.isAvailable()) {
+
+
+
+                                            String startString = currSlot.getStartTime();
+                                            String endString = currSlot.getEndTime();
+
+
+
+
+                                            DateTime startTime = formatter.parseDateTime(startString.substring(0,
+                                                    startString.length() - 6));
+                                            DateTime endTime = formatter.parseDateTime(endString.substring(0,
+                                                    endString.length() - 6));
+                                            String stringStartTime = safeToString(startTime.getHourOfDay()) + ":" +
+                                                    safeToString(startTime.getMinuteOfHour());
+                                            String stringEndTime = safeToString(endTime.getHourOfDay()) + ":" +
+                                                    safeToString(endTime.getMinuteOfHour());
+
+                                            stringStartTime = convertToCivilianTime(stringStartTime);
+                                            stringEndTime = convertToCivilianTime(stringEndTime);
+
+
+                                            insertGSRSlot(gsrRoom.getName(), stringStartTime + "-" + stringEndTime, safeToString(startTime.getHourOfDay()) + ":" +
+                                                            safeToString(startTime.getMinuteOfHour()),
+                                                    safeToString(startTime.getDayOfWeek()),
+                                                    safeToString(startTime.getDayOfMonth()), "30", Integer.toString(gsrRoom.getRoom_id()));
+
+                                        }
+                                    }
+
+
+                                }
+
+                                if (timeSlotLengthZero) {
+                                    Toast.makeText(getContext(), "No GSRs available", Toast.LENGTH_LONG).show();
+                                }
+
+                                LinearLayoutManager gsrRoomListLayoutManager = new LinearLayoutManager(getContext());
+                                gsrRoomListLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                                gsrRoomListRecylerView.setLayoutManager(gsrRoomListLayoutManager);
+                                gsrRoomListRecylerView.setAdapter(new GsrBuildingAdapter(getContext(), mGSRS, Integer.toString(location)));
+
+                                mGSRS = new ArrayList<GSRContainer>();
+                            }
+                        });
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(final Throwable throwable) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getActivity(), "Error: Could not retrieve GSRs", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                });
+    }
+
+
+    private void populateDropDownGSR() {
+        mLabs.location()
+                .subscribe(new Action1<List<GSRLocation>>() {
+                               @Override
+                               public void call(final List<GSRLocation> locations) {
+                                   getActivity().runOnUiThread(new Runnable() {
+                                       @Override
+                                       public void run() {
+
+                                           //reset the drop down
+                                           String[] emptyArray = new String[0];
+                                           ArrayAdapter<String> emptyAdapter = new ArrayAdapter<String>(getActivity(),
+                                                   android.R.layout.simple_spinner_dropdown_item, emptyArray);
+                                           gsrDropDown.setAdapter(emptyAdapter);
+
+
+                                           int numLocations = locations.size();
+
+
+                                           int i = 0;
+                                           // go through all the rooms
+                                           while (i < numLocations) {
+
+                                               gsrHashMap.put(locations.get(i).name, locations.get(i).id);
+                                               gsrLocationsArray.add(locations.get(i).name);
+                                               i++;
+                                           }
+
+                                           String[] gsrs = new String[gsrLocationsArray.size()];
+                                           gsrs = gsrLocationsArray.toArray(gsrs);
+
+                                           //create an adapter to describe how the items are displayed, adapters are used in several places in android.
+                                           //There are multiple variations of this, but this is the basic variant.
+                                           ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, gsrs);
+
+                                           //set the spinners adapter to the previously created one.
+                                           gsrDropDown.setAdapter(adapter);
+                                           searchForGSR();
+                                       }
+                                   });
+
+                               }
+                           }, new Action1<Throwable>() {
+                               @Override
+                               public void call(Throwable throwable) {
+                                   getActivity().runOnUiThread(new Runnable() {
+                                       @Override
+                                       public void run() {
+
+
+                                           //hard coded in case runs into error
+                                           gsrHashMap.put("Weigle", 1086);
+                                           gsrHashMap.put("VP Ground Floor", 1086);
+                                           gsrHashMap.put("VP 3rd Floor", 1086);
+                                           gsrHashMap.put("VP 4th Floor", 1086);
+                                           gsrHashMap.put("Lippincott", 2587);
+                                           gsrHashMap.put("Education Commons", 2495);
+                                           gsrHashMap.put("Biomedical Library", 2683);
+                                           gsrHashMap.put("Fisher Fine Arts", 2637);
+                                           gsrHashMap.put("Levin Building", 1090);
+                                           gsrHashMap.put("Museum Library", 2634);
+                                           //gsrHashMap.put("Dental Sem", 13532);
+                                           gsrHashMap.put("VP Seminar", 2636);
+                                           gsrHashMap.put("VP Special Use", 2611);
+
+
+                                           gsrLocationsArray.add("Weigle");
+                                           gsrLocationsArray.add("VP Ground Floor");
+                                           gsrLocationsArray.add("VP 3rd Floor");
+                                           gsrLocationsArray.add("VP 4th Floor");
+                                           gsrLocationsArray.add("Lippincott");
+                                           gsrLocationsArray.add("Education Commons");
+                                           gsrLocationsArray.add("Biomedical Library");
+                                           gsrLocationsArray.add("Fisher Fine Arts");
+                                           gsrLocationsArray.add("Levin Building");
+                                           gsrLocationsArray.add("Museum Library");
+                                           gsrLocationsArray.add("VP Seminar");
+                                           gsrLocationsArray.add("VP Special Use");
+
+
+                                           String[] gsrs = new String[gsrLocationsArray.size()];
+                                           gsrs = gsrLocationsArray.toArray(gsrs);
+
+                                           //create an adapter to describe how the items are displayed, adapters are used in several places in android.
+                                           //There are multiple variations of this, but this is the basic variant.
+                                           ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, gsrs);
+                                           //set the spinners adapter to the previously created one.
+                                           gsrDropDown.setAdapter(adapter);
+                                           searchForGSR();
+                                       }
+                                   });
+
+                               }
+                           }
+                );
+        gsrDropDown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                searchForGSR();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+
+    //helper function that turns military to civilian time
+    public String convertToCivilianTime(String input) {
+        DateTimeFormatter militaryTimeFormatter = DateTimeFormat.forPattern("HH:mm");
+        DateTimeFormatter civilianTimeFormatter = DateTimeFormat.forPattern("hh:mm a");
+        return civilianTimeFormatter.print(militaryTimeFormatter.parseDateTime(input));
+    }
+
+    //helper function that converts string to int but keeps zeros
+    public String safeToString (int input) {
+        if (input == 0) {
+            return "00";
+        }
+        else {
+          return Integer.toString(input);
+        }
     }
 
     //takes the name of the gsr and returns an int for the corresponding code
     public int mapGSR(String name) {
-        return gsrHashMap.get(name);
+        return  gsrHashMap.get(name);
     }
 
     // Parameters: the starting time's hour, minutes, and AM/PM as formatted by Java.utils.Calendar
@@ -359,212 +553,6 @@ public class GsrFragment extends Fragment {
         return results;
     }
 
-    //async task that gets the hours of the given gsr and time options
-    public class getHours extends AsyncTask<String, Void, String[]> {
-
-        protected void onPreExecute(){}
-
-        //interacts with penn's servers using a post request
-        protected String[] doInBackground(String... pParams) {
-
-            try {
-
-                String gsrCode = pParams[0];
-                String date = pParams[1];
-                String startTime = pParams[2];
-                String endTime = pParams[3];
-                URL url = new URL("http://libcal.library.upenn.edu/process_roombookings.php?m=calscroll&gid=" + gsrCode + "&date=" + date);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestProperty("Referer","http://libcal.library.upenn.edu/booking/vpdlc");
-                conn.setReadTimeout(15000);
-                conn.setConnectTimeout(15000);
-                conn.setRequestMethod("POST");
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-
-
-                int responseCode=conn.getResponseCode();
-                if (responseCode == HttpsURLConnection.HTTP_OK) {
-                    //put the information into a string builder
-                    BufferedReader in=new BufferedReader(new
-                            InputStreamReader(
-                            conn.getInputStream()));
-                    StringBuilder total = new StringBuilder();
-                    String line;
-                    while ((line = in.readLine()) != null) {
-                        total.append(line).append('\n');
-                    }
-
-                    //return response and inputs for onPost
-                    in.close();
-                    String[] returnArray = {total.toString(), gsrCode, date, startTime, endTime};
-                    return returnArray;
-
-                }
-                else {
-                    String[] returnArray = {"failed"};
-                    return returnArray;
-                }
-            }
-            catch(Exception e){
-                String[] returnArray = {"failed"};
-                return returnArray;
-            }
-
-        }
-
-        //take the html, parse it, and populate recycler views
-        @Override
-        protected void onPostExecute(String[] result) {
-            if (result.length > 1) {
-                String gsrCode = result[1];
-                String dayOfWeek = result[2];
-                String startTime = result[3];
-                String endTime = result[4];
-
-                Document doc = Jsoup.parse(result[0]);
-                //each time block has associated tag below:
-                Elements elements = doc.body().select("a.lc_rm_a");
-
-                if (elements.size() == 0) {
-
-                    Toast.makeText(getActivity(), "No GSRs available", Toast.LENGTH_LONG).show();
-
-                    //populate recyclerview
-                    LinearLayoutManager gsrRoomListLayoutManager = new LinearLayoutManager(getContext());
-                    gsrRoomListLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                    gsrRoomListRecylerView.setLayoutManager(gsrRoomListLayoutManager);
-                    gsrRoomListRecylerView.setAdapter(new GsrBuildingAdapter(getContext(), mGSRS, gsrCode));
-
-                } else {
-                    for (Element element : elements) {
-
-                        String element_entry = element.attr("onclick") + "\n";
-                        String[] parsed_data = parseEntry(element_entry).split("&");
-                        String gsrName = parsed_data[0].replace("'", "");
-                        String dateTime = parsed_data[1].replace("'", "");
-                        String elementId = element.attr("id") + "\n";
-
-                        //parse datetime further
-                        String[] dateDataBrokenUp = parseEntry(element_entry).split(",");
-                        String timeRange = dateDataBrokenUp[0].split("&")[1];
-                        String dayDate = dateDataBrokenUp[1];
-                        String dateNum = dateDataBrokenUp[2];
-                        String duration = parsed_data[2].replace("'", "");
-
-                        String AMPM = "";
-                        if (timeRange.contains("AM")) {
-                            AMPM = "AM";
-                        }
-                        else {AMPM = "PM";}
-
-                        //time block times
-                        String localStartTime = timeRange.split("-")[0].replace("'", "");
-                        String localEndTime = timeRange.split("-")[1];
-
-                        Boolean startDateCondition = false;
-                        Boolean endDateCondition = false;
-
-                        //convert all times
-                        //local is for time block and global refers to the user's parameters' times
-                        SimpleDateFormat localFormat = new SimpleDateFormat("hh:mmaa");
-                        SimpleDateFormat globalFormat = new SimpleDateFormat("hh:mm aa");
-
-                        try {
-                            //now convert all times to date objects to compare
-                            Date localStartDate = localFormat.parse(localStartTime);
-                            Date globalStartDate = globalFormat.parse(startTime);
-                            Date localEndDate = localFormat.parse(localEndTime);
-                            Date globalEndDate = globalFormat.parse(endTime);
-
-                            //now compare
-                            Calendar calendarLocalStart = Calendar.getInstance();
-                            Calendar calendarGlobalStart = Calendar.getInstance();
-                            Calendar calendarLocalEnd = Calendar.getInstance();
-                            Calendar calendarGlobalEnd = Calendar.getInstance();
-
-                            calendarLocalEnd.setTime(localEndDate);
-
-                            calendarGlobalEnd.setTime(globalEndDate);
-
-                            calendarLocalStart.setTime(localStartDate);
-
-                            calendarGlobalStart.setTime(globalStartDate);
-
-                            //if end time is greater than time block's end time
-                            if (calendarGlobalEnd.getTimeInMillis() - calendarLocalEnd.getTimeInMillis() >= 0 )
-                            {
-                                endDateCondition = true;
-
-                            }
-
-                            //if start time is less than time start end time
-                            if ((calendarLocalStart.after(calendarGlobalStart)) || calendarLocalStart.equals(calendarGlobalStart)) {
-                                startDateCondition = true;
-
-                            }
-
-
-                        } catch (ParseException e) {
-                        }
-
-                        if (startDateCondition && endDateCondition) {
-                            //now populate mGSRs
-                            insertGSRSlot(gsrName, dateTime, timeRange, dayDate, dateNum, duration, elementId);
-                        }
-
-                    }
-
-                    //now change the ui
-
-                    if (mGSRS.size() == 0)
-                    {
-                        Toast.makeText(getActivity(), "No GSRs available", Toast.LENGTH_LONG).show();
-                    }
-
-                    LinearLayoutManager gsrRoomListLayoutManager = new LinearLayoutManager(getContext());
-                    gsrRoomListLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                    gsrRoomListRecylerView.setLayoutManager(gsrRoomListLayoutManager);
-                    gsrRoomListRecylerView.setAdapter(new GsrBuildingAdapter(getContext(), mGSRS, gsrCode));
-
-                    //reset var
-                    mGSRS = new ArrayList<GSR>();
-
-                }
-            } else {
-                Toast.makeText(getActivity(), "Failed to retrieve GSR data", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    //this function clicks the search button to load initial results on the screen
-    public void loadInitialData() {
-        searchGSR.performClick();
-        searchGSR.setPressed(true);
-        searchGSR.invalidate();
-        searchGSR.setPressed(false);
-        searchGSR.invalidate();
-    }
-
-
-    //helper function to parse the HTML response
-    public String parseEntry(String gsr_entry) {
-        //get the name of gsr
-        Pattern p = Pattern.compile("([\"'])(?:(?=(\\\\?))\\2.)*?\\1");
-        Matcher m = p.matcher(gsr_entry);
-        String final_return = "";
-        while(m.find()) {
-            if (final_return.equals("")) {
-                final_return = m.group();
-            }
-            else {
-                final_return = final_return + "&" + m.group();
-            }
-        }
-        return final_return;
-
-    }
-
     //function that takes all available GSR sessions and populates mGSRs
     public void insertGSRSlot(String gsrName, String GSRTimeRange, String GSRDateTime,
                               String GSRDayDate, String GSRDateNum, String GSRDuration, String GSRElementId) {
@@ -572,7 +560,7 @@ public class GsrFragment extends Fragment {
         boolean encountered = false;
 
         for(int i=0; i<mGSRS.size(); i++) {
-            GSR currentGSR = mGSRS.get(i);
+            GSRContainer currentGSR = mGSRS.get(i);
             //if there is GSR, add the available session to the GSR Object
             if (currentGSR.getGsrName().equals(gsrName)) {
                 currentGSR.addGSRSlot(GSRTimeRange, GSRDateTime, GSRDayDate, GSRDateNum, GSRDuration, GSRElementId);
@@ -581,7 +569,7 @@ public class GsrFragment extends Fragment {
         }
         //can't find existing GSR. Create new object
         if (encountered == false) {
-            GSR newGSRObject = new GSR(gsrName, GSRTimeRange, GSRDateTime, GSRDayDate, GSRDateNum, GSRDuration, GSRElementId);
+            GSRContainer newGSRObject = new GSRContainer(gsrName, GSRTimeRange, GSRDateTime, GSRDayDate, GSRDateNum, GSRDuration, GSRElementId);
             mGSRS.add(newGSRObject);
         }
     }
