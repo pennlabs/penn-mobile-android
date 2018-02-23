@@ -9,6 +9,7 @@ import com.pennapps.labs.pennmobile.classes.GSR;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
+import com.pennapps.labs.pennmobile.classes.LaundryUsage;
 import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Review;
 import com.pennapps.labs.pennmobile.classes.Venue;
@@ -87,8 +88,6 @@ public interface Labs {
             @Query("end") String endTime
             );
 
-
-
     @FormUrlEncoded
     @POST("/studyspaces/book")
     public void bookGSR(
@@ -104,5 +103,8 @@ public interface Labs {
             @Field("size") String size,
             Callback<Response> callback);
 
+    @GET("/laundry/usage/{id}")
+    Observable<LaundryUsage> usage(
+            @Path("id") int id);
 
 }

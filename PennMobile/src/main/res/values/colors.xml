@@ -44,4 +44,6 @@
     <color name="gsr_green">#3CC772</color>
     <color name="gsr_background_gray">#F1F1F1</color>
     <color name="gsr_text_gray">#DFDFDF</color>
+    <color name="washer_blue">#3498db</color>
+    <color name="dryer_red">#d35400</color>
 </resources>

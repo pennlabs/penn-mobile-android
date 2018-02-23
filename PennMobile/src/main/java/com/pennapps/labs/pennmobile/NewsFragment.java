@@ -23,10 +23,15 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import io.fabric.sdk.android.Fabric;
 
 public class NewsFragment extends ListFragment {
 
@@ -172,6 +177,12 @@ public class NewsFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         ((MainActivity) getActivity()).closeKeyboard();
         setHasOptionsMenu(true);
+
+        Fabric.with(getContext(), new Crashlytics());
+        Answers.getInstance().logContentView(new ContentViewEvent()
+                .putContentName("News")
+                .putContentType("App Feature")
+                .putContentId("5"));
     }
 
     @Override

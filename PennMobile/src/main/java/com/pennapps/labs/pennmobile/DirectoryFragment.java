@@ -6,7 +6,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.preference.PreferenceManager;
 
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
+
 import butterknife.ButterKnife;
+import io.fabric.sdk.android.Fabric;
 
 public class DirectoryFragment extends SearchFavoriteFragment {
 
@@ -65,6 +70,16 @@ public class DirectoryFragment extends SearchFavoriteFragment {
     @Override
     protected String getTitle() {
         return getString(R.string.directory);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Fabric.with(getContext(), new Crashlytics());
+        Answers.getInstance().logContentView(new ContentViewEvent()
+                .putContentName("Directory")
+                .putContentType("App Feature")
+                .putContentId("6"));
     }
 
     @Override
