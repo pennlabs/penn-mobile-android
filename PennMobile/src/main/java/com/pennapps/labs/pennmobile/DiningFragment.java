@@ -18,6 +18,9 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
 import com.pennapps.labs.pennmobile.adapters.DiningAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
@@ -27,6 +30,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.fabric.sdk.android.Fabric;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -46,6 +50,11 @@ public class DiningFragment extends ListFragment {
         mLabs = MainActivity.getLabsInstance();
         mActivity = (MainActivity) getActivity();
         mActivity.closeKeyboard();
+        Fabric.with(getContext(), new Crashlytics());
+        Answers.getInstance().logContentView(new ContentViewEvent()
+                .putContentName("Dining")
+                .putContentType("App Feature")
+                .putContentId("1"));
     }
 
     @Override
