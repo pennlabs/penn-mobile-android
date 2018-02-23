@@ -1,84 +1,94 @@
 package com.pennapps.labs.pennmobile;
 
-import android.app.Activity;
+
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-
 import com.pennapps.labs.pennmobile.api.Labs;
-
-import org.joda.time.DateTime;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-/**
- * Created by MikeD on 11/5/2017.
- */
-
-public class BookGSRActivity extends Activity
-
-{
+public class BookGsrFragment extends Fragment {
 
     private Labs mLabs;
 
-    @Bind(R.id.first_name) EditText firstName;
+    @Bind(R.id.first_name)
+    EditText firstName;
     @Bind(R.id.last_name) EditText lastName;
     @Bind(R.id.gsr_email) EditText email;
-    @Bind(R.id.submit_gsr) Button submit;
+    @Bind(R.id.submit_gsr)
+    Button submit;
 
+    private String gsrID, gsrLocationCode, startTime, endTime;
+
+
+    public BookGsrFragment() {
+        // Required empty public constructor
+    }
+
+    public static BookGsrFragment newInstance(String gsrID, String gsrLocationCode, String startTime, String endTime) {
+        BookGsrFragment fragment = new BookGsrFragment();
+        Bundle args = new Bundle();
+        args.putString("gsrID", gsrID);
+        args.putString("gsrLocationCode", gsrLocationCode);
+        args.putString("startTime", startTime);
+        args.putString("endTime", endTime);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.gsr_details_book);
-
+        if (getArguments() != null) {
+            gsrID = getArguments().getString("gsrID");
+            gsrLocationCode = getArguments().getString("gsrLocationCode");
+            startTime = getArguments().getString("startTime");
+            endTime = getArguments().getString("endTime");
+        }
         mLabs = MainActivity.getLabsInstance();
+        getActivity().setTitle(R.string.gsr);
+    }
 
-        ButterKnife.bind(this);
-
-
-
-        final String gsrId = getIntent().getStringExtra("gsrID");
-        final String gsrLocationCode = getIntent().getStringExtra("gsrLocationCode");
-        final String startTime = getIntent().getStringExtra("startTime");
-        final String endTime = getIntent().getStringExtra("endTime");
-
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.gsr_details_book, container, false);
+        ButterKnife.bind(this, v);
         submit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (firstName.getText().toString().matches("") || lastName.getText().toString().matches("")
                         || email.getText().toString().matches("")) {
-                    Toast.makeText(getApplicationContext(), "Please fill in all fields before booking",
+                    Toast.makeText(getActivity(), "Please fill in all fields before booking",
                             Toast.LENGTH_LONG).show();
                 } else {
-                    bookGSR(Integer.parseInt(gsrId), Integer.parseInt(gsrLocationCode), startTime, endTime);
+                    bookGSR(Integer.parseInt(gsrID), Integer.parseInt(gsrLocationCode), startTime, endTime);
                 }
             }
         });
+        return v;
+    }
 
-
-
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 
     private void bookGSR(int gsrId, int gsrLocationCode, String startTime, String endTime){
@@ -119,16 +129,16 @@ public class BookGSRActivity extends Activity
                         }
 
                         //Displaying the output as a toast
-                        Toast.makeText(getApplicationContext(), "GSR successfully booked", Toast.LENGTH_LONG).show();
-                        finish();
+                        Toast.makeText(getActivity(), "GSR successfully booked", Toast.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
-                        //If any error occured displaying the error as toast
-                        Toast.makeText(getApplicationContext(), "An error has occurred. Please try again." ,Toast.LENGTH_LONG).show();
+                        //If any error occurred displaying the error as toast
+                        Toast.makeText(getActivity(), "An error has occurred. Please try again." ,Toast.LENGTH_LONG).show();
                     }
                 }
         );
     }
+
 }
