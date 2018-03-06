@@ -1,5 +1,7 @@
 package com.pennapps.labs.pennmobile.api;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -12,7 +14,6 @@ import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
-import com.pennapps.labs.pennmobile.classes.GSR;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
@@ -155,13 +156,25 @@ public class Serializer {
         }
     }
   
-    // new - gets laundry usage
+    // gets laundry usage
     public static class LaundryUsageSerializer implements JsonDeserializer<LaundryUsage> {
         @Override
         public LaundryUsage deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
                 throws JsonParseException {
             JsonElement content = je.getAsJsonObject();
             return new Gson().fromJson(content, new TypeToken<LaundryUsage>() {
+            }.getType());
+        }
+    }
+
+    // gets laundry pref data from server
+    public static class LaundryPrefSerializer implements JsonDeserializer<List<Integer>> {
+        @Override
+        public List<Integer> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+            throws JsonParseException {
+            Log.d("je", new Gson().toJson(je));
+            JsonElement content = je.getAsJsonObject().get("rooms");
+            return new Gson().fromJson(content, new TypeToken<List<Integer>>() {
             }.getType());
         }
     }

@@ -14,8 +14,6 @@ import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Review;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
-import org.joda.time.DateTime;
-
 import java.util.List;
 
 import retrofit.Callback;
@@ -23,6 +21,7 @@ import retrofit.client.Response;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
+import retrofit.http.Header;
 import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -90,7 +89,7 @@ public interface Labs {
 
     @FormUrlEncoded
     @POST("/studyspaces/book")
-    public void bookGSR(
+    void bookGSR(
             @Field("building") int building,
             @Field("room") int room,
             @Field("start") String start,
@@ -106,5 +105,17 @@ public interface Labs {
     @GET("/laundry/usage/{id}")
     Observable<LaundryUsage> usage(
             @Path("id") int id);
+
+    // used for testing purposes only
+    @GET("/laundry/preferences")
+    Observable<List<Integer>> testPref(
+            @Header("X-Device-ID") String deviceID);
+
+    @FormUrlEncoded
+    @POST("/laundry/preferences")
+    void sendLaundryPref(
+            @Header("X-Device-ID") String deviceID,
+            @Field("rooms") List<Integer> rooms,
+            Callback<Response> callback);
 
 }
