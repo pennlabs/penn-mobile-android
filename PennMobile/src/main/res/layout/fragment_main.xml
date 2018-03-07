@@ -13,25 +13,24 @@
     app:layout_widthPercent="50%"
     app:layout_heightPercent="33%">
 
-    <ImageView
-        android:contentDescription="@string/registrar"
-        android:id="@+id/registrar_img"
-        android:src="@drawable/ic_registrar"
-        style="@style/MainIcon"
-        app:layout_widthPercent="100%"
-        app:layout_heightPercent="60%"
-        app:layout_marginTopPercent="10%"
-        />
+        <ImageView
+            android:id="@+id/registrar_img"
+            style="@style/MainIcon"
+            android:contentDescription="@string/registrar"
+            android:src="@drawable/ic_registrar"
+            app:layout_heightPercent="60%"
+            app:layout_marginTopPercent="10%"
+            app:layout_widthPercent="100%" />
 
-    <TextView
-        android:id="@+id/registrar_button"
-        android:layout_below="@+id/registrar_img"
-        android:text="@string/registrar"
-        style="@style/MainText"
-        app:layout_widthPercent="100%"
-        app:layout_heightPercent="25%"/>
+        <TextView
+            android:id="@+id/registrar_button"
+            style="@style/MainText"
+            android:layout_below="@+id/registrar_img"
+            android:text="@string/registrar"
+            app:layout_heightPercent="25%"
+            app:layout_widthPercent="100%" />
 
-</android.support.percent.PercentRelativeLayout>
+    </android.support.percent.PercentRelativeLayout>
 
     <android.support.percent.PercentRelativeLayout
         style="@style/MainRelativeLayout"
