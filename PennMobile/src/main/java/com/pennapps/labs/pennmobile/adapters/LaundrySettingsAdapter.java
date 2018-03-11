@@ -3,7 +3,6 @@ package com.pennapps.labs.pennmobile.adapters;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.pennapps.labs.pennmobile.MainActivity;
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
@@ -25,7 +23,6 @@ import java.util.List;
 import retrofit.ResponseCallback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import rx.functions.Action1;
 
 /**
  * Created by Jackie on 2017-10-13.
@@ -54,22 +51,16 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
             editor.putInt(s, 0);
             editor.apply();
         }
-        labs = MainActivity.getLabsInstance();
-        labs.testPref("test_android").subscribe(new Action1<List<Integer>>() {
-            @Override
-            public void call(List<Integer> integers) {
-//                int[] logArray = new int[integers.size()];
-//                for (int i = 0; i < logArray.length; i++) {
-//                    logArray[i] = integers.get(i);
-//                }
-                Log.d("get success", integers.toString());
-            }
-        }, new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                Log.d("get failure", throwable.toString());
-            }
-        });
+//        labs = MainActivity.getLabsInstance();
+//        labs.testPref("test_android").subscribe(new Action1<List<Integer>>() {
+//            @Override
+//            public void call(List<Integer> integers) {
+//            }
+//        }, new Action1<Throwable>() {
+//            @Override
+//            public void call(Throwable throwable) {
+//            }
+//        });
     }
 
     @Override
@@ -167,7 +158,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
                         editor.apply();
                     }
                     updateSwitches();
-                    sendPreferencesData();
+//                    sendPreferencesData();
                 }
             });
 
@@ -239,7 +230,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
                 }
 
                 updateSwitches();
-                sendPreferencesData();
+//                sendPreferencesData();
             }
         });
 
@@ -284,11 +275,6 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
         labs.sendLaundryPref("test_android", favoriteLaundryRooms, new ResponseCallback() {
             @Override
             public void success(Response response) {
-//                int[] logArray = new int[favoriteLaundryRooms.size()];
-//                for (int i = 0; i < logArray.length; i++) {
-//                    logArray[i] = favoriteLaundryRooms.get(i);
-//                }
-                Log.d("send success", favoriteLaundryRooms.toString());
             }
 
             @Override
