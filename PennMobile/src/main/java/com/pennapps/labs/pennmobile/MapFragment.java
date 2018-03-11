@@ -401,7 +401,7 @@ public class MapFragment extends Fragment {
         mapView.onResume();
         mapCallbacks.requestLocationUpdates();
         activity.setTitle(R.string.map);
-        activity.setNav(R.id.nav_map);
+//        activity.setNav(R.id.nav_map);
     }
 
     @Override
