@@ -283,17 +283,20 @@ public class MainActivity extends AppCompatActivity {
             gsonBuilder.registerTypeAdapter(BusRoute.class, new Serializer.BusRouteSerializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<List<BusRoute>>() {
             }.getType(), new Serializer.BusRouteListSerializer());
-            // new - gets room
+            // gets room
             gsonBuilder.registerTypeAdapter(new TypeToken<LaundryRoom>() {
             }.getType(), new Serializer.LaundryRoomSerializer());
-            // new - gets laundry room list
+            // gets laundry room list
             gsonBuilder.registerTypeAdapter(new TypeToken<List<LaundryRoomSimple>>() {
             }.getType(), new Serializer.LaundryRoomListSerializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<List<GSRLocation>>() {
             }.getType(), new Serializer.GsrLocationSerializer());
-            // new - gets laundry usage
+            // gets laundry usage
             gsonBuilder.registerTypeAdapter(new TypeToken<LaundryUsage>() {
             }.getType(), new Serializer.LaundryUsageSerializer());
+            // gets laundry preferences (used only for testing)
+            gsonBuilder.registerTypeAdapter(new TypeToken<List<Integer>>(){
+            }.getType(), new Serializer.LaundryPrefSerializer());
             Gson gson = gsonBuilder.create();
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setConverter(new GsonConverter(gson))
