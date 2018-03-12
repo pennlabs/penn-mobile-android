@@ -11,13 +11,20 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.pennapps.labs.pennmobile.MainActivity;
 import com.pennapps.labs.pennmobile.R;
+import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import retrofit.ResponseCallback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import rx.functions.Action1;
 
 /**
  * Created by Jackie on 2017-10-13.
@@ -31,6 +38,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
     private String s;
     private List<Switch> switches = new ArrayList<>();
     private int maxNumRooms = 3;
+    private Labs labs;
 
     public LaundrySettingsAdapter(Context context, HashMap<String, List<LaundryRoomSimple>> laundryRooms, List<String> laundryHalls) {
         this.mContext = context;
@@ -45,6 +53,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
             editor.putInt(s, 0);
             editor.apply();
         }
+//        getPreferencesData();
     }
 
     @Override
@@ -142,6 +151,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
                         editor.apply();
                     }
                     updateSwitches();
+//                    sendPreferencesData();
                 }
             });
 
@@ -213,6 +223,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
                 }
 
                 updateSwitches();
+//                sendPreferencesData();
             }
         });
 
@@ -244,5 +255,37 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
                 nextSwitch.setEnabled(true);
             }
         }
+    }
+
+    private void getPreferencesData() {
+        labs = MainActivity.getLabsInstance();
+        labs.testPref("test_android").subscribe(new Action1<List<Integer>>() {
+            @Override
+            public void call(List<Integer> integers) {
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+            }
+        });
+    }
+
+    private void sendPreferencesData() {
+        final List<Integer> favoriteLaundryRooms = new ArrayList<>();
+        for (int i = 0; i < sp.getInt(mContext.getString(R.string.num_rooms_pref), 100); i++) {
+            if (sp.getBoolean(Integer.toString(i), false)) {
+                favoriteLaundryRooms.add(i);
+            }
+        }
+        // cleanup later by removing callback
+        labs.sendLaundryPref("test_android", favoriteLaundryRooms, new ResponseCallback() {
+            @Override
+            public void success(Response response) {
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+            }
+        });
     }
 }
