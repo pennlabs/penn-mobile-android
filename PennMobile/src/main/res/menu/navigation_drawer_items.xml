@@ -12,11 +12,6 @@
             android:title="@string/registrar"/>
 
         <item
-            android:id="@+id/nav_directory"
-            android:icon="@drawable/ic_contacts"
-            android:title="@string/directory"/>
-
-        <item
             android:id="@+id/nav_gsr"
             android:icon="@drawable/ic_gsr_black"
             android:title="@string/gsr"/>
@@ -31,10 +26,15 @@
             android:icon="@drawable/ic_local_laundry_service"
             android:title="@string/laundry"/>
 
+        <!--<item-->
+            <!--android:id="@+id/nav_map"-->
+            <!--android:icon="@drawable/ic_map"-->
+            <!--android:title="@string/map"/>-->
+
         <item
-            android:id="@+id/nav_map"
-            android:icon="@drawable/ic_map"
-            android:title="@string/map"/>
+            android:id="@+id/nav_directory"
+            android:icon="@drawable/ic_contacts"
+            android:title="@string/directory"/>
 
         <item
             android:id="@+id/nav_news"
