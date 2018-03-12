@@ -99,8 +99,6 @@ public class MapFragment extends Fragment {
     private String query;
     private MainActivity activity;
 
-    @Bind(R.id.map_initial_card)
-    LinearLayout initCard;
     @Bind(R.id.map_search_card)
     LinearLayout searchCard;
     @Bind(R.id.map_search_name)
@@ -109,13 +107,10 @@ public class MapFragment extends Fragment {
     TextView searchLoc;
     @Bind(R.id.map_suggestion)
     ListView suggestionList;
-    @Bind(R.id.map_bus_card)
-    TextView busStopName;
     private FloatingActionButton transitMode;
     private SearchSuggestionAdapter adapter;
     private Building currentBuilding;
     private Marker currentMarker;
-    private Set<Circle> displayCircles;
     private Set<Building> searchedBuildings;
     private Set<Marker> loadedMarkers;
     private static MapCallbacks mapCallbacks;
@@ -152,7 +147,6 @@ public class MapFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mLabs = MainActivity.getLabsInstance();
         activity = (MainActivity) getActivity();
-        displayCircles = new HashSet<>();
         loadedMarkers = new HashSet<>();
         mapCallbacks = new MapCallbacks();
         Context context = activity.getApplicationContext();
@@ -229,16 +223,7 @@ public class MapFragment extends Fragment {
             @Override
             public void onMapClick(LatLng latLng) {
                 boolean changed = false;
-                for (Circle c : displayCircles) {
-                    float[] results = new float[1];
-                    Location.distanceBetween(latLng.latitude, latLng.longitude, c.getCenter().latitude, c.getCenter().longitude, results);
-                    if (results[0] <= SENSITIVITY_MULTIPLIER * CIRCLE_SIZE) {
-                        changed = true;
-                        displayCircles.remove(c);
-                        c.remove();
-                        break;
-                    }
-                }
+
                 if (!changed) {
                     checkBusStopClicked(latLng);
                     return;
@@ -250,12 +235,7 @@ public class MapFragment extends Fragment {
                         currentBuilding = b;
                     }
                 }
-                displayCircles.add(googleMap.addCircle(new CircleOptions()
-                        .center(currentMarker.getPosition())
-                        .visible(true)
-                        .radius(CIRCLE_SIZE)
-                        .fillColor(Color.RED)
-                        .strokeWidth(0)));
+
                 currentMarker.remove();
                 currentMarker = googleMap.addMarker(new MarkerOptions()
                         .position(currentBuilding.getLatLng())
@@ -313,9 +293,6 @@ public class MapFragment extends Fragment {
                     useBus = false;
                     transit = true;
                     drawUserRoute("", query);
-                } else if (useBus) {
-                    button.setImageResource(R.drawable.ic_directions_bus_white_24dp);
-                    drawUserRoute(from.getText().toString(), to.getText().toString());
                 } else {
                     button.setImageResource(R.drawable.ic_directions_walk_white_24dp);
                     drawUserRoute(from.getText().toString(), to.getText().toString());
@@ -348,15 +325,12 @@ public class MapFragment extends Fragment {
                     public void onAnimationStart(Animation animation) {
                         searchName.setVisibility(View.GONE);
                         searchLoc.setVisibility(View.GONE);
-                        initCard.setVisibility(View.VISIBLE);
                         searchCard.setVisibility(View.GONE);
-                        busStopName.setVisibility(View.GONE);
                     }
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        busStopName.setVisibility(View.VISIBLE);
-                        busStopName.setText(currentBuilding == null ? "" : currentBuilding.title);
+
                     }
 
                     @Override
@@ -364,7 +338,6 @@ public class MapFragment extends Fragment {
 
                     }
                 });
-                initCard.startAnimation(animation);
             }
         });
 
@@ -428,7 +401,7 @@ public class MapFragment extends Fragment {
         mapView.onResume();
         mapCallbacks.requestLocationUpdates();
         activity.setTitle(R.string.map);
-        activity.setNav(R.id.nav_map);
+//        activity.setNav(R.id.nav_map);
     }
 
     @Override
@@ -602,24 +575,18 @@ public class MapFragment extends Fragment {
                 .snippet(currentBuilding.getImageURL()));
         for (Building building : buildings) {
             boundsBuilder.include(building.getLatLng());
-            displayCircles.add(googleMap.addCircle(new CircleOptions()
-                    .center(building.getLatLng())
-                    .visible(true)
-                    .radius(CIRCLE_SIZE)
-                    .fillColor(Color.RED)
-                    .strokeWidth(0)));
+
         }
         changeZoomLevel(googleMap, boundsBuilder.build());
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.cardscalebigger);
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                busStopName.setVisibility(View.GONE);
+
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                initCard.setVisibility(View.GONE);
                 searchCard.setVisibility(View.VISIBLE);
                 searchName.setText(currentBuilding.title);
                 searchLoc.setText(currentBuilding.address);
@@ -632,7 +599,6 @@ public class MapFragment extends Fragment {
 
             }
         });
-        initCard.startAnimation(animation);
         suggestionList.setVisibility(View.GONE);
     }
 
@@ -760,7 +726,6 @@ public class MapFragment extends Fragment {
 
     private void clearMap() {
         googleMap.clear();
-        displayCircles.clear();
         if (searchedBuildings != null) {
             searchedBuildings.clear();
         }
@@ -1000,7 +965,6 @@ public class MapFragment extends Fragment {
                         if (total > minStartBuffer + minEndBuffer) {
                             //west
                             if (westStart == null || westEnd == null) {
-                                activity.showErrorToast(R.string.no_bus_route);
                                 addWalkingPath(startLatLng, destLatLng, true, true);
                                 return;
                             }
@@ -1008,14 +972,12 @@ public class MapFragment extends Fragment {
                         } else {
                             //east
                             if (eastStart == null || eastEnd == null) {
-                                activity.showErrorToast(R.string.no_bus_route);
                                 addWalkingPath(startLatLng, destLatLng, true, true);
                                 return;
                             }
                             req = getGoogleBusRoute(map, east, eastStart, eastEnd, interStops);
                         }
                         if (eastStart == null || westStart == null || (interStops.isEmpty() && eastStart.equals(eastEnd) && westStart.equals(westEnd))) {
-                            activity.showErrorToast(R.string.no_bus_route);
                             addWalkingPath(startLatLng, destLatLng, true, true);
                             return;
                         }
@@ -1075,7 +1037,6 @@ public class MapFragment extends Fragment {
 
             @Override
             public void onFailure(Throwable e) {
-                activity.showErrorToast(R.string.no_bus_route);
                 addWalkingPath(startLatLng, destLatLng, true, true);
             }
         };
@@ -1252,7 +1213,6 @@ public class MapFragment extends Fragment {
             Location.distanceBetween(pressed.latitude, pressed.longitude, bs.getLatLng().latitude, bs.getLatLng().longitude, results);
             if (results[0] <= SENSITIVITY_MULTIPLIER * CIRCLE_SIZE) {
                 current = bs;
-                busStopName.setText(current.getName());
                 searchName.setText(current.getName());
                 searchLoc.setText("");
                 break;
@@ -1266,7 +1226,6 @@ public class MapFragment extends Fragment {
                         currentBusStop = null;
                         searchName.setText(currentBuilding == null ? "" : currentBuilding.title);
                         searchLoc.setText(currentBuilding == null ? "" : currentBuilding.address);
-                        busStopName.setText("");
                     } else {
                         c.setFillColor(getResources().getColor(R.color.red));
                         if (currentBusStop != null) {
