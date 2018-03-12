@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.pennapps.labs.pennmobile.MainActivity;
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
@@ -23,6 +24,7 @@ import java.util.List;
 import retrofit.ResponseCallback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.functions.Action1;
 
 /**
  * Created by Jackie on 2017-10-13.
@@ -51,16 +53,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
             editor.putInt(s, 0);
             editor.apply();
         }
-//        labs = MainActivity.getLabsInstance();
-//        labs.testPref("test_android").subscribe(new Action1<List<Integer>>() {
-//            @Override
-//            public void call(List<Integer> integers) {
-//            }
-//        }, new Action1<Throwable>() {
-//            @Override
-//            public void call(Throwable throwable) {
-//            }
-//        });
+//        getPreferencesData();
     }
 
     @Override
@@ -262,6 +255,19 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
                 nextSwitch.setEnabled(true);
             }
         }
+    }
+
+    private void getPreferencesData() {
+        labs = MainActivity.getLabsInstance();
+        labs.testPref("test_android").subscribe(new Action1<List<Integer>>() {
+            @Override
+            public void call(List<Integer> integers) {
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+            }
+        });
     }
 
     private void sendPreferencesData() {
