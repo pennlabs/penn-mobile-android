@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
 import android.Manifest;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -62,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private static Labs mLabs;
-    private boolean from_alarm;
     private static final int CODE_MAP = 1;
     private boolean tab_showed;
 
@@ -79,8 +77,6 @@ public class MainActivity extends AppCompatActivity {
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-
-        from_alarm = getIntent().getBooleanExtra(getString(R.string.laundry_notification_alarm_intent), false);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(
@@ -142,11 +138,6 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         setTitle(R.string.main_title);
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.cancelAll();
-        if (from_alarm) {
-            navigateLayout(R.id.nav_laundry);
-        }
     }
 
     public void closeKeyboard() {
@@ -197,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void navigateLayout(@AnyRes int id) {
+
         Fragment fragment = null;
         switch (id) {
             case R.id.nav_home:
@@ -230,25 +222,9 @@ public class MainActivity extends AppCompatActivity {
 //                return;
             case R.id.nav_laundry:
             case R.id.laundry_cont:
-
-                /*
-                fragment = new LaundryFragment();
-                if (from_alarm) {
-                    from_alarm = false;
-                    Bundle arg = new Bundle();
-                    arg.putInt(getString(R.string.laundry_hall_no), getIntent().getIntExtra(getString(R.string.laundry_hall_no), -1));
-                    fragment.setArguments(arg);
-                }
-                */
-
                 Intent intent = new Intent(this, LaundryActivity.class);
                 startActivity(intent);
-
                 break;
-//            case R.id.nav_nso:
-//            case R.id.nso_cont:
-//                fragment = new NsoFragment();
-//                break;
             case R.id.nav_support:
                 fragment = new SupportFragment();
                 break;
@@ -431,4 +407,6 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
+
+    
 }
