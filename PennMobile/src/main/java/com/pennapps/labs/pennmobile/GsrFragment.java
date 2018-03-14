@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -96,7 +97,9 @@ public class GsrFragment extends Fragment {
         populateDropDownGSR();
 
         // Get calendar time and date
-        Calendar calendar = Calendar.getInstance();
+        //standardize to EST
+        TimeZone tz = TimeZone.getTimeZone("America/New_York");
+        Calendar calendar = Calendar.getInstance(tz);
         int minutes = calendar.get(Calendar.MINUTE);
         int hour = calendar.get(Calendar.HOUR);
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
