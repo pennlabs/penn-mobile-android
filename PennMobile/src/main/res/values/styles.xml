@@ -159,4 +159,10 @@
         <item name="colorAccent">@color/color_accent</item>
     </style>
 
+    <style name="HomeScreenTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/color_accent</item>
+    </style>
+
 </resources>
