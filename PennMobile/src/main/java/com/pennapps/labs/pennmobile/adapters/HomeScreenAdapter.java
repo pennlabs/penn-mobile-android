@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.DiningFragment;
+import com.pennapps.labs.pennmobile.FlingFragment;
 import com.pennapps.labs.pennmobile.GsrFragment;
 import com.pennapps.labs.pennmobile.LaundryActivity;
 import com.pennapps.labs.pennmobile.MapFragment;
@@ -21,6 +23,7 @@ import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.RegistrarFragment;
 import com.pennapps.labs.pennmobile.classes.HomeScreenItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -73,6 +76,9 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 return new MapViewHolder(view, mContext);
             case 5:
                 return new NewsViewHolder(view, mContext);
+            case 6:
+                view = LayoutInflater.from(mContext).inflate(R.layout.home_fling_card, parent, false);
+                return new FlingViewHolder(view, mContext);
             default:
                 view = LayoutInflater.from(mContext).inflate(R.layout.home_cardview_empty_item, parent, false);
                 return new EmptyViewHolder(view, mContext);
@@ -112,6 +118,18 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 NewsViewHolder newsViewHolder = (NewsViewHolder) holder;
                 String newsTitle = mCategories.get(position).getName();
                 newsViewHolder.titleTextView.setText(newsTitle);
+                break;
+            case 6:
+                FlingViewHolder flingViewHolder = (FlingViewHolder) holder;
+                String flingTitle = mCategories.get(position).getName();
+                flingViewHolder.titleTextView.setText(flingTitle);
+                flingViewHolder.homeFlingRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+                ArrayList<String> sampleData = new ArrayList<>();
+                sampleData.add("Penn Labs");
+                sampleData.add("Penn Course Review");
+                sampleData.add("Penn Mobile");
+                sampleData.add("Penn Course Alert");
+                flingViewHolder.homeFlingRecyclerView.setAdapter(new FlingRecyclerViewAdapter(mContext, sampleData));
                 break;
         }
     }
@@ -229,6 +247,26 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         @Override
         public void onClick(View view) {
             fragmentTransact(new NewsFragment());
+        }
+    }
+
+    public class FlingViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        Context context;
+        @Bind(R.id.home_fling_title)
+        TextView titleTextView;
+        @Bind(R.id.home_fling_recyclerview)
+        RecyclerView homeFlingRecyclerView;
+
+        public FlingViewHolder(View view, Context context) {
+            super(view);
+            ButterKnife.bind(this, view);
+            this.context = context;
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            fragmentTransact(new FlingFragment());
         }
     }
 
