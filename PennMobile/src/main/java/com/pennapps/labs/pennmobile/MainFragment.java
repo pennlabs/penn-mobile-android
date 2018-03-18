@@ -71,6 +71,7 @@ public class MainFragment extends Fragment {
         mAllCategories.add(new HomeScreenItem("Laundry", 3));
         mAllCategories.add(new HomeScreenItem("Map", 4));
         mAllCategories.add(new HomeScreenItem("News", 5));
+        mAllCategories.add(new HomeScreenItem("Spring Fling", 6));
 
         mCategories = new ArrayList<>();
         // determine order of cards
@@ -91,7 +92,7 @@ public class MainFragment extends Fragment {
     }
 
     private void reset() {
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < mAllCategories.size(); i++) {
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putInt(mContext.getString(R.string.home_screen_pref) + i, -1);
             editor.apply();
