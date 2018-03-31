@@ -1,11 +1,19 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.pennapps.labs.pennmobile.FlingFragment">
+    tools:context="com.pennapps.labs.pennmobile.FlingFragment"
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:text="@string/spring_fling"/>
 
-</FrameLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/fling_fragment_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:list_item="fling_performance_item"/>
+
+</LinearLayout>

@@ -111,7 +111,6 @@ public class MainFragment extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.home_screen_recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(linearLayoutManager);
-
         return view;
     }
 
