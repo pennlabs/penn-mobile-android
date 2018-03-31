@@ -123,13 +123,21 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 FlingViewHolder flingViewHolder = (FlingViewHolder) holder;
                 String flingTitle = mCategories.get(position).getName();
                 flingViewHolder.titleTextView.setText(flingTitle);
-                flingViewHolder.homeFlingRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
                 ArrayList<String> sampleData = new ArrayList<>();
                 sampleData.add("Penn Labs");
                 sampleData.add("Penn Course Review");
-                sampleData.add("Penn Mobile");
+                sampleData.add("PennMobile");
                 sampleData.add("Penn Course Alert");
-                flingViewHolder.homeFlingRecyclerView.setAdapter(new FlingRecyclerViewAdapter(mContext, sampleData));
+                sampleData.add("PennBasics");
+                sampleData.add("OHQ");
+                flingViewHolder.homeFlingPerformer1.setText(sampleData.get(0));
+                flingViewHolder.homeFlingPerformer2.setText(sampleData.get(1));
+                flingViewHolder.homeFlingPerformer3.setText(sampleData.get(2));
+                flingViewHolder.homeFlingPerformer4.setText(sampleData.get(3));
+                flingViewHolder.homeFlingTime1.setText("2011-present");
+                flingViewHolder.homeFlingTime2.setText("2011-present");
+                flingViewHolder.homeFlingTime3.setText("2015-present");
+                flingViewHolder.homeFlingTime4.setText("2017-present");
                 break;
         }
     }
@@ -254,8 +262,22 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         Context context;
         @Bind(R.id.home_fling_title)
         TextView titleTextView;
-        @Bind(R.id.home_fling_recyclerview)
-        RecyclerView homeFlingRecyclerView;
+        @Bind(R.id.homeview_fling_performer_1)
+        TextView homeFlingPerformer1;
+        @Bind(R.id.homeview_fling_performer_2)
+        TextView homeFlingPerformer2;
+        @Bind(R.id.homeview_fling_performer_3)
+        TextView homeFlingPerformer3;
+        @Bind(R.id.homeview_fling_performer_4)
+        TextView homeFlingPerformer4;
+        @Bind(R.id.homeview_fling_time_1)
+        TextView homeFlingTime1;
+        @Bind(R.id.homeview_fling_time_2)
+        TextView homeFlingTime2;
+        @Bind(R.id.homeview_fling_time_3)
+        TextView homeFlingTime3;
+        @Bind(R.id.homeview_fling_time_4)
+        TextView homeFlingTime4;
 
         public FlingViewHolder(View view, Context context) {
             super(view);
