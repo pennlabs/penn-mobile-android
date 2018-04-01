@@ -106,7 +106,9 @@ public class MainFragment extends Fragment {
         }
 
         // update home screen
-        getHomeData();
+        //getHomeData();
+        homeScreenAdapter = new HomeScreenAdapter(mContext, mCategories, mCells, mLaundryRoomList);
+        mRecyclerView.setAdapter(homeScreenAdapter);
     }
 
     @Override
