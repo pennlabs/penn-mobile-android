@@ -47,6 +47,8 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
         sp = PreferenceManager.getDefaultSharedPreferences(mContext);
         s = mContext.getString(R.string.num_rooms_selected_pref);
 
+        labs = MainActivity.getLabsInstance();
+
         // first time
         if (sp.getInt(s, -1) == -1) {
             SharedPreferences.Editor editor = sp.edit();
@@ -151,7 +153,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
                         editor.apply();
                     }
                     updateSwitches();
-//                    sendPreferencesData();
+                    sendPreferencesData();
                 }
             });
 
@@ -223,7 +225,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
                 }
 
                 updateSwitches();
-//                sendPreferencesData();
+                sendPreferencesData();
             }
         });
 

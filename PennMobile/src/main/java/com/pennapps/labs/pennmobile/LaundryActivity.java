@@ -15,6 +15,9 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
 import com.pennapps.labs.pennmobile.adapters.LaundryRoomAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
@@ -27,13 +30,8 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.functions.Action1;
-
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.ContentViewEvent;
-
 import io.fabric.sdk.android.Fabric;
+import rx.functions.Action1;
 
 public class LaundryActivity extends AppCompatActivity {
 
@@ -125,6 +123,7 @@ public class LaundryActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.laundry_settings) {
             Intent intent = new Intent(this, com.pennapps.labs.pennmobile.LaundrySettingsActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             return true;
         } else if (id == android.R.id.home) {

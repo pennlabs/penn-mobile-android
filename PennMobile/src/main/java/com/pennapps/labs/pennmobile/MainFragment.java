@@ -16,10 +16,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.pennapps.labs.pennmobile.adapters.HomeScreenAdapter;
+import com.pennapps.labs.pennmobile.api.Labs;
+import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
 import com.pennapps.labs.pennmobile.classes.HomeScreenItem;
+import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+
+import butterknife.ButterKnife;
+import rx.functions.Action1;
 
 
 /**
@@ -36,6 +44,16 @@ public class MainFragment extends Fragment {
     private List<HomeScreenItem> mCategories;
     private SharedPreferences sharedPref;
     private List<HomeScreenItem> mAllCategories;
+    private HomeScreenAdapter homeScreenAdapter;
+    private List<HomeScreenCell> mCells;
+
+    private Labs mLabsHome;
+    private Labs mLabs;
+
+    // laundry
+    private List<LaundryRoom> mLaundryRoomList;
+    private List<LaundryRoom> mLaundryRoomResult;
+    private int numLaundryRoomsPref;
 
     /**
      * Use this factory method to create a new instance of
@@ -59,20 +77,21 @@ public class MainFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mContext = getActivity();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mLabsHome = MainActivity.getLabsInstanceHome();
+        mLabs = MainActivity.getLabsInstance();
     }
 
     private void orderCards() {
+
         // home screen categories/pages
         // In order: Courses, Dining, GSR Booking, Laundry, Map, News
-        mAllCategories = new ArrayList<>();
         mAllCategories.add(new HomeScreenItem("Courses", 0));
         mAllCategories.add(new HomeScreenItem("Dining", 1));
         mAllCategories.add(new HomeScreenItem("GSR Booking", 2));
         mAllCategories.add(new HomeScreenItem("Laundry", 3));
-        mAllCategories.add(new HomeScreenItem("Map", 4));
+        mAllCategories.add(new HomeScreenItem("Directory", 4));
         mAllCategories.add(new HomeScreenItem("News", 5));
 
-        mCategories = new ArrayList<>();
         // determine order of cards
         for (int index = 0; index < mAllCategories.size(); index++) {
             // search all categories to find the one that belongs to correct index
@@ -86,16 +105,8 @@ public class MainFragment extends Fragment {
             }
         }
 
-        HomeScreenAdapter adapter = new HomeScreenAdapter(mContext, mCategories);
-        mRecyclerView.setAdapter(adapter);
-    }
-
-    private void reset() {
-        for (int i = 0; i < 6; i++) {
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putInt(mContext.getString(R.string.home_screen_pref) + i, -1);
-            editor.apply();
-        }
+        // update home screen
+        getHomeData();
     }
 
     @Override
@@ -117,8 +128,17 @@ public class MainFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
         getActivity().setTitle(R.string.main_title);
         ((MainActivity) getActivity()).setNav(R.id.nav_home);
+
+        mCells = new ArrayList<>();
+        mCategories = new ArrayList<>();
+        mAllCategories = new ArrayList<>();
+        mLaundryRoomList = new ArrayList<>();
+        mLaundryRoomResult = new ArrayList<>();
+        numLaundryRoomsPref = 0;
+
         orderCards();
     }
 
@@ -137,5 +157,78 @@ public class MainFragment extends Fragment {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
+
+    // get preferences
+    private void getHomeData() {
+        mLabsHome.getHomePage("test_android").subscribe(new Action1<List<HomeScreenCell>>() {
+            @Override
+            public void call(final List<HomeScreenCell> cells) {
+
+                mCells = cells;
+                mLaundryRoomList = new ArrayList<>();
+                mLaundryRoomResult = new ArrayList<>();
+
+                // get laundry prefs and add data to list
+                for (HomeScreenCell cell : mCells) {
+                    if (cell.getType().equals("laundry")) {
+                        int roomId = cell.getInfo().getRoomId();
+                        numLaundryRoomsPref++;
+                        addRoom(roomId);
+                    }
+                }
+
+                // wait for laundry rooms to update
+                while (mLaundryRoomResult.size() != numLaundryRoomsPref) {
+                }
+
+                // sort laundry rooms by name
+                Collections.sort(mLaundryRoomResult, new Comparator<LaundryRoom>() {
+                    @Override
+                    public int compare(LaundryRoom room1, LaundryRoom room2) {
+                        return room2.getId() - room1.getId();
+                    }
+                });
+                mLaundryRoomList = mLaundryRoomResult;
+                // update UI
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // update adapter
+                        homeScreenAdapter = new HomeScreenAdapter(mContext, mCategories, mCells, mLaundryRoomList);
+                        mRecyclerView.setAdapter(homeScreenAdapter);
+                        homeScreenAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+            }
+        });
+    }
+
+    public synchronized void addRoomToList(LaundryRoom room) {
+        mLaundryRoomResult.add(room);
+    }
+
+    private void addRoom(final int i) {
+        mLabs.room(i)
+                .subscribe(new Action1<LaundryRoom>() {
+                    @Override
+                    public void call(final LaundryRoom room) {
+                        addRoomToList(room);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                    }
+                });
     }
 }
