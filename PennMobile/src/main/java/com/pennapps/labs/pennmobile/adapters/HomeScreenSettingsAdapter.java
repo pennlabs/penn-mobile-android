@@ -131,4 +131,12 @@ public class HomeScreenSettingsAdapter extends RecyclerView.Adapter<HomeScreenSe
             this.context = context;
         }
     }
+
+    private void reset() {
+        for (int i = 0; i < 6; i++) {
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt(mContext.getString(R.string.home_screen_pref) + i, -1);
+            editor.apply();
+        }
+    }
 }

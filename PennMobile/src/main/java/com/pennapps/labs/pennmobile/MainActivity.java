@@ -43,6 +43,7 @@ import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
+import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private static Labs mLabs;
+    private static Labs mLabsHome;
     private static final int CODE_MAP = 1;
     private boolean tab_showed;
 
@@ -282,6 +284,22 @@ public class MainActivity extends AppCompatActivity {
             mLabs = restAdapter.create(Labs.class);
         }
         return mLabs;
+    }
+
+    public static Labs getLabsInstanceHome() {
+        if (mLabsHome == null) {
+            // homepage endpoint
+            GsonBuilder gsonBuilderHomePage = new GsonBuilder();
+            gsonBuilderHomePage.registerTypeAdapter(new TypeToken<List<HomeScreenCell>>() {
+            }.getType(), new Serializer.HomePageSerializer());
+            Gson gsonHome = gsonBuilderHomePage.create();
+            RestAdapter restAdapterHome = new RestAdapter.Builder()
+                    .setConverter(new GsonConverter(gsonHome))
+                    .setEndpoint("http://api-dev.pennlabs.org")
+                    .build();
+            mLabsHome = restAdapterHome.create(Labs.class);
+        }
+        return mLabsHome;
     }
 
     public void showErrorToast(final int errorMessage) {

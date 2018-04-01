@@ -7,6 +7,7 @@ import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.GSR;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
+import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
@@ -118,4 +119,8 @@ public interface Labs {
             @Field("rooms") List<Integer> rooms,
             Callback<Response> callback);
 
+    // home page
+    @GET("/homepage")
+    Observable<List<HomeScreenCell>> getHomePage(
+            @Header("X-Device-ID") String deviceID);
 }
