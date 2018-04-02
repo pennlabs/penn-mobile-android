@@ -25,7 +25,15 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp">
 
+                <ImageView
+                    android:id="@+id/home_screen_cardview_icon"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="16dp"
+                    android:src="@drawable/ic_news" />
+
                 <TextView
+                    android:layout_toRightOf="@id/home_screen_cardview_icon"
                     android:id="@+id/home_screen_cardview_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -35,10 +43,11 @@
                     tools:text="News" />
 
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:src="@drawable/ic_news" />
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_chevron_right_black_24dp" />
 
             </RelativeLayout>
 

@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 
 import com.pennapps.labs.pennmobile.adapters.HomeScreenSettingsAdapter;
 import com.pennapps.labs.pennmobile.classes.HomeScreenItem;
+import com.pennapps.labs.pennmobile.classes.HomeScreenItemTouchHelperCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +45,11 @@ public class HomeScreenSettingsActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(linearLayoutManager);
         HomeScreenSettingsAdapter adapter = new HomeScreenSettingsAdapter(mContext, mAllCategories);
         mRecyclerView.setAdapter(adapter);
+
+        // add handling of cardview drags to move position
+        ItemTouchHelper.Callback callback = new HomeScreenItemTouchHelperCallback(adapter);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(mRecyclerView);
     }
 
     @Override

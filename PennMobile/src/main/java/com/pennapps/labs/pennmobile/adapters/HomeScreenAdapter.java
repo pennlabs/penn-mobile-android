@@ -84,7 +84,7 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 view = LayoutInflater.from(mContext).inflate(R.layout.home_cardview_card_laundry, parent, false);
                 return new LaundryViewHolder(view, mContext);
             case 4:
-                view = LayoutInflater.from(mContext).inflate(R.layout.home_cardview_card_map, parent, false);
+                view = LayoutInflater.from(mContext).inflate(R.layout.home_cardview_card_directory, parent, false);
                 return new DirectoryViewHolder(view, mContext);
             case 5:
                 view = LayoutInflater.from(mContext).inflate(R.layout.home_cardview_card_news, parent, false);
