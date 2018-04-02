@@ -13,7 +13,10 @@ import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.classes.HomeScreenItem;
+import com.pennapps.labs.pennmobile.classes.ItemTouchHelperAdapter;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +28,7 @@ import butterknife.ButterKnife;
  * Created by Jackie on 2018-03-06.
  */
 
-public class HomeScreenSettingsAdapter extends RecyclerView.Adapter<HomeScreenSettingsAdapter.CustomViewHolder> {
+public class HomeScreenSettingsAdapter extends RecyclerView.Adapter<HomeScreenSettingsAdapter.CustomViewHolder> implements ItemTouchHelperAdapter {
 
     // all the categories
     private List<HomeScreenItem> mCategories;
@@ -35,9 +38,70 @@ public class HomeScreenSettingsAdapter extends RecyclerView.Adapter<HomeScreenSe
     private Set<CustomViewHolder> viewHolders = new HashSet<>();
 
     public HomeScreenSettingsAdapter(Context context, List<HomeScreenItem> categories) {
-        this.mCategories = categories;
+        this.mCategories = new ArrayList<>();
         this.mContext = context;
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        this.sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+        // determine order of cards
+        for (int index = 0; index < categories.size(); index++) {
+            // search all categories to find the one that belongs to correct index
+            for (int j = 0; j < categories.size(); j++) {
+                int position = sharedPref.getInt(mContext.getString(R.string.home_screen_pref) + j, -1);
+
+                // first time
+                if (position == -1) {
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putInt(mContext.getString(R.string.home_screen_pref) + j, j);
+                    editor.apply();
+                    position = j;
+                }
+
+                // switch on
+                if (position >= 100) {
+                    position -= 100;
+                }
+
+                if (position == index) {
+                    HomeScreenItem category = categories.get(j);
+                    mCategories.add(index, category);
+                    break;
+                }
+            }
+        }
+    }
+
+    // moving item up or down in list
+    public boolean onItemMove(int fromPosition, int toPosition) {
+        // moving down
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(mCategories, i, i + 1);
+            }
+        }
+        // moving up
+        else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(mCategories, i, i - 1);
+            }
+        }
+
+        // update positions as shared preferences
+        for (int i = 0; i < mCategories.size(); i++) {
+            SharedPreferences.Editor editor = sharedPref.edit();
+            HomeScreenItem card = mCategories.get(i);
+            int currentPos = sharedPref.getInt(mContext.getString(R.string.home_screen_pref) + card.getViewType(), -1);
+
+            int newPos = i;
+            if (currentPos >= 100) {
+                newPos += 100;
+            }
+
+            editor.putInt(mContext.getString(R.string.home_screen_pref) + card.getViewType(), newPos);
+            editor.apply();
+        }
+
+        notifyItemMoved(fromPosition, toPosition);
+        return true;
     }
 
     @Override
@@ -52,16 +116,15 @@ public class HomeScreenSettingsAdapter extends RecyclerView.Adapter<HomeScreenSe
         final HomeScreenItem category = mCategories.get(position);
         Switch categorySwitch = holder.aSwitch;
         final int categoryID = category.getViewType();
-        final int pos = sharedPref.getInt(mContext.getString(R.string.home_screen_pref) + categoryID, -1);
+        final int pos = sharedPref.getInt(mContext.getString(R.string.home_screen_pref) + categoryID, categoryID);
         holder.titleTextView.setText(category.getName());
 
         // which categories are shown on the home screen - update switch indicators
-        if (pos == -1) {
+        if (pos < 100) {
             categorySwitch.setChecked(false);
         } else {
             categorySwitch.setChecked(true);
             numCategories++;
-            holder.positionTextView.setText("position in home screen: " + pos);
         }
 
         categorySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -71,40 +134,20 @@ public class HomeScreenSettingsAdapter extends RecyclerView.Adapter<HomeScreenSe
                 // checked - add category
                 if (b) {
                     SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putInt(mContext.getString(R.string.home_screen_pref) + categoryID, numCategories);
+                    int currPos = sharedPref.getInt(mContext.getString(R.string.home_screen_pref) + categoryID, -1);
+                    int newPos = currPos + 100;
+                    editor.putInt(mContext.getString(R.string.home_screen_pref) + categoryID, newPos);
                     editor.apply();
                     numCategories++;
                 }
                 // unchecked - remove category
                 else {
                     SharedPreferences.Editor editor = sharedPref.edit();
-                    int removedPos = sharedPref.getInt(mContext.getString(R.string.home_screen_pref) + categoryID, -1);
-                    editor.putInt(mContext.getString(R.string.home_screen_pref) + categoryID, -1);
+                    int currPos = sharedPref.getInt(mContext.getString(R.string.home_screen_pref) + categoryID, -1);
+                    int newPos = currPos - 100;
+                    editor.putInt(mContext.getString(R.string.home_screen_pref) + categoryID, newPos);
                     editor.apply();
                     numCategories--;
-                    // change the position of the cards after card removed
-                    for (int i = 0; i < mCategories.size(); i++) {
-                        HomeScreenItem cardAfter = mCategories.get(i);
-                        int previousPos = sharedPref.getInt(mContext.getString(R.string.home_screen_pref) + cardAfter.getViewType(), -1);
-                        if (previousPos > removedPos) {
-                            int newPos = previousPos - 1;
-                            editor.putInt(mContext.getString(R.string.home_screen_pref) + cardAfter.getViewType(), newPos);
-                            editor.apply();
-                        }
-                    }
-                }
-
-                // update position textviews
-                for (CustomViewHolder viewHolder : viewHolders) {
-                    int index = viewHolder.getAdapterPosition();
-                    HomeScreenItem category = mCategories.get(index);
-                    int categoryID = category.getViewType();
-                    int position = sharedPref.getInt(mContext.getString(R.string.home_screen_pref) + categoryID, -1);
-                    if (position > -1) {
-                        viewHolder.positionTextView.setText("position in home screen: " + position);
-                    } else {
-                        viewHolder.positionTextView.setText("");
-                    }
                 }
             }
         });
@@ -122,8 +165,6 @@ public class HomeScreenSettingsAdapter extends RecyclerView.Adapter<HomeScreenSe
         Switch aSwitch;
         @Bind(R.id.home_screen_category_name)
         TextView titleTextView;
-        @Bind(R.id.home_screen_position)
-        TextView positionTextView;
 
         public CustomViewHolder(View view, Context context) {
             super(view);
@@ -135,7 +176,7 @@ public class HomeScreenSettingsAdapter extends RecyclerView.Adapter<HomeScreenSe
     private void reset() {
         for (int i = 0; i < 6; i++) {
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putInt(mContext.getString(R.string.home_screen_pref) + i, -1);
+            editor.putInt(mContext.getString(R.string.home_screen_pref) + i, i);
             editor.apply();
         }
     }

@@ -93,14 +93,22 @@ public class MainFragment extends Fragment {
         mAllCategories.add(new HomeScreenItem("News", 5));
 
         // determine order of cards
-        for (int index = 0; index < mAllCategories.size(); index++) {
+        int index = 0;
+        for (int i = 0; i < mAllCategories.size(); i++) {
             // search all categories to find the one that belongs to correct index
             for (int j = 0; j < mAllCategories.size(); j++) {
                 int position = sharedPref.getInt(mContext.getString(R.string.home_screen_pref) + j, -1);
-                if (position == index) {
-                    HomeScreenItem category = mAllCategories.get(j);
-                    mCategories.add(index, category);
-                    break;
+
+                // if item selected
+                if (position >= 100) {
+                    position -= 100;
+
+                    if (position == i) {
+                        HomeScreenItem category = mAllCategories.get(j);
+                        mCategories.add(index, category);
+                        index++;
+                        break;
+                    }
                 }
             }
         }
