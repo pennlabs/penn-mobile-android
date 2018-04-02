@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -21,7 +22,6 @@ public class HomeScreenSettingsActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private Context mContext;
     private List<HomeScreenItem> mAllCategories;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +45,13 @@ public class HomeScreenSettingsActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(linearLayoutManager);
         HomeScreenSettingsAdapter adapter = new HomeScreenSettingsAdapter(mContext, mAllCategories);
         mRecyclerView.setAdapter(adapter);
+
+        // add horizontal divider for RecyclerView
+        DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(
+                mRecyclerView.getContext(),
+                linearLayoutManager.getOrientation()
+        );
+        mRecyclerView.addItemDecoration(mDividerItemDecoration);
 
         // add handling of cardview drags to move position
         ItemTouchHelper.Callback callback = new HomeScreenItemTouchHelperCallback(adapter);
