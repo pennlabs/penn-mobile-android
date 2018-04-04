@@ -42,8 +42,16 @@ public class FlingFragment extends Fragment {
         Labs labs = MainActivity.getLabsInstance();
         labs.getFlingEvents().subscribe(new Action1<List<FlingEvent>>() {
             @Override
-            public void call(List<FlingEvent> flingEvents) {
+            public void call(final List<FlingEvent> flingEvents) {
                 Log.d("received data", flingEvents.toString());
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        flingFragmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+                        flingFragmentRecyclerView.setAdapter(new FlingRecyclerViewAdapter(getContext(), flingEvents));
+                        Log.d("set adapter", "done");
+                    }
+                });
             }
         }, new Action1<Throwable>() {
             @Override
@@ -66,8 +74,6 @@ public class FlingFragment extends Fragment {
         sampleData.add("Penn Course Alert");
         sampleData.add("PennBasics");
         sampleData.add("OHQ");
-        flingFragmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        flingFragmentRecyclerView.setAdapter(new FlingRecyclerViewAdapter(getContext(), sampleData));
         return view;
     }
 

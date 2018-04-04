@@ -13,9 +13,13 @@ import butterknife.ButterKnife;
 public class FlingPerformanceViewHolder extends RecyclerView.ViewHolder {
 
     @Bind(R.id.flingview_image)
-    ImageView flingview_image;
+    public ImageView flingview_image;
     @Bind(R.id.flingview_name)
     public TextView flingview_name;
+    @Bind(R.id.flingview_description)
+    public TextView flingview_description;
+    @Bind(R.id.flingview_time)
+    public TextView flingview_time;
 
     public FlingPerformanceViewHolder(View itemView) {
         super(itemView);
