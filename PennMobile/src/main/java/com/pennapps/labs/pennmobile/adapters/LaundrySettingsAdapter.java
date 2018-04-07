@@ -24,6 +24,7 @@ import java.util.List;
 import retrofit.ResponseCallback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.mime.TypedInput;
 import rx.functions.Action1;
 
 /**
@@ -53,7 +54,11 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
             editor.putInt(s, 0);
             editor.apply();
         }
-//        getPreferencesData();
+
+
+        getPreferencesData();
+
+
     }
 
     @Override
@@ -151,7 +156,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
                         editor.apply();
                     }
                     updateSwitches();
-//                    sendPreferencesData();
+                    sendPreferencesData();
                 }
             });
 
@@ -223,7 +228,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
                 }
 
                 updateSwitches();
-//                sendPreferencesData();
+                sendPreferencesData();
             }
         });
 
@@ -277,8 +282,12 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
                 favoriteLaundryRooms.add(i);
             }
         }
-        // cleanup later by removing callback
-        labs.sendLaundryPref("test_android", favoriteLaundryRooms, new ResponseCallback() {
+
+        //prefernces must be in the form of 1,2,3 (exclude brackets)
+        String api_prepared_string = favoriteLaundryRooms.toString();
+        api_prepared_string = api_prepared_string.substring(1, api_prepared_string.length() - 1);
+
+        labs.sendLaundryPref("test_android", api_prepared_string, new ResponseCallback() {
             @Override
             public void success(Response response) {
             }

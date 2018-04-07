@@ -115,7 +115,7 @@ public interface Labs {
     @POST("/laundry/preferences")
     void sendLaundryPref(
             @Header("X-Device-ID") String deviceID,
-            @Field("rooms") List<Integer> rooms,
+            @Field("rooms") String rooms,
             Callback<Response> callback);
 
 }
