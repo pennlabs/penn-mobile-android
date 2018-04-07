@@ -26,6 +26,7 @@
 
     <!--Home Screen -->
     <string name="home_screen_settings">Home Screen Settings</string>
+    <string name="home_screen_settings_instructions">Press and hold item to drag and drop</string>
 
     <!-- Search -->
     <string name="registrar_search">Search for courses</string>
