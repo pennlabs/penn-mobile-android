@@ -39,6 +39,7 @@ public class HomeScreenSettingsActivity extends AppCompatActivity {
         mAllCategories.add(new HomeScreenItem("Laundry", 3));
         mAllCategories.add(new HomeScreenItem("Directory", 4));
         mAllCategories.add(new HomeScreenItem("News", 5));
+        mAllCategories.add(new HomeScreenItem("Spring Fling", 6));
 
         mRecyclerView = (RecyclerView) findViewById(R.id.home_screen_settings_recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);

@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.DiningFragment;
+import com.pennapps.labs.pennmobile.FlingFragment;
 import com.pennapps.labs.pennmobile.DirectoryFragment;
 import com.pennapps.labs.pennmobile.GsrFragment;
 import com.pennapps.labs.pennmobile.LaundryActivity;
@@ -24,6 +26,7 @@ import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
 import com.pennapps.labs.pennmobile.classes.HomeScreenItem;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -89,6 +92,9 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             case 5:
                 view = LayoutInflater.from(mContext).inflate(R.layout.home_cardview_card_news, parent, false);
                 return new NewsViewHolder(view, mContext);
+            case 6:
+                view = LayoutInflater.from(mContext).inflate(R.layout.home_fling_card, parent, false);
+                return new FlingViewHolder(view, mContext);
             default:
                 view = LayoutInflater.from(mContext).inflate(R.layout.home_cardview_empty_item, parent, false);
                 return new EmptyViewHolder(view, mContext);
@@ -165,6 +171,26 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     }
                 }
                 */
+                break;
+            case 6:
+                FlingViewHolder flingViewHolder = (FlingViewHolder) holder;
+                String flingTitle = mCategories.get(position).getName();
+                flingViewHolder.titleTextView.setText(flingTitle);
+                ArrayList<String> sampleData = new ArrayList<>();
+                sampleData.add("Penn Labs");
+                sampleData.add("Penn Course Review");
+                sampleData.add("PennMobile");
+                sampleData.add("Penn Course Alert");
+                sampleData.add("PennBasics");
+                sampleData.add("OHQ");
+                flingViewHolder.homeFlingPerformer1.setText(sampleData.get(0));
+                flingViewHolder.homeFlingPerformer2.setText(sampleData.get(1));
+                flingViewHolder.homeFlingPerformer3.setText(sampleData.get(2));
+                flingViewHolder.homeFlingPerformer4.setText(sampleData.get(3));
+                flingViewHolder.homeFlingTime1.setText("2011-present");
+                flingViewHolder.homeFlingTime2.setText("2011-present");
+                flingViewHolder.homeFlingTime3.setText("2015-present");
+                flingViewHolder.homeFlingTime4.setText("2017-present");
                 break;
         }
     }
@@ -294,6 +320,40 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         @Override
         public void onClick(View view) {
             fragmentTransact(new NewsFragment());
+        }
+    }
+
+    public class FlingViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        Context context;
+        @Bind(R.id.home_fling_title)
+        TextView titleTextView;
+        @Bind(R.id.homeview_fling_performer_1)
+        TextView homeFlingPerformer1;
+        @Bind(R.id.homeview_fling_performer_2)
+        TextView homeFlingPerformer2;
+        @Bind(R.id.homeview_fling_performer_3)
+        TextView homeFlingPerformer3;
+        @Bind(R.id.homeview_fling_performer_4)
+        TextView homeFlingPerformer4;
+        @Bind(R.id.homeview_fling_time_1)
+        TextView homeFlingTime1;
+        @Bind(R.id.homeview_fling_time_2)
+        TextView homeFlingTime2;
+        @Bind(R.id.homeview_fling_time_3)
+        TextView homeFlingTime3;
+        @Bind(R.id.homeview_fling_time_4)
+        TextView homeFlingTime4;
+
+        public FlingViewHolder(View view, Context context) {
+            super(view);
+            ButterKnife.bind(this, view);
+            this.context = context;
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            fragmentTransact(new FlingFragment());
         }
     }
 

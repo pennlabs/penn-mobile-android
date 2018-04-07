@@ -12,6 +12,7 @@ import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
+import com.pennapps.labs.pennmobile.classes.FlingEvent;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
@@ -176,7 +177,17 @@ public class Serializer {
             }.getType());
         }
     }
+    // fling events
+    public static class FlingEventSerializer implements  JsonDeserializer<List<FlingEvent>> {
 
+        @Override
+        public List<FlingEvent> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                throws JsonParseException {
+            JsonElement content = json.getAsJsonObject().get("events");
+            return new Gson().fromJson(content, new TypeToken<List<FlingEvent>>() {
+            }.getType());
+        }
+    }
     // home page
     public static class HomePageSerializer implements JsonDeserializer<List<HomeScreenCell>> {
         @Override
@@ -187,5 +198,4 @@ public class Serializer {
             }.getType());
         }
     }
-
 }

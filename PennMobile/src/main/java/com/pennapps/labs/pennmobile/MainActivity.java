@@ -42,6 +42,7 @@ import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
+import com.pennapps.labs.pennmobile.classes.FlingEvent;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
@@ -276,6 +277,8 @@ public class MainActivity extends AppCompatActivity {
             // gets laundry preferences (used only for testing)
             gsonBuilder.registerTypeAdapter(new TypeToken<List<Integer>>(){
             }.getType(), new Serializer.LaundryPrefSerializer());
+            gsonBuilder.registerTypeAdapter(new TypeToken<List<FlingEvent>>(){
+            }.getType(), new Serializer.FlingEventSerializer());
             Gson gson = gsonBuilder.create();
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setConverter(new GsonConverter(gson))

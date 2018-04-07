@@ -5,6 +5,7 @@ import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
+import com.pennapps.labs.pennmobile.classes.FlingEvent;
 import com.pennapps.labs.pennmobile.classes.GSR;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
@@ -106,6 +107,9 @@ public interface Labs {
     @GET("/laundry/usage/{id}")
     Observable<LaundryUsage> usage(
             @Path("id") int id);
+
+    @GET("/events/fling")
+    Observable<List<FlingEvent>> getFlingEvents();
 
     // used for testing purposes only
     @GET("/laundry/preferences")
