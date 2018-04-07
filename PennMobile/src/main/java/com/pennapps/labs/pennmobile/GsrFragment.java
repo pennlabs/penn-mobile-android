@@ -36,7 +36,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -95,7 +97,9 @@ public class GsrFragment extends Fragment {
         populateDropDownGSR();
 
         // Get calendar time and date
-        Calendar calendar = Calendar.getInstance();
+        //standardize to EST
+        TimeZone tz = TimeZone.getTimeZone("America/New_York");
+        Calendar calendar = Calendar.getInstance(tz);
         int minutes = calendar.get(Calendar.MINUTE);
         int hour = calendar.get(Calendar.HOUR);
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
@@ -318,8 +322,8 @@ public class GsrFragment extends Fragment {
         DateTimeFormatter toMilitaryTimeFormatter = DateTimeFormat.forPattern("hh:mm a");
 
         DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm:ss");
-        String startMilitary = fmt.print(toMilitaryTimeFormatter.parseDateTime(startTime));
-        String endMilitary = fmt.print(toMilitaryTimeFormatter.parseDateTime(endTime));
+        String startMilitary = fmt.print(toMilitaryTimeFormatter.withLocale(Locale.ENGLISH).parseLocalTime(startTime));
+        String endMilitary = fmt.print(toMilitaryTimeFormatter.withLocale(Locale.ENGLISH).parseLocalTime(endTime));
 
         DateTimeFormatter originalDateFormat = DateTimeFormat.forPattern("MM/dd/yyyy");
         DateTimeFormatter adjustedDateFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
@@ -523,7 +527,7 @@ public class GsrFragment extends Fragment {
     public String convertToCivilianTime(String input) {
         DateTimeFormatter militaryTimeFormatter = DateTimeFormat.forPattern("HH:mm");
         DateTimeFormatter civilianTimeFormatter = DateTimeFormat.forPattern("hh:mm a");
-        return civilianTimeFormatter.print(militaryTimeFormatter.parseDateTime(input));
+        return civilianTimeFormatter.print(militaryTimeFormatter.withLocale(Locale.ENGLISH).parseLocalTime(input));
     }
 
     //helper function that converts string to int but keeps zeros

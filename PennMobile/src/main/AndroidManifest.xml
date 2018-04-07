@@ -61,7 +61,8 @@
             android:name=".LaundryActivity"
             android:label="@string/laundry"
             android:screenOrientation="portrait"
-            android:theme="@style/LaundryTheme" />
+            android:theme="@style/LaundryTheme">
+        </activity>
         <activity
             android:name=".LaundrySettingsActivity"
             android:label="@string/laundry_settings"
