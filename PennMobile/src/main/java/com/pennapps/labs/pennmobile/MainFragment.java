@@ -91,6 +91,7 @@ public class MainFragment extends Fragment {
         mAllCategories.add(new HomeScreenItem("Laundry", 3));
         mAllCategories.add(new HomeScreenItem("Directory", 4));
         mAllCategories.add(new HomeScreenItem("News", 5));
+        mAllCategories.add(new HomeScreenItem("Spring Fling", 6));
 
         // determine order of cards
         int index = 0;
@@ -112,7 +113,6 @@ public class MainFragment extends Fragment {
                 }
             }
         }
-
         // update home screen
         //getHomeData();
         homeScreenAdapter = new HomeScreenAdapter(mContext, mCategories, mCells, mLaundryRoomList);
@@ -131,7 +131,6 @@ public class MainFragment extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.home_screen_recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(linearLayoutManager);
-
         return view;
     }
 
