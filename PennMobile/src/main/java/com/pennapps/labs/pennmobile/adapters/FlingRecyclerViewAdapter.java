@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.FlingPerformanceViewHolder;
+import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.classes.FlingEvent;
 import com.squareup.picasso.Picasso;
 
@@ -16,7 +16,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FlingRecyclerViewAdapter extends RecyclerView.Adapter<FlingPerformanceViewHolder> {
@@ -46,9 +45,9 @@ public class FlingRecyclerViewAdapter extends RecyclerView.Adapter<FlingPerforma
             holder.flingview_description.setText(flingEvent.description);
             DateTime startTime = timeFormatter.parseDateTime(flingEvent.startTime);
             DateTime endTime = timeFormatter.parseDateTime(flingEvent.endTime);
-            DateTimeFormatter dtfStart = DateTimeFormat.forPattern("M/d h:mm a");
+            DateTimeFormatter dtfStart = DateTimeFormat.forPattern("h:mm");
             DateTimeFormatter dtfEnd = DateTimeFormat.forPattern("h:mm a");
-            holder.flingview_time.setText(dtfStart.print(startTime) + " - " + dtfEnd.print(endTime));
+            holder.flingview_time.setText(String.format(context.getResources().getString(R.string.fling_event_time), dtfStart.print(startTime), dtfEnd.print(endTime)));
         }
     }
 
