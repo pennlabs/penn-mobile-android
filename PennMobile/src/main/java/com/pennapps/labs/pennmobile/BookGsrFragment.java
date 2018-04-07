@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,6 +101,7 @@ public class BookGsrFragment extends Fragment {
 
     private void bookGSR(int gsrId, int gsrLocationCode, String startTime, String endTime){
 
+
         mLabs.bookGSR(
 
                 //Passing the values
@@ -129,8 +131,16 @@ public class BookGsrFragment extends Fragment {
                             //Initializing buffered reader
                             reader = new BufferedReader(new InputStreamReader(result.getBody().in()));
 
-                            //Reading the output in the string
-                            output = reader.readLine();
+                            //uncomment for debugging
+                            /*
+                            String s = null;
+
+                            while ((s=reader.readLine())!=null)
+                            {
+
+                                Log.e("res", s);
+                            }
+                            */
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
