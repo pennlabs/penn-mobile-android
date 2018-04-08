@@ -41,7 +41,7 @@ public class MainFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private Context mContext;
-    private List<HomeScreenItem> mCategories;
+    private List<HomeScreenItem> visibleCategories;
     private SharedPreferences sharedPref;
     private List<HomeScreenItem> mAllCategories;
     private HomeScreenAdapter homeScreenAdapter;
@@ -93,29 +93,27 @@ public class MainFragment extends Fragment {
         mAllCategories.add(new HomeScreenItem("News", 5));
         mAllCategories.add(new HomeScreenItem("Spring Fling", 6));
 
-        // determine order of cards
-        int index = 0;
+        // determine which categories are visible
         for (int i = 0; i < mAllCategories.size(); i++) {
-            // search all categories to find the one that belongs to correct index
-            for (int j = 0; j < mAllCategories.size(); j++) {
-                int position = sharedPref.getInt(mContext.getString(R.string.home_screen_pref) + j, -1);
-
-                // if item selected
-                if (position >= 100) {
-                    position -= 100;
-
-                    if (position == i) {
-                        HomeScreenItem category = mAllCategories.get(j);
-                        mCategories.add(index, category);
-                        index++;
-                        break;
-                    }
-                }
+            HomeScreenItem category = mAllCategories.get(i);
+            int position = sharedPref.getInt(mContext.getString(R.string.home_screen_pref) + "_" + category.getName(), -1);
+            if (position >= 100) {
+                visibleCategories.add(category);
             }
         }
+
+        // sort the categories based on the shared preferences data
+        Collections.sort(visibleCategories, new Comparator<HomeScreenItem>() {
+            @Override
+            public int compare(HomeScreenItem homeScreenItem, HomeScreenItem t1) {
+                String itemPrefName = mContext.getString(R.string.home_screen_pref) + "_" + homeScreenItem.getName();
+                String t1PrefName = mContext.getString(R.string.home_screen_pref) + "_" + t1.getName();
+                return sharedPref.getInt(itemPrefName, -1) % 100 - (sharedPref.getInt(t1PrefName, -1) % 100);
+            }
+        });
         // update home screen
         //getHomeData();
-        homeScreenAdapter = new HomeScreenAdapter(mContext, mCategories, mCells, mLaundryRoomList);
+        homeScreenAdapter = new HomeScreenAdapter(mContext, visibleCategories, mCells, mLaundryRoomList);
         mRecyclerView.setAdapter(homeScreenAdapter);
     }
 
@@ -142,7 +140,7 @@ public class MainFragment extends Fragment {
         ((MainActivity) getActivity()).setNav(R.id.nav_home);
 
         mCells = new ArrayList<>();
-        mCategories = new ArrayList<>();
+        visibleCategories = new ArrayList<>();
         mAllCategories = new ArrayList<>();
         mLaundryRoomList = new ArrayList<>();
         mLaundryRoomResult = new ArrayList<>();
@@ -210,7 +208,7 @@ public class MainFragment extends Fragment {
                     @Override
                     public void run() {
                         // update adapter
-                        homeScreenAdapter = new HomeScreenAdapter(mContext, mCategories, mCells, mLaundryRoomList);
+                        homeScreenAdapter = new HomeScreenAdapter(mContext, visibleCategories, mCells, mLaundryRoomList);
                         mRecyclerView.setAdapter(homeScreenAdapter);
                         homeScreenAdapter.notifyDataSetChanged();
                     }

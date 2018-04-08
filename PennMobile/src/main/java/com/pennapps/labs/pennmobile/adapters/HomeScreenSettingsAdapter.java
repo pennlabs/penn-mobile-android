@@ -34,39 +34,26 @@ public class HomeScreenSettingsAdapter extends RecyclerView.Adapter<HomeScreenSe
     private List<HomeScreenItem> mCategories;
     private Context mContext;
     private SharedPreferences sharedPref;
-    private int numCategories = 0;
     private Set<CustomViewHolder> viewHolders = new HashSet<>();
 
+    // categories must be already sorted by shared preferences
     public HomeScreenSettingsAdapter(Context context, List<HomeScreenItem> categories) {
         this.mCategories = new ArrayList<>();
         this.mContext = context;
         this.sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
 
-        // determine order of cards
+        // set up shared preference data for new categories
         for (int index = 0; index < categories.size(); index++) {
-            // search all categories to find the one that belongs to correct index
-            for (int j = 0; j < categories.size(); j++) {
-                int position = sharedPref.getInt(mContext.getString(R.string.home_screen_pref) + j, -1);
-
-                // first time
-                if (position == -1) {
-                    SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putInt(mContext.getString(R.string.home_screen_pref) + j, j);
-                    editor.apply();
-                    position = j;
-                }
-
-                // switch on
-                if (position >= 100) {
-                    position -= 100;
-                }
-
-                if (position == index) {
-                    HomeScreenItem category = categories.get(j);
-                    mCategories.add(index, category);
-                    break;
-                }
+            HomeScreenItem homeScreenItem = categories.get(index);
+            String itemPrefName = mContext.getString(R.string.home_screen_pref) + "_" + homeScreenItem.getName();
+            int itemLocation = sharedPref.getInt(itemPrefName, -1);
+            if (itemLocation == -1) {
+                // new HomeScreenItem
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putInt(itemPrefName, index);
+                editor.apply();
             }
+            mCategories.add(homeScreenItem);
         }
     }
 
@@ -89,14 +76,15 @@ public class HomeScreenSettingsAdapter extends RecyclerView.Adapter<HomeScreenSe
         for (int i = 0; i < mCategories.size(); i++) {
             SharedPreferences.Editor editor = sharedPref.edit();
             HomeScreenItem card = mCategories.get(i);
-            int currentPos = sharedPref.getInt(mContext.getString(R.string.home_screen_pref) + card.getViewType(), -1);
+            String cardPrefName = mContext.getString(R.string.home_screen_pref) + "_" + card.getName();
+            int currentPos = sharedPref.getInt(cardPrefName, -1);
 
             int newPos = i;
             if (currentPos >= 100) {
                 newPos += 100;
             }
 
-            editor.putInt(mContext.getString(R.string.home_screen_pref) + card.getViewType(), newPos);
+            editor.putInt(cardPrefName, newPos);
             editor.apply();
         }
 
@@ -115,16 +103,15 @@ public class HomeScreenSettingsAdapter extends RecyclerView.Adapter<HomeScreenSe
         viewHolders.add(holder);
         final HomeScreenItem category = mCategories.get(position);
         Switch categorySwitch = holder.aSwitch;
-        final int categoryID = category.getViewType();
-        final int pos = sharedPref.getInt(mContext.getString(R.string.home_screen_pref) + categoryID, categoryID);
+        final String categoryName = mContext.getString(R.string.home_screen_pref) + "_" + category.getName();
+        final int pos = sharedPref.getInt(categoryName, -1);
         holder.titleTextView.setText(category.getName());
 
         // which categories are shown on the home screen - update switch indicators
-        if (pos < 100) {
+        if (pos < 100 || pos == -1) {
             categorySwitch.setChecked(false);
         } else {
             categorySwitch.setChecked(true);
-            numCategories++;
         }
 
         categorySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -134,20 +121,18 @@ public class HomeScreenSettingsAdapter extends RecyclerView.Adapter<HomeScreenSe
                 // checked - add category
                 if (b) {
                     SharedPreferences.Editor editor = sharedPref.edit();
-                    int currPos = sharedPref.getInt(mContext.getString(R.string.home_screen_pref) + categoryID, -1);
+                    int currPos = sharedPref.getInt(categoryName, -1);
                     int newPos = currPos + 100;
-                    editor.putInt(mContext.getString(R.string.home_screen_pref) + categoryID, newPos);
+                    editor.putInt(categoryName, newPos);
                     editor.apply();
-                    numCategories++;
                 }
                 // unchecked - remove category
                 else {
                     SharedPreferences.Editor editor = sharedPref.edit();
-                    int currPos = sharedPref.getInt(mContext.getString(R.string.home_screen_pref) + categoryID, -1);
+                    int currPos = sharedPref.getInt(categoryName, -1);
                     int newPos = currPos - 100;
-                    editor.putInt(mContext.getString(R.string.home_screen_pref) + categoryID, newPos);
+                    editor.putInt(categoryName, newPos);
                     editor.apply();
-                    numCategories--;
                 }
             }
         });
@@ -170,14 +155,6 @@ public class HomeScreenSettingsAdapter extends RecyclerView.Adapter<HomeScreenSe
             super(view);
             ButterKnife.bind(this, view);
             this.context = context;
-        }
-    }
-
-    private void reset() {
-        for (int i = 0; i < 6; i++) {
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putInt(mContext.getString(R.string.home_screen_pref) + i, i);
-            editor.apply();
         }
     }
 }

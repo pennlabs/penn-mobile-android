@@ -2,7 +2,9 @@ package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +17,8 @@ import com.pennapps.labs.pennmobile.classes.HomeScreenItem;
 import com.pennapps.labs.pennmobile.classes.HomeScreenItemTouchHelperCallback;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class HomeScreenSettingsActivity extends AppCompatActivity {
@@ -22,6 +26,8 @@ public class HomeScreenSettingsActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private Context mContext;
     private List<HomeScreenItem> mAllCategories;
+    private SharedPreferences sharedPref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +50,17 @@ public class HomeScreenSettingsActivity extends AppCompatActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.home_screen_settings_recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(linearLayoutManager);
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        // sort the categories using the shared preference data so SettingsAdapter will display
+        // the categories in the right order
+        Collections.sort(mAllCategories, new Comparator<HomeScreenItem>() {
+            @Override
+            public int compare(HomeScreenItem homeScreenItem, HomeScreenItem t1) {
+                String itemPrefName = mContext.getString(R.string.home_screen_pref) + "_" + homeScreenItem.getName();
+                String t1PrefName = mContext.getString(R.string.home_screen_pref) + "_" + t1.getName();
+                return sharedPref.getInt(itemPrefName, 150) % 100 - (sharedPref.getInt(t1PrefName, 150) % 100);
+            }
+        });
         HomeScreenSettingsAdapter adapter = new HomeScreenSettingsAdapter(mContext, mAllCategories);
         mRecyclerView.setAdapter(adapter);
 
