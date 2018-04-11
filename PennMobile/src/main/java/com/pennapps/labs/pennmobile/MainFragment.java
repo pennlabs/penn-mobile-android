@@ -21,6 +21,9 @@ import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
 import com.pennapps.labs.pennmobile.classes.HomeScreenItem;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -94,11 +97,13 @@ public class MainFragment extends Fragment {
         mAllCategories.add(new HomeScreenItem("Spring Fling", 6));
 
         // determine which categories are visible
+        int numVisibleCategories = 0;
         for (int i = 0; i < mAllCategories.size(); i++) {
             HomeScreenItem category = mAllCategories.get(i);
             int position = sharedPref.getInt(mContext.getString(R.string.home_screen_pref) + "_" + category.getName(), -1);
             if (position >= 100) {
                 visibleCategories.add(category);
+                numVisibleCategories++;
             }
         }
 
@@ -111,6 +116,26 @@ public class MainFragment extends Fragment {
                 return sharedPref.getInt(itemPrefName, -1) % 100 - (sharedPref.getInt(t1PrefName, -1) % 100);
             }
         });
+
+        // default preferences if none chosen
+        if (numVisibleCategories == 0) {
+
+            DateTime today = new DateTime();
+            DateTime flingStart = new DateTime(2018, 4, 10, 0, 0, 0, 0);
+            DateTime flingEnd = new DateTime(2018, 4, 15, 0, 0, 0, 0);
+            Interval flingDates = new Interval(flingStart, flingEnd);
+
+            // check if today is part of Fling dates - if so, add Fling to home page
+            if (flingDates.contains(today)) {
+                visibleCategories.add(mAllCategories.get(6));
+            }
+
+            // default: dining, laundry, GSR
+            visibleCategories.add(mAllCategories.get(1));
+            visibleCategories.add(mAllCategories.get(3));
+            visibleCategories.add(mAllCategories.get(2));
+        }
+
         // update home screen
         //getHomeData();
         homeScreenAdapter = new HomeScreenAdapter(mContext, visibleCategories, mCells, mLaundryRoomList);
