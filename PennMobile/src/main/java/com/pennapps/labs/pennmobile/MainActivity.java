@@ -228,6 +228,9 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, LaundryActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.nav_fling:
+                fragment = new FlingFragment();
+                break;
             case R.id.nav_support:
                 fragment = new SupportFragment();
                 break;

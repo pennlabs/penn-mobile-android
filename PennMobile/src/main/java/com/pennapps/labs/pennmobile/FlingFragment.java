@@ -1,21 +1,19 @@
 package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.pennapps.labs.pennmobile.adapters.FlingRecyclerViewAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.FlingEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -26,6 +24,8 @@ public class FlingFragment extends Fragment {
 
     @Bind(R.id.fling_fragment_recyclerview)
     RecyclerView flingFragmentRecyclerView;
+
+    List<FlingEvent> flingEvents;
 
     public FlingFragment() {
         // Required empty public constructor
@@ -43,20 +43,23 @@ public class FlingFragment extends Fragment {
         labs.getFlingEvents().subscribe(new Action1<List<FlingEvent>>() {
             @Override
             public void call(final List<FlingEvent> flingEvents) {
-                Log.d("received data", flingEvents.toString());
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         flingFragmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
                         flingFragmentRecyclerView.setAdapter(new FlingRecyclerViewAdapter(getContext(), flingEvents));
-                        Log.d("set adapter", "done");
                     }
                 });
             }
         }, new Action1<Throwable>() {
             @Override
             public void call(Throwable throwable) {
-                Log.d("error", throwable.toString());
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getActivity(), "Error: Could not retrieve Spring Fling schedule", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
     }
@@ -67,14 +70,14 @@ public class FlingFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_fling, container, false);
         ButterKnife.bind(this, view);
-        ArrayList<String> sampleData = new ArrayList<>();
-        sampleData.add("Penn Labs");
-        sampleData.add("Penn Course Review");
-        sampleData.add("PennMobile");
-        sampleData.add("Penn Course Alert");
-        sampleData.add("PennBasics");
-        sampleData.add("OHQ");
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(R.string.spring_fling);
+        ((MainActivity) getActivity()).setNav(R.id.nav_fling);
     }
 
     @Override
