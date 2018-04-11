@@ -64,7 +64,8 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:text="@string/search_start_time"
-                android:textColor="@color/dark_gray" />
+                android:textColor="@color/dark_gray"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/select_start_time"
@@ -75,7 +76,8 @@
                 android:gravity="right|center_vertical"
                 android:text="@string/calendar_button"
                 android:textColor="@color/black"
-                android:textStyle="normal" />
+                android:textStyle="normal"
+                android:visibility="gone" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -91,7 +93,8 @@
                 android:layout_centerVertical="true"
                 android:gravity="center_horizontal"
                 android:text="@string/search_end_time"
-                android:textColor="@color/dark_gray" />
+                android:textColor="@color/dark_gray"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/select_end_time"
@@ -102,7 +105,8 @@
                 android:gravity="right|center_vertical"
                 android:text="@string/calendar_button"
                 android:textColor="@color/black"
-                android:textStyle="normal" />
+                android:textStyle="normal"
+                android:visibility="gone" />
 
         </RelativeLayout>
 

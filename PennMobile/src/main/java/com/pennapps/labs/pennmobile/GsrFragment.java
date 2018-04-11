@@ -308,6 +308,7 @@ public class GsrFragment extends Fragment {
         super.onResume();
         getActivity().setTitle(R.string.gsr);
         ((MainActivity) getActivity()).setNav(R.id.nav_gsr);
+        populateDropDownGSR();
     }
 
     public static String getCurrentTimeZoneOffset() {
@@ -345,8 +346,8 @@ public class GsrFragment extends Fragment {
         DateTimeFormatter adjustedDateFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
         String adjustedDateString = adjustedDateFormat.print(originalDateFormat.parseDateTime(dateBooking));
 
-        String startParam = adjustedDateString + "T" + startMilitary + getCurrentTimeZoneOffset();
-        String endParam = adjustedDateString + "T" + endMilitary + getCurrentTimeZoneOffset();
+        String startParam = adjustedDateString;
+        String endParam = adjustedDateString;
 
         mLabs.gsrRoom(location, startParam, endParam)
                 .subscribe(new Action1<GSR>() {
@@ -445,6 +446,7 @@ public class GsrFragment extends Fragment {
                                                    android.R.layout.simple_spinner_dropdown_item, emptyArray);
                                            gsrDropDown.setAdapter(emptyAdapter);
 
+                                           gsrLocationsArray = new ArrayList<String>();
 
                                            int numLocations = locations.size();
 
