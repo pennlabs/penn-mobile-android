@@ -17,10 +17,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import com.pennapps.labs.pennmobile.api.Labs;
+
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
+import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.GSR;
 import com.pennapps.labs.pennmobile.classes.GSRContainer;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
@@ -42,8 +43,8 @@ import java.util.TimeZone;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.functions.Action1;
 import io.fabric.sdk.android.Fabric;
+import rx.functions.Action1;
 
 /**
  * Created by Mike Abelar on 9/24/2017.
@@ -345,50 +346,54 @@ public class GsrFragment extends Fragment {
 
 
                                 boolean timeSlotLengthZero = true;
-
-                                for (int i = 0; i < gsrRooms.length; i++) {
-                                    GSRRoom gsrRoom = gsrRooms[i];
-                                    GSRSlot[] GSRTimeSlots = gsrRoom.getSlots();
-                                    //checks if the time slots are ever nonzero
-                                    if (GSRTimeSlots.length > 0) {timeSlotLengthZero = false;}
-                                    for (int j=0; j < GSRTimeSlots.length; j++) {
-                                        GSRSlot currSlot = GSRTimeSlots[j];
-                                        if (currSlot.isAvailable()) {
-
-
-
-                                            String startString = currSlot.getStartTime();
-                                            String endString = currSlot.getEndTime();
+                                if (gsrRooms == null) {
+                                    // a certification error causes "room" field to remain null
+                                    Toast.makeText(getActivity(), "Error: Could not retrieve GSRs", Toast.LENGTH_LONG).show();
+                                } else {
+                                    for (int i = 0; i < gsrRooms.length; i++) {
+                                        GSRRoom gsrRoom = gsrRooms[i];
+                                        GSRSlot[] GSRTimeSlots = gsrRoom.getSlots();
+                                        //checks if the time slots are ever nonzero
+                                        if (GSRTimeSlots.length > 0) {timeSlotLengthZero = false;}
+                                        for (int j=0; j < GSRTimeSlots.length; j++) {
+                                            GSRSlot currSlot = GSRTimeSlots[j];
+                                            if (currSlot.isAvailable()) {
 
 
 
-
-                                            DateTime startTime = formatter.parseDateTime(startString.substring(0,
-                                                    startString.length() - 6));
-                                            DateTime endTime = formatter.parseDateTime(endString.substring(0,
-                                                    endString.length() - 6));
-                                            String stringStartTime = safeToString(startTime.getHourOfDay()) + ":" +
-                                                    safeToString(startTime.getMinuteOfHour());
-                                            String stringEndTime = safeToString(endTime.getHourOfDay()) + ":" +
-                                                    safeToString(endTime.getMinuteOfHour());
-
-                                            stringStartTime = convertToCivilianTime(stringStartTime);
-                                            stringEndTime = convertToCivilianTime(stringEndTime);
+                                                String startString = currSlot.getStartTime();
+                                                String endString = currSlot.getEndTime();
 
 
-                                            insertGSRSlot(gsrRoom.getName(), stringStartTime + "-" + stringEndTime, safeToString(startTime.getHourOfDay()) + ":" +
-                                                            safeToString(startTime.getMinuteOfHour()),
-                                                    safeToString(startTime.getDayOfWeek()),
-                                                    safeToString(startTime.getDayOfMonth()), "30", Integer.toString(gsrRoom.getRoom_id()));
 
+
+                                                DateTime startTime = formatter.parseDateTime(startString.substring(0,
+                                                        startString.length() - 6));
+                                                DateTime endTime = formatter.parseDateTime(endString.substring(0,
+                                                        endString.length() - 6));
+                                                String stringStartTime = safeToString(startTime.getHourOfDay()) + ":" +
+                                                        safeToString(startTime.getMinuteOfHour());
+                                                String stringEndTime = safeToString(endTime.getHourOfDay()) + ":" +
+                                                        safeToString(endTime.getMinuteOfHour());
+
+                                                stringStartTime = convertToCivilianTime(stringStartTime);
+                                                stringEndTime = convertToCivilianTime(stringEndTime);
+
+
+                                                insertGSRSlot(gsrRoom.getName(), stringStartTime + "-" + stringEndTime, safeToString(startTime.getHourOfDay()) + ":" +
+                                                                safeToString(startTime.getMinuteOfHour()),
+                                                        safeToString(startTime.getDayOfWeek()),
+                                                        safeToString(startTime.getDayOfMonth()), "30", Integer.toString(gsrRoom.getRoom_id()));
+
+                                            }
                                         }
+
+
                                     }
 
-
-                                }
-
-                                if (timeSlotLengthZero) {
-                                    Toast.makeText(getContext(), "No GSRs available", Toast.LENGTH_LONG).show();
+                                    if (timeSlotLengthZero) {
+                                        Toast.makeText(getContext(), "No GSRs available", Toast.LENGTH_LONG).show();
+                                    }
                                 }
 
                                 LinearLayoutManager gsrRoomListLayoutManager = new LinearLayoutManager(getContext());
