@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +17,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import com.pennapps.labs.pennmobile.api.Labs;
+
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
+import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.GSR;
 import com.pennapps.labs.pennmobile.classes.GSRContainer;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
@@ -45,8 +45,8 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.functions.Action1;
 import io.fabric.sdk.android.Fabric;
+import rx.functions.Action1;
 
 /**
  * Created by Mike Abelar on 9/24/2017.
