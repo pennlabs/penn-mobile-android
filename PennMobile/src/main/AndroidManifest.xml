@@ -44,7 +44,7 @@
 
         <activity
             android:name=".MainActivity"
-            android:label="PennMobile"
+            android:label="Penn Mobile"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
