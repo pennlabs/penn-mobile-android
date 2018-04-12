@@ -26,6 +26,7 @@
 
     <!--Home Screen -->
     <string name="home_screen_settings">Home Screen Settings</string>
+    <string name="home_screen_settings_instructions">Press and hold item to drag and drop</string>
 
     <!-- Search -->
     <string name="registrar_search">Search for courses</string>
@@ -211,4 +212,7 @@
     <string name="email_address">Email Address</string>
     <string name="submit">Submit</string>
 
+    <!-- Spring Fling -->
+    <string name="spring_fling">Spring Fling</string>
+    <string name="fling_event_time">%1$s - %2$s</string>
 </resources>

@@ -10,16 +10,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.DiningFragment;
+import com.pennapps.labs.pennmobile.DirectoryFragment;
+import com.pennapps.labs.pennmobile.FlingFragment;
 import com.pennapps.labs.pennmobile.GsrFragment;
 import com.pennapps.labs.pennmobile.LaundryActivity;
-import com.pennapps.labs.pennmobile.MapFragment;
 import com.pennapps.labs.pennmobile.NewsFragment;
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.RegistrarFragment;
+import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
 import com.pennapps.labs.pennmobile.classes.HomeScreenItem;
+import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 
 import java.util.List;
 
@@ -34,10 +38,17 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private Context mContext;
     private List<HomeScreenItem> mCategories;
+    private List<HomeScreenCell> mCells;
 
-    public HomeScreenAdapter(Context context, List<HomeScreenItem> categories) {
+    // laundry
+    private LaundryHomeAdapter laundryHomeAdapter;
+    private List<LaundryRoom> mLaundryRooms;
+
+    public HomeScreenAdapter(Context context, List<HomeScreenItem> categories, List<HomeScreenCell> cells, List<LaundryRoom> laundryRooms) {
         this.mContext = context;
         this.mCategories = categories;
+        this.mCells = cells;
+        this.mLaundryRooms = laundryRooms;
     }
 
     @Override
@@ -62,17 +73,26 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         // In order: Courses, Dining, GSR Booking, Laundry, Map, News
         switch (viewType) {
             case 0:
+                view = LayoutInflater.from(mContext).inflate(R.layout.home_cardview_card_courses, parent, false);
                 return new CoursesViewHolder(view, mContext);
             case 1:
+                view = LayoutInflater.from(mContext).inflate(R.layout.home_cardview_card_dining, parent, false);
                 return new DiningViewHolder(view, mContext);
             case 2:
+                view = LayoutInflater.from(mContext).inflate(R.layout.home_cardview_card_gsr, parent, false);
                 return new GSRViewHolder(view, mContext);
             case 3:
+                view = LayoutInflater.from(mContext).inflate(R.layout.home_cardview_card_laundry, parent, false);
                 return new LaundryViewHolder(view, mContext);
             case 4:
-                return new MapViewHolder(view, mContext);
+                view = LayoutInflater.from(mContext).inflate(R.layout.home_cardview_card_directory, parent, false);
+                return new DirectoryViewHolder(view, mContext);
             case 5:
+                view = LayoutInflater.from(mContext).inflate(R.layout.home_cardview_card_news, parent, false);
                 return new NewsViewHolder(view, mContext);
+            case 6:
+                view = LayoutInflater.from(mContext).inflate(R.layout.home_fling_card, parent, false);
+                return new FlingViewHolder(view, mContext);
             default:
                 view = LayoutInflater.from(mContext).inflate(R.layout.home_cardview_empty_item, parent, false);
                 return new EmptyViewHolder(view, mContext);
@@ -92,6 +112,19 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 DiningViewHolder diningViewHolder = (DiningViewHolder) holder;
                 String diningTitle = mCategories.get(position).getName();
                 diningViewHolder.titleTextView.setText(diningTitle);
+
+                /*
+                // get index of dining cell from API
+                for (HomeScreenCell cell : mCells) {
+                    if (cell.getType().equals("dining")) {
+                        List<Integer> diningVenues = cell.getInfo().getVenues();
+                        String s1 = "";
+                        for (Integer venue : diningVenues) {
+                            s1 += venue.toString() + " ";
+                        }
+                        diningViewHolder.infoTextView.setText(s1);
+                    }
+                }*/
                 break;
             case 2:
                 GSRViewHolder gsrViewHolder = (GSRViewHolder) holder;
@@ -102,16 +135,45 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 LaundryViewHolder laundryViewHolder = (LaundryViewHolder) holder;
                 String laundryTitle = mCategories.get(position).getName();
                 laundryViewHolder.titleTextView.setText(laundryTitle);
+
+                // set up recycler view with the laundry rooms
+                /*
+                RecyclerView recyclerView = laundryViewHolder.laundryRecyclerView;
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+                recyclerView.setLayoutManager(linearLayoutManager);
+                laundryHomeAdapter = new LaundryHomeAdapter(mLaundryRooms);
+                recyclerView.setAdapter(laundryHomeAdapter); */
                 break;
             case 4:
-                MapViewHolder mapViewHolder = (MapViewHolder) holder;
+                DirectoryViewHolder directoryViewHolder = (DirectoryViewHolder) holder;
                 String mapTitle = mCategories.get(position).getName();
-                mapViewHolder.titleTextView.setText(mapTitle);
+                directoryViewHolder.titleTextView.setText(mapTitle);
                 break;
             case 5:
                 NewsViewHolder newsViewHolder = (NewsViewHolder) holder;
                 String newsTitle = mCategories.get(position).getName();
                 newsViewHolder.titleTextView.setText(newsTitle);
+
+                // news info
+                /*
+                for (HomeScreenCell cell : mCells) {
+                    if (cell.getType().equals("news")) {
+                        String title = cell.getInfo().getTitle();
+                        newsViewHolder.newsTitle.setText(title);
+                        String imageUrl = cell.getInfo().getImageUrl();
+                        Picasso.with(mContext).load(imageUrl).into(newsViewHolder.newsImage);
+                        String source = cell.getInfo().getSource();
+                        newsViewHolder.newsSource.setText(source);
+                        String date = cell.getInfo().getDate();
+                        newsViewHolder.newsDate.setText(date);
+                    }
+                }
+                */
+                break;
+            case 6:
+                FlingViewHolder flingViewHolder = (FlingViewHolder) holder;
+                String flingTitle = mCategories.get(position).getName();
+                flingViewHolder.titleTextView.setText(flingTitle);
                 break;
         }
     }
@@ -141,6 +203,8 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         Context context;
         @Bind(R.id.home_screen_cardview_title)
         TextView titleTextView;
+        @Bind(R.id.home_screen_info)
+        TextView infoTextView;
 
         public DiningViewHolder(View view, Context context) {
             super(view);
@@ -179,6 +243,8 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         Context context;
         @Bind(R.id.home_screen_cardview_title)
         TextView titleTextView;
+        @Bind(R.id.home_screen_laundry_recyclerview)
+        RecyclerView laundryRecyclerView;
 
         public LaundryViewHolder(View view, Context context) {
             super(view);
@@ -194,13 +260,13 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    public class MapViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class DirectoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         Context context;
         @Bind(R.id.home_screen_cardview_title)
         TextView titleTextView;
 
-        public MapViewHolder(View view, Context context) {
+        public DirectoryViewHolder(View view, Context context) {
             super(view);
             ButterKnife.bind(this, view);
             this.context = context;
@@ -209,7 +275,7 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         @Override
         public void onClick(View view) {
-            fragmentTransact(new MapFragment());
+            fragmentTransact(new DirectoryFragment());
         }
     }
 
@@ -218,6 +284,14 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         Context context;
         @Bind(R.id.home_screen_cardview_title)
         TextView titleTextView;
+        @Bind(R.id.home_screen_news_title)
+        TextView newsTitle;
+        @Bind(R.id.home_screen_news_source)
+        TextView newsSource;
+        @Bind(R.id.home_screen_news_date)
+        TextView newsDate;
+        @Bind(R.id.home_screen_news_image)
+        ImageView newsImage;
 
         public NewsViewHolder(View view, Context context) {
             super(view);
@@ -229,6 +303,24 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         @Override
         public void onClick(View view) {
             fragmentTransact(new NewsFragment());
+        }
+    }
+
+    public class FlingViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        Context context;
+        @Bind(R.id.home_screen_cardview_title)
+        TextView titleTextView;
+
+        public FlingViewHolder(View view, Context context) {
+            super(view);
+            ButterKnife.bind(this, view);
+            this.context = context;
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            fragmentTransact(new FlingFragment());
         }
     }
 

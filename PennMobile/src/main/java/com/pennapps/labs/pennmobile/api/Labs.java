@@ -5,8 +5,10 @@ import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
+import com.pennapps.labs.pennmobile.classes.FlingEvent;
 import com.pennapps.labs.pennmobile.classes.GSR;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
+import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
@@ -106,6 +108,9 @@ public interface Labs {
     Observable<LaundryUsage> usage(
             @Path("id") int id);
 
+    @GET("/events/fling")
+    Observable<List<FlingEvent>> getFlingEvents();
+
     // used for testing purposes only
     @GET("/laundry/preferences")
     Observable<List<Integer>> testPref(
@@ -118,4 +123,8 @@ public interface Labs {
             @Field("rooms") String rooms,
             Callback<Response> callback);
 
+    // home page
+    @GET("/homepage")
+    Observable<List<HomeScreenCell>> getHomePage(
+            @Header("X-Device-ID") String deviceID);
 }
