@@ -8,12 +8,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Andrew on 11/5/2017.
@@ -95,7 +98,7 @@ public class GsrRoomAdapter extends RecyclerView.Adapter<GsrRoomHolder> {
 
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
         String formattedDate = df.format(c.getTime());
-        return formattedDate + "T" + start + "00+0500";
+        return formattedDate + "T" + start + getCurrentTimeZoneOffset();
     }
 
     String transformEndTime(String inputTime, String date) {
@@ -113,7 +116,20 @@ public class GsrRoomAdapter extends RecyclerView.Adapter<GsrRoomHolder> {
 
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
         String formattedDate = df.format(c.getTime());
-        return formattedDate + "T" + end + "00+0500";
+        return formattedDate + "T" + end + getCurrentTimeZoneOffset();
+    }
+
+    public static String getCurrentTimeZoneOffset() {
+        DateTimeZone tz = DateTimeZone.forID("America/New_York");
+        Long instant = DateTime.now().getMillis();
+
+        String name = tz.getName(instant);
+
+        long offsetInMilliseconds = tz.getOffset(instant);
+        long hours = TimeUnit.MILLISECONDS.toHours( offsetInMilliseconds );
+
+
+        return "00-0" + Integer.toString((int) Math.abs(hours)) + "00";
     }
 
     //helper function that turns military to civilian time

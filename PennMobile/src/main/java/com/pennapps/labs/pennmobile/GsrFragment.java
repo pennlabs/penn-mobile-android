@@ -17,10 +17,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import com.pennapps.labs.pennmobile.api.Labs;
+
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
+import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.GSR;
 import com.pennapps.labs.pennmobile.classes.GSRContainer;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
@@ -28,6 +29,7 @@ import com.pennapps.labs.pennmobile.classes.GSRRoom;
 import com.pennapps.labs.pennmobile.classes.GSRSlot;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -39,11 +41,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.functions.Action1;
 import io.fabric.sdk.android.Fabric;
+import rx.functions.Action1;
 
 /**
  * Created by Mike Abelar on 9/24/2017.
@@ -305,6 +308,20 @@ public class GsrFragment extends Fragment {
         super.onResume();
         getActivity().setTitle(R.string.gsr);
         ((MainActivity) getActivity()).setNav(R.id.nav_gsr);
+        populateDropDownGSR();
+    }
+
+    public static String getCurrentTimeZoneOffset() {
+        DateTimeZone tz = DateTimeZone.forID("America/New_York");
+        Long instant = DateTime.now().getMillis();
+
+        String name = tz.getName(instant);
+
+        long offsetInMilliseconds = tz.getOffset(instant);
+        long hours = TimeUnit.MILLISECONDS.toHours( offsetInMilliseconds );
+
+
+        return "-0" + Integer.toString((int) Math.abs(hours)) + "00";
     }
 
     private void getTimes(final int location, final String dateBooking, String startTime, String endTime) {
@@ -321,7 +338,7 @@ public class GsrFragment extends Fragment {
         //convert times to military
         DateTimeFormatter toMilitaryTimeFormatter = DateTimeFormat.forPattern("hh:mm a");
 
-        DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm:ss");
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("HHmmss");
         String startMilitary = fmt.print(toMilitaryTimeFormatter.withLocale(Locale.ENGLISH).parseLocalTime(startTime));
         String endMilitary = fmt.print(toMilitaryTimeFormatter.withLocale(Locale.ENGLISH).parseLocalTime(endTime));
 
@@ -329,8 +346,8 @@ public class GsrFragment extends Fragment {
         DateTimeFormatter adjustedDateFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
         String adjustedDateString = adjustedDateFormat.print(originalDateFormat.parseDateTime(dateBooking));
 
-        String startParam = adjustedDateString + "T" + startMilitary + "-0500";
-        String endParam = adjustedDateString + "T" + endMilitary + "-0500";
+        String startParam = adjustedDateString;
+        String endParam = adjustedDateString;
 
         mLabs.gsrRoom(location, startParam, endParam)
                 .subscribe(new Action1<GSR>() {
@@ -429,6 +446,7 @@ public class GsrFragment extends Fragment {
                                                    android.R.layout.simple_spinner_dropdown_item, emptyArray);
                                            gsrDropDown.setAdapter(emptyAdapter);
 
+                                           gsrLocationsArray = new ArrayList<String>();
 
                                            int numLocations = locations.size();
 
