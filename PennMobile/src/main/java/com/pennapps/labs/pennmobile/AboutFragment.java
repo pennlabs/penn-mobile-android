@@ -29,7 +29,7 @@ public class AboutFragment extends Fragment {
         ButterKnife.bind(this, v);
         TextView featureRequest = (TextView) v.findViewById(R.id.about_desc);
         featureRequest.setMovementMethod(LinkMovementMethod.getInstance());
-        String text = "PennMobile was developed by Penn Labs, with funding<br>" +
+        String text = "Penn Mobile was developed by Penn Labs, with funding<br>" +
                 "and support from the Undergraduate Assembly. Special thanks to Vishwa Patel. <br><br> &copy; 2017 Penn Labs <br><br>" +
                 "<a href='mailto:contact@pennlabs.org?subject=[Penn Mobile Android]'>Request a feature</a><br><br>" +
                 "<a href='http://pennlabs.org'>More information</a>";
