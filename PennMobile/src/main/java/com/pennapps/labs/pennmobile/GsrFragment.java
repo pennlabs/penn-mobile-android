@@ -120,8 +120,8 @@ public class GsrFragment extends Fragment {
         startButton.setText(ampmTimes[0]);
         endButton.setText(ampmTimes[1]);
 
-         // Set up recycler view for list of GSR rooms
-         gsrRoomListRecylerView = (RecyclerView) v.findViewById(R.id.gsr_rooms_list);
+        // Set up recycler view for list of GSR rooms
+        gsrRoomListRecylerView = (RecyclerView) v.findViewById(R.id.gsr_rooms_list);
 
         /**
          *
@@ -363,45 +363,50 @@ public class GsrFragment extends Fragment {
 
                                 boolean timeSlotLengthZero = true;
 
-                                for (int i = 0; i < gsrRooms.length; i++) {
-                                    GSRRoom gsrRoom = gsrRooms[i];
-                                    GSRSlot[] GSRTimeSlots = gsrRoom.getSlots();
-                                    //checks if the time slots are ever nonzero
-                                    if (GSRTimeSlots.length > 0) {timeSlotLengthZero = false;}
-                                    for (int j=0; j < GSRTimeSlots.length; j++) {
-                                        GSRSlot currSlot = GSRTimeSlots[j];
-                                        if (currSlot.isAvailable()) {
+                                if (gsrRooms == null) {
+                                    // a certification error causes "room" field to remain null
+                                    Toast.makeText(getActivity(), "Error: Could not retrieve GSRs", Toast.LENGTH_LONG).show();
+                                } else {
+                                    for (int i = 0; i < gsrRooms.length; i++) {
+                                        GSRRoom gsrRoom = gsrRooms[i];
+                                        GSRSlot[] GSRTimeSlots = gsrRoom.getSlots();
+                                        //checks if the time slots are ever nonzero
+                                        if (GSRTimeSlots.length > 0) {timeSlotLengthZero = false;}
+                                        for (int j=0; j < GSRTimeSlots.length; j++) {
+                                            GSRSlot currSlot = GSRTimeSlots[j];
+                                            if (currSlot.isAvailable()) {
 
 
 
-                                            String startString = currSlot.getStartTime();
-                                            String endString = currSlot.getEndTime();
+                                                String startString = currSlot.getStartTime();
+                                                String endString = currSlot.getEndTime();
 
 
 
 
-                                            DateTime startTime = formatter.parseDateTime(startString.substring(0,
-                                                    startString.length() - 6));
-                                            DateTime endTime = formatter.parseDateTime(endString.substring(0,
-                                                    endString.length() - 6));
-                                            String stringStartTime = safeToString(startTime.getHourOfDay()) + ":" +
-                                                    safeToString(startTime.getMinuteOfHour());
-                                            String stringEndTime = safeToString(endTime.getHourOfDay()) + ":" +
-                                                    safeToString(endTime.getMinuteOfHour());
+                                                DateTime startTime = formatter.parseDateTime(startString.substring(0,
+                                                        startString.length() - 6));
+                                                DateTime endTime = formatter.parseDateTime(endString.substring(0,
+                                                        endString.length() - 6));
+                                                String stringStartTime = safeToString(startTime.getHourOfDay()) + ":" +
+                                                        safeToString(startTime.getMinuteOfHour());
+                                                String stringEndTime = safeToString(endTime.getHourOfDay()) + ":" +
+                                                        safeToString(endTime.getMinuteOfHour());
 
-                                            stringStartTime = convertToCivilianTime(stringStartTime);
-                                            stringEndTime = convertToCivilianTime(stringEndTime);
+                                                stringStartTime = convertToCivilianTime(stringStartTime);
+                                                stringEndTime = convertToCivilianTime(stringEndTime);
 
 
-                                            insertGSRSlot(gsrRoom.getName(), stringStartTime + "-" + stringEndTime, safeToString(startTime.getHourOfDay()) + ":" +
-                                                            safeToString(startTime.getMinuteOfHour()),
-                                                    safeToString(startTime.getDayOfWeek()),
-                                                    safeToString(startTime.getDayOfMonth()), "30", Integer.toString(gsrRoom.getRoom_id()));
+                                                insertGSRSlot(gsrRoom.getName(), stringStartTime + "-" + stringEndTime, safeToString(startTime.getHourOfDay()) + ":" +
+                                                                safeToString(startTime.getMinuteOfHour()),
+                                                        safeToString(startTime.getDayOfWeek()),
+                                                        safeToString(startTime.getDayOfMonth()), "30", Integer.toString(gsrRoom.getRoom_id()));
 
+                                            }
                                         }
+
+
                                     }
-
-
                                 }
 
                                 if (timeSlotLengthZero) {
@@ -554,7 +559,7 @@ public class GsrFragment extends Fragment {
             return "00";
         }
         else {
-          return Integer.toString(input);
+            return Integer.toString(input);
         }
     }
 

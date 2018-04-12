@@ -20,4 +20,9 @@ public class HomeScreenItem {
     public int getViewType() {
         return viewType;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
