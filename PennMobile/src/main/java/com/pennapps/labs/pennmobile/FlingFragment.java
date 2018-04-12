@@ -10,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
 import com.pennapps.labs.pennmobile.adapters.FlingRecyclerViewAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.FlingEvent;
@@ -18,6 +21,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.fabric.sdk.android.Fabric;
 import rx.functions.Action1;
 
 public class FlingFragment extends Fragment {
@@ -39,6 +43,19 @@ public class FlingFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(getContext(), new Crashlytics());
+        Answers.getInstance().logContentView(new ContentViewEvent()
+                .putContentName("Spring Fling")
+                .putContentType("App Feature")
+                .putContentId("7"));
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_fling, container, false);
+        ButterKnife.bind(this, view);
         Labs labs = MainActivity.getLabsInstance();
         labs.getFlingEvents().subscribe(new Action1<List<FlingEvent>>() {
             @Override
@@ -62,14 +79,6 @@ public class FlingFragment extends Fragment {
                 });
             }
         });
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_fling, container, false);
-        ButterKnife.bind(this, view);
         return view;
     }
 
