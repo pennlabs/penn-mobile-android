@@ -1,11 +1,15 @@
 package com.pennapps.labs.pennmobile;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +65,9 @@ public class GsrFragment extends Fragment {
 
     private Labs mLabs;
 
+    private ProgressDialog progDailog ;
+
+
     ArrayList<String> gsrLocationsArray = new ArrayList<String>();
 
     ArrayList<GSRContainer> mGSRS = new ArrayList<GSRContainer>();
@@ -84,6 +91,7 @@ public class GsrFragment extends Fragment {
         ((MainActivity) getActivity()).closeKeyboard();
         getActivity().setTitle(R.string.gsr);
         Fabric.with(getContext(), new Crashlytics());
+        progDailog = new ProgressDialog(getContext(), R.style.gsr_spinner);
         Answers.getInstance().logContentView(new ContentViewEvent()
                 .putContentName("GSR")
                 .putContentType("App Feature")
@@ -258,7 +266,8 @@ public class GsrFragment extends Fragment {
                 //set min and max choices for dates. Want to limit to week.
                 Date today = new Date();
                 c.setTime(today);
-                long minDate = c.getTime().getTime();
+                //subtract to avoid error involving date picker min date
+                long minDate = c.getTime().getTime() - 1000;
 
                 c.setTime(today);
                 c.add( Calendar.DAY_OF_MONTH, +6 );
@@ -285,7 +294,11 @@ public class GsrFragment extends Fragment {
     // Makes toast and performs GSR search
     // Called whenever user changes start/end time, date, or building
     public void searchForGSR() {
-        Toast.makeText(getActivity(), "Loading...", Toast.LENGTH_SHORT).show();
+
+        progDailog.setCancelable(false);
+        progDailog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
+        progDailog.show();
+
 
         instructions.setText(getString(R.string.select_instructions));
         //get vars
@@ -301,6 +314,7 @@ public class GsrFragment extends Fragment {
             getTimes(location, dateBooking, startTime, endTime);
 
         }
+
     }
 
     @Override
@@ -325,7 +339,6 @@ public class GsrFragment extends Fragment {
     }
 
     private void getTimes(final int location, final String dateBooking, String startTime, String endTime) {
-
         //deal with exception of time starting with 0:--
         if (startTime.charAt(0) == '0') {
             startTime = "12" + startTime.substring(1);
@@ -419,8 +432,11 @@ public class GsrFragment extends Fragment {
                                 gsrRoomListRecylerView.setAdapter(new GsrBuildingAdapter(getContext(), mGSRS, Integer.toString(location)));
 
                                 mGSRS = new ArrayList<GSRContainer>();
+                                progDailog.dismiss();
+
                             }
                         });
+
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -433,6 +449,7 @@ public class GsrFragment extends Fragment {
                         });
                     }
                 });
+
     }
 
 
