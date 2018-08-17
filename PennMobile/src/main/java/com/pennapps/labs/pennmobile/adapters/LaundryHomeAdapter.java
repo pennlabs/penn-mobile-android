@@ -12,7 +12,7 @@ import com.pennapps.labs.pennmobile.classes.MachineList;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -57,11 +57,11 @@ public class LaundryHomeAdapter extends RecyclerView.Adapter<LaundryHomeAdapter.
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.laundry_room_name_home)
+        @BindView(R.id.laundry_room_name_home)
         TextView roomNameTV;
-        @Bind(R.id.washer_availability_home)
+        @BindView(R.id.washer_availability_home)
         TextView washerAvailabilityTV;
-        @Bind(R.id.dryer_availability_home)
+        @BindView(R.id.dryer_availability_home)
         TextView dryerAvailabilityTV;
 
         public CustomViewHolder(View view) {

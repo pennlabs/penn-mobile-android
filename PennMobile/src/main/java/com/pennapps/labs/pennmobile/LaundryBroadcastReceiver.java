@@ -10,11 +10,11 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 
-public class LaundryBroadcastReceiverNew extends BroadcastReceiver {
+public class LaundryBroadcastReceiver extends BroadcastReceiver {
 
     private int NOTIFICATION_ID;
 
-    public LaundryBroadcastReceiverNew() {
+    public LaundryBroadcastReceiver() {
     }
 
     @Override

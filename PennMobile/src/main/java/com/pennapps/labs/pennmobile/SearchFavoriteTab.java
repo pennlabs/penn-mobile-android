@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.pennapps.labs.pennmobile.api.Labs;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 
 /**
@@ -26,9 +26,9 @@ public abstract class SearchFavoriteTab extends ListFragment {
 
     private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
 
-    protected @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
-    protected @Bind(R.id.no_results) TextView no_results;
-    protected @Bind(R.id.search_instructions) TextView search_instructions;
+    protected @BindView(R.id.loadingPanel) RelativeLayout loadingPanel;
+    protected @BindView(R.id.no_results) TextView no_results;
+    protected @BindView(R.id.search_instructions) TextView search_instructions;
 
 
     public SearchFavoriteTab() {

@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -165,12 +165,12 @@ public class NsoAdapter extends ArrayAdapter<String> { //ArrayAdapter<RSSItem>
     }
 
     static class ViewHolder {
-        @Bind(R.id.tv_event_name)
+        @BindView(R.id.tv_event_name)
         TextView tvName;
-        @Bind(R.id.tv_event_time) TextView tvTime;
-        @Bind(R.id.tv_event_description) TextView tvDescription;
-        @Bind(R.id.star_event) ToggleButton star;
-        @Bind(R.id.event_icon)
+        @BindView(R.id.tv_event_time) TextView tvTime;
+        @BindView(R.id.tv_event_description) TextView tvDescription;
+        @BindView(R.id.star_event) ToggleButton star;
+        @BindView(R.id.event_icon)
         ImageView event;
 
         public ViewHolder(View view) {

@@ -12,17 +12,19 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ViewFlipper;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class NewsTab extends Fragment {
 
+    @BindView(R.id.flipper) ViewFlipper mFlipper;
+    @BindView(R.id.webViewNews) WebView mWebView;
+
+    private Unbinder unbinder;
     private String mUrl = "http://www.thedp.com/";
     static WebView currentWebView;
-    @Bind(R.id.webViewNews) WebView mWebView;
     private boolean newsLoaded;
-
-    @Bind(R.id.flipper) ViewFlipper mFlipper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,7 +41,7 @@ public class NewsTab extends Fragment {
     @SuppressLint("SetJavaScriptEnabled")
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_news_tab, container, false);
-        ButterKnife.bind(this, v);
+        unbinder = ButterKnife.bind(this, v);
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.setBackgroundColor(Color.argb(1, 0, 0, 0));
         if (!newsLoaded) {
@@ -95,6 +97,12 @@ public class NewsTab extends Fragment {
         if (isVisible) {
             currentWebView = mWebView;
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     /**

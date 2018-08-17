@@ -15,7 +15,7 @@ import com.pennapps.labs.pennmobile.classes.Person;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SupportAdapter extends ArrayAdapter<Person> {
@@ -72,9 +72,9 @@ public class SupportAdapter extends ArrayAdapter<Person> {
     }
 
     public static class ViewHolder {
-        @Bind(R.id.support_name) TextView name;
-        @Bind(R.id.support_phone) TextView phone;
-        @Bind(R.id.support_phone_icon) ImageView icon;
+        @BindView(R.id.support_name) TextView name;
+        @BindView(R.id.support_phone) TextView phone;
+        @BindView(R.id.support_phone_icon) ImageView icon;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);

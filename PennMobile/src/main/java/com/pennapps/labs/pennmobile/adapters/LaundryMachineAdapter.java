@@ -16,14 +16,14 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.pennapps.labs.pennmobile.LaundryBroadcastReceiverNew;
+import com.pennapps.labs.pennmobile.LaundryBroadcastReceiver;
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.classes.MachineDetail;
 
 import java.util.Collections;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -132,9 +132,9 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
 
         Context context;
         List<MachineDetail> machineDetails;
-        @Bind(R.id.laundry_machine_image_view)
+        @BindView(R.id.laundry_machine_image_view)
         ImageView machineView;
-        @Bind(R.id.min_left_time)
+        @BindView(R.id.min_left_time)
         TextView timeTextView;
         Switch alarmSwitch;
 
@@ -152,7 +152,7 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
 
         final int id = (mRoomName + mMachineType).hashCode() + machineId;
 
-        final Intent intent = new Intent(mContext, LaundryBroadcastReceiverNew.class);
+        final Intent intent = new Intent(mContext, LaundryBroadcastReceiver.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(mContext.getResources().getString(R.string.laundry_room_name), mRoomName);
         intent.putExtra(mContext.getResources().getString(R.string.laundry_machine_type), mMachineType);
