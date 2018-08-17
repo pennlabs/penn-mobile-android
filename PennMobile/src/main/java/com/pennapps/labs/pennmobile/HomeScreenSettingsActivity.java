@@ -20,10 +20,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class HomeScreenSettingsActivity extends AppCompatActivity {
 
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.home_screen_settings_recyclerview) RecyclerView mRecyclerView;
+
     private Context mContext;
     private List<HomeScreenItem> mAllCategories;
     private SharedPreferences sharedPref;
@@ -32,6 +35,7 @@ public class HomeScreenSettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen_settings);
+        ButterKnife.bind(this);
 
         // set up back button
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
@@ -47,7 +51,6 @@ public class HomeScreenSettingsActivity extends AppCompatActivity {
         mAllCategories.add(new HomeScreenItem("News", 5));
         mAllCategories.add(new HomeScreenItem("Spring Fling", 6));
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.home_screen_settings_recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);

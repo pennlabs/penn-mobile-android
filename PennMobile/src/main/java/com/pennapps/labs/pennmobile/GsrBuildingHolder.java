@@ -2,10 +2,9 @@ package com.pennapps.labs.pennmobile;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -15,8 +14,8 @@ import butterknife.ButterKnife;
 
 public class GsrBuildingHolder extends RecyclerView.ViewHolder {
 
-    @Bind(R.id.gsr_building_name) TextView gsrBuildingName;
-    @Bind(R.id.gsr_availability_in_building) RecyclerView recyclerView;
+    @BindView(R.id.gsr_building_name) TextView gsrBuildingName;
+    @BindView(R.id.gsr_availability_in_building) RecyclerView recyclerView;
 
     public GsrBuildingHolder(View itemView) {
         super(itemView);

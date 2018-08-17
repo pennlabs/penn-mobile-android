@@ -29,7 +29,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import rx.functions.Action1;
 
 
@@ -42,7 +44,8 @@ import rx.functions.Action1;
  */
 public class MainFragment extends Fragment {
 
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.home_screen_recyclerview) RecyclerView mRecyclerView;
+    Unbinder unbinder;
     private Context mContext;
     private List<HomeScreenItem> visibleCategories;
     private SharedPreferences sharedPref;
@@ -147,11 +150,10 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_main_update, container, false);
-
+        unbinder = ButterKnife.bind(this, view);
         // settings
         setHasOptionsMenu(true);
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.home_screen_recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         return view;
@@ -194,7 +196,7 @@ public class MainFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     // get preferences

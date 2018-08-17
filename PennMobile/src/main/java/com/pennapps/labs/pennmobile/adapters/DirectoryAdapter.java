@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DirectoryAdapter extends ArrayAdapter<Person> {
@@ -130,11 +130,11 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
     }
 
     static class ViewHolder {
-        @Bind(R.id.tv_person_name) TextView tvName;
-        @Bind(R.id.tv_person_affiliation) TextView tvAffiliation;
-        @Bind(R.id.tv_person_email) TextView tvEmail;
-        @Bind(R.id.star_contact) ToggleButton star;
-        @Bind(R.id.contact_icon) ImageView contact;
+        @BindView(R.id.tv_person_name) TextView tvName;
+        @BindView(R.id.tv_person_affiliation) TextView tvAffiliation;
+        @BindView(R.id.tv_person_email) TextView tvEmail;
+        @BindView(R.id.star_contact) ToggleButton star;
+        @BindView(R.id.contact_icon) ImageView contact;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);

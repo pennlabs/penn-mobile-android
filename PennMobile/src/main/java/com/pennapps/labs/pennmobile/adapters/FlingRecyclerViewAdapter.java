@@ -40,7 +40,7 @@ public class FlingRecyclerViewAdapter extends RecyclerView.Adapter<FlingPerforma
     public void onBindViewHolder(FlingPerformanceViewHolder holder, int position) {
         if (position < getItemCount()) {
             FlingEvent flingEvent = data.get(position);
-            Picasso.with(context).load(flingEvent.imageUrl).into(holder.flingview_image);
+            Picasso.get().load(flingEvent.imageUrl).into(holder.flingview_image);
             holder.flingview_name.setText(flingEvent.name);
             holder.flingview_description.setText(flingEvent.description);
             DateTime startTime = timeFormatter.parseDateTime(flingEvent.startTime);

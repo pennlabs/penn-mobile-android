@@ -27,7 +27,7 @@ import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -182,8 +182,7 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public class CoursesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         Context context;
-        @Bind(R.id.home_screen_cardview_title)
-        TextView titleTextView;
+        @BindView(R.id.home_screen_cardview_title) TextView titleTextView;
 
         public CoursesViewHolder(View view, Context context) {
             super(view);
@@ -201,9 +200,9 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public class DiningViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         Context context;
-        @Bind(R.id.home_screen_cardview_title)
+        @BindView(R.id.home_screen_cardview_title)
         TextView titleTextView;
-        @Bind(R.id.home_screen_info)
+        @BindView(R.id.home_screen_info)
         TextView infoTextView;
 
         public DiningViewHolder(View view, Context context) {
@@ -222,7 +221,7 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public class GSRViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         Context context;
-        @Bind(R.id.home_screen_cardview_title)
+        @BindView(R.id.home_screen_cardview_title)
         TextView titleTextView;
 
         public GSRViewHolder(View view, Context context) {
@@ -241,9 +240,9 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public class LaundryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         Context context;
-        @Bind(R.id.home_screen_cardview_title)
+        @BindView(R.id.home_screen_cardview_title)
         TextView titleTextView;
-        @Bind(R.id.home_screen_laundry_recyclerview)
+        @BindView(R.id.home_screen_laundry_recyclerview)
         RecyclerView laundryRecyclerView;
 
         public LaundryViewHolder(View view, Context context) {
@@ -263,7 +262,7 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public class DirectoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         Context context;
-        @Bind(R.id.home_screen_cardview_title)
+        @BindView(R.id.home_screen_cardview_title)
         TextView titleTextView;
 
         public DirectoryViewHolder(View view, Context context) {
@@ -282,15 +281,15 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public class NewsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         Context context;
-        @Bind(R.id.home_screen_cardview_title)
+        @BindView(R.id.home_screen_cardview_title)
         TextView titleTextView;
-        @Bind(R.id.home_screen_news_title)
+        @BindView(R.id.home_screen_news_title)
         TextView newsTitle;
-        @Bind(R.id.home_screen_news_source)
+        @BindView(R.id.home_screen_news_source)
         TextView newsSource;
-        @Bind(R.id.home_screen_news_date)
+        @BindView(R.id.home_screen_news_date)
         TextView newsDate;
-        @Bind(R.id.home_screen_news_image)
+        @BindView(R.id.home_screen_news_image)
         ImageView newsImage;
 
         public NewsViewHolder(View view, Context context) {
@@ -308,7 +307,7 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public class FlingViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         Context context;
-        @Bind(R.id.home_screen_cardview_title)
+        @BindView(R.id.home_screen_cardview_title)
         TextView titleTextView;
 
         public FlingViewHolder(View view, Context context) {

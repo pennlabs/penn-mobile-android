@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -34,8 +35,9 @@ import org.joda.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
@@ -43,7 +45,11 @@ import rx.functions.Action1;
  * Created by Lily on 11/13/2015.
  * Fragment for Dining information (hours, map)
  */
-public class DiningInfoFragment extends Fragment {
+public class DiningInfoFragment extends Fragment implements OnMapReadyCallback {
+
+    @BindView(R.id.dining_hours) RelativeLayout menuParent;
+    @BindView(R.id.dining_map_frame) View mapFrame;
+    private Unbinder unbinder;
 
     private DiningHall mDiningHall;
     private MainActivity mActivity;
@@ -51,9 +57,6 @@ public class DiningInfoFragment extends Fragment {
 
     private GoogleMap map;
     private SupportMapFragment mapFragment;
-
-    @Bind(R.id.dining_hours) RelativeLayout menuParent;
-    @Bind(R.id.dining_map_frame) View mapFrame;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,7 +70,7 @@ public class DiningInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dining_info, container, false);
         v.setBackgroundColor(Color.WHITE);
-        ButterKnife.bind(this, v);
+        unbinder = ButterKnife.bind(this, v);
         fillInfo();
         return v;
     }
@@ -185,24 +188,14 @@ public class DiningInfoFragment extends Fragment {
         mActivity.getActionBarToggle().syncState();
         getActivity().setTitle(mDiningHall.getName());
         if (map == null) {
-            map = mapFragment.getMap();
-            if (map != null) {
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(39.95198, -75.19368), 17));
-                map.getUiSettings().setZoomControlsEnabled(false);
-            }
-        }
-        if (isNetworkAvailable()) {
-            drawMap();
-        }
-        else {
-            Toast.makeText(getActivity(), getResources().getString(R.string.no_data_msg), Toast.LENGTH_LONG).show();
+            mapFragment.getMapAsync(this);
         }
     }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         getActivity().setTitle(mDiningHall.getName());
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
     @Override
     public void onDestroy() {
@@ -210,5 +203,17 @@ public class DiningInfoFragment extends Fragment {
     }
 
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(39.95198, -75.19368), 17));
+        map.getUiSettings().setZoomControlsEnabled(false);
+        if (isNetworkAvailable()) {
+            drawMap();
+        }
+        else {
+            Toast.makeText(getActivity(), getResources().getString(R.string.no_data_msg), Toast.LENGTH_LONG).show();
+        }
+    }
 }
 
