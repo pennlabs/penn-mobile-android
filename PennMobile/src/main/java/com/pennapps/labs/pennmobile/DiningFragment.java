@@ -28,8 +28,9 @@ import com.pennapps.labs.pennmobile.classes.Venue;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.fabric.sdk.android.Fabric;
 import rx.Observable;
 import rx.functions.Action1;
@@ -37,11 +38,13 @@ import rx.functions.Func1;
 
 public class DiningFragment extends ListFragment {
 
+    @BindView(R.id.loadingPanel) RelativeLayout loadingPanel;
+    @BindView(R.id.no_results) TextView no_results;
+    private Unbinder unbinder;
+
     private Labs mLabs;
     private ListView mListView;
     private MainActivity mActivity;
-    @Bind(R.id.loadingPanel) RelativeLayout loadingPanel;
-    @Bind(R.id.no_results) TextView no_results;
     SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
@@ -67,7 +70,7 @@ public class DiningFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dining, container, false);
-        ButterKnife.bind(this, v);
+        unbinder = ButterKnife.bind(this, v);
         swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.dining_swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -221,6 +224,6 @@ public class DiningFragment extends ListFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 }

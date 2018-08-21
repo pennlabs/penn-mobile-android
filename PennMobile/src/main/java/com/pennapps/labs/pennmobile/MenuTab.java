@@ -16,16 +16,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class MenuTab extends Fragment {
+
+    @BindView(R.id.menu_parent) LinearLayout menuParent;
+
     String meal;
     HashMap<String,List<String>> stationInfo = new HashMap<String,List<String>>();  //{station name: foods}
+    private Unbinder unbinder;
     private ArrayList<String> stations;
     private String name;
-    @Bind(R.id.menu_parent)
-    LinearLayout menuParent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,7 +56,7 @@ public class MenuTab extends Fragment {
         elv.addFooterView(new View(elv.getContext()));
         elv.setAdapter(new MenuAdapter(getActivity(), stations, stationInfo));
         v.setBackgroundColor(Color.WHITE);
-        ButterKnife.bind(this, v);
+        unbinder = ButterKnife.bind(this, v);
         return v;
     }
 
@@ -67,7 +70,7 @@ public class MenuTab extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         getActivity().setTitle(name);
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
 

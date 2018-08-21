@@ -10,7 +10,6 @@ import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
 
-import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
 
 /**
@@ -95,6 +94,5 @@ public class RegistrarFragment extends SearchFavoriteFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 }

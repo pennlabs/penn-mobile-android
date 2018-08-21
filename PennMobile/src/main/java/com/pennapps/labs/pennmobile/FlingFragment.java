@@ -19,15 +19,16 @@ import com.pennapps.labs.pennmobile.classes.FlingEvent;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.fabric.sdk.android.Fabric;
 import rx.functions.Action1;
 
 public class FlingFragment extends Fragment {
 
-    @Bind(R.id.fling_fragment_recyclerview)
-    RecyclerView flingFragmentRecyclerView;
+    @BindView(R.id.fling_fragment_recyclerview) RecyclerView flingFragmentRecyclerView;
+    private Unbinder unbinder;
 
     List<FlingEvent> flingEvents;
 
@@ -55,7 +56,7 @@ public class FlingFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_fling, container, false);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         Labs labs = MainActivity.getLabsInstance();
         labs.getFlingEvents().subscribe(new Action1<List<FlingEvent>>() {
             @Override
@@ -97,5 +98,11 @@ public class FlingFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

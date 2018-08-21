@@ -28,28 +28,28 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
 import rx.functions.Action1;
 
 public class LaundryActivity extends AppCompatActivity {
 
+    // views
+    @BindView(R.id.laundry_help_text)
+    TextView mTextView;
+    @BindView(R.id.loadingPanel)
+    RelativeLayout loadingPanel;
+    @BindView(R.id.no_results)
+    TextView no_results;
+    @BindView(R.id.favorite_laundry_list)
+    RecyclerView mRecyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     private Labs mLabs;
     private Context mContext;
 
     private SharedPreferences sp;
-
-    // views
-    @Bind(R.id.laundry_help_text)
-    TextView mTextView;
-    @Bind(R.id.loadingPanel)
-    RelativeLayout loadingPanel;
-    @Bind(R.id.no_results)
-    TextView no_results;
-    @Bind(R.id.favorite_laundry_list)
-    RecyclerView mRecyclerView;
-    private SwipeRefreshLayout swipeRefreshLayout;
 
     // list of favorite laundry rooms
     private ArrayList<LaundryRoom> laundryRooms = new ArrayList<>();
@@ -132,12 +132,6 @@ public class LaundryActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ButterKnife.unbind(this);
     }
 
     @Override

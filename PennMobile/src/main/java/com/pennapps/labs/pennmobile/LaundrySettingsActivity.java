@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.functions.Action1;
 
@@ -31,13 +31,13 @@ public class LaundrySettingsActivity extends AppCompatActivity {
     private Labs mLabs;
     private Context mContext;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    @Bind(R.id.loadingPanel)
+    @BindView(R.id.loadingPanel)
     RelativeLayout loadingPanel;
-    @Bind(R.id.no_results)
+    @BindView(R.id.no_results)
     TextView no_results;
-    @Bind(R.id.laundry_building_expandable_list)
+    @BindView(R.id.laundry_building_expandable_list)
     ExpandableListView mExpandableListView;
-    @Bind(R.id.laundry_settings_help_layout)
+    @BindView(R.id.laundry_settings_help_layout)
     RelativeLayout mHelpLayout;
 
     private SharedPreferences sp;
@@ -194,6 +194,5 @@ public class LaundrySettingsActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(this);
     }
 }
