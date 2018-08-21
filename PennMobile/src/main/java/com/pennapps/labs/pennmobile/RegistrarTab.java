@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
@@ -32,6 +33,7 @@ import rx.functions.Action1;
  */
 public class RegistrarTab extends SearchFavoriteTab {
 
+    private Unbinder unbinder;
     private RegistrarAdapter mAdapter;
     private int frameID;
     public static CourseFragment[] fragments;
@@ -51,39 +53,20 @@ public class RegistrarTab extends SearchFavoriteTab {
         }
         frameLayout.setId(frameID);
 
-        ButterKnife.bind(this, v);
+        unbinder = ButterKnife.bind(this, v);
         mListView = (ListView) v.findViewById(android.R.id.list);
         initList();
         setBackButton(frameLayout);
         return v;
     }
 
-    private void setBackButton(FrameLayout frameLayout) {
-        frameLayout.setFocusableInTouchMode(true);
-        frameLayout.requestFocus();
-        frameLayout.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN && fragments[fav ? 1 : 0] != null) {
-                    backRemove(fav ? 1 : 0);
-                    return true;
-                }
-                if (((fav && fragments[0] != null && fragments[1] == null) || (!fav && fragments[0] == null && fragments[1] != null)) &&
-                        (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN)) {
-                    backRemove(fav ? 0 : 1);
-                }
-                return false;
-            }
-        });
-    }
-
-    public void backRemove(int id) {
-        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
-        fragmentManager.beginTransaction().remove(fragments[id]).commit();
-        fragments[id] = null;
-        if (fragments[0] == null && fragments[1] == null) {
-            mActivity.getActionBarToggle().setDrawerIndicatorEnabled(true);
-            mActivity.getActionBarToggle().syncState();
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (fav) {
+            search_instructions.setText(getString(R.string.search_no_fav));
+        } else {
+            search_instructions.setText(getString(R.string.registrar_instructions));
         }
     }
 
@@ -116,6 +99,41 @@ public class RegistrarTab extends SearchFavoriteTab {
     public void processQuery (String query) {
         super.processQuery(query);
         processRegistrarQuery(query);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    private void setBackButton(FrameLayout frameLayout) {
+        frameLayout.setFocusableInTouchMode(true);
+        frameLayout.requestFocus();
+        frameLayout.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN && fragments[fav ? 1 : 0] != null) {
+                    backRemove(fav ? 1 : 0);
+                    return true;
+                }
+                if (((fav && fragments[0] != null && fragments[1] == null) || (!fav && fragments[0] == null && fragments[1] != null)) &&
+                        (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN)) {
+                    backRemove(fav ? 0 : 1);
+                }
+                return false;
+            }
+        });
+    }
+
+    public void backRemove(int id) {
+        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
+        fragmentManager.beginTransaction().remove(fragments[id]).commit();
+        fragments[id] = null;
+        if (fragments[0] == null && fragments[1] == null) {
+            mActivity.getActionBarToggle().setDrawerIndicatorEnabled(true);
+            mActivity.getActionBarToggle().syncState();
+        }
     }
 
     private void processRegistrarQuery(String query) {
@@ -202,16 +220,6 @@ public class RegistrarTab extends SearchFavoriteTab {
             mActivity.closeKeyboard();
         } else {
             notFavoriteInit();
-        }
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (fav) {
-            search_instructions.setText(getString(R.string.search_no_fav));
-        } else {
-            search_instructions.setText(getString(R.string.registrar_instructions));
         }
     }
 }

@@ -22,7 +22,7 @@ import org.apache.commons.lang3.text.WordUtils;
 import java.util.Comparator;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -164,11 +164,11 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
     }
 
     public static class ViewHolder {
-        @Bind(R.id.dining_hall_name) TextView hallNameTV;
-        @Bind(R.id.dining_hall_status) TextView hallStatus;
-        @Bind(R.id.dining_hall_open_meal) TextView openMeal;
-        @Bind(R.id.dining_hall_open_close) TextView openClose;
-        @Bind(R.id.dining_hall_menu_indicator) ImageView menuArrow;
+        @BindView(R.id.dining_hall_name) TextView hallNameTV;
+        @BindView(R.id.dining_hall_status) TextView hallStatus;
+        @BindView(R.id.dining_hall_open_meal) TextView openMeal;
+        @BindView(R.id.dining_hall_open_close) TextView openClose;
+        @BindView(R.id.dining_hall_menu_indicator) ImageView menuArrow;
         public DiningHall hall;
 
         public ViewHolder(View view, DiningHall hall) {

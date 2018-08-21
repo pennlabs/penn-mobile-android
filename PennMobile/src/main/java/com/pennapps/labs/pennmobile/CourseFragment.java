@@ -27,12 +27,25 @@ import com.pennapps.labs.pennmobile.classes.Review;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 public class CourseFragment extends Fragment implements OnMapReadyCallback {
+
+    @BindView(R.id.course_activity) TextView courseActivityTextView;
+    @BindView(R.id.course_title) TextView courseTitleTextView;
+    @BindView(R.id.instructor) TextView instructorTextView;
+    @BindView(R.id.course_desc_title) TextView descriptionTitle;
+    @BindView(R.id.course_desc) TextView descriptionTextView;
+    @BindView(R.id.registrar_map_frame) View mapFrame;
+    @BindView(R.id.pcr_layout) LinearLayout pcrLayout;
+    @BindView(R.id.course_avg_course) TextView courseQuality;
+    @BindView(R.id.course_avg_instr) TextView instructorQuality;
+    @BindView(R.id.course_avg_diff) TextView courseDifficulty;
+    private Unbinder unbinder;
 
     private GoogleMap map;
     private SupportMapFragment mapFragment;
@@ -40,17 +53,6 @@ public class CourseFragment extends Fragment implements OnMapReadyCallback {
     private Labs mLabs;
     private MainActivity mActivity;
     private boolean fav;
-
-    @Bind(R.id.course_activity) TextView courseActivityTextView;
-    @Bind(R.id.course_title) TextView courseTitleTextView;
-    @Bind(R.id.instructor) TextView instructorTextView;
-    @Bind(R.id.course_desc_title) TextView descriptionTitle;
-    @Bind(R.id.course_desc) TextView descriptionTextView;
-    @Bind(R.id.registrar_map_frame) View mapFrame;
-    @Bind(R.id.pcr_layout) LinearLayout pcrLayout;
-    @Bind(R.id.course_avg_course) TextView courseQuality;
-    @Bind(R.id.course_avg_instr) TextView instructorQuality;
-    @Bind(R.id.course_avg_diff) TextView courseDifficulty;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,7 +67,7 @@ public class CourseFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_course, container, false);
-        ButterKnife.bind(this, v);
+        unbinder = ButterKnife.bind(this, v);
         return v;
     }
 
@@ -160,7 +162,7 @@ public class CourseFragment extends Fragment implements OnMapReadyCallback {
         } else {
             getActivity().setTitle(R.string.registrar);
         }
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     private void drawCourseMap() {

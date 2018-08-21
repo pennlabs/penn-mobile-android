@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -181,19 +181,19 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
         Context mContext;
         ArrayList<LaundryRoom> mRooms;
 
-        @Bind(R.id.laundry_room_title)
+        @BindView(R.id.laundry_room_title)
         TextView title;
-        @Bind(R.id.fav_laundry_room_name)
+        @BindView(R.id.fav_laundry_room_name)
         TextView name;
-        @Bind(R.id.washer_availability)
+        @BindView(R.id.washer_availability)
         TextView washerAvailability;
-        @Bind(R.id.dryer_availability)
+        @BindView(R.id.dryer_availability)
         TextView dryerAvailability;
-        @Bind(R.id.laundry_washer_machine_list)
+        @BindView(R.id.laundry_washer_machine_list)
         RecyclerView washerRecyclerView;
-        @Bind(R.id.laundry_dryer_machine_list)
+        @BindView(R.id.laundry_dryer_machine_list)
         RecyclerView dryerRecyclerView;
-        @Bind(R.id.laundry_availability_chart)
+        @BindView(R.id.laundry_availability_chart)
         LineChart lineChart;
 
         public CustomViewHolder(View view, Context context, ArrayList<LaundryRoom> rooms, List<LaundryUsage> roomsData) {

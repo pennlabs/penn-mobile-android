@@ -13,9 +13,11 @@ import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 
 public class AboutFragment extends Fragment {
     private AlertDialog mAlertDialog;
+    private Unbinder unbinder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,7 +28,7 @@ public class AboutFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_about, container, false);
-        ButterKnife.bind(this, v);
+        unbinder = ButterKnife.bind(this, v);
         TextView featureRequest = (TextView) v.findViewById(R.id.about_desc);
         featureRequest.setMovementMethod(LinkMovementMethod.getInstance());
         String text = "Penn Mobile was developed by Penn Labs, with funding<br>" +
@@ -47,7 +49,7 @@ public class AboutFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     @OnClick(R.id.about_desc)

@@ -4,9 +4,10 @@ buildscript {
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
         maven { url "https://jitpack.io" }
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.1.4'
         classpath 'io.fabric.tools:gradle:1.25.1'
     }
 }
@@ -15,19 +16,26 @@ apply plugin: 'io.fabric'
 
 repositories {
     mavenCentral()
-    maven { url 'https://maven.fabric.io/public' }
+    jcenter()
+    maven { url "https://maven.fabric.io/public" }
     maven { url "https://jitpack.io" }
+    google()
 }
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.2'
-
+    buildTypes {
+        debug {
+            matchingFallbacks = ['qa', 'release']
+        }
+        release {}
+    }
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 25
+        vectorDrawables.useSupportLibrary = true
     }
-
     packagingOptions {
         pickFirst 'META-INF/LICENSE.txt'
         pickFirst 'META-INF/NOTICE.txt'
@@ -35,33 +43,35 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile('com.crashlytics.sdk.android:crashlytics:2.8.0@aar') {
-        transitive = true;
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.4@aar') {
+        transitive = true
     }
-    compile 'com.google.maps:google-maps-services:0.1.11'
-    compile 'org.jsoup:jsoup:1.10.1'
-    compile 'com.android.support:percent:25.3.1'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:preference-v7:25.3.1'
-    compile 'com.google.android.gms:play-services-maps:8.4.0'
-    compile 'com.google.android.gms:play-services-location:8.4.0'
-    compile 'joda-time:joda-time:2.8.1'
-    compile 'org.apache.commons:commons-lang3:3.4'
-    compile 'com.android.support:design:25.3.1'
-    compile 'com.jakewharton:butterknife:7.0.1'
-    compile 'com.squareup.retrofit:retrofit:1.9.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.squareup.okhttp:okhttp:2.4.0'
-    compile 'io.reactivex:rxandroid:0.25.0'
-    compile 'com.android.support:customtabs:25.3.1'
-    compile 'com.android.support:recyclerview-v7:25.3.1'
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.daimajia.swipelayout:library:1.2.0@aar'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    testCompile 'junit:junit:4.12'
-    androidTestCompile 'org.testng:testng:6.9.6'
-    compile 'com.github.PhilJay:MPAndroidChart:v3.0.3'
-    compile 'com.android.support:cardview-v7:25.3.1'
+    implementation 'com.google.maps:google-maps-services:0.2.10'
+    implementation 'org.jsoup:jsoup:1.11.3'
+    implementation 'com.android.support:percent:27.1.1'
+    implementation 'com.android.support:exifinterface:27.1.1'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:preference-v7:27.1.1'
+    implementation 'com.google.android.gms:play-services-maps:15.0.1'
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
+    implementation 'joda-time:joda-time:2.10'
+    implementation 'org.apache.commons:commons-lang3:3.7'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    implementation 'com.squareup.retrofit:retrofit:1.9.0'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.squareup.okhttp:okhttp:2.7.5'
+    implementation 'io.reactivex:rxandroid:1.2.1'
+    implementation 'com.android.support:customtabs:27.1.1'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.daimajia.swipelayout:library:1.2.0@aar'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'org.testng:testng:6.14.3'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+    implementation 'com.android.support:cardview-v7:27.1.1'
 }
 

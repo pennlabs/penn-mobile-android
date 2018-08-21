@@ -16,25 +16,23 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class BookGsrFragment extends Fragment {
 
+    @BindView(R.id.first_name) EditText firstName;
+    @BindView(R.id.last_name) EditText lastName;
+    @BindView(R.id.gsr_email) EditText email;
+    @BindView(R.id.submit_gsr) Button submit;
+    private Unbinder unbinder;
+
     private Labs mLabs;
-
-    @Bind(R.id.first_name)
-    EditText firstName;
-    @Bind(R.id.last_name) EditText lastName;
-    @Bind(R.id.gsr_email) EditText email;
-    @Bind(R.id.submit_gsr)
-    Button submit;
-
     private String gsrID, gsrLocationCode, startTime, endTime;
-
 
     public BookGsrFragment() {
         // Required empty public constructor
@@ -75,7 +73,7 @@ public class BookGsrFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.gsr_details_book, container, false);
-        ButterKnife.bind(this, v);
+        unbinder = ButterKnife.bind(this, v);
         submit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -95,7 +93,7 @@ public class BookGsrFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     private void bookGSR(int gsrId, int gsrLocationCode, String startTime, String endTime){

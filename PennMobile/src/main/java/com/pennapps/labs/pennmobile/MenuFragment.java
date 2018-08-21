@@ -21,12 +21,14 @@ import java.util.HashMap;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class MenuFragment extends Fragment {
 
     TabAdapter pageAdapter;
     ViewPager pager;
 
+    private Unbinder unbinder;
     private DiningHall mDiningHall;
     private MainActivity mActivity;
 
@@ -123,7 +125,7 @@ public class MenuFragment extends Fragment {
         pager.setAdapter(pageAdapter);
 
         v.setBackgroundColor(Color.WHITE);
-        ButterKnife.bind(this, v);
+        unbinder = ButterKnife.bind(this, v);
         ((MainActivity) getActivity()).addTabs(pageAdapter, pager, true);
         return v;
     }
@@ -148,7 +150,7 @@ public class MenuFragment extends Fragment {
         super.onDestroyView();
         getActivity().setTitle(R.string.dining);
         mActivity.removeTabs();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
     @Override
     public void onDestroy() {

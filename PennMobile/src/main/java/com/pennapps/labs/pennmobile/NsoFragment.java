@@ -83,7 +83,7 @@ public class NsoFragment extends SearchFavoriteFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+//        ButterKnife.unbind(this);
     }
 
     @Override

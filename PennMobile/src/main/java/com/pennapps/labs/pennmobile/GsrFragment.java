@@ -43,8 +43,9 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.fabric.sdk.android.Fabric;
 import rx.functions.Action1;
 
@@ -54,28 +55,24 @@ import rx.functions.Action1;
 
 public class GsrFragment extends Fragment {
 
+    @BindView(R.id.select_date) Button calendarButton;
+    @BindView(R.id.select_start_time) Button startButton;
+    @BindView(R.id.select_end_time) Button endButton;
+    @BindView(R.id.gsr_building_selection) Spinner gsrDropDown;
+    @BindView(R.id.instructions) TextView instructions;
+    private Unbinder unbinder;
+
+    private Labs mLabs;
 
     //list that holds all GSR rooms
     private Map<String, Integer> gsrHashMap = new HashMap<>();
     RecyclerView gsrRoomListRecylerView;
-
-    private Labs mLabs;
 
     ArrayList<String> gsrLocationsArray = new ArrayList<String>();
 
     ArrayList<GSRContainer> mGSRS = new ArrayList<GSRContainer>();
 
     DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
-
-    @Bind(R.id.select_date) Button calendarButton;
-    @Bind(R.id.select_start_time) Button startButton;
-    @Bind(R.id.select_end_time) Button endButton;
-    @Bind(R.id.gsr_building_selection) Spinner gsrDropDown;
-    @Bind(R.id.instructions) TextView instructions;
-
-
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -94,7 +91,7 @@ public class GsrFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_gsr, container, false);
 
-        ButterKnife.bind(this, v);
+        unbinder = ButterKnife.bind(this, v);
 
 
         populateDropDownGSR();
@@ -282,6 +279,20 @@ public class GsrFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(R.string.gsr);
+        ((MainActivity) getActivity()).setNav(R.id.nav_gsr);
+        populateDropDownGSR();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
     // Makes toast and performs GSR search
     // Called whenever user changes start/end time, date, or building
     public void searchForGSR() {
@@ -301,14 +312,6 @@ public class GsrFragment extends Fragment {
             getTimes(location, dateBooking, startTime, endTime);
 
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getActivity().setTitle(R.string.gsr);
-        ((MainActivity) getActivity()).setNav(R.id.nav_gsr);
-        populateDropDownGSR();
     }
 
     public static String getCurrentTimeZoneOffset() {

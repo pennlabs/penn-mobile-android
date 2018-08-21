@@ -44,6 +44,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -83,13 +84,14 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.Semaphore;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.fabric.sdk.android.Fabric;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private Labs mLabs;
     private MapView mapView;
@@ -99,15 +101,14 @@ public class MapFragment extends Fragment {
     private String query;
     private MainActivity activity;
 
-    @Bind(R.id.map_search_card)
-    LinearLayout searchCard;
-    @Bind(R.id.map_search_name)
-    TextView searchName;
-    @Bind(R.id.map_search_location)
-    TextView searchLoc;
-    @Bind(R.id.map_suggestion)
-    ListView suggestionList;
+    @BindView(R.id.map_search_card) LinearLayout searchCard;
+    @BindView(R.id.map_search_name) TextView searchName;
+    @BindView(R.id.map_search_location) TextView searchLoc;
+    @BindView(R.id.map_suggestion) ListView suggestionList;
+    Unbinder unbinder;
+
     private FloatingActionButton transitMode;
+    private FloatingActionButton currentLocButton;
     private SearchSuggestionAdapter adapter;
     private Building currentBuilding;
     private Marker currentMarker;
@@ -164,7 +165,7 @@ public class MapFragment extends Fragment {
                 .putContentType("App Feature")
                 .putContentId("4"));
 
-        geoapi = new GeoApiContext().setApiKey(getString(R.string.google_api_key));
+        geoapi = new GeoApiContext.Builder().apiKey(getString(R.string.google_api_key)).build();
         allStartPolylines = new HashSet<>();
         allEndPolylines = new HashSet<>();
         query = null;
@@ -201,9 +202,154 @@ public class MapFragment extends Fragment {
         }
         mapView.onCreate(savedInstanceState);
 
-        ButterKnife.bind(this, v);
+        unbinder = ButterKnife.bind(this, v);
+        buildingAdpater = new BuildingWindowAdapter(inflater);
+        transitAdapter = new TransitWindowAdapter(inflater);
+        transitMode = (FloatingActionButton) v.findViewById(R.id.map_direction);
+        currentLocButton = (FloatingActionButton) v.findViewById(R.id.map_current_loc);
+        mapView.getMapAsync(this);
+        return v;
+    }
 
-        googleMap = mapView.getMap();
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mapCallbacks.getGoogleApiClient().connect();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mapView == null) {
+            return;
+        }
+        mapView.onResume();
+        mapCallbacks.requestLocationUpdates();
+        activity.setTitle(R.string.map);
+//        activity.setNav(R.id.nav_map);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mapCallbacks.stopLocationUpdates();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mapView == null) {
+            return;
+        }
+        mapView.onDestroy();
+        mapCallbacks.stopLocationUpdates();
+        activity.closeMapDirectionMenu();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+        activity.closeMapDirectionMenu();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        if (mapView == null) {
+            return;
+        }
+        mapView.onLowMemory();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.building_search:
+                return true;
+            case R.id.transit_route:
+                if (routesAdapter == null) {
+                    loadRouteAdapter();
+                } else {
+                    showRouteDialogBox();
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        if (menu != null && menu.findItem(R.id.building_search) != null) {
+            searchView = (SearchView) menu.findItem(R.id.building_search).getActionView();
+            searchView.setIconifiedByDefault(true);
+            searchView.setIconified(true);
+        }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        this.googleMap = googleMap;
+        setupMap();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (mapView == null) {
+            return;
+        }
+        inflater.inflate(R.menu.building, menu);
+
+        searchView = (SearchView) menu.findItem(R.id.building_search).getActionView();
+        final SearchView.OnQueryTextListener queryListener = new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextChange(String arg0) {
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String arg0) {
+                searchView.clearFocus();
+                query = arg0;
+                SearchFavoriteFragment.addSearchQuery(R.string.map_search_count, R.array.previous_map_array, query, activity, true);
+                searchBuildings(query);
+                suggestionList.setVisibility(View.GONE);
+                return true;
+            }
+        };
+        searchView.setOnQueryTextListener(queryListener);
+        final View.OnFocusChangeListener focusListener = new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    showSuggestion();
+                }
+            }
+        };
+        searchView.setOnQueryTextFocusChangeListener(focusListener);
+
+        final SearchView.OnCloseListener closeListener = new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                suggestionList.setVisibility(View.GONE);
+                return false;
+            }
+        };
+        searchView.setOnCloseListener(closeListener);
+    }
+
+    private void setupMap() {
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         try {
             googleMap.setMyLocationEnabled(true);
@@ -243,8 +389,6 @@ public class MapFragment extends Fragment {
                         .snippet(currentBuilding.getImageURL()));
             }
         });
-        buildingAdpater = new BuildingWindowAdapter(inflater);
-        transitAdapter = new TransitWindowAdapter(inflater);
         googleMap.setInfoWindowAdapter(buildingAdpater);
 
         try {
@@ -278,8 +422,6 @@ public class MapFragment extends Fragment {
         to = (EditText) menuExtension.findViewById(R.id.menu_map_to);
         ImageButton swap = (ImageButton) menuExtension.findViewById(R.id.menu_map_swap);
         ImageButton useCurrent = (ImageButton) menuExtension.findViewById(R.id.menu_map_circle);
-        transitMode = (FloatingActionButton) v.findViewById(R.id.map_direction);
-        FloatingActionButton currentLocButton = (FloatingActionButton) v.findViewById(R.id.map_current_loc);
 
         transitMode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -376,143 +518,6 @@ public class MapFragment extends Fragment {
                 changeZoomLevel(googleMap, boundsBuilder.build());
             }
         });
-        return v;
-    }
-
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mapCallbacks.getGoogleApiClient().connect();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mapView == null) {
-            return;
-        }
-        mapView.onResume();
-        mapCallbacks.requestLocationUpdates();
-        activity.setTitle(R.string.map);
-//        activity.setNav(R.id.nav_map);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        mapCallbacks.stopLocationUpdates();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mapView == null) {
-            return;
-        }
-        mapView.onDestroy();
-        mapCallbacks.stopLocationUpdates();
-        activity.closeMapDirectionMenu();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
-        activity.closeMapDirectionMenu();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        if (mapView == null) {
-            return;
-        }
-        mapView.onLowMemory();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
-        switch (item.getItemId()) {
-            case R.id.building_search:
-                return true;
-            case R.id.transit_route:
-                if (routesAdapter == null) {
-                    loadRouteAdapter();
-                } else {
-                    showRouteDialogBox();
-                }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        if (menu != null && menu.findItem(R.id.building_search) != null) {
-            searchView = (SearchView) menu.findItem(R.id.building_search).getActionView();
-            searchView.setIconifiedByDefault(true);
-            searchView.setIconified(true);
-        }
-    }
-
-    public static MapCallbacks getMapCallbacks() {
-        return mapCallbacks;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (mapView == null) {
-            return;
-        }
-        inflater.inflate(R.menu.building, menu);
-
-        searchView = (SearchView) menu.findItem(R.id.building_search).getActionView();
-        final SearchView.OnQueryTextListener queryListener = new SearchView.OnQueryTextListener() {
-
-            @Override
-            public boolean onQueryTextChange(String arg0) {
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextSubmit(String arg0) {
-                searchView.clearFocus();
-                query = arg0;
-                SearchFavoriteFragment.addSearchQuery(R.string.map_search_count, R.array.previous_map_array, query, activity, true);
-                searchBuildings(query);
-                suggestionList.setVisibility(View.GONE);
-                return true;
-            }
-        };
-        searchView.setOnQueryTextListener(queryListener);
-        final View.OnFocusChangeListener focusListener = new View.OnFocusChangeListener() {
-
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    showSuggestion();
-                }
-            }
-        };
-        searchView.setOnQueryTextFocusChangeListener(focusListener);
-
-        final SearchView.OnCloseListener closeListener = new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                suggestionList.setVisibility(View.GONE);
-                return false;
-            }
-        };
-        searchView.setOnCloseListener(closeListener);
     }
 
     private void showSuggestion() {
@@ -870,11 +875,11 @@ public class MapFragment extends Fragment {
             if (marker.getSnippet().isEmpty()) {
                 imageView.setVisibility(View.GONE);
             } else if (loadedMarkers.contains(currentMarker)) {
-                Picasso.with(activity).load(marker.getSnippet()).fit().centerInside().into(imageView);
+                Picasso.get().load(marker.getSnippet()).fit().centerInside().into(imageView);
             } else {
                 loadedMarkers.add(currentMarker);
                 progressBar.setVisibility(View.VISIBLE);
-                Picasso.with(activity).load(marker.getSnippet()).fit().centerInside().into(imageView, new Callback() {
+                Picasso.get().load(marker.getSnippet()).fit().centerInside().into(imageView, new Callback() {
                     @Override
                     public void onSuccess() {
                         progressBar.setVisibility(View.GONE);
@@ -883,8 +888,10 @@ public class MapFragment extends Fragment {
                     }
 
                     @Override
-                    public void onError() {
+                    public void onError(Exception e) {
+
                     }
+
                 });
             }
             return view;

@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -146,9 +146,9 @@ public class HomeScreenSettingsAdapter extends RecyclerView.Adapter<HomeScreenSe
     public class CustomViewHolder extends RecyclerView.ViewHolder {
 
         Context context;
-        @Bind(R.id.home_screen_settings_switch)
+        @BindView(R.id.home_screen_settings_switch)
         Switch aSwitch;
-        @Bind(R.id.home_screen_category_name)
+        @BindView(R.id.home_screen_category_name)
         TextView titleTextView;
 
         public CustomViewHolder(View view, Context context) {

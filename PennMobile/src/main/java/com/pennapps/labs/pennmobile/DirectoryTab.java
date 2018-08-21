@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
@@ -27,12 +28,13 @@ import rx.functions.Action1;
 public class DirectoryTab extends SearchFavoriteTab {
 
     private DirectoryAdapter mAdapter;
+    private Unbinder unbinder;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_search_favorite_tab, container, false);
-        ButterKnife.bind(this, v);
+        unbinder = ButterKnife.bind(this, v);
         mListView = (ListView) v.findViewById(android.R.id.list);
         initList();
         return v;
@@ -123,5 +125,11 @@ public class DirectoryTab extends SearchFavoriteTab {
         } else {
             search_instructions.setText(getString(R.string.directory_instructions));
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }
