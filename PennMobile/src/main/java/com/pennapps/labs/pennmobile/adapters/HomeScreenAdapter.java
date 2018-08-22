@@ -19,6 +19,7 @@ import com.pennapps.labs.pennmobile.FlingFragment;
 import com.pennapps.labs.pennmobile.GsrFragment;
 import com.pennapps.labs.pennmobile.LaundryActivity;
 import com.pennapps.labs.pennmobile.NewsFragment;
+import com.pennapps.labs.pennmobile.NsoFragment;
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.RegistrarFragment;
 import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
@@ -91,8 +92,10 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 view = LayoutInflater.from(mContext).inflate(R.layout.home_cardview_card_news, parent, false);
                 return new NewsViewHolder(view, mContext);
             case 6:
-                view = LayoutInflater.from(mContext).inflate(R.layout.home_fling_card, parent, false);
-                return new FlingViewHolder(view, mContext);
+                view = LayoutInflater.from(mContext).inflate(R.layout.home_nso_card, parent, false);
+                return new NsoViewHolder(view, mContext);
+//                view = LayoutInflater.from(mContext).inflate(R.layout.home_fling_card, parent, false);
+//                return new FlingViewHolder(view, mContext);
             default:
                 view = LayoutInflater.from(mContext).inflate(R.layout.home_cardview_empty_item, parent, false);
                 return new EmptyViewHolder(view, mContext);
@@ -101,7 +104,7 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        // In order: Courses, Dining, GSR Booking, Laundry, Map, News
+        // In order: Courses, Dining, GSR Booking, Laundry, Directory, News, Fling/NSO
         switch (holder.getItemViewType()) {
             case 0:
                 CoursesViewHolder coursesViewHolder = (CoursesViewHolder) holder;
@@ -171,9 +174,12 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 */
                 break;
             case 6:
-                FlingViewHolder flingViewHolder = (FlingViewHolder) holder;
-                String flingTitle = mCategories.get(position).getName();
-                flingViewHolder.titleTextView.setText(flingTitle);
+                NsoViewHolder nsoViewHolder = (NsoViewHolder) holder;
+                String nsoTitle = mCategories.get(position).getName();
+                nsoViewHolder.titleTextView.setText(nsoTitle);
+//                FlingViewHolder flingViewHolder = (FlingViewHolder) holder;
+//                String flingTitle = mCategories.get(position).getName();
+//                flingViewHolder.titleTextView.setText(flingTitle);
                 break;
         }
     }
@@ -320,6 +326,24 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         @Override
         public void onClick(View view) {
             fragmentTransact(new FlingFragment());
+        }
+    }
+
+    public class NsoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        Context context;
+        @BindView(R.id.home_screen_cardview_title)
+        TextView titleTextView;
+
+        public NsoViewHolder(View view, Context context) {
+            super(view);
+            ButterKnife.bind(this, view);
+            this.context = context;
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            fragmentTransact(new NsoFragment());
         }
     }
 

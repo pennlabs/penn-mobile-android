@@ -11,10 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.daimajia.swipe.SwipeLayout;
 import com.pennapps.labs.pennmobile.R;
 
-// import org.mcsoxford.rss.RSSItem;
+import org.mcsoxford.rss.RSSItem;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,11 +29,11 @@ import butterknife.ButterKnife;
 /**
  * Created by Jason on 8/11/2016.
  */
-public class NsoAdapter extends ArrayAdapter<String> { //ArrayAdapter<RSSItem>
+public class NsoAdapter extends ArrayAdapter<RSSItem> {
     private final LayoutInflater inflater;
     private Context mContext;
 
-    public NsoAdapter(Context context, List<String> list) { //List<RSSItem> list
+    public NsoAdapter(Context context, List<RSSItem> list) {
         super(context, R.layout.nso_list_item, list);
         inflater = LayoutInflater.from(context);
         mContext = context;
@@ -51,11 +50,7 @@ public class NsoAdapter extends ArrayAdapter<String> { //ArrayAdapter<RSSItem>
             view.setTag(holder);
         }
 
-        SwipeLayout swipeLayout = (SwipeLayout) view.findViewById(R.id.nso_swipe);
-        swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
-        swipeLayout.addDrag(SwipeLayout.DragEdge.Right, view.findViewById(R.id.nso_swipe_drawer));
-
-        final String item = getItem(position); //RSSItem item
+        final RSSItem item = getItem(position);
 
         holder.event.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,19 +60,19 @@ public class NsoAdapter extends ArrayAdapter<String> { //ArrayAdapter<RSSItem>
             }
         });
 
-        holder.tvName.setText(item); //setText(getTitleName(item))
-        holder.tvTime.setText(item);
-//        try {
-//            holder.tvTime.setText(getEventTime(item));
-//        } catch (ParseException e) {
-//            //ignore
+        holder.tvName.setText(getTitleName(item));
+
+        try {
+            holder.tvTime.setText(getEventTime(item));
+        } catch (ParseException e) {
+            //ignore
 //            Log.d("NSO", "parse error:", e);
-//        }
-        holder.tvDescription.setText(item); //setText(getDescription(item))
+        }
+        holder.tvDescription.setText(getDescription(item));
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(view.getContext());
         Set<String> starredContacts = sharedPref.getStringSet(mContext.getResources().getString(R.string.search_nso_star), new HashSet<String>());
-        holder.star.setChecked(starredContacts.contains(item)); //contains(item.getTitle())
+        holder.star.setChecked(starredContacts.contains(item.getTitle()));
         holder.star.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,7 +82,7 @@ public class NsoAdapter extends ArrayAdapter<String> { //ArrayAdapter<RSSItem>
                 SharedPreferences.Editor editedPreferences = sharedPref.edit();
                 ToggleButton star = (ToggleButton) v;
                 boolean starred = star.isChecked();
-                String currentTitle = item; //item.getTitle()
+                String currentTitle = item.getTitle();
                 if (starred) {
                     if (currentTitle != null) {
                         starredContacts.add(currentTitle);
@@ -113,8 +108,8 @@ public class NsoAdapter extends ArrayAdapter<String> { //ArrayAdapter<RSSItem>
      * @param item the item to be parsed
      * @return the string to be displayed as the title
      */
-    public static String getTitleName(String item) { //RSSItem item
-        String title = item; //item.getTitle()
+    public static String getTitleName(RSSItem item) {
+        String title = item.getTitle();
         title = title.substring(title.indexOf("\">")+2);
         title = title.substring(0, title.indexOf("</a>"));
         while (title.contains("&amp;")) {
@@ -129,8 +124,8 @@ public class NsoAdapter extends ArrayAdapter<String> { //ArrayAdapter<RSSItem>
      * @return the string to be displayed as the time
      * @throws ParseException the exception thrown if couldn't parse correctly.
      */
-    private String getEventTime(String item) throws ParseException{ //RSSItem item
-        String time = item; //item.getTitle()
+    private String getEventTime(RSSItem item) throws ParseException {
+        String time = item.getTitle();
         time = time.substring(time.indexOf("event/") + 6);
         time = time.substring(0, time.indexOf("/"));
         String starttime = time.substring(0, 17);
@@ -155,8 +150,8 @@ public class NsoAdapter extends ArrayAdapter<String> { //ArrayAdapter<RSSItem>
      * @param item the item to be parsed
      * @return the string to be displayed as description
      */
-    private String getDescription(String item) { //RSSItem item
-        String description = item; //item.getDescription()
+    private String getDescription(RSSItem item) {
+        String description = item.getDescription();
         description = description.substring(3);
         while (description.contains("&amp;")) {
             description = description.replace("&amp;", "&");
