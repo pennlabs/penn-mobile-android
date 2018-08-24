@@ -75,6 +75,6 @@ dependencies {
     androidTestImplementation 'org.testng:testng:6.14.3'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
     implementation 'com.android.support:cardview-v7:27.1.1'
-    implementation 'com.github.ahorn:android-rss:v1.0-rc1'
+    implementation 'com.github.ahorn:android-rss:master-SNAPSHOT' // official release is several years old and is not thread-safe
 }
 
