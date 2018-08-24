@@ -4,7 +4,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,12 @@ import java.util.Set;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import rx.Observable;
+import rx.Single;
+import rx.SingleSubscriber;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Jason on 8/11/2016.
@@ -54,45 +58,58 @@ public class NsoTab extends SearchFavoriteTab {
         processNsoQuery(query);
     }
 
+    /**
+     * Given a query for filtering the RSS feed titles, fetches and displays RSS feed in the list view
+     * @param query Filter for RSS feed titles
+     */
     private void processNsoQuery(final String query) {
         Observable<List<RSSItem>> obs = Observable.create(new Observable.OnSubscribe<List<RSSItem>>() {
             @Override
             public void call(Subscriber<? super List<RSSItem>> subscriber) {
-                subscriber.onNext(getRSSFeed(query));
-                subscriber.onCompleted();
-            }
-        });
-        obs.subscribe(new Subscriber<List<RSSItem>>() {
-            @Override
-            public void onCompleted() {
-                if (adapter == null) {
-                    no_results.setVisibility(View.VISIBLE);
-                    mListView.setVisibility(View.GONE);
-                } else {
-                    mListView.setVisibility(View.VISIBLE);
-                    mListView.setAdapter(adapter);
-                    no_results.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.d("NSO", "observable error", e);
-                no_results.setVisibility(View.VISIBLE);
-                mListView.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onNext(List<RSSItem> rssItems) {
-                if (rssItems.isEmpty()) {
-                    adapter = null;
-                } else {
-                    adapter = new NsoAdapter(mActivity, rssItems);
+                if (!subscriber.isUnsubscribed()) {
+                    subscriber.onNext(getRSSFeed(query));
+                    subscriber.onCompleted();
                 }
             }
         });
+        // use io thread so main thread is not blocked
+        obs.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<RSSItem>>() {
+                    @Override
+                    public void onCompleted() {
+                        if (adapter == null) {
+                            no_results.setVisibility(View.VISIBLE);
+                            mListView.setVisibility(View.GONE);
+                        } else {
+                            mListView.setVisibility(View.VISIBLE);
+                            mListView.setAdapter(adapter);
+                            no_results.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        no_results.setVisibility(View.VISIBLE);
+                        mListView.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onNext(List<RSSItem> rssItems) {
+                        if (rssItems.isEmpty()) {
+                            adapter = null;
+                        } else {
+                            adapter = new NsoAdapter(mActivity, rssItems);
+                        }
+                    }
+                });
     }
 
+    /**
+     * Fetches RSS feed filtered by query
+     * @param query Filter for RSS feed titles
+     * @return List of RSSItem objects
+     */
     @NonNull
     private List<RSSItem> getRSSFeed(String query) {
         try {
@@ -116,48 +133,80 @@ public class NsoTab extends SearchFavoriteTab {
             }
             return answer;
         } catch (RSSReaderException e) {
-            Log.d("NSO", "error reading rss", e);
             return new LinkedList<>();
         }
     }
 
-
+    /**
+     * Fetches and displays RSS feed in the list view when the NsoTab is initially opened
+     */
     @Override
     public void initList() {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mActivity);
-        Set<String> starred = sp.getStringSet(getString(R.string.search_nso_star), new HashSet<String>());
-        if (loadingPanel.getVisibility() == View.VISIBLE) {
-            loadingPanel.setVisibility(View.GONE);
-        }
-        if (mListView.getVisibility() == View.GONE) {
-            mListView.setVisibility(View.VISIBLE);
-        }
-        if (no_results.getVisibility() == View.VISIBLE) {
-            no_results.setVisibility(View.GONE);
-        }
+        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        final Set<String> starred = sp.getStringSet(getString(R.string.search_nso_star), new HashSet<String>());
         if (search_instructions.getVisibility() == View.VISIBLE) {
             search_instructions.setVisibility(View.GONE);
         }
-        List<RSSItem> items = getRSSFeed("");
-        if (fav) {
-            // need to improve runtime later (worst case O(n^2) smh
-            List<RSSItem> favItems = new LinkedList<>();
-            for (String s : starred) {
-                String details = sp.getString(s + getString(R.string.search_nso_star), "");
-                if (!details.isEmpty()) {
-                    for (RSSItem item : items) {
-                        if (item.getTitle().equals(details)) {
-                            favItems.add(item);
-                            break;
-                        }
-                    }
+        if (loadingPanel != null) {
+            loadingPanel.setVisibility(View.VISIBLE);
+        }
+        Single<List<RSSItem>> loadItems = Single.create(new Single.OnSubscribe<List<RSSItem>>() {
+            @Override
+            public void call(SingleSubscriber<? super List<RSSItem>> singleSubscriber) {
+                if (!singleSubscriber.isUnsubscribed()) {
+                    singleSubscriber.onSuccess(getRSSFeed(""));
                 }
             }
-            items = favItems;
-        }
-        adapter = new NsoAdapter(mActivity, items);
-        mListView.setAdapter(adapter);
-        mActivity.closeKeyboard();
+        });
+
+        // use io thread so main thread is not blocked
+        loadItems.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doAfterTerminate(new Action0() {
+                    // update the views after loading the RSS item list has failed/succeeded
+                    @Override
+                    public void call() {
+                        if (loadingPanel != null) {
+                            loadingPanel.setVisibility(View.GONE);
+                        }
+                        if (adapter == null) {
+                            no_results.setVisibility(View.VISIBLE);
+                            mListView.setVisibility(View.GONE);
+                        } else {
+                            mListView.setVisibility(View.VISIBLE);
+                            mListView.setAdapter(adapter);
+                            no_results.setVisibility(View.GONE);
+                        }
+                    }
+                })
+                .subscribe(new SingleSubscriber<List<RSSItem>>() {
+                    @Override
+                    public void onSuccess(List<RSSItem> rssItems) {
+                        if (fav) {
+                            // need to improve runtime later (worst case O(n^2) smh
+                            List<RSSItem> favItems = new LinkedList<>();
+                            for (String s : starred) {
+                                String details = sp.getString(s + getString(R.string.search_nso_star), "");
+                                if (!details.isEmpty()) {
+                                    for (RSSItem item : rssItems) {
+                                        if (item.getTitle().equals(details)) {
+                                            favItems.add(item);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            rssItems = favItems;
+                        }
+                        adapter = new NsoAdapter(mActivity, rssItems);
+                        mListView.setAdapter(adapter);
+                        mActivity.closeKeyboard();
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                    }
+                });
     }
 
     @Override

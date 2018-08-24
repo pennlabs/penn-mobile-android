@@ -125,28 +125,29 @@ public class MainFragment extends Fragment {
         if (numVisibleCategories == 0) {
 
             DateTime today = new DateTime();
+
             DateTime nsoStart = new DateTime(2018, 8, 15, 0, 0, 0, 0);
             DateTime nsoEnd = new DateTime(2018, 10, 15, 0, 0, 0, 0);
             Interval nsoDates = new Interval(nsoStart, nsoEnd);
+
+//            DateTime flingStart = new DateTime(2019, 4, 10, 0, 0, 0, 0);
+//            DateTime flingEnd = new DateTime(2019, 4, 15, 0, 0, 0, 0);
+//            Interval flingDates = new Interval(flingStart, flingEnd);
+
+            // default: dining, laundry, GSR
+            visibleCategories.add(mAllCategories.get(1));
+            visibleCategories.add(mAllCategories.get(3));
+            visibleCategories.add(mAllCategories.get(2));
 
             // check if today is part of NSO dates - if so, add NSO to home page
             if (nsoDates.contains(today)) {
                 visibleCategories.add(mAllCategories.get(6));
             }
 
-//            DateTime flingStart = new DateTime(2019, 4, 10, 0, 0, 0, 0);
-//            DateTime flingEnd = new DateTime(2019, 4, 15, 0, 0, 0, 0);
-//            Interval flingDates = new Interval(flingStart, flingEnd);
-//
 //            // check if today is part of Fling dates - if so, add Fling to home page
 //            if (flingDates.contains(today)) {
 //                visibleCategories.add(mAllCategories.get(6));
 //            }
-
-            // default: dining, laundry, GSR
-            visibleCategories.add(mAllCategories.get(1));
-            visibleCategories.add(mAllCategories.get(3));
-            visibleCategories.add(mAllCategories.get(2));
         }
 
         // update home screen

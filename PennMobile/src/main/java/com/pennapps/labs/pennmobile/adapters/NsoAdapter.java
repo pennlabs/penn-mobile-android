@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -51,14 +50,6 @@ public class NsoAdapter extends ArrayAdapter<RSSItem> {
         }
 
         final RSSItem item = getItem(position);
-
-        holder.event.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //to be implemented
-
-            }
-        });
 
         holder.tvName.setText(getTitleName(item));
 
@@ -115,6 +106,9 @@ public class NsoAdapter extends ArrayAdapter<RSSItem> {
         while (title.contains("&amp;")) {
             title = title.replace("&amp;", "&");
         }
+        while (title.contains("&#039;")) {
+            title = title.replace("&#039;", "'");
+        }
         return title;
     }
 
@@ -132,14 +126,14 @@ public class NsoAdapter extends ArrayAdapter<RSSItem> {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HHmmss", Locale.US);
         cal.setTime(sdf.parse(starttime));
-        SimpleDateFormat out = new SimpleDateFormat("EEE M/dd K:mm a", Locale.US);
+        SimpleDateFormat out = new SimpleDateFormat("EEE M/dd h:mm a", Locale.US);
         String answer = out.format(cal.getTime());
         if (time.length() < 18) {
             return answer;
         }
         answer += " – ";
         String endtime = time.substring(18);
-        out = new SimpleDateFormat("K:mm a", Locale.US);
+        out = new SimpleDateFormat("h:mm a", Locale.US);
         cal.setTime(sdf.parse(endtime));
         answer += out.format(cal.getTime());
         return answer;
@@ -152,9 +146,14 @@ public class NsoAdapter extends ArrayAdapter<RSSItem> {
      */
     private String getDescription(RSSItem item) {
         String description = item.getDescription();
-        description = description.substring(3);
+        if (description.length() >= 4) {
+            description = description.substring(3);
+        }
         while (description.contains("&amp;")) {
             description = description.replace("&amp;", "&");
+        }
+        while (description.contains("&#039;")) {
+            description = description.replace("&#039;", "'");
         }
         return description;
     }
@@ -165,8 +164,6 @@ public class NsoAdapter extends ArrayAdapter<RSSItem> {
         @BindView(R.id.tv_event_time) TextView tvTime;
         @BindView(R.id.tv_event_description) TextView tvDescription;
         @BindView(R.id.star_event) ToggleButton star;
-        @BindView(R.id.event_icon)
-        ImageView event;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);
