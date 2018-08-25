@@ -1,8 +1,13 @@
 package com.pennapps.labs.pennmobile.adapters;
 
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.customtabs.CustomTabsIntent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,11 +36,24 @@ import butterknife.ButterKnife;
 public class NsoAdapter extends ArrayAdapter<RSSItem> {
     private final LayoutInflater inflater;
     private Context mContext;
+    private boolean isCustomTabsSupported;
+    private Intent share;
+    private CustomTabsIntent.Builder builder;
 
     public NsoAdapter(Context context, List<RSSItem> list) {
         super(context, R.layout.nso_list_item, list);
         inflater = LayoutInflater.from(context);
         mContext = context;
+        isCustomTabsSupported = isChromeCustomTabsSupported(context);
+        if (isCustomTabsSupported) {
+            builder = new CustomTabsIntent.Builder();
+            share = new Intent(Intent.ACTION_SEND);
+            share.setType("text/plain");
+            builder.setToolbarColor(0x3E50B4);
+            builder.setStartAnimations(getContext(),
+                    android.support.design.R.anim.abc_popup_enter,
+                    android.support.design.R.anim.abc_popup_exit);
+        }
     }
 
     @Override
@@ -50,6 +68,25 @@ public class NsoAdapter extends ArrayAdapter<RSSItem> {
         }
 
         final RSSItem item = getItem(position);
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri url = item.getLink();
+                if (isCustomTabsSupported) {
+                    share.putExtra(Intent.EXTRA_TEXT, url);
+                    builder.addMenuItem("Share", PendingIntent.getActivity(getContext(), 0,
+                            share, PendingIntent.FLAG_CANCEL_CURRENT));
+                    CustomTabsIntent customTabsIntent = builder.build();
+                    customTabsIntent.launchUrl(mContext, url);
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, url);
+                    if (intent.resolveActivity(mContext.getPackageManager()) != null) {
+                        mContext.startActivity(intent);
+                    }
+                }
+            }
+        });
 
         holder.tvName.setText(getTitleName(item));
 
@@ -156,6 +193,14 @@ public class NsoAdapter extends ArrayAdapter<RSSItem> {
             description = description.replace("&#039;", "'");
         }
         return description;
+    }
+
+    private static boolean isChromeCustomTabsSupported(final Context context) {
+        String SERVICE_ACTION = "android.support.customtabs.action.CustomTabsService";
+        Intent serviceIntent = new Intent(SERVICE_ACTION);
+        serviceIntent.setPackage("com.android.chrome");
+        List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentServices(serviceIntent, 0);
+        return !(resolveInfos == null || resolveInfos.isEmpty());
     }
 
     static class ViewHolder {
