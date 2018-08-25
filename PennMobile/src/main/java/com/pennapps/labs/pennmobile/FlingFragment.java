@@ -87,7 +87,7 @@ public class FlingFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle(R.string.spring_fling);
-        ((MainActivity) getActivity()).setNav(R.id.nav_fling);
+//        ((MainActivity) getActivity()).setNav(R.id.nav_fling);
     }
 
     @Override

@@ -91,7 +91,7 @@ public abstract class SearchFavoriteFragment extends ListFragment {
         viewPager = (ViewPager) v.findViewById(R.id.pager);
         tabAdapter = getAdapter();
         viewPager.setAdapter(tabAdapter);
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 

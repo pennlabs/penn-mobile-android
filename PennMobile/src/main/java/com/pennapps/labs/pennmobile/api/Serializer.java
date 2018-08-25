@@ -177,6 +177,7 @@ public class Serializer {
             }.getType());
         }
     }
+
     // fling events
     public static class FlingEventSerializer implements  JsonDeserializer<List<FlingEvent>> {
 
@@ -188,6 +189,7 @@ public class Serializer {
             }.getType());
         }
     }
+
     // home page
     public static class HomePageSerializer implements JsonDeserializer<List<HomeScreenCell>> {
         @Override
