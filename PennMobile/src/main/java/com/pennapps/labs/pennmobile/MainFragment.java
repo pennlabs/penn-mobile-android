@@ -97,7 +97,8 @@ public class MainFragment extends Fragment {
         mAllCategories.add(new HomeScreenItem("Laundry", 3));
         mAllCategories.add(new HomeScreenItem("Directory", 4));
         mAllCategories.add(new HomeScreenItem("News", 5));
-        mAllCategories.add(new HomeScreenItem("Spring Fling", 6));
+//        mAllCategories.add(new HomeScreenItem("Spring Fling", 6));
+        mAllCategories.add(new HomeScreenItem("NSO", 6));
 
         // determine which categories are visible
         int numVisibleCategories = 0;
@@ -124,19 +125,29 @@ public class MainFragment extends Fragment {
         if (numVisibleCategories == 0) {
 
             DateTime today = new DateTime();
-            DateTime flingStart = new DateTime(2018, 4, 10, 0, 0, 0, 0);
-            DateTime flingEnd = new DateTime(2018, 4, 15, 0, 0, 0, 0);
-            Interval flingDates = new Interval(flingStart, flingEnd);
 
-            // check if today is part of Fling dates - if so, add Fling to home page
-            if (flingDates.contains(today)) {
-                visibleCategories.add(mAllCategories.get(6));
-            }
+            DateTime nsoStart = new DateTime(2018, 8, 15, 0, 0, 0, 0);
+            DateTime nsoEnd = new DateTime(2018, 10, 15, 0, 0, 0, 0);
+            Interval nsoDates = new Interval(nsoStart, nsoEnd);
+
+//            DateTime flingStart = new DateTime(2019, 4, 10, 0, 0, 0, 0);
+//            DateTime flingEnd = new DateTime(2019, 4, 15, 0, 0, 0, 0);
+//            Interval flingDates = new Interval(flingStart, flingEnd);
 
             // default: dining, laundry, GSR
             visibleCategories.add(mAllCategories.get(1));
             visibleCategories.add(mAllCategories.get(3));
             visibleCategories.add(mAllCategories.get(2));
+
+            // check if today is part of NSO dates - if so, add NSO to home page
+            if (nsoDates.contains(today)) {
+                visibleCategories.add(mAllCategories.get(6));
+            }
+
+//            // check if today is part of Fling dates - if so, add Fling to home page
+//            if (flingDates.contains(today)) {
+//                visibleCategories.add(mAllCategories.get(6));
+//            }
         }
 
         // update home screen
