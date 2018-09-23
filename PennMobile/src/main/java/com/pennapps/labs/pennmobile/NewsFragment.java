@@ -201,7 +201,7 @@ public class NewsFragment extends ListFragment {
         NewsSite thirtyFour = new NewsSite("34th Street", "http://www.34st.com/",
                 thirtyFourDescription, R.drawable.thirtyfour);
         NewsSite utb = new NewsSite("Under the Button",
-                "http://www.thedp.com/blog/under-the-button/", utbDescription, R.drawable.utb);
+                "https://www.underthebutton.com/", utbDescription, R.drawable.utb);
         NewsSite[] allSites = {dp, thirtyFour, utb};
         String[] newsUrls = new String[allSites.length];
         for (int i = 0; i < newsUrls.length; i++) {
