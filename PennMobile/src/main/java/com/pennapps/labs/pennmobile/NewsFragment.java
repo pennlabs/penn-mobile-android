@@ -113,7 +113,7 @@ public class NewsFragment extends ListFragment {
             ArrayList<String> titles = new ArrayList<>();
             URLs.add("http://www.thedp.com/");
             URLs.add("http://www.34st.com/");
-            URLs.add("http://www.thedp.com/blog/under-the-button/");
+            URLs.add("https://www.underthebutton.com/");
             titles.add("The Daily Pennsylvanian");
             titles.add("34th Street");
             titles.add("Under the Button");
