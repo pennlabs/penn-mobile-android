@@ -63,9 +63,7 @@ class NewsFragment : ListFragment() {
 
     internal inner class NewsSite(val name: String, val url: String, val description: String, val image: Int) {
 
-        override fun toString(): String {
-            return name
-        }
+        override fun toString() = name
     }
 
     internal inner class NewsCustomTabsServiceConnection : CustomTabsServiceConnection() {
@@ -86,13 +84,9 @@ class NewsFragment : ListFragment() {
             for (i in URLs.indices) {
                 val bundle = Bundle()
                 bundle.putParcelable(CustomTabsService.KEY_URL, object : Parcelable {
-                    override fun describeContents(): Int {
-                        return 0
-                    }
+                    override fun describeContents() = 0
 
-                    override fun writeToParcel(parcel: Parcel, i: Int) {
-                        parcel.writeString(URLs[i])
-                    }
+                    override fun writeToParcel(parcel: Parcel, i: Int) { parcel.writeString(URLs[i]) }
                 })
                 urlList.add(bundle)
             }
@@ -117,19 +111,23 @@ class NewsFragment : ListFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val connection = NewsCustomTabsServiceConnection()
-        isCustomTabsSupported = isChromeCustomTabsSupported(context!!)
+        context?.let { context ->
+            isCustomTabsSupported = isChromeCustomTabsSupported(context)
+        }
         setHasOptionsMenu(true)
         mListView = listView
         builder = CustomTabsIntent.Builder()
         share = Intent(Intent.ACTION_SEND)
         share?.setType("text/plain")
         builder?.setToolbarColor(0x3E50B4)
-        builder?.setStartAnimations(context!!,
-                android.support.design.R.anim.abc_popup_enter,
-                android.support.design.R.anim.abc_popup_exit)
+        context?.let { context ->
+            builder?.setStartAnimations(context,
+                    android.support.design.R.anim.abc_popup_enter,
+                    android.support.design.R.anim.abc_popup_exit)
+            CustomTabsClient.bindCustomTabsService(context,
+                    CUSTOM_TAB_PACKAGE_NAME, connection)
+        }
 
-        CustomTabsClient.bindCustomTabsService(context!!,
-                CUSTOM_TAB_PACKAGE_NAME, connection)
         addNews()
     }
 
@@ -146,9 +144,12 @@ class NewsFragment : ListFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val v = inflater!!.inflate(R.layout.fragment_news, container, false)
-        ButterKnife.bind(this, v)
-        return v
+        inflater?.let { inflater ->
+            val v = inflater.inflate(R.layout.fragment_news, container, false)
+            ButterKnife.bind(this, v)
+            return v
+        }
+
     }
 
     private fun addNews() {
@@ -166,30 +167,38 @@ class NewsFragment : ListFragment() {
         for (i in newsUrls.indices) {
             newsUrls[i] = allSites[i].url
         }
-        val adapter = CustomListAdapter(context!!, newsUrls, allSites)
-        mListView?.setAdapter(adapter)
+        context?.let {context ->
+            val adapter = CustomListAdapter(context, newsUrls, allSites)
+            mListView?.setAdapter(adapter)
+        }
+
+
     }
 
 
     override fun onListItemClick(l: ListView?, v: View?, position: Int, id: Long) {
-        val url = l!!.getItemAtPosition(position) as String
-        if (url != null) {
-            if (isCustomTabsSupported) {
-                share?.putExtra(Intent.EXTRA_TEXT, url)
-                builder?.addMenuItem("Share", PendingIntent.getActivity(context, 0,
-                        share, PendingIntent.FLAG_CANCEL_CURRENT))
-                customTabsIntent = builder?.build()
-                customTabsIntent?.launchUrl(activity!!, Uri.parse(url))
-            } else {
-                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                startActivity(browserIntent)
+        l?.let {l ->
+            val url = l.getItemAtPosition(position) as String
+                if (isCustomTabsSupported) {
+                    share?.putExtra(Intent.EXTRA_TEXT, url)
+                    builder?.addMenuItem("Share", PendingIntent.getActivity(context, 0,
+                            share, PendingIntent.FLAG_CANCEL_CURRENT))
+                    customTabsIntent = builder?.build()
+                    activity?.let { activity ->
+                        customTabsIntent?.launchUrl(activity, Uri.parse(url))
+                    }
+                } else {
+                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    startActivity(browserIntent)
+                }
             }
-        }
-    }
+      }
 
     override fun onResume() {
         super.onResume()
-        activity!!.setTitle(R.string.news)
+        activity?.let { activity ->
+            activity.setTitle(R.string.news)
+        }
         (activity as MainActivity).setNav(R.id.nav_news)
     }
 
