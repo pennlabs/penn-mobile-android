@@ -53,7 +53,7 @@ import rx.functions.Action1;
  * Created by Mike Abelar on 9/24/2017.
  */
 
-public class GsrFragment extends Fragment {
+public class GsrFragmentJava extends Fragment {
 
     @BindView(R.id.select_date) Button calendarButton;
     @BindView(R.id.select_start_time) Button startButton;
