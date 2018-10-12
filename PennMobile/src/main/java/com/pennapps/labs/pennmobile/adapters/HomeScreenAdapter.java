@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.pennapps.labs.pennmobile.DiningFragment;
 import com.pennapps.labs.pennmobile.DirectoryFragment;
 import com.pennapps.labs.pennmobile.FlingFragment;
-import com.pennapps.labs.pennmobile.GsrFragment;
+import com.pennapps.labs.pennmobile.GsrFragmentJava;
 import com.pennapps.labs.pennmobile.LaundryActivity;
 import com.pennapps.labs.pennmobile.NewsFragment;
 import com.pennapps.labs.pennmobile.NsoFragment;
@@ -239,7 +239,7 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         @Override
         public void onClick(View view) {
-            fragmentTransact(new GsrFragment());
+            fragmentTransact(new GsrFragmentJava());
         }
     }
 
