@@ -4,7 +4,12 @@ repositories {
     google()
 }
 buildscript {
+    ext.kotlin_version = '1.2.70'
     repositories {
         google()
+        mavenCentral()
+    }
+    dependencies {
+
     }
 }
