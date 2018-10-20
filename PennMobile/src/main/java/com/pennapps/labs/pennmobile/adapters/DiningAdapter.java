@@ -2,23 +2,30 @@ package com.pennapps.labs.pennmobile.adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.PreferenceManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.MainActivity;
+import com.pennapps.labs.pennmobile.MenuFragment;
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
+import com.squareup.picasso.Picasso;
 
-import org.apache.commons.lang3.text.WordUtils;
-
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -27,107 +34,126 @@ import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-public class DiningAdapter extends ArrayAdapter<DiningHall> {
-    private final LayoutInflater inflater;
+public class DiningAdapter extends RecyclerView.Adapter<DiningAdapter.DiningViewHolder> {
     private Labs mLabs;
     private boolean[] loaded;
     private String sortBy;
+    private List<DiningHall> diningHalls;
+    private Context context;
 
     public DiningAdapter(Context context, List<DiningHall> diningHalls) {
-        super(context, R.layout.dining_list_item, diningHalls);
-        inflater = LayoutInflater.from(context);
         mLabs = MainActivity.getLabsInstance();
+        this.context = context;
         loaded = new boolean[diningHalls.size()];
-
+        this.diningHalls = diningHalls;
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sortBy = sp.getString("dining_sortBy", "RESIDENTIAL");
+        Collections.sort(this.diningHalls, new MenuComparator());
+    }
 
-        this.sort(new MenuComparator());
+    @NonNull
+    @Override
+    public DiningViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dining_list_item, parent, false);
+        return new DiningViewHolder(view, null);
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
-        final DiningHall diningHall = getItem(position);
-        ViewHolder hallHolder;
-        if (view != null) {
-            hallHolder = (ViewHolder) view.getTag();
-        } else {
-            view = inflater.inflate(R.layout.dining_list_item, parent, false);
-            hallHolder = new ViewHolder(view, diningHall);
-            view.setTag(hallHolder);
-        }
+    public void onBindViewHolder(@NonNull final DiningViewHolder holder, int position) {
+        if (position < diningHalls.size()) {
+            final DiningHall diningHall = diningHalls.get(position);
+            holder.hall = diningHall;
 
-        final ViewHolder holder = hallHolder;
-        final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.dining_progress);
-        holder.hall = diningHall;
+            holder.menuArrow.setVisibility(View.GONE);
+            holder.progressBar.setVisibility(View.VISIBLE);
 
-        holder.menuArrow.setVisibility(View.GONE);
-        holder.openMeal.setVisibility(View.VISIBLE);
-        holder.openClose.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
+            holder.hallNameTV.setText(diningHall.getName());
+            Picasso.get().load(diningHall.getImage()).fit().centerCrop().into(holder.hallImage);
 
-        holder.hallNameTV.setText(WordUtils.capitalizeFully(diningHall.getName()));
-
-
-
-        if (diningHall.isOpen()) {
-            holder.hallStatus.setText(R.string.dining_hall_open);
-            holder.hallStatus.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.label_green));
-            if (!diningHall.openMeal().equals("all")) {
-                if (diningHall.openMeal().equals("Breakfast/Lunch/Dinner")){
-                    holder.openMeal.setText(String.format("Currently serving all meals"));
+            if (diningHall.isOpen()) {
+                holder.hallStatus.setBackground(ContextCompat.getDrawable(context, R.drawable.label_green));
+                if (!diningHall.openMeal().equals("all")) {
+                    holder.hallStatus.setText(getOpenStatusLabel(diningHall.openMeal()));
                 }
-                else {
-                    holder.openMeal.setText(String.format("Currently serving %s", diningHall.openMeal()));
+                holder.hallHours.setText(diningHall.openTimes().toLowerCase());
+            } else {
+                holder.hallStatus.setText(R.string.dining_hall_closed);
+                holder.hallStatus.setBackground(ContextCompat.getDrawable(context, R.drawable.label_red));
+                String openTimes = diningHall.openTimes();
+                if (openTimes.length() == 0) {
+                    holder.hallHours.setText(R.string.dining_closed_tomorrow);
+                } else {
+                    holder.hallHours.setText(diningHall.openTimes().toLowerCase());
                 }
-            } else {
-                view.findViewById(R.id.dining_hall_open_meal).setVisibility(View.GONE);
             }
-            holder.openClose.setText(String.format("Closes at %s", diningHall.closingTime()));
-        } else {
-            holder.hallStatus.setText(R.string.dining_hall_closed);
-            holder.hallStatus.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.label_red));
-            String meal = diningHall.nextMeal();
-            if (meal.equals("") || meal.equals("all")){
-                view.findViewById(R.id.dining_hall_open_meal).setVisibility(View.GONE);
-            } else if (meal.equals("Breakfast/Lunch/Dinner")){
-                holder.openMeal.setText(String.format("Next serving all meals"));
-            } else {
-                holder.openMeal.setText(String.format("Next serving %s", meal));
+            final int pos = position;
+            if (diningHall.isResidential() && !loaded[pos]) {
+                holder.progressBar.setVisibility(View.VISIBLE);
+                mLabs.daily_menu(diningHall.getId())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<DiningHall>() {
+                            @Override
+                            public void call(DiningHall newDiningHall) {
+                                diningHall.sortMeals(newDiningHall.menus);
+                                holder.progressBar.setVisibility(View.INVISIBLE);
+                                holder.menuArrow.setVisibility(View.VISIBLE);
+                                loaded[pos] = true;
+                            }
+                        }, new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                holder.progressBar.setVisibility(View.VISIBLE);
+                                holder.menuArrow.setVisibility(View.GONE);
+                            }
+                        });
             }
-            String openingTime = diningHall.openingTime();
-            if (openingTime.equals("")) {
-                view.findViewById(R.id.dining_hall_open_close).setVisibility(View.GONE);
-            } else {
-                holder.openClose.setText(String.format("Opens at %s", diningHall.openingTime()));
+            else {
+                holder.progressBar.setVisibility(View.GONE);
+                holder.menuArrow.setVisibility(View.VISIBLE);
             }
+            holder.layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    MainActivity mainActivity = ((MainActivity) context);
+                    mainActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
+                    mainActivity.getActionBarToggle().syncState();
+                    Fragment fragment = new MenuFragment();
+
+                    Bundle args = new Bundle();
+                    args.putParcelable("DiningHall", diningHall);
+                    fragment.setArguments(args);
+
+                    FragmentManager fragmentManager = mainActivity.getSupportFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.dining_fragment, fragment, "DINING_INFO_FRAGMENT")
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .addToBackStack(null)
+                            .commitAllowingStateLoss();
+                }
+            });
         }
-        final int pos = position;
-        if (diningHall.isResidential() && !loaded[pos]) {
-            progressBar.setVisibility(View.VISIBLE);
-            mLabs.daily_menu(diningHall.getId())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<DiningHall>() {
-                        @Override
-                        public void call(DiningHall newDiningHall) {
-                            diningHall.sortMeals(newDiningHall.menus);
-                            progressBar.setVisibility(View.INVISIBLE);
-                            holder.menuArrow.setVisibility(View.VISIBLE);
-                            loaded[pos] = true;
-                        }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
-                            progressBar.setVisibility(View.VISIBLE);
-                            holder.menuArrow.setVisibility(View.GONE);
-                        }
-                    });
+    }
+
+    private int getOpenStatusLabel(String openMeal) {
+        switch (openMeal) {
+            case "Breakfast":
+                return R.string.dining_hall_breakfast;
+            case "Brunch":
+                return R.string.dining_hall_brunch;
+            case "Lunch":
+                return R.string.dining_hall_lunch;
+            case "Dinner":
+                return R.string.dining_hall_dinner;
+            case "Late Night":
+                return R.string.dining_hall_late_night;
+            default:
+                return R.string.dining_hall_open;
         }
-        else {
-            progressBar.setVisibility(View.GONE);
-            holder.menuArrow.setVisibility(View.VISIBLE);
-        }
-        return view;
+    }
+
+    @Override
+    public int getItemCount() {
+        return diningHalls.size();
     }
 
     private class MenuComparator implements Comparator<DiningHall> {
@@ -163,15 +189,18 @@ public class DiningAdapter extends ArrayAdapter<DiningHall> {
         }
     }
 
-    public static class ViewHolder {
+    public static class DiningViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.dining_list_item_layout) ConstraintLayout layout;
         @BindView(R.id.dining_hall_name) TextView hallNameTV;
         @BindView(R.id.dining_hall_status) TextView hallStatus;
-        @BindView(R.id.dining_hall_open_meal) TextView openMeal;
-        @BindView(R.id.dining_hall_open_close) TextView openClose;
+        @BindView(R.id.dining_hall_image) ImageView hallImage;
+        @BindView(R.id.dining_hall_hours) TextView hallHours;
         @BindView(R.id.dining_hall_menu_indicator) ImageView menuArrow;
+        @BindView(R.id.dining_progress) ProgressBar progressBar;
         public DiningHall hall;
 
-        public ViewHolder(View view, DiningHall hall) {
+        public DiningViewHolder(View view, DiningHall hall) {
+            super(view);
             this.hall = hall;
             ButterKnife.bind(this, view);
         }
