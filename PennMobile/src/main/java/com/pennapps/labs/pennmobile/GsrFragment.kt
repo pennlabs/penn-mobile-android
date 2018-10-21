@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import org.joda.time.format.DateTimeFormat
 import com.pennapps.labs.pennmobile.classes.GSRContainer
+import com.pennapps.labs.pennmobile.classes.GSRLocation
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,8 @@ import butterknife.ButterKnife
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
+import com.pennapps.labs.pennmobile.R.string.gsr
+import com.pennapps.labs.pennmobile.classes.GSR
 import io.fabric.sdk.android.Fabric
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
@@ -296,7 +299,7 @@ class GsrFragment : Fragment() {
         mLabs?.gsrRoom(location, adjustedDateString, adjustedDateString)
                 ?.subscribe({ gsr ->
                     activity!!.runOnUiThread {
-                        val gsrRooms = gsr.getRooms()
+                        val gsrRooms = gsr.rooms
 
 
                         var timeSlotLengthZero = true
@@ -306,43 +309,48 @@ class GsrFragment : Fragment() {
                             Toast.makeText(activity, "Error: Could not retrieve GSRs", Toast.LENGTH_LONG).show()
                         } else {
                             for (i in gsrRooms.indices) {
-                                val gsrRoom = gsrRooms[i]
-                                val GSRTimeSlots = gsrRoom.getSlots()
+                                val gsrRoom = gsrRooms.get(i)
+                                val GSRTimeSlots = gsrRoom.slots
                                 //checks if the time slots are ever nonzero
-                                if (GSRTimeSlots.size > 0) {
+                                var size = GSRTimeSlots?.size ?: 0
+                                if (size > 0) {
                                     timeSlotLengthZero = false
                                 }
-                                for (j in GSRTimeSlots.indices) {
-                                    val currSlot = GSRTimeSlots[j]
-                                    if (currSlot.isAvailable) {
+                                if (GSRTimeSlots != null) {
+                                    for (j in GSRTimeSlots.indices) {
+                                        val currSlot = GSRTimeSlots[j]
+                                        if (currSlot.isAvailable) {
 
 
-                                        val startString = currSlot.getStartTime()
-                                        val endString = currSlot.getEndTime()
+                                            val startString = currSlot.startTime
+                                            val endString = currSlot.endTime
 
+                                            if (startString != null && endString != null) {
+                                                val startTime = formatter.parseDateTime(startString.substring(0,
+                                                        startString.length - 6))
+                                                val endTime = formatter.parseDateTime(endString.substring(0,
+                                                        endString.length - 6))
+                                                var stringStartTime = safeToString(startTime.hourOfDay) + ":" +
+                                                        safeToString(startTime.minuteOfHour)
+                                                var stringEndTime = safeToString(endTime.hourOfDay) + ":" +
+                                                        safeToString(endTime.minuteOfHour)
 
-                                        val startTime = formatter.parseDateTime(startString.substring(0,
-                                                startString.length - 6))
-                                        val endTime = formatter.parseDateTime(endString.substring(0,
-                                                endString.length - 6))
-                                        var stringStartTime = safeToString(startTime.hourOfDay) + ":" +
-                                                safeToString(startTime.minuteOfHour)
-                                        var stringEndTime = safeToString(endTime.hourOfDay) + ":" +
-                                                safeToString(endTime.minuteOfHour)
+                                                stringStartTime = convertToCivilianTime(stringStartTime)
+                                                stringEndTime = convertToCivilianTime(stringEndTime)
 
-                                        stringStartTime = convertToCivilianTime(stringStartTime)
-                                        stringEndTime = convertToCivilianTime(stringEndTime)
+                                                var gsrName = gsrRoom?.name ?: ""
+                                                var gsrRoomId = gsrRoom?.room_id ?: 0
+                                                insertGSRSlot(gsrName, "$stringStartTime-$stringEndTime", safeToString(startTime.hourOfDay) + ":" +
+                                                        safeToString(startTime.minuteOfHour),
+                                                        safeToString(startTime.dayOfWeek),
+                                                        safeToString(startTime.dayOfMonth), "30", Integer.toString(gsrRoomId))
 
-
-                                        insertGSRSlot(gsrRoom.getName(), "$stringStartTime-$stringEndTime", safeToString(startTime.hourOfDay) + ":" +
-                                                safeToString(startTime.minuteOfHour),
-                                                safeToString(startTime.dayOfWeek),
-                                                safeToString(startTime.dayOfMonth), "30", Integer.toString(gsrRoom.getRoom_id()!!))
-
+                                            }
+                                        }
                                     }
+
+
                                 }
-
-
                             }
                         }
 
@@ -379,9 +387,9 @@ class GsrFragment : Fragment() {
                         var i = 0
                         // go through all the rooms
                         while (i < numLocations) {
-
-                            gsrHashMap[locations[i].name] = locations[i].id
-                            gsrLocationsArray.add(locations[i].name)
+                            var locationName = locations[i]?.name ?: ""
+                            gsrHashMap[locationName] = locations[i].id
+                            gsrLocationsArray.add(locationName)
                             i++
                         }
 
