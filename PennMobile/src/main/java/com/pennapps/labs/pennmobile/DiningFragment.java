@@ -40,11 +40,11 @@ public class DiningFragment extends Fragment {
     @BindView(R.id.loadingPanel) RelativeLayout loadingPanel;
     @BindView(R.id.no_results) TextView no_results;
     @BindView(R.id.dining_halls_recycler_view) RecyclerView recyclerView;
+    @BindView(R.id.dining_swiperefresh) SwipeRefreshLayout swipeRefreshLayout;
     private Unbinder unbinder;
 
     private Labs mLabs;
     private MainActivity mActivity;
-    SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,7 +69,6 @@ public class DiningFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dining, container, false);
         unbinder = ButterKnife.bind(this, v);
-        swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.dining_swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -85,6 +84,7 @@ public class DiningFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.dining_sort, menu);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        // sort the dining halls in the user-specified order
         String order = sp.getString("dining_sortBy", "RESIDENTIAL");
         if (order.equals("RESIDENTIAL")) {
             menu.findItem(R.id.action_sort_residential).setChecked(true);
@@ -196,6 +196,7 @@ public class DiningFragment extends Fragment {
                 });
     }
 
+    // Takes a venue then adds an image and modifies venue name if name is too long
     private DiningHall createHall(Venue venue) {
         switch (venue.id) {
             case 593:

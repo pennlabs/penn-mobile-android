@@ -115,22 +115,47 @@ public class DiningHall implements Parcelable {
         return image;
     }
 
-    public List<Map.Entry<String, Interval>> orderedHours() {
-        List<Map.Entry<String, Interval>> list = new ArrayList<>(openHours.entrySet());
-        Collections.sort( list, new Comparator<Map.Entry<String, Interval>>() {
-            public int compare( Map.Entry<String, Interval> x, Map.Entry<String, Interval> y )
+    // Returns list of time intervals sorted by interval starting time
+    private List<Interval> orderedHours() {
+        List<Interval> list = new ArrayList<>(openHours.values());
+        Collections.sort( list, new Comparator<Interval>() {
+            public int compare( Interval x, Interval y )
             {
-                return x.getValue().getStart().compareTo(y.getValue().getStart());
+                return x.getStart().compareTo(y.getStart());
             }
         });
         return list;
     }
 
+    // Returns list of time intervals sorted by interval starting time, and merges intervals such that none overlap
+    private List<Interval> orderedMergedHours() {
+        List<Interval> originalList = orderedHours();
+        List<Interval> mergedList = new ArrayList<>(originalList.size());
+        Interval currentInterval = null;
+        for (int i = 0; i < originalList.size(); i++) {
+            if (currentInterval == null) {
+                currentInterval = originalList.get(i);
+            } else if (currentInterval.getEnd().compareTo(originalList.get(i).getStart()) >= 0) {
+                DateTime newEndTime = currentInterval.getEnd().compareTo(originalList.get(i).getEnd()) > 0
+                        ? currentInterval.getEnd() : originalList.get(i).getEnd();
+                currentInterval = new Interval(currentInterval.getStart(), newEndTime);
+            } else {
+                mergedList.add(currentInterval);
+                currentInterval = null;
+            }
+        }
+        if (currentInterval != null) {
+            mergedList.add(currentInterval);
+        }
+        return mergedList;
+    }
+
     public String openTimes() {
-        List<Map.Entry<String, Interval>> list = orderedHours();
+
+        List<Interval> list = isResidential() ? orderedHours() : orderedMergedHours();
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < list.size(); i++) {
-            Interval openInterval = list.get(i).getValue();
+            Interval openInterval = list.get(i);
             if (i != 0) {
                 builder.append(" | ");
             }
