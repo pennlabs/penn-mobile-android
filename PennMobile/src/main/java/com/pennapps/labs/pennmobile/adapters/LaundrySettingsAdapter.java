@@ -24,7 +24,6 @@ import java.util.List;
 import retrofit.ResponseCallback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import retrofit.mime.TypedInput;
 import rx.functions.Action1;
 
 /**
