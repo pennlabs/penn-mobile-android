@@ -8,15 +8,11 @@ import android.support.v7.widget.LinearLayoutManager
 import org.joda.time.format.DateTimeFormat
 import com.pennapps.labs.pennmobile.classes.GSRContainer
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.pennapps.labs.pennmobile.api.Labs
-import butterknife.Unbinder
-import butterknife.BindView
-import butterknife.ButterKnife
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
@@ -26,36 +22,40 @@ import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.math.log
 
 
 class GsrFragment : Fragment() {
 
+    // ui components
     var calendarButton :Button? = null
     var startButton: Button? = null
     var endButton: Button? = null
     var gsrDropDown: Spinner? = null
     var instructions: TextView? = null
 
-    private var unbinder: Unbinder? = null
-
+    // api manager
     private var mLabs: Labs? = null
 
     //list that holds all GSR rooms
     private val gsrHashMap = HashMap<String, Int>()
-    internal var gsrRoomListRecylerView: RecyclerView? = null
 
-    internal var gsrLocationsArray = ArrayList<String>()
+    private var gsrRoomListRecylerView: RecyclerView? = null
 
-    internal var mGSRS = ArrayList<GSRContainer>()
+    private var gsrLocationsArray = ArrayList<String>()
 
-    internal var formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss")
+    // all the gsrs
+    private var mGSRS = ArrayList<GSRContainer>()
+
+    private var formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mLabs = MainActivity.getLabsInstance()
         (activity as MainActivity).closeKeyboard()
-        activity!!.setTitle(R.string.gsr)
+        activity?.let {activity ->
+            activity.setTitle(R.string.gsr)
+        }
+        // fabric report handling
         Fabric.with(context, Crashlytics())
         Answers.getInstance().logContentView(ContentViewEvent()
                 .putContentName("GSR")
@@ -64,34 +64,29 @@ class GsrFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+        // link UI elements
         val v = inflater.inflate(R.layout.fragment_gsr, container, false)
-
-        unbinder = ButterKnife.bind(this, v)
-
         calendarButton = v.select_date
         startButton = v.select_start_time
         endButton = v.select_end_time
         gsrDropDown = v.gsr_building_selection
         instructions = v.instructions
 
-
+        // populate the list of gsrs
         populateDropDownGSR()
 
-        // Get calendar time and date
-        //standardize to EST
+        // Get calendar time and date: standardize to EST
         val tz = TimeZone.getTimeZone("America/New_York")
         val calendar = Calendar.getInstance(tz)
         val minutes = calendar.get(Calendar.MINUTE)
         val hour = calendar.get(Calendar.HOUR)
-        val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
         val month = calendar.get(Calendar.MONTH) + 1
         val year = calendar.get(Calendar.YEAR)
         val ampm = calendar.get(Calendar.AM_PM)
 
-
         calendarButton?.text = (month.toString() + "/" + day + "/" + year)
-
 
         // Set default start/end times for GSR booking
         val ampmTimes = getStartEndTimes(hour, minutes, ampm)
@@ -102,10 +97,7 @@ class GsrFragment : Fragment() {
         gsrRoomListRecylerView = v.findViewById<View>(R.id.gsr_rooms_list) as RecyclerView
 
         /**
-         *
-         *
-         * START on click functions for buttons
-         *
+         * On Click functions for buttons
          */
 
         //set start time button
@@ -197,7 +189,7 @@ class GsrFragment : Fragment() {
 
             val datePickerDialog = DatePickerDialog(activity!!,
                     DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-                        //acount for index starting at 0
+                        //account for index starting at 0
                         val entryMonth = monthOfYear + 1
 
                         calendarButton?.text = entryMonth.toString() + "/" + dayOfMonth + "/" + year
@@ -218,27 +210,20 @@ class GsrFragment : Fragment() {
             datePickerDialog.show()
         })
 
-        /**
-         *
-         *
-         * END on click functions for buttons
-         *
-         */
-
-
         return v
     }
 
     override fun onResume() {
         super.onResume()
-        activity!!.setTitle(R.string.gsr)
+        activity?.let { activity ->
+            activity.setTitle(R.string.gsr)
+        }
         (activity as MainActivity).setNav(R.id.nav_gsr)
         populateDropDownGSR()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        unbinder?.unbind()
     }
 
     // Makes toast and performs GSR search
