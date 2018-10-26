@@ -190,7 +190,7 @@ class GsrFragment : Fragment() {
             val mMonth = c.get(Calendar.MONTH)
             val mDay = c.get(Calendar.DAY_OF_MONTH)
 
-            val datePickerDialog = DatePickerDialog(activity!!,
+            val datePickerDialog = DatePickerDialog(activity,
                     DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                         //account for index starting at 0
                         val entryMonth = monthOfYear + 1
@@ -282,9 +282,9 @@ class GsrFragment : Fragment() {
 
         mLabs?.gsrRoom(location, adjustedDateString, adjustedDateString)
                 ?.subscribe({ gsr ->
-                    activity!!.runOnUiThread {
+                    activity?.let {activity ->
+                    activity.runOnUiThread {
                         val gsrRooms = gsr.rooms
-
                         var timeSlotLengthZero = true
 
                         if (gsrRooms == null) {
@@ -350,83 +350,94 @@ class GsrFragment : Fragment() {
 
                         mGSRS = ArrayList()
                     }
-                }, { activity!!.runOnUiThread { Toast.makeText(activity, "Error: Could not retrieve GSRs", Toast.LENGTH_LONG).show() } })
+                }
+                }, { activity?.let {
+                    activity ->
+                    activity.runOnUiThread { Toast.makeText(activity, "Error: Could not retrieve GSRs", Toast.LENGTH_LONG).show() } }
+                }
+                )
     }
 
 
     private fun populateDropDownGSR() {
         mLabs?.location()
                 ?.subscribe({ locations ->
-                    activity!!.runOnUiThread {
-                        //reset the drop down
-                        val emptyArray = arrayOfNulls<String>(0)
-                        val emptyAdapter = ArrayAdapter<String>(activity!!,
-                                android.R.layout.simple_spinner_dropdown_item, emptyArray)
-                        gsrDropDown?.setAdapter(emptyAdapter)
+                    activity?.let {activity ->
+                        activity.runOnUiThread {
+                            //reset the drop down
+                            val emptyArray = arrayOfNulls<String>(0)
+                            val emptyAdapter = ArrayAdapter<String>(activity,
+                                    android.R.layout.simple_spinner_dropdown_item, emptyArray)
+                            gsrDropDown?.setAdapter(emptyAdapter)
 
-                        gsrLocationsArray = ArrayList()
+                            gsrLocationsArray = ArrayList()
 
-                        val numLocations = locations.size
+                            val numLocations = locations.size
 
 
-                        var i = 0
-                        // go through all the rooms
-                        while (i < numLocations) {
-                            var locationName = locations[i]?.name ?: ""
-                            gsrHashMap[locationName] = locations[i].id
-                            gsrLocationsArray.add(locationName)
-                            i++
+                            var i = 0
+                            // go through all the rooms
+                            while (i < numLocations) {
+                                var locationName = locations[i]?.name ?: ""
+                                gsrHashMap[locationName] = locations[i].id
+                                gsrLocationsArray.add(locationName)
+                                i++
+                            }
+
+                            var gsrs = gsrLocationsArray.toTypedArray<String?>()
+
+                            //create an adapter to describe how the items are displayed, adapters are used in several places in android.
+                            //There are multiple variations of this, but this is the basic variant.
+                            val adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_dropdown_item, gsrs)
+
+                            //set the spinners adapter to the previously created one.
+                            gsrDropDown?.setAdapter(adapter)
+                            searchForGSR()
                         }
-
-                        var gsrs = gsrLocationsArray.toTypedArray<String?>()
-
-                        //create an adapter to describe how the items are displayed, adapters are used in several places in android.
-                        //There are multiple variations of this, but this is the basic variant.
-                        val adapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_dropdown_item, gsrs)
-
-                        //set the spinners adapter to the previously created one.
-                        gsrDropDown?.setAdapter(adapter)
-                        searchForGSR()
                     }
                 }, {
-                    activity!!.runOnUiThread {
-                        //hard coded in case runs into error
-                        gsrHashMap["Weigle"] = 1086
-                        gsrHashMap["VP Ground Floor"] = 1086
-                        gsrHashMap["VP 3rd Floor"] = 1086
-                        gsrHashMap["VP 4th Floor"] = 1086
-                        gsrHashMap["Lippincott"] = 2587
-                        gsrHashMap["Education Commons"] = 2495
-                        gsrHashMap["Biomedical Library"] = 2683
-                        gsrHashMap["Fisher Fine Arts"] = 2637
-                        gsrHashMap["Levin Building"] = 1090
-                        gsrHashMap["Museum Library"] = 2634
-                        gsrHashMap["VP Seminar"] = 2636
-                        gsrHashMap["VP Special Use"] = 2611
+                    activity?.let {activity ->
+                        activity.runOnUiThread {
+                            //hard coded in case runs into error
+                            gsrHashMap["Weigle"] = 1086
+                            gsrHashMap["VP Ground Floor"] = 1086
+                            gsrHashMap["VP 3rd Floor"] = 1086
+                            gsrHashMap["VP 4th Floor"] = 1086
+                            gsrHashMap["Lippincott"] = 2587
+                            gsrHashMap["Education Commons"] = 2495
+                            gsrHashMap["Biomedical Library"] = 2683
+                            gsrHashMap["Fisher Fine Arts"] = 2637
+                            gsrHashMap["Levin Building"] = 1090
+                            gsrHashMap["Museum Library"] = 2634
+                            gsrHashMap["VP Seminar"] = 2636
+                            gsrHashMap["VP Special Use"] = 2611
 
 
-                        gsrLocationsArray.add("Weigle")
-                        gsrLocationsArray.add("VP Ground Floor")
-                        gsrLocationsArray.add("VP 3rd Floor")
-                        gsrLocationsArray.add("VP 4th Floor")
-                        gsrLocationsArray.add("Lippincott")
-                        gsrLocationsArray.add("Education Commons")
-                        gsrLocationsArray.add("Biomedical Library")
-                        gsrLocationsArray.add("Fisher Fine Arts")
-                        gsrLocationsArray.add("Levin Building")
-                        gsrLocationsArray.add("Museum Library")
-                        gsrLocationsArray.add("VP Seminar")
-                        gsrLocationsArray.add("VP Special Use")
+                            gsrLocationsArray.add("Weigle")
+                            gsrLocationsArray.add("VP Ground Floor")
+                            gsrLocationsArray.add("VP 3rd Floor")
+                            gsrLocationsArray.add("VP 4th Floor")
+                            gsrLocationsArray.add("Lippincott")
+                            gsrLocationsArray.add("Education Commons")
+                            gsrLocationsArray.add("Biomedical Library")
+                            gsrLocationsArray.add("Fisher Fine Arts")
+                            gsrLocationsArray.add("Levin Building")
+                            gsrLocationsArray.add("Museum Library")
+                            gsrLocationsArray.add("VP Seminar")
+                            gsrLocationsArray.add("VP Special Use")
 
 
-                        var gsrs =  gsrLocationsArray.toTypedArray<String?>()
+                            var gsrs = gsrLocationsArray.toTypedArray<String?>()
 
-                        //create an adapter to describe how the items are displayed, adapters are used in several places in android.
-                        //There are multiple variations of this, but this is the basic variant.
-                        val adapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_dropdown_item, gsrs)
-                        //set the spinners adapter to the previously created one.
-                        gsrDropDown?.setAdapter(adapter)
-                        searchForGSR()
+                            //create an adapter to describe how the items are displayed, adapters are used in several places in android.
+                            //There are multiple variations of this, but this is the basic variant.
+                            activity?.let {activity ->
+                                val adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_dropdown_item, gsrs)
+                                //set the spinners adapter to the previously created one.
+                                gsrDropDown?.setAdapter(adapter)
+                                searchForGSR()
+                            }
+                        }
                     }
                 }
                 )

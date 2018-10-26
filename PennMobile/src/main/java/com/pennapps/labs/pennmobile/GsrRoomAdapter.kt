@@ -13,7 +13,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class GsrRoomAdapter(internal var times: ArrayList<String>, internal var ids: ArrayList<String>, internal var gsrLocationCode: String, internal var context: Context,
+class GsrRoomAdapter(internal var times: ArrayList<String>, internal var ids: ArrayList<String>,
+                     internal var gsrLocationCode: String, internal var context: Context,
                      internal var dates: ArrayList<String>) : RecyclerView.Adapter<GsrRoomHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GsrRoomHolder {
