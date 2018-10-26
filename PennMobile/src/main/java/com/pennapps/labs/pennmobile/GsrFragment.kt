@@ -9,6 +9,7 @@ import org.joda.time.format.DateTimeFormat
 import com.pennapps.labs.pennmobile.classes.GSRContainer
 import com.pennapps.labs.pennmobile.classes.GSRLocation
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,24 +24,22 @@ import com.crashlytics.android.answers.ContentViewEvent
 import com.pennapps.labs.pennmobile.R.string.gsr
 import com.pennapps.labs.pennmobile.classes.GSR
 import io.fabric.sdk.android.Fabric
+import kotlinx.android.synthetic.main.fragment_gsr.view.*
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.math.log
 
 
 class GsrFragment : Fragment() {
 
-    @BindView(R.id.select_date)
-    internal var calendarButton: Button? = null
-    @BindView(R.id.select_start_time)
-    internal var startButton: Button? = null
-    @BindView(R.id.select_end_time)
-    internal var endButton: Button? = null
-    @BindView(R.id.gsr_building_selection)
-    internal var gsrDropDown: Spinner? = null
-    @BindView(R.id.instructions)
-    internal var instructions: TextView? = null
+    var calendarButton :Button? = null
+    var startButton: Button? = null
+    var endButton: Button? = null
+    var gsrDropDown: Spinner? = null
+    var instructions: TextView? = null
+
     private var unbinder: Unbinder? = null
 
     private var mLabs: Labs? = null
@@ -72,6 +71,12 @@ class GsrFragment : Fragment() {
 
         unbinder = ButterKnife.bind(this, v)
 
+        calendarButton = v.select_date
+        startButton = v.select_start_time
+        endButton = v.select_end_time
+        gsrDropDown = v.gsr_building_selection
+        instructions = v.instructions
+
 
         populateDropDownGSR()
 
@@ -88,7 +93,7 @@ class GsrFragment : Fragment() {
         val ampm = calendar.get(Calendar.AM_PM)
 
 
-        calendarButton?.text = month.toString() + "/" + day + "/" + year
+        calendarButton?.text = (month.toString() + "/" + day + "/" + year)
 
 
         // Set default start/end times for GSR booking
@@ -255,7 +260,6 @@ class GsrFragment : Fragment() {
         } else {
             //get the hours
             getTimes(location, dateBooking, startTime, endTime)
-
         }
     }
 
@@ -286,11 +290,6 @@ class GsrFragment : Fragment() {
         }
 
         //convert times to military
-        val toMilitaryTimeFormatter = DateTimeFormat.forPattern("hh:mm a")
-
-        val fmt = DateTimeFormat.forPattern("HHmmss")
-        val startMilitary = fmt.print(toMilitaryTimeFormatter.withLocale(Locale.ENGLISH).parseLocalTime(startTime))
-        val endMilitary = fmt.print(toMilitaryTimeFormatter.withLocale(Locale.ENGLISH).parseLocalTime(endTime))
 
         val originalDateFormat = DateTimeFormat.forPattern("MM/dd/yyyy")
         val adjustedDateFormat = DateTimeFormat.forPattern("yyyy-MM-dd")
@@ -300,7 +299,6 @@ class GsrFragment : Fragment() {
                 ?.subscribe({ gsr ->
                     activity!!.runOnUiThread {
                         val gsrRooms = gsr.rooms
-
 
                         var timeSlotLengthZero = true
 
@@ -360,8 +358,10 @@ class GsrFragment : Fragment() {
 
                         val gsrRoomListLayoutManager = LinearLayoutManager(context)
                         gsrRoomListLayoutManager.orientation = LinearLayoutManager.VERTICAL
-                        gsrRoomListRecylerView?.setLayoutManager(gsrRoomListLayoutManager)
-                        gsrRoomListRecylerView?.setAdapter(GsrBuildingAdapter(context, mGSRS, Integer.toString(location)))
+                        gsrRoomListRecylerView?.layoutManager = (gsrRoomListLayoutManager)
+                        gsrRoomListRecylerView?.adapter = (context?.let {
+                            GsrBuildingAdapter(it, mGSRS, Integer.toString(location))
+                        })
 
                         mGSRS = ArrayList()
                     }
@@ -446,7 +446,7 @@ class GsrFragment : Fragment() {
                 }
                 )
         gsrDropDown?.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
+            override fun onItemSelected(adapterView: AdapterView<*>, view: View?, i: Int, l: Long) {
                 searchForGSR()
             }
 
@@ -489,7 +489,7 @@ class GsrFragment : Fragment() {
     // Returns a string array of length 2 where first element is properly formatted starting time
     // Second element is properly formatted ending time, which is one hour after starting time
     fun getStartEndTimes(hour: Int, minutes: Int, ampm: Int): Array<String> {
-        val results = emptyArray<String>()
+        val results = arrayOf("0", "0")
         val strampm = if (ampm == 0) "AM" else "PM"
         results[0] = hour.toString() + ":00" + " " + strampm
         results[1] = "11:59 PM"
