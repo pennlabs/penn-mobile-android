@@ -9,7 +9,8 @@ import android.widget.Toast
 import com.pennapps.labs.pennmobile.classes.GSRContainer
 import java.util.ArrayList
 
-class GsrBuildingAdapter(internal var context: Context, internal var gsrs: ArrayList<GSRContainer>, internal var gsrLocationCode: String) : RecyclerView.Adapter<GsrBuildingHolder>() {
+class GsrBuildingAdapter(internal var context: Context, internal var gsrs: ArrayList<GSRContainer>,
+                         internal var gsrLocationCode: String) : RecyclerView.Adapter<GsrBuildingHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GsrBuildingHolder {
         val view = LayoutInflater.from(parent.context)
