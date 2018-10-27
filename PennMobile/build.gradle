@@ -16,10 +16,10 @@ apply plugin: 'io.fabric'
 
 repositories {
     mavenCentral()
+    google()
     jcenter()
     maven { url "https://maven.fabric.io/public" }
     maven { url "https://jitpack.io" }
-    google()
 }
 
 android {

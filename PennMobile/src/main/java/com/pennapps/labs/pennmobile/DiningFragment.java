@@ -76,6 +76,9 @@ public class DiningFragment extends Fragment {
             }
         });
         swipeRefreshLayout.setColorSchemeResources(R.color.color_accent, R.color.color_primary);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        DividerItemDecoration divider = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
+        recyclerView.addItemDecoration(divider);
         getDiningHalls();
         return v;
     }
@@ -155,11 +158,8 @@ public class DiningFragment extends Fragment {
                             @Override
                             public void run() {
                                 if (loadingPanel != null) {
-                                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
                                     DiningAdapter adapter = new DiningAdapter(mActivity, diningHalls);
                                     recyclerView.setAdapter(adapter);
-                                    DividerItemDecoration divider = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
-                                    recyclerView.addItemDecoration(divider);
                                     loadingPanel.setVisibility(View.GONE);
                                     if (diningHalls.size() > 0) {
                                         no_results.setVisibility(View.GONE);

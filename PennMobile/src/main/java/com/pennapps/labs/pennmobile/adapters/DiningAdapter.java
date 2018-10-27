@@ -81,7 +81,7 @@ public class DiningAdapter extends RecyclerView.Adapter<DiningAdapter.DiningView
                 holder.hallStatus.setBackground(ContextCompat.getDrawable(context, R.drawable.label_red));
                 String openTimes = diningHall.openTimes();
                 if (openTimes.length() == 0) {
-                    holder.hallHours.setText(R.string.dining_closed_tomorrow);
+                    holder.hallHours.setText(R.string.dining_closed);
                 } else {
                     holder.hallHours.setText(diningHall.openTimes().toLowerCase());
                 }
