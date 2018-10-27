@@ -58,7 +58,7 @@
     <string name="sort_by_name">Order by Name</string>
     <string name="sort_by_residential">Order by Residential Hall</string>
     <string name="sort_by_open">Order by Open Status</string>
-    <string name="dining_closed_tomorrow">Closed tomorrow</string>
+    <string name="dining_closed">Closed today</string>
 
     <!-- Courses -->
     <string name="course">Average Course</string>
