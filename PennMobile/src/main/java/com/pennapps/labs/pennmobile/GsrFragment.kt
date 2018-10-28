@@ -30,19 +30,19 @@ import java.util.concurrent.TimeUnit
 class GsrFragment : Fragment() {
 
     // ui components
-    var calendarButton :Button? = null
-    var startButton: Button? = null
-    var endButton: Button? = null
-    var gsrDropDown: Spinner? = null
-    var instructions: TextView? = null
+    lateinit var calendarButton :Button
+    lateinit var startButton: Button
+    lateinit var endButton: Button
+    lateinit var gsrDropDown: Spinner
+    lateinit var instructions: TextView
 
     // api manager
-    private var mLabs: Labs? = null
+    private lateinit  var mLabs: Labs
 
     //list that holds all GSR rooms
     private val gsrHashMap = HashMap<String, Int>()
 
-    private var gsrRoomListRecylerView: RecyclerView? = null
+    private lateinit  var gsrRoomListRecylerView: RecyclerView
 
     private var gsrLocationsArray = ArrayList<String>()
 
@@ -113,12 +113,7 @@ class GsrFragment : Fragment() {
             // Launch Time Picker Dialog
             val timePickerDialog = TimePickerDialog(activity,
                     TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-                        val AM_PM: String
-                        if (hourOfDay < 12) {
-                            AM_PM = "AM"
-                        } else {
-                            AM_PM = "PM"
-                        }
+                        val AM_PM = if (hourOfDay < 12) "AM" else "PM"
 
                         var hourString = Integer.toString(hourOfDay)
                         if (hourOfDay == 0) {
@@ -153,12 +148,7 @@ class GsrFragment : Fragment() {
             // Launch Time Picker Dialog
             val timePickerDialog = TimePickerDialog(activity,
                     TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-                        val AM_PM: String
-                        if (hourOfDay < 12) {
-                            AM_PM = "AM"
-                        } else {
-                            AM_PM = "PM"
-                        }
+                        val AM_PM = if (hourOfDay < 12) "AM" else "PM"
 
                         var hourString = Integer.toString(hourOfDay)
                         if (hourOfDay == 0) {
@@ -461,24 +451,10 @@ class GsrFragment : Fragment() {
     }
 
     //helper function that converts string to int but keeps zeros
-    fun safeToString(input: Int): String {
-        return if (input == 0) {
-            "00"
-        } else {
-            Integer.toString(input)
-        }
-    }
+    fun safeToString(input: Int): String = if (input == 0) "00" else Integer.toString(input)
 
     //takes the name of the gsr and returns an int for the corresponding code
-    fun mapGSR(name: String): Int {
-        val returnVal =  gsrHashMap[name]
-        if (returnVal != null) {
-            return returnVal
-        } else {
-            return 0
-        }
-
-    }
+    fun mapGSR(name: String): Int = gsrHashMap[name] ?: 0
 
     // Parameters: the starting time's hour, minutes, and AM/PM as formatted by Java.utils.Calendar
     // AM = 0, PM = 1

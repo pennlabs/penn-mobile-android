@@ -22,19 +22,19 @@ import java.io.InputStreamReader
 class BookGsrFragment : Fragment() {
 
     // fields for booking
-    internal var firstName: EditText? = null
-    internal var lastName: EditText? = null
-    internal var email: EditText? = null
+    internal lateinit var firstName: EditText
+    internal lateinit var lastName: EditText
+    internal lateinit var email: EditText
     // submit button
-    internal var submit: Button? = null
+    internal lateinit var submit: Button
 
-    private var mLabs: Labs? = null
+    private lateinit var mLabs: Labs
 
     // gsr details
-    private var gsrID: String? = null
-    private var gsrLocationCode: String? = null
-    private var startTime: String? = null
-    private var endTime: String? = null
+    private lateinit var gsrID: String
+    private lateinit var gsrLocationCode: String
+    private lateinit var startTime: String
+    private lateinit var endTime: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

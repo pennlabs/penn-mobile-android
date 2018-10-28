@@ -44,7 +44,5 @@ class GsrBuildingAdapter(internal var context: Context, internal var gsrs: Array
         }
     }
 
-    override fun getItemCount(): Int {
-        return gsrs.size
-    }
+    override fun getItemCount(): Int { return gsrs.size }
 }
