@@ -3,25 +3,22 @@ package com.pennapps.labs.pennmobile;
 import android.Manifest;
 import android.content.ContentProviderOperation;
 import android.content.ContentProviderResult;
-import android.content.ContentResolver;
 import android.content.OperationApplicationException;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.net.Uri;
+import android.os.Bundle;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ListFragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.view.ViewGroup;
 import android.widget.Toast;
-import android.provider.ContactsContract;
 
 import com.pennapps.labs.pennmobile.adapters.PhoneSaveAdapter;
 import com.pennapps.labs.pennmobile.classes.Person;
@@ -31,58 +28,54 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+public class SaveContactsFragment extends ListFragment {
 
-public class SaveContactsActivity extends AppCompatActivity {
-
+    private MainActivity mActivity;
     private List<Person> contacts_list;
     private List<Person> selected;
     private Set<String> current_numbers;
     private Set<String> current_names;
     private final int permission_read = 0;
 
-    @BindView(R.id.contacts_save_list)
-    ListView list;
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_save_contacts);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ButterKnife.bind(this);
-        current_numbers = new HashSet<>();
-        current_names = new HashSet<>();
-        loadCurrent();
+    public void onActivityCreated(Bundle save) {
+        super.onActivityCreated(save);
+        mActivity = (MainActivity) getActivity();
+        mActivity.closeKeyboard();
         loadData();
-        PhoneSaveAdapter adapter = new PhoneSaveAdapter(this, contacts_list, selected);
-        list.setAdapter(adapter);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                view.findViewById(R.id.phone_save_radiobutton).performClick();
-            }
-        });
+        getListView().setAdapter(new PhoneSaveAdapter(getActivity(), contacts_list, selected));
+        loadCurrent();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.phone_save_menu, menu);
-        return true;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle save) {
+        View view = inflater.inflate(R.layout.fragment_save_contacts, container, false);
+        setHasOptionsMenu(true);
+        current_numbers = new HashSet<>();
+        current_names = new HashSet<>();
+        selected = new ArrayList<>();
+        return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        mActivity.getMenuInflater().inflate(R.menu.phone_save_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.support_contacts_add) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS)
+            if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_CONTACTS)
                     != PackageManager.PERMISSION_GRANTED ||
-                    ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this,
+                    ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_CONTACTS)
+                            != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(mActivity,
                         new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS},
                         permission_read);
             } else {
+                loadCurrent();
                 addContacts();
             }
             return true;
@@ -90,12 +83,18 @@ public class SaveContactsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(R.string.save_contacts);
+        mActivity.getActionBarToggle().setDrawerIndicatorEnabled(true);
+        mActivity.getActionBarToggle().syncState();
+        mActivity.setNav(R.id.nav_support);
+    }
+
     private void addContacts() {
-
         for (Person p : selected) {
-
             if (this.current_names.contains(p.name) || current_numbers.contains(p.phone)) {
-                Log.d("###Duplicate", p.name+" - "+p.phone);
                 continue;
             }
 
@@ -120,20 +119,16 @@ public class SaveContactsActivity extends AppCompatActivity {
                     .withValue(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)
                     .build());
             try {
-                ContentProviderResult[] results = getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
+                ContentProviderResult[] results = mActivity.getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
                 current_names.add(p.name);
                 current_numbers.add(p.phone);
-                for (ContentProviderResult result : results) {
-                    Log.d("###CPResult", result.toString());
-                }
             } catch (RemoteException e) {
-                Toast.makeText(this, "error saving"+ e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity, "Could not save contacts", Toast.LENGTH_SHORT).show();
             } catch (OperationApplicationException e) {
-                Toast.makeText(this, "error saving"+e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity, "Could not save contacts", Toast.LENGTH_SHORT).show();
             }
         }
-
-        Toast.makeText(this, selected.size() + " contacts saved", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mActivity, selected.size() + " contact"+ (selected.size() > 1 ? "s" : "") +" saved", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -141,6 +136,7 @@ public class SaveContactsActivity extends AppCompatActivity {
         switch (requestCode) {
             case permission_read: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    loadCurrent();
                     addContacts();
                 }
                 break;
@@ -164,30 +160,16 @@ public class SaveContactsActivity extends AppCompatActivity {
     }
 
     private void loadCurrent() {
-        Cursor cursor = getContentResolver()
-                .query(ContactsContract.Contacts.CONTENT_URI,null,null,null,null);
-        if (cursor == null) return;
+        current_numbers.clear();
+        current_names.clear();
+        Cursor cursor = mActivity.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,null,null,null,null);
+        if (cursor == null)
+            return;
         cursor.moveToFirst();
         do {
             String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-            String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.NAME_RAW_CONTACT_ID));
-            Cursor phones = getContentResolver()
-                    .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + id,
-                            null,
-                            null);
-            if (phones != null) {
-                while (phones.moveToNext()) {
-                    String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    current_numbers.add(phoneNumber);
-                    current_names.add(name);
-                }
-                phones.close();
-            }
+            current_names.add(name);
         } while (cursor.moveToNext());
-        Log.d("###Current Phone Size", ""+current_numbers.size());
-
         cursor.close();
     }
 }

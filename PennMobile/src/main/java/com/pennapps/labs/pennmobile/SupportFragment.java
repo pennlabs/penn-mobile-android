@@ -1,10 +1,8 @@
 package com.pennapps.labs.pennmobile;
 
-
-import android.content.ContentProviderOperation;
-import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.pennapps.labs.pennmobile.adapters.SupportAdapter;
 import com.pennapps.labs.pennmobile.classes.Person;
@@ -72,26 +69,16 @@ public class SupportFragment extends ListFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.support_contacts_add:
-                Intent intent = new Intent(getActivity(), SaveContactsActivity.class);
-                startActivity(intent);
+                SaveContactsFragment frag = new SaveContactsFragment();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(((ViewGroup)getView().getParent()).getId(), frag, "SAVE_CONTACTS_FRAGMENT")
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .addToBackStack(null)
+                        .commitAllowingStateLoss();
                 break;
         }
         return true;
-    }
-
-    private void addContacts() {
-        List<ContentProviderOperation> additions = new ArrayList<>();
-
-        Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
-        intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
-        intent.putExtra(ContactsContract.Intents.Insert.NAME, "test1_name")
-                .putExtra(ContactsContract.Intents.Insert.PHONE, "test1_phone");
-        startActivity(intent);
-        intent = new Intent(ContactsContract.Intents.Insert.ACTION);
-        intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
-        intent.putExtra(ContactsContract.Intents.Insert.NAME, "test2_name")
-                .putExtra(ContactsContract.Intents.Insert.PHONE, "test2_phone");
-        startActivity(intent);
     }
 
     @Override

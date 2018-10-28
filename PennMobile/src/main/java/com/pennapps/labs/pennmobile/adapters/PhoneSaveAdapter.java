@@ -2,11 +2,11 @@ package com.pennapps.labs.pennmobile.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -30,10 +30,6 @@ public class PhoneSaveAdapter extends ArrayAdapter<Person> {
         selections = s;
     }
 
-    public List<Person> getSelections() {
-        return selections;
-    }
-
     @Override
     public View getView(int pos, View view, ViewGroup parent) {
         final Person currentPerson = getItem(pos);
@@ -47,38 +43,34 @@ public class PhoneSaveAdapter extends ArrayAdapter<Person> {
         }
 
         holder.name.setText(currentPerson.name);
-        if (currentPerson.phone_words.equals("")) {
-            holder.phone.setText(currentPerson.phone);
-        } else {
-            holder.phone.setText(currentPerson.phone_words + " (" + currentPerson.phone + ")");
-        }
+        holder.phone.setText(currentPerson.phone);
 
-        if (currentPerson.isURL()) {
-            holder.icon.setVisibility(View.GONE);
-        } else {
-            holder.icon.setVisibility(View.VISIBLE);
-        }
+        holder.icon.setVisibility(currentPerson.isURL() ? View.GONE: View.VISIBLE);
 
-        view.setOnClickListener(new View.OnClickListener() {
+        holder.radio.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                if (holder.radio.isChecked()) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    holder.radio.setChecked(true);
+                    selections.add(new Person(holder.name.getText().toString(), holder.phone.getText().toString()));
+                } else {
                     holder.radio.setChecked(false);
                     for (Person p : selections) {
                         if (p.name.equals(holder.name.getText().toString())) {
-                            Log.d("###", "Selected removal: "+p.name);
                             selections.remove(p);
                             break;
                         }
                     }
-                } else {
-                    holder.radio.setChecked(true);
-                    selections.add(new Person(holder.name.getText().toString(), holder.phone.getText().toString()));
-                    Log.d("###", "Selected addition: "+holder.name);
                 }
             }
         });
 
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.radio.setChecked(!holder.radio.isChecked());
+            }
+        });
         return view;
     }
 
@@ -92,5 +84,4 @@ public class PhoneSaveAdapter extends ArrayAdapter<Person> {
             ButterKnife.bind(this, view);
         }
     }
-
 }
