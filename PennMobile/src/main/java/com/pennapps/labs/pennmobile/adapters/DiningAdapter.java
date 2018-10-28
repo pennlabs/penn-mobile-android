@@ -64,6 +64,7 @@ public class DiningAdapter extends RecyclerView.Adapter<DiningAdapter.DiningView
             final DiningHall diningHall = diningHalls.get(position);
             holder.hall = diningHall;
 
+            // Show dining hall name, photo, status, and hours on the screen
             holder.menuArrow.setVisibility(View.GONE);
             holder.progressBar.setVisibility(View.VISIBLE);
 
@@ -86,6 +87,8 @@ public class DiningAdapter extends RecyclerView.Adapter<DiningAdapter.DiningView
                     holder.hallHours.setText(diningHall.openTimes().toLowerCase());
                 }
             }
+
+            // Load the menu for each dining hall
             final int pos = position;
             if (diningHall.isResidential() && !loaded[pos]) {
                 holder.progressBar.setVisibility(View.VISIBLE);
@@ -106,8 +109,7 @@ public class DiningAdapter extends RecyclerView.Adapter<DiningAdapter.DiningView
                                 holder.menuArrow.setVisibility(View.GONE);
                             }
                         });
-            }
-            else {
+            } else {
                 holder.progressBar.setVisibility(View.GONE);
                 holder.menuArrow.setVisibility(View.VISIBLE);
             }
@@ -134,6 +136,7 @@ public class DiningAdapter extends RecyclerView.Adapter<DiningAdapter.DiningView
         }
     }
 
+    // Converts the String representation of a meal name to its corresponding resource ID
     private int getOpenStatusLabel(String openMeal) {
         switch (openMeal) {
             case "Breakfast":

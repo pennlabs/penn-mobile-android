@@ -136,6 +136,7 @@ public class DiningFragment extends Fragment {
     }
 
     private void getDiningHalls() {
+        // Map each item in the list of venues to a Venue Observable, then map each Venue to a DiningHall Observable
         mLabs.venues()
                 .flatMap(new Func1<List<Venue>, Observable<Venue>>() {
                     @Override
