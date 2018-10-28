@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,10 @@ public class PhoneSaveAdapter extends ArrayAdapter<Person> {
         super(context, R.layout.phone_save_list_item, contacts);
         inflater = LayoutInflater.from(context);
         selections = s;
+    }
+
+    public List<Person> getSelections() {
+        return selections;
     }
 
     @Override
@@ -61,6 +66,7 @@ public class PhoneSaveAdapter extends ArrayAdapter<Person> {
                     holder.radio.setChecked(false);
                     for (Person p : selections) {
                         if (p.name.equals(holder.name.getText().toString())) {
+                            Log.d("###", "Selected removal: "+p.name);
                             selections.remove(p);
                             break;
                         }
@@ -68,6 +74,7 @@ public class PhoneSaveAdapter extends ArrayAdapter<Person> {
                 } else {
                     holder.radio.setChecked(true);
                     selections.add(new Person(holder.name.getText().toString(), holder.phone.getText().toString()));
+                    Log.d("###", "Selected addition: "+holder.name);
                 }
             }
         });
