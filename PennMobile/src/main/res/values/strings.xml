@@ -23,6 +23,7 @@
     <string name="add_contact">Add contact</string>
     <string name="no_results">No results found.</string>
     <string name="action_licenses">Open Source Licenses</string>
+    <string name="save_contacts">Select Contacts to Save</string>
 
     <!--Home Screen -->
     <string name="home_screen_settings">Home Screen Settings</string>
@@ -215,4 +216,5 @@
     <!-- Spring Fling -->
     <string name="spring_fling">Spring Fling</string>
     <string name="fling_event_time">%1$s - %2$s</string>
+
 </resources>

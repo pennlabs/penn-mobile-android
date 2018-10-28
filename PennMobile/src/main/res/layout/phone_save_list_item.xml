@@ -10,12 +10,14 @@
     android:orientation="horizontal">
 
     <RadioButton
+        android:id="@+id/phone_save_radiobutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:gravity="center_vertical|center_horizontal"
-        android:id="@+id/phone_save_radiobutton"/>
+        android:clickable="false"
+        android:focusable="false"
+        android:gravity="center_vertical|center_horizontal" />
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -34,8 +36,7 @@
             android:paddingBottom="2dp"
             android:textColor="#000000"
             android:textSize="20sp"
-            android:textStyle="bold"
-            tools:text="Penn Police General" />
+            android:textStyle="bold"  />
 
         <ImageView
             android:id="@+id/support_phone_icon"
@@ -52,8 +53,7 @@
             android:layout_below="@+id/support_name"
             android:layout_toRightOf="@+id/support_phone_icon"
             android:textColor="#3F51B5"
-            android:textSize="16sp"
-            tools:text="(215) 898-7297" />
+            android:textSize="16sp" />
 
     </RelativeLayout>
 
