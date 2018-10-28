@@ -36,7 +36,7 @@ public class Venue {
     /**
      * Get a mapping of meal names to open hours for all meals in the dining hall this week
      *
-     * @return HashMap of meal name (lunch, dinner) to open hours expressed as a Joda Interval
+     * @return HashMap of meal name (lunch, dinner) to today's open hours expressed as a Joda Interval
      */
     public HashMap<String, Interval> getHours() {
         DateTime currentTime = new DateTime();
@@ -48,7 +48,8 @@ public class Venue {
             intervalDateTime = intervalFormatter.parseDateTime(interval.date);
             if (intervalDateTime.toLocalDate().equals(currentTime.toLocalDate())) {
                 for (Map.Entry<String, Interval> entry : interval.getIntervals().entrySet()) {
-                    if (!entry.getKey().equals("Closed")) {
+                    // special cases for McClelland and Houston Market meal times
+                    if (!entry.getKey().equals("Closed") && !entry.getKey().equals("The Market Café")) {
                         intervals.put(entry.getKey(), entry.getValue());
                     }
                 }

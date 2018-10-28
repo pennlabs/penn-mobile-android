@@ -42,8 +42,9 @@ public class DiningHall implements Parcelable {
         residential = booleanArray[0];
         openHours = new HashMap<>();
         menus = new ArrayList<>();
-        in.readMap(openHours, Interval.class.getClassLoader());
-        in.readList(menus, ArrayList.class.getClassLoader());
+        // Use application class loader instead of framework class loader because Menu is a custom class
+        in.readMap(openHours, getClass().getClassLoader());
+        in.readList(menus, getClass().getClassLoader());
         id = in.readInt();
         name = in.readString();
         image = in.readInt();
@@ -150,6 +151,8 @@ public class DiningHall implements Parcelable {
         return mergedList;
     }
 
+    // Takes the ordered time intervals of the dining hall and formats them for displaying to the user
+    // e.g. 8 - 11 | 12 - 3 | 6 - 9
     public String openTimes() {
 
         List<Interval> list = isResidential() ? orderedHours() : orderedMergedHours();
@@ -191,6 +194,7 @@ public class DiningHall implements Parcelable {
         return false;
     }
 
+    // Returns the name of the meal that the dining hall is currently serving (e.g. Breakfast)
     public String openMeal() {
         for (Map.Entry<String, Interval> entry : openHours.entrySet()) {
             Interval openInterval = entry.getValue();
