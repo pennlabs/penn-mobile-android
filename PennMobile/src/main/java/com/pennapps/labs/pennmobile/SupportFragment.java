@@ -1,12 +1,19 @@
 package com.pennapps.labs.pennmobile;
 
 
+import android.content.ContentProviderOperation;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.pennapps.labs.pennmobile.adapters.SupportAdapter;
 import com.pennapps.labs.pennmobile.classes.Person;
@@ -17,6 +24,7 @@ import java.util.List;
 public class SupportFragment extends ListFragment {
 
     private MainActivity mActivity;
+    private List<Person> contacts_list;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,7 +36,7 @@ public class SupportFragment extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         ListView mListView = getListView();
-        List<Person> contacts_list = new ArrayList<>();
+        contacts_list = new ArrayList<>();
         contacts_list.add(new Person("Penn Police General", "(215) 898-7297"));
         contacts_list.add(new Person("Penn Police Emergencies/MERT", "(215) 573-3333"));
         contacts_list.add(new Person("Penn Walk", "215-898-9255", "215-898-WALK"));
@@ -49,7 +57,41 @@ public class SupportFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_support, container, false);
+        View view = inflater.inflate(R.layout.fragment_support, container, false);
+        setHasOptionsMenu(true);
+        return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        mActivity.getMenuInflater().inflate(R.menu.phone_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.support_contacts_add:
+                Intent intent = new Intent(getActivity(), SaveContactsActivity.class);
+                startActivity(intent);
+                break;
+        }
+        return true;
+    }
+
+    private void addContacts() {
+        List<ContentProviderOperation> additions = new ArrayList<>();
+
+        Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
+        intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
+        intent.putExtra(ContactsContract.Intents.Insert.NAME, "test1_name")
+                .putExtra(ContactsContract.Intents.Insert.PHONE, "test1_phone");
+        startActivity(intent);
+        intent = new Intent(ContactsContract.Intents.Insert.ACTION);
+        intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
+        intent.putExtra(ContactsContract.Intents.Insert.NAME, "test2_name")
+                .putExtra(ContactsContract.Intents.Insert.PHONE, "test2_phone");
+        startActivity(intent);
     }
 
     @Override
