@@ -4,17 +4,16 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -36,16 +35,16 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-public class DiningFragment extends ListFragment {
+public class DiningFragment extends Fragment {
 
     @BindView(R.id.loadingPanel) RelativeLayout loadingPanel;
     @BindView(R.id.no_results) TextView no_results;
+    @BindView(R.id.dining_halls_recycler_view) RecyclerView recyclerView;
+    @BindView(R.id.dining_swiperefresh) SwipeRefreshLayout swipeRefreshLayout;
     private Unbinder unbinder;
 
     private Labs mLabs;
-    private ListView mListView;
     private MainActivity mActivity;
-    SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,14 +63,12 @@ public class DiningFragment extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
-        mListView = getListView();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dining, container, false);
         unbinder = ButterKnife.bind(this, v);
-        swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.dining_swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -79,6 +76,9 @@ public class DiningFragment extends ListFragment {
             }
         });
         swipeRefreshLayout.setColorSchemeResources(R.color.color_accent, R.color.color_primary);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        DividerItemDecoration divider = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
+        recyclerView.addItemDecoration(divider);
         getDiningHalls();
         return v;
     }
@@ -87,6 +87,7 @@ public class DiningFragment extends ListFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.dining_sort, menu);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        // sort the dining halls in the user-specified order
         String order = sp.getString("dining_sortBy", "RESIDENTIAL");
         if (order.equals("RESIDENTIAL")) {
             menu.findItem(R.id.action_sort_residential).setChecked(true);
@@ -134,25 +135,8 @@ public class DiningFragment extends ListFragment {
         }
     }
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
-        mActivity.getActionBarToggle().syncState();
-        Fragment fragment = new MenuFragment();
-
-        Bundle args = new Bundle();
-        args.putParcelable("DiningHall", ((DiningAdapter.ViewHolder) v.getTag()).hall);
-        fragment.setArguments(args);
-
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.dining_fragment, fragment, "DINING_INFO_FRAGMENT")
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .addToBackStack(null)
-                .commitAllowingStateLoss();
-    }
-
     private void getDiningHalls() {
+        // Map each item in the list of venues to a Venue Observable, then map each Venue to a DiningHall Observable
         mLabs.venues()
                 .flatMap(new Func1<List<Venue>, Observable<Venue>>() {
                     @Override
@@ -163,7 +147,7 @@ public class DiningFragment extends ListFragment {
                 .flatMap(new Func1<Venue, Observable<DiningHall>>() {
                     @Override
                     public Observable<DiningHall> call(Venue venue) {
-                        DiningHall hall = new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours(), venue);
+                        DiningHall hall = createHall(venue);
                         return Observable.just(hall);
                     }
                 })
@@ -176,7 +160,7 @@ public class DiningFragment extends ListFragment {
                             public void run() {
                                 if (loadingPanel != null) {
                                     DiningAdapter adapter = new DiningAdapter(mActivity, diningHalls);
-                                    mListView.setAdapter(adapter);
+                                    recyclerView.setAdapter(adapter);
                                     loadingPanel.setVisibility(View.GONE);
                                     if (diningHalls.size() > 0) {
                                         no_results.setVisibility(View.GONE);
@@ -200,7 +184,6 @@ public class DiningFragment extends ListFragment {
                                     loadingPanel.setVisibility(View.GONE);
                                 }
                                 if (no_results != null) {
-                                    mListView.setAdapter(null);
                                     no_results.setVisibility(View.VISIBLE);
                                 }
                                 try {
@@ -212,6 +195,46 @@ public class DiningFragment extends ListFragment {
                         });
                     }
                 });
+    }
+
+    // Takes a venue then adds an image and modifies venue name if name is too long
+    private DiningHall createHall(Venue venue) {
+        switch (venue.id) {
+            case 593:
+                return new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours(), venue, R.drawable.dining_commons);
+            case 636:
+                return new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours(), venue, R.drawable.dining_hill_house);
+            case 637:
+                return new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours(), venue, R.drawable.dining_kceh);
+            case 638:
+                return new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours(), venue, R.drawable.dining_hillel);
+            case 639:
+                return new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours(), venue, R.drawable.dining_houston);
+            case 640:
+                return new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours(), venue, R.drawable.dining_marks);
+            case 641:
+                return new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours(), venue, R.drawable.dining_accenture);
+            case 642:
+                return new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours(), venue, R.drawable.dining_joes_cafe);
+            case 1442:
+                return new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours(), venue, R.drawable.dining_nch);
+            case 747:
+                return new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours(), venue, R.drawable.dining_mcclelland);
+            case 1057:
+                return new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours(), venue, R.drawable.dining_gourmet_grocer);
+            case 1058:
+                return new DiningHall(venue.id, "Tortas Frontera", venue.isResidential(), venue.getHours(), venue, R.drawable.dining_tortas);
+            case 1163:
+                return new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours(), venue, R.drawable.dining_commons);
+            case 1731:
+                return new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours(), venue, R.drawable.dining_nch);
+            case 1732:
+                return new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours(), venue, R.drawable.dining_mba_cafe);
+            case 1733:
+                return new DiningHall(venue.id, "Pret a Manger (Locust)", venue.isResidential(), venue.getHours(), venue, R.drawable.dining_pret_a_manger);
+            default:
+                return new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours(), venue, R.drawable.dining_commons);
+        }
     }
 
     @Override
