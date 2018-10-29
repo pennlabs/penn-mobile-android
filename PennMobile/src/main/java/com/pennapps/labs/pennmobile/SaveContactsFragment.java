@@ -10,8 +10,11 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -129,6 +132,13 @@ public class SaveContactsFragment extends ListFragment {
             }
         }
         Toast.makeText(mActivity, selected.size() + " contact"+ (selected.size() > 1 ? "s" : "") +" saved", Toast.LENGTH_SHORT).show();
+        SupportFragment frag = new SupportFragment();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(((ViewGroup)getView().getParent()).getId(), frag, "SUPPORT_FRAGMENT")
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .addToBackStack(null)
+                .commitAllowingStateLoss();
     }
 
     @Override
