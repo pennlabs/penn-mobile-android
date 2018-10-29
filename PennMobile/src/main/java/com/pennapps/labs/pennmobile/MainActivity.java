@@ -415,7 +415,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         if (grantResults.length == 0 || grantResults[0] == PackageManager.PERMISSION_DENIED) {
-            showErrorToast(R.string.ask_permission_fail);
+            switch (requestCode) {
+                case SaveContactsFragment.permission_read:
+                    showErrorToast(R.string.ask_contacts_fail);
+                    break;
+                default:
+                    showErrorToast(R.string.ask_location_fail);
+                    break;
+            }
             return;
         }
         if (requestCode == CODE_MAP) {
