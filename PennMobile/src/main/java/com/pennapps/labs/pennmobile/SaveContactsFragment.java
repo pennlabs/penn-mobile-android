@@ -37,7 +37,7 @@ public class SaveContactsFragment extends ListFragment {
     private List<Person> selected;
     private Set<String> current_numbers;
     private Set<String> current_names;
-    private final int permission_read = 0;
+    public static final int permission_read = 123;
 
     @Override
     public void onActivityCreated(Bundle save) {
@@ -46,7 +46,14 @@ public class SaveContactsFragment extends ListFragment {
         mActivity.closeKeyboard();
         loadData();
         getListView().setAdapter(new PhoneSaveAdapter(getActivity(), contacts_list, selected));
-        loadCurrent();
+        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_CONTACTS)
+                        != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(mActivity,
+                    new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS},
+                    permission_read);
+        }
     }
 
     @Override
