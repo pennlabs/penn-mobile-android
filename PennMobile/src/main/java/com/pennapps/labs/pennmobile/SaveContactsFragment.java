@@ -45,7 +45,7 @@ public class SaveContactsFragment extends ListFragment {
         mActivity = (MainActivity) getActivity();
         mActivity.closeKeyboard();
         loadData();
-        getListView().setAdapter(new PhoneSaveAdapter(getActivity(), contacts_list, selected));
+        getListView().setAdapter(new PhoneSaveAdapter(getActivity(), contacts_list, selected, contacts_list.size()));
         if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_CONTACTS)
@@ -181,11 +181,12 @@ public class SaveContactsFragment extends ListFragment {
         Cursor cursor = mActivity.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,null,null,null,null);
         if (cursor == null)
             return;
-        cursor.moveToFirst();
-        do {
-            String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-            current_names.add(name);
-        } while (cursor.moveToNext());
-        cursor.close();
+        if (cursor.moveToFirst()) {
+            do {
+                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                current_names.add(name);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
     }
 }
