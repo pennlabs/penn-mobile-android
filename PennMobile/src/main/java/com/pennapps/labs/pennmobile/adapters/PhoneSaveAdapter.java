@@ -23,15 +23,17 @@ public class PhoneSaveAdapter extends ArrayAdapter<Person> {
 
     private final LayoutInflater inflater;
     private final List<Person> selections;
+    private boolean[] state;
 
-    public PhoneSaveAdapter(@NonNull Context context, List<Person> contacts, List<Person> s) {
+    public PhoneSaveAdapter(@NonNull Context context, List<Person> contacts, List<Person> s, int size) {
         super(context, R.layout.phone_save_list_item, contacts);
         inflater = LayoutInflater.from(context);
         selections = s;
+        state = new boolean[size];
     }
 
     @Override
-    public View getView(int pos, View view, ViewGroup parent) {
+    public View getView(final int pos, View view, ViewGroup parent) {
         final Person currentPerson = getItem(pos);
         final PhoneSaveAdapter.ViewHolder holder;
         if (view != null) {
@@ -47,12 +49,16 @@ public class PhoneSaveAdapter extends ArrayAdapter<Person> {
 
         holder.icon.setVisibility(currentPerson.isURL() ? View.GONE: View.VISIBLE);
 
+        holder.radio.setOnCheckedChangeListener(null);
+        holder.radio.setChecked(state[pos]);
+
         holder.radio.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+                if (!state[pos]) {
                     holder.radio.setChecked(true);
                     selections.add(new Person(holder.name.getText().toString(), holder.phone.getText().toString()));
+                    state[pos] = true;
                 } else {
                     holder.radio.setChecked(false);
                     for (Person p : selections) {
@@ -61,6 +67,7 @@ public class PhoneSaveAdapter extends ArrayAdapter<Person> {
                             break;
                         }
                     }
+                    state[pos] = false;
                 }
             }
         });
