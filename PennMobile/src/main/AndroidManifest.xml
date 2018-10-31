@@ -19,12 +19,16 @@
     <!-- vibration for laundry alert -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <!-- adding new contacts -->
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
 
     <application
-        android:name='android.support.multidex.MultiDexApplication'
+        android:name="android.support.multidex.MultiDexApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
@@ -61,8 +65,7 @@
             android:name=".LaundryActivity"
             android:label="@string/laundry"
             android:screenOrientation="portrait"
-            android:theme="@style/LaundryTheme">
-        </activity>
+            android:theme="@style/LaundryTheme" />
         <activity
             android:name=".LaundrySettingsActivity"
             android:label="@string/laundry_settings"
@@ -79,7 +82,8 @@
             android:name=".HomeScreenSettingsActivity"
             android:label="@string/home_screen_settings"
             android:screenOrientation="portrait"
-            android:theme="@style/HomeScreenTheme"/>
+            android:theme="@style/HomeScreenTheme" />
+
     </application>
 
 </manifest>
