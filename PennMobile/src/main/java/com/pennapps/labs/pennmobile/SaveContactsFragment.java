@@ -45,6 +45,9 @@ public class SaveContactsFragment extends ListFragment {
         mActivity = (MainActivity) getActivity();
         mActivity.closeKeyboard();
         loadData();
+        for (Person p : contacts_list) {
+            selected.add(p);
+        }
         getListView().setAdapter(new PhoneSaveAdapter(getActivity(), contacts_list, selected, contacts_list.size()));
         if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED ||
