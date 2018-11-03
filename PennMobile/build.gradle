@@ -1,27 +1,29 @@
 buildscript {
     repositories {
         mavenCentral()
-        google()
+        jcenter()
         maven { url 'https://maven.fabric.io/public' }
         maven { url "https://jitpack.io" }
-        jcenter()
-
+        google()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.4'
         classpath 'io.fabric.tools:gradle:1.25.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.fabric'
+apply plugin: 'idea'
 
 repositories {
     mavenCentral()
     google()
+    jcenter()
     maven { url "https://maven.fabric.io/public" }
     maven { url "https://jitpack.io" }
-    jcenter()
-
 }
 
 android {
@@ -78,5 +80,6 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
     implementation 'com.android.support:cardview-v7:27.1.1'
     implementation 'com.github.ahorn:android-rss:master-SNAPSHOT'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     // official release is several years old and is not thread-safe
 }

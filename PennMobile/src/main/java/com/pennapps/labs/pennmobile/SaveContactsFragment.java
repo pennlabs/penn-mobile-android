@@ -140,7 +140,7 @@ public class SaveContactsFragment extends ListFragment {
                 Toast.makeText(mActivity, "Could not save contacts", Toast.LENGTH_SHORT).show();
             }
         }
-        Toast.makeText(mActivity, selected.size() + " contact"+ (selected.size() > 1 ? "s" : "") +" saved", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mActivity, selected.size() + " contact"+ (selected.size() > 1 || selected.size() == 0 ? "s" : "") +" saved", Toast.LENGTH_SHORT).show();
         SupportFragment frag = new SupportFragment();
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         fragmentManager.beginTransaction()

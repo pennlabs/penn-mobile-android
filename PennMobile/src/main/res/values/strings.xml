@@ -45,8 +45,13 @@
     <string name="registrar_search_count">register_count</string>
 
     <!-- Dining -->
-    <string name="dining_hall_open">OPEN</string>
-    <string name="dining_hall_closed">CLOSED</string>
+    <string name="dining_hall_open">Open</string>
+    <string name="dining_hall_closed">Closed</string>
+    <string name="dining_hall_breakfast">Breakfast</string>
+    <string name="dining_hall_brunch">Brunch</string>
+    <string name="dining_hall_lunch">Lunch</string>
+    <string name="dining_hall_dinner">Dinner</string>
+    <string name="dining_hall_late_night">Late Night</string>
     <string name="dining_info">Dining Hall Hours</string>
     <string name="menu_arg_name">name</string>
     <string name="menu_arg_meal">meal</string>
@@ -54,6 +59,7 @@
     <string name="sort_by_name">Order by Name</string>
     <string name="sort_by_residential">Order by Residential Hall</string>
     <string name="sort_by_open">Order by Open Status</string>
+    <string name="dining_closed">Closed today</string>
 
     <!-- Courses -->
     <string name="course">Average Course</string>
@@ -207,6 +213,7 @@
     <string name="search_GSRs">Search GSRs</string>
     <string name="quitBook">&lt;- Back</string>
     <string name="select_instructions">Select an open GSR slot or edit the search range</string>
+    <string name="start_end_button_text">%1$s:%2$s %$3</string>
     <string name="to">to</string>
     <string name="search_date">Date</string>
     <string name="first_name">First name</string>
