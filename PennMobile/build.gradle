@@ -1,10 +1,11 @@
 buildscript {
     repositories {
         mavenCentral()
-        jcenter()
+        google()
         maven { url 'https://maven.fabric.io/public' }
         maven { url "https://jitpack.io" }
-        google()
+        jcenter()
+
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.4'
@@ -16,10 +17,11 @@ apply plugin: 'io.fabric'
 
 repositories {
     mavenCentral()
-    jcenter()
+    google()
     maven { url "https://maven.fabric.io/public" }
     maven { url "https://jitpack.io" }
-    google()
+    jcenter()
+
 }
 
 android {
@@ -75,6 +77,6 @@ dependencies {
     androidTestImplementation 'org.testng:testng:6.14.3'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
     implementation 'com.android.support:cardview-v7:27.1.1'
-    implementation 'com.github.ahorn:android-rss:master-SNAPSHOT' // official release is several years old and is not thread-safe
+    implementation 'com.github.ahorn:android-rss:master-SNAPSHOT'
+    // official release is several years old and is not thread-safe
 }
-
