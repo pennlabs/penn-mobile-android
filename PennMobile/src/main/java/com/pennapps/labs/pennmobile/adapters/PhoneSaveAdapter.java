@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -30,6 +31,9 @@ public class PhoneSaveAdapter extends ArrayAdapter<Person> {
         inflater = LayoutInflater.from(context);
         selections = s;
         state = new boolean[size];
+        for (int i = 0; i < state.length; ++i) {
+            state[i] = true;
+        }
     }
 
     @Override
@@ -49,18 +53,18 @@ public class PhoneSaveAdapter extends ArrayAdapter<Person> {
 
         holder.icon.setVisibility(currentPerson.isURL() ? View.GONE: View.VISIBLE);
 
-        holder.radio.setOnCheckedChangeListener(null);
-        holder.radio.setChecked(state[pos]);
+        holder.checkbox.setOnCheckedChangeListener(null);
+        holder.checkbox.setChecked(state[pos]);
 
-        holder.radio.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        holder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!state[pos]) {
-                    holder.radio.setChecked(true);
+                    holder.checkbox.setChecked(true);
                     selections.add(new Person(holder.name.getText().toString(), holder.phone.getText().toString()));
                     state[pos] = true;
                 } else {
-                    holder.radio.setChecked(false);
+                    holder.checkbox.setChecked(false);
                     for (Person p : selections) {
                         if (p.name.equals(holder.name.getText().toString())) {
                             selections.remove(p);
@@ -75,7 +79,7 @@ public class PhoneSaveAdapter extends ArrayAdapter<Person> {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.radio.setChecked(!holder.radio.isChecked());
+                holder.checkbox.setChecked(!holder.checkbox.isChecked());
             }
         });
         return view;
@@ -85,7 +89,7 @@ public class PhoneSaveAdapter extends ArrayAdapter<Person> {
         @BindView(R.id.support_name) TextView name;
         @BindView(R.id.support_phone) TextView phone;
         @BindView(R.id.support_phone_icon) ImageView icon;
-        @BindView(R.id.phone_save_radiobutton) RadioButton radio;
+        @BindView(R.id.phone_save_checkbox) CheckBox checkbox;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);
