@@ -9,15 +9,16 @@
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
-    <RadioButton
-        android:id="@+id/phone_save_radiobutton"
+    <CheckBox
+        android:id="@+id/phone_save_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:clickable="false"
         android:focusable="false"
-        android:gravity="center_vertical|center_horizontal" />
+        android:gravity="center_vertical|center_horizontal">
+    </CheckBox>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
