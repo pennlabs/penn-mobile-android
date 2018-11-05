@@ -200,31 +200,24 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.nav_registrar:
-            case R.id.registrar_cont:
                 fragment = new RegistrarFragment();
                 break;
             case R.id.nav_gsr:
-            case R.id.gsr_cont:
                 fragment = new GsrFragment();
                 break;
             case R.id.nav_dining:
-            case R.id.dining_cont:
                 fragment = new DiningFragment();
                 break;
             case R.id.nav_directory:
-            case R.id.directory_cont:
                 fragment = new DirectoryFragment();
                 break;
             case R.id.nav_news:
-            case R.id.news_cont:
                 fragment = new NewsFragment();
                 break;
 //            case R.id.nav_map:
-//            case R.id.map_cont:
 //                getPermission();
 //                return;
             case R.id.nav_laundry:
-            case R.id.laundry_cont:
                 Intent intent = new Intent(this, LaundryActivity.class);
                 startActivity(intent);
                 break;

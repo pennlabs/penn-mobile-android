@@ -231,7 +231,7 @@ public class DiningFragment extends Fragment {
             case 1732:
                 return new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours(), venue, R.drawable.dining_mba_cafe);
             case 1733:
-                return new DiningHall(venue.id, "Pret a Manger (Locust)", venue.isResidential(), venue.getHours(), venue, R.drawable.dining_pret_a_manger);
+                return new DiningHall(venue.id, "Pret a Manger Locust", venue.isResidential(), venue.getHours(), venue, R.drawable.dining_pret_a_manger);
             default:
                 return new DiningHall(venue.id, venue.name, venue.isResidential(), venue.getHours(), venue, R.drawable.dining_commons);
         }
