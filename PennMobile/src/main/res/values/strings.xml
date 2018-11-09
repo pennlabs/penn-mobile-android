@@ -215,4 +215,8 @@
     <!-- Spring Fling -->
     <string name="spring_fling">Spring Fling</string>
     <string name="fling_event_time">%1$s - %2$s</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="fitness">Fitness</string>
 </resources>

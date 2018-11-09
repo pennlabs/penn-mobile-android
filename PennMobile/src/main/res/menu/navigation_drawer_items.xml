@@ -65,5 +65,9 @@
             android:id="@+id/nav_about"
             android:icon="@drawable/ic_info"
             android:title="@string/about"/>
+
+        <item
+            android:id="@+id/nav_fitness"
+            android:title="@string/fitness" />
     </group>
 </menu>

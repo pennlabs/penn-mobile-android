@@ -6,4 +6,6 @@
     <dimen name="dryer_machine_view">78dp</dimen>
     <dimen name="laundry_font_small">14sp</dimen>
     <dimen name="cardview_height">150dp</dimen>
+    <dimen name="gym_imageview_height">100dp</dimen>
+    <dimen name="gym_imageview_width">150dp</dimen>
 </resources>
