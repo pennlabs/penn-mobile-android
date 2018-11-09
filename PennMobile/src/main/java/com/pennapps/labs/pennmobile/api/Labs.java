@@ -8,6 +8,7 @@ import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.FlingEvent;
 import com.pennapps.labs.pennmobile.classes.GSR;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
+import com.pennapps.labs.pennmobile.classes.Gym;
 import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
@@ -127,4 +128,7 @@ public interface Labs {
     @GET("/homepage")
     Observable<List<HomeScreenCell>> getHomePage(
             @Header("X-Device-ID") String deviceID);
+
+    @GET("/fitness/schedule")
+    Observable<List<Gym>> getGymData();
 }

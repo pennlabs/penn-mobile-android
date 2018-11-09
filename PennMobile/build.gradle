@@ -19,10 +19,10 @@ apply plugin: 'io.fabric'
 
 repositories {
     mavenCentral()
-    jcenter()
+    google()
     maven { url "https://maven.fabric.io/public" }
     maven { url "https://jitpack.io" }
-    google()
+    jcenter()
 }
 
 android {
