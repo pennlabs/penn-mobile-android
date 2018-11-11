@@ -24,6 +24,8 @@ import butterknife.ButterKnife;
 
 public class FitnessAdapter extends RecyclerView.Adapter<FitnessAdapter.FitnessViewHolder> {
 
+    private Context mContext;
+
     // TODO 3: implement Fitness Adapter
 
     // gym data
@@ -38,6 +40,7 @@ public class FitnessAdapter extends RecyclerView.Adapter<FitnessAdapter.FitnessV
     @Override
     public FitnessViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fitness_list_item, parent, false);
+        mContext = parent.getContext();
         return new FitnessViewHolder(view);
     }
 
@@ -58,20 +61,43 @@ public class FitnessAdapter extends RecyclerView.Adapter<FitnessAdapter.FitnessV
         // if the gym is open or not
         boolean open = g.isOpen();
         // TODO: change to not hardcoded string
-        String openClosed = "CLOSED";
-        if (open) {
-            openClosed = "OPEN";
+        String openClosed = "OPEN";
+        if (!open) {
+            openClosed = "CLOSED";
+            // set background to red for closed
+            holder.gymStatusView.setBackgroundResource(R.drawable.label_red);
         }
+
+
+        // get first word in name
+        int i = name.indexOf(' ');
+        String simpName = name;
+        if (i >= 0) {
+            simpName = name.substring(0, i);
+        }
+        simpName = simpName.toLowerCase();
+
+        // build image resource name from simpName
+        String src_name = "gym_" + simpName;
+
+        // get resource identifier
+        int identifier = mContext.getResources().getIdentifier(src_name, "drawable", mContext.getPackageName());
+        if (identifier == 0) { // if the src name is invalid
+            identifier = mContext.getResources().getIdentifier("gym_fox", "drawable", mContext.getPackageName());
+            Log.d("ASFJHDPOIFH", "" + identifier);
+        }
+
 
         // update ViewHolder
         // TODO: change image view based on gym
+        holder.gymImageView.setImageResource(identifier);
         holder.gymNameView.setText(name);
         holder.gymStatusView.setText(openClosed);
         holder.gymHoursView.setText(intervalsToString(hours));
     }
 
 
-
+    // turn list of hours into string
     private static String intervalsToString(List<Interval> hours) {
         Interval i1 = hours.get(0);
         // first check if it's all day

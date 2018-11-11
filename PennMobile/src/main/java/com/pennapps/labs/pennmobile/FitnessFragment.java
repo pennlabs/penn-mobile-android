@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -61,6 +62,14 @@ public class FitnessFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_fitness, container, false);
         unbinder = ButterKnife.bind(this, view);
 
+        // set layout manager for RecyclerView
+        fitnessRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
+                LinearLayoutManager.VERTICAL, false));
+
+        // add divider
+        DividerItemDecoration divider = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
+        fitnessRecyclerView.addItemDecoration(divider);
+
         // get API data
         Labs labs = MainActivity.getLabsInstance();
         labs.getGymData().subscribe(new Action1<List<Gym>>() {
@@ -70,8 +79,6 @@ public class FitnessFragment extends Fragment {
                     @Override
                     public void run() {
                         Log.d("REMOVE", "IT DID GET HERE 1");
-                        fitnessRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
-                                LinearLayoutManager.VERTICAL, false));
                         fitnessRecyclerView.setAdapter(new FitnessAdapter(getContext(), gyms));
                     }
                 });
