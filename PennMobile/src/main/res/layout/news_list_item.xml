@@ -1,45 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="4dp"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="4dp"
+    android:paddingBottom="@dimen/activity_vertical_margin">
 
     <ImageView
         android:id="@+id/news_logo"
         android:layout_width="160dp"
         android:layout_height="140dp"
         android:paddingRight="16dp"
-        android:src="@drawable/thedp"/>
+        android:src="@drawable/thedp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/news_name"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/news_details"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.62"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_weight="7"
+        tools:text="Daily Pennsylvanian" />
+
+    <TextView
+        android:id="@+id/news_details"
+        android:layout_width="0dp"
+        android:layout_height="99dp"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintVertical_weight="3"
+        tools:text="description" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline2"
         android:layout_width="wrap_content"
-        android:layout_height="140dp"
-        android:id="@+id/news_info"
-        android:layout_alignParentRight="true"
-        android:layout_toRightOf="@+id/news_logo"
-        android:paddingRight="4dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        >
-        <TextView
-            tools:text="Daily Pennsylvanian"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:id="@+id/news_name"
-            android:layout_centerVertical="true"
-            android:textSize="15sp"
-            android:textStyle="bold"/>
-        <TextView
-            android:id="@+id/news_details"
-            tools:text="description"
-            android:layout_width="match_parent"
-            android:textSize="13sp"
-            android:layout_height="100dp" />
+        app:layout_constraintGuide_begin="160dp" />
 
-    </LinearLayout>
-
-
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
