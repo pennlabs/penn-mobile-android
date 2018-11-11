@@ -13,6 +13,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:scaleType="centerCrop"
         android:src="@drawable/gym_fox"/> <!-- placeholder image -->
 
     <TextView
@@ -34,6 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_marginStart="15dp"
+        android:layout_marginRight="0dp"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toEndOf="@id/gym_image_view"
         app:layout_constraintTop_toBottomOf="@id/gym_status_view"
