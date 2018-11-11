@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
@@ -31,9 +34,16 @@ import rx.functions.Action1;
 
 public class FitnessFragment extends Fragment {
 
+    // bind loading and no results layouts
+    @BindView(R.id.loadingPanel) RelativeLayout loadingPanel;
+    @BindView(R.id.no_results) TextView noResults;
+
     // bind recycler view
     @BindView(R.id.gym_list) RecyclerView fitnessRecyclerView;
+    @BindView(R.id.gym_refresh_layout) SwipeRefreshLayout refreshLayout;
     private Unbinder unbinder;
+
+    private MainActivity mActivity;
 
     public FitnessFragment() {
         // Required empty public constructor
@@ -47,6 +57,8 @@ public class FitnessFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mActivity = (MainActivity) getActivity();
 
         Fabric.with(getContext(), new Crashlytics());
         Answers.getInstance().logContentView(new ContentViewEvent()
@@ -70,6 +82,22 @@ public class FitnessFragment extends Fragment {
         DividerItemDecoration divider = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
         fitnessRecyclerView.addItemDecoration(divider);
 
+        // handle swipe to refresh
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getGymData();
+            }
+        });
+
+        // get api data
+        getGymData();
+
+
+        return view;
+    }
+
+    private void getGymData() {
         // get API data
         Labs labs = MainActivity.getLabsInstance();
         labs.getGymData().subscribe(new Action1<List<Gym>>() {
@@ -78,8 +106,18 @@ public class FitnessFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d("REMOVE", "IT DID GET HERE 1");
                         fitnessRecyclerView.setAdapter(new FitnessAdapter(getContext(), gyms));
+                        // get rid of loading screen
+                        loadingPanel.setVisibility(View.GONE);
+                        if (gyms.size() > 0) {
+                            noResults.setVisibility(View.GONE);
+                        }
+                        // stop refreshing
+                        try {
+                            refreshLayout.setRefreshing(false);
+                        } catch (NullPointerException e) {
+                            // no need to do anything, we've just moved away from this activity
+                        }
                     }
                 });
             }
@@ -88,10 +126,23 @@ public class FitnessFragment extends Fragment {
             public void call(Throwable throwable) {
                 throwable.printStackTrace();
                 Toast.makeText(getActivity(), "Error: Could not load gym information", Toast.LENGTH_LONG).show();
+                // get rid of loading screen
+                loadingPanel.setVisibility(View.GONE);
+                // display no results
+                noResults.setVisibility(View.VISIBLE);
+                try {
+                    refreshLayout.setRefreshing(false);
+                } catch (NullPointerException e) {
+                    // no need to do anything, we've just moved away from this activity
+                }
             }
         });
+    }
 
-
-        return view;
+    @Override
+    public void onResume() {
+        super.onResume();
+        mActivity.setTitle(R.string.fitness);
+        mActivity.setNav(R.id.nav_fitness);
     }
 }
