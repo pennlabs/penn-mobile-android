@@ -6,14 +6,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".FitnessFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/gym_list"
+    <include layout="@layout/no_results" />
+
+    <include layout="@layout/loading_panel" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/gym_refresh_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_width="0dp"
-        android:layout_height="0dp"/>
+        app:layout_constraintEnd_toEndOf="parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/gym_list"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
 </android.support.constraint.ConstraintLayout>

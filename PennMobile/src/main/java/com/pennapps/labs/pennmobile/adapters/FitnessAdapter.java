@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.classes.Gym;
 import com.pennapps.labs.pennmobile.classes.GymHours;
+import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -26,7 +27,6 @@ public class FitnessAdapter extends RecyclerView.Adapter<FitnessAdapter.FitnessV
 
     private Context mContext;
 
-    // TODO 3: implement Fitness Adapter
 
     // gym data
     private List<Gym> gyms;
@@ -51,16 +51,11 @@ public class FitnessAdapter extends RecyclerView.Adapter<FitnessAdapter.FitnessV
         String name = g.getName();
         List hours = g.getHours();
 
-
-        Log.d("ADPFLKDPLKGFNDSPO", position + " " + name);
-
-
         // process name to remove hours and dashes and excess stupid stuff
         // String processedName = processName(name); NO MORE NEED
 
         // if the gym is open or not
         boolean open = g.isOpen();
-        // TODO: change to not hardcoded string
         String openClosed = "OPEN";
         if (!open) {
             openClosed = "CLOSED";
@@ -84,13 +79,13 @@ public class FitnessAdapter extends RecyclerView.Adapter<FitnessAdapter.FitnessV
         int identifier = mContext.getResources().getIdentifier(src_name, "drawable", mContext.getPackageName());
         if (identifier == 0) { // if the src name is invalid
             identifier = mContext.getResources().getIdentifier("gym_fox", "drawable", mContext.getPackageName());
-            Log.d("ASFJHDPOIFH", "" + identifier);
         }
+
+        // set image
+        Picasso.get().load(identifier).fit().centerCrop().into(holder.gymImageView);
 
 
         // update ViewHolder
-        // TODO: change image view based on gym
-        holder.gymImageView.setImageResource(identifier);
         holder.gymNameView.setText(name);
         holder.gymStatusView.setText(openClosed);
         holder.gymHoursView.setText(intervalsToString(hours));
@@ -140,13 +135,11 @@ public class FitnessAdapter extends RecyclerView.Adapter<FitnessAdapter.FitnessV
 
     @Override
     public int getItemCount() {
-        Log.d("ADPFLKDPLKGFNDSPO", "" + gyms.size());
         return gyms.size();
     }
 
     public class FitnessViewHolder extends RecyclerView.ViewHolder {
 
-        // TODO 2: define FitnessViewHolder
         @BindView(R.id.gym_image_view)
         public ImageView gymImageView;
         @BindView(R.id.gym_name_view)

@@ -4,8 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="101dp">
 
-    <!-- TODO 1: make fitness list item layout -->
-
     <ImageView
         android:id="@+id/gym_image_view"
         android:layout_width="175dp"
