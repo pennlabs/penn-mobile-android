@@ -1,9 +1,13 @@
 package com.pennapps.labs.pennmobile;
 
-
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -17,6 +21,7 @@ import java.util.List;
 public class SupportFragment extends ListFragment {
 
     private MainActivity mActivity;
+    private List<Person> contacts_list;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,7 +33,7 @@ public class SupportFragment extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         ListView mListView = getListView();
-        List<Person> contacts_list = new ArrayList<>();
+        contacts_list = new ArrayList<>();
         contacts_list.add(new Person("Penn Police General", "(215) 898-7297"));
         contacts_list.add(new Person("Penn Police Emergencies/MERT", "(215) 573-3333"));
         contacts_list.add(new Person("Penn Walk", "215-898-9255", "215-898-WALK"));
@@ -49,7 +54,31 @@ public class SupportFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_support, container, false);
+        View view = inflater.inflate(R.layout.fragment_support, container, false);
+        setHasOptionsMenu(true);
+        return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        mActivity.getMenuInflater().inflate(R.menu.phone_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.support_contacts_add:
+                SaveContactsFragment frag = new SaveContactsFragment();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(((ViewGroup)getView().getParent()).getId(), frag, "SAVE_CONTACTS_FRAGMENT")
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .addToBackStack(null)
+                        .commitAllowingStateLoss();
+                break;
+        }
+        return true;
     }
 
     @Override
