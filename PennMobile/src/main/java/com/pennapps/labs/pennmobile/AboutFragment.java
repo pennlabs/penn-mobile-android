@@ -9,8 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
@@ -18,6 +22,9 @@ import butterknife.Unbinder;
 public class AboutFragment extends Fragment {
     private AlertDialog mAlertDialog;
     private Unbinder unbinder;
+
+    @BindView(R.id.about_desc) TextView featureRequest;
+    @BindView(R.id.labs_icon) ImageView labsIcon;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,10 +36,10 @@ public class AboutFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_about, container, false);
         unbinder = ButterKnife.bind(this, v);
-        TextView featureRequest = (TextView) v.findViewById(R.id.about_desc);
         featureRequest.setMovementMethod(LinkMovementMethod.getInstance());
+        Picasso.get().load(R.drawable.labs_logo).fit().centerCrop().into(labsIcon);
         String text = "Penn Mobile was developed by Penn Labs, with funding<br>" +
-                "and support from the Undergraduate Assembly. Special thanks to Vishwa Patel. <br><br> &copy; 2017 Penn Labs <br><br>" +
+                "and support from the Undergraduate Assembly. Special thanks to Vishwa Patel. <br><br> &copy; 2018 Penn Labs <br><br>" +
                 "<a href='mailto:contact@pennlabs.org?subject=[Penn Mobile Android]'>Request a feature</a><br><br>" +
                 "<a href='http://pennlabs.org'>More information</a>";
         featureRequest.setText(Html.fromHtml(text));
