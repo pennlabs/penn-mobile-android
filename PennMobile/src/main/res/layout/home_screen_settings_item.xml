@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="16dp">
 
     <Switch
@@ -25,6 +26,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/ic_reorder" />
+        app:srcCompat="@drawable/ic_reorder" />
 
 </RelativeLayout>
