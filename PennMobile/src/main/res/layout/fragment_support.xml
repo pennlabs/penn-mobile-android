@@ -3,10 +3,18 @@
     android:layout_height="match_parent"
     tools:context="com.pennapps.labs.pennmobile.SupportFragment">
 
-    <ListView
-        tools:listitem="@layout/support_list_item"
-        android:id="@android:id/list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="visible"
+        android:id="@+id/save_contacts_fragment">
+
+        <ListView
+            tools:listitem="@layout/support_list_item"
+            android:id="@android:id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
 
 </FrameLayout>

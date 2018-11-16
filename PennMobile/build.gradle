@@ -21,9 +21,9 @@ apply plugin: 'idea'
 repositories {
     mavenCentral()
     google()
+    jcenter()
     maven { url "https://maven.fabric.io/public" }
     maven { url "https://jitpack.io" }
-    jcenter()
 }
 
 android {
@@ -37,7 +37,7 @@ android {
     buildToolsVersion '27.0.3'
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 27
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
     }
