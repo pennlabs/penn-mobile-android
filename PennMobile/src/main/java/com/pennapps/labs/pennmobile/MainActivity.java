@@ -200,31 +200,24 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.nav_registrar:
-            case R.id.registrar_cont:
                 fragment = new RegistrarFragment();
                 break;
             case R.id.nav_gsr:
-            case R.id.gsr_cont:
-                fragment = new GsrFragmentJava();
+                fragment = new GsrFragment();
                 break;
             case R.id.nav_dining:
-            case R.id.dining_cont:
                 fragment = new DiningFragment();
                 break;
             case R.id.nav_directory:
-            case R.id.directory_cont:
                 fragment = new DirectoryFragment();
                 break;
             case R.id.nav_news:
-            case R.id.news_cont:
                 fragment = new NewsFragment();
                 break;
 //            case R.id.nav_map:
-//            case R.id.map_cont:
 //                getPermission();
 //                return;
             case R.id.nav_laundry:
-            case R.id.laundry_cont:
                 Intent intent = new Intent(this, LaundryActivity.class);
                 startActivity(intent);
                 break;
@@ -415,7 +408,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         if (grantResults.length == 0 || grantResults[0] == PackageManager.PERMISSION_DENIED) {
-            showErrorToast(R.string.ask_permission_fail);
+            switch (requestCode) {
+                case SaveContactsFragment.permission_read:
+                    showErrorToast(R.string.ask_contacts_fail);
+                    break;
+                default:
+                    showErrorToast(R.string.ask_location_fail);
+                    break;
+            }
             return;
         }
         if (requestCode == CODE_MAP) {

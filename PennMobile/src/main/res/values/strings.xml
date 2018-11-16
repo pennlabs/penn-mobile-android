@@ -23,6 +23,7 @@
     <string name="add_contact">Add contact</string>
     <string name="no_results">No results found.</string>
     <string name="action_licenses">Open Source Licenses</string>
+    <string name="save_contacts">Select Contacts to Save</string>
 
     <!--Home Screen -->
     <string name="home_screen_settings">Home Screen Settings</string>
@@ -44,8 +45,13 @@
     <string name="registrar_search_count">register_count</string>
 
     <!-- Dining -->
-    <string name="dining_hall_open">OPEN</string>
-    <string name="dining_hall_closed">CLOSED</string>
+    <string name="dining_hall_open">Open</string>
+    <string name="dining_hall_closed">Closed</string>
+    <string name="dining_hall_breakfast">Breakfast</string>
+    <string name="dining_hall_brunch">Brunch</string>
+    <string name="dining_hall_lunch">Lunch</string>
+    <string name="dining_hall_dinner">Dinner</string>
+    <string name="dining_hall_late_night">Late Night</string>
     <string name="dining_info">Dining Hall Hours</string>
     <string name="menu_arg_name">name</string>
     <string name="menu_arg_meal">meal</string>
@@ -53,6 +59,7 @@
     <string name="sort_by_name">Order by Name</string>
     <string name="sort_by_residential">Order by Residential Hall</string>
     <string name="sort_by_open">Order by Open Status</string>
+    <string name="dining_closed">Closed today</string>
 
     <!-- Courses -->
     <string name="course">Average Course</string>
@@ -77,7 +84,8 @@
     <string name="google_api_origin">origin</string>
     <string name="google_api_dest">destination</string>
     <string name="no_permission_map">Permission not granted for using Google Map</string>
-    <string name="ask_permission_fail">Access of your location is required to use this feature.</string>
+    <string name="ask_location_fail">Access of your location is required to use this feature.</string>
+    <string name="ask_contacts_fail">Access to your contacts is required to use this feature.</string>
     <string name="no_map_beardman">Map is not provided by the phone.</string>
     <string name="no_map_description">We were unable to\nload your map.</string>
     <string name="no_map_count_key">no_map_count_key</string>
@@ -205,6 +213,7 @@
     <string name="search_GSRs">Search GSRs</string>
     <string name="quitBook">&lt;- Back</string>
     <string name="select_instructions">Select an open GSR slot or edit the search range</string>
+    <string name="start_end_button_text">%1$s:%2$s %$3</string>
     <string name="to">to</string>
     <string name="search_date">Date</string>
     <string name="first_name">First name</string>
@@ -215,4 +224,5 @@
     <!-- Spring Fling -->
     <string name="spring_fling">Spring Fling</string>
     <string name="fling_event_time">%1$s - %2$s</string>
+
 </resources>
