@@ -2,9 +2,9 @@ buildscript {
     repositories {
         mavenCentral()
         jcenter()
+        google()
         maven { url 'https://maven.fabric.io/public' }
         maven { url "https://jitpack.io" }
-        google()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.4'
@@ -19,10 +19,11 @@ apply plugin: 'io.fabric'
 
 repositories {
     mavenCentral()
+    google()
     jcenter()
     maven { url "https://maven.fabric.io/public" }
     maven { url "https://jitpack.io" }
-    google()
+
 }
 
 android {

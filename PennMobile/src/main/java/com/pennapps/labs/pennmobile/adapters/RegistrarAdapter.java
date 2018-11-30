@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -26,31 +28,46 @@ import java.util.Set;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RegistrarAdapter extends ArrayAdapter<Course> {
+public class RegistrarAdapter extends RecyclerView.Adapter<RegistrarAdapter.RegistrarViewHolder> {
     private final LayoutInflater inflater;
     private List<Course> courses;
     private Context mContext;
 
-    public RegistrarAdapter(Context context, List<Course> courses) {
-        super(context, R.layout.registrar_list_item, courses);
+    public RegistrarAdapter(Context context, List<Course> courses)  {
         this.courses = courses;
         mContext = context;
         inflater = LayoutInflater.from(context);
     }
-    @Override
-    public View getView(int position, View view, ViewGroup parent) {
-        final Course course = getItem(position);
-        String courseName = course.getName();
-        ViewHolder holder;
-        if (view != null) {
-            holder = (ViewHolder) view.getTag();
-        } else {
-            view = inflater.inflate(R.layout.registrar_list_item, parent, false);
-            holder = new ViewHolder(view, course);
-            view.setTag(holder);
+
+    public static class RegistrarViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.course_id_text) TextView courseId;
+        @BindView(R.id.course_instr_text) TextView courseInstr;
+        @BindView(R.id.course_title_text) TextView courseTitle;
+        @BindView(R.id.course_meeting_times) TextView courseTimes;
+        @BindView(R.id.star_course) ToggleButton star;
+        @BindView(R.id.course_activity) TextView courseActivity;
+        public Course course;
+
+        public RegistrarViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
         }
+    }
+
+
+    @NonNull
+    @Override
+    public RegistrarViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new RegistrarViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.registrar_list_item, parent, false));
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RegistrarViewHolder holder, int position) {
+        final Course course = this.courses.get(position);
+        String courseName = course.getName();
 
         holder.course = course;
+        View view = holder.itemView;
 
         Spannable courseCode = new SpannableString(courseName);
         courseCode.setSpan(
@@ -65,7 +82,7 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
             holder.courseInstr.setText(course.instructors.get(0).name);
             holder.courseInstr.setTextColor(Color.BLACK);
         } catch (IndexOutOfBoundsException e) {
-            holder.courseInstr.setText(getContext().getString(R.string.professor_missing));
+            holder.courseInstr.setText(mContext.getString(R.string.professor_missing));
             holder.courseInstr.setTextColor(Color.parseColor("#4a000000"));
         }
 
@@ -111,29 +128,16 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
                 editedPreferences.apply();
             }
         });
-
-        return view;
     }
 
-    public static class ViewHolder {
-        @BindView(R.id.course_id_text) TextView courseId;
-        @BindView(R.id.course_instr_text) TextView courseInstr;
-        @BindView(R.id.course_title_text) TextView courseTitle;
-        @BindView(R.id.course_meeting_times) TextView courseTimes;
-        @BindView(R.id.star_course) ToggleButton star;
-        @BindView(R.id.course_activity) TextView courseActivity;
-        public Course course;
-
-        public ViewHolder(View view, Course course) {
-            this.course = course;
-            ButterKnife.bind(this, view);
-        }
+    public Course getItem(int position) {
+        return this.courses.get(position);
     }
+
 
     @Override
-    public int getCount() {
-        return courses != null ? courses.size() : 0;
-    }
+    public int getItemCount() { return courses != null ? courses.size() : 0; }
+
 
     private String getDataString(Course currentCourse){
         return (new Gson()).toJson(currentCourse, Course.class);

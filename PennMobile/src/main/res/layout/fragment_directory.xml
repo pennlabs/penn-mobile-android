@@ -15,9 +15,9 @@
 
     <include layout="@layout/loading_panel" />
 
-    <ListView
-        tools:listitem="@layout/directory_list_item"
-        android:id="@android:id/list"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/directory_recycler_view"
+        android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

@@ -54,7 +54,7 @@ public class RegistrarTab extends SearchFavoriteTab {
         frameLayout.setId(frameID);
 
         unbinder = ButterKnife.bind(this, v);
-        mListView = (ListView) v.findViewById(android.R.id.list);
+        mRecyclerView = v.findViewById(android.R.id.list);
         initList();
         setBackButton(frameLayout);
         return v;
@@ -72,15 +72,17 @@ public class RegistrarTab extends SearchFavoriteTab {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        if (!(mListView.getAdapter() instanceof RegistrarAdapter)) {
-            String s = mListView.getAdapter().getItem(position).toString();
+        /* TODO figure out this conversion
+        if (!(mRecyclerView.getAdapter() instanceof RegistrarAdapter)) {
+            String s = mRecyclerView.getAdapter().getItem(position).toString();
             processRegistrarQuery(s);
             mActivity.closeKeyboard();
             return;
         }
+        */
         int pos = fav ? 1 : 0;
         fragments[pos] = new CourseFragment();
-        Course course = ((RegistrarAdapter.ViewHolder) v.getTag()).course;
+        Course course = ((RegistrarAdapter.RegistrarViewHolder) v.getTag()).course;
         mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
         mActivity.getActionBarToggle().syncState();
         Bundle args = new Bundle();
@@ -150,13 +152,13 @@ public class RegistrarTab extends SearchFavoriteTab {
                             if (courses.isEmpty()) {
                                 if (no_results != null) {
                                     no_results.setVisibility(View.VISIBLE);
-                                    mListView.setVisibility(View.GONE);
+                                    mRecyclerView.setVisibility(View.GONE);
                                 }
                             } else {
-                                if (mListView != null) {
+                                if (mRecyclerView != null) {
                                     mAdapter = new RegistrarAdapter(mActivity, filterCourses(courses));
-                                    mListView.setVisibility(View.VISIBLE);
-                                    mListView.setAdapter(mAdapter);
+                                    mRecyclerView.setVisibility(View.VISIBLE);
+                                    mRecyclerView.setAdapter(mAdapter);
                                     no_results.setVisibility(View.GONE);
                                 }
                             }
@@ -197,8 +199,8 @@ public class RegistrarTab extends SearchFavoriteTab {
                 if (loadingPanel.getVisibility() == View.VISIBLE) {
                     loadingPanel.setVisibility(View.GONE);
                 }
-                if (mListView.getVisibility() == View.GONE) {
-                    mListView.setVisibility(View.VISIBLE);
+                if (mRecyclerView.getVisibility() == View.GONE) {
+                    mRecyclerView.setVisibility(View.VISIBLE);
                 }
                 if (no_results.getVisibility() == View.VISIBLE) {
                     no_results.setVisibility(View.GONE);
@@ -215,7 +217,7 @@ public class RegistrarTab extends SearchFavoriteTab {
                     }
                 }
                 mAdapter = new RegistrarAdapter(mActivity, filterCourses(courses));
-                mListView.setAdapter(mAdapter);
+                mRecyclerView.setAdapter(mAdapter);
             }
             mActivity.closeKeyboard();
         } else {
