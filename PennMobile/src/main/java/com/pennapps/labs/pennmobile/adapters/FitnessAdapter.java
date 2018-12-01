@@ -3,7 +3,6 @@ package com.pennapps.labs.pennmobile.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,9 +49,6 @@ public class FitnessAdapter extends RecyclerView.Adapter<FitnessAdapter.FitnessV
         // get the data from Gym class
         String name = g.getName();
         List hours = g.getHours();
-
-        // process name to remove hours and dashes and excess stupid stuff
-        // String processedName = processName(name); NO MORE NEED
 
         // if the gym is open or not
         boolean open = g.isOpen();
@@ -116,22 +112,6 @@ public class FitnessAdapter extends RecyclerView.Adapter<FitnessAdapter.FitnessV
         DateTime d2 = interval.getEnd();
         return d1.toString("h:mm a") + " - " + d2.toString("h:mm a");
     }
-
-    // HELPER FUNCTION: process name string
-    /*private String processName(String name) {
-        String[] splits = name.split("\\s");
-        StringBuilder sb = new StringBuilder();
-        for (String s: splits) {
-            if (s.contains("-")) {
-                sb.append(s.split("-")[0]);
-                break;
-            } else if (s.equalsIgnoreCase("hours")) {
-                break;
-            }
-            sb.append(s);
-        }
-        return sb.toString();
-    }*/
 
     @Override
     public int getItemCount() {
