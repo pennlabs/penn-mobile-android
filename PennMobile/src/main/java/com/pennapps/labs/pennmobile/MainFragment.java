@@ -140,9 +140,6 @@ public class MainFragment extends Fragment {
             visibleCategories.add(mAllCategories.get(3));
             visibleCategories.add(mAllCategories.get(2));
 
-            // add to Shared Preferences
-            sharedPref.
-
             // check if today is part of NSO dates - if so, add NSO to home page
             if (nsoDates.contains(today)) {
                 visibleCategories.add(mAllCategories.get(6));
