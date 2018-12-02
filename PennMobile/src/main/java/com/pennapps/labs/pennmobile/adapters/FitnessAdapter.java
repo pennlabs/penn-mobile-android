@@ -110,7 +110,16 @@ public class FitnessAdapter extends RecyclerView.Adapter<FitnessAdapter.FitnessV
     private static String intervalToString(Interval interval) {
         DateTime d1 = interval.getStart();
         DateTime d2 = interval.getEnd();
-        return d1.toString("h:mm a") + " - " + d2.toString("h:mm a");
+
+        return formatTime(d1) + " - " + formatTime(d2);
+    }
+
+    private static String formatTime(DateTime time) {
+        if (time.toString("mm").equals("00")) {
+            return time.toString("h a");
+        } else {
+            return time.toString("h:mm a");
+        }
     }
 
     @Override
