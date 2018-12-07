@@ -77,7 +77,7 @@ class BookGsrFragment : Fragment() {
                                     || email.text.toString().matches("".toRegex())) {
                                 Toast.makeText(activity, "Please fill in all fields before booking",
                                         Toast.LENGTH_LONG).show()
-                            } else if (!email.text.toString().matches("""[\w]+@(seas.|sas.|wharton.|nursing.)?upenn.edu""".toRegex())) {
+                            } else if (!email.text.toString().matches("""[\w]+@(seas\.|sas\.|wharton\.|nursing\.)?upenn\.edu""".toRegex())) {
                                 Toast.makeText(activity, "Please enter a valid Penn email", Toast.LENGTH_LONG).show()
                             } else {
                                 bookGSR(Integer.parseInt(gsrID), Integer.parseInt(gsrLocationCode), startTime, endTime)
