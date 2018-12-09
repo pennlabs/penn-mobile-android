@@ -153,7 +153,6 @@ public class MainFragment extends Fragment {
                 editor.putInt(mContext.getString(R.string.home_screen_pref) + "_" + item1.getName(), 100);
                 editor.putInt(mContext.getString(R.string.home_screen_pref) + "_" + item2.getName(), 101);
                 editor.putInt(mContext.getString(R.string.home_screen_pref) + "_" + item3.getName(), 102);
-                // TODO:
 
                 // check if today is part of NSO dates - if so, add NSO to home page
                 if (nsoDates.contains(today)) {
