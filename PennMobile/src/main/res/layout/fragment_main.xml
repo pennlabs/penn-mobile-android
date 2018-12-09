@@ -13,7 +13,7 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:gravity="center"
-        android:text="No items selected, click on settings in the top right of the screen to change this"
+        android:text="@string/no_home_items_message"
         android:visibility="gone"/>
 
     <android.support.v7.widget.RecyclerView

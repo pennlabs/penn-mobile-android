@@ -227,5 +227,6 @@
 
 
     <string name="first_open_pref">first_open</string>
+    <string name="no_home_items_message">No items selected, click on settings in the top right of the screen to change this</string>
 
 </resources>
