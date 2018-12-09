@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.adapters.HomeScreenAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
@@ -45,6 +46,7 @@ import rx.functions.Action1;
 public class MainFragment extends Fragment {
 
     @BindView(R.id.home_screen_recyclerview) RecyclerView mRecyclerView;
+    @BindView(R.id.no_home_items_textview) TextView mNoHomeItemsTextView;
     Unbinder unbinder;
     private Context mContext;
     private List<HomeScreenItem> visibleCategories;
@@ -123,31 +125,52 @@ public class MainFragment extends Fragment {
 
         // default preferences if none chosen
         if (numVisibleCategories == 0) {
+            SharedPreferences.Editor editor = sharedPref.edit();
 
-            DateTime today = new DateTime();
+            // if this is the first open
+            if (sharedPref.getBoolean(getString(R.string.first_open_pref), true)) {
 
-            DateTime nsoStart = new DateTime(2018, 8, 15, 0, 0, 0, 0);
-            DateTime nsoEnd = new DateTime(2018, 10, 15, 0, 0, 0, 0);
-            Interval nsoDates = new Interval(nsoStart, nsoEnd);
+
+                DateTime today = new DateTime();
+
+                DateTime nsoStart = new DateTime(2018, 8, 15, 0, 0, 0, 0);
+                DateTime nsoEnd = new DateTime(2018, 10, 15, 0, 0, 0, 0);
+                Interval nsoDates = new Interval(nsoStart, nsoEnd);
 
 //            DateTime flingStart = new DateTime(2019, 4, 10, 0, 0, 0, 0);
 //            DateTime flingEnd = new DateTime(2019, 4, 15, 0, 0, 0, 0);
 //            Interval flingDates = new Interval(flingStart, flingEnd);
 
-            // default: dining, laundry, GSR
-            visibleCategories.add(mAllCategories.get(1));
-            visibleCategories.add(mAllCategories.get(3));
-            visibleCategories.add(mAllCategories.get(2));
+                // default: dining, laundry, GSR
+                HomeScreenItem item1 = mAllCategories.get(1);
+                HomeScreenItem item2 = mAllCategories.get(3);
+                HomeScreenItem item3 = mAllCategories.get(2);
+                visibleCategories.add(item1);
+                visibleCategories.add(item2);
+                visibleCategories.add(item3);
 
-            // check if today is part of NSO dates - if so, add NSO to home page
-            if (nsoDates.contains(today)) {
-                visibleCategories.add(mAllCategories.get(6));
-            }
+                // add to settings as well
+                editor.putInt(mContext.getString(R.string.home_screen_pref) + "_" + item1.getName(), 100);
+                editor.putInt(mContext.getString(R.string.home_screen_pref) + "_" + item2.getName(), 101);
+                editor.putInt(mContext.getString(R.string.home_screen_pref) + "_" + item3.getName(), 102);
+                // TODO:
+
+                // check if today is part of NSO dates - if so, add NSO to home page
+                if (nsoDates.contains(today)) {
+                    visibleCategories.add(mAllCategories.get(6));
+                }
 
 //            // check if today is part of Fling dates - if so, add Fling to home page
 //            if (flingDates.contains(today)) {
 //                visibleCategories.add(mAllCategories.get(6));
 //            }
+
+                editor.putBoolean(getString(R.string.first_open_pref), false);
+                editor.apply();
+
+            } else { // just let the user know how they can select items
+                mNoHomeItemsTextView.setVisibility(View.VISIBLE);
+            }
         }
 
         // update home screen
