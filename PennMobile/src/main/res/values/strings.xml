@@ -225,4 +225,7 @@
     <string name="spring_fling">Spring Fling</string>
     <string name="fling_event_time">%1$s - %2$s</string>
 
+
+    <string name="first_open_pref">first_open</string>
+
 </resources>
