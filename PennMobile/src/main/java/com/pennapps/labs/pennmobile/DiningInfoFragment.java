@@ -182,7 +182,6 @@ public class DiningInfoFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle(mDiningHall.getName());
         if (map == null) {
             mapFragment.getMapAsync(this);
         }
@@ -190,7 +189,7 @@ public class DiningInfoFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        getActivity().setTitle(mDiningHall.getName());
+        getActivity().setTitle(R.string.dining);
         unbinder.unbind();
     }
     @Override
