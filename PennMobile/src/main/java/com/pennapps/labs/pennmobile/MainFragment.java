@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.adapters.HomeScreenAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
@@ -45,10 +46,11 @@ import rx.functions.Action1;
 public class MainFragment extends Fragment {
 
     @BindView(R.id.home_screen_recyclerview) RecyclerView mRecyclerView;
-    Unbinder unbinder;
+    @BindView(R.id.no_home_items_textview) TextView mNoHomeItemsTextView;
+    Unbinder mUnbinder;
     private Context mContext;
-    private List<HomeScreenItem> visibleCategories;
-    private SharedPreferences sharedPref;
+    private List<HomeScreenItem> mVisibleCategories;
+    private SharedPreferences mSharedPref;
     private List<HomeScreenItem> mAllCategories;
     private HomeScreenAdapter homeScreenAdapter;
     private List<HomeScreenCell> mCells;
@@ -59,7 +61,7 @@ public class MainFragment extends Fragment {
     // laundry
     private List<LaundryRoom> mLaundryRoomList;
     private List<LaundryRoom> mLaundryRoomResult;
-    private int numLaundryRoomsPref;
+    private int mNumLaundryRoomsPref;
 
     /**
      * Use this factory method to create a new instance of
@@ -82,7 +84,7 @@ public class MainFragment extends Fragment {
         ((MainActivity) getActivity()).closeKeyboard();
         super.onCreate(savedInstanceState);
         mContext = getActivity();
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mSharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
         mLabsHome = MainActivity.getLabsInstanceHome();
         mLabs = MainActivity.getLabsInstance();
     }
@@ -104,55 +106,77 @@ public class MainFragment extends Fragment {
         int numVisibleCategories = 0;
         for (int i = 0; i < mAllCategories.size(); i++) {
             HomeScreenItem category = mAllCategories.get(i);
-            int position = sharedPref.getInt(mContext.getString(R.string.home_screen_pref) + "_" + category.getName(), -1);
+            int position = mSharedPref.getInt(mContext.getString(R.string.home_screen_pref) + "_" + category.getName(), -1);
             if (position >= 100) {
-                visibleCategories.add(category);
+                mVisibleCategories.add(category);
                 numVisibleCategories++;
             }
         }
 
         // sort the categories based on the shared preferences data
-        Collections.sort(visibleCategories, new Comparator<HomeScreenItem>() {
+        Collections.sort(mVisibleCategories, new Comparator<HomeScreenItem>() {
             @Override
             public int compare(HomeScreenItem homeScreenItem, HomeScreenItem t1) {
                 String itemPrefName = mContext.getString(R.string.home_screen_pref) + "_" + homeScreenItem.getName();
                 String t1PrefName = mContext.getString(R.string.home_screen_pref) + "_" + t1.getName();
-                return sharedPref.getInt(itemPrefName, -1) % 100 - (sharedPref.getInt(t1PrefName, -1) % 100);
+                return mSharedPref.getInt(itemPrefName, -1) % 100 - (mSharedPref.getInt(t1PrefName, -1) % 100);
             }
         });
 
         // default preferences if none chosen
         if (numVisibleCategories == 0) {
+            SharedPreferences.Editor editor = mSharedPref.edit();
 
-            DateTime today = new DateTime();
+            // if this is the first open
+            if (mSharedPref.getBoolean(getString(R.string.first_open_pref), true)) {
 
-            DateTime nsoStart = new DateTime(2018, 8, 15, 0, 0, 0, 0);
-            DateTime nsoEnd = new DateTime(2018, 10, 15, 0, 0, 0, 0);
-            Interval nsoDates = new Interval(nsoStart, nsoEnd);
+
+                DateTime today = new DateTime();
+
+                DateTime nsoStart = new DateTime(2018, 8, 15, 0, 0, 0, 0);
+                DateTime nsoEnd = new DateTime(2018, 10, 15, 0, 0, 0, 0);
+                Interval nsoDates = new Interval(nsoStart, nsoEnd);
 
 //            DateTime flingStart = new DateTime(2019, 4, 10, 0, 0, 0, 0);
 //            DateTime flingEnd = new DateTime(2019, 4, 15, 0, 0, 0, 0);
 //            Interval flingDates = new Interval(flingStart, flingEnd);
 
-            // default: dining, laundry, GSR
-            visibleCategories.add(mAllCategories.get(1));
-            visibleCategories.add(mAllCategories.get(3));
-            visibleCategories.add(mAllCategories.get(2));
+                // default: dining, laundry, GSR
+                HomeScreenItem item1 = mAllCategories.get(1);
+                HomeScreenItem item2 = mAllCategories.get(3);
+                HomeScreenItem item3 = mAllCategories.get(2);
+                mVisibleCategories.add(item1);
+                mVisibleCategories.add(item2);
+                mVisibleCategories.add(item3);
 
-            // check if today is part of NSO dates - if so, add NSO to home page
-            if (nsoDates.contains(today)) {
-                visibleCategories.add(mAllCategories.get(6));
-            }
+                // add to settings as well
+                editor.putInt(mContext.getString(R.string.home_screen_pref) + "_" + item1.getName(), 100);
+                editor.putInt(mContext.getString(R.string.home_screen_pref) + "_" + item2.getName(), 101);
+                editor.putInt(mContext.getString(R.string.home_screen_pref) + "_" + item3.getName(), 102);
+
+                // check if today is part of NSO dates - if so, add NSO to home page
+                if (nsoDates.contains(today)) {
+                    HomeScreenItem item4 = mAllCategories.get(6);
+                    mVisibleCategories.add(item4);
+                    editor.putInt(mContext.getString(R.string.home_screen_pref) + "_" + item4.getName(), 103);
+                }
 
 //            // check if today is part of Fling dates - if so, add Fling to home page
 //            if (flingDates.contains(today)) {
-//                visibleCategories.add(mAllCategories.get(6));
+//                mVisibleCategories.add(mAllCategories.get(6));
 //            }
+
+                editor.putBoolean(getString(R.string.first_open_pref), false);
+                editor.apply();
+
+            } else { // just let the user know how they can select items
+                mNoHomeItemsTextView.setVisibility(View.VISIBLE);
+            }
         }
 
         // update home screen
         //getHomeData();
-        homeScreenAdapter = new HomeScreenAdapter(mContext, visibleCategories, mCells, mLaundryRoomList);
+        homeScreenAdapter = new HomeScreenAdapter(mContext, mVisibleCategories, mCells, mLaundryRoomList);
         mRecyclerView.setAdapter(homeScreenAdapter);
     }
 
@@ -161,7 +185,7 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-        unbinder = ButterKnife.bind(this, view);
+        mUnbinder = ButterKnife.bind(this, view);
         // settings
         setHasOptionsMenu(true);
 
@@ -178,11 +202,11 @@ public class MainFragment extends Fragment {
         ((MainActivity) getActivity()).setNav(R.id.nav_home);
 
         mCells = new ArrayList<>();
-        visibleCategories = new ArrayList<>();
+        mVisibleCategories = new ArrayList<>();
         mAllCategories = new ArrayList<>();
         mLaundryRoomList = new ArrayList<>();
         mLaundryRoomResult = new ArrayList<>();
-        numLaundryRoomsPref = 0;
+        mNumLaundryRoomsPref = 0;
 
         orderCards();
     }
@@ -207,7 +231,7 @@ public class MainFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+        mUnbinder.unbind();
     }
 
     // get preferences
@@ -224,13 +248,13 @@ public class MainFragment extends Fragment {
                 for (HomeScreenCell cell : mCells) {
                     if (cell.getType().equals("laundry")) {
                         int roomId = cell.getInfo().getRoomId();
-                        numLaundryRoomsPref++;
+                        mNumLaundryRoomsPref++;
                         addRoom(roomId);
                     }
                 }
 
                 // wait for laundry rooms to update
-                while (mLaundryRoomResult.size() != numLaundryRoomsPref) {
+                while (mLaundryRoomResult.size() != mNumLaundryRoomsPref) {
                 }
 
                 // sort laundry rooms by name
@@ -246,7 +270,7 @@ public class MainFragment extends Fragment {
                     @Override
                     public void run() {
                         // update adapter
-                        homeScreenAdapter = new HomeScreenAdapter(mContext, visibleCategories, mCells, mLaundryRoomList);
+                        homeScreenAdapter = new HomeScreenAdapter(mContext, mVisibleCategories, mCells, mLaundryRoomList);
                         mRecyclerView.setAdapter(homeScreenAdapter);
                         homeScreenAdapter.notifyDataSetChanged();
                     }
