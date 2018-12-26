@@ -123,18 +123,23 @@ public class FitnessFragment extends Fragment {
             }
         }, new Action1<Throwable>() {
             @Override
-            public void call(Throwable throwable) {
-                throwable.printStackTrace();
-                Toast.makeText(getActivity(), "Error: Could not load gym information", Toast.LENGTH_LONG).show();
-                // get rid of loading screen
-                loadingPanel.setVisibility(View.GONE);
-                // display no results
-                noResults.setVisibility(View.VISIBLE);
-                try {
-                    refreshLayout.setRefreshing(false);
-                } catch (NullPointerException e) {
-                    // no need to do anything, we've just moved away from this activity
-                }
+            public void call(final Throwable throwable) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        throwable.printStackTrace();
+                        Toast.makeText(getActivity(), "Error: Could not load gym information", Toast.LENGTH_LONG).show();
+                        // get rid of loading screen
+                        loadingPanel.setVisibility(View.GONE);
+                        // display no results
+                        noResults.setVisibility(View.VISIBLE);
+                        try {
+                            refreshLayout.setRefreshing(false);
+                        } catch (NullPointerException e) {
+                            // no need to do anything, we've just moved away from this activity
+                        }
+                    }
+                });
             }
         });
     }
