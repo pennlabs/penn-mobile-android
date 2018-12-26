@@ -26,6 +26,11 @@
             android:icon="@drawable/ic_local_laundry_service"
             android:title="@string/laundry"/>
 
+        <item
+            android:id="@+id/nav_fitness"
+            android:icon="@drawable/ic_fitness_black"
+            android:title="@string/fitness" />
+
         <!--<item-->
             <!--android:id="@+id/nav_map"-->
             <!--android:icon="@drawable/ic_map"-->

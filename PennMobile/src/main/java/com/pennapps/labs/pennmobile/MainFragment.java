@@ -101,6 +101,7 @@ public class MainFragment extends Fragment {
         mAllCategories.add(new HomeScreenItem("News", 5));
 //        mAllCategories.add(new HomeScreenItem("Spring Fling", 6));
         mAllCategories.add(new HomeScreenItem("NSO", 6));
+        mAllCategories.add(new HomeScreenItem("Fitness", 7));
 
         // determine which categories are visible
         int numVisibleCategories = 0;
