@@ -27,7 +27,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.webkit.WebView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -94,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 super.onDrawerSlide(drawerView, 0);
             }
         };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
 
         mDrawerList = (NavigationView) findViewById(R.id.navigation);
         mDrawerList.setNavigationItemSelectedListener(new DrawerItemClickListener());
@@ -119,22 +118,10 @@ public class MainActivity extends AppCompatActivity {
             mDrawerLayout.closeDrawer(mDrawerList);
             return;
         }
-        try {
-            WebView webView = NewsTab.currentWebView;
-            if (webView.canGoBack()) {
-                webView.goBack();
-            } else if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-                getSupportFragmentManager().popBackStack();
-            } else {
-                super.onBackPressed();
-            }
-        } catch (NullPointerException ignored) {
-            // No webview exists currently
-            super.onBackPressed();
-            if (CourseFragment.containsNum(getTitle())) {
-                mDrawerToggle.setDrawerIndicatorEnabled(false);
-                mDrawerToggle.syncState();
-            }
+        super.onBackPressed();
+        if (CourseFragment.containsNum(getTitle())) {
+            mDrawerToggle.setDrawerIndicatorEnabled(false);
+            mDrawerToggle.syncState();
         }
     }
 
