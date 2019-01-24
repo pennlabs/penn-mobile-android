@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -184,9 +182,6 @@ public class DiningInfoFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onResume() {
         super.onResume();
-        mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
-        mActivity.getActionBarToggle().syncState();
-        getActivity().setTitle(mDiningHall.getName());
         if (map == null) {
             mapFragment.getMapAsync(this);
         }
@@ -194,7 +189,7 @@ public class DiningInfoFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        getActivity().setTitle(mDiningHall.getName());
+        getActivity().setTitle(R.string.dining);
         unbinder.unbind();
     }
     @Override
