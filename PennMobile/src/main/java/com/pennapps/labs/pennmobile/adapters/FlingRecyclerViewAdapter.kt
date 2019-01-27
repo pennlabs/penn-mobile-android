@@ -12,7 +12,7 @@ import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import org.joda.time.format.ISODateTimeFormat
 
-class FlingRecyclerViewAdapter(private val context: Context, private val sampleData: List<FlingEvent>) : RecyclerView.Adapter<FlingPerformanceViewHolder>() {
+class FlingRecyclerViewAdapter(private val context: Context?, private val sampleData: List<FlingEvent>) : RecyclerView.Adapter<FlingPerformanceViewHolder>() {
 
     private val timeFormatter: DateTimeFormatter = ISODateTimeFormat.dateTimeNoMillis()
 
@@ -35,7 +35,7 @@ class FlingRecyclerViewAdapter(private val context: Context, private val sampleD
             val endTime = timeFormatter.parseDateTime(flingEvent.endTime)
             val dtfStart = DateTimeFormat.forPattern("h:mm")
             val dtfEnd = DateTimeFormat.forPattern("h:mm a")
-            holder.flingview_time.text = String.format(context.resources.getString(R.string.fling_event_time), dtfStart.print(startTime), dtfEnd.print(endTime))
+            holder.flingview_time.text = String.format(context?.resources?.getString(R.string.fling_event_time).toString(), dtfStart.print(startTime), dtfEnd.print(endTime))
         }
     }
 
