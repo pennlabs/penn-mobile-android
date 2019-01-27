@@ -146,20 +146,23 @@ public class MainFragment extends Fragment {
                 HomeScreenItem item1 = mAllCategories.get(1);
                 HomeScreenItem item2 = mAllCategories.get(3);
                 HomeScreenItem item3 = mAllCategories.get(2);
+                HomeScreenItem item4 = mAllCategories.get(7);
                 mVisibleCategories.add(item1);
                 mVisibleCategories.add(item2);
                 mVisibleCategories.add(item3);
+                mVisibleCategories.add(item4);
 
                 // add to settings as well
                 editor.putInt(mContext.getString(R.string.home_screen_pref) + "_" + item1.getName(), 100);
                 editor.putInt(mContext.getString(R.string.home_screen_pref) + "_" + item2.getName(), 101);
                 editor.putInt(mContext.getString(R.string.home_screen_pref) + "_" + item3.getName(), 102);
+                editor.putInt(mContext.getString(R.string.home_screen_pref) + "_" + item4.getName(), 103);
 
                 // check if today is part of NSO dates - if so, add NSO to home page
                 if (nsoDates.contains(today)) {
-                    HomeScreenItem item4 = mAllCategories.get(6);
-                    mVisibleCategories.add(item4);
-                    editor.putInt(mContext.getString(R.string.home_screen_pref) + "_" + item4.getName(), 103);
+                    HomeScreenItem nsoItem = mAllCategories.get(6);
+                    mVisibleCategories.add(nsoItem);
+                    editor.putInt(mContext.getString(R.string.home_screen_pref) + "_" + nsoItem.getName(), 104);
                 }
 
 //            // check if today is part of Fling dates - if so, add Fling to home page
@@ -210,6 +213,13 @@ public class MainFragment extends Fragment {
         mNumLaundryRoomsPref = 0;
 
         orderCards();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        mNoHomeItemsTextView.setVisibility(View.GONE);
     }
 
     @Override
