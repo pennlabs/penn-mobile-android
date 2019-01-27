@@ -62,7 +62,7 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.Dire
     @Override
     public void onBindViewHolder(@NonNull DirectoryViewHolder holder, int position) {
         View view = holder.itemView;
-        SwipeLayout swipeLayout = (SwipeLayout) view.findViewById(R.id.directory_swipe);
+        SwipeLayout swipeLayout = view.findViewById(R.id.directory_swipe);
         swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
         swipeLayout.addDrag(SwipeLayout.DragEdge.Right, view.findViewById(R.id.directory_swipe_drawer));
 

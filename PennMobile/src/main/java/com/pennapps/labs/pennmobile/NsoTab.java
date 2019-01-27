@@ -47,7 +47,7 @@ public class NsoTab extends SearchFavoriteTab {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_search_favorite_tab, container, false);
         unbinder =  ButterKnife.bind(this, v);
-        mRecyclerView = v.findViewById(android.R.id.list);
+        mRecyclerView = v.findViewById(R.id.fragment_search_favorite_recycler_view);
         initList();
         return v;
     }

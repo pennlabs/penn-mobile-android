@@ -54,7 +54,7 @@ public class RegistrarTab extends SearchFavoriteTab {
         frameLayout.setId(frameID);
 
         unbinder = ButterKnife.bind(this, v);
-        mRecyclerView = v.findViewById(android.R.id.list);
+        mRecyclerView = v.findViewById(R.id.fragment_search_favorite_recycler_view);
         initList();
         setBackButton(frameLayout);
         return v;
@@ -70,32 +70,32 @@ public class RegistrarTab extends SearchFavoriteTab {
         }
     }
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        /* TODO figure out this conversion
-        if (!(mRecyclerView.getAdapter() instanceof RegistrarAdapter)) {
-            String s = mRecyclerView.getAdapter().getItem(position).toString();
-            processRegistrarQuery(s);
-            mActivity.closeKeyboard();
-            return;
-        }
-        */
-        int pos = fav ? 1 : 0;
-        fragments[pos] = new CourseFragment();
-        Course course = ((RegistrarAdapter.RegistrarViewHolder) v.getTag()).course;
-        mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
-        mActivity.getActionBarToggle().syncState();
-        Bundle args = new Bundle();
-        args.putParcelable(getString(R.string.course_bundle_arg), course);
-        args.putBoolean(getString(R.string.registrar_search), fav);
-        fragments[pos].setArguments(args);
-
-        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .add(frameID, fragments[pos])
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit();
-    }
+//    @Override
+//    public void onListItemClick(ListView l, View v, int position, long id) {
+//        /* TODO figure out this conversion
+//        if (!(mRecyclerView.getAdapter() instanceof RegistrarAdapter)) {
+//            String s = mRecyclerView.getAdapter().getItem(position).toString();
+//            processRegistrarQuery(s);
+//            mActivity.closeKeyboard();
+//            return;
+//        }
+//        */
+//        int pos = fav ? 1 : 0;
+//        fragments[pos] = new CourseFragment();
+//        Course course = ((RegistrarAdapter.RegistrarViewHolder) v.getTag()).course;
+//        mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
+//        mActivity.getActionBarToggle().syncState();
+//        Bundle args = new Bundle();
+//        args.putParcelable(getString(R.string.course_bundle_arg), course);
+//        args.putBoolean(getString(R.string.registrar_search), fav);
+//        fragments[pos].setArguments(args);
+//
+//        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
+//        fragmentManager.beginTransaction()
+//                .add(frameID, fragments[pos])
+//                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+//                .commit();
+//    }
 
     @Override
     public void processQuery (String query) {

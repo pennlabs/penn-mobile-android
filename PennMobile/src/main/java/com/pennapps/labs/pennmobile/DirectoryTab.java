@@ -3,7 +3,9 @@ package com.pennapps.labs.pennmobile;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +38,7 @@ public class DirectoryTab extends SearchFavoriteTab {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_search_favorite_tab, container, false);
         unbinder = ButterKnife.bind(this, v);
-        mRecyclerView = v.findViewById(android.R.id.list);
+        mRecyclerView = v.findViewById(R.id.fragment_search_favorite_recycler_view);
         initList();
         return v;
     }
@@ -63,10 +65,11 @@ public class DirectoryTab extends SearchFavoriteTab {
                                     no_results.setVisibility(View.VISIBLE);
                                     mRecyclerView.setVisibility(View.GONE);
                                 }
-                        } else if (mRecyclerView != null) {
+                            } else if (mRecyclerView != null) {
                                 mAdapter = new DirectoryAdapter(mActivity, people);
                                 mRecyclerView.setAdapter(mAdapter);
                                 mRecyclerView.setVisibility(View.VISIBLE);
+                                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                                 no_results.setVisibility(View.GONE);
                             }
                         }

@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -16,7 +17,7 @@ import butterknife.BindView;
 /**
  * Created by Jason on 1/26/2016.
  */
-public abstract class SearchFavoriteTab extends ListFragment {
+public abstract class SearchFavoriteTab extends Fragment {
 
     protected boolean fav;
     protected String type;
