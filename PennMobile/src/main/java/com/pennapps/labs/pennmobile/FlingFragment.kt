@@ -47,10 +47,6 @@ class FlingFragment : Fragment() {
         activity?.setTitle(R.string.spring_fling)
     }
 
-    override fun onAttach(context: Context?) { super.onAttach(context) }
-    override fun onDetach() { super.onDetach() }
-    override fun onDestroyView() { super.onDestroyView() }
-
     companion object {
         fun newInstance(): FlingFragment {
             return FlingFragment()
