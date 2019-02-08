@@ -178,6 +178,10 @@ public class CourseFragment extends Fragment implements OnMapReadyCallback {
                                 drawMarker(buildings.get(0).getLatLng(), meetingLocation);
                             }
                         }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                        }
                     });
         }
     }
