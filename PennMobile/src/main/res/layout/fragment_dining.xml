@@ -17,12 +17,13 @@
             android:id="@+id/dining_swiperefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <ListView
-                tools:visibility="visible"
-                tools:listitem="@layout/dining_list_item"
-                android:id="@android:id/list"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/dining_halls_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                tools:list_item="@layout/dining_list_item" />
         </android.support.v4.widget.SwipeRefreshLayout>
     </FrameLayout>
 

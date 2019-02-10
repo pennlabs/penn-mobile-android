@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 import java.util.ArrayList;
@@ -23,14 +24,16 @@ public class DiningHall implements Parcelable {
     private boolean residential;
     private HashMap<String, Interval> openHours;
     private Venue venue;
+    private int image;
     @SerializedName("tblDayPart") public List<Menu> menus = new ArrayList<>();
 
-    public DiningHall(int id, String name, boolean residential, HashMap<String, Interval> hours, Venue venue) {
+    public DiningHall(int id, String name, boolean residential, HashMap<String, Interval> hours, Venue venue, int image) {
         this.id = id;
         this.name = name;
         this.residential = residential;
         this.openHours = hours;
         this.venue = venue;
+        this.image = image;
     }
 
     protected DiningHall(Parcel in) {
@@ -39,10 +42,12 @@ public class DiningHall implements Parcelable {
         residential = booleanArray[0];
         openHours = new HashMap<>();
         menus = new ArrayList<>();
-        in.readMap(openHours, Interval.class.getClassLoader());
-        in.readList(menus, ArrayList.class.getClassLoader());
+        // Use application class loader instead of framework class loader because Menu is a custom class
+        in.readMap(openHours, getClass().getClassLoader());
+        in.readList(menus, getClass().getClassLoader());
         id = in.readInt();
         name = in.readString();
+        image = in.readInt();
     }
 
     public static final Creator<DiningHall> CREATOR = new Creator<DiningHall>() {
@@ -80,6 +85,7 @@ public class DiningHall implements Parcelable {
         dest.writeList(menus);
         dest.writeInt(id);
         dest.writeString(name);
+        dest.writeInt(image);
     }
 
     public int getId() {
@@ -106,35 +112,77 @@ public class DiningHall implements Parcelable {
         return venue;
     }
 
-    public String closingTime() {
-        for (Interval openInterval : openHours.values()) {
-            if (openInterval.containsNow()) {
-                return openInterval.getEnd().toString("h:mma");
-            }
-        }
-        return "";
+    public int getImage() {
+        return image;
     }
 
-    public List<Map.Entry<String, Interval>> orderedHours() {
-        List<Map.Entry<String, Interval>> list = new ArrayList<>(openHours.entrySet());
-        Collections.sort( list, new Comparator<Map.Entry<String, Interval>>() {
-            public int compare( Map.Entry<String, Interval> x, Map.Entry<String, Interval> y )
+    // Returns list of time intervals sorted by interval starting time
+    private List<Interval> orderedHours() {
+        List<Interval> list = new ArrayList<>(openHours.values());
+        Collections.sort( list, new Comparator<Interval>() {
+            public int compare( Interval x, Interval y )
             {
-                return x.getValue().getStart().compareTo(y.getValue().getStart());
+                return x.getStart().compareTo(y.getStart());
             }
         });
         return list;
     }
 
-    public String openingTime() {
-        List<Map.Entry<String, Interval>> list = orderedHours();
-        for (int i = 0; i < list.size(); i++) {
-            Interval openInterval = list.get(i).getValue();
-            if (openInterval.isAfterNow()) {
-                return openInterval.getStart().toString("h:mma");
+    // Returns list of time intervals sorted by interval starting time, and merges intervals such that none overlap
+    private List<Interval> orderedMergedHours() {
+        List<Interval> originalList = orderedHours();
+        List<Interval> mergedList = new ArrayList<>(originalList.size());
+        Interval currentInterval = null;
+        for (int i = 0; i < originalList.size(); i++) {
+            if (currentInterval == null) {
+                currentInterval = originalList.get(i);
+            } else if (currentInterval.getEnd().compareTo(originalList.get(i).getStart()) >= 0) {
+                DateTime newEndTime = currentInterval.getEnd().compareTo(originalList.get(i).getEnd()) > 0
+                        ? currentInterval.getEnd() : originalList.get(i).getEnd();
+                currentInterval = new Interval(currentInterval.getStart(), newEndTime);
+            } else {
+                mergedList.add(currentInterval);
+                currentInterval = null;
             }
         }
-        return "";
+        if (currentInterval != null) {
+            mergedList.add(currentInterval);
+        }
+        return mergedList;
+    }
+
+    // Takes the ordered time intervals of the dining hall and formats them for displaying to the user
+    // e.g. 8 - 11 | 12 - 3 | 6 - 9
+    public String openTimes() {
+
+        List<Interval> list = isResidential() ? orderedHours() : orderedMergedHours();
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < list.size(); i++) {
+            Interval openInterval = list.get(i);
+            if (i != 0) {
+                builder.append(" | ");
+            }
+            builder.append(getFormattedTime(openInterval.getStart()));
+            builder.append(" - ");
+            builder.append(getFormattedTime(openInterval.getEnd()));
+        }
+        return builder.toString();
+    }
+
+    private String getFormattedTime(DateTime time) {
+        if (time.toString("mm").equals("00")) {
+            if (isResidential()) {
+                return time.toString("h");
+            } else {
+                return time.toString("h a");
+            }
+        } else {
+            if (isResidential()) {
+                return time.toString("h:mm");
+            } else {
+                return time.toString("h:mm a");
+            }
+        }
     }
 
     public boolean isOpen() {
@@ -146,6 +194,7 @@ public class DiningHall implements Parcelable {
         return false;
     }
 
+    // Returns the name of the meal that the dining hall is currently serving (e.g. Breakfast)
     public String openMeal() {
         for (Map.Entry<String, Interval> entry : openHours.entrySet()) {
             Interval openInterval = entry.getValue();
@@ -154,17 +203,6 @@ public class DiningHall implements Parcelable {
             }
         }
         return null;
-    }
-
-    public String nextMeal() {
-        List<Map.Entry<String, Interval>> list = orderedHours();
-        for (int i = 0; i < list.size(); i++) {
-            Interval openInterval = list.get(i).getValue();
-            if (openInterval.isAfterNow()) {
-                return list.get(i).getKey();
-            }
-        }
-        return "";
     }
 
     /**

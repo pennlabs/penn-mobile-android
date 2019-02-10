@@ -61,15 +61,8 @@ public class MenuTab extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        getActivity().setTitle(name);
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
-        getActivity().setTitle(name);
         unbinder.unbind();
     }
 

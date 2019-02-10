@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -34,15 +35,32 @@ public class LaundryBroadcastReceiver extends BroadcastReceiver {
         StringBuilder builder = new StringBuilder();
         builder.append("A ").append(machineType).append(" in ").append(roomName).append(" is available!");
 
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
         // build notification
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_local_laundry_service)
-                .setContentTitle(context.getString(R.string.app_name))
-                .setContentText(builder);
+        NotificationCompat.Builder mBuilder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelName = "Laundry Alarm";
+            String channelId = "pennmobile_laundry_alarm";
+            String description = "Alarm for laundry machine availability";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
+            channel.setDescription(description);
+            channel.enableLights(true);
+            channel.setLightColor(ContextCompat.getColor(context, R.color.color_primary));
+            notificationManager.createNotificationChannel(channel);
+            mBuilder = new NotificationCompat.Builder(context, channel.getId())
+                    .setSmallIcon(R.drawable.ic_local_laundry_service)
+                    .setContentTitle(context.getString(R.string.app_name))
+                    .setContentText(builder);
+        } else {
+            mBuilder = new NotificationCompat.Builder(context)
+                    .setSmallIcon(R.drawable.ic_local_laundry_service)
+                    .setContentTitle(context.getString(R.string.app_name))
+                    .setContentText(builder);
+        }
         mBuilder.setAutoCancel(true);
         mBuilder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
-
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mBuilder.setColor(ContextCompat.getColor(context, R.color.color_primary));
         }

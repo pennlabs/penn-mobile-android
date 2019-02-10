@@ -27,7 +27,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.webkit.WebView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -44,6 +43,7 @@ import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.FlingEvent;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
+import com.pennapps.labs.pennmobile.classes.Gym;
 import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 super.onDrawerSlide(drawerView, 0);
             }
         };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
 
         mDrawerList = (NavigationView) findViewById(R.id.navigation);
         mDrawerList.setNavigationItemSelectedListener(new DrawerItemClickListener());
@@ -118,22 +118,10 @@ public class MainActivity extends AppCompatActivity {
             mDrawerLayout.closeDrawer(mDrawerList);
             return;
         }
-        try {
-            WebView webView = NewsTab.currentWebView;
-            if (webView.canGoBack()) {
-                webView.goBack();
-            } else if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-                getSupportFragmentManager().popBackStack();
-            } else {
-                super.onBackPressed();
-            }
-        } catch (NullPointerException ignored) {
-            // No webview exists currently
-            super.onBackPressed();
-            if (CourseFragment.containsNum(getTitle())) {
-                mDrawerToggle.setDrawerIndicatorEnabled(false);
-                mDrawerToggle.syncState();
-            }
+        super.onBackPressed();
+        if (CourseFragment.containsNum(getTitle())) {
+            mDrawerToggle.setDrawerIndicatorEnabled(false);
+            mDrawerToggle.syncState();
         }
     }
 
@@ -200,31 +188,24 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.nav_registrar:
-            case R.id.registrar_cont:
                 fragment = new RegistrarFragment();
                 break;
             case R.id.nav_gsr:
-            case R.id.gsr_cont:
                 fragment = new GsrFragment();
                 break;
             case R.id.nav_dining:
-            case R.id.dining_cont:
                 fragment = new DiningFragment();
                 break;
             case R.id.nav_directory:
-            case R.id.directory_cont:
                 fragment = new DirectoryFragment();
                 break;
             case R.id.nav_news:
-            case R.id.news_cont:
                 fragment = new NewsFragment();
                 break;
 //            case R.id.nav_map:
-//            case R.id.map_cont:
 //                getPermission();
 //                return;
             case R.id.nav_laundry:
-            case R.id.laundry_cont:
                 Intent intent = new Intent(this, LaundryActivity.class);
                 startActivity(intent);
                 break;
@@ -242,6 +223,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.nav_pref:
                 fragment = new PreferenceFragment();
+                break;
+            case R.id.nav_fitness:
+                fragment = new FitnessFragment();
                 break;
         }
 
@@ -285,6 +269,9 @@ public class MainActivity extends AppCompatActivity {
             }.getType(), new Serializer.LaundryPrefSerializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<List<FlingEvent>>(){
             }.getType(), new Serializer.FlingEventSerializer());
+            // gets fitness
+            gsonBuilder.registerTypeAdapter(new TypeToken<List<Gym>>(){
+            }.getType(), new Serializer.GymSerializer());
             Gson gson = gsonBuilder.create();
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setConverter(new GsonConverter(gson))
@@ -415,7 +402,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         if (grantResults.length == 0 || grantResults[0] == PackageManager.PERMISSION_DENIED) {
-            showErrorToast(R.string.ask_permission_fail);
+            switch (requestCode) {
+                case SaveContactsFragment.permission_read:
+                    showErrorToast(R.string.ask_contacts_fail);
+                    break;
+                default:
+                    showErrorToast(R.string.ask_location_fail);
+                    break;
+            }
             return;
         }
         if (requestCode == CODE_MAP) {

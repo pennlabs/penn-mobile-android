@@ -1,69 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="4dp"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:layout_width="wrap_content"
-    android:layout_height="90dp">
+    android:id="@+id/dining_list_item_layout"
+    android:layout_width="match_parent"
+    android:layout_height="101dp">
 
-    <TextView
-        tools:text="1920 Commons"
-        android:id="@+id/dining_hall_name"
-        style="@style/HallName" />
-
-
-    <TextView
-        tools:text="Currently serving dinner"
-        tools:visibility="visible"
-        android:id="@+id/dining_hall_open_meal"
-        android:layout_below="@+id/dining_hall_name"
-        android:fontFamily="sans-serif-light"
-        style="@style/MealName"/>
-
-    <TextView
-        tools:text="Closes at 9:00PM"
-        tools:visibility="visible"
-        android:id="@+id/dining_hall_open_close"
-        android:layout_below="@+id/dining_hall_open_meal"
-        android:fontFamily="sans-serif-light"
-        style="@style/Menu"/>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/dining_indicator_wrapper"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:paddingRight="4dp"
-        >
-        <ProgressBar
-            android:indeterminateTint="@color/color_primary"
-            android:indeterminateTintMode="src_in"
-            style="@android:style/Widget.ProgressBar.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/dining_progress"
-            android:paddingRight="8dp"
-            android:paddingLeft="10dp"
-            android:adjustViewBounds="true"
-            android:indeterminate="true"/>
-
-        <ImageView
-            android:id="@+id/dining_hall_menu_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_chevron_right_black_24dp"/>
-    </RelativeLayout>
+    <ImageView
+        android:id="@+id/dining_hall_image"
+        android:layout_width="175dp"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/dining_hall_status"
-        tools:text="Open"
-        tools:background="@drawable/label_green"
+        style="@style/DiningStatusLabel"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/dining_indicator_wrapper"
-        style="@style/DiningStatusLabel" />
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toEndOf="@id/dining_hall_image"
+        app:layout_constraintEnd_toEndOf="@id/dining_loading_guideline"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="@drawable/label_green"
+        tools:text="Open" />
 
+    <TextView
+        android:id="@+id/dining_hall_name"
+        style="@style/HallName"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toEndOf="@id/dining_hall_image"
+        app:layout_constraintTop_toBottomOf="@id/dining_hall_status"
+        app:layout_constraintEnd_toEndOf="@id/dining_loading_guideline"
+        tools:text="1920 Commons" />
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/dining_hall_hours"
+        style="@style/Menu"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
+        android:fontFamily="sans-serif-light"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/dining_hall_image"
+        app:layout_constraintTop_toBottomOf="@id/dining_hall_name"
+        app:layout_constraintEnd_toEndOf="@id/dining_loading_guideline"
+        tools:text="Closes at 9:00PM"
+        tools:visibility="visible" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/dining_loading_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="32dp" />
+
+    <ProgressBar
+        android:id="@+id/dining_progress"
+        style="@android:style/Widget.ProgressBar.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/color_primary"
+        android:indeterminateTintMode="src_in"
+        android:paddingLeft="10dp"
+        android:paddingRight="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingStart="10dp"
+        android:paddingEnd="8dp" />
+
+    <ImageView
+        android:id="@+id/dining_hall_menu_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_chevron_right_black_24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

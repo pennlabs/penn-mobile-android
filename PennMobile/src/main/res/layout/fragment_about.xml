@@ -9,15 +9,12 @@
 
         <ImageView
             android:id="@+id/labs_icon"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="250dp"
+            android:layout_height="125dp"
+            android:layout_gravity="center_horizontal"
             android:adjustViewBounds="true"
             android:contentDescription="@string/labs_icon"
-            android:paddingBottom="40dp"
-            android:paddingLeft="40dp"
-            android:paddingRight="40dp"
-            android:paddingTop="20dp"
-            android:src="@drawable/labs_logo" />
+            android:layout_margin="20dp"/>
 
         <TextView
             tools:text="PennMobile was developed by Penn Labs, with funding and support from the Undergraduate Assembly"

@@ -50,13 +50,14 @@ public class HomeScreenSettingsActivity extends AppCompatActivity {
         mAllCategories.add(new HomeScreenItem("Directory", 4));
         mAllCategories.add(new HomeScreenItem("News", 5));
         mAllCategories.add(new HomeScreenItem("NSO", 6));
+        mAllCategories.add(new HomeScreenItem("Fitness", 7));
 //        mAllCategories.add(new HomeScreenItem("Spring Fling", 6));
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        // sort the categories using the shared preference data so SettingsAdapter will display
-        // the categories in the right order
+        /*sort the categories using the shared preference data so SettingsAdapter will display
+        the categories in the right order*/
         Collections.sort(mAllCategories, new Comparator<HomeScreenItem>() {
             @Override
             public int compare(HomeScreenItem homeScreenItem, HomeScreenItem t1) {

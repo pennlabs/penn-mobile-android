@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.DiningFragment;
 import com.pennapps.labs.pennmobile.DirectoryFragment;
+import com.pennapps.labs.pennmobile.FitnessFragment;
 import com.pennapps.labs.pennmobile.FlingFragment;
 import com.pennapps.labs.pennmobile.GsrFragment;
 import com.pennapps.labs.pennmobile.LaundryActivity;
@@ -96,6 +97,9 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 return new NsoViewHolder(view, mContext);
 //                view = LayoutInflater.from(mContext).inflate(R.layout.home_fling_card, parent, false);
 //                return new FlingViewHolder(view, mContext);
+            case 7:
+                view = LayoutInflater.from(mContext).inflate(R.layout.home_cardview_card_fitness, parent, false);
+                return new FitnessViewHolder(view, mContext);
             default:
                 view = LayoutInflater.from(mContext).inflate(R.layout.home_cardview_empty_item, parent, false);
                 return new EmptyViewHolder(view, mContext);
@@ -181,6 +185,10 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 //                String flingTitle = mCategories.get(position).getName();
 //                flingViewHolder.titleTextView.setText(flingTitle);
                 break;
+            case 7:
+                FitnessViewHolder fitnessViewHolder = (FitnessViewHolder) holder;
+                String fitnessTitle = mCategories.get(position).getName();
+                fitnessViewHolder.titleTextView.setText(fitnessTitle);
         }
     }
 
@@ -240,6 +248,25 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         @Override
         public void onClick(View view) {
             fragmentTransact(new GsrFragment());
+        }
+    }
+
+    public class FitnessViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        Context context;
+        @BindView(R.id.home_screen_cardview_title)
+        TextView titleTextView;
+
+        public FitnessViewHolder(View view, Context context) {
+            super(view);
+            ButterKnife.bind(this, view);
+            this.context = context;
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            fragmentTransact(new FitnessFragment());
         }
     }
 
