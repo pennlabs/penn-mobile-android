@@ -7,7 +7,9 @@ import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.customtabs.CustomTabsIntent;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,15 +35,16 @@ import butterknife.ButterKnife;
 /**
  * Created by Jason on 8/11/2016.
  */
-public class NsoAdapter extends ArrayAdapter<RSSItem> {
+public class NsoAdapter extends RecyclerView.Adapter<NsoAdapter.NSOViewHolder>{
     private final LayoutInflater inflater;
+    private List<RSSItem> list;
     private Context mContext;
     private boolean isCustomTabsSupported;
     private Intent share;
     private CustomTabsIntent.Builder builder;
 
     public NsoAdapter(Context context, List<RSSItem> list) {
-        super(context, R.layout.nso_list_item, list);
+        this.list = list;
         inflater = LayoutInflater.from(context);
         mContext = context;
         isCustomTabsSupported = isChromeCustomTabsSupported(context);
@@ -50,24 +53,23 @@ public class NsoAdapter extends ArrayAdapter<RSSItem> {
             share = new Intent(Intent.ACTION_SEND);
             share.setType("text/plain");
             builder.setToolbarColor(0x3E50B4);
-            builder.setStartAnimations(getContext(),
+            builder.setStartAnimations(context,
                     android.support.design.R.anim.abc_popup_enter,
                     android.support.design.R.anim.abc_popup_exit);
         }
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
-        ViewHolder holder;
-        if (view != null) {
-            holder = (ViewHolder) view.getTag();
-        } else {
-            view = inflater.inflate(R.layout.nso_list_item, parent, false);
-            holder = new ViewHolder(view);
-            view.setTag(holder);
-        }
+    public NSOViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new NSOViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.nso_list_item, parent, false));
+    }
 
-        final RSSItem item = getItem(position);
+    @Override
+    public void onBindViewHolder(@NonNull NSOViewHolder holder, int position) {
+        View view = holder.itemView;
+
+        final RSSItem item = list.get(position);
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +77,7 @@ public class NsoAdapter extends ArrayAdapter<RSSItem> {
                 Uri url = item.getLink();
                 if (isCustomTabsSupported) {
                     share.putExtra(Intent.EXTRA_TEXT, url);
-                    builder.addMenuItem("Share", PendingIntent.getActivity(getContext(), 0,
+                    builder.addMenuItem("Share", PendingIntent.getActivity(mContext, 0,
                             share, PendingIntent.FLAG_CANCEL_CURRENT));
                     CustomTabsIntent customTabsIntent = builder.build();
                     customTabsIntent.launchUrl(mContext, url);
@@ -127,9 +129,27 @@ public class NsoAdapter extends ArrayAdapter<RSSItem> {
                 editedPreferences.apply();
             }
         });
-
-        return view;
     }
+
+
+    @Override
+    public int getItemCount() {
+        return this.list.size();
+    }
+
+    public static class NSOViewHolder extends RecyclerView.ViewHolder{
+        @BindView(R.id.tv_event_name) TextView tvName;
+        @BindView(R.id.tv_event_time) TextView tvTime;
+        @BindView(R.id.tv_event_description) TextView tvDescription;
+        @BindView(R.id.star_event) ToggleButton star;
+
+        public NSOViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
+        }
+    }
+
+
 
     /**
      * returns the parsed version of the title
@@ -203,16 +223,6 @@ public class NsoAdapter extends ArrayAdapter<RSSItem> {
         return !(resolveInfos == null || resolveInfos.isEmpty());
     }
 
-    static class ViewHolder {
-        @BindView(R.id.tv_event_name)
-        TextView tvName;
-        @BindView(R.id.tv_event_time) TextView tvTime;
-        @BindView(R.id.tv_event_description) TextView tvDescription;
-        @BindView(R.id.star_event) ToggleButton star;
 
-        public ViewHolder(View view) {
-            ButterKnife.bind(this, view);
-        }
-    }
 
 }

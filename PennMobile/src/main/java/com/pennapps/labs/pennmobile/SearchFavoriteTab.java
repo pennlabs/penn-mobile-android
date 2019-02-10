@@ -1,9 +1,10 @@
 package com.pennapps.labs.pennmobile;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -16,11 +17,11 @@ import butterknife.BindView;
 /**
  * Created by Jason on 1/26/2016.
  */
-public abstract class SearchFavoriteTab extends ListFragment {
+public abstract class SearchFavoriteTab extends Fragment {
 
     protected boolean fav;
     protected String type;
-    protected ListView mListView;
+    protected RecyclerView mRecyclerView;
     protected MainActivity mActivity;
     protected Labs mLabs;
 
@@ -57,7 +58,7 @@ public abstract class SearchFavoriteTab extends ListFragment {
         if (loadingPanel != null) {
             loadingPanel.setVisibility(View.GONE);
             no_results.setVisibility(View.VISIBLE);
-            mListView.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.GONE);
             search_instructions.setVisibility(View.GONE);
         }
     }
@@ -67,7 +68,7 @@ public abstract class SearchFavoriteTab extends ListFragment {
             search_instructions.setVisibility(View.VISIBLE);
             no_results.setVisibility(View.GONE);
             loadingPanel.setVisibility(View.GONE);
-            mListView.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.GONE);
         }
     }
 

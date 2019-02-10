@@ -47,7 +47,7 @@ public class NsoTab extends SearchFavoriteTab {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_search_favorite_tab, container, false);
         unbinder =  ButterKnife.bind(this, v);
-        mListView = (ListView) v.findViewById(android.R.id.list);
+        mRecyclerView = v.findViewById(R.id.fragment_search_favorite_recycler_view);
         initList();
         return v;
     }
@@ -80,10 +80,10 @@ public class NsoTab extends SearchFavoriteTab {
                     public void onCompleted() {
                         if (adapter == null) {
                             no_results.setVisibility(View.VISIBLE);
-                            mListView.setVisibility(View.GONE);
+                            mRecyclerView.setVisibility(View.GONE);
                         } else {
-                            mListView.setVisibility(View.VISIBLE);
-                            mListView.setAdapter(adapter);
+                            mRecyclerView.setVisibility(View.VISIBLE);
+                            mRecyclerView.setAdapter(adapter);
                             no_results.setVisibility(View.GONE);
                         }
                     }
@@ -91,7 +91,7 @@ public class NsoTab extends SearchFavoriteTab {
                     @Override
                     public void onError(Throwable e) {
                         no_results.setVisibility(View.VISIBLE);
-                        mListView.setVisibility(View.GONE);
+                        mRecyclerView.setVisibility(View.GONE);
                     }
 
                     @Override
@@ -171,10 +171,10 @@ public class NsoTab extends SearchFavoriteTab {
                         }
                         if (adapter == null) {
                             no_results.setVisibility(View.VISIBLE);
-                            mListView.setVisibility(View.GONE);
+                            mRecyclerView.setVisibility(View.GONE);
                         } else {
-                            mListView.setVisibility(View.VISIBLE);
-                            mListView.setAdapter(adapter);
+                            mRecyclerView.setVisibility(View.VISIBLE);
+                            mRecyclerView.setAdapter(adapter);
                             no_results.setVisibility(View.GONE);
                         }
                     }
@@ -199,7 +199,7 @@ public class NsoTab extends SearchFavoriteTab {
                             rssItems = favItems;
                         }
                         adapter = new NsoAdapter(mActivity, rssItems);
-                        mListView.setAdapter(adapter);
+                        mRecyclerView.setAdapter(adapter);
                         mActivity.closeKeyboard();
                     }
 

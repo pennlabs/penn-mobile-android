@@ -7,6 +7,8 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,32 +29,44 @@ import java.util.Set;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DirectoryAdapter extends ArrayAdapter<Person> {
+public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.DirectoryViewHolder> {
+    private List<Person> persons;
     private final LayoutInflater inflater;
     private Context mContext;
 
     public DirectoryAdapter(Context context, List<Person> persons) {
-        super(context, R.layout.directory_list_item, persons);
+        this.persons = persons;
         inflater = LayoutInflater.from(context);
         mContext = context;
     }
 
-    @Override
-    public View getView(int position, View view, ViewGroup parent) {
-        ViewHolder holder;
-        if (view != null) {
-            holder = (ViewHolder) view.getTag();
-        } else {
-            view = inflater.inflate(R.layout.directory_list_item, parent, false);
-            holder = new ViewHolder(view);
-            view.setTag(holder);
-        }
+    public static class DirectoryViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.tv_person_name) TextView tvName;
+        @BindView(R.id.tv_person_affiliation) TextView tvAffiliation;
+        @BindView(R.id.tv_person_email) TextView tvEmail;
+        @BindView(R.id.star_contact) ToggleButton star;
+        @BindView(R.id.contact_icon) ImageView contact;
 
-        SwipeLayout swipeLayout = (SwipeLayout) view.findViewById(R.id.directory_swipe);
+        public DirectoryViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
+        }
+    }
+
+    @NonNull
+    @Override
+    public DirectoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new DirectoryViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.directory_list_item, parent, false));
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull DirectoryViewHolder holder, int position) {
+        View view = holder.itemView;
+        SwipeLayout swipeLayout = view.findViewById(R.id.directory_swipe);
         swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
         swipeLayout.addDrag(SwipeLayout.DragEdge.Right, view.findViewById(R.id.directory_swipe_drawer));
 
-        Person person = getItem(position);
+        Person person = this.persons.get(position);
         final Person currentPerson = person;
 
         holder.contact.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +81,7 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
                 intent.putExtra(ContactsContract.Intents.Insert.EMAIL, currentPerson.email);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                getContext().startActivity(intent);
+                mContext.startActivity(intent);
             }
         });
 
@@ -113,7 +127,7 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
                     }
                 } else {
                     starredContacts.remove(currentName);
-                    if(currentName != null) {
+                    if (currentName != null) {
                         editedPreferences.remove(currentName + mContext.getResources().getString(R.string.search_dir_star));
                     }
                 }
@@ -121,24 +135,15 @@ public class DirectoryAdapter extends ArrayAdapter<Person> {
                 editedPreferences.apply();
             }
         });
+    }
 
-        return view;
+    @Override
+    public int getItemCount() {
+        return this.persons.size();
     }
 
     private String getDataString(Person currentPerson){
         return (new Gson()).toJson(currentPerson, Person.class);
-    }
-
-    static class ViewHolder {
-        @BindView(R.id.tv_person_name) TextView tvName;
-        @BindView(R.id.tv_person_affiliation) TextView tvAffiliation;
-        @BindView(R.id.tv_person_email) TextView tvEmail;
-        @BindView(R.id.star_contact) ToggleButton star;
-        @BindView(R.id.contact_icon) ImageView contact;
-
-        public ViewHolder(View view) {
-            ButterKnife.bind(this, view);
-        }
     }
 
 }

@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.ArrayRes;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.preference.PreferenceManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,11 +33,11 @@ import java.util.ArrayList;
 /**
  * Created by Jason on 1/25/2016.
  */
-public abstract class SearchFavoriteFragment extends ListFragment {
+public abstract class SearchFavoriteFragment extends Fragment {
 
     protected Labs mLabs;
     protected MainActivity mActivity;
-    protected ListView mListView;
+    protected RecyclerView mRecyclerView;
     protected ViewPager viewPager;
     protected SearchView searchView;
     protected ListTabAdapter tabAdapter;
@@ -88,7 +91,7 @@ public abstract class SearchFavoriteFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_search_favorite, container, false);
-        viewPager = (ViewPager) v.findViewById(R.id.pager);
+        viewPager = v.findViewById(R.id.pager);
         tabAdapter = getAdapter();
         viewPager.setAdapter(tabAdapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -118,17 +121,12 @@ public abstract class SearchFavoriteFragment extends ListFragment {
         return v;
     }
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        lastQuery = mListView.getAdapter().getItem(position).toString();
-        hideSuggestion();
-    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mListView = getListView();
-        mListView.setVisibility(View.GONE);
+        mRecyclerView = getRecyclerView();
+        mRecyclerView.setVisibility(View.GONE);
         setHasOptionsMenu(true);
     }
 
@@ -229,8 +227,7 @@ public abstract class SearchFavoriteFragment extends ListFragment {
         }
         if (!list.isEmpty()) {
             viewPager.setVisibility(View.GONE);
-            mListView.setVisibility(View.VISIBLE);
-            mListView.setAdapter(new SearchSuggestionAdapter(mActivity, list));
+            mRecyclerView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -238,7 +235,16 @@ public abstract class SearchFavoriteFragment extends ListFragment {
         mActivity.addTabs(getAdapter(), viewPager, false);
         viewPager.setVisibility(View.VISIBLE);
         tabAdapter.onReceiveQuery(lastQuery);
-        mListView.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.GONE);
+    }
+
+    public RecyclerView getRecyclerView() {
+        if (mRecyclerView==null) {
+            mRecyclerView=new RecyclerView(getContext());
+            mRecyclerView.setHasFixedSize(true);
+        }
+
+        return(mRecyclerView);
     }
 
     /**
