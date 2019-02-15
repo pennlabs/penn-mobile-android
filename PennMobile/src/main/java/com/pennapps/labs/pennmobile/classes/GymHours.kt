@@ -24,14 +24,13 @@ class GymHours {
             if (allDay) {
                 return allDayInterval
             }
-            val startDateTime = formatter.parseDateTime(start!!)
-            val endDateTime = formatter.parseDateTime(end!!)
+            val startDateTime = formatter.parseDateTime(start)
+            val endDateTime = formatter.parseDateTime(end)
             return Interval(startDateTime, endDateTime)
         }
 
     companion object {
-
-        val formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ")
+        val formatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ")
         val allDayInterval = Interval(0, 0)
     }
 
