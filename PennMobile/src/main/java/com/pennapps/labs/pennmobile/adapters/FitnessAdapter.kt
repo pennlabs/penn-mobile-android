@@ -16,14 +16,13 @@ import com.squareup.picasso.Picasso
 import org.joda.time.DateTime
 import org.joda.time.Interval
 
-import butterknife.BindView
-import butterknife.ButterKnife
+import kotlinx.android.synthetic.main.fitness_list_item.view.*
 
-class FitnessAdapter(context: Context, // gym data
+class FitnessAdapter(context: Context?, // gym data
                      private val gyms: List<Gym>)// get gym data from fragment (which gets it from the api call)
     : RecyclerView.Adapter<FitnessAdapter.FitnessViewHolder>() {
 
-    private var mContext: Context? = null
+    private lateinit var mContext: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FitnessViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.fitness_list_item, parent, false)
@@ -43,12 +42,16 @@ class FitnessAdapter(context: Context, // gym data
         if (!open) {
             openClosed = "CLOSED"
             // set background to red for closed
-            holder.gymStatusView!!.setBackgroundResource(R.drawable.label_red)
+            holder.itemView.gym_status_view.setBackgroundResource(R.drawable.label_red)
         }
 
 
         // get first word in name
-        val i = name!!.indexOf(' ')
+        if (name == null) {
+            holder.itemView.visibility = View.GONE;
+            return;
+        }
+        val i = name.indexOf(' ')
         var simpName: String = name
         if (i >= 0) {
             simpName = name.substring(0, i)
@@ -59,24 +62,27 @@ class FitnessAdapter(context: Context, // gym data
         val src_name = "gym_$simpName"
 
         // get resource identifier
-        var identifier = mContext!!.resources.getIdentifier(src_name, "drawable", mContext!!.packageName)
+        var identifier = mContext.resources.getIdentifier(src_name, "drawable", mContext.packageName)
         if (identifier == 0) { // if the src name is invalid
-            identifier = mContext!!.resources.getIdentifier("gym_fox", "drawable", mContext!!.packageName)
+            identifier = mContext.resources.getIdentifier("gym_fox", "drawable", mContext.packageName)
         }
 
         // set image
-        Picasso.get().load(identifier).fit().centerCrop().into(holder.gymImageView)
+        Picasso.get().load(identifier).fit().centerCrop().into(holder.itemView.gym_image_view)
 
 
         // update ViewHolder
-        holder.gymNameView!!.text = name
-        holder.gymStatusView!!.text = openClosed
-        holder.gymHoursView!!.text = intervalsToString(hours)
+        holder.itemView.gym_name_view.setText(name)
+        holder.itemView.gym_status_view.setText(openClosed)
+        holder.itemView.gym_hours_view.setText(intervalsToString(hours))
     }
 
 
     // turn list of hours into string
-    private fun intervalsToString(hours: List<Interval>): String {
+    private fun intervalsToString(hours: List<Interval>?): String {
+        if (hours == null) {
+            return "" // no hours, return empty string
+        }
         val i1 = hours[0]
         // first check if it's all day
         if (i1 == GymHours.allDayInterval) {
@@ -115,17 +121,6 @@ class FitnessAdapter(context: Context, // gym data
 
     inner class FitnessViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        @BindView(R.id.gym_image_view)
-        var gymImageView: ImageView? = null
-        @BindView(R.id.gym_name_view)
-        var gymNameView: TextView? = null
-        @BindView(R.id.gym_status_view)
-        var gymStatusView: TextView? = null
-        @BindView(R.id.gym_hours_view)
-        var gymHoursView: TextView? = null
-
-        init {
-            ButterKnife.bind(this, itemView)
-        }
+        val View = itemView
     }
 }
