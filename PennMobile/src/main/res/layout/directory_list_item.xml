@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.daimajia.swipe.SwipeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/directory_swipe"
     android:layout_width="match_parent"
-    android:layout_height="50dp">
+    android:layout_height="100dp">
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:id="@+id/directory_swipe_drawer"
@@ -17,15 +17,18 @@
             android:layout_height="wrap_content"
             android:layout_margin="17dp"
             android:contentDescription="@string/add_contact"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:scaleType="fitXY"
             android:src="@drawable/ic_person_add_black_36dp"
             android:tint="@color/secondary_text"
-            android:layout_centerInParent="true"
             android:id="@+id/contact_icon"
             />
-    </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -37,6 +40,8 @@
         <TextView
             tools:text="Benjamin Franklin"
             android:id="@+id/tv_person_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="17sp"
@@ -46,40 +51,38 @@
             android:id="@+id/star_contact"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginBottom="10dp"
-            android:textOn=""
-            android:textOff=""
+            android:background="@drawable/star"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:tint="@color/star_color_off"
+            android:textOff=""
+            android:textOn=""
 
-            android:background="@drawable/star" />
+            android:tint="@color/star_color_off"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             tools:text="President and Founder"
             android:id="@+id/tv_person_affiliation"
-            android:layout_below="@+id/tv_person_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_person_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="32dp"
             android:textSize="13sp"
-            android:textColor="@color/text_color" />
+            android:textColor="@color/text_color"
+            android:layout_marginEnd="32dp" />
 
         <TextView
             tools:text="ben@upenn.edu"
             android:id="@+id/tv_person_email"
-            android:layout_below="@+id/tv_person_affiliation"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_person_affiliation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="13sp"
             android:textColor="@color/secondary_text" />
 
-    </RelativeLayout>
-
-
-
-
+    </android.support.constraint.ConstraintLayout>
 </com.daimajia.swipe.SwipeLayout>

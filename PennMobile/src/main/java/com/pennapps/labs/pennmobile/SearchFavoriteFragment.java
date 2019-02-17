@@ -116,7 +116,7 @@ public abstract class SearchFavoriteFragment extends Fragment {
             }
         });
         mActivity.addTabs(getAdapter(), viewPager, false);
-        FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.search_fav_fab);
+        FloatingActionButton fab = v.findViewById(R.id.search_fav_fab);
         fabInit(fab);
         return v;
     }
@@ -151,7 +151,7 @@ public abstract class SearchFavoriteFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.registrar, menu);
         searchView = (SearchView) menu.findItem(R.id.registrar_search).getActionView();
-        final ImageView cross = (ImageView) searchView.findViewById(R.id.search_close_btn);
+        final ImageView cross = searchView.findViewById(R.id.search_close_btn);
         cross.setImageResource(R.drawable.ic_clear_white_24dp);
         cross.setImageAlpha(ALPHA);
         final SearchView.OnQueryTextListener queryListener = new SearchView.OnQueryTextListener() {

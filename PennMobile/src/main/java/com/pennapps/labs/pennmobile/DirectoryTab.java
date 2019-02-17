@@ -3,13 +3,11 @@ package com.pennapps.labs.pennmobile;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import com.google.gson.Gson;
 import com.pennapps.labs.pennmobile.adapters.DirectoryAdapter;
@@ -67,6 +65,7 @@ public class DirectoryTab extends SearchFavoriteTab {
                                 }
                             } else if (mRecyclerView != null) {
                                 mAdapter = new DirectoryAdapter(mActivity, people);
+                                mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL));
                                 mRecyclerView.setAdapter(mAdapter);
                                 mRecyclerView.setVisibility(View.VISIBLE);
                                 mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

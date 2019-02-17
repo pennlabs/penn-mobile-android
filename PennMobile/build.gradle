@@ -5,7 +5,6 @@ buildscript {
         maven { url 'https://maven.fabric.io/public' }
         maven { url "https://jitpack.io" }
         jcenter()
-        jcenter()
         google()
         maven { url 'https://maven.fabric.io/public' }
         maven { url "https://jitpack.io" }
