@@ -4,8 +4,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import org.joda.time.DateTime
 import org.joda.time.Interval
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
 
 import java.util.LinkedList
 
@@ -26,7 +24,7 @@ class Gym {
             if (intervalList != null) {
                 return intervalList ?: hours
             }
-            var tempMutableList: MutableList<Interval> = LinkedList()
+            val tempMutableList: MutableList<Interval> = LinkedList()
             if (hoursList == null) {
                 return null
             }

@@ -5,8 +5,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.Gym
@@ -18,8 +16,7 @@ import org.joda.time.Interval
 
 import kotlinx.android.synthetic.main.fitness_list_item.view.*
 
-class FitnessAdapter(context: Context?, // gym data
-                     private val gyms: List<Gym>)// get gym data from fragment (which gets it from the api call)
+class FitnessAdapter(private val gyms: List<Gym>)// get gym data from fragment (which gets it from the api call)
     : RecyclerView.Adapter<FitnessAdapter.FitnessViewHolder>() {
 
     private lateinit var mContext: Context
@@ -48,8 +45,8 @@ class FitnessAdapter(context: Context?, // gym data
 
         // get first word in name
         if (name == null) {
-            holder.itemView.visibility = View.GONE;
-            return;
+            holder.itemView.visibility = View.GONE
+            return
         }
         val i = name.indexOf(' ')
         var simpName: String = name
@@ -72,9 +69,9 @@ class FitnessAdapter(context: Context?, // gym data
 
 
         // update ViewHolder
-        holder.itemView.gym_name_view.setText(name)
-        holder.itemView.gym_status_view.setText(openClosed)
-        holder.itemView.gym_hours_view.setText(intervalsToString(hours))
+        holder.itemView.gym_name_view.text = name
+        holder.itemView.gym_status_view.text = openClosed
+        holder.itemView.gym_hours_view.text = intervalsToString(hours)
     }
 
 
