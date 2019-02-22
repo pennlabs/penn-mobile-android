@@ -65,7 +65,7 @@ class FitnessFragment : Fragment() {
         val labs = MainActivity.getLabsInstance()
         labs.gymData.subscribe({ gyms ->
             mActivity.runOnUiThread {
-                gym_list.adapter = FitnessAdapter(context, gyms)
+                gym_list.adapter = FitnessAdapter(gyms)
                 // get rid of loading screen
                 loadingPanel.visibility = View.GONE
                 if (gyms.size > 0) {
