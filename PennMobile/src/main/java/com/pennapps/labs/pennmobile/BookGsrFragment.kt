@@ -1,28 +1,19 @@
 package com.pennapps.labs.pennmobile
 
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import butterknife.ButterKnife
 import com.pennapps.labs.pennmobile.api.Labs
 import kotlinx.android.synthetic.main.gsr_details_book.view.*
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
 
 
 class BookGsrFragment : Fragment() {
@@ -104,7 +95,7 @@ class BookGsrFragment : Fragment() {
     private fun bookGSR(gsrId: Int, gsrLocationCode: Int, startTime: String?, endTime: String?) {
 
         if (gsrLocationCode == 1) {
-            val HuntsmanGSRLogin = huntsmanGSRLogin.newInstance()
+            val HuntsmanGSRLogin = HuntsmanGSRLogin.newInstance()
             val fragmentManager = (context as MainActivity).supportFragmentManager
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, HuntsmanGSRLogin)
@@ -133,8 +124,6 @@ class BookGsrFragment : Fragment() {
                         override fun success(result: Response, response: Response) {
                             //Displaying the output as a toast
                             Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
-                            Log.d("@@@@@@@@@@", response.reason)
-                            Log.d("@@@@@@@@@@", result.reason)
                         }
 
                         override fun failure(error: RetrofitError) {
@@ -158,14 +147,6 @@ class BookGsrFragment : Fragment() {
             fragment.arguments = args
             return fragment
         }
-    }
-
-    private fun isChromeCustomTabsSupported(context: Context): Boolean {
-        val SERVICE_ACTION = "android.support.customtabs.action.CustomTabsService"
-        val serviceIntent = Intent(SERVICE_ACTION)
-        serviceIntent.setPackage("com.android.chrome")
-        val resolveInfos = context.packageManager.queryIntentServices(serviceIntent, 0)
-        return !(resolveInfos == null || resolveInfos.isEmpty())
     }
 
 }// Required empty public constructor
