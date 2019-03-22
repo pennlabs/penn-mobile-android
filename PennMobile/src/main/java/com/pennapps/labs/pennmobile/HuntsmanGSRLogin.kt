@@ -1,17 +1,28 @@
 package com.pennapps.labs.pennmobile
 
 
+import android.content.Context
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentTransaction
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import kotlinx.android.synthetic.main.fragment_huntsman_gsrlogin.*
 
+
 class HuntsmanGSRLogin : Fragment() {
+
+    // gsr details
+    private lateinit var gsrID: String
+    private lateinit var gsrLocationCode: String
+    private lateinit var startTime: String
+    private lateinit var endTime: String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -31,10 +42,28 @@ class HuntsmanGSRLogin : Fragment() {
             // Called every time a URL finishes loading, not just when the first URL finishes loading
             override fun onPageFinished(view : WebView, url : String) {
                 if (url == "https://apps.wharton.upenn.edu/gsr/") {
-                    Log.d("@@@@", "user is already logged in, get the cookie")
-                }
-                else {
-                    Log.d("@@@@@", "redirected to login page")
+                    // val cookies = CookieManager.getInstance().getCookie(url)
+                    var sessionid = "INVALID"
+                    val cookies = CookieManager.getInstance().getCookie(url).split(";")
+                    for (cookie in cookies){
+                        if (cookie.take(11) == " sessionid=") {
+                            sessionid = cookie.substring(11)
+                            Log.d("!!!!!!!!", "Session ID: " + sessionid)
+                            /*
+                            // set up shared preferences
+                            var sp = PreferenceManager.getDefaultSharedPreferences(mContext)
+                            var sessionIDPref = sp.getInt(mContext.getString(R.string.session_id_pref), 100)
+                            */
+                            break
+                        }
+                    }
+                    val bookGsrFragment = BookGsrFragment.newInstance(gsrID, gsrLocationCode, startTime, endTime)
+                    val fragmentManager = (context as MainActivity).supportFragmentManager
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.content_frame, bookGsrFragment)
+                            .addToBackStack("GSR Fragment")
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .commit()
                 }
             }
         }
@@ -43,8 +72,15 @@ class HuntsmanGSRLogin : Fragment() {
 
     companion object {
 
-        fun newInstance(): HuntsmanGSRLogin {
-            return HuntsmanGSRLogin()
+        fun newInstance(gsrID: String, gsrLocationCode: String, startTime: String, endTime: String): BookGsrFragment {
+            val fragment = BookGsrFragment()
+            val args = Bundle()
+            args.putString("gsrID", gsrID)
+            args.putString("gsrLocationCode", gsrLocationCode)
+            args.putString("startTime", startTime)
+            args.putString("endTime", endTime)
+            fragment.arguments = args
+            return fragment
         }
     }
 }
