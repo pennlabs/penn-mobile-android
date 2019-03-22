@@ -38,7 +38,7 @@ class GsrRoomAdapter(internal var times: ArrayList<String>, internal var ids: Ar
 
             holder.gsrRoom?.setOnClickListener {
                 if (Integer.parseInt(gsrLocationCode) == 1) {
-                    val huntsmanGSRLogin = HuntsmanGSRLogin.newInstance()
+                    val huntsmanGSRLogin = HuntsmanGSRLogin.newInstance(localGSRID, gsrLocationCode, startTime, endTime)
                     val fragmentManager = (context as MainActivity).supportFragmentManager
                     fragmentManager.beginTransaction()
                             .replace(R.id.content_frame, huntsmanGSRLogin)
