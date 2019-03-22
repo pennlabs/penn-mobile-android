@@ -3,9 +3,11 @@ package com.pennapps.labs.pennmobile
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
 import android.webkit.WebViewClient
 import kotlinx.android.synthetic.main.fragment_huntsman_gsrlogin.*
 
@@ -24,7 +26,18 @@ class HuntsmanGSRLogin : Fragment() {
 
     private fun loadWebpage() {
         // Get the web view settings instance
-        webViewGSR.webViewClient = WebViewClient()
+        webViewGSR.webViewClient = object : WebViewClient() {
+
+            // Called every time a URL finishes loading, not just when the first URL finishes loading
+            override fun onPageFinished(view : WebView, url : String) {
+                if (url == "https://apps.wharton.upenn.edu/gsr/") {
+                    Log.d("@@@@", "user is already logged in, get the cookie")
+                }
+                else {
+                    Log.d("@@@@@", "redirected to login page")
+                }
+            }
+        }
         webViewGSR.loadUrl("https://apps.wharton.upenn.edu/gsr/")
     }
 

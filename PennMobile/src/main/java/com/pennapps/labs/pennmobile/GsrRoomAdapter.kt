@@ -4,7 +4,6 @@ import android.content.Context
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
@@ -38,13 +37,23 @@ class GsrRoomAdapter(internal var times: ArrayList<String>, internal var ids: Ar
             //whenever a time slot is clicked
 
             holder.gsrRoom?.setOnClickListener {
-                val bookGsrFragment = BookGsrFragment.newInstance(localGSRID, gsrLocationCode, startTime, endTime)
-                val fragmentManager = (context as MainActivity).supportFragmentManager
-                fragmentManager.beginTransaction()
-                        .replace(R.id.content_frame, bookGsrFragment)
-                        .addToBackStack("GSR Fragment")
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .commit()
+                if (Integer.parseInt(gsrLocationCode) == 1) {
+                    val huntsmanGSRLogin = HuntsmanGSRLogin.newInstance()
+                    val fragmentManager = (context as MainActivity).supportFragmentManager
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.content_frame, huntsmanGSRLogin)
+                            .addToBackStack("Huntsman GSR Login")
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .commit()
+                } else {
+                    val bookGsrFragment = BookGsrFragment.newInstance(localGSRID, gsrLocationCode, startTime, endTime)
+                    val fragmentManager = (context as MainActivity).supportFragmentManager
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.content_frame, bookGsrFragment)
+                            .addToBackStack("GSR Fragment")
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .commit()
+                }
             }
 
         }
