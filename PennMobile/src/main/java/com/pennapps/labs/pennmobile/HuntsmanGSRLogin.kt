@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile
 
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
@@ -32,6 +33,7 @@ class HuntsmanGSRLogin : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.d("@@@@@", "opened huntsman gsr login")
         loadWebpage()
     }
 
@@ -41,6 +43,7 @@ class HuntsmanGSRLogin : Fragment() {
 
             // Called every time a URL finishes loading, not just when the first URL finishes loading
             override fun onPageFinished(view : WebView, url : String) {
+                Log.d("@@@@@@", "page finished loading")
                 if (url == "https://apps.wharton.upenn.edu/gsr/") {
                     // val cookies = CookieManager.getInstance().getCookie(url)
                     var sessionid = "INVALID"
@@ -48,15 +51,21 @@ class HuntsmanGSRLogin : Fragment() {
                     for (cookie in cookies){
                         if (cookie.take(11) == " sessionid=") {
                             sessionid = cookie.substring(11)
-                            Log.d("!!!!!!!!", "Session ID: " + sessionid)
-                            /*
-                            // set up shared preferences
-                            var sp = PreferenceManager.getDefaultSharedPreferences(mContext)
-                            var sessionIDPref = sp.getInt(mContext.getString(R.string.session_id_pref), 100)
-                            */
+                            Log.d("@@@@", "Session ID: " + sessionid)
                             break
                         }
                     }
+
+                    // set up shared preferences
+                    activity?.let { activity ->
+                        Log.d("@@@@ activity", "storing sessionid " + sessionid)
+                        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                        val editor = sp.edit()
+                        editor.putString(getString(R.string.huntsmanGSR_SessionID), sessionid)
+                        editor.apply()
+                    }
+                    Log.d("@@@@@", "switching to bookGsrFragment")
+
                     val bookGsrFragment = BookGsrFragment.newInstance(gsrID, gsrLocationCode, startTime, endTime)
                     val fragmentManager = (context as MainActivity).supportFragmentManager
                     fragmentManager.beginTransaction()
