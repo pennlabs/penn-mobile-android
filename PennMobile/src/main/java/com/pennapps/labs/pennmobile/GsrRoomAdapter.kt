@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile
 import android.content.Context
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import org.joda.time.DateTime
@@ -38,6 +39,7 @@ class GsrRoomAdapter(internal var times: ArrayList<String>, internal var ids: Ar
 
             holder.gsrRoom?.setOnClickListener {
                 if (Integer.parseInt(gsrLocationCode) == 1) {
+                    Log.d("@@@@@", "opening huntsmanGSRlogin")
                     val huntsmanGSRLogin = HuntsmanGSRLogin.newInstance(localGSRID, gsrLocationCode, startTime, endTime)
                     val fragmentManager = (context as MainActivity).supportFragmentManager
                     fragmentManager.beginTransaction()

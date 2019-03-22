@@ -1,7 +1,9 @@
 package com.pennapps.labs.pennmobile
 
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -93,9 +95,17 @@ class BookGsrFragment : Fragment() {
 
     private fun bookGSR(gsrId: Int, gsrLocationCode: Int, startTime: String?, endTime: String?) {
 
+        var sessionID = "INVALID"
+        activity?.let { activity ->
+            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+            sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "INVALID")
+            Log.d("@@@@ sessionid", sessionID)
+        }
+
         mLabs?.let { mLabs ->
             mLabs.bookGSR(
                     //Passing the values
+                    sessionID,
                     gsrLocationCode,
                     gsrId,
                     startTime,
