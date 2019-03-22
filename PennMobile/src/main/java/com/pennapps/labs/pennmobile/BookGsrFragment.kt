@@ -2,7 +2,6 @@ package com.pennapps.labs.pennmobile
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentTransaction
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -93,17 +92,6 @@ class BookGsrFragment : Fragment() {
     }
 
     private fun bookGSR(gsrId: Int, gsrLocationCode: Int, startTime: String?, endTime: String?) {
-
-        if (gsrLocationCode == 1) {
-            val HuntsmanGSRLogin = HuntsmanGSRLogin.newInstance()
-            val fragmentManager = (context as MainActivity).supportFragmentManager
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, HuntsmanGSRLogin)
-                    .addToBackStack("Huntsman GSR Login")
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .commit()
-        }
-
 
         mLabs?.let { mLabs ->
             mLabs.bookGSR(
