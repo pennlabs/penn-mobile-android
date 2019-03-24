@@ -14,7 +14,13 @@ import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
+import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.classes.GSRBookingResult
 import kotlinx.android.synthetic.main.fragment_huntsman_gsrlogin.*
+import retrofit.Callback
+import retrofit.RetrofitError
+import retrofit.client.Response
 
 
 class HuntsmanGSRLogin : Fragment() {
@@ -24,6 +30,13 @@ class HuntsmanGSRLogin : Fragment() {
     private lateinit var gsrLocationCode: String
     private lateinit var startTime: String
     private lateinit var endTime: String
+
+    private lateinit var mLabs: Labs
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mLabs = MainActivity.getLabsInstance()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -39,6 +52,8 @@ class HuntsmanGSRLogin : Fragment() {
 
     private fun loadWebpage() {
         // Get the web view settings instance
+
+        Log.d("@@@@@@@", "loadwebpage called")
         webViewGSR.webViewClient = object : WebViewClient() {
 
             // Called every time a URL finishes loading, not just when the first URL finishes loading
@@ -46,7 +61,7 @@ class HuntsmanGSRLogin : Fragment() {
                 Log.d("@@@@@@", "page finished loading")
                 if (url == "https://apps.wharton.upenn.edu/gsr/") {
                     // val cookies = CookieManager.getInstance().getCookie(url)
-                    var sessionid = "INVALID"
+                    var sessionid = ""
                     val cookies = CookieManager.getInstance().getCookie(url).split(";")
                     for (cookie in cookies){
                         if (cookie.take(11) == " sessionid=") {
@@ -64,15 +79,45 @@ class HuntsmanGSRLogin : Fragment() {
                         editor.putString(getString(R.string.huntsmanGSR_SessionID), sessionid)
                         editor.apply()
                     }
-                    Log.d("@@@@@", "switching to bookGsrFragment")
+                    Log.d("@@@@@", "booking GSR now")
 
-                    val bookGsrFragment = BookGsrFragment.newInstance(gsrID, gsrLocationCode, startTime, endTime)
-                    val fragmentManager = (context as MainActivity).supportFragmentManager
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.content_frame, bookGsrFragment)
-                            .addToBackStack("GSR Fragment")
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .commit()
+                    mLabs?.let { mLabs ->
+                        mLabs.bookGSR(
+                                //Passing the values
+                                sessionid,
+                                Integer.parseInt(gsrLocationCode),
+                                Integer.parseInt(gsrID),
+                                startTime,
+                                endTime,
+                                "firstname",
+                                "lastname",
+                                "email",
+                                "Penn Mobile GSR",
+                                "2158986533",
+                                "2-3",
+
+                                //Creating an anonymous callback
+                                object : Callback<GSRBookingResult> {
+                                    override fun success(result: GSRBookingResult, response: Response) {
+                                        //Displaying the output as a toast
+                                        Log.d("@@@@ string", result.toString())
+                                        Log.d("@@@@@ results", result.getResults()?.toString() ?: "results is null")
+                                        Log.d("@@@@@ error", result.getError() ?: "error is null")
+                                        if (result.getResults() == true) {
+                                            Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
+                                        }
+                                        else {
+                                            Toast.makeText(activity, "GSR booking failed with " + result.getError(), Toast.LENGTH_LONG).show()
+                                        }
+                                    }
+
+                                    override fun failure(error: RetrofitError) {
+                                        //If any error occurred displaying the error as toast
+                                        Toast.makeText(activity, "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
+                                    }
+                                }
+                        )
+                    }
                 }
             }
         }

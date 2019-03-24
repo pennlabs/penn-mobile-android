@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.classes.GSRBookingResult
 import kotlinx.android.synthetic.main.gsr_details_book.view.*
 import retrofit.Callback
 import retrofit.RetrofitError
@@ -95,10 +96,10 @@ class BookGsrFragment : Fragment() {
 
     private fun bookGSR(gsrId: Int, gsrLocationCode: Int, startTime: String?, endTime: String?) {
 
-        var sessionID = "INVALID"
+        var sessionID = ""
         activity?.let { activity ->
             val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-            sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "INVALID")
+            sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
             Log.d("@@@@ sessionid", sessionID)
         }
 
@@ -118,10 +119,18 @@ class BookGsrFragment : Fragment() {
                     "2-3",
 
                     //Creating an anonymous callback
-                    object : Callback<Response> {
-                        override fun success(result: Response, response: Response) {
+                    object : Callback<GSRBookingResult> {
+                        override fun success(result: GSRBookingResult, response: Response) {
                             //Displaying the output as a toast
-                            Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
+                            Log.d("@@@@ string", result.toString())
+                            Log.d("@@@@@ results", result.getResults()?.toString() ?: "results is null")
+                            Log.d("@@@@@ error", result.getError() ?: "error is null")
+                            if (result.getResults() == true) {
+                                Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
+                            }
+                            else {
+                                Toast.makeText(activity, "GSR booking failed with " + result.getError(), Toast.LENGTH_LONG).show()
+                            }
                         }
 
                         override fun failure(error: RetrofitError) {

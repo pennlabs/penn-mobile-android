@@ -7,6 +7,7 @@ import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.FlingEvent;
 import com.pennapps.labs.pennmobile.classes.GSR;
+import com.pennapps.labs.pennmobile.classes.GSRBookingResult;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.Gym;
 import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
@@ -104,7 +105,7 @@ public interface Labs {
             @Field("groupname") String groupname,
             @Field("phone") String phone,
             @Field("size") String size,
-            Callback<Response> callback);
+            Callback<GSRBookingResult> callback);
 
     @GET("/laundry/usage/{id}")
     Observable<LaundryUsage> usage(
