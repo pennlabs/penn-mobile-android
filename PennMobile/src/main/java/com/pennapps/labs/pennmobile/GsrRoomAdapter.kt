@@ -31,13 +31,13 @@ class GsrRoomAdapter(internal var times: ArrayList<String>, internal var ids: Ar
             val date = dates[position]
             val startTime = transformStartTime(time, date)
             val endTime = transformEndTime(time, date)
-            holder.gsrStartTime?.text = time.substring(0, time.indexOf("-"))
-            holder.gsrEndTime?.text = time.substring(time.indexOf("-") + 1)
-            holder.gsrId?.text = ids[position]
-            holder.locationId?.text = gsrLocationCode
+            holder.gsrStartTime.text = time.substring(0, time.indexOf("-"))
+            holder.gsrEndTime.text = time.substring(time.indexOf("-") + 1)
+            holder.gsrId.text = ids[position]
+            holder.locationId.text = gsrLocationCode
             //whenever a time slot is clicked
 
-            holder.gsrRoom?.setOnClickListener {
+            holder.gsrRoom.setOnClickListener {
                 if (Integer.parseInt(gsrLocationCode) == 1) {
                     Log.d("@@@@@", "opening huntsmanGSRlogin")
                     val huntsmanGSRLogin = HuntsmanGSRLogin.newInstance(localGSRID, gsrLocationCode, startTime, endTime)

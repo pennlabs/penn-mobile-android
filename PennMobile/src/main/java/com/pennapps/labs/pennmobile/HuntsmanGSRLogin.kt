@@ -85,7 +85,7 @@ class HuntsmanGSRLogin : Fragment() {
                         editor.putString(getString(R.string.huntsmanGSR_SessionID), sessionid)
                         editor.apply()
                     }
-                    Log.d("@@@@@", "booking GSR now, $startTime - $endTime")
+                    Log.d("@@@@@", "booking GSR for $gsrLocationCode now, $startTime - $endTime")
 
                     mLabs?.let { mLabs ->
                         mLabs.bookGSR(
@@ -119,6 +119,9 @@ class HuntsmanGSRLogin : Fragment() {
 
                                     override fun failure(error: RetrofitError) {
                                         //If any error occurred displaying the error as toast
+                                        Log.d("@@@@ failure", error.response.reason + " " + error.message + " " + sessionid)
+                                        var result = error.getBodyAs(GSRBookingResult::class.java) as GSRBookingResult
+                                        Log.d("@@@@@ F_error", result.getError() ?: "error is null")
                                         Toast.makeText(activity, "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
                                     }
                                 }
