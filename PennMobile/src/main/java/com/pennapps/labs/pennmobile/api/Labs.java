@@ -94,8 +94,8 @@ public interface Labs {
     @FormUrlEncoded
     @POST("/studyspaces/book")
     void bookGSR(
-            @Field("sessionID") String sessionID,
-            @Field("building") int building,
+            @Field("sessionid") String sessionID,
+            @Field("lid") int building,
             @Field("room") int room,
             @Field("start") String start,
             @Field("end") String end,

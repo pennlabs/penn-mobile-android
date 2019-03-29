@@ -90,10 +90,6 @@ class BookGsrFragment : Fragment() {
         return v
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
-
     private fun bookGSR(gsrId: Int, gsrLocationCode: Int, startTime: String?, endTime: String?) {
 
         var sessionID = ""
@@ -111,9 +107,9 @@ class BookGsrFragment : Fragment() {
                     gsrId,
                     startTime,
                     endTime,
-                    firstName?.text.toString(),
-                    lastName?.text.toString(),
-                    email?.text.toString(),
+                    firstName.text.toString(),
+                    lastName.text.toString(),
+                    email.text.toString(),
                     "Penn Mobile GSR",
                     "2158986533",
                     "2-3",
