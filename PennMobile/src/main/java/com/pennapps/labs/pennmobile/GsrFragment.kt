@@ -472,7 +472,7 @@ class GsrFragment : Fragment() {
             }
         }
         //can't find existing GSR. Create new object
-        if (encountered == false) {
+        if (!encountered) {
             val newGSRObject = GSRContainer(gsrName, GSRTimeRange, GSRDateTime, GSRDayDate, GSRDateNum, GSRDuration, GSRElementId)
             mGSRS.add(newGSRObject)
         }

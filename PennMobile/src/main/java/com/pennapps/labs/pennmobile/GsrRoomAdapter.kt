@@ -44,7 +44,7 @@ class GsrRoomAdapter(internal var times: ArrayList<String>, internal var ids: Ar
                     val fragmentManager = (context as MainActivity).supportFragmentManager
                     fragmentManager.beginTransaction()
                             .replace(R.id.content_frame, huntsmanGSRLogin)
-                            .addToBackStack("Huntsman GSR Login")
+                            .addToBackStack("GSR Fragment")
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                             .commit()
                 } else {
