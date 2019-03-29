@@ -36,6 +36,12 @@ class HuntsmanGSRLogin : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mLabs = MainActivity.getLabsInstance()
+        arguments?.let {arguments ->
+            gsrID = arguments.getString("gsrID")
+            gsrLocationCode = arguments.getString("gsrLocationCode")
+            startTime = arguments.getString("startTime")
+            endTime = arguments.getString("endTime")
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -79,7 +85,7 @@ class HuntsmanGSRLogin : Fragment() {
                         editor.putString(getString(R.string.huntsmanGSR_SessionID), sessionid)
                         editor.apply()
                     }
-                    Log.d("@@@@@", "booking GSR now")
+                    Log.d("@@@@@", "booking GSR now, $startTime - $endTime")
 
                     mLabs?.let { mLabs ->
                         mLabs.bookGSR(
@@ -126,8 +132,8 @@ class HuntsmanGSRLogin : Fragment() {
 
     companion object {
 
-        fun newInstance(gsrID: String, gsrLocationCode: String, startTime: String, endTime: String): BookGsrFragment {
-            val fragment = BookGsrFragment()
+        fun newInstance(gsrID: String, gsrLocationCode: String, startTime: String, endTime: String): HuntsmanGSRLogin {
+            val fragment = HuntsmanGSRLogin()
             val args = Bundle()
             args.putString("gsrID", gsrID)
             args.putString("gsrLocationCode", gsrLocationCode)
