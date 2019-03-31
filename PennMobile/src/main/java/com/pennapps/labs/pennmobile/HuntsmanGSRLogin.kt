@@ -1,8 +1,6 @@
 package com.pennapps.labs.pennmobile
 
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
@@ -106,23 +104,30 @@ class HuntsmanGSRLogin : Fragment() {
                                 object : Callback<GSRBookingResult> {
                                     override fun success(result: GSRBookingResult, response: Response) {
                                         //Displaying the output as a toast
-                                        Log.d("@@@@ string", result.toString())
-                                        Log.d("@@@@@ results", result.getResults()?.toString() ?: "results is null")
-                                        Log.d("@@@@@ error", result.getError() ?: "error is null")
                                         if (result.getResults() == true) {
                                             Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
                                         }
                                         else {
                                             Toast.makeText(activity, "GSR booking failed with " + result.getError(), Toast.LENGTH_LONG).show()
                                         }
+                                        val huntsmanGSRLogin = GsrFragment()
+                                        val fragmentManager = (context as MainActivity).supportFragmentManager
+                                        fragmentManager.beginTransaction()
+                                                .replace(R.id.content_frame, huntsmanGSRLogin)
+                                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                                .commit()
                                     }
 
                                     override fun failure(error: RetrofitError) {
                                         //If any error occurred displaying the error as toast
-                                        Log.d("@@@@ failure", error.response.reason + " " + error.message + " " + sessionid)
-                                        var result = error.getBodyAs(GSRBookingResult::class.java) as GSRBookingResult
-                                        Log.d("@@@@@ F_error", result.getError() ?: "error is null")
-                                        Toast.makeText(activity, "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
+                                        val result = error.getBodyAs(GSRBookingResult::class.java) as GSRBookingResult
+                                        Toast.makeText(activity, result.getError() ?: "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
+                                        val huntsmanGSRLogin = GsrFragment()
+                                        val fragmentManager = (context as MainActivity).supportFragmentManager
+                                        fragmentManager.beginTransaction()
+                                                .replace(R.id.content_frame, huntsmanGSRLogin)
+                                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                                .commit()
                                     }
                                 }
                         )

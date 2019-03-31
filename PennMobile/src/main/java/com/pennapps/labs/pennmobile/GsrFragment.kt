@@ -211,7 +211,7 @@ class GsrFragment : Fragment() {
     // Makes toast and performs GSR search
     // Called whenever user changes start/end time, date, or building
     fun searchForGSR() {
-        Toast.makeText(activity, "Loading...", Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, "Loading...", Toast.LENGTH_SHORT).show() // TODO
 
         instructions.text = getString(R.string.select_instructions)
         //get vars
@@ -220,7 +220,7 @@ class GsrFragment : Fragment() {
         val endTime = endButton.text.toString()
         val location = mapGSR(gsrDropDown?.selectedItem.toString())
         if (location == -1) {
-            Toast.makeText(activity, "Sorry, an error has occurred", Toast.LENGTH_LONG).show()
+            Toast.makeText(activity, "Sorry, an error has occurred", Toast.LENGTH_LONG).show() // TODO
         } else {
             //get the hours
             getTimes(location, dateBooking, startTime, endTime)
@@ -258,7 +258,6 @@ class GsrFragment : Fragment() {
         val originalDateFormat = DateTimeFormat.forPattern("MM/dd/yyyy")
         val adjustedDateFormat = DateTimeFormat.forPattern("yyyy-MM-dd")
         val adjustedDateString = adjustedDateFormat.print(originalDateFormat.parseDateTime(dateBooking))
-
         mLabs.gsrRoom(location, adjustedDateString, adjustedDateString)
                 ?.subscribe({ gsr ->
                     activity?.let {activity ->
@@ -268,7 +267,7 @@ class GsrFragment : Fragment() {
 
                         if (gsrRooms == null) {
                             // a certification error causes "room" field to remain null
-                            Toast.makeText(activity, "Error: Could not retrieve GSRs", Toast.LENGTH_LONG).show()
+                            Toast.makeText(activity, "Error: Could not retrieve GSRs", Toast.LENGTH_LONG).show() // TODO
                         } else {
                             for (i in gsrRooms.indices) {
                                 val gsrRoom = gsrRooms[i]
@@ -292,21 +291,22 @@ class GsrFragment : Fragment() {
                                                         startString.length - 6))
                                                 val endTime = formatter.parseDateTime(endString.substring(0,
                                                         endString.length - 6))
-                                                var stringStartTime = safeToString(startTime.hourOfDay) + ":" +
-                                                        safeToString(startTime.minuteOfHour)
-                                                var stringEndTime = safeToString(endTime.hourOfDay) + ":" +
-                                                        safeToString(endTime.minuteOfHour)
+                                                if (endTime.isAfterNow) {
+                                                    var stringStartTime = safeToString(startTime.hourOfDay) + ":" +
+                                                            safeToString(startTime.minuteOfHour)
+                                                    var stringEndTime = safeToString(endTime.hourOfDay) + ":" +
+                                                            safeToString(endTime.minuteOfHour)
 
-                                                stringStartTime = convertToCivilianTime(stringStartTime)
-                                                stringEndTime = convertToCivilianTime(stringEndTime)
+                                                    stringStartTime = convertToCivilianTime(stringStartTime)
+                                                    stringEndTime = convertToCivilianTime(stringEndTime)
 
-                                                val gsrName = gsrRoom.name ?: ""
-                                                val gsrRoomId = gsrRoom.room_id ?: 0
-                                                insertGSRSlot(gsrName, "$stringStartTime-$stringEndTime", safeToString(startTime.hourOfDay) + ":" +
-                                                        safeToString(startTime.minuteOfHour),
-                                                        safeToString(startTime.dayOfWeek),
-                                                        safeToString(startTime.dayOfMonth), "30", Integer.toString(gsrRoomId))
-
+                                                    val gsrName = gsrRoom.name ?: ""
+                                                    val gsrRoomId = gsrRoom.room_id ?: 0
+                                                    insertGSRSlot(gsrName, "$stringStartTime-$stringEndTime", safeToString(startTime.hourOfDay) + ":" +
+                                                            safeToString(startTime.minuteOfHour),
+                                                            safeToString(startTime.dayOfWeek),
+                                                            safeToString(startTime.dayOfMonth), "30", Integer.toString(gsrRoomId))
+                                                }
                                             }
                                         }
                                     }
@@ -317,7 +317,7 @@ class GsrFragment : Fragment() {
                         }
 
                         if (timeSlotLengthZero) {
-                            Toast.makeText(context, "No GSRs available", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, "No GSRs available", Toast.LENGTH_LONG).show() // TODO
                         }
 
                         val gsrRoomListLayoutManager = LinearLayoutManager(context)

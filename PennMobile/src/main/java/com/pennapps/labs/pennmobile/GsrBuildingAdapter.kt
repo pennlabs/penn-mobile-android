@@ -5,9 +5,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import com.pennapps.labs.pennmobile.classes.GSRContainer
-import java.util.ArrayList
+import java.util.*
 
 class GsrBuildingAdapter(internal var context: Context, internal var gsrs: ArrayList<GSRContainer>,
                          internal var gsrLocationCode: String) : RecyclerView.Adapter<GsrBuildingHolder>() {
@@ -19,7 +18,7 @@ class GsrBuildingAdapter(internal var context: Context, internal var gsrs: Array
     }
 
     override fun onBindViewHolder(holder: GsrBuildingHolder, position: Int) {
-        if (position < getItemCount()) {
+        if (position < itemCount) {
             val gsrRoomsRecyclerView = holder.recyclerView
             if (gsrRoomsRecyclerView != null) {
                 val gsrRoomsLayoutManager = LinearLayoutManager(context,
@@ -37,9 +36,8 @@ class GsrBuildingAdapter(internal var context: Context, internal var gsrs: Array
                     dates.add(gsrslot.dateNum)
                     ids.add(gsrslot.elementId)
                 }
-
                 gsrRoomsRecyclerView.adapter = GsrRoomAdapter(times, ids, gsrLocationCode, context, dates)
-                holder.gsrBuildingName!!.text = gsrs[position].gsrName
+                holder.gsrBuildingName?.text = gsrs[position].gsrName
             }
         }
     }
