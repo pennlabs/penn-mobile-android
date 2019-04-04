@@ -5,7 +5,6 @@ import android.app.TimePickerDialog
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,10 @@ import com.crashlytics.android.answers.ContentViewEvent
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.GSRContainer
 import io.fabric.sdk.android.Fabric
+import kotlinx.android.synthetic.main.fragment_gsr.*
 import kotlinx.android.synthetic.main.fragment_gsr.view.*
+import kotlinx.android.synthetic.main.loading_panel.*
+import kotlinx.android.synthetic.main.no_results.*
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
@@ -31,15 +33,12 @@ class GsrFragment : Fragment() {
     lateinit var startButton: Button
     lateinit var endButton: Button
     var gsrDropDown: Spinner? = null
-    lateinit var instructions: TextView
 
     // api manager
     private lateinit  var mLabs: Labs
 
     //list that holds all GSR rooms
     private val gsrHashMap = HashMap<String, Int>()
-
-    private lateinit  var gsrRoomListRecylerView: RecyclerView
 
     private var gsrLocationsArray = ArrayList<String>()
 
@@ -69,7 +68,6 @@ class GsrFragment : Fragment() {
         startButton = v.select_start_time
         endButton = v.select_end_time
         gsrDropDown = v.gsr_building_selection
-        instructions = v.instructions
 
         // populate the list of gsrs
         populateDropDownGSR()
@@ -92,7 +90,9 @@ class GsrFragment : Fragment() {
         endButton.text = ampmTimes[1]
 
         // Set up recycler view for list of GSR rooms
-        gsrRoomListRecylerView = v.findViewById<View>(R.id.gsr_rooms_list) as RecyclerView
+        val gsrRoomListLayoutManager = LinearLayoutManager(context)
+        gsrRoomListLayoutManager.orientation = LinearLayoutManager.VERTICAL
+        v.gsr_rooms_list.layoutManager = (gsrRoomListLayoutManager)
 
         /**
          * On Click functions for buttons
@@ -198,6 +198,26 @@ class GsrFragment : Fragment() {
             datePickerDialog.show()
         }
 
+        // handle swipe to refresh
+        v.gsr_refresh_layout.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
+        v.gsr_refresh_layout.setOnRefreshListener {
+            //get vars
+            val dateBooking = calendarButton.text.toString()
+            val startTime = startButton.text.toString()
+            val endTime = endButton.text.toString()
+            val location = mapGSR(gsrDropDown?.selectedItem.toString())
+            if (location == -1) {
+                // get rid of loading screen
+                loadingPanel.visibility = View.GONE
+                // display no results
+                no_results.visibility = View.VISIBLE
+                Toast.makeText(activity, "Error: could not load buildings", Toast.LENGTH_LONG).show()
+            } else {
+                //get the hours
+                getTimes(location, dateBooking, startTime, endTime)
+            }
+        }
+
         return v
     }
 
@@ -211,17 +231,21 @@ class GsrFragment : Fragment() {
     // Makes toast and performs GSR search
     // Called whenever user changes start/end time, date, or building
     fun searchForGSR() {
-        Toast.makeText(activity, "Loading...", Toast.LENGTH_SHORT).show() // TODO
-
-        instructions.text = getString(R.string.select_instructions)
         //get vars
         val dateBooking = calendarButton.text.toString()
         val startTime = startButton.text.toString()
         val endTime = endButton.text.toString()
         val location = mapGSR(gsrDropDown?.selectedItem.toString())
         if (location == -1) {
-            Toast.makeText(activity, "Sorry, an error has occurred", Toast.LENGTH_LONG).show() // TODO
+            // get rid of loading screen
+            loadingPanel.visibility = View.GONE
+            // display no results
+            no_results.visibility = View.VISIBLE
+            Toast.makeText(activity, "Error: could not load buildings", Toast.LENGTH_LONG).show()
         } else {
+            // display loading screen
+            loadingPanel.visibility = View.VISIBLE // TODO only show this if not swiping to refresh, make results invisible
+            gsr_rooms_list.visibility = View.GONE
             //get the hours
             getTimes(location, dateBooking, startTime, endTime)
         }
@@ -267,7 +291,11 @@ class GsrFragment : Fragment() {
 
                         if (gsrRooms == null) {
                             // a certification error causes "room" field to remain null
-                            Toast.makeText(activity, "Error: Could not retrieve GSRs", Toast.LENGTH_LONG).show() // TODO
+                            // get rid of loading screen
+                            loadingPanel.visibility = View.GONE
+                            // display no results
+                            no_results.visibility = View.VISIBLE
+                            Toast.makeText(activity, "Error: Could not load GSRs", Toast.LENGTH_LONG).show()
                         } else {
                             for (i in gsrRooms.indices) {
                                 val gsrRoom = gsrRooms[i]
@@ -315,15 +343,22 @@ class GsrFragment : Fragment() {
                                 }
                             }
                         }
-
-                        if (timeSlotLengthZero) {
-                            Toast.makeText(context, "No GSRs available", Toast.LENGTH_LONG).show() // TODO
+                        // remove loading icon
+                        loadingPanel.visibility = View.GONE
+                        no_results.visibility = View.GONE
+                        // stop refreshing
+                        try {
+                            gsr_rooms_list.visibility = View.VISIBLE
+                            gsr_refresh_layout.isRefreshing = false
+                        } catch (e: NullPointerException) {
+                            // no need to do anything, we've just moved away from this activity
                         }
 
-                        val gsrRoomListLayoutManager = LinearLayoutManager(context)
-                        gsrRoomListLayoutManager.orientation = LinearLayoutManager.VERTICAL
-                        gsrRoomListRecylerView.layoutManager = (gsrRoomListLayoutManager)
-                        gsrRoomListRecylerView.adapter = (context?.let {
+                        if (timeSlotLengthZero) {
+                            Toast.makeText(context, "No GSRs available", Toast.LENGTH_LONG).show()
+                        }
+
+                        gsr_rooms_list.adapter = (context?.let {
                             GsrBuildingAdapter(it, mGSRS, Integer.toString(location))
                         })
 
@@ -332,7 +367,13 @@ class GsrFragment : Fragment() {
                 }
                 }, { activity?.let {
                     activity ->
-                    activity.runOnUiThread { Toast.makeText(activity, "Error: Could not retrieve GSRs", Toast.LENGTH_LONG).show() } }
+                    activity.runOnUiThread {
+                        // get rid of loading screen
+                        loadingPanel.visibility = View.GONE
+                        // display no results
+                        no_results.visibility = View.VISIBLE
+                        Toast.makeText(activity, "Error: could not load GSRs", Toast.LENGTH_LONG).show()
+                    } }
                 }
                 )
     }
