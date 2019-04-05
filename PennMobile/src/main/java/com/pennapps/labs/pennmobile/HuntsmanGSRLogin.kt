@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile
 
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
@@ -50,32 +51,34 @@ class HuntsmanGSRLogin : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.d("@@@@@", "opened huntsman gsr login")
-        loadWebpage()
+        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+        val sessionid = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
+        // load Huntsman website if no sessionid
+        if (sessionid.isEmpty()) {
+            loadWebpage()
+        } else {
+            bookHuntsmanGSR(sessionid)
+        }
     }
 
     private fun loadWebpage() {
         // Get the web view settings instance
-
-        Log.d("@@@@@@@", "loadwebpage called")
         webViewGSR.webViewClient = object : WebViewClient() {
 
             // Called every time a URL finishes loading, not just when the first URL finishes loading
             override fun onPageFinished(view : WebView, url : String) {
-                Log.d("@@@@@@", "page finished loading")
+                // extract sessionid after user logs in
                 if (url == "https://apps.wharton.upenn.edu/gsr/") {
-                    // val cookies = CookieManager.getInstance().getCookie(url)
                     var sessionid = ""
                     val cookies = CookieManager.getInstance().getCookie(url).split(";")
                     for (cookie in cookies){
                         if (cookie.take(11) == " sessionid=") {
                             sessionid = cookie.substring(11)
-                            Log.d("@@@@", "Session ID: " + sessionid)
                             break
                         }
                     }
 
-                    // set up shared preferences
+                    // save sessionid in shared preferences
                     activity?.let { activity ->
                         Log.d("@@@@ activity", "storing sessionid " + sessionid)
                         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
@@ -84,58 +87,71 @@ class HuntsmanGSRLogin : Fragment() {
                         editor.apply()
                     }
                     Log.d("@@@@@", "booking GSR for $gsrLocationCode now, $startTime - $endTime")
-
-                    mLabs?.let { mLabs ->
-                        mLabs.bookGSR(
-                                //Passing the values
-                                sessionid,
-                                Integer.parseInt(gsrLocationCode),
-                                Integer.parseInt(gsrID),
-                                startTime,
-                                endTime,
-                                "firstname",
-                                "lastname",
-                                "email",
-                                "Penn Mobile GSR",
-                                "2158986533",
-                                "2-3",
-
-                                //Creating an anonymous callback
-                                object : Callback<GSRBookingResult> {
-                                    override fun success(result: GSRBookingResult, response: Response) {
-                                        //Displaying the output as a toast
-                                        if (result.getResults() == true) {
-                                            Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
-                                        }
-                                        else {
-                                            Toast.makeText(activity, "GSR booking failed with " + result.getError(), Toast.LENGTH_LONG).show()
-                                        }
-                                        val huntsmanGSRLogin = GsrFragment()
-                                        val fragmentManager = (context as MainActivity).supportFragmentManager
-                                        fragmentManager.beginTransaction()
-                                                .replace(R.id.content_frame, huntsmanGSRLogin)
-                                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                                .commit()
-                                    }
-
-                                    override fun failure(error: RetrofitError) {
-                                        //If any error occurred displaying the error as toast
-                                        val result = error.getBodyAs(GSRBookingResult::class.java) as GSRBookingResult
-                                        Toast.makeText(activity, result.getError() ?: "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
-                                        val huntsmanGSRLogin = GsrFragment()
-                                        val fragmentManager = (context as MainActivity).supportFragmentManager
-                                        fragmentManager.beginTransaction()
-                                                .replace(R.id.content_frame, huntsmanGSRLogin)
-                                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                                .commit()
-                                    }
-                                }
-                        )
-                    }
+                    bookHuntsmanGSR(sessionid)
                 }
             }
         }
         webViewGSR.loadUrl("https://apps.wharton.upenn.edu/gsr/")
+    }
+
+    // performs POST request and redirects user to GSR booking fragment
+    private fun bookHuntsmanGSR(sessionid : String) {
+        mLabs?.let { mLabs ->
+            mLabs.bookGSR(
+                    //Passing the values
+                    sessionid,
+                    Integer.parseInt(gsrLocationCode),
+                    Integer.parseInt(gsrID),
+                    startTime,
+                    endTime,
+                    "firstname",
+                    "lastname",
+                    "email",
+                    "Penn Mobile GSR",
+                    "2158986533",
+                    "2-3",
+
+                    //Creating an anonymous callback
+                    object : Callback<GSRBookingResult> {
+                        override fun success(result: GSRBookingResult, response: Response) {
+                            //Display the output as a toast
+                            if (result.getResults() == true) {
+                                Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
+                            }
+                            else {
+                                Toast.makeText(activity, "GSR booking failed: " + result.getError(), Toast.LENGTH_LONG).show()
+                                activity?.let { activity ->
+                                    Log.d("@@@@ activity", "deleting sessionid " + sessionid)
+                                    val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                                    val editor = sp.edit()
+                                    editor.remove(getString(R.string.huntsmanGSR_SessionID))
+                                    editor.apply()
+                                }
+                            }
+                            // redirect user
+                            val huntsmanGSRLogin = GsrFragment()
+                            val fragmentManager = (context as MainActivity).supportFragmentManager
+                            fragmentManager.beginTransaction()
+                                    .replace(R.id.content_frame, huntsmanGSRLogin)
+                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                    .commit()
+                        }
+
+                        override fun failure(error: RetrofitError) {
+                            //If any error occurred display the error as toast
+                            val result = error.getBodyAs(GSRBookingResult::class.java) as GSRBookingResult
+                            Toast.makeText(activity, result.getError() ?: "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
+                            // redirect user
+                            val huntsmanGSRLogin = GsrFragment()
+                            val fragmentManager = (context as MainActivity).supportFragmentManager
+                            fragmentManager.beginTransaction()
+                                    .replace(R.id.content_frame, huntsmanGSRLogin)
+                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                    .commit()
+                        }
+                    }
+            )
+        }
     }
 
     companion object {
