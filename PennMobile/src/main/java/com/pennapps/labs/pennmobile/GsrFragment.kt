@@ -207,13 +207,12 @@ class GsrFragment : Fragment() {
             val endTime = endButton.text.toString()
             val location = mapGSR(gsrDropDown?.selectedItem.toString())
             if (location == -1) {
-                // get rid of loading screen
-                loadingPanel.visibility = View.GONE
-                // display no results
-                no_results.visibility = View.VISIBLE
+                showNoResults()
                 Toast.makeText(activity, "Error: could not load buildings", Toast.LENGTH_LONG).show()
             } else {
-                //get the hours
+                no_results.visibility = View.GONE
+                // Do not make the normal loading panel visible since the refresh layout already shows a loading icon
+                // Get the hours
                 getTimes(location, dateBooking, startTime, endTime)
             }
         }
@@ -228,8 +227,8 @@ class GsrFragment : Fragment() {
         populateDropDownGSR()
     }
 
-    // Makes toast and performs GSR search
-    // Called whenever user changes start/end time, date, or building
+    // Performs GSR search
+    // Called when page loads and whenever user changes start/end time, date, or building
     fun searchForGSR() {
         //get vars
         val dateBooking = calendarButton.text.toString()
@@ -237,33 +236,19 @@ class GsrFragment : Fragment() {
         val endTime = endButton.text.toString()
         val location = mapGSR(gsrDropDown?.selectedItem.toString())
         if (location == -1) {
-            // get rid of loading screen
-            loadingPanel.visibility = View.GONE
-            // display no results
-            no_results.visibility = View.VISIBLE
+            showNoResults()
             Toast.makeText(activity, "Error: could not load buildings", Toast.LENGTH_LONG).show()
         } else {
             // display loading screen
-            loadingPanel.visibility = View.VISIBLE // TODO only show this if not swiping to refresh, make results invisible
+            no_results.visibility = View.GONE
+            loadingPanel.visibility = View.VISIBLE
             gsr_rooms_list.visibility = View.GONE
             //get the hours
             getTimes(location, dateBooking, startTime, endTime)
         }
     }
 
-    fun getCurrentTimeZoneOffset(): String {
-        val tz = DateTimeZone.forID("America/New_York")
-        val instant = DateTime.now().millis
-
-        val name = tz.getName(instant)
-
-        val offsetInMilliseconds = tz.getOffset(instant).toLong()
-        val hours = TimeUnit.MILLISECONDS.toHours(offsetInMilliseconds)
-
-
-        return "-0" + Integer.toString(Math.abs(hours).toInt()) + "00"
-    }
-
+    // Performs GET request and fetches the rooms and availability
     private fun getTimes(location: Int, dateBooking: String, startTime: String, endTime: String) {
         var startTime = startTime
         var endTime = endTime
@@ -291,10 +276,7 @@ class GsrFragment : Fragment() {
 
                         if (gsrRooms == null) {
                             // a certification error causes "room" field to remain null
-                            // get rid of loading screen
-                            loadingPanel.visibility = View.GONE
-                            // display no results
-                            no_results.visibility = View.VISIBLE
+                            showNoResults()
                             Toast.makeText(activity, "Error: Could not load GSRs", Toast.LENGTH_LONG).show()
                         } else {
                             for (i in gsrRooms.indices) {
@@ -368,10 +350,7 @@ class GsrFragment : Fragment() {
                 }, { activity?.let {
                     activity ->
                     activity.runOnUiThread {
-                        // get rid of loading screen
-                        loadingPanel.visibility = View.GONE
-                        // display no results
-                        no_results.visibility = View.VISIBLE
+                        showNoResults()
                         Toast.makeText(activity, "Error: could not load GSRs", Toast.LENGTH_LONG).show()
                     } }
                 }
@@ -472,6 +451,13 @@ class GsrFragment : Fragment() {
         }
     }
 
+    private fun showNoResults() {
+        // get rid of loading screen and display no results
+        no_results.visibility = View.VISIBLE
+        loadingPanel.visibility = View.GONE
+        gsr_rooms_list.visibility = View.GONE
+        gsr_refresh_layout.isRefreshing = false
+    }
 
     //helper function that turns military to civilian time
     fun convertToCivilianTime(input: String): String {
