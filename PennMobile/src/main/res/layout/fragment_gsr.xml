@@ -1,118 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/gsr_selection"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+    <Button
+        android:id="@+id/gsr_select_date"
+        android:layout_width="80dp"
+        android:layout_height="100dp"
+        app:layout_constraintBottom_toTopOf="@+id/gsr_selection"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/gsr_select_time"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/gsr_select_time"
+        android:layout_width="80dp"
+        android:layout_height="100dp"
+        app:layout_constraintBottom_toTopOf="@+id/gsr_selection"
+        app:layout_constraintStart_toEndOf="@id/gsr_select_date"
+        app:layout_constraintEnd_toStartOf="@+id/gsr_building_selection"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/gsr_building_selection"
+        android:layout_width="80dp"
+        android:layout_height="100dp"
+        app:layout_constraintBottom_toTopOf="@+id/gsr_selection"
+        app:layout_constraintStart_toEndOf="@id/gsr_select_time"
+        app:layout_constraintEnd_toStartOf="@id/gsr_duration"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/gsr_duration"
+        android:layout_width="80dp"
+        android:layout_height="100dp"
+        app:layout_constraintBottom_toTopOf="@+id/gsr_selection"
+        app:layout_constraintStart_toEndOf="@+id/gsr_building_selection"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp">
-
-        <Spinner
-            android:id="@+id/gsr_building_selection"
-            style="@style/Base.Widget.AppCompat.Spinner.Underlined"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:spinnerMode="dropdown" />
-
-        <RelativeLayout
-            android:id="@+id/date_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/gsr_building_selection">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:text="@string/search_date"
-                android:textColor="@color/dark_gray" />
-
-            <Button
-                android:id="@+id/select_date"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_alignParentRight="true"
-                android:background="@android:color/transparent"
-                android:gravity="right|center_vertical"
-                android:text="@string/calendar_button"
-                android:textColor="@color/black"
-                android:textStyle="normal" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/start_time_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/date_layout">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:text="@string/search_start_time"
-                android:textColor="@color/dark_gray"
-                android:visibility="gone" />
-
-            <Button
-                android:id="@+id/select_start_time"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_alignParentRight="true"
-                android:background="@android:color/transparent"
-                android:gravity="right|center_vertical"
-                android:text="@string/calendar_button"
-                android:textColor="@color/black"
-                android:textStyle="normal"
-                android:visibility="gone" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/end_time_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/start_time_layout">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:gravity="center_horizontal"
-                android:text="@string/search_end_time"
-                android:textColor="@color/dark_gray"
-                android:visibility="gone" />
-
-            <Button
-                android:id="@+id/select_end_time"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_alignParentRight="true"
-                android:background="@android:color/transparent"
-                android:gravity="right|center_vertical"
-                android:text="@string/calendar_button"
-                android:textColor="@color/black"
-                android:textStyle="normal"
-                android:visibility="gone" />
-
-        </RelativeLayout>
-
-    </RelativeLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
+        app:layout_constraintTop_toBottomOf="@id/gsr_selection"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <include layout="@layout/no_results" />
     </LinearLayout>
@@ -123,15 +56,23 @@
         android:id="@+id/gsr_refresh_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/gsr_selection"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/gsr_selection">
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/gsr_rooms_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:list_item="@layout/gsr_building" />
     </android.support.v4.widget.SwipeRefreshLayout>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/gsr_selection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="115dp" />
 
 </android.support.constraint.ConstraintLayout>
