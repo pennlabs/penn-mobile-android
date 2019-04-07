@@ -87,7 +87,7 @@ public class NsoFragment extends SearchFavoriteFragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle(R.string.nso);
-        mActivity.setNav(R.id.nav_nso);
+//        mActivity.setNav(R.id.nav_nso);
     }
 
     @Override
