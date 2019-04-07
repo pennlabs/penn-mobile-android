@@ -16,6 +16,9 @@ import com.pennapps.labs.pennmobile.adapters.FlingRecyclerViewAdapter
 
 import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.fragment_fling.*
+import android.R.id
+
+
 
 class FlingFragment : Fragment() {
 
@@ -45,6 +48,7 @@ class FlingFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         activity?.setTitle(R.string.spring_fling)
+        (activity as MainActivity?)?.setNav(R.id.nav_fling)
     }
 
     companion object {

@@ -46,15 +46,15 @@
             android:icon="@drawable/ic_announcement"
             android:title="@string/news"/>
 
-        <!--<item-->
-            <!--android:id="@+id/nav_fling"-->
-            <!--android:icon="@drawable/ic_event_black_24dp"-->
-            <!--android:title="@string/spring_fling"/>-->
-
         <item
-            android:id="@+id/nav_nso"
+            android:id="@+id/nav_fling"
             android:icon="@drawable/ic_event_black_24dp"
-            android:title="@string/nso"/>
+            android:title="@string/spring_fling"/>
+
+        <!--<item-->
+            <!--android:id="@+id/nav_nso"-->
+            <!--android:icon="@drawable/ic_event_black_24dp"-->
+            <!--android:title="@string/nso"/>-->
 
         <item
             android:id="@+id/nav_support"
