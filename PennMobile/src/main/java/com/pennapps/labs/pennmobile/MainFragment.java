@@ -99,8 +99,8 @@ public class MainFragment extends Fragment {
         mAllCategories.add(new HomeScreenItem("Laundry", 3));
         mAllCategories.add(new HomeScreenItem("Directory", 4));
         mAllCategories.add(new HomeScreenItem("News", 5));
-//        mAllCategories.add(new HomeScreenItem("Spring Fling", 6));
-        mAllCategories.add(new HomeScreenItem("NSO", 6));
+        mAllCategories.add(new HomeScreenItem("Spring Fling", 6));
+//        mAllCategories.add(new HomeScreenItem("NSO", 6));
         mAllCategories.add(new HomeScreenItem("Fitness", 7));
 
         // determine which categories are visible
@@ -111,6 +111,23 @@ public class MainFragment extends Fragment {
             if (position >= 100) {
                 mVisibleCategories.add(category);
                 numVisibleCategories++;
+            }
+        }
+
+        DateTime flingStart = new DateTime(2019, 4, 6, 0, 0, 0, 0);
+        DateTime flingEnd = new DateTime(2019, 4, 15, 0, 0, 0, 0);
+        Interval flingDates = new Interval(flingStart, flingEnd);
+        // check if today is part of Fling dates and if Fling is already on homepage - if so, add Fling to home page
+        if (flingDates.contains(new DateTime())) {
+            boolean flingAlreadyShown = false;
+            for (HomeScreenItem item : mVisibleCategories) {
+                if (item.getName().equals("Spring Fling")) {
+                    flingAlreadyShown = true;
+                    break;
+                }
+            }
+            if (!flingAlreadyShown) {
+                mVisibleCategories.add(mAllCategories.get(6));
             }
         }
 
@@ -138,10 +155,6 @@ public class MainFragment extends Fragment {
                 DateTime nsoEnd = new DateTime(2018, 10, 15, 0, 0, 0, 0);
                 Interval nsoDates = new Interval(nsoStart, nsoEnd);
 
-//            DateTime flingStart = new DateTime(2019, 4, 10, 0, 0, 0, 0);
-//            DateTime flingEnd = new DateTime(2019, 4, 15, 0, 0, 0, 0);
-//            Interval flingDates = new Interval(flingStart, flingEnd);
-
                 // default: dining, laundry, GSR
                 HomeScreenItem item1 = mAllCategories.get(1);
                 HomeScreenItem item2 = mAllCategories.get(3);
@@ -165,10 +178,19 @@ public class MainFragment extends Fragment {
                     editor.putInt(mContext.getString(R.string.home_screen_pref) + "_" + nsoItem.getName(), 104);
                 }
 
-//            // check if today is part of Fling dates - if so, add Fling to home page
-//            if (flingDates.contains(today)) {
-//                mVisibleCategories.add(mAllCategories.get(6));
-//            }
+                // check if today is part of Fling dates and if Fling is already on homepage - if so, add Fling to home page
+                if (flingDates.contains(new DateTime())) {
+                    boolean flingAlreadyShown = false;
+                    for (HomeScreenItem item : mVisibleCategories) {
+                        if (item.getName().equals("Spring Fling")) {
+                            flingAlreadyShown = true;
+                            break;
+                        }
+                    }
+                    if (!flingAlreadyShown) {
+                        mVisibleCategories.add(mAllCategories.get(6));
+                    }
+                }
 
                 editor.putBoolean(getString(R.string.first_open_pref), false);
                 editor.apply();

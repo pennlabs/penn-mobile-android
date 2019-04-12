@@ -1,31 +1,48 @@
 package com.pennapps.labs.pennmobile
 
-import android.content.Context
+import android.net.Uri
 import android.os.Bundle
+import android.support.customtabs.CustomTabsIntent.Builder
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
-
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
 import com.pennapps.labs.pennmobile.adapters.FlingRecyclerViewAdapter
-
 import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.fragment_fling.*
+
 
 class FlingFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Fabric.with(context, Crashlytics())
+        setHasOptionsMenu(true)
         Answers.getInstance().logContentView(ContentViewEvent()
                 .putContentName("Spring Fling")
                 .putContentType("App Feature")
                 .putContentId("7"))
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.fling_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        // Handle presses on the action bar items
+        return when (item?.itemId) {
+            R.id.fling_raffle -> {
+                val url = "https://docs.google.com/forms/d/e/1FAIpQLSexkehYfGgyAa7RagaCl8rze4KUKQSX9TbcvvA6iXp34TyHew/viewform"
+                val builder = Builder()
+                val customTabsIntent = builder.build()
+                customTabsIntent.launchUrl(context, Uri.parse(url))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +62,7 @@ class FlingFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         activity?.setTitle(R.string.spring_fling)
+        (activity as MainActivity?)?.setNav(R.id.nav_fling)
     }
 
     companion object {

@@ -93,10 +93,10 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 view = LayoutInflater.from(mContext).inflate(R.layout.home_cardview_card_news, parent, false);
                 return new NewsViewHolder(view, mContext);
             case 6:
-                view = LayoutInflater.from(mContext).inflate(R.layout.home_nso_card, parent, false);
-                return new NsoViewHolder(view, mContext);
-//                view = LayoutInflater.from(mContext).inflate(R.layout.home_fling_card, parent, false);
-//                return new FlingViewHolder(view, mContext);
+//                view = LayoutInflater.from(mContext).inflate(R.layout.home_nso_card, parent, false);
+//                return new NsoViewHolder(view, mContext);
+                view = LayoutInflater.from(mContext).inflate(R.layout.home_fling_card, parent, false);
+                return new FlingViewHolder(view, mContext);
             case 7:
                 view = LayoutInflater.from(mContext).inflate(R.layout.home_cardview_card_fitness, parent, false);
                 return new FitnessViewHolder(view, mContext);
@@ -178,12 +178,12 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 */
                 break;
             case 6:
-                NsoViewHolder nsoViewHolder = (NsoViewHolder) holder;
-                String nsoTitle = mCategories.get(position).getName();
-                nsoViewHolder.titleTextView.setText(nsoTitle);
-//                FlingViewHolder flingViewHolder = (FlingViewHolder) holder;
-//                String flingTitle = mCategories.get(position).getName();
-//                flingViewHolder.titleTextView.setText(flingTitle);
+//                NsoViewHolder nsoViewHolder = (NsoViewHolder) holder;
+//                String nsoTitle = mCategories.get(position).getName();
+//                nsoViewHolder.titleTextView.setText(nsoTitle);
+                FlingViewHolder flingViewHolder = (FlingViewHolder) holder;
+                String flingTitle = mCategories.get(position).getName();
+                flingViewHolder.titleTextView.setText(flingTitle);
                 break;
             case 7:
                 FitnessViewHolder fitnessViewHolder = (FitnessViewHolder) holder;

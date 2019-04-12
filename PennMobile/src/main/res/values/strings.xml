@@ -225,6 +225,7 @@
     <!-- Spring Fling -->
     <string name="spring_fling">Spring Fling</string>
     <string name="fling_event_time">%1$s - %2$s</string>
+    <string name="spec_spring_fling_2019_raffle">SPEC Spring Fling 2019 Raffle</string>
 
 
     <string name="first_open_pref">first_open</string>
