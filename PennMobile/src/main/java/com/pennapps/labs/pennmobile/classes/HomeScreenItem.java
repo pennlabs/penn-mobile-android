@@ -1,10 +1,12 @@
 package com.pennapps.labs.pennmobile.classes;
 
+import android.support.annotation.NonNull;
+
 /**
  * Created by Jackie on 2018-03-04.
  */
 
-public class HomeScreenItem {
+public class HomeScreenItem implements Comparable<HomeScreenItem> {
     private String name;
     private int viewType;
 
@@ -24,5 +26,10 @@ public class HomeScreenItem {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public int compareTo(@NonNull HomeScreenItem homeScreenItem) {
+        return name.compareTo(homeScreenItem.name);
     }
 }
