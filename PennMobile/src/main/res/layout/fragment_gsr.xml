@@ -5,41 +5,81 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/gsr_date_text"
+        android:text="@string/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/gsr_select_date"
+        app:layout_constraintEnd_toEndOf="@id/gsr_select_date"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/gsr_select_date"/>
+
     <Button
         android:id="@+id/gsr_select_date"
-        android:layout_width="80dp"
-        android:layout_height="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
         app:layout_constraintBottom_toTopOf="@+id/gsr_selection"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/gsr_select_time"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/gsr_date_text" />
+
+    <TextView
+        android:id="@+id/gsr_time_text"
+        android:text="@string/any"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/gsr_select_time"
+        app:layout_constraintEnd_toEndOf="@id/gsr_select_time"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/gsr_select_time"/>
 
     <Button
         android:id="@+id/gsr_select_time"
-        android:layout_width="80dp"
-        android:layout_height="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
         app:layout_constraintBottom_toTopOf="@+id/gsr_selection"
         app:layout_constraintStart_toEndOf="@id/gsr_select_date"
         app:layout_constraintEnd_toStartOf="@+id/gsr_building_selection"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/gsr_time_text" />
+
+    <TextView
+        android:id="@+id/gsr_building_text"
+        android:text="@string/any"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/gsr_building_selection"
+        app:layout_constraintEnd_toEndOf="@id/gsr_building_selection"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/gsr_building_selection"/>
 
     <Spinner
         android:id="@+id/gsr_building_selection"
-        android:layout_width="80dp"
-        android:layout_height="100dp"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
         app:layout_constraintBottom_toTopOf="@+id/gsr_selection"
         app:layout_constraintStart_toEndOf="@id/gsr_select_time"
         app:layout_constraintEnd_toStartOf="@id/gsr_duration"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/gsr_building_text" />
+
+    <TextView
+        android:id="@+id/gsr_duration_text"
+        android:text="@string/any"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/gsr_duration"
+        app:layout_constraintEnd_toEndOf="@id/gsr_duration"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/gsr_duration"/>
 
     <Spinner
         android:id="@+id/gsr_duration"
-        android:layout_width="80dp"
-        android:layout_height="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
         app:layout_constraintBottom_toTopOf="@+id/gsr_selection"
         app:layout_constraintStart_toEndOf="@+id/gsr_building_selection"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/gsr_duration_text" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -73,6 +113,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="115dp" />
+        app:layout_constraintGuide_begin="80dp" />
 
 </android.support.constraint.ConstraintLayout>
