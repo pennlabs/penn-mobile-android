@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import android.widget.AdapterView.OnItemSelectedListener
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
@@ -26,8 +27,8 @@ import java.util.*
 class GsrFragment : Fragment() {
 
     // ui components
-    lateinit var calendarButton: Button
-    lateinit var startButton: Button
+    lateinit var selectDateButton: Button
+    lateinit var selectTimeButton: Button
     lateinit var durationDropDown: Spinner
     lateinit var gsrLocationDropDown: Spinner
 
@@ -38,6 +39,8 @@ class GsrFragment : Fragment() {
     private val gsrHashMap = HashMap<String, Int>()
 
     private var gsrLocationsArray = ArrayList<String>()
+
+    private val durations : Array<String> = arrayOf("Any", "30m", "60m", "90m")
 
     // all the gsrs
     private var mGSRS = ArrayList<GSRContainer>()
@@ -61,8 +64,9 @@ class GsrFragment : Fragment() {
 
         // link UI elements
         val v = inflater.inflate(R.layout.fragment_gsr, container, false)
-        calendarButton = v.gsr_select_date
-        startButton = v.gsr_select_time
+        selectDateButton = v.gsr_select_date
+        selectTimeButton = v.gsr_select_time
+        durationDropDown = v.gsr_duration
         gsrLocationDropDown = v.gsr_building_selection
 
         // populate the list of gsrs
@@ -78,12 +82,17 @@ class GsrFragment : Fragment() {
         val year = calendar.get(Calendar.YEAR)
         val ampm = calendar.get(Calendar.AM_PM)
 
-        calendarButton.text = (month.toString() + "/" + day + "/" + year)
+        selectDateButton.text = ("$month/$day/$year")
 
         // Set default start/end times for GSR booking
         val ampmTimes = getStartEndTimes(hour, minutes, ampm)
-        startButton.text = ampmTimes[0]
-        durationDropDown.text = ampmTimes[1]
+        selectTimeButton.text = ampmTimes[0]
+        activity?.let { activity ->
+            val adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_dropdown_item, durations)
+            //set the spinners adapter to the previously created one.
+            durationDropDown.adapter = adapter
+            durationDropDown.prompt = durations[0]
+        }
 
         // Set up recycler view for list of GSR rooms
         val gsrRoomListLayoutManager = LinearLayoutManager(context)
@@ -95,7 +104,7 @@ class GsrFragment : Fragment() {
          */
 
         //set start time button
-        startButton.setOnClickListener {
+        selectTimeButton.setOnClickListener {
             // Get Current Time
             val c = Calendar.getInstance()
             val mHour = c.get(Calendar.HOUR_OF_DAY)
@@ -123,48 +132,33 @@ class GsrFragment : Fragment() {
                         }
 
                         //display selected time
-                        startButton.text = String.format(getString(R.string.start_end_button_text), hourString, minuteString, AM_PM)
+                        selectTimeButton.text = String.format(getString(R.string.start_end_button_text), hourString, minuteString, AM_PM)
                         searchForGSR()
                     }, mHour, mMinute, false)
             timePickerDialog.show()
         }
 
-        //end time button
-        durationDropDown.setOnClickListener {
-            // Get Current Time
-            val c = Calendar.getInstance()
-            val mHour = c.get(Calendar.HOUR_OF_DAY)
-            val mMinute = c.get(Calendar.MINUTE)
+        durationDropDown.onItemSelectedListener = object : OnItemSelectedListener {
+            var initCheck = 0
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                // User did not change the duration
+            }
 
-            // Launch Time Picker Dialog
-            val timePickerDialog = TimePickerDialog(activity,
-                    TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-                        val AM_PM = if (hourOfDay < 12) "AM" else "PM"
-
-                        var hourString = Integer.toString(hourOfDay)
-                        if (hourOfDay == 0) {
-                            hourString = "12"
-                        }
-                        if (hourOfDay > 12) {
-                            hourString = Integer.toString(hourOfDay - 12)
-                        }
-
-                        var minuteString = Integer.toString(minute)
-
-                        if (minute < 10) {
-                            minuteString = "0$minute"
-                        }
-
-                        durationDropDown?.text = String.format(getString(R.string.start_end_button_text), hourString, minuteString, AM_PM)
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                if (p2 < durations.size) {
+                    durationDropDown.prompt = durations[p2]
+                    // OnItemSelected is called at initialization before the GSR locations have loaded, which would cause error
+                    if (initCheck > 0) {
                         searchForGSR()
-                    }, mHour, mMinute, false)
-
-            timePickerDialog.show()
+                    } else {
+                        initCheck++
+                    }
+                }
+            }
         }
-
 
         //day for gsr
-        calendarButton.setOnClickListener {
+        selectDateButton.setOnClickListener {
             // Get Current Date
             val c = Calendar.getInstance()
             val mYear = c.get(Calendar.YEAR)
@@ -176,7 +170,7 @@ class GsrFragment : Fragment() {
                         //account for index starting at 0
                         val entryMonth = monthOfYear + 1
 
-                        calendarButton.text = entryMonth.toString() + "/" + dayOfMonth + "/" + year
+                        selectDateButton.text = "$entryMonth/$dayOfMonth/$year"
                         searchForGSR()
                     }, mYear, mMonth, mDay)
 
@@ -198,10 +192,15 @@ class GsrFragment : Fragment() {
         v.gsr_refresh_layout.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
         v.gsr_refresh_layout.setOnRefreshListener {
             //get vars
-            val dateBooking = calendarButton.text.toString()
-            val startTime = startButton.text.toString()
-            val endTime = durationDropDown.text.toString()
-            val location = mapGSR(gsrLocationDropDown?.selectedItem.toString())
+            val dateBooking = selectDateButton.text.toString()
+            val startTime = selectTimeButton.text.toString()
+            val format = DateTimeFormat.forPattern("HH:mm a")
+            val formattedStartTime = format.parseDateTime(startTime)
+            val formattedEndTime = if (durationDropDown.selectedItemPosition == 0 || durationDropDown.selectedItemPosition == -1) formattedStartTime.plusMinutes(90)
+            else formattedStartTime.plusMinutes(30 * durationDropDown.selectedItemPosition)
+            val endTime = formattedEndTime.toString("HH:mm a")
+//            val endTime = durationDropDown.text.toString()
+            val location = mapGSR(gsrLocationDropDown.selectedItem.toString())
             if (location == -1) {
                 showNoResults()
                 Toast.makeText(activity, "Error: could not load buildings", Toast.LENGTH_LONG).show()
@@ -227,10 +226,14 @@ class GsrFragment : Fragment() {
     // Called when page loads and whenever user changes start/end time, date, or building
     fun searchForGSR() {
         //get vars
-        val dateBooking = calendarButton.text.toString()
-        val startTime = startButton.text.toString()
-        val endTime = durationDropDown.text.toString()
-        val location = mapGSR(gsrLocationDropDown?.selectedItem.toString())
+        val dateBooking = selectDateButton.text.toString()
+        val startTime = selectTimeButton.text.toString()
+        val format = DateTimeFormat.forPattern("HH:mm a")
+        val formattedStartTime = format.parseDateTime(startTime)
+        val formattedEndTime = if (durationDropDown.selectedItemPosition == 0 || durationDropDown.selectedItemPosition == -1) formattedStartTime.plusMinutes(90)
+        else formattedStartTime.plusMinutes(30 * durationDropDown.selectedItemPosition)
+        val endTime = formattedEndTime.toString("HH:mm a")
+        val location = mapGSR(gsrLocationDropDown.selectedItem.toString())
         if (location == -1) {
             showNoResults()
             Toast.makeText(activity, "Error: could not load buildings", Toast.LENGTH_LONG).show()
@@ -363,7 +366,7 @@ class GsrFragment : Fragment() {
                             val emptyArray = arrayOfNulls<String>(0)
                             val emptyAdapter = ArrayAdapter<String>(activity,
                                     android.R.layout.simple_spinner_dropdown_item, emptyArray)
-                            gsrLocationDropDown?.adapter = emptyAdapter
+                            gsrLocationDropDown.adapter = emptyAdapter
 
                             gsrLocationsArray = ArrayList()
 
@@ -386,7 +389,7 @@ class GsrFragment : Fragment() {
                             val adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_dropdown_item, gsrs)
 
                             //set the spinners adapter to the previously created one.
-                            gsrLocationDropDown?.setAdapter(adapter)
+                            gsrLocationDropDown.adapter = adapter
                             searchForGSR()
                         }
                     }
@@ -426,17 +429,17 @@ class GsrFragment : Fragment() {
 
                             //create an adapter to describe how the items are displayed, adapters are used in several places in android.
                             //There are multiple variations of this, but this is the basic variant.
-                            activity?.let {activity ->
+                            activity.let {activity ->
                                 val adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_dropdown_item, gsrs)
                                 //set the spinners adapter to the previously created one.
-                                gsrLocationDropDown?.setAdapter(adapter)
+                                gsrLocationDropDown.adapter = adapter
                                 searchForGSR()
                             }
                         }
                     }
                 }
                 )
-        gsrLocationDropDown?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        gsrLocationDropDown.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View?, i: Int, l: Long) {
                 searchForGSR()
             }
