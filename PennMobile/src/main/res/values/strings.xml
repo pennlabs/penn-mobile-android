@@ -223,6 +223,9 @@
     <string name="any">Any</string>
     <string name="date">Date</string>
     <string name="huntsmanGSR_SessionID">HuntsmanGSR_SessionID</string>
+    <string name="time">Time</string>
+    <string name="duration">Duration</string>
+    <string name="gsr_location">Location</string>
 
     <!-- Spring Fling -->
     <string name="spring_fling">Spring Fling</string>

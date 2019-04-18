@@ -19,6 +19,10 @@
         android:id="@+id/gsr_select_date"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
+        android:minWidth="0dp"
+        android:background="@android:color/transparent"
+        android:textColor="@color/color_primary"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/gsr_selection"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/gsr_select_time"
@@ -26,7 +30,7 @@
 
     <TextView
         android:id="@+id/gsr_time_text"
-        android:text="@string/any"
+        android:text="@string/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/gsr_select_time"
@@ -38,6 +42,10 @@
         android:id="@+id/gsr_select_time"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
+        android:minWidth="0dp"
+        android:background="@android:color/transparent"
+        android:textColor="@color/color_primary"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/gsr_selection"
         app:layout_constraintStart_toEndOf="@id/gsr_select_date"
         app:layout_constraintEnd_toStartOf="@+id/gsr_building_selection"
@@ -45,7 +53,7 @@
 
     <TextView
         android:id="@+id/gsr_building_text"
-        android:text="@string/any"
+        android:text="@string/gsr_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/gsr_building_selection"
@@ -55,8 +63,9 @@
 
     <Spinner
         android:id="@+id/gsr_building_selection"
-        android:layout_width="100dp"
+        android:layout_width="150dp"
         android:layout_height="40dp"
+        android:background="@null"
         app:layout_constraintBottom_toTopOf="@+id/gsr_selection"
         app:layout_constraintStart_toEndOf="@id/gsr_select_time"
         app:layout_constraintEnd_toStartOf="@id/gsr_duration"
@@ -64,7 +73,7 @@
 
     <TextView
         android:id="@+id/gsr_duration_text"
-        android:text="@string/any"
+        android:text="@string/duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/gsr_duration"
@@ -76,6 +85,7 @@
         android:id="@+id/gsr_duration"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
+        android:background="@null"
         app:layout_constraintBottom_toTopOf="@+id/gsr_selection"
         app:layout_constraintStart_toEndOf="@+id/gsr_building_selection"
         app:layout_constraintEnd_toEndOf="parent"

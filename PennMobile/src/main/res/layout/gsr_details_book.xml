@@ -49,6 +49,8 @@
         android:layout_below="@+id/gsr_email"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:textColor="@color/gsr_green"
         android:background="@drawable/gsr_room_background"
         android:text="@string/submit" />
 </RelativeLayout>
