@@ -41,7 +41,8 @@
     <color name="avail_color_red">#F44336</color>
 
     <color name="gsr_white">#FEFEFE</color>
-    <color name="gsr_green">#3CC772</color>
+    <color name="gsr_green">#6DB786</color>
+    <color name="gsr_inside_green">#196DB786</color>
     <color name="gsr_background_gray">#F1F1F1</color>
     <color name="gsr_text_gray">#DFDFDF</color>
     <color name="washer_blue">#3498db</color>

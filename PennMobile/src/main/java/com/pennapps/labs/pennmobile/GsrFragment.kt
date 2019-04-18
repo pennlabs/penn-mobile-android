@@ -38,8 +38,6 @@ class GsrFragment : Fragment() {
     //list that holds all GSR rooms
     private val gsrHashMap = HashMap<String, Int>()
 
-    private var gsrLocationsArray = ArrayList<String>()
-
     private val durations : Array<String> = arrayOf("Any", "30m", "60m", "90m")
 
     // all the gsrs
@@ -88,7 +86,7 @@ class GsrFragment : Fragment() {
         val ampmTimes = getStartEndTimes(hour, minutes, ampm)
         selectTimeButton.text = ampmTimes[0]
         activity?.let { activity ->
-            val adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_dropdown_item, durations)
+            val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, durations)
             //set the spinners adapter to the previously created one.
             durationDropDown.adapter = adapter
             durationDropDown.prompt = durations[0]
@@ -368,8 +366,6 @@ class GsrFragment : Fragment() {
                                     android.R.layout.simple_spinner_dropdown_item, emptyArray)
                             gsrLocationDropDown.adapter = emptyAdapter
 
-                            gsrLocationsArray = ArrayList()
-
                             val numLocations = locations.size
 
 
@@ -377,16 +373,28 @@ class GsrFragment : Fragment() {
                             // go through all the rooms
                             while (i < numLocations) {
                                 val locationName = locations[i]?.name ?: ""
-                                gsrHashMap[locationName] = locations[i].id
-                                gsrLocationsArray.add(locationName)
+                                when (locations[i].id) {
+                                    1086 -> gsrHashMap["Van Pelt"] = 1086
+                                    2587 -> gsrHashMap["Lippincott"] = 2587
+                                    2495 -> gsrHashMap["Edu Commons"] = 2495
+                                    2683 -> gsrHashMap["Biomedical"] = 2683
+                                    2637 -> gsrHashMap["Fisher"] = 2637
+                                    1090 -> gsrHashMap["Levin Building"] = 1090
+                                    2634 -> gsrHashMap["Museum Library"] = 2634
+                                    2636 -> gsrHashMap["VP Seminar"] = 2636
+                                    2611 -> gsrHashMap["VP Special Use"] = 2611
+                                    1 -> gsrHashMap["Huntsman Hall"] = 1
+                                    4370 -> gsrHashMap["PCPSE Building"] = 4370
+                                    else -> gsrHashMap[locationName] = locations[i].id
+                                }
                                 i++
                             }
 
-                            val gsrs = gsrLocationsArray.toTypedArray<String?>()
+                            val gsrs = gsrHashMap.keys.toList().toTypedArray()
 
                             //create an adapter to describe how the items are displayed, adapters are used in several places in android.
                             //There are multiple variations of this, but this is the basic variant.
-                            val adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_dropdown_item, gsrs)
+                            val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
 
                             //set the spinners adapter to the previously created one.
                             gsrLocationDropDown.adapter = adapter
@@ -397,40 +405,23 @@ class GsrFragment : Fragment() {
                     activity?.let {activity ->
                         activity.runOnUiThread {
                             //hard coded in case runs into error
-                            gsrHashMap["Weigle"] = 1086
-                            gsrHashMap["VP Ground Floor"] = 1086
-                            gsrHashMap["VP 3rd Floor"] = 1086
-                            gsrHashMap["VP 4th Floor"] = 1086
+                            gsrHashMap["Van Pelt"] = 1086
                             gsrHashMap["Lippincott"] = 2587
-                            gsrHashMap["Education Commons"] = 2495
-                            gsrHashMap["Biomedical Library"] = 2683
-                            gsrHashMap["Fisher Fine Arts"] = 2637
+                            gsrHashMap["Edu Commons"] = 2495
+                            gsrHashMap["Biomedical"] = 2683
+                            gsrHashMap["Fisher"] = 2637
                             gsrHashMap["Levin Building"] = 1090
                             gsrHashMap["Museum Library"] = 2634
                             gsrHashMap["VP Seminar"] = 2636
                             gsrHashMap["VP Special Use"] = 2611
+                            gsrHashMap["Huntsman Hall"] = 1
 
-
-                            gsrLocationsArray.add("Weigle")
-                            gsrLocationsArray.add("VP Ground Floor")
-                            gsrLocationsArray.add("VP 3rd Floor")
-                            gsrLocationsArray.add("VP 4th Floor")
-                            gsrLocationsArray.add("Lippincott")
-                            gsrLocationsArray.add("Education Commons")
-                            gsrLocationsArray.add("Biomedical Library")
-                            gsrLocationsArray.add("Fisher Fine Arts")
-                            gsrLocationsArray.add("Levin Building")
-                            gsrLocationsArray.add("Museum Library")
-                            gsrLocationsArray.add("VP Seminar")
-                            gsrLocationsArray.add("VP Special Use")
-
-
-                            val gsrs = gsrLocationsArray.toTypedArray<String?>()
+                            val gsrs = gsrHashMap.keys.toList().toTypedArray()
 
                             //create an adapter to describe how the items are displayed, adapters are used in several places in android.
                             //There are multiple variations of this, but this is the basic variant.
                             activity.let {activity ->
-                                val adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_dropdown_item, gsrs)
+                                val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
                                 //set the spinners adapter to the previously created one.
                                 gsrLocationDropDown.adapter = adapter
                                 searchForGSR()
