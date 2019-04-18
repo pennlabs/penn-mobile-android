@@ -220,6 +220,9 @@
     <string name="last_name">Last name</string>
     <string name="email_address">Email Address</string>
     <string name="submit">Submit</string>
+    <string name="any">Any</string>
+    <string name="date">Date</string>
+    <string name="huntsmanGSR_SessionID">HuntsmanGSR_SessionID</string>
 
     <!-- Spring Fling -->
     <string name="spring_fling">Spring Fling</string>
@@ -228,6 +231,5 @@
 
     <string name="first_open_pref">first_open</string>
     <string name="no_home_items_message">No items selected, click on settings in the top right of the screen to change this</string>
-    <string name="huntsmanGSR_SessionID">HuntsmanGSR_SessionID</string>
 
 </resources>
