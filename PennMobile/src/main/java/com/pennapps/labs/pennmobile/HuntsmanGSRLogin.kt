@@ -87,7 +87,14 @@ class HuntsmanGSRLogin : Fragment() {
                         editor.apply()
                     }
                     Log.d("@@@@@", "booking GSR for $gsrLocationCode now, $startTime - $endTime")
+                    if (startTime.substring(9,13) == "2330") {
+                        Log.d("@@@@@", startTime.substring(4,8))
+                        val newDay = endTime[7] + 1
+                        var newEndTime = endTime.substring(0,7) + newDay + endTime.substring(8,endTime.length)
+                        endTime = newEndTime
+                    }
                     bookHuntsmanGSR(sessionid)
+                    Log.d("@@@@@", "booking GSR for $gsrLocationCode now, $startTime - $endTime")
                 }
             }
         }
