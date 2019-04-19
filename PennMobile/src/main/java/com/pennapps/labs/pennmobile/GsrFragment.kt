@@ -29,7 +29,6 @@ class GsrFragment : Fragment() {
     // ui components
     lateinit var selectDateButton: Button
     lateinit var selectTimeButton: Button
-    lateinit var durationDropDown: Spinner
     lateinit var gsrLocationDropDown: Spinner
 
     // api manager
@@ -37,8 +36,6 @@ class GsrFragment : Fragment() {
 
     //list that holds all GSR rooms
     private val gsrHashMap = HashMap<String, Int>()
-
-    private val durations : Array<String> = arrayOf("Any", "30m", "60m", "90m")
 
     // all the gsrs
     private var mGSRS = ArrayList<GSRContainer>()
@@ -64,7 +61,6 @@ class GsrFragment : Fragment() {
         val v = inflater.inflate(R.layout.fragment_gsr, container, false)
         selectDateButton = v.gsr_select_date
         selectTimeButton = v.gsr_select_time
-        durationDropDown = v.gsr_duration
         gsrLocationDropDown = v.gsr_building_selection
 
         // populate the list of gsrs
@@ -85,12 +81,6 @@ class GsrFragment : Fragment() {
         // Set default start/end times for GSR booking
         val ampmTimes = getStartEndTimes(hour, minutes, ampm)
         selectTimeButton.text = ampmTimes[0]
-        activity?.let { activity ->
-            val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, durations)
-            //set the spinners adapter to the previously created one.
-            durationDropDown.adapter = adapter
-            durationDropDown.prompt = durations[0]
-        }
 
         // Set up recycler view for list of GSR rooms
         val gsrRoomListLayoutManager = LinearLayoutManager(context)
@@ -136,25 +126,6 @@ class GsrFragment : Fragment() {
             timePickerDialog.show()
         }
 
-        durationDropDown.onItemSelectedListener = object : OnItemSelectedListener {
-            var initCheck = 0
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-                // User did not change the duration
-            }
-
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                if (p2 < durations.size) {
-                    durationDropDown.prompt = durations[p2]
-                    // OnItemSelected is called at initialization before the GSR locations have loaded, which would cause error
-                    if (initCheck > 0) {
-                        searchForGSR()
-                    } else {
-                        initCheck++
-                    }
-                }
-            }
-        }
-
         //day for gsr
         selectDateButton.setOnClickListener {
             // Get Current Date
@@ -194,8 +165,7 @@ class GsrFragment : Fragment() {
             val startTime = selectTimeButton.text.toString()
             val format = DateTimeFormat.forPattern("HH:mm a")
             val formattedStartTime = format.parseDateTime(startTime)
-            val formattedEndTime = if (durationDropDown.selectedItemPosition == 0 || durationDropDown.selectedItemPosition == -1) formattedStartTime.plusMinutes(90)
-            else formattedStartTime.plusMinutes(30 * durationDropDown.selectedItemPosition)
+            val formattedEndTime = formattedStartTime.plusMinutes(90)
             val endTime = formattedEndTime.toString("HH:mm a")
 //            val endTime = durationDropDown.text.toString()
             val location = mapGSR(gsrLocationDropDown.selectedItem.toString())
@@ -228,8 +198,7 @@ class GsrFragment : Fragment() {
         val startTime = selectTimeButton.text.toString()
         val format = DateTimeFormat.forPattern("HH:mm a")
         val formattedStartTime = format.parseDateTime(startTime)
-        val formattedEndTime = if (durationDropDown.selectedItemPosition == 0 || durationDropDown.selectedItemPosition == -1) formattedStartTime.plusMinutes(90)
-        else formattedStartTime.plusMinutes(30 * durationDropDown.selectedItemPosition)
+        val formattedEndTime = formattedStartTime.plusMinutes(90)
         val endTime = formattedEndTime.toString("HH:mm a")
         val location = mapGSR(gsrLocationDropDown.selectedItem.toString())
         if (location == -1) {
