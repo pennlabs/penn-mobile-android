@@ -21,7 +21,7 @@ class GsrRoomAdapter(internal var timeRanges: ArrayList<String>, internal var id
 
         //whenever a time slot is clicked, open spinner to let user pick a duration
         gsrRoomHolder.gsrRoom.setOnClickListener {
-            val position = it.tag as Int
+            val position = gsrRoomHolder.adapterPosition
 
             gsrRoomHolder.gsrDuration.adapter = ArrayAdapter(context, R.layout.gsr_spinner_item, getValidDurations(position))
 
@@ -66,12 +66,12 @@ class GsrRoomAdapter(internal var timeRanges: ArrayList<String>, internal var id
 
     override fun onBindViewHolder(holder: GsrRoomHolder, position: Int) {
         if (position < itemCount) {
-            holder.gsrRoom.tag = holder.layoutPosition
             val time = timeRanges[position]
             holder.gsrStartTime.text = time.substring(0, time.indexOf("-"))
             holder.gsrEndTime.text = time.substring(time.indexOf("-") + 1)
             holder.gsrId.text = ids[position]
             holder.locationId.text = gsrLocationCode
+            holder.gsrDuration.adapter = null
         }
     }
 
@@ -85,7 +85,8 @@ class GsrRoomAdapter(internal var timeRanges: ArrayList<String>, internal var id
             if (position + 2 < itemCount && timeRanges[position + 2].substring(0, time.indexOf("-")) == secondEndTime) {
                 durations.add("90m")
                 val thirdEndTime = timeRanges[position + 2].substring(time.indexOf("-") + 1)
-                if (Integer.parseInt(gsrLocationCode) != 1 && position + 3 < itemCount && timeRanges[position + 3].substring(0, time.indexOf("-")) == thirdEndTime) {
+                if (Integer.parseInt(gsrLocationCode) != 1 && position + 3 < itemCount &&
+                        timeRanges[position + 3].substring(0, time.indexOf("-")) == thirdEndTime) {
                     durations.add("120m")
                 }
             }
