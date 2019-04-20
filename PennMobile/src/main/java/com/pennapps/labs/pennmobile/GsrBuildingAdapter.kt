@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.pennapps.labs.pennmobile.classes.GSRContainer
+import org.joda.time.DateTime
 import java.util.*
 
 class GsrBuildingAdapter(internal var context: Context, internal var gsrs: ArrayList<GSRContainer>,
@@ -26,17 +27,17 @@ class GsrBuildingAdapter(internal var context: Context, internal var gsrs: Array
                 gsrRoomsRecyclerView.layoutManager = gsrRoomsLayoutManager
 
                 //now define arrays
-                val times = ArrayList<String>()
-                val dates = ArrayList<String>()
+                val timeRanges = ArrayList<String>()
+                val startTimes = ArrayList<DateTime>()
                 val ids = ArrayList<String>()
 
                 for (j in 0 until gsrs[position].availableGSRSlots.size) {
                     val gsrslot = gsrs[position].availableGSRSlots[j]
-                    times.add(gsrslot.timeRange)
-                    dates.add(gsrslot.dateNum)
+                    timeRanges.add(gsrslot.timeRange)
+                    startTimes.add(gsrslot.startTime)
                     ids.add(gsrslot.elementId)
                 }
-                gsrRoomsRecyclerView.adapter = GsrRoomAdapter(times, ids, gsrLocationCode, context, dates)
+                gsrRoomsRecyclerView.adapter = GsrRoomAdapter(timeRanges, ids, gsrLocationCode, context, startTimes)
                 holder.gsrBuildingName?.text = gsrs[position].gsrName
             }
         }

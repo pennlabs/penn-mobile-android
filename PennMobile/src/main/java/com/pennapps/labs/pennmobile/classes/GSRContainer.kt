@@ -1,34 +1,30 @@
 package com.pennapps.labs.pennmobile.classes
 
+import org.joda.time.DateTime
 import java.util.ArrayList
 
 /**
  * Created by Varun on 10/14/2018.
  */
 
-class GSRContainer(val gsrName: String, constructorTimeRange: String, constructorDateTime: String,
-                   constructorDayDate: String, constructorDateNum: String,
-                   constructorDuration: String, constructorElementId: String) {
+class GSRContainer(val gsrName: String, constructorTimeRange: String, constructorStartTime: DateTime,
+                   constructorElementId: String) {
     //used to keep track availability of the given room
     val availableGSRSlots = ArrayList<GSRContainerSlot>()
 
-
     init {
 
-        val newGSRSlot = GSRContainerSlot(constructorTimeRange, constructorDateTime,
-                constructorDayDate, constructorDateNum, constructorDuration, constructorElementId)
+        val newGSRSlot = GSRContainerSlot(constructorTimeRange, constructorStartTime, constructorElementId)
 
         availableGSRSlots.add(newGSRSlot)
 
     }
 
-    fun addGSRSlot(constructorTimeRange: String, constructorDateTime: String,
-                   constructorDayDate: String, constructorDateNum: String,
-                   constructorDuration: String, constructorElementId: String) {
+    fun addGSRSlot(constructorTimeRange: String, constructorStartTime: DateTime,
+                   constructorElementId: String) {
 
         //created new GSR time slot object
-        val newGSRSlot = GSRContainerSlot(constructorTimeRange, constructorDateTime,
-                constructorDayDate, constructorDateNum, constructorDuration, constructorElementId)
+        val newGSRSlot = GSRContainerSlot(constructorTimeRange, constructorStartTime, constructorElementId)
 
         availableGSRSlots.add(newGSRSlot)
     }
