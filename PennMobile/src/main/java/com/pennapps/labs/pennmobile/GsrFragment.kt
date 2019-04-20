@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.fragment_gsr.*
 import kotlinx.android.synthetic.main.fragment_gsr.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.no_results.*
+import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import java.util.*
 
@@ -40,12 +41,21 @@ class GsrFragment : Fragment() {
     // all the gsrs
     private var mGSRS = ArrayList<GSRContainer>()
 
-    private var formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss")
+    private lateinit var selectedDateTime : DateTime
+
+    private val spinnerDateFormatter = DateTimeFormat.forPattern("M/d/yyyy")
+    private val timeFormatter = DateTimeFormat.forPattern("h:mm a")
+    private val adjustedDateFormat = DateTimeFormat.forPattern("yyyy-MM-dd")
+    private val gsrSlotFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZZ")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mLabs = MainActivity.getLabsInstance()
         (activity as MainActivity).closeKeyboard()
+
+        // set default GSR selection date + time to the current date and time
+        selectedDateTime = DateTime.now()
+
         activity?.setTitle(R.string.gsr)
         // fabric report handling
         Fabric.with(context, Crashlytics())
@@ -66,21 +76,11 @@ class GsrFragment : Fragment() {
         // populate the list of gsrs
         populateDropDownGSR()
 
-        // Get calendar time and date: standardize to EST
-        val tz = TimeZone.getTimeZone("America/New_York")
-        val calendar = Calendar.getInstance(tz)
-        val minutes = calendar.get(Calendar.MINUTE)
-        val hour = calendar.get(Calendar.HOUR)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-        val month = calendar.get(Calendar.MONTH) + 1
-        val year = calendar.get(Calendar.YEAR)
-        val ampm = calendar.get(Calendar.AM_PM)
+        // Set default start date for GSR booking
+        selectDateButton.text = selectedDateTime.toString(spinnerDateFormatter)
 
-        selectDateButton.text = ("$month/$day/$year")
-
-        // Set default start/end times for GSR booking
-        val ampmTimes = getStartEndTimes(hour, minutes, ampm)
-        selectTimeButton.text = ampmTimes[0]
+        // Set default start time for GSR booking
+        selectTimeButton.text = selectedDateTime.toString(timeFormatter)
 
         // Set up recycler view for list of GSR rooms
         val gsrRoomListLayoutManager = LinearLayoutManager(context)
@@ -100,28 +100,14 @@ class GsrFragment : Fragment() {
 
             // Launch Time Picker Dialog
             val timePickerDialog = TimePickerDialog(activity,
-                    TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-                        val AM_PM = if (hourOfDay < 12) "AM" else "PM"
+                    TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
 
-                        var hourString = Integer.toString(hourOfDay)
-                        if (hourOfDay == 0) {
-                            hourString = "12"
-                        }
-                        //convert to nonmilitary time
-                        if (hourOfDay > 12) {
-                            hourString = Integer.toString(hourOfDay - 12)
-                        }
+                        // Update hour + minute
+                        selectedDateTime = DateTime(selectedDateTime.year, selectedDateTime.monthOfYear, selectedDateTime.dayOfMonth, hourOfDay, minute)
 
-                        var minuteString = Integer.toString(minute)
-
-                        //Android treats minutes less than 10 as single digit
-                        if (minute < 10) {
-                            minuteString = "0$minute"
-                        }
-
-                        //display selected time
-                        selectTimeButton.text = String.format(getString(R.string.start_end_button_text), hourString, minuteString, AM_PM)
-                        searchForGSR()
+                        // Display the selected time; use Joda to do the formatting work
+                        selectTimeButton.text = selectedDateTime.toString(timeFormatter)
+                        searchForGSR(false)
                     }, mHour, mMinute, false)
             timePickerDialog.show()
         }
@@ -135,12 +121,16 @@ class GsrFragment : Fragment() {
             val mDay = c.get(Calendar.DAY_OF_MONTH)
 
             val datePickerDialog = DatePickerDialog(activity,
-                    DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                    DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
                         //account for index starting at 0
                         val entryMonth = monthOfYear + 1
 
-                        selectDateButton.text = "$entryMonth/$dayOfMonth/$year"
-                        searchForGSR()
+                        // Update year + month + day
+                        selectedDateTime = DateTime(year, entryMonth, dayOfMonth, selectedDateTime.hourOfDay, selectedDateTime.minuteOfHour)
+
+                        // Display the selected date; use Joda to do the formatting work
+                        selectDateButton.text = selectedDateTime.toString(spinnerDateFormatter)
+                        searchForGSR(false)
                     }, mYear, mMonth, mDay)
 
             //set min and max choices for dates. Want to limit to week.
@@ -160,24 +150,7 @@ class GsrFragment : Fragment() {
         // handle swipe to refresh
         v.gsr_refresh_layout.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
         v.gsr_refresh_layout.setOnRefreshListener {
-            //get vars
-            val dateBooking = selectDateButton.text.toString()
-            val startTime = selectTimeButton.text.toString()
-            val format = DateTimeFormat.forPattern("HH:mm a")
-            val formattedStartTime = format.parseDateTime(startTime)
-            val formattedEndTime = formattedStartTime.plusMinutes(90)
-            val endTime = formattedEndTime.toString("HH:mm a")
-//            val endTime = durationDropDown.text.toString()
-            val location = mapGSR(gsrLocationDropDown.selectedItem.toString())
-            if (location == -1) {
-                showNoResults()
-                Toast.makeText(activity, "Error: could not load buildings", Toast.LENGTH_LONG).show()
-            } else {
-                no_results.visibility = View.GONE
-                // Do not make the normal loading panel visible since the refresh layout already shows a loading icon
-                // Get the hours
-                getTimes(location, dateBooking, startTime, endTime)
-            }
+            searchForGSR(true)
         }
 
         return v
@@ -192,48 +165,27 @@ class GsrFragment : Fragment() {
 
     // Performs GSR search
     // Called when page loads and whenever user changes start/end time, date, or building
-    fun searchForGSR() {
-        //get vars
-        val dateBooking = selectDateButton.text.toString()
-        val startTime = selectTimeButton.text.toString()
-        val format = DateTimeFormat.forPattern("HH:mm a")
-        val formattedStartTime = format.parseDateTime(startTime)
-        val formattedEndTime = formattedStartTime.plusMinutes(90)
-        val endTime = formattedEndTime.toString("HH:mm a")
+    fun searchForGSR(calledByRefreshLayout: Boolean) {
         val location = mapGSR(gsrLocationDropDown.selectedItem.toString())
         if (location == -1) {
             showNoResults()
             Toast.makeText(activity, "Error: could not load buildings", Toast.LENGTH_LONG).show()
         } else {
-            // display loading screen
+            // display loading screen if user did not use swipe refresh
+            if (!calledByRefreshLayout) {
+                loadingPanel.visibility = View.VISIBLE
+                gsr_rooms_list.visibility = View.GONE
+            }
             no_results.visibility = View.GONE
-            loadingPanel.visibility = View.VISIBLE
-            gsr_rooms_list.visibility = View.GONE
             //get the hours
-            getTimes(location, dateBooking, startTime, endTime)
+            getTimes(location)
         }
     }
 
     // Performs GET request and fetches the rooms and availability
-    private fun getTimes(location: Int, dateBooking: String, startTime: String, endTime: String) {
-        var startTime = startTime
-        var endTime = endTime
-
-        //deal with exception of time starting with 0:--
-        if (startTime[0] == '0') {
-            startTime = "12" + startTime.substring(1)
-        }
-
-        if (endTime[0] == '0') {
-            endTime = "12" + endTime.substring(1)
-        }
-
-        //convert times to military
-
-        val originalDateFormat = DateTimeFormat.forPattern("MM/dd/yyyy")
-        val adjustedDateFormat = DateTimeFormat.forPattern("yyyy-MM-dd")
-        val adjustedDateString = adjustedDateFormat.print(originalDateFormat.parseDateTime(dateBooking))
-        mLabs.gsrRoom(location, adjustedDateString, adjustedDateString)
+    private fun getTimes(location: Int) {
+        val adjustedDateString = selectedDateTime.toString(adjustedDateFormat)
+        mLabs.gsrRoom(location, adjustedDateString)
                 ?.subscribe({ gsr ->
                     activity?.let {activity ->
                     activity.runOnUiThread {
@@ -258,30 +210,20 @@ class GsrFragment : Fragment() {
                                         val currSlot = gsrTimeSlots[j]
                                         if (currSlot.isAvailable) {
 
-
                                             val startString = currSlot.startTime
                                             val endString = currSlot.endTime
 
                                             if (startString != null && endString != null) {
-                                                val startTime = formatter.parseDateTime(startString.substring(0,
-                                                        startString.length - 6))
-                                                val endTime = formatter.parseDateTime(endString.substring(0,
-                                                        endString.length - 6))
-                                                if (endTime.isAfterNow) {
-                                                    var stringStartTime = safeToString(startTime.hourOfDay) + ":" +
-                                                            safeToString(startTime.minuteOfHour)
-                                                    var stringEndTime = safeToString(endTime.hourOfDay) + ":" +
-                                                            safeToString(endTime.minuteOfHour)
-
-                                                    stringStartTime = convertToCivilianTime(stringStartTime)
-                                                    stringEndTime = convertToCivilianTime(stringEndTime)
+                                                val startTime = gsrSlotFormatter.parseDateTime(startString)
+                                                val endTime = gsrSlotFormatter.parseDateTime(endString)
+                                                if (endTime.isAfter(selectedDateTime)) {
+                                                    val stringStartTime = startTime.toString(timeFormatter)
+                                                    val stringEndTime = endTime.toString(timeFormatter)
 
                                                     val gsrName = gsrRoom.name ?: ""
                                                     val gsrRoomId = gsrRoom.room_id ?: 0
-                                                    insertGSRSlot(gsrName, "$stringStartTime-$stringEndTime", safeToString(startTime.hourOfDay) + ":" +
-                                                            safeToString(startTime.minuteOfHour),
-                                                            safeToString(startTime.dayOfWeek),
-                                                            safeToString(startTime.dayOfMonth), "30", Integer.toString(gsrRoomId))
+                                                    insertGSRSlot(gsrName, "$stringStartTime-$stringEndTime",
+                                                            startTime, Integer.toString(gsrRoomId))
                                                 }
                                             }
                                         }
@@ -337,7 +279,6 @@ class GsrFragment : Fragment() {
 
                             val numLocations = locations.size
 
-
                             var i = 0
                             // go through all the rooms
                             while (i < numLocations) {
@@ -367,7 +308,7 @@ class GsrFragment : Fragment() {
 
                             //set the spinners adapter to the previously created one.
                             gsrLocationDropDown.adapter = adapter
-                            searchForGSR()
+                            searchForGSR(false)
                         }
                     }
                 }, {
@@ -393,7 +334,7 @@ class GsrFragment : Fragment() {
                                 val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
                                 //set the spinners adapter to the previously created one.
                                 gsrLocationDropDown.adapter = adapter
-                                searchForGSR()
+                                searchForGSR(false)
                             }
                         }
                     }
@@ -401,7 +342,7 @@ class GsrFragment : Fragment() {
                 )
         gsrLocationDropDown.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View?, i: Int, l: Long) {
-                searchForGSR()
+                searchForGSR(false)
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>) {
@@ -418,34 +359,11 @@ class GsrFragment : Fragment() {
         gsr_refresh_layout.isRefreshing = false
     }
 
-    //helper function that turns military to civilian time
-    fun convertToCivilianTime(input: String): String {
-        val militaryTimeFormatter = DateTimeFormat.forPattern("HH:mm")
-        val civilianTimeFormatter = DateTimeFormat.forPattern("hh:mm a")
-        return civilianTimeFormatter.print(militaryTimeFormatter.withLocale(Locale.ENGLISH).parseLocalTime(input))
-    }
-
-    //helper function that converts string to int but keeps zeros
-    fun safeToString(input: Int): String = if (input == 0) "00" else Integer.toString(input)
-
     //takes the name of the gsr and returns an int for the corresponding code
     fun mapGSR(name: String): Int = gsrHashMap[name] ?: 0
 
-    // Parameters: the starting time's hour, minutes, and AM/PM as formatted by Java.utils.Calendar
-    // AM = 0, PM = 1
-    // Returns a string array of length 2 where first element is properly formatted starting time
-    // Second element is properly formatted ending time, which is one hour after starting time
-    fun getStartEndTimes(hour: Int, minutes: Int, ampm: Int): Array<String> {
-        val results = arrayOf("0", "0")
-        val strampm = if (ampm == 0) "AM" else "PM"
-        results[0] = hour.toString() + ":00" + " " + strampm
-        results[1] = "11:59 PM"
-        return results
-    }
-
     //function that takes all available GSR sessions and populates mGSRs
-    fun insertGSRSlot(gsrName: String, GSRTimeRange: String, GSRDateTime: String,
-                      GSRDayDate: String, GSRDateNum: String, GSRDuration: String, GSRElementId: String) {
+    fun insertGSRSlot(gsrName: String, GSRTimeRange: String, GSRStartTime: DateTime, GSRElementId: String) {
 
         var encountered = false
 
@@ -453,18 +371,14 @@ class GsrFragment : Fragment() {
             val currentGSR = mGSRS[i]
             //if there is GSR, add the available session to the GSR Object
             if (currentGSR.gsrName == gsrName) {
-                currentGSR.addGSRSlot(GSRTimeRange, GSRDateTime, GSRDayDate, GSRDateNum, GSRDuration, GSRElementId)
+                currentGSR.addGSRSlot(GSRTimeRange, GSRStartTime, GSRElementId)
                 encountered = true
             }
         }
         //can't find existing GSR. Create new object
         if (!encountered) {
-            val newGSRObject = GSRContainer(gsrName, GSRTimeRange, GSRDateTime, GSRDayDate, GSRDateNum, GSRDuration, GSRElementId)
+            val newGSRObject = GSRContainer(gsrName, GSRTimeRange, GSRStartTime, GSRElementId)
             mGSRS.add(newGSRObject)
         }
     }
-
-
-
-
 }
