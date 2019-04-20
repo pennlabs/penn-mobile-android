@@ -10,6 +10,12 @@
     android:orientation="vertical"
     android:padding="4dp">
 
+    <Spinner
+        android:id="@+id/gsr_duration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"/>
+
     <TextView
         android:id="@+id/gsr_start_time"
         android:layout_width="wrap_content"
