@@ -68,8 +68,28 @@
         android:background="@null"
         app:layout_constraintBottom_toTopOf="@+id/gsr_selection"
         app:layout_constraintStart_toEndOf="@id/gsr_select_time"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/gsr_duration"
         app:layout_constraintTop_toBottomOf="@id/gsr_building_text" />
+
+    <TextView
+        android:id="@+id/gsr_duration_text"
+        android:text="@string/duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/gsr_duration"
+        app:layout_constraintEnd_toEndOf="@id/gsr_duration"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/gsr_duration"/>
+
+    <Spinner
+        android:id="@+id/gsr_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:background="@null"
+        app:layout_constraintBottom_toTopOf="@+id/gsr_selection"
+        app:layout_constraintStart_toEndOf="@+id/gsr_building_selection"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gsr_duration_text" />
 
     <LinearLayout
         android:id="@+id/linearLayout"

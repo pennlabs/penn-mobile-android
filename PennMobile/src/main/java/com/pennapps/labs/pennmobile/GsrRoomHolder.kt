@@ -3,7 +3,6 @@ package com.pennapps.labs.pennmobile
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.Spinner
 import android.widget.TextView
 import kotlinx.android.synthetic.main.gsr_room.view.*
 
@@ -14,6 +13,5 @@ class GsrRoomHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     internal var gsrEndTime: TextView = itemView.gsr_end_time
     internal var gsrId: TextView =  itemView.gsr_id
     internal var locationId: TextView = itemView.locationId
-    internal var gsrDuration: Spinner = itemView.gsr_duration
 
 }
