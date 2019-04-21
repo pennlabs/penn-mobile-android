@@ -8,7 +8,7 @@
     android:textColor="@color/color_primary"
     android:gravity="center"
     android:layout_height="60dp"
-    android:paddingLeft="2dp"
-    android:paddingRight="2dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
     android:ellipsize="marquee"
-    android:paddingStart="2dp" />
+    android:paddingStart="8dp" />

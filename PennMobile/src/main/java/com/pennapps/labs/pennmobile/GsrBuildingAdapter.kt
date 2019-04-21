@@ -10,7 +10,7 @@ import org.joda.time.DateTime
 import java.util.*
 
 class GsrBuildingAdapter(internal var context: Context, internal var gsrs: ArrayList<GSRContainer>,
-                         internal var gsrLocationCode: String) : RecyclerView.Adapter<GsrBuildingHolder>() {
+                         internal var gsrLocationCode: String, internal var duration: Int) : RecyclerView.Adapter<GsrBuildingHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GsrBuildingHolder {
         val view = LayoutInflater.from(parent.context)
@@ -37,7 +37,7 @@ class GsrBuildingAdapter(internal var context: Context, internal var gsrs: Array
                     startTimes.add(gsrslot.startTime)
                     ids.add(gsrslot.elementId)
                 }
-                gsrRoomsRecyclerView.adapter = GsrRoomAdapter(timeRanges, ids, gsrLocationCode, context, startTimes)
+                gsrRoomsRecyclerView.adapter = GsrRoomAdapter(timeRanges, ids, gsrLocationCode, context, startTimes, duration)
                 holder.gsrBuildingName?.text = gsrs[position].gsrName
             }
         }
