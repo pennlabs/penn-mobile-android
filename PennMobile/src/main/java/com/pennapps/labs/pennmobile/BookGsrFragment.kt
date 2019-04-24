@@ -3,7 +3,6 @@ package com.pennapps.labs.pennmobile
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -96,7 +95,6 @@ class BookGsrFragment : Fragment() {
         activity?.let { activity ->
             val sp = PreferenceManager.getDefaultSharedPreferences(activity)
             sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
-            Log.d("@@@@ sessionid", sessionID)
         }
 
         mLabs?.let { mLabs ->
@@ -118,9 +116,6 @@ class BookGsrFragment : Fragment() {
                     object : Callback<GSRBookingResult> {
                         override fun success(result: GSRBookingResult, response: Response) {
                             //Displaying the output as a toast
-                            Log.d("@@@@ string", result.toString())
-                            Log.d("@@@@@ results", result.getResults()?.toString() ?: "results is null")
-                            Log.d("@@@@@ error", result.getError() ?: "error is null")
                             if (result.getResults() == true) {
                                 Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
                             }

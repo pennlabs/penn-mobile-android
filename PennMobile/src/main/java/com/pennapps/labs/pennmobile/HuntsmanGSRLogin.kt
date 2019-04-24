@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -79,21 +78,17 @@ class HuntsmanGSRLogin : Fragment() {
 
                     // save sessionid in shared preferences
                     activity?.let { activity ->
-                        Log.d("@@@@ activity", "storing sessionid " + sessionid)
                         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
                         val editor = sp.edit()
                         editor.putString(getString(R.string.huntsmanGSR_SessionID), sessionid)
                         editor.apply()
                     }
-                    Log.d("@@@@@", "booking GSR for $gsrLocationCode now, $startTime - $endTime")
                     if (startTime.substring(9,13) == "2330") {
-                        Log.d("@@@@@", startTime.substring(4,8))
                         val newDay = endTime[7] + 1
                         var newEndTime = endTime.substring(0,7) + newDay + endTime.substring(8,endTime.length)
                         endTime = newEndTime
                     }
                     bookHuntsmanGSR(sessionid)
-                    Log.d("@@@@@", "booking GSR for $gsrLocationCode now, $startTime - $endTime")
                 }
             }
         }
@@ -127,7 +122,6 @@ class HuntsmanGSRLogin : Fragment() {
                             else {
                                 Toast.makeText(activity, "GSR booking failed: " + result.getError(), Toast.LENGTH_LONG).show()
                                 activity?.let { activity ->
-                                    Log.d("@@@@ activity", "deleting sessionid " + sessionid)
                                     val sp = PreferenceManager.getDefaultSharedPreferences(activity)
                                     val editor = sp.edit()
                                     editor.remove(getString(R.string.huntsmanGSR_SessionID))
