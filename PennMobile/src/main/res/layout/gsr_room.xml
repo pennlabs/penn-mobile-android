@@ -15,29 +15,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:color="@color/gsr_white"
         android:text="Time"
         android:textColor="@color/gsr_green"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:textStyle="bold"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:color="@color/gsr_white"
         android:text="-"
         android:textColor="@color/gsr_green"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/gsr_end_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:color="@color/gsr_white"
         android:text="Time"
         android:textColor="@color/gsr_green"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/gsr_id"
@@ -45,11 +45,11 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:layout_gravity="center_horizontal"
-        android:color="@color/gsr_white"
         android:text=""
         android:textColor="@color/gsr_green"
         android:textSize="14sp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/locationId"
@@ -57,10 +57,10 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:gravity="center_horizontal"
-        android:color="@color/gsr_white"
         android:text=""
         android:textSize="14sp"
         android:textColor="@color/gsr_green"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:textStyle="bold"/>
 
 </LinearLayout>

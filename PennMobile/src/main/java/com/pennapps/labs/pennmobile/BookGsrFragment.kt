@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile
 
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -8,15 +9,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import butterknife.ButterKnife
 import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.classes.GSRBookingResult
 import kotlinx.android.synthetic.main.gsr_details_book.view.*
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
 
 
 class BookGsrFragment : Fragment() {
@@ -91,31 +89,39 @@ class BookGsrFragment : Fragment() {
         return v
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
-
     private fun bookGSR(gsrId: Int, gsrLocationCode: Int, startTime: String?, endTime: String?) {
+
+        var sessionID = ""
+        activity?.let { activity ->
+            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+            sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
+        }
 
         mLabs?.let { mLabs ->
             mLabs.bookGSR(
                     //Passing the values
+                    sessionID,
                     gsrLocationCode,
                     gsrId,
                     startTime,
                     endTime,
-                    firstName?.text.toString(),
-                    lastName?.text.toString(),
-                    email?.text.toString(),
+                    firstName.text.toString(),
+                    lastName.text.toString(),
+                    email.text.toString(),
                     "Penn Mobile GSR",
                     "2158986533",
                     "2-3",
 
                     //Creating an anonymous callback
-                    object : Callback<Response> {
-                        override fun success(result: Response, response: Response) {
+                    object : Callback<GSRBookingResult> {
+                        override fun success(result: GSRBookingResult, response: Response) {
                             //Displaying the output as a toast
-                            Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
+                            if (result.getResults() == true) {
+                                Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
+                            }
+                            else {
+                                Toast.makeText(activity, "GSR booking failed with " + result.getError(), Toast.LENGTH_LONG).show()
+                            }
                         }
 
                         override fun failure(error: RetrofitError) {
