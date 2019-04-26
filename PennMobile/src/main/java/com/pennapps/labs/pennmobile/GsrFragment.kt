@@ -196,6 +196,10 @@ class GsrFragment : Fragment() {
     // Performs GET request and fetches the rooms and availability
     private fun getTimes(location: Int) {
         val adjustedDateString = selectedDateTime.toString(adjustedDateFormat)
+        selectDateButton.isClickable = false
+        selectTimeButton.isClickable = false
+        gsrLocationDropDown.isEnabled = false
+        durationDropDown.isEnabled = false
         mLabs.gsrRoom(location, adjustedDateString)
                 ?.subscribe({ gsr ->
                     activity?.let {activity ->
@@ -241,6 +245,10 @@ class GsrFragment : Fragment() {
                         })
 
                         mGSRS = ArrayList()
+                        selectDateButton.isClickable = true
+                        selectTimeButton.isClickable = true
+                        gsrLocationDropDown.isEnabled = true
+                        durationDropDown.isEnabled = true
                     }
                 }
                 }, { activity?.let {
@@ -248,6 +256,10 @@ class GsrFragment : Fragment() {
                     activity.runOnUiThread {
                         showNoResults()
                         Toast.makeText(activity, "Error: could not load GSRs", Toast.LENGTH_LONG).show()
+                        selectDateButton.isClickable = true
+                        selectTimeButton.isClickable = true
+                        gsrLocationDropDown.isEnabled = true
+                        durationDropDown.isEnabled = true
                     } }
                 }
                 )
