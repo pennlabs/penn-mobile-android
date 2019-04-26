@@ -14,5 +14,4 @@ class GsrRoomHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     internal var gsrId: TextView =  itemView.gsr_id
     internal var locationId: TextView = itemView.locationId
 
-
 }

@@ -213,14 +213,18 @@
     <string name="calendar_button">Something went wrong</string>
     <string name="search_GSRs">Search GSRs</string>
     <string name="quitBook">&lt;- Back</string>
-    <string name="select_instructions">Select an open GSR slot or edit the search range</string>
-    <string name="start_end_button_text">%1$s:%2$s %$3</string>
     <string name="to">to</string>
     <string name="search_date">Date</string>
     <string name="first_name">First name</string>
     <string name="last_name">Last name</string>
     <string name="email_address">Email Address</string>
     <string name="submit">Submit</string>
+    <string name="any">Any</string>
+    <string name="date">Date</string>
+    <string name="huntsmanGSR_SessionID">HuntsmanGSR_SessionID</string>
+    <string name="time">Time</string>
+    <string name="duration">Duration</string>
+    <string name="gsr_location">Location</string>
 
     <!-- Spring Fling -->
     <string name="spring_fling">Spring Fling</string>
