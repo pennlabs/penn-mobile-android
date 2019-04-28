@@ -92,7 +92,7 @@
         app:layout_constraintTop_toBottomOf="@id/gsr_duration_text" />
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/gsr_no_results"
         app:layout_constraintTop_toBottomOf="@id/gsr_selection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -100,7 +100,14 @@
         <include layout="@layout/no_results" />
     </LinearLayout>
 
-    <include layout="@layout/loading_panel" />
+    <LinearLayout
+        android:id="@+id/gsr_loading"
+        app:layout_constraintTop_toBottomOf="@id/gsr_selection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/loading_panel" />
+    </LinearLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/gsr_refresh_layout"
