@@ -98,7 +98,7 @@ class GsrFragment : Fragment() {
         // Set up recycler view for list of GSR rooms
         val gsrRoomListLayoutManager = LinearLayoutManager(context)
         gsrRoomListLayoutManager.orientation = LinearLayoutManager.VERTICAL
-        v.gsr_rooms_list.layoutManager = (gsrRoomListLayoutManager)
+        v.gsr_rooms_list?.layoutManager = (gsrRoomListLayoutManager)
 
         /**
          * On Click functions for buttons
@@ -161,8 +161,8 @@ class GsrFragment : Fragment() {
         }
 
         // handle swipe to refresh
-        v.gsr_refresh_layout.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
-        v.gsr_refresh_layout.setOnRefreshListener {
+        v.gsr_refresh_layout?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
+        v.gsr_refresh_layout?.setOnRefreshListener {
             searchForGSR(true)
         }
 
@@ -187,7 +187,7 @@ class GsrFragment : Fragment() {
             // display loading screen if user did not use swipe refresh
             if (!calledByRefreshLayout) {
                 loadingPanel.visibility = View.VISIBLE
-                gsr_rooms_list.visibility = View.GONE
+                gsr_rooms_list?.visibility = View.GONE
             }
             noResultsPanel.visibility = View.GONE
             //get the hours
@@ -406,8 +406,8 @@ class GsrFragment : Fragment() {
         // get rid of loading screen and display no results
         noResultsPanel.visibility = View.VISIBLE
         loadingPanel.visibility = View.GONE
-        gsr_rooms_list.visibility = View.GONE
-        gsr_refresh_layout.isRefreshing = false
+        gsr_rooms_list?.visibility = View.GONE
+        gsr_refresh_layout?.isRefreshing = false
     }
 
     //takes the name of the gsr and returns an int for the corresponding code
