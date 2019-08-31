@@ -51,13 +51,14 @@ class FitnessFragment : Fragment() {
 
         // handle swipe to refresh
         view.gym_refresh_layout.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
-        view.gym_refresh_layout.setOnRefreshListener { getGymData() }
-
-        // get api data
-        getGymData()
-
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        view.gym_refresh_layout.setOnRefreshListener { getGymData() }
+        // get api data
+        getGymData()
     }
 
     private fun getGymData() {
