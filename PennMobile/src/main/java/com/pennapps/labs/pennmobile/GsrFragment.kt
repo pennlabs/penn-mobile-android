@@ -73,15 +73,16 @@ class GsrFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_gsr, container, false)
+    }
 
-        // link UI elements
-        val v = inflater.inflate(R.layout.fragment_gsr, container, false)
-        selectDateButton = v.gsr_select_date
-        selectTimeButton = v.gsr_select_time
-        gsrLocationDropDown = v.gsr_building_selection
-        durationDropDown = v.gsr_duration
-        loadingPanel = v.gsr_loading
-        noResultsPanel = v.gsr_no_results
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        selectDateButton = view.gsr_select_date
+        selectTimeButton = view.gsr_select_time
+        gsrLocationDropDown = view.gsr_building_selection
+        durationDropDown = view.gsr_duration
+        loadingPanel = view.gsr_loading
+        noResultsPanel = view.gsr_no_results
 
         durationAdapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m", "120m"))
         huntsmanDurationAdapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m"))
@@ -98,7 +99,7 @@ class GsrFragment : Fragment() {
         // Set up recycler view for list of GSR rooms
         val gsrRoomListLayoutManager = LinearLayoutManager(context)
         gsrRoomListLayoutManager.orientation = LinearLayoutManager.VERTICAL
-        v.gsr_rooms_list?.layoutManager = (gsrRoomListLayoutManager)
+        view.gsr_rooms_list.layoutManager = (gsrRoomListLayoutManager)
 
         /**
          * On Click functions for buttons
@@ -161,12 +162,10 @@ class GsrFragment : Fragment() {
         }
 
         // handle swipe to refresh
-        v.gsr_refresh_layout?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
-        v.gsr_refresh_layout?.setOnRefreshListener {
+        view.gsr_refresh_layout.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
+        view.gsr_refresh_layout.setOnRefreshListener {
             searchForGSR(true)
         }
-
-        return v
     }
 
     override fun onResume() {
@@ -187,7 +186,7 @@ class GsrFragment : Fragment() {
             // display loading screen if user did not use swipe refresh
             if (!calledByRefreshLayout) {
                 loadingPanel.visibility = View.VISIBLE
-                gsr_rooms_list?.visibility = View.GONE
+                gsr_rooms_list.visibility = View.GONE
             }
             noResultsPanel.visibility = View.GONE
             //get the hours
@@ -205,50 +204,50 @@ class GsrFragment : Fragment() {
         mLabs.gsrRoom(location, adjustedDateString)
                 ?.subscribe({ gsr ->
                     activity?.let {activity ->
-                    activity.runOnUiThread {
-                        val gsrRooms = gsr.rooms
-                        var timeSlotLengthZero = true
+                        activity.runOnUiThread {
+                            val gsrRooms = gsr.rooms
+                            var timeSlotLengthZero = true
 
-                        if (gsrRooms == null) {
-                            // a certification error causes "room" field to remain null
-                            showNoResults()
-                            Toast.makeText(activity, "Error: Could not load GSRs", Toast.LENGTH_LONG).show()
-                        } else {
-                            for (i in gsrRooms.indices) {
-                                val gsrRoom = gsrRooms[i]
-                                val gsrTimeSlots = gsrRoom.slots
-                                //checks if the time slots are ever nonzero
-                                val size = gsrTimeSlots?.size ?: 0
-                                if (size > 0) {
-                                    timeSlotLengthZero = false
-                                }
-                                if (gsrTimeSlots != null) {
-                                    filterInsertTimeSlots(gsrRoom, gsrTimeSlots)
+                            if (gsrRooms == null) {
+                                // a certification error causes "room" field to remain null
+                                showNoResults()
+                                Toast.makeText(activity, "Error: Could not load GSRs", Toast.LENGTH_LONG).show()
+                            } else {
+                                for (i in gsrRooms.indices) {
+                                    val gsrRoom = gsrRooms[i]
+                                    val gsrTimeSlots = gsrRoom.slots
+                                    //checks if the time slots are ever nonzero
+                                    val size = gsrTimeSlots?.size ?: 0
+                                    if (size > 0) {
+                                        timeSlotLengthZero = false
+                                    }
+                                    if (gsrTimeSlots != null) {
+                                        filterInsertTimeSlots(gsrRoom, gsrTimeSlots)
+                                    }
                                 }
                             }
+                            // remove loading icon
+                            loadingPanel.visibility = View.GONE
+                            noResultsPanel.visibility = View.GONE
+                            // stop refreshing
+                            gsr_rooms_list.visibility = View.VISIBLE
+                            gsr_refresh_layout.isRefreshing = false
+
+                            if (timeSlotLengthZero) {
+                                Toast.makeText(context, "No GSRs available", Toast.LENGTH_LONG).show()
+                            }
+
+                            gsr_rooms_list.adapter = (context?.let {
+                                GsrBuildingAdapter(it, mGSRS, Integer.toString(location), (durationDropDown.selectedItemPosition + 1) * 30)
+                            })
+
+                            mGSRS = ArrayList()
+                            selectDateButton.isClickable = true
+                            selectTimeButton.isClickable = true
+                            gsrLocationDropDown.isEnabled = true
+                            durationDropDown.isEnabled = true
                         }
-                        // remove loading icon
-                        loadingPanel.visibility = View.GONE
-                        noResultsPanel.visibility = View.GONE
-                        // stop refreshing
-                        gsr_rooms_list?.visibility = View.VISIBLE
-                        gsr_refresh_layout?.isRefreshing = false
-
-                        if (timeSlotLengthZero) {
-                            Toast.makeText(context, "No GSRs available", Toast.LENGTH_LONG).show()
-                        }
-
-                        gsr_rooms_list?.adapter = (context?.let {
-                            GsrBuildingAdapter(it, mGSRS, Integer.toString(location), (durationDropDown.selectedItemPosition + 1) * 30)
-                        })
-
-                        mGSRS = ArrayList()
-                        selectDateButton.isClickable = true
-                        selectTimeButton.isClickable = true
-                        gsrLocationDropDown.isEnabled = true
-                        durationDropDown.isEnabled = true
                     }
-                }
                 }, { activity?.let {
                     activity ->
                     activity.runOnUiThread {
@@ -406,8 +405,8 @@ class GsrFragment : Fragment() {
         // get rid of loading screen and display no results
         noResultsPanel.visibility = View.VISIBLE
         loadingPanel.visibility = View.GONE
-        gsr_rooms_list?.visibility = View.GONE
-        gsr_refresh_layout?.isRefreshing = false
+        gsr_rooms_list.visibility = View.GONE
+        gsr_refresh_layout.isRefreshing = false
     }
 
     //takes the name of the gsr and returns an int for the corresponding code
