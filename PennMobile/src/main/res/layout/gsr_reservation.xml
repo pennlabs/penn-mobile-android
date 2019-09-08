@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <Button
+        android:id="@+id/gsr_reservation_cancel_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="22dp"
+        android:background="#D35400"
+        android:fontFamily="Roboto"
+        android:text="Cancel"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="12dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gsr_reservation_date_tv" />
+
+    <ImageView
+        android:id="@+id/gsr_reservation_iv"
+        android:layout_width="135dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="22dp"
+        android:layout_marginLeft="22dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginBottom="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/gsr_reservation_add_to_calendar_btn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@color/browser_actions_bg_grey" />
+
+    <TextView
+        android:id="@+id/gsr_reservation_location_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="22dp"
+        android:text="VP Weigle Room 110"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/gsr_reservation_iv"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/gsr_reservation_date_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="8dp"
+        android:text="Friday April 20 \n 2:00pm-3:00 pm"
+        android:textSize="13dp"
+        app:layout_constraintStart_toEndOf="@+id/gsr_reservation_iv"
+        app:layout_constraintTop_toBottomOf="@+id/gsr_reservation_location_tv" />
+
+    <Button
+        android:id="@+id/gsr_reservation_add_to_calendar_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:minWidth="100dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="8dp"
+        android:text="Add to Calendar"
+        android:textAllCaps="false"
+        android:textSize="12dp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:background="#C4C4C4"
+        app:layout_constraintStart_toEndOf="@+id/gsr_reservation_iv"
+        app:layout_constraintTop_toBottomOf="@+id/gsr_reservation_date_tv" />
+
+</android.support.constraint.ConstraintLayout>
