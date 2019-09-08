@@ -7,8 +7,6 @@ import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import kotlinx.android.synthetic.main.fragment_gsr_tabs.*
 import kotlinx.android.synthetic.main.fragment_gsr_tabs.view.*
 
 class GsrTabbedFragment : Fragment() {

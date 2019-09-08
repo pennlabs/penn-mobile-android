@@ -8,7 +8,7 @@ class GsrPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> {
-                GsrCurrentReservation()
+                GsrReservationsFragment()
             } else -> {
                 return GsrFragment()
             }
