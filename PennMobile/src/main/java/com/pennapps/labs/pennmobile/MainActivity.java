@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new RegistrarFragment();
                 break;
             case R.id.nav_gsr:
-                fragment = new GsrFragment();
+                fragment = new GsrTabbedFragment();
                 break;
             case R.id.nav_dining:
                 fragment = new DiningFragment();
