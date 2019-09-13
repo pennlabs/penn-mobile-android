@@ -8,9 +8,9 @@ class GsrPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> {
-                GsrReservationsFragment()
+                GsrFragment()
             } else -> {
-                return GsrFragment()
+                return GsrReservationsFragment()
             }
         }
     }
@@ -21,9 +21,9 @@ class GsrPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
     override fun getPageTitle(position: Int): CharSequence {
         return when (position) {
-            0 -> "My Reservations"
+            0 -> "Book a Room"
             else -> {
-                return "Book a Room"
+                return "My Reservations"
             }
         }
     }
