@@ -18,7 +18,7 @@ class GsrTabbedFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_gsr_tabs, container, false)
-        val fragmentAdapter = GsrPagerAdapter(activity!!.supportFragmentManager)
+        val fragmentAdapter = GsrPagerAdapter(childFragmentManager)
         viewPager = view.gsr_viewpager
         viewPager.adapter = fragmentAdapter
 
