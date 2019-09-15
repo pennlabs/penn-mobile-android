@@ -24,4 +24,7 @@
             android:layout_height="0dp"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 
+    <include layout="@layout/loading_panel" />
+    <include layout="@layout/no_results" />
+
 </android.support.constraint.ConstraintLayout>
