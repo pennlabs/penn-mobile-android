@@ -37,9 +37,7 @@ class GsrReservationsAdapter(private val reservations: List<GSRReservation>)// g
         val fromHour = from.toString("h:mm a")
         val toHour = to.toString("h:mm a")
 
-        Log.d("GsrReservations", reservation.info.toString())
         val imageUrl = reservation.info?.get("thumbnail")
-        Log.d("GsrReservations", imageUrl)
 
         // set image
         Picasso.get().load(imageUrl).fit().centerCrop().into(holder.itemView.gsr_reservation_iv)

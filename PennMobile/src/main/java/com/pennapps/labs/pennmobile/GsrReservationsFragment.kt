@@ -52,13 +52,6 @@ class GsrReservationsFragment : Fragment() {
         val divider = DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
         view.gsr_reservations_rv.addItemDecoration(divider)
 
-//        var reservations: MutableList<GSRReservation> = mutableListOf()
-//        for (i in 0..7) {
-//            reservations.add(GSRReservation())
-//        }
-//
-//        view.gsr_reservations_rv.adapter = GsrReservationsAdapter(reservations)
-
         // handle swipe to refresh
          view.gsr_reservations_refresh_layout.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
          view.gsr_reservations_refresh_layout.setOnRefreshListener { getReservations() }
@@ -76,10 +69,10 @@ class GsrReservationsFragment : Fragment() {
             mActivity.runOnUiThread {
                 gsr_reservations_rv.adapter = GsrReservationsAdapter(reservations)
                 // get rid of loading screen
-//                loadingPanel.visibility = View.GONE
-//                if (reservations.size > 0) {
-//                    no_results.visibility = View.GONE
-//                }
+                loadingPanel.visibility = View.GONE
+                if (reservations.size > 0) {
+                    no_results.visibility = View.GONE
+                }
                 // stop refreshing
                 try {
                     gsr_reservations_refresh_layout.isRefreshing = false
@@ -92,9 +85,9 @@ class GsrReservationsFragment : Fragment() {
                 throwable.printStackTrace()
                 Toast.makeText(activity, "Error: Could not load GSR reservations", Toast.LENGTH_LONG).show()
                 // get rid of loading screen
-//                loadingPanel.visibility = View.GONE
-//                // display no results
-//                no_results.visibility = View.VISIBLE
+                loadingPanel.visibility = View.GONE
+                // display no results
+                no_results.visibility = View.VISIBLE
                 try {
                     gsr_reservations_refresh_layout.isRefreshing = false
                 } catch (e: NullPointerException) {
