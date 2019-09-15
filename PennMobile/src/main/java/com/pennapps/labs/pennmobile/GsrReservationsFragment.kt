@@ -74,7 +74,6 @@ class GsrReservationsFragment : Fragment() {
         val labs = MainActivity.getLabsInstance() //TODO: store user email and fetch for that user
         labs.getGsrReservations("martagf@seas.upenn.edu").subscribe({ reservations ->
             mActivity.runOnUiThread {
-                Log.d("GsrReservationsFragment", reservations[0].name)
                 gsr_reservations_rv.adapter = GsrReservationsAdapter(reservations)
                 // get rid of loading screen
 //                loadingPanel.visibility = View.GONE
