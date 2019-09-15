@@ -4,19 +4,31 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class GSRReservation {
-    @SerializedName("room_name")
+    @SerializedName("booking_id")
     @Expose
-    var room_name: String? = null
+    var booking_id: String? = null
 
-    @SerializedName("date")
+    @SerializedName("name")
     @Expose
-    var date: String? = null
+    var name: String? = null
 
-    @SerializedName("time")
+    @SerializedName("fromDate")
     @Expose
-    var time: String? = null
+    var fromDate: String? = null
 
-    @SerializedName("image_url")
+    @SerializedName("toDate")
     @Expose
-    var image_url: String? = null
+    var toDate: String? = null
+
+    @SerializedName("gid")
+    @Expose
+    var gid: String? = null
+
+    @SerializedName("lid")
+    @Expose
+    var lid: String? = null
+
+    @SerializedName("info")
+    @Expose
+    var info: Map<String, String>? = null
 }

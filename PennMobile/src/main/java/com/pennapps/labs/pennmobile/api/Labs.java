@@ -9,6 +9,7 @@ import com.pennapps.labs.pennmobile.classes.FlingEvent;
 import com.pennapps.labs.pennmobile.classes.GSR;
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
+import com.pennapps.labs.pennmobile.classes.GSRReservation;
 import com.pennapps.labs.pennmobile.classes.Gym;
 import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
@@ -132,4 +133,8 @@ public interface Labs {
 
     @GET("/fitness/schedule")
     Observable<List<Gym>> getGymData();
+
+    @GET("/studyspaces/reservations") //TODO: figure out how to add email and session id params
+    Observable<List<GSRReservation>> getGsrReservations(
+            @Query("email") String email);
 }

@@ -23,9 +23,9 @@ class GsrReservationsAdapter(private val reservations: List<GSRReservation>)// g
     override fun onBindViewHolder(holder: GsrReservationViewHolder, position: Int) {
         val reservation = reservations[position]
         // get the data from GsrReservation class
-        val roomName = reservation.room_name
-        val date = reservation.date
-        val imageUrl = reservation.image_url
+        val roomName = reservation.name
+//        val date = reservation.date
+//        val imageUrl = reservation.image_url
 
         // set image
 //        Picasso.get().load(imageUrl).fit().centerCrop().into(holder.itemView.gym_image_view)
