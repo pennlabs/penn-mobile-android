@@ -134,7 +134,7 @@ public interface Labs {
     @GET("/fitness/schedule")
     Observable<List<Gym>> getGymData();
 
-    @GET("/studyspaces/reservations") //TODO: figure out how to add email and session id params
+    @GET("/studyspaces/reservations") //TODO: figure out how to add optional session id param for huntsman
     Observable<List<GSRReservation>> getGsrReservations(
             @Query("email") String email);
 }

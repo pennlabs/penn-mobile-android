@@ -2,12 +2,17 @@ package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.GSRReservation
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.gsr_reservation.view.*
 import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
 
 class GsrReservationsAdapter(private val reservations: List<GSRReservation>)// get reservations data from fragment
     : RecyclerView.Adapter<GsrReservationsAdapter.GsrReservationViewHolder>() {
@@ -24,23 +29,24 @@ class GsrReservationsAdapter(private val reservations: List<GSRReservation>)// g
         val reservation = reservations[position]
         // get the data from GsrReservation class
         val roomName = reservation.name
-//        val date = reservation.date
-//        val imageUrl = reservation.image_url
+
+        val formatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ")
+        val from = formatter.parseDateTime(reservation.fromDate)
+        val to = formatter.parseDateTime(reservation.toDate)
+        val day = from.toString("EEEE, MMMM d")
+        val fromHour = from.toString("h:mm a")
+        val toHour = to.toString("h:mm a")
+
+        Log.d("GsrReservations", reservation.info.toString())
+        val imageUrl = reservation.info?.get("thumbnail")
+        Log.d("GsrReservations", imageUrl)
 
         // set image
-//        Picasso.get().load(imageUrl).fit().centerCrop().into(holder.itemView.gym_image_view)
-//
-//        // update ViewHolder
-//        holder.itemView.gsr_reservation_location_tv.text = roomName
-//        holder.itemView.gsr_reservation_date_tv.text = date
-    }
+        Picasso.get().load(imageUrl).fit().centerCrop().into(holder.itemView.gsr_reservation_iv)
 
-    private fun formatTime(time: DateTime): String {
-        return if (time.toString("mm") == "00") {
-            time.toString("h a")
-        } else {
-            time.toString("h:mm a")
-        }
+        // update ViewHolder
+        holder.itemView.gsr_reservation_location_tv.text = roomName
+        holder.itemView.gsr_reservation_date_tv.text = day + "\n" + fromHour + "-" + toHour
     }
 
     override fun getItemCount(): Int {
