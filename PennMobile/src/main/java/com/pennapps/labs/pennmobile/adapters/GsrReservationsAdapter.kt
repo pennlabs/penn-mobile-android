@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.GSRReservation
 import com.squareup.picasso.Picasso
@@ -13,6 +14,7 @@ import kotlinx.android.synthetic.main.gsr_reservation.view.*
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
+import kotlin.Result.Companion.success
 
 class GsrReservationsAdapter(private val reservations: List<GSRReservation>)// get reservations data from fragment
     : RecyclerView.Adapter<GsrReservationsAdapter.GsrReservationViewHolder>() {
@@ -37,7 +39,7 @@ class GsrReservationsAdapter(private val reservations: List<GSRReservation>)// g
         val fromHour = from.toString("h:mm a")
         val toHour = to.toString("h:mm a")
 
-        val imageUrl = reservation.info?.get("thumbnail")
+        val imageUrl = reservation.info?.get("thumbnail") //?: "huntsman_url" TODO: put huntsman image url
 
         // set image
         Picasso.get().load(imageUrl).fit().centerCrop().into(holder.itemView.gsr_reservation_iv)
@@ -45,6 +47,12 @@ class GsrReservationsAdapter(private val reservations: List<GSRReservation>)// g
         // update ViewHolder
         holder.itemView.gsr_reservation_location_tv.text = roomName
         holder.itemView.gsr_reservation_date_tv.text = day + "\n" + fromHour + "-" + toHour
+
+        holder.itemView.gsr_reservation_cancel_btn.setOnClickListener {
+            val bookingID = reservation.booking_id
+            val labs = MainActivity.getLabsInstance()
+//            labs.cancelReservation("", bookingID, "", null)
+        }
     }
 
     override fun getItemCount(): Int {

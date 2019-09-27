@@ -134,8 +134,16 @@ public interface Labs {
     @GET("/fitness/schedule")
     Observable<List<Gym>> getGymData();
 
-    @GET("/studyspaces/reservations") //TODO: figure out how to add optional session id param for huntsman
+    @GET("/studyspaces/reservations")
     Observable<List<GSRReservation>> getGsrReservations(
             @Query("email") String email,
             @Query("sessionid") String sessionID);
+
+    @FormUrlEncoded
+    @POST("/studyspaces/cancel")
+    void cancelReservation(
+            @Header("X-Device-ID") String deviceID,
+            @Field("booking_id") String bookingID,
+            @Field("sessionid") String sessionID,
+            Callback<Response> callback);
 }
