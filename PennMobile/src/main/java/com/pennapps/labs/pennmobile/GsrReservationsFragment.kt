@@ -49,7 +49,6 @@ class GsrReservationsFragment : Fragment() {
         view.gsr_reservations_rv.layoutManager = LinearLayoutManager(context,
                 LinearLayoutManager.VERTICAL, false)
 
-        // add divider
         val divider = DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
         view.gsr_reservations_rv.addItemDecoration(divider)
 
@@ -73,7 +72,7 @@ class GsrReservationsFragment : Fragment() {
         Log.d("GsrReservations", "email: " + email)
 
         // get API data
-        val labs = MainActivity.getLabsInstance() //TODO: store user email and fetch for that user
+        val labs = MainActivity.getLabsInstance()
         labs.getGsrReservations(email, sessionid).subscribe({ reservations ->
             mActivity.runOnUiThread {
                 Log.d("GsrReservations", "reservations: " + reservations)
