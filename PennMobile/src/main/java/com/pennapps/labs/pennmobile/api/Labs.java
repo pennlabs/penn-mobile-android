@@ -136,5 +136,6 @@ public interface Labs {
 
     @GET("/studyspaces/reservations") //TODO: figure out how to add optional session id param for huntsman
     Observable<List<GSRReservation>> getGsrReservations(
-            @Query("email") String email);
+            @Query("email") String email,
+            @Query("sessionid") String sessionID);
 }
