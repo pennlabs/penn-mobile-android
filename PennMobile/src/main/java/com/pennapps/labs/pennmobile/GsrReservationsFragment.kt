@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile
 
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -63,15 +64,26 @@ class GsrReservationsFragment : Fragment() {
     }
 
     private fun getReservations() {
+
+        // get email and session id from shared preferences
+        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+        val sessionid = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
+        val email = sp.getString(getString(R.string.email_address), "")
+        Log.d("GsrReservations", "sessionid: " + sessionid)
+        Log.d("GsrReservations", "email: " + email)
+
         // get API data
         val labs = MainActivity.getLabsInstance() //TODO: store user email and fetch for that user
-        labs.getGsrReservations("martagf@seas.upenn.edu").subscribe({ reservations ->
+        labs.getGsrReservations(email, sessionid).subscribe({ reservations ->
             mActivity.runOnUiThread {
+                Log.d("GsrReservations", "reservations: " + reservations)
                 gsr_reservations_rv.adapter = GsrReservationsAdapter(reservations)
                 // get rid of loading screen
                 loadingPanel.visibility = View.GONE
                 if (reservations.size > 0) {
                     no_results.visibility = View.GONE
+                } else {
+                    no_results.visibility = View.VISIBLE //TODO: make no results tv prettier
                 }
                 // stop refreshing
                 try {

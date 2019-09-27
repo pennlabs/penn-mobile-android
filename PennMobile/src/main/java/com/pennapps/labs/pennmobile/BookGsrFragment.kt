@@ -79,6 +79,11 @@ class BookGsrFragment : Fragment() {
                                 Toast.makeText(activity, "Please enter a valid Penn email", Toast.LENGTH_LONG).show()
                             } else {
                                 bookGSR(Integer.parseInt(gsrID), Integer.parseInt(gsrLocationCode), startTime, endTime)
+                                // Save user email in shared preferences
+                                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                                val editor = sp.edit()
+                                editor.putString(getString(R.string.email_address), email.text.toString())
+                                editor.apply()
                             }
                         }
                     }
