@@ -1,11 +1,14 @@
 package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
+import android.preference.PreferenceManager
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.GSRReservation
@@ -14,7 +17,13 @@ import kotlinx.android.synthetic.main.gsr_reservation.view.*
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
+import retrofit.ResponseCallback
+import retrofit.RetrofitError
+import retrofit.client.Response
 import kotlin.Result.Companion.success
+import android.R.attr.radius
+
+
 
 class GsrReservationsAdapter(private val reservations: List<GSRReservation>)// get reservations data from fragment
     : RecyclerView.Adapter<GsrReservationsAdapter.GsrReservationViewHolder>() {
@@ -49,9 +58,31 @@ class GsrReservationsAdapter(private val reservations: List<GSRReservation>)// g
         holder.itemView.gsr_reservation_date_tv.text = day + "\n" + fromHour + "-" + toHour
 
         holder.itemView.gsr_reservation_cancel_btn.setOnClickListener {
-            val bookingID = reservation.booking_id
-            val labs = MainActivity.getLabsInstance()
-//            labs.cancelReservation("", bookingID, "", null)
+            // create dialog to confirm that you want to cancel reservation
+            val builder = AlertDialog.Builder(mContext)
+            builder.setTitle("Are you sure?")
+            builder.setMessage("Please confirm that you wish to delete this booking.")
+
+            builder.setPositiveButton("Confirm") { dialog, which ->
+                val bookingID = reservation.booking_id
+                val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
+                val sessionid = if (reservation.info == null) sp.getString(mContext.getString(R.string.huntsmanGSR_SessionID), "") else null
+
+                val labs = MainActivity.getLabsInstance()
+                labs.cancelReservation(bookingID, sessionid, object : ResponseCallback() {
+                    override fun success(response: Response) {
+                        Log.d("GsrReservations", response.status.toString())
+                    }
+
+                    override fun failure(error: RetrofitError) {
+                        Log.d("GsrReservations", error.toString())
+                    }
+                })
+            }
+
+            builder.setNegativeButton("Cancel") { _, _ -> }
+
+            builder.show()
         }
     }
 
