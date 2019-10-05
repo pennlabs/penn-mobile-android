@@ -142,7 +142,6 @@ public interface Labs {
     @FormUrlEncoded
     @POST("/studyspaces/cancel")
     void cancelReservation(
-            @Header("X-Device-ID") String deviceID,
             @Field("booking_id") String bookingID,
             @Field("sessionid") String sessionID,
             Callback<Response> callback);
