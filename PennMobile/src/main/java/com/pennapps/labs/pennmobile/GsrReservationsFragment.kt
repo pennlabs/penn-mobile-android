@@ -76,7 +76,7 @@ class GsrReservationsFragment : Fragment() {
         labs.getGsrReservations(email, sessionid).subscribe({ reservations ->
             mActivity.runOnUiThread {
                 Log.d("GsrReservations", "reservations: " + reservations)
-                gsr_reservations_rv.adapter = GsrReservationsAdapter(reservations)
+                gsr_reservations_rv.adapter = GsrReservationsAdapter(ArrayList(reservations))
                 // get rid of loading screen
                 loadingPanel.visibility = View.GONE
                 if (reservations.size > 0) {
