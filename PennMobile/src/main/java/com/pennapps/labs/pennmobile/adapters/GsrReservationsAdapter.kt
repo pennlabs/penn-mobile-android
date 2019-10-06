@@ -22,10 +22,10 @@ import retrofit.RetrofitError
 import retrofit.client.Response
 import kotlin.Result.Companion.success
 import android.R.attr.radius
+import android.widget.Toast.LENGTH_SHORT
 
 
-
-class GsrReservationsAdapter(private val reservations: List<GSRReservation>)// get reservations data from fragment
+class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>)// get reservations data from fragment
     : RecyclerView.Adapter<GsrReservationsAdapter.GsrReservationViewHolder>() {
 
     private lateinit var mContext: Context
@@ -38,6 +38,7 @@ class GsrReservationsAdapter(private val reservations: List<GSRReservation>)// g
 
     override fun onBindViewHolder(holder: GsrReservationViewHolder, position: Int) {
         val reservation = reservations[position]
+
         // get the data from GsrReservation class
         val roomName = reservation.name
 
@@ -66,16 +67,18 @@ class GsrReservationsAdapter(private val reservations: List<GSRReservation>)// g
             builder.setPositiveButton("Confirm") { dialog, which ->
                 val bookingID = reservation.booking_id
                 val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
-                val sessionid = if (reservation.info == null) sp.getString(mContext.getString(R.string.huntsmanGSR_SessionID), "") else null
+                val sessionID = if (reservation.info == null) sp.getString(mContext.getString(R.string.huntsmanGSR_SessionID), "") else null
 
                 val labs = MainActivity.getLabsInstance()
-                labs.cancelReservation(bookingID, sessionid, object : ResponseCallback() {
+                labs.cancelReservation("test_android", bookingID, sessionID, object : ResponseCallback() {
+                    // TODO: change to actual device id
                     override fun success(response: Response) {
-                        Log.d("GsrReservations", response.status.toString())
+                        reservations.removeAt(position)
+                        notifyItemRemoved(position)
                     }
 
                     override fun failure(error: RetrofitError) {
-                        Log.d("GsrReservations", error.toString())
+                        Toast.makeText(mContext, "Error deleting your GSR reservation.", LENGTH_SHORT).show()
                     }
                 })
             }
