@@ -36,6 +36,7 @@ class BookGsrFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         arguments?.let {arguments ->
             gsrID = arguments.getString("gsrID")
             gsrLocationCode = arguments.getString("gsrLocationCode")
