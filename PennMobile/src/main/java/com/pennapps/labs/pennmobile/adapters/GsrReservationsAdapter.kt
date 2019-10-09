@@ -23,6 +23,7 @@ import retrofit.client.Response
 import kotlin.Result.Companion.success
 import android.R.attr.radius
 import android.widget.Toast.LENGTH_SHORT
+import kotlinx.android.synthetic.main.fragment_gsr_reservations.*
 
 
 class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>)// get reservations data from fragment
@@ -39,7 +40,6 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
     override fun onBindViewHolder(holder: GsrReservationViewHolder, position: Int) {
         val reservation = reservations[position]
 
-        // get the data from GsrReservation class
         val roomName = reservation.name
 
         val formatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ")
@@ -49,12 +49,11 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
         val fromHour = from.toString("h:mm a")
         val toHour = to.toString("h:mm a")
 
-        val imageUrl = reservation.info?.get("thumbnail") //?: "huntsman_url" TODO: put huntsman image url
+        // huntsman reservation responses don't have an image url so we set it here
+        val imageUrl = reservation.info?.get("thumbnail") ?: "https://s3.us-east-2.amazonaws.com/labs.api/dining/MBA+Cafe.jpg"
 
-        // set image
         Picasso.get().load(imageUrl).fit().centerCrop().into(holder.itemView.gsr_reservation_iv)
 
-        // update ViewHolder
         holder.itemView.gsr_reservation_location_tv.text = roomName
         holder.itemView.gsr_reservation_date_tv.text = day + "\n" + fromHour + "-" + toHour
 
@@ -64,7 +63,7 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
             builder.setTitle("Are you sure?")
             builder.setMessage("Please confirm that you wish to delete this booking.")
 
-            builder.setPositiveButton("Confirm") { dialog, which ->
+            builder.setPositiveButton("Confirm") { _, _ ->
                 val bookingID = reservation.booking_id
                 val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
                 val sessionID = if (reservation.info == null) sp.getString(mContext.getString(R.string.huntsmanGSR_SessionID), "") else null
