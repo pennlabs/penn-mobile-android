@@ -22,7 +22,6 @@ import kotlinx.android.synthetic.main.fragment_fitness.view.*
 import kotlinx.android.synthetic.main.fragment_gsr_reservations.*
 import kotlinx.android.synthetic.main.fragment_gsr_reservations.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
-import kotlinx.android.synthetic.main.no_results.*
 
 class GsrReservationsFragment : Fragment() {
 
@@ -68,42 +67,32 @@ class GsrReservationsFragment : Fragment() {
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
         val sessionid = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
         val email = sp.getString(getString(R.string.email_address), "")
-        Log.d("GsrReservations", "sessionid: " + sessionid)
-        Log.d("GsrReservations", "email: " + email)
 
         // get API data
         val labs = MainActivity.getLabsInstance()
         labs.getGsrReservations(email, sessionid).subscribe({ reservations ->
             mActivity.runOnUiThread {
-                Log.d("GsrReservations", "reservations: " + reservations)
                 gsr_reservations_rv.adapter = GsrReservationsAdapter(ArrayList(reservations))
-                // get rid of loading screen
                 loadingPanel.visibility = View.GONE
                 if (reservations.size > 0) {
-                    no_results.visibility = View.GONE
+                    gsr_no_reservations.visibility = View.GONE
                 } else {
-                    no_results.visibility = View.VISIBLE //TODO: make no results tv prettier
+                    gsr_no_reservations.visibility = View.VISIBLE
                 }
                 // stop refreshing
                 try {
                     gsr_reservations_refresh_layout.isRefreshing = false
-                } catch (e: NullPointerException) {
-                    // no need to do anything, we've just moved away from this activity
-                }
+                } catch (e: NullPointerException) {}
             }
         }, { throwable ->
             mActivity.runOnUiThread {
                 throwable.printStackTrace()
                 Toast.makeText(activity, "Error: Could not load GSR reservations", Toast.LENGTH_LONG).show()
-                // get rid of loading screen
                 loadingPanel.visibility = View.GONE
-                // display no results
-                no_results.visibility = View.VISIBLE
+                gsr_no_reservations.visibility = View.VISIBLE
                 try {
                     gsr_reservations_refresh_layout.isRefreshing = false
-                } catch (e: NullPointerException) {
-                    // no need to do anything, we've just moved away from this activity
-                }
+                } catch (e: NullPointerException) {}
             }
         })
     }
