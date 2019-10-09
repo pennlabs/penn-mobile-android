@@ -3,10 +3,12 @@ package com.pennapps.labs.pennmobile;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.preference.PreferenceManager;
 import android.support.annotation.AnyRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -66,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
     private static Labs mLabsHome;
     private static final int CODE_MAP = 1;
     private boolean tab_showed;
+    private boolean loggedIn;
+    private SharedPreferences mSharedPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -107,6 +113,12 @@ public class MainActivity extends AppCompatActivity {
         // Set default fragment to MainFragment
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
         tx.replace(R.id.content_frame, new MainFragment());
+
+        loggedIn = mSharedPrefs.getBoolean("logged_in", false);
+        if(!loggedIn){
+            tx.add(R.id.content_frame, new LoginFragment());
+        }
+
         tx.commit();
     }
 
@@ -194,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new GsrFragment();
                 break;
             case R.id.nav_dining:
-                fragment = new DiningFragment();
+                fragment = new LoginFragment();
                 break;
             case R.id.nav_directory:
                 fragment = new DirectoryFragment();
