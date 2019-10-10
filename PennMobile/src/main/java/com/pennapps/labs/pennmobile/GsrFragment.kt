@@ -64,7 +64,6 @@ class GsrFragment : Fragment() {
         // set default GSR selection date + time to the current date and time
         selectedDateTime = DateTime.now()
 
-        activity?.setTitle(R.string.gsr)
         // fabric report handling
         Fabric.with(context, Crashlytics())
         Answers.getInstance().logContentView(ContentViewEvent()
