@@ -21,6 +21,7 @@ class GsrTabbedFragment : Fragment() {
         val fragmentAdapter = GsrPagerAdapter(childFragmentManager)
         viewPager = view.gsr_viewpager
         viewPager.adapter = fragmentAdapter
+        activity?.setTitle(R.string.gsr)
 
         tabLayout = view.gsr_tab_layout
         tabLayout.setupWithViewPager(viewPager)
