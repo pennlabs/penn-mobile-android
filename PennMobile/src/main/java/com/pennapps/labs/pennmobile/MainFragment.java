@@ -55,7 +55,6 @@ public class MainFragment extends Fragment {
     private HomeScreenAdapter homeScreenAdapter;
     private List<HomeScreenCell> mCells;
 
-    private Labs mLabsHome;
     private Labs mLabs;
 
     // laundry
@@ -85,7 +84,6 @@ public class MainFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mContext = getActivity();
         mSharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        mLabsHome = MainActivity.getLabsInstanceHome();
         mLabs = MainActivity.getLabsInstance();
     }
 
@@ -267,9 +265,9 @@ public class MainFragment extends Fragment {
         mUnbinder.unbind();
     }
 
-    // get preferences
+    // get preferences (old)
     private void getHomeData() {
-        mLabsHome.getHomePage("test_android").subscribe(new Action1<List<HomeScreenCell>>() {
+        mLabs.getHomePage("test_android", null).subscribe(new Action1<List<HomeScreenCell>>() {
             @Override
             public void call(final List<HomeScreenCell> cells) {
 

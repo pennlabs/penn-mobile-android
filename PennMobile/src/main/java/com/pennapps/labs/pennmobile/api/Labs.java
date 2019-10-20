@@ -129,7 +129,8 @@ public interface Labs {
     // home page
     @GET("/homepage")
     Observable<List<HomeScreenCell>> getHomePage(
-            @Header("X-Device-ID") String deviceID);
+            @Header("X-Device-ID") String deviceID,
+            @Header("X-Account-ID") String accountID);
 
     @GET("/fitness/schedule")
     Observable<List<Gym>> getGymData();
