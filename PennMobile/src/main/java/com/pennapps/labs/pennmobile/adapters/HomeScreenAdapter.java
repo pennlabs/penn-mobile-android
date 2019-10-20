@@ -18,6 +18,7 @@ import com.pennapps.labs.pennmobile.DirectoryFragment;
 import com.pennapps.labs.pennmobile.FitnessFragment;
 import com.pennapps.labs.pennmobile.FlingFragment;
 import com.pennapps.labs.pennmobile.GsrFragment;
+import com.pennapps.labs.pennmobile.GsrTabbedFragment;
 import com.pennapps.labs.pennmobile.LaundryActivity;
 import com.pennapps.labs.pennmobile.NewsFragment;
 import com.pennapps.labs.pennmobile.NsoFragment;
@@ -247,7 +248,7 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         @Override
         public void onClick(View view) {
-            fragmentTransact(new GsrFragment());
+            fragmentTransact(new GsrTabbedFragment());
         }
     }
 

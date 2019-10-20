@@ -43,6 +43,7 @@ import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.FlingEvent;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
+import com.pennapps.labs.pennmobile.classes.GSRReservation;
 import com.pennapps.labs.pennmobile.classes.Gym;
 import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
@@ -191,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new RegistrarFragment();
                 break;
             case R.id.nav_gsr:
-                fragment = new GsrFragment();
+                fragment = new GsrTabbedFragment();
                 break;
             case R.id.nav_dining:
                 fragment = new DiningFragment();
@@ -272,6 +273,9 @@ public class MainActivity extends AppCompatActivity {
             // gets fitness
             gsonBuilder.registerTypeAdapter(new TypeToken<List<Gym>>(){
             }.getType(), new Serializer.GymSerializer());
+            // gets gsr reservations
+            gsonBuilder.registerTypeAdapter(new TypeToken<List<GSRReservation>>(){
+            }.getType(), new Serializer.GsrReservationSerializer());
             Gson gson = gsonBuilder.create();
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setConverter(new GsonConverter(gson))
