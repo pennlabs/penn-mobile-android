@@ -5,7 +5,6 @@ import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,9 +12,7 @@ import android.widget.Toast
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
-import com.pennapps.labs.pennmobile.adapters.FitnessAdapter
 import com.pennapps.labs.pennmobile.adapters.GsrReservationsAdapter
-import com.pennapps.labs.pennmobile.classes.GSRReservation
 import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.fragment_gsr_reservations.*
 import kotlinx.android.synthetic.main.fragment_gsr_reservations.view.*

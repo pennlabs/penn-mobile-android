@@ -7,11 +7,15 @@ import com.google.gson.annotations.SerializedName
  * Created by Jackie on 2018-03-28. Updated by Marta on 2019-10-20.
  */
 
-class HomeScreenCell {
+class HomeCell {
     @SerializedName("type")
     @Expose
     var type: String? = null
+
+    var reservations: List<GSRReservation>? = null
+    var events: List<CalendarEvent>? = null
+
     @SerializedName("info")
     @Expose
-    var info: HomeScreenInfo? = null
+    var info: HomeCellInfo? = null
 }

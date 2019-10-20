@@ -45,7 +45,7 @@ import com.pennapps.labs.pennmobile.classes.FlingEvent;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.GSRReservation;
 import com.pennapps.labs.pennmobile.classes.Gym;
-import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
+import com.pennapps.labs.pennmobile.classes.HomeCell;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
@@ -105,9 +105,9 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(true);
         }
 
-        // Set default fragment to MainFragment
+        // Set default fragment to HomeFragment
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-        tx.replace(R.id.content_frame, new MainFragment());
+        tx.replace(R.id.content_frame, new HomeFragment());
         tx.commit();
     }
 
@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
         switch (id) {
             case R.id.nav_home:
                 if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-                    fragment = new MainFragment();
+                    fragment = new HomeFragment();
                 }
                 break;
             case R.id.nav_registrar:
@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
             gsonBuilder.registerTypeAdapter(new TypeToken<List<GSRReservation>>(){
             }.getType(), new Serializer.GsrReservationSerializer());
             // gets homepage
-            gsonBuilder.registerTypeAdapter(new TypeToken<List<HomeScreenCell>>(){
+            gsonBuilder.registerTypeAdapter(new TypeToken<List<HomeCell>>(){
             }.getType(), new Serializer.HomePageSerializer());
 
             Gson gson = gsonBuilder.create();

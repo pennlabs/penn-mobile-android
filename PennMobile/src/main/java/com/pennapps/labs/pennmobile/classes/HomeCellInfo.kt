@@ -7,7 +7,15 @@ import com.google.gson.annotations.SerializedName
  * Created by Jackie on 2018-03-28. Updated by Marta on 2019-10-20.
  */
 
-class HomeScreenInfo {
+class HomeCellInfo {
+
+    // reservations
+    @Expose
+    val reservations: List<GSRReservation>? = null
+
+    // calendar events
+    @Expose
+    val events: List<CalendarEvent>? = null
 
     // news
     @SerializedName("article_url")
@@ -42,12 +50,9 @@ class HomeScreenInfo {
     // courses
     @SerializedName("courses")
     @Expose
-    val courses: List<Course>? = null
+    val courses: List<HomeCourse>? = null
     @SerializedName("weekday")
     @Expose
     val weekday: String? = null
-
-    // reservations, university events are arrays
-
 
 }
