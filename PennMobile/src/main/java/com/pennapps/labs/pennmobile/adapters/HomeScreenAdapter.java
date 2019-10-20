@@ -17,14 +17,13 @@ import com.pennapps.labs.pennmobile.DiningFragment;
 import com.pennapps.labs.pennmobile.DirectoryFragment;
 import com.pennapps.labs.pennmobile.FitnessFragment;
 import com.pennapps.labs.pennmobile.FlingFragment;
-import com.pennapps.labs.pennmobile.GsrFragment;
 import com.pennapps.labs.pennmobile.GsrTabbedFragment;
 import com.pennapps.labs.pennmobile.LaundryActivity;
 import com.pennapps.labs.pennmobile.NewsFragment;
 import com.pennapps.labs.pennmobile.NsoFragment;
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.RegistrarFragment;
-import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
+import com.pennapps.labs.pennmobile.classes.HomeCell;
 import com.pennapps.labs.pennmobile.classes.HomeScreenItem;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 
@@ -41,13 +40,13 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private Context mContext;
     private List<HomeScreenItem> mCategories;
-    private List<HomeScreenCell> mCells;
+    private List<HomeCell> mCells;
 
     // laundry
     private LaundryHomeAdapter laundryHomeAdapter;
     private List<LaundryRoom> mLaundryRooms;
 
-    public HomeScreenAdapter(Context context, List<HomeScreenItem> categories, List<HomeScreenCell> cells, List<LaundryRoom> laundryRooms) {
+    public HomeScreenAdapter(Context context, List<HomeScreenItem> categories, List<HomeCell> cells, List<LaundryRoom> laundryRooms) {
         this.mContext = context;
         this.mCategories = categories;
         this.mCells = cells;
@@ -123,7 +122,7 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                 /*
                 // get index of dining cell from API
-                for (HomeScreenCell cell : mCells) {
+                for (HomeCell cell : mCells) {
                     if (cell.getType().equals("dining")) {
                         List<Integer> diningVenues = cell.getInfo().getVenues();
                         String s1 = "";
@@ -164,7 +163,7 @@ public class HomeScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                 // news info
                 /*
-                for (HomeScreenCell cell : mCells) {
+                for (HomeCell cell : mCells) {
                     if (cell.getType().equals("news")) {
                         String title = cell.getInfo().getTitle();
                         newsViewHolder.newsTitle.setText(title);

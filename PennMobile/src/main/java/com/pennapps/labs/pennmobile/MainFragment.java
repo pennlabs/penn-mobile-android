@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.adapters.HomeScreenAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
-import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
+import com.pennapps.labs.pennmobile.classes.HomeCell;
 import com.pennapps.labs.pennmobile.classes.HomeScreenItem;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 
@@ -39,7 +39,7 @@ import rx.functions.Action1;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * Use the {@link MainFragment#newInstance} factory method to
+ * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  *
  */
@@ -53,7 +53,7 @@ public class MainFragment extends Fragment {
     private SharedPreferences mSharedPref;
     private List<HomeScreenItem> mAllCategories;
     private HomeScreenAdapter homeScreenAdapter;
-    private List<HomeScreenCell> mCells;
+    private List<HomeCell> mCells;
 
     private Labs mLabs;
 
@@ -66,10 +66,10 @@ public class MainFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment MainFragment.
+     * @return A new instance of fragment HomeFragment.
      */
-    public static MainFragment newInstance() {
-        MainFragment fragment = new MainFragment();
+    public static HomeFragment newInstance() {
+        HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -267,16 +267,16 @@ public class MainFragment extends Fragment {
 
     // get preferences (old)
     private void getHomeData() {
-        mLabs.getHomePage("test_android", null).subscribe(new Action1<List<HomeScreenCell>>() {
+        mLabs.getHomePage("test_android", null).subscribe(new Action1<List<HomeCell>>() {
             @Override
-            public void call(final List<HomeScreenCell> cells) {
+            public void call(final List<HomeCell> cells) {
 
                 mCells = cells;
                 mLaundryRoomList = new ArrayList<>();
                 mLaundryRoomResult = new ArrayList<>();
 
                 // get laundry prefs and add data to list
-                for (HomeScreenCell cell : mCells) {
+                for (HomeCell cell : mCells) {
                     if (cell.getType().equals("laundry")) {
                         int roomId = cell.getInfo().getRoomId();
                         mNumLaundryRoomsPref++;
