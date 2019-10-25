@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -63,7 +64,6 @@ class GsrFragment : Fragment() {
         // set default GSR selection date + time to the current date and time
         selectedDateTime = DateTime.now()
 
-        activity?.setTitle(R.string.gsr)
         // fabric report handling
         Fabric.with(context, Crashlytics())
         Answers.getInstance().logContentView(ContentViewEvent()

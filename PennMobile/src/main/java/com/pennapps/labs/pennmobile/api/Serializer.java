@@ -14,6 +14,7 @@ import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.FlingEvent;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
+import com.pennapps.labs.pennmobile.classes.GSRReservation;
 import com.pennapps.labs.pennmobile.classes.Gym;
 import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
@@ -211,6 +212,17 @@ public class Serializer {
                 throws JsonParseException {
             JsonElement content = je.getAsJsonObject().get("schedule");
             return new Gson().fromJson(content, new TypeToken<List<Gym>>() {}.getType());
+        }
+    }
+
+    // for GSR Reservations
+    public static class GsrReservationSerializer implements JsonDeserializer<List<GSRReservation>> {
+
+        @Override
+        public List<GSRReservation> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+                throws JsonParseException {
+            JsonElement content = je.getAsJsonObject().get("reservations");
+            return new Gson().fromJson(content, new TypeToken<List<GSRReservation>>() {}.getType());
         }
     }
 }

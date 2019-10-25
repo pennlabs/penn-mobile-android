@@ -20,9 +20,9 @@ import retrofit.client.Response
 class BookGsrFragment : Fragment() {
 
     // fields for booking
-    internal lateinit var firstName: EditText
-    internal lateinit var lastName: EditText
-    internal lateinit var email: EditText
+    internal lateinit var firstNameEt: EditText
+    internal lateinit var lastNameEt: EditText
+    internal lateinit var emailEt: EditText
     // submit button
     internal lateinit var submit: Button
 
@@ -60,25 +60,41 @@ class BookGsrFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.gsr_details_book, container, false)
 
-        firstName = v.first_name
-        lastName = v.last_name
-        email = v.gsr_email
+        firstNameEt = v.first_name
+        lastNameEt = v.last_name
+        emailEt = v.gsr_email
         submit = v.submit_gsr
 
+        // get user email and name from shared preferences if it's already saved
+        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+        val email = sp.getString(getString(R.string.email_address), "")
+        val firstName = sp.getString(getString(R.string.first_name), "")
+        val lastName = sp.getString(getString(R.string.last_name), "")
+
+        firstNameEt.setText(firstName)
+        lastNameEt.setText(lastName)
+        emailEt.setText(email)
 
         submit?.let { submit ->
             submit.setOnClickListener {
-                firstName?.let {firstName ->
-                    lastName?.let { lastName ->
-                        email?.let {email ->
-                            if (firstName.text.toString().matches("".toRegex()) || lastName.text.toString().matches("".toRegex())
-                                    || email.text.toString().matches("".toRegex())) {
+                firstNameEt?.let {firstNameEt ->
+                    lastNameEt?.let { lastNameEt ->
+                        emailEt?.let {emailEt ->
+                            if (firstNameEt.text.toString().matches("".toRegex()) || lastNameEt.text.toString().matches("".toRegex())
+                                    || emailEt.text.toString().matches("".toRegex())) {
                                 Toast.makeText(activity, "Please fill in all fields before booking",
                                         Toast.LENGTH_LONG).show()
-                            } else if (!email.text.toString().matches("""[\w]+@(seas\.|sas\.|wharton\.|nursing\.)?upenn\.edu""".toRegex())) {
+                            } else if (!emailEt.text.toString().matches("""[\w]+@(seas\.|sas\.|wharton\.|nursing\.)?upenn\.edu""".toRegex())) {
                                 Toast.makeText(activity, "Please enter a valid Penn email", Toast.LENGTH_LONG).show()
                             } else {
                                 bookGSR(Integer.parseInt(gsrID), Integer.parseInt(gsrLocationCode), startTime, endTime)
+                                // Save user info in shared preferences
+                                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                                val editor = sp.edit()
+                                editor.putString(getString(R.string.first_name), firstNameEt.text.toString())
+                                editor.putString(getString(R.string.last_name), lastNameEt.text.toString())
+                                editor.putString(getString(R.string.email_address), emailEt.text.toString())
+                                editor.apply()
                             }
                         }
                     }
@@ -105,9 +121,9 @@ class BookGsrFragment : Fragment() {
                     gsrId,
                     startTime,
                     endTime,
-                    firstName.text.toString(),
-                    lastName.text.toString(),
-                    email.text.toString(),
+                    firstNameEt.text.toString(),
+                    lastNameEt.text.toString(),
+                    emailEt.text.toString(),
                     "Penn Mobile GSR",
                     "2158986533",
                     "2-3",

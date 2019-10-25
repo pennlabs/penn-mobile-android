@@ -129,7 +129,7 @@ class HuntsmanGSRLogin : Fragment() {
                                 }
                             }
                             // redirect user
-                            val huntsmanGSRLogin = GsrFragment()
+                            val huntsmanGSRLogin = GsrTabbedFragment()
                             val fragmentManager = (context as MainActivity).supportFragmentManager
                             fragmentManager.beginTransaction()
                                     .replace(R.id.content_frame, huntsmanGSRLogin)
@@ -142,7 +142,7 @@ class HuntsmanGSRLogin : Fragment() {
                             val result = error.getBodyAs(GSRBookingResult::class.java) as GSRBookingResult
                             Toast.makeText(activity, result.getError() ?: "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
                             // redirect user
-                            val huntsmanGSRLogin = GsrFragment()
+                            val huntsmanGSRLogin = GsrTabbedFragment()
                             val fragmentManager = (context as MainActivity).supportFragmentManager
                             fragmentManager.beginTransaction()
                                     .replace(R.id.content_frame, huntsmanGSRLogin)
