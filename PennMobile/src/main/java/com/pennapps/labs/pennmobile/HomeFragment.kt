@@ -11,10 +11,8 @@ import android.widget.Toast
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
-import com.pennapps.labs.pennmobile.adapters.HomeCellAdapter
+import com.pennapps.labs.pennmobile.adapters.HomeAdapter
 import io.fabric.sdk.android.Fabric
-import kotlinx.android.synthetic.main.fragment_gsr_reservations.view.gsr_reservations_refresh_layout
-import kotlinx.android.synthetic.main.fragment_gsr_reservations.view.gsr_reservations_rv
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
@@ -60,7 +58,7 @@ class HomeFragment : Fragment()  {
         val labs = MainActivity.getLabsInstance() //TODO: get for an account id
         labs.getHomePage("test_android", "5fb78cbc-692e-4167-8802-82c3eb2ddc7b").subscribe({ cells ->
             mActivity.runOnUiThread {
-                home_cells_rv.adapter = HomeCellAdapter(ArrayList(cells))
+                home_cells_rv.adapter = HomeAdapter(ArrayList(cells))
                 loadingPanel.visibility = View.GONE
                 try {
                     home_refresh_layout.isRefreshing = false

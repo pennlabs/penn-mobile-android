@@ -8,15 +8,6 @@ import com.google.gson.annotations.SerializedName
  */
 
 class HomeCellInfo {
-
-    // reservations
-    @Expose
-    val reservations: List<GSRReservation>? = null
-
-    // calendar events
-    @Expose
-    val events: List<CalendarEvent>? = null
-
     // news
     @SerializedName("article_url")
     @Expose
