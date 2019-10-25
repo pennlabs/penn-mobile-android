@@ -34,6 +34,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.pennapps.labs.pennmobile.ExpandedBottomNavBar.ExpandableBottomTabBar;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.api.Serializer;
 import com.pennapps.labs.pennmobile.classes.Building;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
     private NavigationView mDrawerList;
+    private ExpandableBottomTabBar tabBarView;
     private ActionBarDrawerToggle mDrawerToggle;
     private static Labs mLabs;
     private static Labs mLabsHome;
@@ -108,6 +110,63 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
         tx.replace(R.id.content_frame, new MainFragment());
         tx.commit();
+
+
+        tabBarView = findViewById(R.id.bottom_navigation);
+
+        onExpandableBottomNavigationItemSelected();
+    }
+
+    private void onExpandableBottomNavigationItemSelected() {
+        tabBarView.setOnTabClickedListener(new ExpandableBottomTabBar.OnTabClickedListener() {
+            @Override
+            public void onTabClicked(View view, int tabPos) {
+                Fragment fragment = null;
+                switch (tabPos) {
+                    case 0:
+                        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                            fragment = new MainFragment();
+                        }
+                        break;
+                    case 1:
+                        fragment = new GsrFragment();
+                        break;
+                    case 2:
+                        fragment = new DiningFragment();
+                        break;
+                    case 3:
+                        Intent intent = new Intent(getApplicationContext(), LaundryActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 5:
+                        fragment = new FitnessFragment();
+                        break;
+                    case 6:
+                        fragment = new RegistrarFragment();
+                        break;
+                    case 7:
+                        fragment = new DirectoryFragment();
+                        break;
+                    case 8:
+                        fragment = new NewsFragment();
+                        break;
+                    case 9:
+                        fragment = new FlingFragment();
+                        break;
+                    case 10:
+                        fragment = new SupportFragment();
+                        break;
+                    case 11:
+                        fragment = new PreferenceFragment();
+                        break;
+                    case 12:
+                        fragment = new AboutFragment();
+                        break;
+                }
+
+                fragmentTransact(fragment);
+            }
+        });
     }
 
     @Override

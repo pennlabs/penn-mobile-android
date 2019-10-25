@@ -25,6 +25,7 @@
     <string name="no_results">No results found.</string>
     <string name="action_licenses">Open Source Licenses</string>
     <string name="save_contacts">Select Contacts to Save</string>
+    <string name="nav_more">More</string>
 
     <!--Home Screen -->
     <string name="home_screen_settings">Home Screen Settings</string>

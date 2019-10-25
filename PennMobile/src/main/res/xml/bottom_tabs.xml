@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        id="@+id/nav_home"
+        icon="@drawable/ic_home_grey"
+        icon_pressed = "@drawable/ic_home_blue"
+        title="Home"/>
+    <tab
+        id="@+id/nav_gsr"
+        icon="@drawable/ic_gsr_grey"
+        icon_pressed = "@drawable/ic_gsr_blue"
+        title="@string/gsr" />
+    <tab
+        id="@+id/nav_dining"
+        icon="@drawable/ic_dining_grey"
+        icon_pressed = "@drawable/ic_dining_blue"
+        title="@string/dining"/>
+
+    <tab
+        id="@+id/nav_laundry"
+        icon="@drawable/ic_laundry_grey"
+        icon_pressed = "@drawable/ic_laundry_blue"
+        title="@string/laundry"/>
+
+
+
+    <tab
+        id="@+id/nav_fitness"
+        icon="@drawable/ic_fitness_grey"
+        icon_pressed = "@drawable/ic_fitness_blue"
+        title="@string/fitness" />
+
+
+    <tab
+        id="@+id/nav_registrar"
+        icon="@drawable/ic_book"
+        title="@string/registrar"/>
+
+
+    <tab
+        id="@+id/nav_directory"
+        icon="@drawable/ic_contacts"
+        icon_pressed = "@drawable/ic_contacts"
+        title="@string/directory"/>
+
+    <tab
+        id="@+id/nav_news"
+        icon="@drawable/ic_announcement"
+        icon_pressed = "@drawable/ic_announcement"
+        title="@string/news"/>
+
+    <tab
+        id="@+id/nav_fling"
+        icon="@drawable/ic_event_black_24dp"
+        icon_pressed = "@drawable/ic_event_black_24dp"
+        title="@string/spring_fling"/>
+
+    <tab
+        id="@+id/nav_support"
+        icon="@drawable/ic_face_unlock_black_24dp"
+        icon_pressed = "@drawable/ic_face_unlock_black_24dp"
+        title="@string/support"/>
+
+    <tab
+        id="@+id/nav_pref"
+        icon="@drawable/ic_settings_black_24dp"
+        icon_pressed = "@drawable/ic_settings_black_24dp"
+        title="@string/action_settings"/>
+
+    <tab
+        id="@+id/nav_about"
+        icon="@drawable/ic_info"
+        icon_pressed = "@drawable/ic_info"
+        title="@string/about"/>
+
+</tabs>
