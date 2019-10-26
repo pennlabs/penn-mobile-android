@@ -16,6 +16,7 @@ import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
 import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Review;
+import com.pennapps.labs.pennmobile.classes.User;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
 import java.util.List;
@@ -36,6 +37,11 @@ import rx.Observable;
  * Retrofit interface to the Penn Labs API
  */
 public interface Labs {
+
+    @GET("/registrar/search/person/{person_id}")
+    Observable<User> user(
+            @Path("person_id") String person_id);
+
     @GET("/registrar/search")
     Observable<List<Course>> courses(
             @Query("q") String name);

@@ -1,5 +1,7 @@
 package com.pennapps.labs.pennmobile.api;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -19,6 +21,7 @@ import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
+import com.pennapps.labs.pennmobile.classes.User;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
 import java.lang.reflect.Type;
@@ -30,6 +33,15 @@ import java.util.List;
  * Wrapper class for Gson Serializers
  */
 public class Serializer {
+
+    public static class UserSerializer implements  JsonDeserializer<User> {
+        @Override
+        public User deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+                throws JsonParseException {
+            JsonElement content = je.getAsJsonObject();
+            return new Gson().fromJson(content, User.class);
+        }
+    }
 
     public static class CourseSerializer implements JsonDeserializer<List<Course>> {
         @Override
