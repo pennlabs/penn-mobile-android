@@ -1,8 +1,9 @@
 package com.pennapps.labs.pennmobile.classes
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
-data class User(val first: String?, val last: String?, val email: String?, val pennkey: String?, val degrees : Set<Degree>?, val courses : Set<Course>?) {
+data class User(val first: String?, val last: String?, val email: String?, val pennkey: String?, val degrees : Set<Degree>?, val courses : Set<Course>?) : Serializable {
 
     @SerializedName("first_name")
     var mFirstName : String? = first

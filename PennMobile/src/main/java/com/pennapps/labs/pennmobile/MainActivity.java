@@ -25,6 +25,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +38,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.pennapps.labs.pennmobile.api.Labs;
+import com.pennapps.labs.pennmobile.api.PennInTouchNetworkManager;
 import com.pennapps.labs.pennmobile.api.Serializer;
 import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
@@ -51,6 +53,7 @@ import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
 import com.pennapps.labs.pennmobile.classes.Person;
+import com.pennapps.labs.pennmobile.classes.User;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
 import java.util.List;
@@ -120,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         tx.commit();
+
     }
 
     @Override
@@ -284,6 +288,8 @@ public class MainActivity extends AppCompatActivity {
             // gets fitness
             gsonBuilder.registerTypeAdapter(new TypeToken<List<Gym>>(){
             }.getType(), new Serializer.GymSerializer());
+            //get user
+            gsonBuilder.registerTypeAdapter(User.class, new Serializer.UserSerializer());
             Gson gson = gsonBuilder.create();
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setConverter(new GsonConverter(gson))

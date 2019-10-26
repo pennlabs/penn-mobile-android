@@ -1,9 +1,10 @@
 package com.pennapps.labs.pennmobile.api
 
+
 class PennInTouchNetworkManager {
 
-    fun getStudent(){
-        //use okhttp here https://square.github.io/okhttp/
+    fun getStudent() {
+
     }
 
     fun getDegrees(){
