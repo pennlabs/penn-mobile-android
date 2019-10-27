@@ -46,7 +46,7 @@ import com.pennapps.labs.pennmobile.classes.FlingEvent;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.GSRReservation;
 import com.pennapps.labs.pennmobile.classes.Gym;
-import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
+import com.pennapps.labs.pennmobile.classes.HomeCell;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
@@ -107,9 +107,9 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(true);
         }
 
-        // Set default fragment to MainFragment
+        // Set default fragment to HomeFragment
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-        tx.replace(R.id.content_frame, new MainFragment());
+        tx.replace(R.id.content_frame, new HomeFragment());
         tx.commit();
 
 
@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
         switch (id) {
             case R.id.nav_home:
                 if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-                    fragment = new MainFragment();
+                    fragment = new HomeFragment();
                 }
                 break;
             case R.id.nav_registrar:
@@ -335,6 +335,10 @@ public class MainActivity extends AppCompatActivity {
             // gets gsr reservations
             gsonBuilder.registerTypeAdapter(new TypeToken<List<GSRReservation>>(){
             }.getType(), new Serializer.GsrReservationSerializer());
+            // gets homepage
+            gsonBuilder.registerTypeAdapter(new TypeToken<List<HomeCell>>(){
+            }.getType(), new Serializer.HomePageSerializer());
+
             Gson gson = gsonBuilder.create();
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setConverter(new GsonConverter(gson))
@@ -343,22 +347,6 @@ public class MainActivity extends AppCompatActivity {
             mLabs = restAdapter.create(Labs.class);
         }
         return mLabs;
-    }
-
-    public static Labs getLabsInstanceHome() {
-        if (mLabsHome == null) {
-            // homepage endpoint
-            GsonBuilder gsonBuilderHomePage = new GsonBuilder();
-            gsonBuilderHomePage.registerTypeAdapter(new TypeToken<List<HomeScreenCell>>() {
-            }.getType(), new Serializer.HomePageSerializer());
-            Gson gsonHome = gsonBuilderHomePage.create();
-            RestAdapter restAdapterHome = new RestAdapter.Builder()
-                    .setConverter(new GsonConverter(gsonHome))
-                    .setEndpoint("http://api-dev.pennlabs.org")
-                    .build();
-            mLabsHome = restAdapterHome.create(Labs.class);
-        }
-        return mLabsHome;
     }
 
     public void showErrorToast(final int errorMessage) {

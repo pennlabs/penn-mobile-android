@@ -359,7 +359,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             activity.showErrorToast(R.string.no_permission_map);
             FragmentManager fragmentManager = activity.getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, new MainFragment())
+                    .replace(R.id.content_frame, new HomeFragment())
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit();
