@@ -1,6 +1,8 @@
 package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.HomeCell
+import kotlinx.android.synthetic.main.fragment_gsr_reservations.*
+import kotlinx.android.synthetic.main.fragment_gsr_reservations.view.*
 import kotlinx.android.synthetic.main.home_base_card.view.*
 
 class HomeAdapter(private var cells: ArrayList<HomeCell>)
@@ -91,6 +95,13 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         val reservations = cell.reservations
         holder.itemView.home_card_title.text = "Upcoming Reservations"
         holder.itemView.home_card_subtitle.text = "GSR RESERVATIONS"
+        holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
+                LinearLayoutManager.VERTICAL, false)
+
+        //val divider = DividerItemDecoration(mContext, LinearLayoutManager.VERTICAL)
+        //holder.itemView.home_card_rv.addItemDecoration(divider)
+        holder.itemView.home_card_rv.adapter = GsrReservationsAdapter(ArrayList(reservations))
+
     }
 
     private fun bindDiningCell(holder: ViewHolder, cell: HomeCell) {
