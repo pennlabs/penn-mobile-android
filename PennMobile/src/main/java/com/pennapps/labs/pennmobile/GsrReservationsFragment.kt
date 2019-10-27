@@ -36,21 +36,14 @@ class GsrReservationsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_gsr_reservations, container, false)
 
-        // set layout manager for RecyclerView
         view.gsr_reservations_rv.layoutManager = LinearLayoutManager(context,
                 LinearLayoutManager.VERTICAL, false)
 
-        val divider = DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
-        view.gsr_reservations_rv.addItemDecoration(divider)
-
-        // handle swipe to refresh
          view.gsr_reservations_refresh_layout.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
          view.gsr_reservations_refresh_layout.setOnRefreshListener { getReservations() }
 
-        // get api data
         getReservations()
 
         return view
@@ -60,12 +53,11 @@ class GsrReservationsFragment : Fragment() {
 
         // get email and session id from shared preferences
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-        val sessionid = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
+        val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
         val email = sp.getString(getString(R.string.email_address), "")
 
-        // get API data
         val labs = MainActivity.getLabsInstance()
-        labs.getGsrReservations(email, sessionid).subscribe({ reservations ->
+        labs.getGsrReservations(email, sessionID).subscribe({ reservations ->
             mActivity.runOnUiThread {
                 gsr_reservations_rv.adapter = GsrReservationsAdapter(ArrayList(reservations))
                 loadingPanel.visibility = View.GONE
