@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -43,11 +44,13 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
     ArrayList<LaundryRoom> mRooms;
     List<LaundryUsage> mRoomsData;
     SharedPreferences sp;
+    boolean isHome;
 
-    public LaundryRoomAdapter(Context context, ArrayList<LaundryRoom> rooms, List<LaundryUsage> roomsData) {
+    public LaundryRoomAdapter(Context context, ArrayList<LaundryRoom> rooms, List<LaundryUsage> roomsData, boolean isHome) {
         mContext = context;
         mRooms = rooms;
         mRoomsData = roomsData;
+        this.isHome = isHome;
         sp = PreferenceManager.getDefaultSharedPreferences(mContext);
     }
 
@@ -61,6 +64,12 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
     public void onBindViewHolder(LaundryRoomAdapter.CustomViewHolder holder, int position) {
 
         LaundryRoom room = mRooms.get(position);
+
+        if (isHome) {
+            holder.laundryInfoLayout.setVisibility(View.GONE);
+            holder.lineChart.setVisibility(View.GONE);
+            holder.grayLine.setVisibility(View.GONE);
+        }
 
         // update name of laundry room and type of machine
         int hall_no = room.getId();
@@ -111,6 +120,14 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
         int outOfOrderDryers = dryerList.getOutOfOrder();
         int totalDryers = openDryers + runningDryers + offlineDryers + outOfOrderDryers;
         holder.dryerAvailability.setText(openDryers + " / " + totalDryers + " open");
+
+        if (mRoomsData != null) {
+            createLaundryChart(holder, position);
+        }
+
+    }
+
+    private void createLaundryChart(LaundryRoomAdapter.CustomViewHolder holder, int position) {
 
         // Laundry availability chart
         LaundryUsage roomUsage = mRoomsData.get(position);
@@ -195,6 +212,10 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
         RecyclerView dryerRecyclerView;
         @BindView(R.id.laundry_availability_chart)
         LineChart lineChart;
+        @BindView(R.id.laundry_info_layout)
+        LinearLayout laundryInfoLayout;
+        @BindView(R.id.gray_line)
+        View grayLine;
 
         public CustomViewHolder(View view, Context context, ArrayList<LaundryRoom> rooms, List<LaundryUsage> roomsData) {
             super(view);

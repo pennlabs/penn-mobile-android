@@ -8,16 +8,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.HomeCell
 import kotlinx.android.synthetic.main.fragment_gsr_reservations.*
 import kotlinx.android.synthetic.main.fragment_gsr_reservations.view.*
 import kotlinx.android.synthetic.main.home_base_card.view.*
+import kotlinx.android.synthetic.main.loading_panel.*
 
 class HomeAdapter(private var cells: ArrayList<HomeCell>)
     : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
 
     private lateinit var mContext: Context
+    private lateinit var mActivity: MainActivity
 
     companion object {
         private const val NOT_SUPPORTED = -1
@@ -31,6 +34,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         mContext = parent.context
+        mActivity = mContext as MainActivity
 
         return when (viewType) {
             RESERVATIONS -> {
@@ -95,13 +99,10 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         val reservations = cell.reservations
         holder.itemView.home_card_title.text = "Upcoming Reservations"
         holder.itemView.home_card_subtitle.text = "GSR RESERVATIONS"
+
         holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
                 LinearLayoutManager.VERTICAL, false)
-
-        //val divider = DividerItemDecoration(mContext, LinearLayoutManager.VERTICAL)
-        //holder.itemView.home_card_rv.addItemDecoration(divider)
         holder.itemView.home_card_rv.adapter = GsrReservationsAdapter(ArrayList(reservations))
-
     }
 
     private fun bindDiningCell(holder: ViewHolder, cell: HomeCell) {
@@ -125,7 +126,19 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
     }
 
     private fun bindLaundryCell(holder: ViewHolder, cell: HomeCell) {
-        holder.itemView.home_card_title.text = "Laundry"
+        val roomID = cell.info?.roomId ?: 0
         holder.itemView.home_card_subtitle.text = "LAUNDRY"
+        holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
+                LinearLayoutManager.VERTICAL, false)
+
+        val labs = MainActivity.getLabsInstance()
+        labs.room(roomID).subscribe({ room ->
+            mActivity.runOnUiThread {
+                holder.itemView.home_card_title.text = room.name
+                val rooms = arrayListOf(room)
+                holder.itemView.home_card_rv.adapter = LaundryRoomAdapter(mContext, rooms, null, true)
+            }
+
+        }, { throwable -> mActivity.runOnUiThread { throwable.printStackTrace() } } )
     }
 }
