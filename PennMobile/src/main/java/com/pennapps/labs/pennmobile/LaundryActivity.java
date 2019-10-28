@@ -107,7 +107,7 @@ public class LaundryActivity extends AppCompatActivity {
         if (count == 0) {
             loadingPanel.setVisibility(View.GONE);
             mTextView.setVisibility(View.VISIBLE);
-            mAdapter = new LaundryRoomAdapter(mContext, laundryRooms, roomsData);
+            mAdapter = new LaundryRoomAdapter(mContext, laundryRooms, roomsData, false);
             mRecyclerView.setAdapter(mAdapter);
         }
     }
@@ -171,7 +171,7 @@ public class LaundryActivity extends AppCompatActivity {
         if (count == 0) {
             loadingPanel.setVisibility(View.GONE);
             mTextView.setVisibility(View.VISIBLE);
-            mAdapter = new LaundryRoomAdapter(mContext, laundryRooms, roomsData);
+            mAdapter = new LaundryRoomAdapter(mContext, laundryRooms, roomsData, false);
             mRecyclerView.setAdapter(mAdapter);
         }
     }
@@ -224,7 +224,7 @@ public class LaundryActivity extends AppCompatActivity {
 
                                         roomsData = roomsDataResult;
                                         laundryRooms = laundryRoomsResult;
-                                        mAdapter = new LaundryRoomAdapter(mContext, laundryRooms, roomsData);
+                                        mAdapter = new LaundryRoomAdapter(mContext, laundryRooms, roomsData, false);
                                         mRecyclerView.setAdapter(mAdapter);
 
                                         loadingPanel.setVisibility(View.GONE);
