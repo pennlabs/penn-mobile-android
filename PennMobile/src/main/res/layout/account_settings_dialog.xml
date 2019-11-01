@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingBottom="30dp"
+            android:layout_weight="1"
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="10dp">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
+                android:layout_weight="3"
+                android:text="X"
+                android:id="@+id/cancel_button"
+                android:gravity="left"
+                android:textSize="15sp"
+                android:textColor="@color/washer_blue"
+                android:background="@drawable/dialog_button"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:text="Contact Info"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="20sp">
+
+            </TextView>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Save"
+                android:id="@+id/save_button"
+                android:textSize="15sp"
+                android:textColor="@color/washer_blue"
+                android:layout_marginLeft="10dp"
+                android:gravity="right"
+                android:layout_weight="3"
+                android:background="@drawable/dialog_button"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:orientation="horizontal"
+          android:paddingBottom="30dp"
+          android:layout_weight="1"
+          android:layout_marginHorizontal="10dp">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="first"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/edittext"
+                android:id="@+id/first_name"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="last"
+                android:background="@drawable/edittext"
+                android:id="@+id/last_name"/>
+
+        </LinearLayout>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="pennid@seas.upenn.edu"
+            android:layout_marginBottom="30dp"
+            android:layout_marginHorizontal="10dp"
+            android:background="@drawable/edittext"
+            android:id="@+id/email"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="This information is used when booking GSRs and when displaying your name on the homepage."
+            android:textColor="@color/gray"
+            android:textSize="15sp"
+            android:layout_marginHorizontal="10dp"/>
+
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>
