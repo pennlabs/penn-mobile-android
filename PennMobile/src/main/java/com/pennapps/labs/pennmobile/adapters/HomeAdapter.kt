@@ -1,6 +1,10 @@
 package com.pennapps.labs.pennmobile.adapters
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -55,8 +59,11 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
             LAUNDRY -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
             }
-            else -> {
+            NOT_SUPPORTED -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.empty_view, parent, false))
+            }
+            else -> {
+                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
             }
         }
     }
@@ -102,7 +109,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
 
         holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
                 LinearLayoutManager.VERTICAL, false)
-        holder.itemView.home_card_rv.adapter = GsrReservationsAdapter(ArrayList(reservations))
+        holder.itemView.home_card_rv.adapter = GsrReservationsAdapter(ArrayList(reservations), true)
     }
 
     private fun bindDiningCell(holder: ViewHolder, cell: HomeCell) {
