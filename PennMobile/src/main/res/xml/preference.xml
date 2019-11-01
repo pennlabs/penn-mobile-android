@@ -2,6 +2,16 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
+        android:title="Account">
+
+        <Preference
+            android:key="pref_account"
+            android:title="Edit your profile"
+            android:summary="Modify your name and email"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:title="@string/pref_courses_title">
 
     <CheckBoxPreference
