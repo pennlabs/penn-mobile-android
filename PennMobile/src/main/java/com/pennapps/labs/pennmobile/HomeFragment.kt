@@ -1,8 +1,14 @@
 package com.pennapps.labs.pennmobile
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.res.Resources
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +18,7 @@ import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
 import com.pennapps.labs.pennmobile.adapters.HomeAdapter
+import com.pennapps.labs.pennmobile.classes.HomeCell
 import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
@@ -25,6 +32,8 @@ class HomeFragment : Fragment()  {
         super.onCreate(savedInstanceState)
 
         mActivity = activity as MainActivity
+
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(broadcastReceiver, IntentFilter("refresh"))
 
         Fabric.with(context, Crashlytics())
         Answers.getInstance().logContentView(ContentViewEvent()
@@ -58,9 +67,9 @@ class HomeFragment : Fragment()  {
         val labs = MainActivity.getLabsInstance() //TODO: get for an account id
         labs.getHomePage("test_android", "5fb78cbc-692e-4167-8802-82c3eb2ddc7b").subscribe({ cells ->
             mActivity.runOnUiThread {
-                home_cells_rv.adapter = HomeAdapter(ArrayList(cells))
-                loadingPanel.visibility = View.GONE
                 try {
+                    home_cells_rv.adapter = HomeAdapter(ArrayList(cells))
+                    loadingPanel.visibility = View.GONE
                     home_refresh_layout.isRefreshing = false
                 } catch (e: NullPointerException) {}
             }
@@ -68,11 +77,18 @@ class HomeFragment : Fragment()  {
             mActivity.runOnUiThread {
                 throwable.printStackTrace()
                 Toast.makeText(activity, "Error: Could not load Home page", Toast.LENGTH_LONG).show()
-                loadingPanel.visibility = View.GONE
                 try {
+                    loadingPanel.visibility = View.GONE
                     home_refresh_layout.isRefreshing = false
                 } catch (e: NullPointerException) {}
             }
         })
+    }
+
+    private val broadcastReceiver = object: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            //getHomePage()
+            // TODO: fix broadcast receiver so homepage refreshes when we have no more reservations
+        }
     }
 }

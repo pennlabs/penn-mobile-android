@@ -1,8 +1,14 @@
 package com.pennapps.labs.pennmobile
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.res.Resources
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -59,7 +65,7 @@ class GsrReservationsFragment : Fragment() {
         val labs = MainActivity.getLabsInstance()
         labs.getGsrReservations(email, sessionID).subscribe({ reservations ->
             mActivity.runOnUiThread {
-                gsr_reservations_rv.adapter = GsrReservationsAdapter(ArrayList(reservations))
+                gsr_reservations_rv.adapter = GsrReservationsAdapter(ArrayList(reservations), false)
                 loadingPanel.visibility = View.GONE
                 if (reservations.size > 0) {
                     gsr_no_reservations.visibility = View.GONE

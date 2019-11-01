@@ -22,14 +22,18 @@ import retrofit.RetrofitError
 import retrofit.client.Response
 import kotlin.Result.Companion.success
 import android.R.attr.radius
+import android.content.Intent
+import android.content.res.Resources
+import android.support.v4.content.LocalBroadcastManager
 import android.widget.Toast.LENGTH_SHORT
 import kotlinx.android.synthetic.main.fragment_gsr_reservations.*
 
 
-class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>)// get reservations data from fragment
+class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>, isHome: Boolean)// get reservations data from fragment
     : RecyclerView.Adapter<GsrReservationsAdapter.GsrReservationViewHolder>() {
 
     private lateinit var mContext: Context
+    private var isHome = isHome
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GsrReservationViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.gsr_reservation, parent, false)
@@ -73,6 +77,10 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                     // TODO: change to actual device id
                     override fun success(response: Response) {
                         reservations.removeAt(position)
+                        run {if (reservations.size == 0 && isHome) {
+                            var intent = Intent("refresh")
+                            LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent)
+                        }}
                         notifyItemRemoved(position)
                     }
 
