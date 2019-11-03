@@ -1,7 +1,9 @@
 package com.pennapps.labs.pennmobile;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,6 +24,7 @@ import butterknife.OnClick;
 public class PreferenceFragment extends PreferenceFragmentCompat {
 
     Preference accountSettings;
+    Preference logoutButton;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -39,7 +42,10 @@ public class PreferenceFragment extends PreferenceFragmentCompat {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        accountSettings = findPreference("pref_account");
+        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        final SharedPreferences.Editor editor = sp.edit();
+
+        accountSettings = findPreference("pref_account_edit");
         accountSettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -68,9 +74,6 @@ public class PreferenceFragment extends PreferenceFragmentCompat {
                 saveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                        SharedPreferences.Editor editor = sp.edit();
-
                         editor.putString("first_name", firstName.getText().toString());
                         editor.putString("last_name", lastName.getText().toString());
                         editor.putString("email", email.getText().toString());
@@ -81,6 +84,34 @@ public class PreferenceFragment extends PreferenceFragmentCompat {
                 });
 
                 dialog.getWindow().setAttributes(lp);
+                dialog.show();
+
+                return true;
+            }
+        });
+
+        logoutButton = findPreference("pref_account_logout");
+        logoutButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+
+                final AlertDialog dialog = new AlertDialog.Builder(getContext()).create();
+                dialog.setTitle("Logout");
+                dialog.setMessage("Are you sure you want to logout?");
+                dialog.setButton("Logout", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        editor.putBoolean("logged_in", false);
+                        editor.commit();
+                        dialog.cancel();
+                    }
+                });
+                dialog.setButton2("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
                 dialog.show();
 
                 return true;

@@ -5,9 +5,13 @@
         android:title="Account">
 
         <Preference
-            android:key="pref_account"
+            android:key="pref_account_edit"
             android:title="Edit your profile"
             android:summary="Modify your name and email"/>
+
+        <Preference
+            android:key="pref_account_logout"
+            android:title="Logout" />
 
     </PreferenceCategory>
 
