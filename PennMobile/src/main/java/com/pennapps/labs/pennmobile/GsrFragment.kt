@@ -252,7 +252,7 @@ class GsrFragment : Fragment() {
                     activity ->
                     activity.runOnUiThread {
                         showNoResults()
-                        Toast.makeText(activity, "Error: could not load GSRs", Toast.LENGTH_LONG).show()
+                        //Toast.makeText(activity, "Error: could not load GSRs", Toast.LENGTH_LONG).show()
                         selectDateButton.isClickable = true
                         selectTimeButton.isClickable = true
                         gsrLocationDropDown.isEnabled = true

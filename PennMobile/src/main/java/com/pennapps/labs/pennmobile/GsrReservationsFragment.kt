@@ -80,7 +80,6 @@ class GsrReservationsFragment : Fragment() {
         }, { throwable ->
             mActivity.runOnUiThread {
                 throwable.printStackTrace()
-                Toast.makeText(activity, "Error: Could not load GSR reservations", Toast.LENGTH_LONG).show()
                 loadingPanel.visibility = View.GONE
                 gsr_no_reservations.visibility = View.VISIBLE
                 try {
