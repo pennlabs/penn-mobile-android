@@ -10,6 +10,7 @@ import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -68,6 +69,10 @@ class HomeFragment : Fragment()  {
         labs.getHomePage("test_android", "5fb78cbc-692e-4167-8802-82c3eb2ddc7b").subscribe({ cells ->
             mActivity.runOnUiThread {
                 try {
+                    // Let's initialize the adapter before setting it
+                    Log.d("$$$$$", ArrayList(cells).toString())
+
+
                     home_cells_rv.adapter = HomeAdapter(ArrayList(cells))
                     loadingPanel.visibility = View.GONE
                     home_refresh_layout.isRefreshing = false
@@ -87,7 +92,7 @@ class HomeFragment : Fragment()  {
 
     private val broadcastReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            //getHomePage()
+            getHomePage()
             // TODO: fix broadcast receiver so homepage refreshes when we have no more reservations
         }
     }
