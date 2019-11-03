@@ -80,8 +80,8 @@ public class PreferenceFragment extends PreferenceFragmentCompat {
                     }
                 });
 
-                dialog.show();
                 dialog.getWindow().setAttributes(lp);
+                dialog.show();
 
                 return true;
             }
