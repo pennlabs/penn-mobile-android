@@ -1,24 +1,23 @@
 package com.pennapps.labs.pennmobile.adapters
 
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.support.v4.content.LocalBroadcastManager
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.HomeCell
-import kotlinx.android.synthetic.main.fragment_gsr_reservations.*
-import kotlinx.android.synthetic.main.fragment_gsr_reservations.view.*
+import com.roundtableapps.timelinedayviewlibrary.Event
+import com.roundtableapps.timelinedayviewlibrary.EventView
 import kotlinx.android.synthetic.main.home_base_card.view.*
-import kotlinx.android.synthetic.main.loading_panel.*
+import kotlinx.android.synthetic.main.home_course.view.*
+import kotlinx.android.synthetic.main.home_courses_card.view.*
+import kotlin.collections.ArrayList
+
 
 class HomeAdapter(private var cells: ArrayList<HomeCell>)
     : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
@@ -54,7 +53,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
             }
             COURSES -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
+                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_courses_card, parent, false))
             }
             LAUNDRY -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
@@ -128,8 +127,29 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
     }
 
     private fun bindCoursesCell(holder: ViewHolder, cell: HomeCell) {
-        holder.itemView.home_card_title.text = "Today's schedule"
-        holder.itemView.home_card_subtitle.text = "COURSE SCHEDULE"
+        val courses = cell.info?.courses
+        holder.itemView.home_courses_card_title.text = "Today's schedule"
+        holder.itemView.home_courses_card_subtitle.text = "COURSE SCHEDULE"
+
+        //MY EVENT IS A SAMPLE CLASS THAT YOU CAN CREATE AND EXTEND IT FROM 'Event' CLASS
+
+        var myEventView = EventView(mContext,
+                Event().apply {
+                    startTime = 0.0f
+                    endTime = 1.0f
+                },
+                1, //optional
+                layoutResourceId = R.layout.home_course, //optional
+                setupView = { myView ->
+                    myView.home_course_name_tv.text = "CIS 160"
+                },
+                onItemClick = { event ->
+                    //CLICK EVENT
+                }
+        )
+
+        timeline.addEvent(myEventView)
+
     }
 
     private fun bindLaundryCell(holder: ViewHolder, cell: HomeCell) {

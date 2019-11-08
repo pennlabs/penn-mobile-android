@@ -87,7 +87,7 @@ class HomeFragment : Fragment()  {
 
     private val broadcastReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            //getHomePage()
+            // getHomePage()
             // TODO: fix broadcast receiver so homepage refreshes when we have no more reservations
         }
     }

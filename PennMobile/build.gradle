@@ -33,7 +33,7 @@ android {
         }
         release {}
     }
-    compileSdkVersion 27
+    compileSdkVersion 28
     buildToolsVersion '28.0.3'
     defaultConfig {
         minSdkVersion 16
@@ -82,5 +82,10 @@ dependencies {
     implementation 'com.github.ahorn:android-rss:master-SNAPSHOT'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     // official release is several years old and is not thread-safe
+
+    // course schedule layout
+    implementation 'com.github.r3za13:android-timeline-schedule-view:0.9'
+    //implementation 'com.linkedin.android.tachyon:tachyon:1.0.2'
+    //implementation 'com.github.alamkanak:android-week-view:1.2.6'
 }
 
