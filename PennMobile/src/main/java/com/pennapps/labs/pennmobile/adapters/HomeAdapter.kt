@@ -15,9 +15,12 @@ import android.view.ViewGroup
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.HomeCell
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_gsr_reservations.*
 import kotlinx.android.synthetic.main.fragment_gsr_reservations.view.*
+import kotlinx.android.synthetic.main.gsr_reservation.view.*
 import kotlinx.android.synthetic.main.home_base_card.view.*
+import kotlinx.android.synthetic.main.home_news_card.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
 
 class HomeAdapter(private var cells: ArrayList<HomeCell>)
@@ -51,7 +54,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
             }
             NEWS -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
+                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_news_card, parent, false))
             }
             COURSES -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
@@ -118,8 +121,16 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
     }
 
     private fun bindNewsCell(holder: ViewHolder, cell: HomeCell) {
-        holder.itemView.home_card_title.text = "News"
-        holder.itemView.home_card_subtitle.text = "NEWS"
+        val info = cell.info
+        holder.itemView.home_news_title.text = info?.title
+        holder.itemView.home_news_subtitle.text = info?.source
+        holder.itemView.home_news_timestamp.text = info?.timestamp
+
+        Picasso.get().load(info?.imageUrl).fit().centerCrop().into(holder.itemView.home_news_iv)
+        holder.itemView.home_news_iv.setOnClickListener {
+            Log.d("Home", "clicked, go to " + info?.articleUrl)
+            //TODO: open webview with articleUrl
+        }
     }
 
     private fun bindCalendarCell(holder: ViewHolder, cell: HomeCell) {
