@@ -56,23 +56,8 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         mActivity = mContext as MainActivity
 
         return when (viewType) {
-            RESERVATIONS -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
-            }
-            DINING -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
-            }
-            CALENDAR -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
-            }
             NEWS -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_news_card, parent, false))
-            }
-            COURSES -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
-            }
-            LAUNDRY -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
             }
             NOT_SUPPORTED -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.empty_view, parent, false))
@@ -147,7 +132,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
             val connection = NewsCustomTabsServiceConnection()
             builder = CustomTabsIntent.Builder()
             share = Intent(Intent.ACTION_SEND)
-            share?.setType("text/plain")
+            share?.type = "text/plain"
             builder?.setToolbarColor(0x3E50B4)
             builder?.setStartAnimations(mContext,
                     android.support.design.R.anim.abc_popup_enter,
