@@ -33,6 +33,8 @@ class GsrReservationsFragment : Fragment() {
 
         mActivity = activity as MainActivity
 
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(broadcastReceiver, IntentFilter("refresh"))
+
         Fabric.with(context, Crashlytics())
         Answers.getInstance().logContentView(ContentViewEvent()
                 .putContentName("GsrReservations")
@@ -65,7 +67,7 @@ class GsrReservationsFragment : Fragment() {
         val labs = MainActivity.getLabsInstance()
         labs.getGsrReservations(email, sessionID).subscribe({ reservations ->
             mActivity.runOnUiThread {
-                gsr_reservations_rv?.adapter = GsrReservationsAdapter(ArrayList(reservations), false)
+                gsr_reservations_rv?.adapter = GsrReservationsAdapter(ArrayList(reservations))
                 loadingPanel?.visibility = View.GONE
                 if (reservations.size > 0) {
                     gsr_no_reservations?.visibility = View.GONE
@@ -88,6 +90,12 @@ class GsrReservationsFragment : Fragment() {
                 } catch (e: NullPointerException) {}
             }
         })
+    }
+
+    private val broadcastReceiver = object: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            getReservations()
+        }
     }
 
 }

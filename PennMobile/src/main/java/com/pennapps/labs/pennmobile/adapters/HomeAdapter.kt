@@ -109,7 +109,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
 
         holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
                 LinearLayoutManager.VERTICAL, false)
-        holder.itemView.home_card_rv.adapter = GsrReservationsAdapter(ArrayList(reservations), true)
+        holder.itemView.home_card_rv.adapter = GsrReservationsAdapter(ArrayList(reservations))
     }
 
     private fun bindDiningCell(holder: ViewHolder, cell: HomeCell) {
