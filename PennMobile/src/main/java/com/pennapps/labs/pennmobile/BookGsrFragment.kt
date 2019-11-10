@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentTransaction
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -88,13 +89,20 @@ class BookGsrFragment : Fragment() {
                                 Toast.makeText(activity, "Please enter a valid Penn email", Toast.LENGTH_LONG).show()
                             } else {
                                 bookGSR(Integer.parseInt(gsrID), Integer.parseInt(gsrLocationCode), startTime, endTime)
-                                // Save user info in shared preferences
+                                // Save user info in shared preferences and go back to GSR fragment
                                 val sp = PreferenceManager.getDefaultSharedPreferences(activity)
                                 val editor = sp.edit()
                                 editor.putString(getString(R.string.first_name), firstNameEt.text.toString())
                                 editor.putString(getString(R.string.last_name), lastNameEt.text.toString())
                                 editor.putString(getString(R.string.email_address), emailEt.text.toString())
                                 editor.apply()
+
+                                val fragmentManager = (context as MainActivity).supportFragmentManager
+                                fragmentManager.beginTransaction()
+                                        .replace(R.id.content_frame, GsrTabbedFragment())
+                                        .addToBackStack("GSR Fragment")
+                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                        .commit()
                             }
                         }
                     }
