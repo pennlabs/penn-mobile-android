@@ -67,28 +67,23 @@ class HomeFragment : Fragment()  {
         val labs = MainActivity.getLabsInstance() //TODO: get for an account id
         labs.getHomePage("test_android", "5fb78cbc-692e-4167-8802-82c3eb2ddc7b").subscribe({ cells ->
             mActivity.runOnUiThread {
-                try {
-                    home_cells_rv.adapter = HomeAdapter(ArrayList(cells))
-                    loadingPanel.visibility = View.GONE
-                    home_refresh_layout.isRefreshing = false
-                } catch (e: NullPointerException) {}
+                home_cells_rv?.adapter = HomeAdapter(ArrayList(cells))
+                loadingPanel?.visibility = View.GONE
+                home_refresh_layout?.isRefreshing = false
             }
         }, { throwable ->
             mActivity.runOnUiThread {
                 throwable.printStackTrace()
                 Toast.makeText(activity, "Error: Could not load Home page", Toast.LENGTH_LONG).show()
-                try {
-                    loadingPanel.visibility = View.GONE
-                    home_refresh_layout.isRefreshing = false
-                } catch (e: NullPointerException) {}
+                loadingPanel?.visibility = View.GONE
+                home_refresh_layout?.isRefreshing = false
             }
         })
     }
 
     private val broadcastReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            //getHomePage()
-            // TODO: fix broadcast receiver so homepage refreshes when we have no more reservations
+            getHomePage()
         }
     }
 }

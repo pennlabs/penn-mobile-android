@@ -77,11 +77,14 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                     // TODO: change to actual device id
                     override fun success(response: Response) {
                         reservations.removeAt(position)
-                        run {if (reservations.size == 0 && isHome) {
-                            var intent = Intent("refresh")
-                            LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent)
-                        }}
-                        notifyItemRemoved(position)
+                        run {
+                            if (reservations.size == 0 && isHome) {
+                                var intent = Intent("refresh")
+                                LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent)
+                            } else {
+                                reservations.removeAt(position)
+                                notifyItemRemoved(position)
+                            }}
                     }
 
                     override fun failure(error: RetrofitError) {
