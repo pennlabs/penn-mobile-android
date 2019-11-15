@@ -71,9 +71,8 @@ class HomeFragment : Fragment()  {
                 try {
                     // Let's initialize the adapter before setting it
                     Log.d("$$$$$", ArrayList(cells).toString())
-
-
-                    home_cells_rv.adapter = HomeAdapter(ArrayList(cells))
+                    val currAdapter = HomeAdapter(ArrayList<HomeCell>(cells))
+                    home_cells_rv.adapter = currAdapter
                     loadingPanel.visibility = View.GONE
                     home_refresh_layout.isRefreshing = false
                 } catch (e: NullPointerException) {}
