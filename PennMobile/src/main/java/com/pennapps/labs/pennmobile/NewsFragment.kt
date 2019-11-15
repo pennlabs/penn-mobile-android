@@ -205,10 +205,5 @@ class NewsFragment : ListFragment() {
     override fun onDestroyView() {
         (activity as MainActivity).removeTabs()
         super.onDestroyView()
-
     }
-
-
-
-
 }

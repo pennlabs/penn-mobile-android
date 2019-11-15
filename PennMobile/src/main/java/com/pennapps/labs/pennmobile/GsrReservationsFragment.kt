@@ -33,6 +33,8 @@ class GsrReservationsFragment : Fragment() {
 
         mActivity = activity as MainActivity
 
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(broadcastReceiver, IntentFilter("refresh"))
+
         Fabric.with(context, Crashlytics())
         Answers.getInstance().logContentView(ContentViewEvent()
                 .putContentName("GsrReservations")
@@ -65,28 +67,35 @@ class GsrReservationsFragment : Fragment() {
         val labs = MainActivity.getLabsInstance()
         labs.getGsrReservations(email, sessionID).subscribe({ reservations ->
             mActivity.runOnUiThread {
-                gsr_reservations_rv.adapter = GsrReservationsAdapter(ArrayList(reservations), false)
-                loadingPanel.visibility = View.GONE
+                gsr_reservations_rv?.adapter = GsrReservationsAdapter(ArrayList(reservations))
+                loadingPanel?.visibility = View.GONE
                 if (reservations.size > 0) {
-                    gsr_no_reservations.visibility = View.GONE
+                    gsr_no_reservations?.visibility = View.GONE
                 } else {
-                    gsr_no_reservations.visibility = View.VISIBLE
+                    gsr_no_reservations?.visibility = View.VISIBLE
                 }
                 // stop refreshing
                 try {
-                    gsr_reservations_refresh_layout.isRefreshing = false
+                    gsr_reservations_refresh_layout?.isRefreshing = false
                 } catch (e: NullPointerException) {}
             }
         }, { throwable ->
             mActivity.runOnUiThread {
                 throwable.printStackTrace()
-                loadingPanel.visibility = View.GONE
-                gsr_no_reservations.visibility = View.VISIBLE
+                Toast.makeText(activity, "Error: Could not load GSR reservations", Toast.LENGTH_LONG).show()
+                loadingPanel?.visibility = View.GONE
+                gsr_no_reservations?.visibility = View.VISIBLE
                 try {
-                    gsr_reservations_refresh_layout.isRefreshing = false
+                    gsr_reservations_refresh_layout?.isRefreshing = false
                 } catch (e: NullPointerException) {}
             }
         })
+    }
+
+    private val broadcastReceiver = object: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            getReservations()
+        }
     }
 
 }

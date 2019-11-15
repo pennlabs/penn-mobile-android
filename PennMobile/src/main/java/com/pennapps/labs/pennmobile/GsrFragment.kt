@@ -227,17 +227,17 @@ class GsrFragment : Fragment() {
                                 }
                             }
                             // remove loading icon
-                            loadingPanel.visibility = View.GONE
-                            noResultsPanel.visibility = View.GONE
+                            loadingPanel?.visibility = View.GONE
+                            noResultsPanel?.visibility = View.GONE
                             // stop refreshing
-                            gsr_rooms_list.visibility = View.VISIBLE
-                            gsr_refresh_layout.isRefreshing = false
+                            gsr_rooms_list?.visibility = View.VISIBLE
+                            gsr_refresh_layout?.isRefreshing = false
 
                             if (timeSlotLengthZero) {
                                 Toast.makeText(context, "No GSRs available", Toast.LENGTH_LONG).show()
                             }
 
-                            gsr_rooms_list.adapter = (context?.let {
+                            gsr_rooms_list?.adapter = (context?.let {
                                 GsrBuildingAdapter(it, mGSRS, Integer.toString(location), (durationDropDown.selectedItemPosition + 1) * 30)
                             })
 
@@ -252,7 +252,7 @@ class GsrFragment : Fragment() {
                     activity ->
                     activity.runOnUiThread {
                         showNoResults()
-                        //Toast.makeText(activity, "Error: could not load GSRs", Toast.LENGTH_LONG).show()
+                        Toast.makeText(activity, "Error: could not load GSRs", Toast.LENGTH_LONG).show()
                         selectDateButton.isClickable = true
                         selectTimeButton.isClickable = true
                         gsrLocationDropDown.isEnabled = true

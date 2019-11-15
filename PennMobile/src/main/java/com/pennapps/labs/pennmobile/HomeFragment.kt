@@ -76,15 +76,16 @@ class HomeFragment : Fragment()  {
                     loadingPanel.visibility = View.GONE
                     home_refresh_layout.isRefreshing = false
                 } catch (e: NullPointerException) {}
+                home_cells_rv?.adapter = HomeAdapter(ArrayList(cells))
+                loadingPanel?.visibility = View.GONE
+                home_refresh_layout?.isRefreshing = false
             }
         }, { throwable ->
             mActivity.runOnUiThread {
                 throwable.printStackTrace()
                 Toast.makeText(activity, "Error: Could not load Home page", Toast.LENGTH_LONG).show()
-                try {
-                    loadingPanel.visibility = View.GONE
-                    home_refresh_layout.isRefreshing = false
-                } catch (e: NullPointerException) {}
+                loadingPanel?.visibility = View.GONE
+                home_refresh_layout?.isRefreshing = false
             }
         })
     }
@@ -92,7 +93,6 @@ class HomeFragment : Fragment()  {
     private val broadcastReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             getHomePage()
-            // TODO: fix broadcast receiver so homepage refreshes when we have no more reservations
         }
     }
 }

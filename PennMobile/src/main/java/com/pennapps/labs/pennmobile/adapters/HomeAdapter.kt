@@ -1,9 +1,13 @@
 package com.pennapps.labs.pennmobile.adapters
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.app.PendingIntent
+import android.content.*
+import android.net.Uri
+import android.os.Bundle
+import android.os.Parcel
+import android.os.Parcelable
+import android.support.customtabs.*
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -12,12 +16,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ListView
 import com.pennapps.labs.pennmobile.MainActivity
+import com.pennapps.labs.pennmobile.NewsFragment
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.HomeCell
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_gsr_reservations.*
 import kotlinx.android.synthetic.main.fragment_gsr_reservations.view.*
+import kotlinx.android.synthetic.main.gsr_reservation.view.*
 import kotlinx.android.synthetic.main.home_base_card.view.*
+import kotlinx.android.synthetic.main.home_news_card.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
 
 class HomeAdapter(private var cells: ArrayList<HomeCell>)
@@ -25,6 +34,12 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
 
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
+
+    private var mCustomTabsClient: CustomTabsClient? = null
+    private var customTabsIntent: CustomTabsIntent? = null
+    private var share: Intent? = null
+    private var session: CustomTabsSession? = null
+    private var builder: CustomTabsIntent.Builder? = null
 
     companion object {
         private const val NOT_SUPPORTED = -1
@@ -41,23 +56,8 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         mActivity = mContext as MainActivity
 
         return when (viewType) {
-            RESERVATIONS -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
-            }
-            DINING -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
-            }
-            CALENDAR -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
-            }
             NEWS -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
-            }
-            COURSES -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
-            }
-            LAUNDRY -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
+                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_news_card, parent, false))
             }
             NOT_SUPPORTED -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.empty_view, parent, false))
@@ -109,7 +109,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
 
         holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
                 LinearLayoutManager.VERTICAL, false)
-        holder.itemView.home_card_rv.adapter = GsrReservationsAdapter(ArrayList(reservations), true)
+        holder.itemView.home_card_rv.adapter = GsrReservationsAdapter(ArrayList(reservations))
     }
 
     private fun bindDiningCell(holder: ViewHolder, cell: HomeCell) {
@@ -118,8 +118,41 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
     }
 
     private fun bindNewsCell(holder: ViewHolder, cell: HomeCell) {
-        holder.itemView.home_card_title.text = "News"
-        holder.itemView.home_card_subtitle.text = "NEWS"
+        val info = cell.info
+        holder.itemView.home_news_title.text = info?.title
+        holder.itemView.home_news_subtitle.text = info?.source
+        holder.itemView.home_news_timestamp.text = info?.timestamp
+
+        Picasso.get().load(info?.imageUrl).fit().centerCrop().into(holder.itemView.home_news_iv)
+
+        holder.itemView.home_news_card.setOnClickListener {
+
+            val url = info?.articleUrl
+
+            val connection = NewsCustomTabsServiceConnection()
+            builder = CustomTabsIntent.Builder()
+            share = Intent(Intent.ACTION_SEND)
+            share?.type = "text/plain"
+            builder?.setToolbarColor(0x3E50B4)
+            builder?.setStartAnimations(mContext,
+                    android.support.design.R.anim.abc_popup_enter,
+                    android.support.design.R.anim.abc_popup_exit)
+            CustomTabsClient.bindCustomTabsService(mContext,
+                    NewsFragment.CUSTOM_TAB_PACKAGE_NAME, connection)
+
+            if (isChromeCustomTabsSupported(mContext)) {
+                share?.putExtra(Intent.EXTRA_TEXT, url)
+                builder?.addMenuItem("Share", PendingIntent.getActivity(mContext, 0,
+                        share, PendingIntent.FLAG_CANCEL_CURRENT))
+                customTabsIntent = builder?.build()
+                mActivity?.let { activity ->
+                    customTabsIntent?.launchUrl(activity, Uri.parse(url))
+                }
+            } else {
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                startActivity(mContext, browserIntent, null)
+            }
+        }
     }
 
     private fun bindCalendarCell(holder: ViewHolder, cell: HomeCell) {
@@ -147,5 +180,29 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
             }
 
         }, { throwable -> mActivity.runOnUiThread { throwable.printStackTrace() } } )
+    }
+
+    // Chrome custom tabs to launch news site
+
+    internal inner class NewsCustomTabsServiceConnection : CustomTabsServiceConnection() {
+
+        override fun onCustomTabsServiceConnected(name: ComponentName, client: CustomTabsClient) {
+            mCustomTabsClient = client
+            mCustomTabsClient?.warmup(0)
+            session = mCustomTabsClient?.newSession(null)
+        }
+
+        override fun onServiceDisconnected(name: ComponentName) {
+            mCustomTabsClient = null
+            session = null
+            customTabsIntent = null
+        }
+    }
+
+    private fun isChromeCustomTabsSupported(context: Context): Boolean {
+        val serviceIntent = Intent("android.support.customtabs.action.CustomTabsService")
+        serviceIntent.setPackage("com.android.chrome")
+        val resolveInfos = context.packageManager.queryIntentServices(serviceIntent, 0)
+        return !(resolveInfos == null || resolveInfos.isEmpty())
     }
 }
