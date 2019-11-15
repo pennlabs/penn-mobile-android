@@ -54,7 +54,8 @@ public class LaundryBroadcastReceiver extends BroadcastReceiver {
                     .setContentTitle(context.getString(R.string.app_name))
                     .setContentText(builder);
         } else {
-            mBuilder = new NotificationCompat.Builder(context)
+            String channelId = "pennmobile_laundry_alarm";
+            mBuilder = new NotificationCompat.Builder(context, channelId)
                     .setSmallIcon(R.drawable.ic_local_laundry_service)
                     .setContentTitle(context.getString(R.string.app_name))
                     .setContentText(builder);
