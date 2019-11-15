@@ -156,8 +156,14 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
     }
 
     private fun bindCalendarCell(holder: ViewHolder, cell: HomeCell) {
+        val events = cell.events
+
         holder.itemView.home_card_title.text = "Upcoming Events"
         holder.itemView.home_card_subtitle.text = "UNIVERSITY NOTIFICATIONS"
+
+        holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
+                LinearLayoutManager.VERTICAL, false)
+        holder.itemView.home_card_rv.adapter = UniversityEventAdapter(ArrayList(events))
     }
 
     private fun bindCoursesCell(holder: ViewHolder, cell: HomeCell) {
