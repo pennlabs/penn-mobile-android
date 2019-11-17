@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile
 
 
+import android.content.SharedPreferences
 import android.database.SQLException
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -12,14 +13,10 @@ import android.view.ViewGroup
 import android.webkit.*
 import android.widget.Button
 import com.pennapps.labs.pennmobile.api.Labs
-import com.pennapps.labs.pennmobile.api.PennInTouchNetworkManager
 import com.pennapps.labs.pennmobile.classes.User
 import java.util.*
-import com.pennapps.labs.pennmobile.api.DatabaseHelper
-import java.io.IOException
-import android.widget.Toast
-
-
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 
 /**
@@ -31,46 +28,62 @@ class LoginFragment : Fragment() {
     lateinit var cancelButton: Button
     lateinit var user: User
     private lateinit var mLabs: Labs
+    lateinit var sp: SharedPreferences
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-         val dbHelper = DatabaseHelper(context);
-         try {
-             dbHelper.createDataBase();
-                } catch (io: IOException) {
-                    throw Error("Unable to create database");
-                }
-                try {
-                    dbHelper.openDataBase();
-                } catch (sqle: SQLException) {
-                    throw sqle;
-                }
-         try {
-                    dbHelper.createDataBase();
-                } catch (ioe: IOException) {
-                    throw Error("Unable to create database");
-                }
-                try {
-                    dbHelper.openDataBase();
-                } catch (sqle: SQLException) {
-                    throw sqle;
-                }
+        sp = PreferenceManager.getDefaultSharedPreferences(activity)
 
-         Toast.makeText(context, "Successfully Imported", Toast.LENGTH_SHORT).show()
-        //need the table name for the query (accountdb is not the correct one and not sure how to find it)
-        /* val c = dbHelper.query("accountdb", null, null, null, null, null, null);
-         if (c.moveToFirst()) {
-             do {
-                 Toast.makeText(context,
-                             "id: " + c.getString(0) + "\n" +
-                                  "first: " + c.getString(1) + "\n" +
-                                  "last: " + c.getString(2) + "\n" +
-                                  "pennkey:  " + c.getString(3),
-                                Toast.LENGTH_LONG).show();
-                    } while (c.moveToNext());
-                }*/
+        val rows = ArrayList<List<String>>()
+        var inputStreamReader = InputStreamReader(context!!.assets.open("accountdb.csv"))
+        var bufferedReader = BufferedReader(inputStreamReader)
+        val csvSplitBy = ","
+
+        var line = bufferedReader.readLine()
+
+        while (line != null) {
+            val row = line.split(csvSplitBy)
+            rows.add(row);
+            line = bufferedReader.readLine()
+        }
+
+        inputStreamReader = InputStreamReader(context!!.assets.open("school_major_account.csv"))
+        bufferedReader = BufferedReader(inputStreamReader);
+
+        var accountId =""
+
+        //pennkey should be the pennkey saved in the shared preferences
+        //right now, using 'sahitpen' to just parse the data correctly.
+        for (row in rows) {
+            if (row.get(3).equals("sahitpen")) {
+                accountId = row.get(0);
+            }
+        }
+
+        Log.d("AccountId", accountId)
+
+        var majorCode = ""
+        var majorName = ""
+        var gradYear = ""
+
+        line = bufferedReader.readLine()
+        while (line != null) {
+            val row = line.split(", ")
+            Log.d("Row", row.toString());
+            if (row.get(0).equals(accountId)) {
+                majorCode = row.get(1);
+                majorName = row.get(2);
+                gradYear = row.get(3);
+            }
+            line = bufferedReader.readLine()
+        }
+
+
+        Log.d("MajorCode", majorCode)
+        Log.d("MajorName", majorName)
+        Log.d("GradYear", gradYear)
 
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
