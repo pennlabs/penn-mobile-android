@@ -35,9 +35,9 @@ class UniversityEventAdapter(private var events: ArrayList<CalendarEvent>)
 
         holder.itemView.event_name_tv.text = name
         if (start.equals(end)) {
-            holder.itemView.event_date_tv.text = event.start
+            holder.itemView.event_date_tv.text = start
         } else {
-            holder.itemView.event_date_tv.text = event.start + " - " + event.end
+            holder.itemView.event_date_tv.text = start + " - " + end
         }
 
     }
