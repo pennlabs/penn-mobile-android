@@ -187,7 +187,7 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
                     // snackbar
                     StringBuilder stringBuilder = new StringBuilder();
                     stringBuilder.append("Alarm set for " + time + " minutes");
-                    Snackbar snackbar = Snackbar.make(((LaundryActivity) mContext).findViewById(android.R.id.content), stringBuilder, Snackbar.LENGTH_SHORT);
+                    Snackbar snackbar = Snackbar.make(buttonView, stringBuilder, Snackbar.LENGTH_SHORT);
                     View subView = snackbar.getView();
                     TextView snackTextView = (TextView) subView.findViewById(android.support.design.R.id.snackbar_text);
                     snackTextView.setTextColor(ContextCompat.getColor(mContext, R.color.white));
