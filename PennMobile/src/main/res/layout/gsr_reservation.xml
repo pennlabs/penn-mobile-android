@@ -67,7 +67,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="8dp"
-        android:text="Friday April 20 \n 2:00pm-3:00 pm"
+        android:text="Friday April 20 \n 2:00p3:00 pm"
         android:textSize="13dp"
         app:layout_constraintStart_toEndOf="@+id/gsr_reservation_cardview"
         app:layout_constraintTop_toBottomOf="@+id/gsr_reservation_location_tv" />

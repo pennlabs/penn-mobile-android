@@ -49,6 +49,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         private const val NEWS = 3
         private const val COURSES = 4
         private const val LAUNDRY = 5
+        private const val GSR_BOOKING = 6
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -75,8 +76,9 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
             "dining" -> bindDiningCell(holder, cell)
             "calendar" -> bindCalendarCell(holder, cell)
             "news" -> bindNewsCell(holder, cell)
-            "courses" -> bindCoursesCell(holder, cell)
+            //"courses" -> bindCoursesCell(holder, cell)
             "laundry" -> bindLaundryCell(holder, cell)
+            "gsr_booking" -> bindGsrBookingCell(holder, cell)
             else -> Log.d("HomeAdapter", "Unsupported type of data at position " + position)
         }
     }
@@ -96,8 +98,9 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
             "dining" -> DINING
             "calendar" -> CALENDAR
             "news" -> NEWS
-            "courses" -> COURSES
+            //"courses" -> COURSES
             "laundry" -> LAUNDRY
+            "gsr_booking" -> GSR_BOOKING
             else -> NOT_SUPPORTED
         }
     }
@@ -186,6 +189,17 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
             }
 
         }, { throwable -> mActivity.runOnUiThread { throwable.printStackTrace() } } )
+    }
+
+    private fun bindGsrBookingCell(holder: ViewHolder, cell: HomeCell) {
+        val buildings = cell.buildings
+
+        holder.itemView.home_card_title.text = "Book a GSR"
+        holder.itemView.home_card_subtitle.text = "GROUP STUDY ROOMS"
+
+        holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
+                LinearLayoutManager.VERTICAL, false)
+        holder.itemView.home_card_rv.adapter = HomeGsrBuildingAdapter(ArrayList(buildings))
     }
 
     // Chrome custom tabs to launch news site

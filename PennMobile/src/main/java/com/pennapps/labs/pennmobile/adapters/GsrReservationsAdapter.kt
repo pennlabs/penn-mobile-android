@@ -54,7 +54,6 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
 
         // huntsman reservation responses don't have an image url so we set it here
         val imageUrl = reservation.info?.get("thumbnail") ?: "https://s3.us-east-2.amazonaws.com/labs.api/dining/MBA+Cafe.jpg"
-
         Picasso.get().load(imageUrl).fit().centerCrop().into(holder.itemView.gsr_reservation_iv)
 
         holder.itemView.gsr_reservation_location_tv.text = roomName
@@ -81,7 +80,6 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                                 var intent = Intent("refresh")
                                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent)
                             } else {
-                                reservations.removeAt(position)
                                 notifyItemRemoved(position)
                             }}
                     }
