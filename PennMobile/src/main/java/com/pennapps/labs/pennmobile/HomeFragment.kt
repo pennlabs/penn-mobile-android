@@ -68,14 +68,13 @@ class HomeFragment : Fragment()  {
         val labs = MainActivity.getLabsInstance() //TODO: get for an account id
         labs.getHomePage("test_android", "5fb78cbc-692e-4167-8802-82c3eb2ddc7b").subscribe({ cells ->
             mActivity.runOnUiThread {
-                try {
-                    // Let's initialize the adapter before setting it
-                    Log.d("$$$$$", ArrayList(cells).toString())
-                    val currAdapter = HomeAdapter(ArrayList<HomeCell>(cells))
-                    home_cells_rv.adapter = currAdapter
-                    loadingPanel.visibility = View.GONE
-                    home_refresh_layout.isRefreshing = false
-                } catch (e: NullPointerException) {}
+                val gsrBookingCell = HomeCell()
+                gsrBookingCell.type = "gsr_booking"
+                val buildings = ArrayList<String>()
+                buildings.add("Huntsman Hall")
+                buildings.add("VP Weigle")
+                gsrBookingCell.buildings = buildings
+                cells?.add(cells?.size - 1, gsrBookingCell)
                 home_cells_rv?.adapter = HomeAdapter(ArrayList(cells))
                 loadingPanel?.visibility = View.GONE
                 home_refresh_layout?.isRefreshing = false

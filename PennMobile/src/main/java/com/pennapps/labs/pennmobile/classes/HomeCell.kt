@@ -14,6 +14,7 @@ class HomeCell {
 
     var reservations: List<GSRReservation>? = null
     var events: List<CalendarEvent>? = null
+    var buildings: List<String>? = null
 
     @SerializedName("info")
     @Expose
