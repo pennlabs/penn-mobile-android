@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dining_list_item_layout"
+    android:layout_width="match_parent"
+    android:layout_height="101dp">
+
+    <ImageView
+        android:id="@+id/item_dining_image"
+        android:layout_width="175dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/card_imageview_padding"
+        android:layout_marginLeft="@dimen/card_imageview_padding"
+        android:layout_marginTop="@dimen/card_imageview_padding"
+        android:layout_marginBottom="@dimen/card_imageview_padding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/item_dining_status"
+        style="@style/DiningStatusLabel"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="@+id/item_dining_name"
+        app:layout_constraintTop_toBottomOf="@+id/item_dining_name"
+        tools:background="@drawable/label_green"
+        tools:text="Open" />
+
+    <TextView
+        android:id="@+id/item_dining_name"
+        style="@style/HallName"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toEndOf="@id/item_dining_image"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="1920 Commons" />
+
+    <TextView
+        android:id="@+id/item_dining_hours"
+        style="@style/Menu"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="15dp"
+        android:fontFamily="sans-serif-light"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/item_dining_status"
+        app:layout_constraintTop_toBottomOf="@+id/item_dining_status"
+        tools:text="Closes at 9:00PM"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/item_dining_menu_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_chevron_right_black_24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

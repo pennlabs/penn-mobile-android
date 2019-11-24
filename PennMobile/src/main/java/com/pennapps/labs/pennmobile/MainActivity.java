@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private static Labs mLabs;
-    private static Labs mLabsHome;
     private static final int CODE_MAP = 1;
     private boolean tab_showed;
 

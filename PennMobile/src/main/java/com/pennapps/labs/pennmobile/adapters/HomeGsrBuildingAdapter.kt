@@ -1,10 +1,15 @@
 package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.pennapps.labs.pennmobile.GsrTabbedFragment
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.CalendarEvent
 import com.squareup.picasso.Picasso
@@ -36,10 +41,8 @@ class HomeGsrBuildingAdapter(private var buildings: ArrayList<String>)
             holder.itemView.home_gsr_building_iv.setImageResource(R.drawable.weigle)
         }
         holder.itemView.setOnClickListener {
-            // TODO: go to gsr fragment with this location
+            fragmentTransact(GsrTabbedFragment())
         }
-
-
 
     }
 
@@ -49,5 +52,24 @@ class HomeGsrBuildingAdapter(private var buildings: ArrayList<String>)
 
     inner class HomeGsrBuildingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val view = itemView
+    }
+
+    private fun fragmentTransact(fragment: Fragment?) {
+        if (fragment != null) {
+            if (mContext is FragmentActivity) {
+                try {
+                    val activity = mContext as FragmentActivity
+                    val fragmentManager = activity.supportFragmentManager
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.content_frame, fragment)
+                            .addToBackStack("Main Activity")
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .commit()
+                } catch (e: IllegalStateException) {
+                    Log.e("HomeAdapter", e.toString())
+                }
+
+            }
+        }
     }
 }
