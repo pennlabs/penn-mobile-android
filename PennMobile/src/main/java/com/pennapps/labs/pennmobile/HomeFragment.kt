@@ -36,6 +36,8 @@ class HomeFragment : Fragment()  {
 
         LocalBroadcastManager.getInstance(mActivity).registerReceiver(broadcastReceiver, IntentFilter("refresh"))
 
+        //mActivity.supportActionBar?.title = "Home"
+
         Fabric.with(context, Crashlytics())
         Answers.getInstance().logContentView(ContentViewEvent()
                 .putContentName("Home")

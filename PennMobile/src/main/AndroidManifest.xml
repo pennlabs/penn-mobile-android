@@ -78,12 +78,6 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity
-            android:name=".HomeScreenSettingsActivity"
-            android:label="@string/home_screen_settings"
-            android:screenOrientation="portrait"
-            android:theme="@style/HomeScreenTheme" />
-
     </application>
 
 </manifest>

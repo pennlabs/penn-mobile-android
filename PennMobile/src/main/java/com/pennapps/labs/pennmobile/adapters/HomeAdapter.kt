@@ -3,37 +3,38 @@ package com.pennapps.labs.pennmobile.adapters
 import android.app.PendingIntent
 import android.content.*
 import android.net.Uri
-import android.os.Bundle
-import android.os.Parcel
-import android.os.Parcelable
 import android.support.customtabs.*
+import android.support.v4.content.ContextCompat
 import android.support.v4.content.ContextCompat.startActivity
-import android.support.v4.content.LocalBroadcastManager
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ListView
+import android.widget.ImageView
+import android.widget.TextView
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.NewsFragment
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.HomeCell
+import com.pennapps.labs.pennmobile.classes.Venue
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_gsr_reservations.*
-import kotlinx.android.synthetic.main.fragment_gsr_reservations.view.*
-import kotlinx.android.synthetic.main.gsr_reservation.view.*
 import kotlinx.android.synthetic.main.home_base_card.view.*
+import kotlinx.android.synthetic.main.home_dining_item.view.*
 import kotlinx.android.synthetic.main.home_news_card.view.*
-import kotlinx.android.synthetic.main.loading_panel.*
+import rx.Observable
+
 
 class HomeAdapter(private var cells: ArrayList<HomeCell>)
     : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
 
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
+
+    private lateinit var mLabs: Labs
 
     private var mCustomTabsClient: CustomTabsClient? = null
     private var customTabsIntent: CustomTabsIntent? = null
@@ -54,6 +55,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         mContext = parent.context
+        mLabs = MainActivity.getLabsInstance()
         mActivity = mContext as MainActivity
 
         return when (viewType) {
@@ -118,6 +120,28 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
     private fun bindDiningCell(holder: ViewHolder, cell: HomeCell) {
         holder.itemView.home_card_title.text = "Favorites"
         holder.itemView.home_card_subtitle.text = "DINING HALLS"
+
+        mLabs.venues()
+                .flatMap { venues -> Observable.from(venues) }
+                .flatMap { venue ->
+                    val hall = createHall(venue)
+                    Observable.just(hall)
+                }
+                .toList()
+                .subscribe { diningHalls ->
+                    mActivity.runOnUiThread {
+                        var favorites :ArrayList<DiningHall> = arrayListOf()
+                        var  favoritesIdList :List<Int>? = cell.info?.venues
+                        diningHalls.forEach {
+                            if (favoritesIdList?.contains(it.id) == true) {
+                                favorites.add(it)
+                            }
+                        }
+                        holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
+                                LinearLayoutManager.VERTICAL, false)
+                        holder.itemView.home_card_rv.adapter = DiningCardAdapter(favorites)
+                    }
+                }
     }
 
     private fun bindNewsCell(holder: ViewHolder, cell: HomeCell) {
@@ -180,8 +204,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
                 LinearLayoutManager.VERTICAL, false)
 
-        val labs = MainActivity.getLabsInstance()
-        labs.room(roomID).subscribe({ room ->
+        mLabs.room(roomID).subscribe({ room ->
             mActivity.runOnUiThread {
                 holder.itemView.home_card_title.text = room.name
                 val rooms = arrayListOf(room)
@@ -225,4 +248,28 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         val resolveInfos = context.packageManager.queryIntentServices(serviceIntent, 0)
         return !(resolveInfos == null || resolveInfos.isEmpty())
     }
+
+    // Takes a venue then adds an image and modifies venue name if name is too long
+    private fun createHall(venue: Venue): DiningHall {
+        when (venue.id) {
+            593 -> return DiningHall(venue.id, venue.name, venue.isResidential, venue.getHours(), venue, R.drawable.dining_commons)
+            636 -> return DiningHall(venue.id, venue.name, venue.isResidential, venue.getHours(), venue, R.drawable.dining_hill_house)
+            637 -> return DiningHall(venue.id, venue.name, venue.isResidential, venue.getHours(), venue, R.drawable.dining_kceh)
+            638 -> return DiningHall(venue.id, venue.name, venue.isResidential, venue.getHours(), venue, R.drawable.dining_hillel)
+            639 -> return DiningHall(venue.id, venue.name, venue.isResidential, venue.getHours(), venue, R.drawable.dining_houston)
+            640 -> return DiningHall(venue.id, venue.name, venue.isResidential, venue.getHours(), venue, R.drawable.dining_marks)
+            641 -> return DiningHall(venue.id, venue.name, venue.isResidential, venue.getHours(), venue, R.drawable.dining_accenture)
+            642 -> return DiningHall(venue.id, venue.name, venue.isResidential, venue.getHours(), venue, R.drawable.dining_joes_cafe)
+            1442 -> return DiningHall(venue.id, venue.name, venue.isResidential, venue.getHours(), venue, R.drawable.dining_nch)
+            747 -> return DiningHall(venue.id, venue.name, venue.isResidential, venue.getHours(), venue, R.drawable.dining_mcclelland)
+            1057 -> return DiningHall(venue.id, venue.name, venue.isResidential, venue.getHours(), venue, R.drawable.dining_gourmet_grocer)
+            1058 -> return DiningHall(venue.id, "Tortas Frontera", venue.isResidential, venue.getHours(), venue, R.drawable.dining_tortas)
+            1163 -> return DiningHall(venue.id, venue.name, venue.isResidential, venue.getHours(), venue, R.drawable.dining_commons)
+            1731 -> return DiningHall(venue.id, venue.name, venue.isResidential, venue.getHours(), venue, R.drawable.dining_nch)
+            1732 -> return DiningHall(venue.id, venue.name, venue.isResidential, venue.getHours(), venue, R.drawable.dining_mba_cafe)
+            1733 -> return DiningHall(venue.id, "Pret a Manger Locust", venue.isResidential, venue.getHours(), venue, R.drawable.dining_pret_a_manger)
+            else -> return DiningHall(venue.id, venue.name, venue.isResidential, venue.getHours(), venue, R.drawable.dining_commons)
+        }
+    }
+
 }
