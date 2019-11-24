@@ -36,8 +36,6 @@ class HomeFragment : Fragment()  {
 
         LocalBroadcastManager.getInstance(mActivity).registerReceiver(broadcastReceiver, IntentFilter("refresh"))
 
-        //mActivity.supportActionBar?.title = "Home"
-
         Fabric.with(context, Crashlytics())
         Answers.getInstance().logContentView(ContentViewEvent()
                 .putContentName("Home")
@@ -95,5 +93,11 @@ class HomeFragment : Fragment()  {
         override fun onReceive(context: Context?, intent: Intent?) {
             getHomePage()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mActivity.setTitle(R.string.home)
+        mActivity.setNav(R.id.nav_home)
     }
 }
