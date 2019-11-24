@@ -27,8 +27,7 @@
     <string name="save_contacts">Select Contacts to Save</string>
 
     <!--Home Screen -->
-    <string name="home_screen_settings">Home Screen Settings</string>
-    <string name="home_screen_settings_instructions">Press and hold item to drag and drop</string>
+    <string name="home">Home</string>
 
     <!-- Search -->
     <string name="registrar_search">Search for courses</string>
