@@ -49,8 +49,8 @@ class GsrReservationsFragment : Fragment() {
         view.gsr_reservations_rv.layoutManager = LinearLayoutManager(context,
                 LinearLayoutManager.VERTICAL, false)
 
-         view.gsr_reservations_refresh_layout.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
-         view.gsr_reservations_refresh_layout.setOnRefreshListener { getReservations() }
+        view.gsr_reservations_refresh_layout.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
+        view.gsr_reservations_refresh_layout.setOnRefreshListener { getReservations() }
 
         getReservations()
 
