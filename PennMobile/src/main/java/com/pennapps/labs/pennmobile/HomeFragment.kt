@@ -66,7 +66,7 @@ class HomeFragment : Fragment()  {
 
         // get API data
         val labs = MainActivity.getLabsInstance() //TODO: get for an account id
-        labs.getHomePage("test_android", "5fb78cbc-692e-4167-8802-82c3eb2ddc7b").subscribe({ cells ->
+        labs.getHomePage("test_android", null, sessionid).subscribe({ cells ->
             mActivity.runOnUiThread {
                 val gsrBookingCell = HomeCell()
                 gsrBookingCell.type = "gsr_booking"

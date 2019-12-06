@@ -130,7 +130,8 @@ public interface Labs {
     @GET("/homepage")
     Observable<List<HomeCell>> getHomePage(
             @Header("X-Device-ID") String deviceID,
-            @Header("X-Account-ID") String accountID);
+            @Header("X-Account-ID") String accountID,
+            @Query("sessionid") String sessionID);
 
     @GET("/fitness/schedule")
     Observable<List<Gym>> getGymData();
