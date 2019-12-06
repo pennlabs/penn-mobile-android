@@ -1,5 +1,8 @@
 package com.pennapps.labs.pennmobile.adapters
 
+import android.content.Context
+import android.os.Bundle
+import android.support.v4.app.FragmentTransaction
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -7,10 +10,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import com.pennapps.labs.pennmobile.MainActivity
+import com.pennapps.labs.pennmobile.MenuFragment
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.home_dining_item.view.*
+import rx.android.schedulers.AndroidSchedulers
+import rx.functions.Action1
 
 
 class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<DiningCardAdapter.ViewHolder>() {
@@ -20,6 +29,10 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
     private lateinit var itemName: TextView
     private lateinit var itemStatus: TextView
     private lateinit var itemHours: TextView
+
+    private lateinit var mContext: Context
+    private lateinit var mActivity: MainActivity
+    private lateinit var mLabs: Labs
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -42,6 +55,35 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
                 itemHours.text = currentHall.openTimes().toLowerCase()
             }
         }
+
+
+        // Load the menu for each dining hall
+        if (currentHall.isResidential) {
+            mLabs.daily_menu(currentHall.id)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ newDiningHall ->
+                        currentHall.sortMeals(newDiningHall.menus)
+                    }, {
+                        Toast.makeText(mContext, "Error loading menus", Toast.LENGTH_SHORT).show()
+                    })
+        }
+
+        holder.itemView.setOnClickListener {
+            mActivity.actionBarToggle.isDrawerIndicatorEnabled = false
+            mActivity.actionBarToggle.syncState()
+            val fragment = MenuFragment()
+
+            val args = Bundle()
+            args.putParcelable("DiningHall", currentHall)
+            fragment.arguments = args
+
+            val fragmentManager = mActivity.supportFragmentManager
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, fragment, "DINING_INFO_FRAGMENT")
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .addToBackStack(null)
+                    .commitAllowingStateLoss()
+        }
     }
 
     override fun getItemCount(): Int {
@@ -49,6 +91,10 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        mContext = parent.context
+        mActivity = mContext as MainActivity
+        mLabs = MainActivity.getLabsInstance()
+
         val view = LayoutInflater.from(parent.context).inflate(R.layout.home_dining_item, parent, false)
         return ViewHolder(view)
     }
