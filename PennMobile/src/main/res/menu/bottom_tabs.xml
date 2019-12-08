@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <tab
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_bottom_nav_home_grey"
+        icon_pressed= "@drawable/ic_bottom_nav_home_blue"
+        android:title="Home"
+        tools:ignore="MissingPrefix" />
+    <tab
+        android:id="@+id/nav_gsr"
+        android:icon="@drawable/ic_gsr_grey"
+        icon_pressed= "@drawable/ic_gsr_blue"
+        android:title="@string/gsr"
+        tools:ignore="MissingPrefix" />
+    <tab
+        android:id="@+id/nav_dining"
+        android:icon="@drawable/ic_dining_grey"
+        icon_pressed= "@drawable/ic_dining_blue"
+        android:title="@string/dining"
+        tools:ignore="MissingPrefix" />
+
+    <tab
+        android:id="@+id/nav_laundry"
+        android:icon="@drawable/ic_laundry_grey"
+        icon_pressed= "@drawable/ic_laundry_blue"
+        android:title="@string/laundry"
+        tools:ignore="MissingPrefix" />
+
+
+
+    <tab
+        android:id="@+id/nav_fitness"
+        android:icon="@drawable/ic_fitness_grey"
+        icon_pressed= "@drawable/ic_fitness_blue"
+        android:title="@string/fitness"
+        tools:ignore="MissingPrefix" />
+
+
+    <tab
+        android:id="@+id/nav_registrar"
+        android:icon="@drawable/ic_book"
+        android:title="@string/registrar"/>
+
+
+    <tab
+        android:id="@+id/nav_directory"
+        android:icon="@drawable/ic_contacts"
+        icon_pressed= "@drawable/ic_contacts"
+        android:title="@string/directory"
+        tools:ignore="MissingPrefix" />
+
+    <tab
+        android:id="@+id/nav_news"
+        android:icon="@drawable/ic_announcement"
+        icon_pressed= "@drawable/ic_announcement"
+        android:title="@string/news"
+        tools:ignore="MissingPrefix" />
+
+    <tab
+        android:id="@+id/nav_fling"
+        android:icon="@drawable/ic_event_black_24dp"
+        icon_pressed= "@drawable/ic_event_black_24dp"
+        android:title="@string/spring_fling"
+        tools:ignore="MissingPrefix" />
+
+    <tab
+        android:id="@+id/nav_support"
+        android:icon="@drawable/ic_face_unlock_black_24dp"
+        icon_pressed= "@drawable/ic_face_unlock_black_24dp"
+        android:title="@string/support"
+        tools:ignore="MissingPrefix" />
+
+    <tab
+        android:id="@+id/nav_pref"
+        android:icon="@drawable/ic_settings_black_24dp"
+        icon_pressed= "@drawable/ic_settings_black_24dp"
+        android:title="@string/action_settings"
+        tools:ignore="MissingPrefix" />
+
+    <tab
+        android:id="@+id/nav_about"
+        android:icon="@drawable/ic_info"
+        icon_pressed= "@drawable/ic_info"
+        android:title="@string/about"
+        tools:ignore="MissingPrefix" />
+
+</tabs>
