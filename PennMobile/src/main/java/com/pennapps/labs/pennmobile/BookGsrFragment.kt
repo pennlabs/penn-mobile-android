@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile
 
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
@@ -54,7 +55,9 @@ class BookGsrFragment : Fragment() {
         activity?.let { activity ->
             activity.setTitle(R.string.gsr)
         }
-        (activity as MainActivity).setNav(R.id.nav_gsr)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            (activity as MainActivity).setSelectedTab(1)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

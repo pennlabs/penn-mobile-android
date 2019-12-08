@@ -81,8 +81,8 @@ public class RegistrarTab extends SearchFavoriteTab {
         int pos = fav ? 1 : 0;
         fragments[pos] = new CourseFragment();
         Course course = ((RegistrarAdapter.ViewHolder) v.getTag()).course;
-        mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
-        mActivity.getActionBarToggle().syncState();
+//        mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
+//        mActivity.getActionBarToggle().syncState();
         Bundle args = new Bundle();
         args.putParcelable(getString(R.string.course_bundle_arg), course);
         args.putBoolean(getString(R.string.registrar_search), fav);
@@ -130,10 +130,6 @@ public class RegistrarTab extends SearchFavoriteTab {
         FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
         fragmentManager.beginTransaction().remove(fragments[id]).commit();
         fragments[id] = null;
-        if (fragments[0] == null && fragments[1] == null) {
-            mActivity.getActionBarToggle().setDrawerIndicatorEnabled(true);
-            mActivity.getActionBarToggle().syncState();
-        }
     }
 
     private void processRegistrarQuery(String query) {

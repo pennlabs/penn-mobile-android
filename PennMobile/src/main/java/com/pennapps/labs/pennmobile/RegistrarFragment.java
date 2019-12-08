@@ -83,7 +83,7 @@ public class RegistrarFragment extends SearchFavoriteFragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle(R.string.registrar);
-        mActivity.setNav(R.id.nav_registrar);
+        //mActivity.setNav(R.id.nav_registrar);
     }
 
     @Override

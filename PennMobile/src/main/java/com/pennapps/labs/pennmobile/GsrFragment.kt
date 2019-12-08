@@ -171,7 +171,7 @@ class GsrFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         activity?.setTitle(R.string.gsr)
-        (activity as MainActivity).setNav(R.id.nav_gsr)
+        //(activity as MainActivity).setNav(R.id.nav_gsr)
         populateDropDownGSR()
     }
 

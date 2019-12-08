@@ -62,7 +62,7 @@ class FlingFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         activity?.setTitle(R.string.spring_fling)
-        (activity as MainActivity?)?.setNav(R.id.nav_fling)
+        //(activity as MainActivity?)?.setNav(R.id.nav_fling)
     }
 
     companion object {

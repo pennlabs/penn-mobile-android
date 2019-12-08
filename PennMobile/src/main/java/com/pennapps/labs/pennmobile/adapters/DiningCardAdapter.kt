@@ -69,8 +69,6 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
         }
 
         holder.itemView.setOnClickListener {
-            mActivity.actionBarToggle.isDrawerIndicatorEnabled = false
-            mActivity.actionBarToggle.syncState()
             val fragment = MenuFragment()
 
             val args = Bundle()

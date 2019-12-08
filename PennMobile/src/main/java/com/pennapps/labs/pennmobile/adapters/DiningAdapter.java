@@ -117,8 +117,8 @@ public class DiningAdapter extends RecyclerView.Adapter<DiningAdapter.DiningView
                 @Override
                 public void onClick(View view) {
                     MainActivity mainActivity = ((MainActivity) context);
-                    mainActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
-                    mainActivity.getActionBarToggle().syncState();
+//                    mainActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
+//                    mainActivity.getActionBarToggle().syncState();
                     Fragment fragment = new MenuFragment();
 
                     Bundle args = new Bundle();

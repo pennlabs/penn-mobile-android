@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Resources
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
@@ -98,6 +99,9 @@ class HomeFragment : Fragment()  {
     override fun onResume() {
         super.onResume()
         mActivity.setTitle(R.string.home)
-        mActivity.setNav(R.id.nav_home)
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+//            (activity as MainActivity).setSelectedTab(1)
+//        }
+        //mActivity.setNav(R.id.nav_home)
     }
 }
