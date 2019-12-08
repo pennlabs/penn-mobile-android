@@ -233,7 +233,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mapView.onResume();
         mapCallbacks.requestLocationUpdates();
         activity.setTitle(R.string.map);
-//        activity.setNav(R.id.nav_map);
     }
 
     @Override

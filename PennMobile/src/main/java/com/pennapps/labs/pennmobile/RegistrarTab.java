@@ -81,8 +81,6 @@ public class RegistrarTab extends SearchFavoriteTab {
         int pos = fav ? 1 : 0;
         fragments[pos] = new CourseFragment();
         Course course = ((RegistrarAdapter.ViewHolder) v.getTag()).course;
-//        mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
-//        mActivity.getActionBarToggle().syncState();
         Bundle args = new Bundle();
         args.putParcelable(getString(R.string.course_bundle_arg), course);
         args.putBoolean(getString(R.string.registrar_search), fav);

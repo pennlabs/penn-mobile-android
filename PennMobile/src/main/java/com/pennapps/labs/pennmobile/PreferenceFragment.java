@@ -25,6 +25,5 @@ public class PreferenceFragment extends PreferenceFragmentCompat {
     public void onResume(){
         super.onResume();
         getActivity().setTitle(R.string.action_settings);
-        //((MainActivity)getActivity()).setNav(R.id.nav_pref);
     }
 }

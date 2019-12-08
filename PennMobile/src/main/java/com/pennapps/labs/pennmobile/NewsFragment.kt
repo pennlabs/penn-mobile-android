@@ -200,10 +200,6 @@ class NewsFragment : ListFragment() {
         activity?.let { activity ->
             activity.setTitle(R.string.news)
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            (activity as MainActivity).setSelectedTab(1)
-        }
-        //(activity as MainActivity).setNav(R.id.nav_news)
     }
 
     override fun onDestroyView() {

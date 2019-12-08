@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:showIn="@layout/activity_main">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -16,7 +16,104 @@
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RelativeLayout
+                android:id="@+id/menu_map_extension"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                android:visibility="gone"
+                app:layout_scrollFlags="scroll|enterAlways">
+
+                <EditText
+                    android:id="@+id/menu_map_from"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toStartOf="@id/menu_map_swap"
+                    android:layout_toLeftOf="@id/menu_map_swap"
+                    android:layout_toEndOf="@id/menu_map_circle"
+                    android:layout_toRightOf="@id/menu_map_circle"
+                    android:hint="@string/starting_location_hint"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white" />
+
+                <EditText
+                    android:id="@+id/menu_map_to"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/menu_map_from"
+                    android:layout_alignStart="@id/menu_map_from"
+                    android:layout_alignLeft="@id/menu_map_from"
+                    android:layout_alignEnd="@id/menu_map_from"
+                    android:layout_alignRight="@id/menu_map_from"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="20dp"
+                    android:hint="@string/starting_location_hint"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white" />
+
+                <ImageButton
+                    android:id="@+id/menu_map_swap"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="?attr/colorPrimary"
+                    android:src="@drawable/ic_swap_vert_white_24dp" />
+
+                <ImageButton
+                    android:id="@android:id/home"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="15dp"
+                    android:background="?attr/colorPrimary"
+                    android:src="@drawable/ic_arrow_back_white_24dp" />
+
+                <ImageButton
+                    android:id="@+id/menu_map_circle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_toEndOf="@android:id/home"
+                    android:layout_toRightOf="@android:id/home"
+                    android:background="?attr/colorPrimary"
+                    android:src="@drawable/ic_panorama_fish_eye_white_24dp" />
+
+                <ImageView
+                    android:id="@+id/menu_map_vert_circles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/menu_map_circle"
+                    android:layout_alignStart="@id/menu_map_circle"
+                    android:layout_alignLeft="@id/menu_map_circle"
+                    android:layout_marginTop="2dp"
+                    android:src="@drawable/ic_more_vert_white_24dp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/menu_map_vert_circles"
+                    android:layout_alignStart="@id/menu_map_vert_circles"
+                    android:layout_alignLeft="@id/menu_map_vert_circles"
+                    android:layout_alignTop="@id/menu_map_to"
+                    android:layout_marginTop="9dp"
+                    android:src="@drawable/ic_place_white_24dp" />
+
+            </RelativeLayout>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -25,130 +122,38 @@
                 android:background="?attr/colorPrimary"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|enterAlways"
-                android:id="@+id/menu_map_extension"
-                android:visibility="gone">
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_arrow_back_white_24dp"
-                    android:background="?attr/colorPrimary"
-                    android:layout_margin="15dp"
-                    android:id="@android:id/home"/>
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_panorama_fish_eye_white_24dp"
-                    android:layout_toRightOf="@android:id/home"
-                    android:layout_toEndOf="@android:id/home"
-                    android:layout_marginTop="15dp"
-                    android:background="?attr/colorPrimary"
-                    android:id="@+id/menu_map_circle"
-                    />
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:id="@+id/menu_map_swap"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_swap_vert_white_24dp"
-                    android:background="?attr/colorPrimary"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginRight="20dp"/>
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/menu_map_circle"
-                    android:layout_toRightOf="@id/menu_map_circle"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_toStartOf="@id/menu_map_swap"
-                    android:layout_toLeftOf="@id/menu_map_swap"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:id="@+id/menu_map_from"
-                    android:layout_marginTop="10dp"
-                    android:imeOptions="actionNext"
-                    android:inputType="text"
-                    android:textColor="@color/white"
-                    android:textColorHint="@color/white"
-                    android:hint="@string/starting_location_hint"
-                    />
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignStart="@id/menu_map_from"
-                    android:layout_alignLeft="@id/menu_map_from"
-                    android:layout_alignEnd="@id/menu_map_from"
-                    android:layout_alignRight="@id/menu_map_from"
-                    android:layout_below="@id/menu_map_from"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginTop="10dp"
-                    android:id="@+id/menu_map_to"
-                    android:inputType="text"
-                    android:imeOptions="actionSearch"
-                    android:textColor="@color/white"
-                    android:hint="@string/starting_location_hint"
-                    android:textColorHint="@color/white"
-                    />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_more_vert_white_24dp"
-                    android:layout_alignStart="@id/menu_map_circle"
-                    android:layout_alignLeft="@id/menu_map_circle"
-                    android:layout_marginTop="2dp"
-                    android:layout_below="@id/menu_map_circle"
-                    android:id="@+id/menu_map_vert_circles"/>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignStart="@id/menu_map_vert_circles"
-                    android:layout_alignLeft="@id/menu_map_vert_circles"
-                    android:layout_below="@id/menu_map_vert_circles"
-                    android:layout_alignTop="@id/menu_map_to"
-                    android:layout_marginTop="9dp"
-                    android:src="@drawable/ic_place_white_24dp"/>
-
-            </RelativeLayout>
+                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
         </android.support.design.widget.AppBarLayout>
 
         <FrameLayout
             android:id="@+id/content_frame"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appbar" />
 
-    <com.pennapps.labs.pennmobile.ExpandedBottomNavBar.ExpandableBottomTabBar
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@android:color/white"
-        android:gravity="bottom"
-        android:textColor="#D8D8D8"
-        android:textSize="10sp"
-        app:layout_anchor="@+id/linearLayout"
-        app:layout_anchorGravity="bottom|center"
-        app:max_tab_count="5"
-        app:more_icon_resource="@drawable/ic_bottom_nav_more_grey"
-        app:selected_tab_text_color="#209CEE"
-        app:tab_resource="@menu/bottom_tabs"
-        tools:ignore="SmallSp" />
+        <com.pennapps.labs.pennmobile.ExpandedBottomNavBar.ExpandableBottomTabBar
+            android:id="@+id/bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/white"
+            android:gravity="bottom"
+            android:textColor="#D8D8D8"
+            android:textSize="10sp"
+            app:layout_anchor="@+id/linearLayout"
+            app:layout_anchorGravity="bottom|center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:max_tab_count="5"
+            app:more_icon_resource="@drawable/ic_bottom_nav_more_grey"
+            app:selected_tab_text_color="#209CEE"
+            app:tab_resource="@menu/bottom_tabs"
+            tools:ignore="SmallSp"
+            tools:layout_editor_absoluteX="0dp" />
+
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -150,8 +150,6 @@ public class MenuFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-//        mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
-//        mActivity.getActionBarToggle().syncState();
         mActivity.setTitle(mDiningHall.getName());
     }
 
