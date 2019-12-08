@@ -99,7 +99,6 @@ public class SaveContactsFragment extends ListFragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle(R.string.save_contacts);
-//        mActivity.setNav(R.id.nav_support);
     }
 
     private void addContacts() {

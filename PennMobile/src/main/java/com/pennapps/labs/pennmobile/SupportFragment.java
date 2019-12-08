@@ -85,8 +85,5 @@ public class SupportFragment extends ListFragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle(R.string.support);
-//        mActivity.getActionBarToggle().setDrawerIndicatorEnabled(true);
-//        mActivity.getActionBarToggle().syncState();
-//        mActivity.setNav(R.id.nav_support);
     }
 }

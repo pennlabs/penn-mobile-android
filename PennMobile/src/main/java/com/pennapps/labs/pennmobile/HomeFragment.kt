@@ -99,9 +99,5 @@ class HomeFragment : Fragment()  {
     override fun onResume() {
         super.onResume()
         mActivity.setTitle(R.string.home)
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-//            (activity as MainActivity).setSelectedTab(1)
-//        }
-        //mActivity.setNav(R.id.nav_home)
     }
 }

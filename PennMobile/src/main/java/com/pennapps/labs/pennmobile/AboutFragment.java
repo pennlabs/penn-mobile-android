@@ -50,7 +50,6 @@ public class AboutFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle(R.string.about);
-        //((MainActivity) getActivity()).setNav(R.id.nav_about);
     }
 
     @Override
