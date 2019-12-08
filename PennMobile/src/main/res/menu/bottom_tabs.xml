@@ -9,21 +9,21 @@
         tools:ignore="MissingPrefix" />
     <tab
         android:id="@+id/nav_gsr"
-        android:icon="@drawable/ic_gsr_grey"
-        icon_pressed= "@drawable/ic_gsr_blue"
+        android:icon="@drawable/ic_bottom_nav_booking_grey"
+        icon_pressed= "@drawable/ic_bottom_nav_booking_blue"
         android:title="@string/gsr"
         tools:ignore="MissingPrefix" />
     <tab
         android:id="@+id/nav_dining"
-        android:icon="@drawable/ic_dining_grey"
-        icon_pressed= "@drawable/ic_dining_blue"
+        android:icon="@drawable/ic_bottom_nav_dining_grey"
+        icon_pressed= "@drawable/ic_bottom_nav_dining_blue"
         android:title="@string/dining"
         tools:ignore="MissingPrefix" />
 
     <tab
         android:id="@+id/nav_laundry"
-        android:icon="@drawable/ic_laundry_grey"
-        icon_pressed= "@drawable/ic_laundry_blue"
+        android:icon="@drawable/ic_bottom_nav_laundry_grey"
+        icon_pressed= "@drawable/ic_bottom_nav_laundry_blue"
         android:title="@string/laundry"
         tools:ignore="MissingPrefix" />
 
@@ -31,8 +31,8 @@
 
     <tab
         android:id="@+id/nav_fitness"
-        android:icon="@drawable/ic_fitness_grey"
-        icon_pressed= "@drawable/ic_fitness_blue"
+        android:icon="@drawable/ic_bottom_nav_health_grey"
+        icon_pressed= "@drawable/ic_bottom_nav_health_blue"
         android:title="@string/fitness"
         tools:ignore="MissingPrefix" />
 
