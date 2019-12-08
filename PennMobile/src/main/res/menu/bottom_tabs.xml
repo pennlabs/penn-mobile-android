@@ -39,21 +39,23 @@
 
     <tab
         android:id="@+id/nav_registrar"
-        android:icon="@drawable/ic_book"
+        android:icon="@drawable/ic_bottom_nav_courses_grey"
+        icon_pressed= "@drawable/ic_bottom_nav_courses_blue"
+        tools:ignore="MissingPrefix"
         android:title="@string/registrar"/>
 
 
     <tab
         android:id="@+id/nav_directory"
-        android:icon="@drawable/ic_contacts"
-        icon_pressed= "@drawable/ic_contacts"
+        android:icon="@drawable/ic_bottom_nav_directory_grey"
+        icon_pressed= "@drawable/ic_bottom_nav_directory_blue"
         android:title="@string/directory"
         tools:ignore="MissingPrefix" />
 
     <tab
         android:id="@+id/nav_news"
-        android:icon="@drawable/ic_announcement"
-        icon_pressed= "@drawable/ic_announcement"
+        android:icon="@drawable/ic_bottom_nav_news_grey"
+        icon_pressed= "@drawable/ic_bottom_nav_news_blue"
         android:title="@string/news"
         tools:ignore="MissingPrefix" />
 
@@ -66,15 +68,15 @@
 
     <tab
         android:id="@+id/nav_support"
-        android:icon="@drawable/ic_face_unlock_black_24dp"
-        icon_pressed= "@drawable/ic_face_unlock_black_24dp"
+        android:icon="@drawable/ic_bottom_nav_campus_help_grey"
+        icon_pressed= "@drawable/ic_bottom_nav_campus_help_blue"
         android:title="@string/support"
         tools:ignore="MissingPrefix" />
 
     <tab
         android:id="@+id/nav_pref"
-        android:icon="@drawable/ic_settings_black_24dp"
-        icon_pressed= "@drawable/ic_settings_black_24dp"
+        android:icon="@drawable/ic_bottom_nav_settings_grey"
+        icon_pressed= "@drawable/ic_bottom_nav_settings_blue"
         android:title="@string/action_settings"
         tools:ignore="MissingPrefix" />
 
