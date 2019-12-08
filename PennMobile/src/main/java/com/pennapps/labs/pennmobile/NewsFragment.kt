@@ -6,6 +6,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
@@ -199,7 +200,10 @@ class NewsFragment : ListFragment() {
         activity?.let { activity ->
             activity.setTitle(R.string.news)
         }
-        (activity as MainActivity).setNav(R.id.nav_news)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            (activity as MainActivity).setSelectedTab(1)
+        }
+        //(activity as MainActivity).setNav(R.id.nav_news)
     }
 
     override fun onDestroyView() {

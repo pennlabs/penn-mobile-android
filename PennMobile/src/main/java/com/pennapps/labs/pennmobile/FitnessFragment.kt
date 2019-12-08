@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile
 
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
@@ -99,7 +100,10 @@ class FitnessFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         mActivity.setTitle(R.string.fitness)
-        mActivity.setNav(R.id.nav_fitness)
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+//            (activity as MainActivity).setSelectedTab(1)
+//        }
+        //mActivity.setNav(R.id.nav_fitness)
     }
 
     companion object {

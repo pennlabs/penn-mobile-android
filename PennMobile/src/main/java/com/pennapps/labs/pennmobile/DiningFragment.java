@@ -241,7 +241,7 @@ public class DiningFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle(R.string.dining);
-        mActivity.setNav(R.id.nav_dining);
+        //mActivity.setNav(R.id.nav_dining);
     }
 
     @Override

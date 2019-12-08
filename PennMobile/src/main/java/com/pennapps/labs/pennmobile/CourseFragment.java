@@ -107,10 +107,10 @@ public class CourseFragment extends Fragment implements OnMapReadyCallback {
                 FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
                 fragmentManager.beginTransaction().remove(RegistrarTab.fragments[pos]).commit();
                 RegistrarTab.fragments[pos] = null;
-                if (RegistrarTab.fragments[0] == null && RegistrarTab.fragments[1] == null) {
-                    mActivity.getActionBarToggle().setDrawerIndicatorEnabled(true);
-                    mActivity.getActionBarToggle().syncState();
-                }
+//                if (RegistrarTab.fragments[0] == null && RegistrarTab.fragments[1] == null) {
+//                    mActivity.getActionBarToggle().setDrawerIndicatorEnabled(true);
+//                    mActivity.getActionBarToggle().syncState();
+//                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

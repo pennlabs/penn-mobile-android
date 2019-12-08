@@ -87,7 +87,7 @@ public class DirectoryFragment extends SearchFavoriteFragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle(R.string.directory);
-        mActivity.setNav(R.id.nav_directory);
+        //mActivity.setNav(R.id.nav_directory);
     }
 
     @Override
