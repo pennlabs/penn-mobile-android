@@ -1,6 +1,8 @@
 package com.pennapps.labs.pennmobile;
 
+import android.annotation.TargetApi;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -36,7 +38,7 @@ public class MenuTab extends Fragment {
         Bundle args = getArguments();
         name = args.getString(getString(R.string.menu_arg_name), "Dining Hall");
         meal = args.getString(getString(R.string.menu_arg_meal), "Meal");
-        stations = args.getStringArrayList(getString(R.string.menu_arg_stations,"Dining Stations"));
+        stations = args.getStringArrayList(getString(R.string.menu_arg_stations));
         
         for (String station : stations) {
             stationInfo.put(station, args.getStringArrayList(station));
@@ -64,6 +66,17 @@ public class MenuTab extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(R.string.dining);
+
+//        if (Build.VERSION.SDK_INT > 17){
+//            MainActivity mainActivity = (MainActivity) getActivity();
+//            mainActivity.setSelectedTab(2);
+//        }
     }
 
 

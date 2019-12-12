@@ -1,7 +1,9 @@
 package com.pennapps.labs.pennmobile
 
+import android.annotation.TargetApi
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
@@ -171,6 +173,10 @@ class GsrFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         activity?.setTitle(R.string.gsr)
+//        @TargetApi(17)
+//        if (Build.VERSION.SDK_INT > 17){
+//            (activity as MainActivity).setSelectedTab(1)
+//        }
         populateDropDownGSR()
     }
 
