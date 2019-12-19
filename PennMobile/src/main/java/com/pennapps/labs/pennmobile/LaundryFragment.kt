@@ -1,12 +1,12 @@
 package com.pennapps.labs.pennmobile
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.*
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
@@ -16,8 +16,8 @@ import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.classes.LaundryUsage
 import io.fabric.sdk.android.Fabric
-import kotlinx.android.synthetic.main.activity_laundry.*
-import kotlinx.android.synthetic.main.activity_laundry.view.*
+import kotlinx.android.synthetic.main.fragment_laundry.*
+import kotlinx.android.synthetic.main.fragment_laundry.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.loading_panel.view.*
 import kotlinx.android.synthetic.main.no_results.*
@@ -52,6 +52,7 @@ class LaundryFragment : Fragment() {
         mLabs = MainActivity.getLabsInstance()
         mActivity = activity as MainActivity
         mContext = mActivity
+        setHasOptionsMenu(true)
 
         Fabric.with(context, Crashlytics())
         Answers.getInstance().logContentView(ContentViewEvent()
@@ -61,7 +62,7 @@ class LaundryFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.activity_laundry, container, false)
+        val view = inflater.inflate(R.layout.fragment_laundry, container, false)
 
         // get num rooms to display
         sp = PreferenceManager.getDefaultSharedPreferences(mContext)
@@ -85,22 +86,20 @@ class LaundryFragment : Fragment() {
             view.favorite_laundry_list?.adapter = mAdapter
         }
 
-        updateRooms()
-
         return view
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.laundry_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if (id == R.id.laundry_settings) {
-//            val intent = Intent(this, LaundrySettingsActivity::class.java)
-//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-//            startActivity(intent)
-            Log.d("LaundryFragment", "go to settings")
+            val intent = Intent(mContext, LaundrySettingsActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(intent)
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -118,10 +117,9 @@ class LaundryFragment : Fragment() {
                 count += 1
             }
         }
-
-        loadingPanel?.visibility = View.VISIBLE
         mActivity.setTitle(R.string.laundry)
-        //updateRooms()
+        loadingPanel?.visibility = View.VISIBLE
+        updateRooms()
     }
 
     private fun updateRooms() {

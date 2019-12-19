@@ -16,8 +16,8 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.pennapps.labs.pennmobile.LaundryActivity;
 import com.pennapps.labs.pennmobile.LaundryBroadcastReceiver;
+import com.pennapps.labs.pennmobile.MainActivity;
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.classes.MachineDetail;
 
@@ -181,7 +181,8 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
 
                     final PendingIntent alarmIntent = PendingIntent.getBroadcast(mContext, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     // for testing 10 second notification
-                    // alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 10000, alarmIntent);
+                    //alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 10000, alarmIntent);
+
                     alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + time * 60000, alarmIntent);
 
                     // snackbar
@@ -210,11 +211,13 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
                     // snackbar
                     StringBuilder stringBuilder = new StringBuilder();
                     stringBuilder.append("Alarm off");
-                    Snackbar snackbar = Snackbar.make(buttonView, stringBuilder, Snackbar.LENGTH_SHORT);
-                    View subView = snackbar.getView();
-                    TextView snackTextView = (TextView) subView.findViewById(android.support.design.R.id.snackbar_text);
-                    snackTextView.setTextColor(ContextCompat.getColor(mContext, R.color.white));
-                    snackbar.show();
+                    if (buttonView != null) {
+                        Snackbar snackbar = Snackbar.make(buttonView, stringBuilder, Snackbar.LENGTH_SHORT);
+                        View subView = snackbar.getView();
+                        TextView snackTextView = subView.findViewById(android.support.design.R.id.snackbar_text);
+                        snackTextView.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+                        snackbar.show();
+                    }
                 }
             }
         });

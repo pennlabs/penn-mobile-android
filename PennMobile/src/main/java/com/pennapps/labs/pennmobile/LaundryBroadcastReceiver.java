@@ -56,7 +56,7 @@ public class LaundryBroadcastReceiver extends BroadcastReceiver {
         } else {
             String channelId = "pennmobile_laundry_alarm";
             mBuilder = new NotificationCompat.Builder(context, channelId)
-                    .setSmallIcon(R.drawable.ic_local_laundry_service)
+                    .setSmallIcon(R.drawable.ic_bottom_nav_laundry_grey)
                     .setContentTitle(context.getString(R.string.app_name))
                     .setContentText(builder);
         }
@@ -66,9 +66,10 @@ public class LaundryBroadcastReceiver extends BroadcastReceiver {
             mBuilder.setColor(ContextCompat.getColor(context, R.color.color_primary));
         }
 
-        // intent to go to laundry activity
-        Intent laundryIntent = new Intent(context, LaundryActivity.class);
+        // intent to go to main activity, TODO: select laundry fragment
+        Intent laundryIntent = new Intent(context, MainActivity.class);
         laundryIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
         PendingIntent notifyIntent = PendingIntent.getActivity(context, NOTIFICATION_ID, laundryIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(notifyIntent);
         notificationManager.notify(NOTIFICATION_ID, mBuilder.build());
