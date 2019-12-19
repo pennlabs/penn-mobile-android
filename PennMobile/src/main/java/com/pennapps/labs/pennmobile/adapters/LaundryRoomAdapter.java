@@ -191,7 +191,6 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
 
     @Override
     public int getItemCount() {
-        Log.d("Laundry", "itemcount: " + String.valueOf(mRooms.size()));
         return mRooms.size();
     }
 

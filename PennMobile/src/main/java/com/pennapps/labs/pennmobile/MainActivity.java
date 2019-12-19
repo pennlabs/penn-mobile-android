@@ -116,8 +116,6 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new DiningFragment();
                         break;
                     case 3:
-//                        Intent intent = new Intent(MainActivity.this.getApplicationContext(), LaundryActivity.class);
-//                        MainActivity.this.startActivity(intent);
                         fragment = new LaundryFragment();
                         break;
                     case 5:
