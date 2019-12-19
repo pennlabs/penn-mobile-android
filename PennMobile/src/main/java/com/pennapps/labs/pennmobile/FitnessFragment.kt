@@ -99,7 +99,11 @@ class FitnessFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        mActivity.removeTabs()
         mActivity.setTitle(R.string.fitness)
+        if (Build.VERSION.SDK_INT > 17){
+            mActivity.setSelectedTab(5)
+        }
     }
 
     companion object {

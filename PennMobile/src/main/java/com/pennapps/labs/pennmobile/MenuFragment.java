@@ -1,12 +1,13 @@
 package com.pennapps.labs.pennmobile;
 
-import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -84,7 +85,7 @@ public class MenuFragment extends Fragment {
                 args.putString(getString(R.string.menu_arg_name), name);
                 myFragment.setArguments(args);
             }
-            else{
+            else {
                 myFragment = new MenuTab();
                 Bundle args = new Bundle();
                 args.putString(getString(R.string.menu_arg_name), name);
@@ -150,7 +151,12 @@ public class MenuFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        mActivity.setTitle(mDiningHall.getName());
+        getActivity().setTitle(mDiningHall.getName());
+
+        if (Build.VERSION.SDK_INT > 17){
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.setSelectedTab(2);
+        }
     }
 
     @Override

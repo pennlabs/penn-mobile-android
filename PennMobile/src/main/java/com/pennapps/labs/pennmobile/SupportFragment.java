@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -84,6 +85,11 @@ public class SupportFragment extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
+        mActivity.removeTabs();
         getActivity().setTitle(R.string.support);
+        if (Build.VERSION.SDK_INT > 17){
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.setSelectedTab(10);
+        }
     }
 }

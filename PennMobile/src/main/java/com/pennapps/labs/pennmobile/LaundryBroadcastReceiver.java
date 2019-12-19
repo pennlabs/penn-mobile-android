@@ -66,7 +66,7 @@ public class LaundryBroadcastReceiver extends BroadcastReceiver {
             mBuilder.setColor(ContextCompat.getColor(context, R.color.color_primary));
         }
 
-        // intent to go to main activity, TODO: select laundry fragment
+        // intent to go to main activity
         Intent laundryIntent = new Intent(context, MainActivity.class);
         laundryIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 

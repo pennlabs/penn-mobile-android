@@ -118,7 +118,7 @@ public class DiningInfoFragment extends Fragment implements OnMapReadyCallback {
             marker.showInfoWindow();
         }
     }
-    public void fillInfo(){
+    public void fillInfo() {
         if (mDiningHall.getVenue() != null) {
             List<VenueInterval> days = mDiningHall.getVenue().allHours();
             LinkedList<TextView> vertical = new LinkedList<>();
@@ -190,10 +190,10 @@ public class DiningInfoFragment extends Fragment implements OnMapReadyCallback {
             mapFragment.getMapAsync(this);
         }
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        getActivity().setTitle(R.string.dining);
         unbinder.unbind();
     }
     @Override

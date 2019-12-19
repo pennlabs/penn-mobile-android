@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
@@ -107,6 +108,7 @@ class LaundryFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        mActivity.removeTabs()
 
         numRooms = sp?.getInt(mContext?.getString(R.string.num_rooms_pref), 100) ?: 0
 
@@ -118,6 +120,9 @@ class LaundryFragment : Fragment() {
             }
         }
         mActivity.setTitle(R.string.laundry)
+        if (Build.VERSION.SDK_INT > 17){
+            mActivity.setSelectedTab(3)
+        }
         loadingPanel?.visibility = View.VISIBLE
         updateRooms()
     }

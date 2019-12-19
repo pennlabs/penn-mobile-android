@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile
 
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.support.customtabs.CustomTabsIntent.Builder
 import android.support.v4.app.Fragment
@@ -61,7 +62,11 @@ class FlingFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        (activity as MainActivity)?.removeTabs()
         activity?.setTitle(R.string.spring_fling)
+        if (Build.VERSION.SDK_INT > 17){
+            (activity as MainActivity).setSelectedTab(9)
+        }
     }
 
     companion object {
