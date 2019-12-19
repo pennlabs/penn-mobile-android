@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile;
 
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -240,7 +241,12 @@ public class DiningFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        mActivity.removeTabs();
         getActivity().setTitle(R.string.dining);
+        if (Build.VERSION.SDK_INT > 17){
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.setSelectedTab(2);
+        }
     }
 
     @Override

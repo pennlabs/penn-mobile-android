@@ -71,12 +71,6 @@ public class MenuTab extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle(R.string.dining);
-
-//        if (Build.VERSION.SDK_INT > 17){
-//            MainActivity mainActivity = (MainActivity) getActivity();
-//            mainActivity.setSelectedTab(2);
-//        }
     }
 
 

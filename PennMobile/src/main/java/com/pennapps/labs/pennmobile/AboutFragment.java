@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -49,7 +50,12 @@ public class AboutFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        ((MainActivity) getActivity()).removeTabs();
         getActivity().setTitle(R.string.about);
+        if (Build.VERSION.SDK_INT > 17){
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.setSelectedTab(12);
+        }
     }
 
     @Override

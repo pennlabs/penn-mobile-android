@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ArrayRes;
 import android.support.v4.app.Fragment;
@@ -51,7 +52,7 @@ public class DirectoryFragment extends SearchFavoriteFragment {
     }
 
     @Override
-    protected ListTabAdapter getAdapter() {
+    protected ListTabAdapter getAdapter() { // TODO: weird bug, when you hit back button from the registrar to directory fragment top tabs don't show
         if (adapter == null){
             adapter = new DirectoryTabAdapter(mActivity.getSupportFragmentManager());
         }
@@ -86,7 +87,12 @@ public class DirectoryFragment extends SearchFavoriteFragment {
     @Override
     public void onResume() {
         super.onResume();
+        ((MainActivity) getActivity()).removeTabs();
         getActivity().setTitle(R.string.directory);
+        if (Build.VERSION.SDK_INT > 17){
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.setSelectedTab(7);
+        }
     }
 
     @Override

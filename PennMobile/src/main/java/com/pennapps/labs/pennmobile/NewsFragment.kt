@@ -197,8 +197,10 @@ class NewsFragment : ListFragment() {
 
     override fun onResume() {
         super.onResume()
-        activity?.let { activity ->
-            activity.setTitle(R.string.news)
+        (activity as MainActivity).removeTabs()
+        activity?.setTitle(R.string.news)
+        if (Build.VERSION.SDK_INT > 17){
+            (activity as MainActivity).setSelectedTab(8)
         }
     }
 

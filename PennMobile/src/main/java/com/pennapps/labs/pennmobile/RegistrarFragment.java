@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ArrayRes;
 import android.support.v4.app.Fragment;
@@ -82,7 +83,12 @@ public class RegistrarFragment extends SearchFavoriteFragment {
     @Override
     public void onResume() {
         super.onResume();
+        mActivity.removeTabs();
         getActivity().setTitle(R.string.registrar);
+        if (Build.VERSION.SDK_INT > 17){
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.setSelectedTab(6);
+        }
     }
 
     @Override
