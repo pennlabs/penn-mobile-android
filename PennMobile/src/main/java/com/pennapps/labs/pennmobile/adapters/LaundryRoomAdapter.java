@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -122,7 +123,7 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
         holder.dryerAvailability.setText(openDryers + " / " + totalDryers + " open");
 
         if (mRoomsData != null) {
-            createLaundryChart(holder, position);
+            if (mRoomsData.size() > position) createLaundryChart(holder, position);
         }
 
     }
@@ -190,6 +191,7 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
 
     @Override
     public int getItemCount() {
+        Log.d("Laundry", "itemcount: " + String.valueOf(mRooms.size()));
         return mRooms.size();
     }
 
