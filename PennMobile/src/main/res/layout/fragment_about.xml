@@ -1,39 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:fillViewport="true" android:orientation="vertical"
-    android:layout_width="match_parent" android:layout_height="match_parent">
-    <LinearLayout
-        android:orientation="vertical" android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/labs_icon"
-            android:layout_width="250dp"
-            android:layout_height="125dp"
-            android:layout_gravity="center_horizontal"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/labs_icon"
-            android:layout_margin="20dp"/>
+<android.support.constraint.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-        <TextView
-            tools:text="PennMobile was developed by Penn Labs, with funding and support from the Undergraduate Assembly"
-            android:id="@+id/about_desc"
-            android:paddingLeft="40dp"
-            android:paddingRight="40dp"
-            style="@style/MainText"/>
+    <ImageView
+        android:id="@+id/labs_icon"
+        android:layout_width="240dp"
+        android:layout_height="96dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="20dp"
+        android:layout_marginTop="40dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/labs_icon"
+        android:src="@drawable/logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+    <TextView
+        android:id="@+id/about_hi_tv"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:textStyle="normal|bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/labs_icon"
+        android:text="@string/hi_we_are_labs" />
 
-            <Button
-                android:id="@+id/licenses"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/licenses"/>
-        </RelativeLayout>
-    </LinearLayout>
+    <Button
+        android:id="@+id/licenses_btn"
+        android:layout_width="135sp"
+        android:layout_height="32sp"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/dark_rounded_border"
+        android:text="@string/licenses"
+        android:textColor="@color/logo_dark_blue"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/request_feature_btn" />
+
+    <TextView
+        android:id="@+id/about_mission_tv"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="@string/labs_mission"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/about_hi_tv" />
+
+    <Button
+        android:id="@+id/learn_more_btn"
+        android:layout_width="135sp"
+        android:layout_height="32sp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/dark_rounded_border"
+        android:text="@string/learn_more"
+        android:textColor="@color/logo_dark_blue"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/about_mission_tv" />
+
+    <TextView
+        android:id="@+id/our_team_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/logo_dark_blue"
+        android:text="@string/our_team"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/learn_more_btn" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/our_team_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/our_team_tv" />
+
+    <Button
+        android:id="@+id/request_feature_btn"
+        android:layout_width="135sp"
+        android:layout_height="32sp"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/rounded_corners"
+        android:backgroundTint="@color/washer_blue"
+        android:text="@string/request_feature"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/our_team_rv" />
+
+    <TextView
+        android:id="@+id/copyright_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="24dp"
+        android:text="@string/penn_labs_copyright"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/licenses_btn" />
+
+</android.support.constraint.ConstraintLayout>
 </ScrollView>
