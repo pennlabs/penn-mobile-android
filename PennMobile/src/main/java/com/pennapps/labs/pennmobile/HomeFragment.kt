@@ -67,14 +67,11 @@ class HomeFragment : Fragment()  {
 
         // get API data
         val labs = MainActivity.getLabsInstance() //TODO: get for an account id
-        labs.getHomePage("test_android", null, null).subscribe({ cells ->
+        labs.getHomePage("test_android", null, sessionid).subscribe({ cells ->
             mActivity.runOnUiThread {
                 val gsrBookingCell = HomeCell()
                 gsrBookingCell.type = "gsr_booking"
-                val buildings = ArrayList<String>()
-                buildings.add("Huntsman Hall")
-                buildings.add("VP Weigle")
-                gsrBookingCell.buildings = buildings
+                gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "VP Weigle")
                 cells?.add(cells?.size - 1, gsrBookingCell)
                 home_cells_rv?.adapter = HomeAdapter(ArrayList(cells))
                 loadingPanel?.visibility = View.GONE

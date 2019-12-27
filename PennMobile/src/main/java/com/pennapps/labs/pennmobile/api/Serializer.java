@@ -221,7 +221,8 @@ public class Serializer {
                     ArrayList<CalendarEvent> events = new Gson().fromJson(info, new TypeToken<List<CalendarEvent>>() {
                     }.getType());
                     newCell.setEvents(events);
-                } else {
+                } else if (cellType.equals("news") | cellType.equals("dining")
+                        | cellType.equals("laundry") | cellType.equals("courses")) {
                     HomeCellInfo infoObj = new Gson().fromJson(info, new TypeToken<HomeCellInfo>() {
                     }.getType());
                     newCell.setInfo(infoObj);
