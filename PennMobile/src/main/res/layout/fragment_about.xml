@@ -14,7 +14,6 @@
         android:layout_width="240dp"
         android:layout_height="96dp"
         android:layout_gravity="center_horizontal"
-        android:layout_margin="20dp"
         android:layout_marginTop="40dp"
         android:adjustViewBounds="true"
         android:contentDescription="@string/labs_icon"
@@ -25,16 +24,20 @@
 
     <TextView
         android:id="@+id/about_hi_tv"
-        android:layout_width="240dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
+        android:layout_marginLeft="60dp"
         android:layout_marginTop="32dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginRight="60dp"
         android:gravity="center"
+        android:text="@string/hi_we_are_labs"
         android:textSize="16sp"
         android:textStyle="normal|bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/labs_icon"
-        android:text="@string/hi_we_are_labs" />
+        app:layout_constraintTop_toBottomOf="@+id/labs_icon" />
 
     <Button
         android:id="@+id/licenses_btn"
@@ -52,9 +55,13 @@
 
     <TextView
         android:id="@+id/about_mission_tv"
-        android:layout_width="240dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
+        android:layout_marginLeft="60dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginRight="60dp"
         android:gravity="center"
         android:text="@string/labs_mission"
         android:textSize="14sp"
@@ -66,7 +73,7 @@
         android:id="@+id/learn_more_btn"
         android:layout_width="135sp"
         android:layout_height="32sp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/dark_rounded_border"
         android:text="@string/learn_more"
         android:textColor="@color/logo_dark_blue"
@@ -90,9 +97,14 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/our_team_rv"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/our_team_tv" />

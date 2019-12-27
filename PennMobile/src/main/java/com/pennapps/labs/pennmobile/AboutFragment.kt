@@ -1,16 +1,19 @@
 package com.pennapps.labs.pennmobile
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
-import android.text.method.LinkMovementMethod
+import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
+import com.pennapps.labs.pennmobile.adapters.AboutAdapter
 
-import kotlinx.android.synthetic.main.fragment_about.*
+import kotlinx.android.synthetic.main.fragment_about.view.*
 
 class AboutFragment : Fragment() {
 
@@ -21,9 +24,18 @@ class AboutFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_about, container, false)
-        about_hi_tv?.movementMethod = LinkMovementMethod.getInstance()
 
-        licenses_btn?.setOnClickListener {
+        v.our_team_rv?.layoutManager = GridLayoutManager(context,3)
+        val members = arrayListOf("Marta García Ferreiro", "Davies Lumumba",
+                "Sahit Penmatcha", "Varun Ramakrishnan", "Anna Wang", "Sophia Ye")
+        v.our_team_rv?.adapter = AboutAdapter(members)
+
+        v.learn_more_btn?.setOnClickListener {
+            val i = Intent(Intent.ACTION_VIEW, Uri.parse("https://pennlabs.org"))
+            startActivity(i)
+        }
+
+        v.licenses_btn?.setOnClickListener {
             val view = LayoutInflater.from(activity).inflate(R.layout.dialog_licenses, null) as WebView
             view.loadUrl("file:///android_asset/open_source_licenses.html")
             if (activity != null) {
