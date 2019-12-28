@@ -68,7 +68,7 @@
 
         <item
             android:id="@+id/nav_about"
-            android:icon="@drawable/ic_info"
+            android:icon="@drawable/ic_bottom_nav_info_blue"
             android:title="@string/about"/>
     </group>
 </menu>
