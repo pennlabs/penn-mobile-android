@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -153,6 +154,10 @@ public class MenuFragment extends Fragment {
         super.onResume();
         getActivity().setTitle(mDiningHall.getName());
 
+        if (mActivity.getSupportActionBar() != null ) {
+            mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         if (Build.VERSION.SDK_INT > 17){
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.setSelectedTab(2);
@@ -164,6 +169,9 @@ public class MenuFragment extends Fragment {
         super.onDestroyView();
         getActivity().setTitle(R.string.dining);
         mActivity.removeTabs();
+        if (mActivity.getSupportActionBar() != null ) {
+            mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
         unbinder.unbind();
     }
     @Override

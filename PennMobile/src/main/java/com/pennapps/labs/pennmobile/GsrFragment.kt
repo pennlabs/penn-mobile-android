@@ -239,7 +239,7 @@ class GsrFragment : Fragment() {
                             gsr_refresh_layout?.isRefreshing = false
 
                             if (timeSlotLengthZero) {
-                                Toast.makeText(context, "No GSRs available", Toast.LENGTH_LONG).show()
+                                if (context != null) Toast.makeText(context, "No GSRs available", Toast.LENGTH_LONG).show()
                             }
 
                             gsr_rooms_list?.adapter = (context?.let {

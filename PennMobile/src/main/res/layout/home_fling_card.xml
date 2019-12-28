@@ -24,7 +24,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginRight="16dp"
-                android:src="@drawable/ic_fling" />
+                android:src="@drawable/ic_bottom_nav_fling_blue" />
 
             <TextView
                 android:layout_toRightOf="@id/home_screen_cardview_icon"

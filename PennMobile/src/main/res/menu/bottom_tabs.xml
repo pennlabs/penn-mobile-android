@@ -61,8 +61,8 @@
 
     <tab
         android:id="@+id/nav_fling"
-        android:icon="@drawable/ic_event_black_24dp"
-        icon_pressed= "@drawable/ic_event_black_24dp"
+        android:icon="@drawable/ic_bottom_nav_fling_grey"
+        icon_pressed= "@drawable/ic_bottom_nav_fling_blue"
         android:title="@string/spring_fling"
         tools:ignore="MissingPrefix" />
 
@@ -82,8 +82,8 @@
 
     <tab
         android:id="@+id/nav_about"
-        android:icon="@drawable/ic_info"
-        icon_pressed= "@drawable/ic_info"
+        android:icon="@drawable/ic_bottom_nav_info_grey"
+        icon_pressed= "@drawable/ic_bottom_nav_info_blue"
         android:title="@string/about"
         tools:ignore="MissingPrefix" />
 
