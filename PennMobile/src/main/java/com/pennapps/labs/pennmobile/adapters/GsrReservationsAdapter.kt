@@ -2,8 +2,8 @@ package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
 import android.preference.PreferenceManager
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.RecyclerView
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +24,7 @@ import kotlin.Result.Companion.success
 import android.R.attr.radius
 import android.content.Intent
 import android.content.res.Resources
-import android.support.v4.content.LocalBroadcastManager
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.widget.Toast.LENGTH_SHORT
 import kotlinx.android.synthetic.main.fragment_gsr_reservations.*
 

@@ -1,7 +1,7 @@
 package com.pennapps.labs.pennmobile.classes;
 
 import android.graphics.Color;
-import android.support.annotation.AnyRes;
+import androidx.annotation.AnyRes;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;

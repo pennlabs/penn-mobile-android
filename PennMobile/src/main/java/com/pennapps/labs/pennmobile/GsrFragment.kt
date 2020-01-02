@@ -6,21 +6,18 @@ import android.app.TimePickerDialog
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
-import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.ContentViewEvent
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.GSRContainer
 import com.pennapps.labs.pennmobile.classes.GSRRoom
 import com.pennapps.labs.pennmobile.classes.GSRSlot
-import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.fragment_gsr.*
 import kotlinx.android.synthetic.main.fragment_gsr.view.*
 import org.joda.time.DateTime
@@ -58,20 +55,22 @@ class GsrFragment : Fragment() {
     private lateinit var durationAdapter: ArrayAdapter<String>
     private lateinit var huntsmanDurationAdapter: ArrayAdapter<String>
 
+    private lateinit var mActivity: MainActivity
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mLabs = MainActivity.getLabsInstance()
-        (activity as MainActivity).closeKeyboard()
+        mActivity = activity as MainActivity
+        mActivity.closeKeyboard()
 
         // set default GSR selection date + time to the current date and time
         selectedDateTime = DateTime.now()
 
-        // fabric report handling
-        Fabric.with(context, Crashlytics())
-        Answers.getInstance().logContentView(ContentViewEvent()
-                .putContentName("GSR")
-                .putContentType("App Feature")
-                .putContentId("0"))
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "0")
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "GSR")
+        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
+        FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

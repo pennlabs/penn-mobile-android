@@ -3,11 +3,11 @@ package com.pennapps.labs.pennmobile.adapters
 import android.app.PendingIntent
 import android.content.*
 import android.net.Uri
-import android.support.customtabs.*
-import android.support.v4.content.ContextCompat
-import android.support.v4.content.ContextCompat.startActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.browser.customtabs.*
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -162,8 +162,8 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
             share?.type = "text/plain"
             builder?.setToolbarColor(0x3E50B4)
             builder?.setStartAnimations(mContext,
-                    android.support.design.R.anim.abc_popup_enter,
-                    android.support.design.R.anim.abc_popup_exit)
+                    R.anim.abc_popup_enter,
+                    R.anim.abc_popup_exit)
             CustomTabsClient.bindCustomTabsService(mContext,
                     NewsFragment.CUSTOM_TAB_PACKAGE_NAME, connection)
 

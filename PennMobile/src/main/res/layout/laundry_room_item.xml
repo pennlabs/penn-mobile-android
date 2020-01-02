@@ -63,7 +63,7 @@
                 android:textSize="@dimen/laundry_font_small" />
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/laundry_washer_machine_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
 
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/laundry_dryer_machine_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
