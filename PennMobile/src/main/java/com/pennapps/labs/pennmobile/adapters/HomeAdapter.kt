@@ -81,7 +81,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
             //"courses" -> bindCoursesCell(holder, cell)
             "laundry" -> bindLaundryCell(holder, cell)
             "gsr_booking" -> bindGsrBookingCell(holder, cell)
-            else -> Log.d("HomeAdapter", "Unsupported type of data at position " + position)
+            else -> Log.i("HomeAdapter", "Unsupported type of data at position " + position)
         }
     }
 
