@@ -9,11 +9,11 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.ListFragment;
-import android.support.v4.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.ListFragment;
+import androidx.core.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -99,9 +99,6 @@ public class SaveContactsFragment extends ListFragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle(R.string.save_contacts);
-        mActivity.getActionBarToggle().setDrawerIndicatorEnabled(true);
-        mActivity.getActionBarToggle().syncState();
-        mActivity.setNav(R.id.nav_support);
     }
 
     private void addContacts() {

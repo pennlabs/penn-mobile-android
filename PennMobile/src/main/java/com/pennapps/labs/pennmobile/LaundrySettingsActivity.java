@@ -1,12 +1,11 @@
 package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -87,7 +86,7 @@ public class LaundrySettingsActivity extends AppCompatActivity {
         });
 
         // set up back button
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        androidx.appcompat.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         getHalls();
@@ -185,9 +184,7 @@ public class LaundrySettingsActivity extends AppCompatActivity {
     // back button
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent = new Intent(this, com.pennapps.labs.pennmobile.LaundryActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        onBackPressed();
         return true;
     }
 

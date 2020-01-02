@@ -2,8 +2,8 @@ package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
 import android.preference.PreferenceManager
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.RecyclerView
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,11 +22,14 @@ import retrofit.RetrofitError
 import retrofit.client.Response
 import kotlin.Result.Companion.success
 import android.R.attr.radius
+import android.content.Intent
+import android.content.res.Resources
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.widget.Toast.LENGTH_SHORT
 import kotlinx.android.synthetic.main.fragment_gsr_reservations.*
 
 
-class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>)// get reservations data from fragment
+class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>)
     : RecyclerView.Adapter<GsrReservationsAdapter.GsrReservationViewHolder>() {
 
     private lateinit var mContext: Context
@@ -51,7 +54,6 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
 
         // huntsman reservation responses don't have an image url so we set it here
         val imageUrl = reservation.info?.get("thumbnail") ?: "https://s3.us-east-2.amazonaws.com/labs.api/dining/MBA+Cafe.jpg"
-
         Picasso.get().load(imageUrl).fit().centerCrop().into(holder.itemView.gsr_reservation_iv)
 
         holder.itemView.gsr_reservation_location_tv.text = roomName
@@ -73,7 +75,13 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                     // TODO: change to actual device id
                     override fun success(response: Response) {
                         reservations.removeAt(position)
-                        notifyItemRemoved(position)
+                        run {
+                            if (reservations.size == 0) {
+                                var intent = Intent("refresh")
+                                LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent)
+                            } else {
+                                notifyItemRemoved(position)
+                            }}
                     }
 
                     override fun failure(error: RetrofitError) {

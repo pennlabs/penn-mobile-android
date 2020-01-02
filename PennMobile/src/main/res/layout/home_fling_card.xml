@@ -7,7 +7,7 @@
     android:paddingTop="8dp"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         card_view:cardCornerRadius="8dp"
@@ -24,7 +24,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginRight="16dp"
-                android:src="@drawable/ic_fling" />
+                android:src="@drawable/ic_bottom_nav_fling_blue" />
 
             <TextView
                 android:layout_toRightOf="@id/home_screen_cardview_icon"
@@ -45,5 +45,5 @@
 
         </RelativeLayout>
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 </LinearLayout>
