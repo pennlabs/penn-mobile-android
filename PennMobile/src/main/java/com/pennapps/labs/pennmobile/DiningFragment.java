@@ -50,12 +50,6 @@ public class DiningFragment extends Fragment {
         mActivity = (MainActivity) getActivity();
         mActivity.closeKeyboard();
 
-//        Fabric.with(getContext(), new Crashlytics());
-//        Answers.getInstance().logContentView(new ContentViewEvent()
-//                .putContentName("Dining")
-//                .putContentType("App Feature")
-//                .putContentId("1"));
-
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "1");
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Dining");
