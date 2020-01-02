@@ -7,7 +7,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.support.customtabs.CustomTabsIntent;
+import androidx.browser.customtabs.CustomTabsIntent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,8 +51,8 @@ public class NsoAdapter extends ArrayAdapter<RSSItem> {
             share.setType("text/plain");
             builder.setToolbarColor(0x3E50B4);
             builder.setStartAnimations(getContext(),
-                    android.support.design.R.anim.abc_popup_enter,
-                    android.support.design.R.anim.abc_popup_exit);
+                    R.anim.abc_popup_enter,
+                    R.anim.abc_popup_exit);
         }
     }
 

@@ -4,9 +4,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.GridLayoutManager
+import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +25,7 @@ class AboutFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_about, container, false)
 
-        v.our_team_rv?.layoutManager = GridLayoutManager(context,3)
+        v.our_team_rv?.layoutManager = GridLayoutManager(context, 3)
         val members = arrayListOf("Marta García Ferreiro", "Davies Lumumba",
                 "Sahit Penmatcha", "Varun Ramakrishnan", "Anna Wang", "Sophia Ye")
         v.our_team_rv?.adapter = AboutAdapter(members)

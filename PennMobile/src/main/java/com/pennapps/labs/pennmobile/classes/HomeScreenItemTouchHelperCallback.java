@@ -1,7 +1,7 @@
 package com.pennapps.labs.pennmobile.classes;
 
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 
 /**
  * Created by Jackie on 2018-03-04.

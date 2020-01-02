@@ -2,17 +2,13 @@ package com.pennapps.labs.pennmobile;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.ArrayRes;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.preference.PreferenceManager;
-
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.ContentViewEvent;
+import androidx.annotation.ArrayRes;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.preference.PreferenceManager;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import butterknife.Unbinder;
-import io.fabric.sdk.android.Fabric;
 
 public class DirectoryFragment extends SearchFavoriteFragment {
 
@@ -77,11 +73,11 @@ public class DirectoryFragment extends SearchFavoriteFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(getContext(), new Crashlytics());
-        Answers.getInstance().logContentView(new ContentViewEvent()
-                .putContentName("Directory")
-                .putContentType("App Feature")
-                .putContentId("6"));
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "6");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Directory");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature");
+        FirebaseAnalytics.getInstance(getContext()).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle);
     }
 
     @Override

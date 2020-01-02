@@ -1,19 +1,14 @@
 package com.pennapps.labs.pennmobile;
 
 import android.os.Bundle;
-import android.support.annotation.ArrayRes;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.preference.PreferenceManager;
+import androidx.annotation.ArrayRes;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.preference.PreferenceManager;
 import android.view.View;
 
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.ContentViewEvent;
-
-import butterknife.ButterKnife;
-import io.fabric.sdk.android.Fabric;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 /**
  * Created by Jason on 8/6/2016.
@@ -76,11 +71,11 @@ public class NsoFragment extends SearchFavoriteFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(getContext(), new Crashlytics());
-        Answers.getInstance().logContentView(new ContentViewEvent()
-                .putContentName("NSO")
-                .putContentType("App Feature")
-                .putContentId("8"));
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "8");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "NSO");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature");
+        FirebaseAnalytics.getInstance(getContext()).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle);
     }
 
     @Override

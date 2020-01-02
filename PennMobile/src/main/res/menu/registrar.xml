@@ -3,8 +3,8 @@
     <item android:id="@+id/registrar_search"
         android:icon="?attr/searchIcon"
         android:hint="@string/registrar_search"
-        app:actionViewClass="android.support.v7.widget.SearchView"
-        android:actionViewClass="android.support.v7.widget.SearchView"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        android:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always"
         android:title="@string/search_title"/>
 </menu>

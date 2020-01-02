@@ -6,17 +6,14 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.*
-import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.ContentViewEvent
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.LaundryRoomAdapter
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.classes.LaundryUsage
-import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.fragment_laundry.*
 import kotlinx.android.synthetic.main.fragment_laundry.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
@@ -55,11 +52,11 @@ class LaundryFragment : Fragment() {
         mContext = mActivity
         setHasOptionsMenu(true)
 
-        Fabric.with(context, Crashlytics())
-        Answers.getInstance().logContentView(ContentViewEvent()
-                .putContentName("Laundry")
-                .putContentType("App Feature")
-                .putContentId("3"))
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "3")
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Laundry")
+        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
+        FirebaseAnalytics.getInstance(mContext).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
