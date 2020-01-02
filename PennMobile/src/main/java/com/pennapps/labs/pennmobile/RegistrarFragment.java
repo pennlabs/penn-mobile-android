@@ -1,16 +1,12 @@
 package com.pennapps.labs.pennmobile;
 
+import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.ArrayRes;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.preference.PreferenceManager;
-
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.ContentViewEvent;
-
-import io.fabric.sdk.android.Fabric;
+import androidx.annotation.ArrayRes;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.preference.PreferenceManager;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 /**
  * Created by Jason on 1/25/2016.
@@ -72,18 +68,23 @@ public class RegistrarFragment extends SearchFavoriteFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(getContext(), new Crashlytics());
-        Answers.getInstance().logContentView(new ContentViewEvent()
-                .putContentName("Courses")
-                .putContentType("App Feature")
-                .putContentId("2"));
+
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "2");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Courses");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature");
+        FirebaseAnalytics.getInstance(getContext()).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        mActivity.removeTabs();
         getActivity().setTitle(R.string.registrar);
-        mActivity.setNav(R.id.nav_registrar);
+        if (Build.VERSION.SDK_INT > 17){
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.setSelectedTab(6);
+        }
     }
 
     @Override

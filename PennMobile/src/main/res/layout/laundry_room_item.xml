@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <View
+        android:id="@+id/gray_line"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@color/gray" />
@@ -41,10 +42,10 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="24dp"
+            android:layout_marginLeft="20dp"
             android:orientation="vertical">
 
             <TextView
@@ -57,16 +58,16 @@
 
             <TextView
                 android:id="@+id/washer_availability"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/laundry_font_small" />
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/laundry_washer_machine_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="100dp" />
+            android:layout_marginLeft="95dp" />
 
     </RelativeLayout>
 
@@ -76,10 +77,10 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="24dp"
+            android:layout_marginLeft="20dp"
             android:orientation="vertical">
 
             <TextView
@@ -92,17 +93,17 @@
 
             <TextView
                 android:id="@+id/dryer_availability"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/laundry_font_small" />
 
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/laundry_dryer_machine_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="100dp" />
+            android:layout_marginLeft="95dp" />
 
     </RelativeLayout>
 

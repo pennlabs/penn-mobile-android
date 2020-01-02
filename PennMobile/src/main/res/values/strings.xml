@@ -27,8 +27,7 @@
     <string name="save_contacts">Select Contacts to Save</string>
 
     <!--Home Screen -->
-    <string name="home_screen_settings">Home Screen Settings</string>
-    <string name="home_screen_settings_instructions">Press and hold item to drag and drop</string>
+    <string name="home">Home</string>
 
     <!-- Search -->
     <string name="registrar_search">Search for courses</string>
@@ -70,7 +69,7 @@
     <string name="course_bundle_arg">CourseFragment</string>
 
     <!-- Map -->
-    <string name="google_api_key"></string>
+    <string name="google_maps_api_key"></string>
     <string name="image_description">Photo</string>
     <string name="map">Map</string>
     <string name="map_searches">map_search</string>
@@ -157,7 +156,18 @@
     <string name="news_sharing">Share link</string>
 
     <!-- About -->
-    <string name="licenses">Licenses</string>
+    <string name="licenses">LICENSES</string>
+    <string name="hi_we_are_labs">
+    Hi, we\'re Penn Labs: a team of student software engineers, product designers, and business developers.
+    </string>
+    <string name="labs_mission">
+    Penn Labs empowers others to make connections: connections to resources, connections to people, and connections to the greater Penn community.\n\nOur ultimate goal is improving the Penn community. We aim to do so not only by creating high quality products, but also by giving back to the community with educational resources and technical support.
+    </string>
+    <string name="learn_more">LEARN MORE</string>
+    <string name="request_feature">REQUEST A FEATURE</string>
+    <string name="our_team">Our Team</string>
+    <string name="penn_labs_copyright">\u00A9 2019 Penn Labs</string>
+
 
     <!-- Preference -->
     <string name="pref_courses_title">Courses</string>

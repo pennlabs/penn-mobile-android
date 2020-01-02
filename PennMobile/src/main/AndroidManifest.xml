@@ -28,7 +28,7 @@
         android:required="true" />
 
     <application
-        android:name="android.support.multidex.MultiDexApplication"
+        android:name="androidx.multidex.MultiDexApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
@@ -44,11 +44,12 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="@string/google_api_key" />
+            android:value="@string/google_maps_api_key" />
 
         <activity
             android:name=".MainActivity"
             android:label="Penn Mobile"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -62,11 +63,6 @@
             android:value="18a765536e6539a73a15dd36c369ed29cfb91aa1" />
 
         <activity
-            android:name=".LaundryActivity"
-            android:label="@string/laundry"
-            android:screenOrientation="portrait"
-            android:theme="@style/LaundryTheme" />
-        <activity
             android:name=".LaundrySettingsActivity"
             android:label="@string/laundry_settings"
             android:screenOrientation="portrait"
@@ -77,12 +73,6 @@
             android:name=".LaundryBroadcastReceiver"
             android:enabled="true"
             android:exported="true" />
-
-        <activity
-            android:name=".HomeScreenSettingsActivity"
-            android:label="@string/home_screen_settings"
-            android:screenOrientation="portrait"
-            android:theme="@style/HomeScreenTheme" />
 
     </application>
 

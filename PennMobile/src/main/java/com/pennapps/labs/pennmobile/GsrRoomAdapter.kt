@@ -1,8 +1,8 @@
 package com.pennapps.labs.pennmobile
 
 import android.content.Context
-import android.support.v4.app.FragmentTransaction
-import android.support.v7.widget.RecyclerView
+import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import org.joda.time.DateTime

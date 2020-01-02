@@ -11,7 +11,7 @@ import com.pennapps.labs.pennmobile.classes.GSRBookingResult;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.GSRReservation;
 import com.pennapps.labs.pennmobile.classes.Gym;
-import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
+import com.pennapps.labs.pennmobile.classes.HomeCell;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
@@ -128,8 +128,10 @@ public interface Labs {
 
     // home page
     @GET("/homepage")
-    Observable<List<HomeScreenCell>> getHomePage(
-            @Header("X-Device-ID") String deviceID);
+    Observable<List<HomeCell>> getHomePage(
+            @Header("X-Device-ID") String deviceID,
+            @Header("X-Account-ID") String accountID,
+            @Query("sessionid") String sessionID);
 
     @GET("/fitness/schedule")
     Observable<List<Gym>> getGymData();

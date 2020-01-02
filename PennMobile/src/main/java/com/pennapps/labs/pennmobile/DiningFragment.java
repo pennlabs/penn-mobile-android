@@ -1,13 +1,14 @@
 package com.pennapps.labs.pennmobile;
 
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,10 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.ContentViewEvent;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.pennapps.labs.pennmobile.adapters.DiningAdapter;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
@@ -30,7 +28,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.fabric.sdk.android.Fabric;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -52,11 +49,12 @@ public class DiningFragment extends Fragment {
         mLabs = MainActivity.getLabsInstance();
         mActivity = (MainActivity) getActivity();
         mActivity.closeKeyboard();
-        Fabric.with(getContext(), new Crashlytics());
-        Answers.getInstance().logContentView(new ContentViewEvent()
-                .putContentName("Dining")
-                .putContentType("App Feature")
-                .putContentId("1"));
+
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "1");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Dining");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature");
+        FirebaseAnalytics.getInstance(getContext()).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle);
     }
 
     @Override
@@ -240,8 +238,12 @@ public class DiningFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        mActivity.removeTabs();
         getActivity().setTitle(R.string.dining);
-        mActivity.setNav(R.id.nav_dining);
+        if (Build.VERSION.SDK_INT > 17){
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.setSelectedTab(2);
+        }
     }
 
     @Override
