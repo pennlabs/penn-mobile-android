@@ -108,7 +108,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
     }
 
     private fun bindHomeReservationsCell(holder: ViewHolder, cell: HomeCell) {
-        val reservations = cell.reservations
+        val reservations = cell.reservations ?: ArrayList()
         holder.itemView.home_card_title.text = "Upcoming Reservations"
         holder.itemView.home_card_subtitle.text = "GSR RESERVATIONS"
 
@@ -130,8 +130,8 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
                 .toList()
                 .subscribe { diningHalls ->
                     mActivity.runOnUiThread {
-                        var favorites :ArrayList<DiningHall> = arrayListOf()
-                        var  favoritesIdList :List<Int>? = cell.info?.venues
+                        var favorites: ArrayList<DiningHall> = arrayListOf()
+                        var favoritesIdList: List<Int>? = cell.info?.venues
                         diningHalls.forEach {
                             if (favoritesIdList?.contains(it.id) == true) {
                                 favorites.add(it)
@@ -183,7 +183,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
     }
 
     private fun bindCalendarCell(holder: ViewHolder, cell: HomeCell) {
-        val events = cell.events
+        val events = cell.events ?: ArrayList()
 
         holder.itemView.home_card_title.text = "Upcoming Events"
         holder.itemView.home_card_subtitle.text = "UNIVERSITY NOTIFICATIONS"
@@ -215,7 +215,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
     }
 
     private fun bindGsrBookingCell(holder: ViewHolder, cell: HomeCell) {
-        val buildings = cell.buildings
+        val buildings = cell.buildings ?: ArrayList()
 
         holder.itemView.home_card_title.text = "Book a GSR"
         holder.itemView.home_card_subtitle.text = "GROUP STUDY ROOMS"

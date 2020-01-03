@@ -62,7 +62,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         setTheme(R.style.AppTheme);
+
+        if (Build.VERSION.SDK_INT > 28){
+            setTheme(R.style.DarkModeApi29);
+        }
         super.onCreate(savedInstanceState);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);

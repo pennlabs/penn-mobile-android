@@ -55,7 +55,7 @@ class FitnessFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.gym_refresh_layout.setOnRefreshListener { getGymData() }
+        view.gym_refresh_layout?.setOnRefreshListener { getGymData() }
         // get api data
         getGymData()
     }
@@ -65,32 +65,22 @@ class FitnessFragment : Fragment() {
         val labs = MainActivity.getLabsInstance()
         labs.gymData.subscribe({ gyms ->
             mActivity.runOnUiThread {
-                gym_list.adapter = FitnessAdapter(gyms)
+                gym_list?.adapter = FitnessAdapter(gyms)
                 // get rid of loading screen
-                loadingPanel.visibility = View.GONE
+                loadingPanel?.visibility = View.GONE
                 if (gyms.size > 0) {
-                    no_results.visibility = View.GONE
+                    no_results?.visibility = View.GONE
                 }
                 // stop refreshing
-                try {
-                    gym_refresh_layout.isRefreshing = false
-                } catch (e: NullPointerException) {
-                    // no need to do anything, we've just moved away from this activity
-                }
+                gym_refresh_layout?.isRefreshing = false
             }
         }, { throwable ->
             mActivity.runOnUiThread {
                 throwable.printStackTrace()
                 Toast.makeText(activity, "Error: Could not load gym information", Toast.LENGTH_LONG).show()
-                // get rid of loading screen
-                loadingPanel.visibility = View.GONE
-                // display no results
-                no_results.visibility = View.VISIBLE
-                try {
-                    gym_refresh_layout.isRefreshing = false
-                } catch (e: NullPointerException) {
-                    // no need to do anything, we've just moved away from this activity
-                }
+                loadingPanel?.visibility = View.GONE
+                no_results?.visibility = View.VISIBLE
+                gym_refresh_layout?.isRefreshing = false
             }
         })
     }
