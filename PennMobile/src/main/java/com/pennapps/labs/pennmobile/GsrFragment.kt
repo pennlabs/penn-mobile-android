@@ -20,6 +20,9 @@ import com.pennapps.labs.pennmobile.classes.GSRRoom
 import com.pennapps.labs.pennmobile.classes.GSRSlot
 import kotlinx.android.synthetic.main.fragment_gsr.*
 import kotlinx.android.synthetic.main.fragment_gsr.view.*
+import kotlinx.android.synthetic.main.no_results.*
+import kotlinx.android.synthetic.main.no_results.view.*
+import kotlinx.android.synthetic.main.no_results.view.no_results
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import java.util.*
@@ -85,8 +88,8 @@ class GsrFragment : Fragment() {
         loadingPanel = view.gsr_loading
         noResultsPanel = view.gsr_no_results
 
-        durationAdapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m", "120m"))
-        huntsmanDurationAdapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m"))
+        durationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m", "120m"))
+        huntsmanDurationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m"))
 
         // populate the list of gsrs
         populateDropDownGSR()
@@ -135,7 +138,7 @@ class GsrFragment : Fragment() {
             val mMonth = c.get(Calendar.MONTH)
             val mDay = c.get(Calendar.DAY_OF_MONTH)
 
-            val datePickerDialog = DatePickerDialog(activity,
+            val datePickerDialog = DatePickerDialog(mActivity,
                     DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
                         //account for index starting at 0
                         val entryMonth = monthOfYear + 1
@@ -193,6 +196,7 @@ class GsrFragment : Fragment() {
                 gsr_rooms_list?.visibility = View.GONE
             }
             noResultsPanel?.visibility = View.GONE
+            gsr_no_rooms?.visibility = View.GONE
             //get the hours
             getTimes(location)
         }
@@ -215,7 +219,7 @@ class GsrFragment : Fragment() {
                             if (gsrRooms == null) {
                                 // a certification error causes "room" field to remain null
                                 showNoResults()
-                                Toast.makeText(activity, "Error: Could not load GSRs", Toast.LENGTH_LONG).show()
+                                Toast.makeText(activity, "Error: Could not load GSRs", Toast.LENGTH_SHORT).show()
                             } else {
                                 for (i in gsrRooms.indices) {
                                     val gsrRoom = gsrRooms[i]
@@ -231,14 +235,14 @@ class GsrFragment : Fragment() {
                                 }
                             }
                             // remove loading icon
-                            loadingPanel?.visibility = View.GONE
-                            noResultsPanel?.visibility = View.GONE
+                            loadingPanel.visibility = View.GONE
+                            noResultsPanel.visibility = View.GONE
                             // stop refreshing
                             gsr_rooms_list?.visibility = View.VISIBLE
                             gsr_refresh_layout?.isRefreshing = false
 
                             if (timeSlotLengthZero) {
-                                if (context != null) Toast.makeText(context, "No GSRs available", Toast.LENGTH_LONG).show()
+                                gsr_no_rooms?.visibility = View.VISIBLE
                             }
 
                             gsr_rooms_list?.adapter = (context?.let {
@@ -246,10 +250,10 @@ class GsrFragment : Fragment() {
                             })
 
                             mGSRS = ArrayList()
-                            selectDateButton?.isClickable = true
-                            selectTimeButton?.isClickable = true
-                            gsrLocationDropDown?.isEnabled = true
-                            durationDropDown?.isEnabled = true
+                            selectDateButton.isClickable = true
+                            selectTimeButton.isClickable = true
+                            gsrLocationDropDown.isEnabled = true
+                            durationDropDown.isEnabled = true
                         }
                     }
                 }, { activity?.let {
@@ -257,10 +261,10 @@ class GsrFragment : Fragment() {
                     activity.runOnUiThread {
                         showNoResults()
                         Toast.makeText(activity, "Error: could not load GSRs", Toast.LENGTH_LONG).show()
-                        selectDateButton?.isClickable = true
-                        selectTimeButton?.isClickable = true
-                        gsrLocationDropDown?.isEnabled = true
-                        durationDropDown?.isEnabled = true
+                        selectDateButton.isClickable = true
+                        selectTimeButton.isClickable = true
+                        gsrLocationDropDown.isEnabled = true
+                        durationDropDown.isEnabled = true
                     } }
                 }
                 )
@@ -407,8 +411,8 @@ class GsrFragment : Fragment() {
 
     private fun showNoResults() {
         // get rid of loading screen and display no results
-        noResultsPanel?.visibility = View.VISIBLE
-        loadingPanel?.visibility = View.GONE
+        noResultsPanel.visibility = View.VISIBLE
+        loadingPanel.visibility = View.GONE
         gsr_rooms_list?.visibility = View.GONE
         gsr_refresh_layout?.isRefreshing = false
     }

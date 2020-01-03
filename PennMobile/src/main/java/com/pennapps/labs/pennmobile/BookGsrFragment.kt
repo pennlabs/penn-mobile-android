@@ -1,8 +1,6 @@
 package com.pennapps.labs.pennmobile
 
-import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import android.view.LayoutInflater
@@ -11,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult
 import kotlinx.android.synthetic.main.gsr_details_book.view.*
@@ -39,10 +38,10 @@ class BookGsrFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {arguments ->
-            gsrID = arguments.getString("gsrID")
-            gsrLocationCode = arguments.getString("gsrLocationCode")
-            startTime = arguments.getString("startTime")
-            endTime = arguments.getString("endTime")
+            gsrID = arguments.getString("gsrID") ?: ""
+            gsrLocationCode = arguments.getString("gsrLocationCode") ?: ""
+            startTime = arguments.getString("startTime") ?: ""
+            endTime = arguments.getString("endTime") ?: ""
         }
         mLabs = MainActivity.getLabsInstance()
         activity?.let {activity ->
@@ -76,25 +75,16 @@ class BookGsrFragment : Fragment() {
         lastNameEt.setText(lastName)
         emailEt.setText(email)
 
-        submit?.let { submit ->
-            submit.setOnClickListener {
-                firstNameEt?.let {firstNameEt ->
-                    lastNameEt?.let { lastNameEt ->
-                        emailEt?.let {emailEt ->
-                            if (firstNameEt.text.toString().matches("".toRegex()) || lastNameEt.text.toString().matches("".toRegex())
-                                    || emailEt.text.toString().matches("".toRegex())) {
-                                Toast.makeText(activity, "Please fill in all fields before booking",
-                                        Toast.LENGTH_LONG).show()
-                            } else if (!emailEt.text.toString().matches("""[\w]+@(seas\.|sas\.|wharton\.|nursing\.)?upenn\.edu""".toRegex())) {
-                                Toast.makeText(activity, "Please enter a valid Penn email", Toast.LENGTH_LONG).show()
-                            } else {
-                                bookGSR(Integer.parseInt(gsrID), Integer.parseInt(gsrLocationCode), startTime, endTime)
-                            }
-                        }
-                    }
-                }
+        submit.setOnClickListener {
+            if (firstNameEt.text.toString().matches("".toRegex()) || lastNameEt.text.toString().matches("".toRegex())
+                    || emailEt.text.toString().matches("".toRegex())) {
+                Toast.makeText(activity, "Please fill in all fields before booking",
+                        Toast.LENGTH_LONG).show()
+            } else if (!emailEt.text.toString().matches("""[\w]+@(seas\.|sas\.|wharton\.|nursing\.)?upenn\.edu""".toRegex())) {
+                Toast.makeText(activity, "Please enter a valid Penn email", Toast.LENGTH_LONG).show()
+            } else {
+                bookGSR(Integer.parseInt(gsrID), Integer.parseInt(gsrLocationCode), startTime, endTime)
             }
-            return v
         }
         return v
     }
@@ -104,7 +94,7 @@ class BookGsrFragment : Fragment() {
         var sessionID = ""
         activity?.let { activity ->
             val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-            sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
+            sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "") ?: ""
         }
 
         mLabs?.let { mLabs ->

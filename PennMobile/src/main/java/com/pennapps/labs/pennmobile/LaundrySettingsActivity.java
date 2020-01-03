@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -47,6 +48,9 @@ public class LaundrySettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT > 28){
+            setTheme(R.style.DarkModeApi29);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_laundry_settings);
 
