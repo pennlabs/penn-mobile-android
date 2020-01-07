@@ -55,8 +55,8 @@ class FlingFragment : Fragment() {
         val labs = MainActivity.getLabsInstance()
         labs.flingEvents.subscribe({ flingEvents ->
             activity?.runOnUiThread {
-                fling_fragment_recyclerview.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                fling_fragment_recyclerview.adapter = FlingRecyclerViewAdapter(context, flingEvents)
+                fling_fragment_recyclerview?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                fling_fragment_recyclerview?.adapter = FlingRecyclerViewAdapter(context, flingEvents)
             }
         }, { activity?.runOnUiThread { Toast.makeText(activity, "Error: Could not retrieve Spring Fling schedule", Toast.LENGTH_LONG).show() } })
         return view
@@ -70,10 +70,4 @@ class FlingFragment : Fragment() {
             (activity as MainActivity).setSelectedTab(9)
         }
     }
-
-    companion object {
-        fun newInstance(): FlingFragment {
-            return FlingFragment()
-        }
-    }
-}// Required empty public constructor
+}

@@ -28,7 +28,9 @@ class FlingRecyclerViewAdapter(private val context: Context?, private val sample
     override fun onBindViewHolder(holder: FlingPerformanceViewHolder, position: Int) {
         if (position < itemCount) {
             val flingEvent = sampleData[position]
-            Picasso.get().load(flingEvent.imageUrl).into(holder.flingview_image)
+            val picasso = Picasso.get()
+            picasso.isLoggingEnabled = true
+            picasso.load(flingEvent.imageUrl).into(holder.flingview_image)
             holder.flingview_name.text = flingEvent.name
             holder.flingview_description.text = flingEvent.description
             val startTime = timeFormatter.parseDateTime(flingEvent.startTime)

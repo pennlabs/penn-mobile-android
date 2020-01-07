@@ -14,16 +14,36 @@ import android.webkit.WebView
 import com.pennapps.labs.pennmobile.adapters.AboutAdapter
 
 import kotlinx.android.synthetic.main.fragment_about.view.*
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.gif.GifDrawable
+import com.bumptech.glide.request.RequestListener
+
 
 class AboutFragment : Fragment() {
 
+    private lateinit var mActivity: MainActivity
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (activity as MainActivity).closeKeyboard()
+        mActivity = activity as MainActivity
+        mActivity.closeKeyboard()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_about, container, false)
+
+        Glide.with(this).asGif().load(R.drawable.logo_gif_transparent).listener(object : RequestListener<GifDrawable> {
+            override fun onLoadFailed(e: GlideException?, model: Any?, target: com.bumptech.glide.request.target.Target<GifDrawable>?, isFirstResource: Boolean): Boolean {
+                return false
+            }
+
+            override fun onResourceReady(resource: GifDrawable, model: Any, target: com.bumptech.glide.request.target.Target<GifDrawable>?, dataSource: DataSource, isFirstResource: Boolean): Boolean {
+                resource.setLoopCount(1)
+                return false
+            }
+        }).into(v.logo_gif_iv)
 
         v.our_team_rv?.layoutManager = GridLayoutManager(context, 3)
         val members = arrayListOf("Marta García Ferreiro", "Davies Lumumba",
