@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
     private static Labs mLabs;
     private static final int CODE_MAP = 1;
     private boolean tab_showed;
-    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +68,6 @@ public class MainActivity extends AppCompatActivity {
             setTheme(R.style.DarkModeApi29);
         }
         super.onCreate(savedInstanceState);
-
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
