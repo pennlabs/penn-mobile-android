@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
+import androidx.core.view.ViewCompat
 import com.pennapps.labs.pennmobile.adapters.AboutAdapter
 
 import kotlinx.android.synthetic.main.fragment_about.view.*
@@ -19,6 +20,8 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.RequestListener
+import kotlinx.android.synthetic.main.fragment_about.*
+import kotlinx.android.synthetic.main.fragment_about.view.logo_gif_iv
 
 
 class AboutFragment : Fragment() {
@@ -49,6 +52,7 @@ class AboutFragment : Fragment() {
         val members = arrayListOf("Marta García Ferreiro", "Davies Lumumba",
                 "Sahit Penmatcha", "Varun Ramakrishnan", "Anna Wang", "Sophia Ye")
         v.our_team_rv?.adapter = AboutAdapter(members)
+        ViewCompat.setNestedScrollingEnabled(v.our_team_rv, false)
 
         v.learn_more_btn?.setOnClickListener {
             val i = Intent(Intent.ACTION_VIEW, Uri.parse("https://pennlabs.org"))
