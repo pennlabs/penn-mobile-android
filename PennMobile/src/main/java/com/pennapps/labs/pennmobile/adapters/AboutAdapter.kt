@@ -24,7 +24,7 @@ class AboutAdapter(private var members: ArrayList<String>)
     }
 
     override fun onBindViewHolder(holder: TeamViewHolder, position: Int) {
-        holder.itemView.name_tv.text = members[position]
+        holder.view.name_tv?.text = members[position]
         var imageId = when (members[position]) {
             "Marta García Ferreiro" -> R.drawable.marta
             "Varun Ramakrishnan" -> R.drawable.varun
@@ -34,7 +34,7 @@ class AboutAdapter(private var members: ArrayList<String>)
             "Sahit Penmatcha" -> R.drawable.sahit
             else -> null
         }
-        if (imageId != null) holder.itemView.person_iv.setImageResource(imageId)
+        if (imageId != null) holder.view.person_iv?.setImageResource(imageId)
     }
 
     inner class TeamViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
