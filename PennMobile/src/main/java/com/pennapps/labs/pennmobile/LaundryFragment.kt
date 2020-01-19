@@ -23,7 +23,6 @@ import java.util.*
 
 class LaundryFragment : Fragment() {
 
-
     private lateinit var mActivity: MainActivity
 
     private lateinit var mLabs: Labs
@@ -72,9 +71,9 @@ class LaundryFragment : Fragment() {
             }
         }
 
-        view.favorite_laundry_list.layoutManager = LinearLayoutManager(mContext)
-        view.laundry_machine_refresh.setOnRefreshListener { updateRooms() }
-        view.laundry_machine_refresh.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
+        view.favorite_laundry_list?.layoutManager = LinearLayoutManager(mContext)
+        view.laundry_machine_refresh?.setOnRefreshListener { updateRooms() }
+        view.laundry_machine_refresh?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
 
         // no rooms chosen
         if (count == 0) {

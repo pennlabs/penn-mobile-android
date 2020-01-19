@@ -25,7 +25,9 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             app:layout_constraintDimensionRatio="H,1:1"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/labslogo" />
 
         <ImageView
             android:id="@+id/logo_name_iv"
@@ -36,7 +38,8 @@
             android:contentDescription="@string/labs_icon"
             android:src="@drawable/logo_name"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/logo_gif_iv" />
+            app:layout_constraintStart_toEndOf="@+id/logo_gif_iv"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
