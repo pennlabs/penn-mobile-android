@@ -28,11 +28,6 @@ import android.graphics.drawable.Drawable
 import android.R.attr.animation
 import android.graphics.drawable.AnimatedVectorDrawable
 
-
-
-
-
-
 class AboutFragment : Fragment() {
 
     private lateinit var mActivity: MainActivity
