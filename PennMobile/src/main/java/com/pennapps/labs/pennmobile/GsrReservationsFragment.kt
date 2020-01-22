@@ -71,19 +71,14 @@ class GsrReservationsFragment : Fragment() {
                     gsr_no_reservations?.visibility = View.VISIBLE
                 }
                 // stop refreshing
-                try {
-                    gsr_reservations_refresh_layout?.isRefreshing = false
-                } catch (e: NullPointerException) {}
+                gsr_reservations_refresh_layout?.isRefreshing = false
             }
         }, { throwable ->
             mActivity.runOnUiThread {
                 throwable.printStackTrace()
-                //Toast.makeText(activity, "Error: Could not load GSR reservations", Toast.LENGTH_LONG).show()
                 loadingPanel?.visibility = View.GONE
                 gsr_no_reservations?.visibility = View.VISIBLE
-                try {
-                    gsr_reservations_refresh_layout?.isRefreshing = false
-                } catch (e: NullPointerException) {}
+                gsr_reservations_refresh_layout?.isRefreshing = false
             }
         })
     }

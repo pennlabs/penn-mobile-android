@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -155,10 +156,18 @@ class NewsFragment : ListFragment() {
         val utbDescription = "Under The Button is Penn's 24/7 news and entertainment blog, known for its signature humor, gossip and snarky features."
         val dp = NewsSite("The Daily Pennsylvanian", "http://www.thedp.com/",
                 dpDescription, R.drawable.thedp)
-        val thirtyFour = NewsSite("34th Street", "http://www.34st.com/",
+        var thirtyFour = NewsSite("34th Street", "http://www.34st.com/",
                 thirtyFourDescription, R.drawable.thirtyfour)
-        val utb = NewsSite("Under the Button",
+        var utb = NewsSite("Under the Button",
                 "https://www.underthebutton.com/", utbDescription, R.drawable.utb)
+
+        if (Build.VERSION.SDK_INT > 28 && (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) {
+            thirtyFour = NewsSite("34th Street", "http://www.34st.com/",
+                    thirtyFourDescription, R.drawable.thirtyfour_darkmode)
+            utb = NewsSite("Under the Button",
+                    "https://www.underthebutton.com/", utbDescription, R.drawable.utb_darkmode)
+        }
+
         val allSites = arrayOf(dp, thirtyFour, utb)
         val newsUrls = arrayOfNulls<String>(allSites.size)
         for (i in newsUrls.indices) {

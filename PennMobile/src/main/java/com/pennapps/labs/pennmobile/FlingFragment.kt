@@ -31,12 +31,12 @@ class FlingFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater?.inflate(R.menu.fling_menu, menu)
+        inflater.inflate(R.menu.fling_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle presses on the action bar items
-        return when (item?.itemId) {
+        return when (item.itemId) {
             R.id.fling_raffle -> {
                 val url = "https://docs.google.com/forms/d/e/1FAIpQLSexkehYfGgyAa7RagaCl8rze4KUKQSX9TbcvvA6iXp34TyHew/viewform"
                 val builder = Builder()
@@ -55,8 +55,8 @@ class FlingFragment : Fragment() {
         val labs = MainActivity.getLabsInstance()
         labs.flingEvents.subscribe({ flingEvents ->
             activity?.runOnUiThread {
-                fling_fragment_recyclerview.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                fling_fragment_recyclerview.adapter = FlingRecyclerViewAdapter(context, flingEvents)
+                fling_fragment_recyclerview?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                fling_fragment_recyclerview?.adapter = FlingRecyclerViewAdapter(context, flingEvents)
             }
         }, { activity?.runOnUiThread { Toast.makeText(activity, "Error: Could not retrieve Spring Fling schedule", Toast.LENGTH_LONG).show() } })
         return view
@@ -64,16 +64,10 @@ class FlingFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as MainActivity)?.removeTabs()
+        (activity as MainActivity).removeTabs()
         activity?.setTitle(R.string.spring_fling)
         if (Build.VERSION.SDK_INT > 17){
             (activity as MainActivity).setSelectedTab(9)
         }
     }
-
-    companion object {
-        fun newInstance(): FlingFragment {
-            return FlingFragment()
-        }
-    }
-}// Required empty public constructor
+}

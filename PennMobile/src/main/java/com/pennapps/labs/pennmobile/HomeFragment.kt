@@ -59,11 +59,11 @@ class HomeFragment : Fragment()  {
 
         // get session id from shared preferences
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-        val sessionid = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
+        val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
 
         // get API data
         val labs = MainActivity.getLabsInstance() //TODO: get for an account id
-        labs.getHomePage("test_android", null, sessionid).subscribe({ cells ->
+        labs.getHomePage("test_android", null, sessionID).subscribe({ cells ->
             mActivity.runOnUiThread {
                 val gsrBookingCell = HomeCell()
                 gsrBookingCell.type = "gsr_booking"

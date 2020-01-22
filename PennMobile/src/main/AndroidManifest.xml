@@ -33,6 +33,7 @@
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme.Launcher">
         <uses-library
             android:name="com.google.android.maps"
@@ -61,12 +62,6 @@
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="18a765536e6539a73a15dd36c369ed29cfb91aa1" />
-
-        <activity
-            android:name=".LaundrySettingsActivity"
-            android:label="@string/laundry_settings"
-            android:screenOrientation="portrait"
-            android:theme="@style/LaundryTheme" />
 
         <!-- receiver for laundry -->
         <receiver
