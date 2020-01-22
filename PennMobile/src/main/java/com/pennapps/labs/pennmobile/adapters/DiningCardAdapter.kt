@@ -24,7 +24,7 @@ import rx.functions.Action1
 
 class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<DiningCardAdapter.ViewHolder>() {
 
-    var favoriteHalls:ArrayList<DiningHall>  = halls
+    private var favoriteHalls: ArrayList<DiningHall> = halls
     private lateinit var itemImage: ImageView
     private lateinit var itemName: TextView
     private lateinit var itemStatus: TextView
@@ -33,7 +33,6 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
     private lateinit var mLabs: Labs
-
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var currentHall = favoriteHalls[position]
@@ -109,8 +108,7 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
         }
     }
 
-    inner class ViewHolder
-    (itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         init {
             itemImage = itemView.item_dining_image

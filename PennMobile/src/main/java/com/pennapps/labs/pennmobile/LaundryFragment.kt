@@ -9,6 +9,7 @@ import android.preference.PreferenceManager
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.*
+import androidx.fragment.app.FragmentTransaction
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.LaundryRoomAdapter
 import com.pennapps.labs.pennmobile.api.Labs
@@ -22,7 +23,6 @@ import kotlinx.android.synthetic.main.no_results.*
 import java.util.*
 
 class LaundryFragment : Fragment() {
-
 
     private lateinit var mActivity: MainActivity
 
@@ -72,9 +72,9 @@ class LaundryFragment : Fragment() {
             }
         }
 
-        view.favorite_laundry_list.layoutManager = LinearLayoutManager(mContext)
-        view.laundry_machine_refresh.setOnRefreshListener { updateRooms() }
-        view.laundry_machine_refresh.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
+        view.favorite_laundry_list?.layoutManager = LinearLayoutManager(mContext)
+        view.laundry_machine_refresh?.setOnRefreshListener { updateRooms() }
+        view.laundry_machine_refresh?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
 
         // no rooms chosen
         if (count == 0) {
@@ -95,9 +95,12 @@ class LaundryFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if (id == R.id.laundry_settings) {
-            val intent = Intent(mContext, LaundrySettingsActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            startActivity(intent)
+            val fragmentManager = mActivity.supportFragmentManager
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, LaundrySettingsFragment())
+                    .addToBackStack("Laundry Settings Fragment")
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .commit()
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -112,7 +115,7 @@ class LaundryFragment : Fragment() {
         // get num rooms to display
         count = 0
         for (i in 0 until numRooms) {
-            if (sp!!.getBoolean(Integer.toString(i), false)) {
+            if (sp?.getBoolean(Integer.toString(i), false) == true) {
                 count += 1
             }
         }

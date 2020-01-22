@@ -42,7 +42,6 @@ class FitnessAdapter(private val gyms: List<Gym>)// get gym data from fragment (
             holder.itemView.gym_status_view.setBackgroundResource(R.drawable.label_red)
         }
 
-
         // get first word in name
         if (name == null) {
             holder.itemView.visibility = View.GONE
@@ -117,7 +116,6 @@ class FitnessAdapter(private val gyms: List<Gym>)// get gym data from fragment (
     }
 
     inner class FitnessViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        val View = itemView
+        val view = itemView
     }
 }

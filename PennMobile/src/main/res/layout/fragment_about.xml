@@ -9,18 +9,38 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/labs_icon"
         android:layout_width="240dp"
         android:layout_height="96dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="40dp"
         android:adjustViewBounds="true"
-        android:contentDescription="@string/labs_icon"
-        android:src="@drawable/logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/logo_gif_iv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/labslogo" />
+
+        <ImageView
+            android:id="@+id/logo_name_iv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="12dp"
+            android:layout_marginLeft="12dp"
+            android:contentDescription="@string/labs_icon"
+            android:src="@drawable/logo_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/logo_gif_iv"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/about_hi_tv"

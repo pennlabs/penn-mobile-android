@@ -14,6 +14,5 @@ class GsrBuildingHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     init {
         recyclerView = itemView.gsr_availability_in_building
         gsrBuildingName = itemView.gsr_building_name
-
     }
 }

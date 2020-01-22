@@ -13,6 +13,7 @@
         android:padding="16dp"
         android:text="@string/no_gsr_reservations"
         android:visibility="gone"
+        android:textColor="@color/text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -34,10 +34,10 @@ class HuntsmanGSRLogin : Fragment() {
         super.onCreate(savedInstanceState)
         mLabs = MainActivity.getLabsInstance()
         arguments?.let {arguments ->
-            gsrID = arguments.getString("gsrID")
-            gsrLocationCode = arguments.getString("gsrLocationCode")
-            startTime = arguments.getString("startTime")
-            endTime = arguments.getString("endTime")
+            gsrID = arguments.getString("gsrID") ?: ""
+            gsrLocationCode = arguments.getString("gsrLocationCode") ?: ""
+            startTime = arguments.getString("startTime") ?: ""
+            endTime = arguments.getString("endTime") ?: ""
         }
     }
 
@@ -50,9 +50,9 @@ class HuntsmanGSRLogin : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-        val sessionid = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
+        val sessionid = sp.getString(getString(R.string.huntsmanGSR_SessionID), "") ?: ""
         // load Huntsman website if no sessionid
-        if (sessionid.isEmpty()) {
+        if (sessionid == "") {
             loadWebpage()
         } else {
             bookHuntsmanGSR(sessionid)

@@ -236,6 +236,7 @@
     <string name="duration">Duration</string>
     <string name="gsr_location">Location</string>
     <string name="no_gsr_reservations">No upcoming GSR reservations</string>
+    <string name="no_gsr_rooms">No GSRs available</string>
 
     <!-- Spring Fling -->
     <string name="spring_fling">Spring Fling</string>
