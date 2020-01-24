@@ -6,7 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +20,11 @@ import com.pennapps.labs.pennmobile.classes.HomeCell
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
+import android.provider.Settings.Secure
+import androidx.preference.PreferenceManager
+import androidx.core.content.ContextCompat.getSystemService
+import android.telephony.TelephonyManager
+
 
 
 class HomeFragment : Fragment()  {
@@ -61,9 +66,12 @@ class HomeFragment : Fragment()  {
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
         val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
 
+        val deviceID = Secure.getString(mActivity.contentResolver,
+                Secure.ANDROID_ID) ?: "test"
+
         // get API data
         val labs = MainActivity.getLabsInstance() //TODO: get for an account id
-        labs.getHomePage("test_android", null, sessionID).subscribe({ cells ->
+        labs.getHomePage(deviceID, null, null).subscribe({ cells ->
             mActivity.runOnUiThread {
                 val gsrBookingCell = HomeCell()
                 gsrBookingCell.type = "gsr_booking"

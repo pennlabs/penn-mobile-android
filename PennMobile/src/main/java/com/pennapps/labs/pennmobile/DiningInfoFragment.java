@@ -193,6 +193,7 @@ public class DiningInfoFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onDestroyView() {
+        setHasOptionsMenu(false);
         super.onDestroyView();
         unbinder.unbind();
     }
