@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Get a Google Maps API key from https://developers.google.com/maps/documentation/android-api/signup -->
-    <string name="google_api_key"></string>
+    <string name="google_maps_api_key"></string>
 </resources>
