@@ -5,8 +5,8 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,7 +118,7 @@ public class DiningInfoFragment extends Fragment implements OnMapReadyCallback {
             marker.showInfoWindow();
         }
     }
-    public void fillInfo(){
+    public void fillInfo() {
         if (mDiningHall.getVenue() != null) {
             List<VenueInterval> days = mDiningHall.getVenue().allHours();
             LinkedList<TextView> vertical = new LinkedList<>();
@@ -190,10 +190,11 @@ public class DiningInfoFragment extends Fragment implements OnMapReadyCallback {
             mapFragment.getMapAsync(this);
         }
     }
+
     @Override
     public void onDestroyView() {
+        setHasOptionsMenu(false);
         super.onDestroyView();
-        getActivity().setTitle(R.string.dining);
         unbinder.unbind();
     }
     @Override

@@ -1,8 +1,7 @@
 package com.pennapps.labs.pennmobile;
 
 import android.content.Intent;
-import android.support.design.widget.NavigationView;
-import android.test.ActivityUnitTestCase;
+import com.google.android.material.navigation.NavigationView;
 import android.view.ContextThemeWrapper;
 
 import com.pennapps.labs.pennmobile.api.Labs;
@@ -12,6 +11,9 @@ import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
 import java.util.List;
+
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 
 /**
  * Unit testing for MainActivity

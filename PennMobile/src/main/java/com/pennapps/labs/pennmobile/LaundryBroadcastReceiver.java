@@ -8,8 +8,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 public class LaundryBroadcastReceiver extends BroadcastReceiver {
 
@@ -54,8 +54,9 @@ public class LaundryBroadcastReceiver extends BroadcastReceiver {
                     .setContentTitle(context.getString(R.string.app_name))
                     .setContentText(builder);
         } else {
-            mBuilder = new NotificationCompat.Builder(context)
-                    .setSmallIcon(R.drawable.ic_local_laundry_service)
+            String channelId = "pennmobile_laundry_alarm";
+            mBuilder = new NotificationCompat.Builder(context, channelId)
+                    .setSmallIcon(R.drawable.ic_bottom_nav_laundry_grey)
                     .setContentTitle(context.getString(R.string.app_name))
                     .setContentText(builder);
         }
@@ -65,9 +66,10 @@ public class LaundryBroadcastReceiver extends BroadcastReceiver {
             mBuilder.setColor(ContextCompat.getColor(context, R.color.color_primary));
         }
 
-        // intent to go to laundry activity
-        Intent laundryIntent = new Intent(context, LaundryActivity.class);
+        // intent to go to main activity
+        Intent laundryIntent = new Intent(context, MainActivity.class);
         laundryIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
         PendingIntent notifyIntent = PendingIntent.getActivity(context, NOTIFICATION_ID, laundryIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(notifyIntent);
         notificationManager.notify(NOTIFICATION_ID, mBuilder.build());
