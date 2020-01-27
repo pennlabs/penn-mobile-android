@@ -9,12 +9,12 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.preference.PreferenceManager;
-import android.support.v7.widget.SearchView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.PreferenceManager;
+import androidx.appcompat.widget.SearchView;
 import android.text.Editable;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -34,10 +34,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.ContentViewEvent;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -53,6 +49,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.maps.DirectionsApi;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
@@ -87,7 +84,6 @@ import java.util.concurrent.Semaphore;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.fabric.sdk.android.Fabric;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
@@ -159,13 +155,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mapCallbacks.setGoogleApiClient(mGoogleApiClient);
         activity.closeKeyboard();
 
-        Fabric.with(getContext(), new Crashlytics());
-        Answers.getInstance().logContentView(new ContentViewEvent()
-                .putContentName("Maps")
-                .putContentType("App Feature")
-                .putContentId("4"));
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "4");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Maps");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature");
+        FirebaseAnalytics.getInstance(getContext()).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle);
 
-        geoapi = new GeoApiContext.Builder().apiKey(getString(R.string.google_api_key)).build();
+        geoapi = new GeoApiContext.Builder().apiKey(getString(R.string.google_maps_api_key)).build();
         allStartPolylines = new HashSet<>();
         allEndPolylines = new HashSet<>();
         query = null;
@@ -233,7 +229,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mapView.onResume();
         mapCallbacks.requestLocationUpdates();
         activity.setTitle(R.string.map);
-//        activity.setNav(R.id.nav_map);
     }
 
     @Override
@@ -359,7 +354,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             activity.showErrorToast(R.string.no_permission_map);
             FragmentManager fragmentManager = activity.getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, new MainFragment())
+                    .replace(R.id.content_frame, new HomeFragment())
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit();

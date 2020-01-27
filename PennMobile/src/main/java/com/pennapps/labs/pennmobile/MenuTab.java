@@ -2,7 +2,7 @@ package com.pennapps.labs.pennmobile;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,7 +36,7 @@ public class MenuTab extends Fragment {
         Bundle args = getArguments();
         name = args.getString(getString(R.string.menu_arg_name), "Dining Hall");
         meal = args.getString(getString(R.string.menu_arg_meal), "Meal");
-        stations = args.getStringArrayList(getString(R.string.menu_arg_stations,"Dining Stations"));
+        stations = args.getStringArrayList(getString(R.string.menu_arg_stations));
         
         for (String station : stations) {
             stationInfo.put(station, args.getStringArrayList(station));
@@ -64,6 +64,11 @@ public class MenuTab extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
 
