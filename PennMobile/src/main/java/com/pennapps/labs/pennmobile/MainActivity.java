@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,13 +10,18 @@ import android.os.StrictMode;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
+
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.app.ActivityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -23,7 +29,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -57,12 +62,9 @@ import retrofit.converter.GsonConverter;
 
 public class MainActivity extends AppCompatActivity {
 
-    private DrawerLayout mDrawerLayout;
-    private NavigationView mDrawerList;
-    private ActionBarDrawerToggle mDrawerToggle;
     private static Labs mLabs;
-    private static Labs mLabsHome;
     private static final int CODE_MAP = 1;
+    private ExpandableBottomTabBar tabBarView;
     private boolean tab_showed;
     private boolean loggedIn;
     private SharedPreferences mSharedPrefs;
