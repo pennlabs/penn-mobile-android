@@ -2,16 +2,15 @@ package com.pennapps.labs.pennmobile
 
 
 import android.content.SharedPreferences
-import android.database.SQLException
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
 import android.widget.Button
+import androidx.fragment.app.Fragment
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.User
 import java.util.*
