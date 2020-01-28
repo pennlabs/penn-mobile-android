@@ -166,8 +166,8 @@ class GsrFragment : Fragment() {
         }
 
         // handle swipe to refresh
-        view.gsr_refresh_layout.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
-        view.gsr_refresh_layout.setOnRefreshListener {
+        view.gsr_refresh_layout?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
+        view.gsr_refresh_layout?.setOnRefreshListener {
             searchForGSR(true)
         }
     }
@@ -192,10 +192,10 @@ class GsrFragment : Fragment() {
         } else {
             // display loading screen if user did not use swipe refresh
             if (!calledByRefreshLayout) {
-                loadingPanel?.visibility = View.VISIBLE
+                loadingPanel.visibility = View.VISIBLE
                 gsr_rooms_list?.visibility = View.GONE
             }
-            noResultsPanel?.visibility = View.GONE
+            noResultsPanel.visibility = View.GONE
             gsr_no_rooms?.visibility = View.GONE
             //get the hours
             getTimes(location)
@@ -205,10 +205,10 @@ class GsrFragment : Fragment() {
     // Performs GET request and fetches the rooms and availability
     private fun getTimes(location: Int) {
         val adjustedDateString = selectedDateTime.toString(adjustedDateFormat)
-        selectDateButton?.isClickable = false
-        selectTimeButton?.isClickable = false
-        gsrLocationDropDown?.isEnabled = false
-        durationDropDown?.isEnabled = false
+        selectDateButton.isClickable = false
+        selectTimeButton.isClickable = false
+        gsrLocationDropDown.isEnabled = false
+        durationDropDown.isEnabled = false
         mLabs.gsrRoom(location, adjustedDateString)
                 ?.subscribe({ gsr ->
                     activity?.let {activity ->
@@ -376,19 +376,19 @@ class GsrFragment : Fragment() {
 
                             val gsrs = gsrHashMap.keys.toList().toTypedArray()
                             val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
-                            gsrLocationDropDown?.adapter = adapter
+                            gsrLocationDropDown.adapter = adapter
 
-                            durationDropDown?.adapter = if (gsrLocationDropDown?.selectedItem.toString() == "Huntsman Hall")
+                            durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman Hall")
                                 huntsmanDurationAdapter else durationAdapter
                             searchForGSR(false)
                         }
                     }
                 }
                 )
-        gsrLocationDropDown?.onItemSelectedListener = object : OnItemSelectedListener {
+        gsrLocationDropDown.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View?, i: Int, l: Long) {
                 // change possible durations depending on the location
-                durationDropDown?.adapter = if (gsrLocationDropDown?.selectedItem.toString() == "Huntsman Hall")
+                durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman Hall")
                     huntsmanDurationAdapter else durationAdapter
                 searchForGSR(false)
             }
