@@ -63,7 +63,7 @@ class HomeFragment : Fragment()  {
     private fun getHomePage() {
 
         // get session id from shared preferences
-        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+        val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
         val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
 
         val deviceID = Secure.getString(mActivity.contentResolver,
