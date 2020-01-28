@@ -35,8 +35,14 @@
     <string name="directory_search">Search for people</string>
     <string name="building_search">Search for buildings</string>
     <string name="building_instructions">Search for Penn buildings</string>
+    <string-array name="previous_course_array">
+        <item>course1</item>
+        <item>course2</item>
+        <item>course3</item>
+        <item>course4</item>
+        <item>course5</item>
+    </string-array>
     <string name="registrar_search_count">register_count</string>
-    <string name="dining_hall_open">Open</string>
 
     <!-- Dining -->
     <string name="dining_hall_open">Open</string>
@@ -77,6 +83,13 @@
     <string name="no_map_description">We were unable to\nload your map.</string>
     <string name="no_map_count_key">no_map_count_key</string>
     <string name="no_data_msg">Cannot display Map: wifi/data not enabled</string>
+    <string-array name="previous_map_array">
+        <item>map1</item>
+        <item>map2</item>
+        <item>map3</item>
+        <item>map4</item>
+        <item>map5</item>
+    </string-array>
 
     <!-- Transit search -->
     <string name="starting_location_hint">Current location</string>
