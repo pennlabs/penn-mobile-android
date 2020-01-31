@@ -41,7 +41,7 @@ import java.util.List;
  */
 public class Serializer {
 
-    public static class UserSerializer implements  JsonDeserializer<User> {
+    public static class UserSerializer implements JsonDeserializer<User> {
         @Override
         public User deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
                 throws JsonParseException {

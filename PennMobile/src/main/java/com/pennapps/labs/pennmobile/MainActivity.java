@@ -25,6 +25,8 @@ import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
@@ -36,6 +38,7 @@ import com.google.gson.reflect.TypeToken;
 import com.pennapps.labs.pennmobile.ExpandedBottomNavBar.ExpandableBottomTabBar;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.api.PennInTouchNetworkManager;
+import com.pennapps.labs.pennmobile.api.Platform;
 import com.pennapps.labs.pennmobile.api.Serializer;
 import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
@@ -57,12 +60,16 @@ import com.pennapps.labs.pennmobile.classes.Venue;
 import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
+import retrofit.ResponseCallback;
 import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
 
 public class MainActivity extends AppCompatActivity {
 
     private static Labs mLabs;
+    private static Platform mPlatform;
     private static final int CODE_MAP = 1;
     private ExpandableBottomTabBar tabBarView;
     private boolean tab_showed;
@@ -101,6 +108,35 @@ public class MainActivity extends AppCompatActivity {
         // Expandable bottom nav bar
         tabBarView = findViewById(R.id.bottom_navigation);
         onExpandableBottomNavigationItemSelected();
+
+        // TODO: testing account methods, put in the right place
+        mPlatform = getPlatformInstance();
+        mPlatform.getAccessToken("test_auth_code", "",
+                "https://pennlabs.org/pennmobile/android/callback/", "",
+                new ResponseCallback() {
+            @Override
+            public void success(Response response) {
+                Log.d("Accounts", "access token: " + response.getBody());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d("Accounts", "Error fetching access token " + error);
+            }
+        });
+
+        mPlatform.getUser("test_access_token", new ResponseCallback() {
+            @Override
+            public void success(Response response) {
+                Log.d("Accounts", "user: " + response.getBody());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d("Accounts", "Error getting user " + error);
+            }
+        });
+
     }
 
     private void onExpandableBottomNavigationItemSelected() {
@@ -177,6 +213,19 @@ public class MainActivity extends AppCompatActivity {
         if (view != null) {
             inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
+    }
+
+    public static Platform getPlatformInstance() {
+        if (mPlatform == null) {
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            Gson gson = gsonBuilder.create();
+            RestAdapter restAdapter = new RestAdapter.Builder()
+                    .setConverter(new GsonConverter(gson))
+                    .setEndpoint("https://platform.pennlabs.org")
+                    .build();
+            mPlatform = restAdapter.create(Platform.class);
+        }
+        return mPlatform;
     }
 
     public static Labs getLabsInstance() {
