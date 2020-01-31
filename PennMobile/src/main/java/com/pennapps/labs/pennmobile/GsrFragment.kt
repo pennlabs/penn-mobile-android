@@ -192,10 +192,10 @@ class GsrFragment : Fragment() {
         } else {
             // display loading screen if user did not use swipe refresh
             if (!calledByRefreshLayout) {
-                loadingPanel?.visibility = View.VISIBLE
+                loadingPanel.visibility = View.VISIBLE
                 gsr_rooms_list?.visibility = View.GONE
             }
-            noResultsPanel?.visibility = View.GONE
+            noResultsPanel.visibility = View.GONE
             gsr_no_rooms?.visibility = View.GONE
             //get the hours
             getTimes(location)
@@ -205,10 +205,10 @@ class GsrFragment : Fragment() {
     // Performs GET request and fetches the rooms and availability
     private fun getTimes(location: Int) {
         val adjustedDateString = selectedDateTime.toString(adjustedDateFormat)
-        selectDateButton?.isClickable = false
-        selectTimeButton?.isClickable = false
-        gsrLocationDropDown?.isEnabled = false
-        durationDropDown?.isEnabled = false
+        selectDateButton.isClickable = false
+        selectTimeButton.isClickable = false
+        gsrLocationDropDown.isEnabled = false
+        durationDropDown.isEnabled = false
         mLabs.gsrRoom(location, adjustedDateString)
                 ?.subscribe({ gsr ->
                     activity?.let {activity ->
