@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.classes;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Created by Jackie on 2018-03-04.

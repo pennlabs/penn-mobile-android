@@ -1,7 +1,7 @@
 package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,7 +41,6 @@ class FitnessAdapter(private val gyms: List<Gym>)// get gym data from fragment (
             // set background to red for closed
             holder.itemView.gym_status_view.setBackgroundResource(R.drawable.label_red)
         }
-
 
         // get first word in name
         if (name == null) {
@@ -117,7 +116,6 @@ class FitnessAdapter(private val gyms: List<Gym>)// get gym data from fragment (
     }
 
     inner class FitnessViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        val View = itemView
+        val view = itemView
     }
 }

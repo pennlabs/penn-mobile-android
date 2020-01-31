@@ -1,16 +1,17 @@
 package com.pennapps.labs.pennmobile
 
-
 import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
-import android.support.customtabs.*
-import android.support.v4.app.ListFragment
+import androidx.browser.customtabs.*
+import androidx.fragment.app.ListFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,11 +20,7 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import butterknife.ButterKnife
-import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.ContentViewEvent
-import io.fabric.sdk.android.Fabric
-import kotlinx.android.synthetic.main.news_list_item.*
+import com.google.firebase.analytics.FirebaseAnalytics
 import java.util.ArrayList
 
 
@@ -122,8 +119,8 @@ class NewsFragment : ListFragment() {
         builder?.setToolbarColor(0x3E50B4)
         context?.let { context ->
             builder?.setStartAnimations(context,
-                    android.support.design.R.anim.abc_popup_enter,
-                    android.support.design.R.anim.abc_popup_exit)
+                    R.anim.abc_popup_enter,
+                    R.anim.abc_popup_exit)
             CustomTabsClient.bindCustomTabsService(context,
                     CUSTOM_TAB_PACKAGE_NAME, connection)
         }
@@ -133,14 +130,15 @@ class NewsFragment : ListFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (activity as MainActivity).closeKeyboard()
+        val mActivity = activity as MainActivity
+        mActivity.closeKeyboard()
         setHasOptionsMenu(true)
 
-        Fabric.with(context, Crashlytics())
-        Answers.getInstance().logContentView(ContentViewEvent()
-                .putContentName("News")
-                .putContentType("App Feature")
-                .putContentId("5"))
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "5")
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "News")
+        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
+        FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -158,10 +156,18 @@ class NewsFragment : ListFragment() {
         val utbDescription = "Under The Button is Penn's 24/7 news and entertainment blog, known for its signature humor, gossip and snarky features."
         val dp = NewsSite("The Daily Pennsylvanian", "http://www.thedp.com/",
                 dpDescription, R.drawable.thedp)
-        val thirtyFour = NewsSite("34th Street", "http://www.34st.com/",
+        var thirtyFour = NewsSite("34th Street", "http://www.34st.com/",
                 thirtyFourDescription, R.drawable.thirtyfour)
-        val utb = NewsSite("Under the Button",
+        var utb = NewsSite("Under the Button",
                 "https://www.underthebutton.com/", utbDescription, R.drawable.utb)
+
+        if (Build.VERSION.SDK_INT > 28 && (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) {
+            thirtyFour = NewsSite("34th Street", "http://www.34st.com/",
+                    thirtyFourDescription, R.drawable.thirtyfour_darkmode)
+            utb = NewsSite("Under the Button",
+                    "https://www.underthebutton.com/", utbDescription, R.drawable.utb_darkmode)
+        }
+
         val allSites = arrayOf(dp, thirtyFour, utb)
         val newsUrls = arrayOfNulls<String>(allSites.size)
         for (i in newsUrls.indices) {
@@ -176,8 +182,8 @@ class NewsFragment : ListFragment() {
     }
 
 
-    override fun onListItemClick(l: ListView?, v: View?, position: Int, id: Long) {
-        l?.let {l ->
+    override fun onListItemClick(l: ListView, v: View, position: Int, id: Long) {
+        l.let {l ->
             val url = l.getItemAtPosition(position) as String
                 if (isCustomTabsSupported) {
                     share?.putExtra(Intent.EXTRA_TEXT, url)
@@ -196,19 +202,15 @@ class NewsFragment : ListFragment() {
 
     override fun onResume() {
         super.onResume()
-        activity?.let { activity ->
-            activity.setTitle(R.string.news)
+        (activity as MainActivity).removeTabs()
+        activity?.setTitle(R.string.news)
+        if (Build.VERSION.SDK_INT > 17){
+            (activity as MainActivity).setSelectedTab(8)
         }
-        (activity as MainActivity).setNav(R.id.nav_news)
     }
 
     override fun onDestroyView() {
         (activity as MainActivity).removeTabs()
         super.onDestroyView()
-
     }
-
-
-
-
 }

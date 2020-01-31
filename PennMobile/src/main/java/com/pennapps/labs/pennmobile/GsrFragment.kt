@@ -1,25 +1,28 @@
 package com.pennapps.labs.pennmobile
 
+import android.annotation.TargetApi
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
+import android.preference.PreferenceManager
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
-import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.ContentViewEvent
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.GSRContainer
 import com.pennapps.labs.pennmobile.classes.GSRRoom
 import com.pennapps.labs.pennmobile.classes.GSRSlot
-import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.fragment_gsr.*
 import kotlinx.android.synthetic.main.fragment_gsr.view.*
+import kotlinx.android.synthetic.main.no_results.*
+import kotlinx.android.synthetic.main.no_results.view.*
+import kotlinx.android.synthetic.main.no_results.view.no_results
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import java.util.*
@@ -55,21 +58,22 @@ class GsrFragment : Fragment() {
     private lateinit var durationAdapter: ArrayAdapter<String>
     private lateinit var huntsmanDurationAdapter: ArrayAdapter<String>
 
+    private lateinit var mActivity: MainActivity
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mLabs = MainActivity.getLabsInstance()
-        (activity as MainActivity).closeKeyboard()
+        mActivity = activity as MainActivity
+        mActivity.closeKeyboard()
 
         // set default GSR selection date + time to the current date and time
         selectedDateTime = DateTime.now()
 
-        activity?.setTitle(R.string.gsr)
-        // fabric report handling
-        Fabric.with(context, Crashlytics())
-        Answers.getInstance().logContentView(ContentViewEvent()
-                .putContentName("GSR")
-                .putContentType("App Feature")
-                .putContentId("0"))
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "0")
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "GSR")
+        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
+        FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -84,8 +88,8 @@ class GsrFragment : Fragment() {
         loadingPanel = view.gsr_loading
         noResultsPanel = view.gsr_no_results
 
-        durationAdapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m", "120m"))
-        huntsmanDurationAdapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m"))
+        durationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m", "120m"))
+        huntsmanDurationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m"))
 
         // populate the list of gsrs
         populateDropDownGSR()
@@ -134,7 +138,7 @@ class GsrFragment : Fragment() {
             val mMonth = c.get(Calendar.MONTH)
             val mDay = c.get(Calendar.DAY_OF_MONTH)
 
-            val datePickerDialog = DatePickerDialog(activity,
+            val datePickerDialog = DatePickerDialog(mActivity,
                     DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
                         //account for index starting at 0
                         val entryMonth = monthOfYear + 1
@@ -162,16 +166,19 @@ class GsrFragment : Fragment() {
         }
 
         // handle swipe to refresh
-        view.gsr_refresh_layout.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
-        view.gsr_refresh_layout.setOnRefreshListener {
+        view.gsr_refresh_layout?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
+        view.gsr_refresh_layout?.setOnRefreshListener {
             searchForGSR(true)
         }
     }
 
     override fun onResume() {
         super.onResume()
+        (activity as MainActivity).removeTabs()
         activity?.setTitle(R.string.gsr)
-        (activity as MainActivity).setNav(R.id.nav_gsr)
+        if (Build.VERSION.SDK_INT > 17){
+            (activity as MainActivity).setSelectedTab(1)
+        }
         populateDropDownGSR()
     }
 
@@ -186,9 +193,10 @@ class GsrFragment : Fragment() {
             // display loading screen if user did not use swipe refresh
             if (!calledByRefreshLayout) {
                 loadingPanel.visibility = View.VISIBLE
-                gsr_rooms_list.visibility = View.GONE
+                gsr_rooms_list?.visibility = View.GONE
             }
             noResultsPanel.visibility = View.GONE
+            gsr_no_rooms?.visibility = View.GONE
             //get the hours
             getTimes(location)
         }
@@ -211,7 +219,7 @@ class GsrFragment : Fragment() {
                             if (gsrRooms == null) {
                                 // a certification error causes "room" field to remain null
                                 showNoResults()
-                                Toast.makeText(activity, "Error: Could not load GSRs", Toast.LENGTH_LONG).show()
+                                Toast.makeText(activity, "Error: Could not load GSRs", Toast.LENGTH_SHORT).show()
                             } else {
                                 for (i in gsrRooms.indices) {
                                     val gsrRoom = gsrRooms[i]
@@ -230,14 +238,14 @@ class GsrFragment : Fragment() {
                             loadingPanel.visibility = View.GONE
                             noResultsPanel.visibility = View.GONE
                             // stop refreshing
-                            gsr_rooms_list.visibility = View.VISIBLE
-                            gsr_refresh_layout.isRefreshing = false
+                            gsr_rooms_list?.visibility = View.VISIBLE
+                            gsr_refresh_layout?.isRefreshing = false
 
                             if (timeSlotLengthZero) {
-                                Toast.makeText(context, "No GSRs available", Toast.LENGTH_LONG).show()
+                                gsr_no_rooms?.visibility = View.VISIBLE
                             }
 
-                            gsr_rooms_list.adapter = (context?.let {
+                            gsr_rooms_list?.adapter = (context?.let {
                                 GsrBuildingAdapter(it, mGSRS, Integer.toString(location), (durationDropDown.selectedItemPosition + 1) * 30)
                             })
 
@@ -316,7 +324,7 @@ class GsrFragment : Fragment() {
                             val emptyArray = arrayOfNulls<String>(0)
                             val emptyAdapter = ArrayAdapter<String>(activity,
                                     android.R.layout.simple_spinner_dropdown_item, emptyArray)
-                            gsrLocationDropDown.adapter = emptyAdapter
+                            gsrLocationDropDown?.adapter = emptyAdapter
 
                             val numLocations = locations.size
 
@@ -344,9 +352,9 @@ class GsrFragment : Fragment() {
                             val gsrs = gsrHashMap.keys.toList().toTypedArray()
 
                             val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
-                            gsrLocationDropDown.adapter = adapter
+                            gsrLocationDropDown?.adapter = adapter
 
-                            durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman Hall")
+                            durationDropDown?.adapter = if (gsrLocationDropDown?.selectedItem.toString() == "Huntsman Hall")
                                 huntsmanDurationAdapter else durationAdapter
                             searchForGSR(false)
                         }
@@ -390,7 +398,7 @@ class GsrFragment : Fragment() {
             }
         }
 
-        durationDropDown.onItemSelectedListener = object : OnItemSelectedListener {
+        durationDropDown?.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
                 searchForGSR(false)
             }
@@ -405,8 +413,8 @@ class GsrFragment : Fragment() {
         // get rid of loading screen and display no results
         noResultsPanel.visibility = View.VISIBLE
         loadingPanel.visibility = View.GONE
-        gsr_rooms_list.visibility = View.GONE
-        gsr_refresh_layout.isRefreshing = false
+        gsr_rooms_list?.visibility = View.GONE
+        gsr_refresh_layout?.isRefreshing = false
     }
 
     //takes the name of the gsr and returns an int for the corresponding code

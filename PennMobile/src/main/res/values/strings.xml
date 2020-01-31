@@ -27,8 +27,7 @@
     <string name="save_contacts">Select Contacts to Save</string>
 
     <!--Home Screen -->
-    <string name="home_screen_settings">Home Screen Settings</string>
-    <string name="home_screen_settings_instructions">Press and hold item to drag and drop</string>
+    <string name="home">Home</string>
 
     <!-- Search -->
     <string name="registrar_search">Search for courses</string>
@@ -36,10 +35,17 @@
     <string name="directory_search">Search for people</string>
     <string name="building_search">Search for buildings</string>
     <string name="building_instructions">Search for Penn buildings</string>
+    <string-array name="previous_course_array">
+        <item>course1</item>
+        <item>course2</item>
+        <item>course3</item>
+        <item>course4</item>
+        <item>course5</item>
+    </string-array>
     <string name="registrar_search_count">register_count</string>
-    <string name="dining_hall_open">Open</string>
 
     <!-- Dining -->
+    <string name="dining_hall_open">Open</string>
     <string name="dining_hall_closed">Closed</string>
     <string name="dining_hall_breakfast">Breakfast</string>
     <string name="dining_hall_brunch">Brunch</string>
@@ -54,16 +60,16 @@
     <string name="sort_by_residential">Order by Residential Hall</string>
     <string name="sort_by_open">Order by Open Status</string>
     <string name="dining_closed">Closed today</string>
-    <string name="course">Average Course</string>
 
     <!-- Courses -->
+    <string name="course">Average Course</string>
     <string name="instructor">Average Instructor</string>
     <string name="difficulty">Average Difficulty</string>
     <string name="professor_missing">No professor listed</string>
     <string name="course_bundle_arg">CourseFragment</string>
-    <string name="google_api_key"></string>
 
     <!-- Map -->
+    <string name="google_maps_api_key"></string>
     <string name="image_description">Photo</string>
     <string name="map">Map</string>
     <string name="map_searches">map_search</string>
@@ -77,10 +83,17 @@
     <string name="no_map_description">We were unable to\nload your map.</string>
     <string name="no_map_count_key">no_map_count_key</string>
     <string name="no_data_msg">Cannot display Map: wifi/data not enabled</string>
-    <string name="starting_location_hint">Current location</string>
-    <string name="routes_list">Routes</string>
+    <string-array name="previous_map_array">
+        <item>map1</item>
+        <item>map2</item>
+        <item>map3</item>
+        <item>map4</item>
+        <item>map5</item>
+    </string-array>
 
     <!-- Transit search -->
+    <string name="starting_location_hint">Current location</string>
+    <string name="routes_list">Routes</string>
     <string name="routes_ok">OK</string>
     <string name="location_not_found">Location not found, please try again</string>
     <string name="no_path_found">No path found</string>
@@ -90,10 +103,10 @@
     <string name="google_map_fail">Google map fails to find a path</string>
     <string name="bus_west">PennBUS West</string>
     <string name="bus_east">PennBUS East</string>
-    <string name="laundry_washer">Washers</string>
-    <string name="laundry_dryer">Dryers</string>
 
     <!-- LaundryRoom -->
+    <string name="laundry_washer">Washers</string>
+    <string name="laundry_dryer">Dryers</string>
     <string name="laundry_summary">Summary</string>
     <string name="laundry_available">Available</string>
     <string name="laundry_availablein">left</string>
@@ -137,31 +150,49 @@
     <string name="status_end_of_cycle">End of cycle</string>
     <string name="laundry_room_name">roomName</string>
     <string name="laundry_machine_id">id</string>
+
+    <!-- News -->
     <string name="open_browser">Open in Browser</string>
     <string name="news_sharing">Share link</string>
 
-    <!-- News -->
-    <string name="licenses">Licenses</string>
-    <string name="pref_courses_title">Courses</string>
-
     <!-- About -->
-    <string name="pref_recitations">Show recitations</string>
+    <string name="licenses">LICENSES</string>
+    <string name="hi_we_are_labs">
+    Hi, we\'re Penn Labs: a team of student software engineers, product designers, and business developers.
+    </string>
+    <string name="labs_mission">
+    Penn Labs empowers others to make connections: connections to resources, connections to people, and connections to the greater Penn community.\n\nOur ultimate goal is improving the Penn community. We aim to do so not only by creating high quality products, but also by giving back to the community with educational resources and technical support.
+    </string>
+    <string name="learn_more">LEARN MORE</string>
+    <string name="request_feature">REQUEST A FEATURE</string>
+    <string name="our_team">Our Team</string>
+    <string name="penn_labs_copyright">\u00A9 2019 Penn Labs</string>
+
 
     <!-- Preference -->
+    <string name="pref_courses_title">Courses</string>
+    <string name="pref_recitations">Show recitations</string>
     <string name="pref_recitations_summ">Display recitations in search results</string>
+
     <string name="pref_dining_title">Dining</string>
     <string name="pref_vegetarian">Show only vegetarian items</string>
-
     <string name="pref_vegetarian_summ">Display only vegetarian food items in the dining menus</string>
     <string name="pref_vegan">Show only vegan items</string>
     <string name="pref_vegan_summ">Display only vegan food items in the dining menus</string>
-    <string name="home_screen_pref">home_screen_pref</string>
-    <string name="directory_show">Show favorites</string>
 
-    <string name="directory_all">Show all</string>
+    <string name="home_screen_pref">home_screen_pref</string>
 
     <!-- Search favorites -->
+    <string name="directory_show">Show favorites</string>
+    <string name="directory_all">Show all</string>
     <string name="directory_delim">|#|</string>
+    <string-array name="previous_directory_array">
+        <item>dir1</item>
+        <item>dir2</item>
+        <item>dir3</item>
+        <item>dir4</item>
+        <item>dir5</item>
+    </string-array>
     <string name="directory_search_count">dir_count</string>
     <string name="search_all">ALL</string>
     <string name="search_favorite">FAVORITES</string>
@@ -171,18 +202,25 @@
     <string name="search_no_fav">No favorites found.</string>
     <string name="directory_instructions">Search for Penn faculty</string>
     <string name="registrar_instructions">Search for courses</string>
+
+    <!-- NSO -->
+    <string-array name="previous_nso_array">
+        <item>nso1</item>
+        <item>nso2</item>
+        <item>nso3</item>
+        <item>nso4</item>
+        <item>nso5</item>
+    </string-array>
     <string name="nso_search_count">nso_count</string>
     <string name="add_event">Add event to calendar</string>
     <string name="search_nso_star">search_nso_star</string>
-
-    <!-- NSO -->
     <string name="nso_instructions">Search for instructions</string>
+
+    <!-- GSR -->
     <string name="search_range">Select GSR Search Range and click "Search"</string>
     <string name="search_start_time">Start Time</string>
     <string name="search_end_time">End Time</string>
     <string name="calendar_button">Something went wrong</string>
-
-    <!-- GSR -->
     <string name="search_GSRs">Search GSRs</string>
     <string name="quitBook">&lt;- Back</string>
     <string name="to">to</string>
@@ -197,48 +235,19 @@
     <string name="time">Time</string>
     <string name="duration">Duration</string>
     <string name="gsr_location">Location</string>
+    <string name="no_gsr_reservations">No upcoming GSR reservations</string>
+    <string name="no_gsr_rooms">No GSRs available</string>
+
+    <!-- Spring Fling -->
     <string name="spring_fling">Spring Fling</string>
     <string name="fling_event_time">%1$s - %2$s</string>
     <string name="spec_spring_fling_2019_raffle">SPEC Spring Fling 2019 Raffle</string>
+
+
     <string name="first_open_pref">first_open</string>
+    <string name="no_home_items_message">No items selected, click on settings in the top right of the screen to change this</string>
 
     <!-- Login -->
     <string name ="login_SessionID">Login_SessionID</string>
-
-    <!-- Spring Fling -->
-    <string name="no_home_items_message">No items selected, click on settings in the top right of the screen to change this</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string-array name="previous_course_array">
-        <item>course1</item>
-        <item>course2</item>
-        <item>course3</item>
-        <item>course4</item>
-        <item>course5</item>
-    </string-array>
-
-
-    <string-array name="previous_map_array">
-        <item>map1</item>
-        <item>map2</item>
-        <item>map3</item>
-        <item>map4</item>
-        <item>map5</item>
-    </string-array>
-    <string-array name="previous_directory_array">
-        <item>dir1</item>
-        <item>dir2</item>
-        <item>dir3</item>
-        <item>dir4</item>
-        <item>dir5</item>
-    </string-array>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string-array name="previous_nso_array">
-        <item>nso1</item>
-        <item>nso2</item>
-        <item>nso3</item>
-        <item>nso4</item>
-        <item>nso5</item>
-    </string-array>
 
 </resources>

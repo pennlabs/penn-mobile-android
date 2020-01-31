@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile.api;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -12,17 +13,23 @@ import com.google.gson.reflect.TypeToken;
 import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
+import com.pennapps.labs.pennmobile.classes.CalendarEvent;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.FlingEvent;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
+import com.pennapps.labs.pennmobile.classes.GSRReservation;
 import com.pennapps.labs.pennmobile.classes.Gym;
-import com.pennapps.labs.pennmobile.classes.HomeScreenCell;
+import com.pennapps.labs.pennmobile.classes.HomeCell;
+import com.pennapps.labs.pennmobile.classes.HomeCellInfo;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
 import com.pennapps.labs.pennmobile.classes.User;
 import com.pennapps.labs.pennmobile.classes.Venue;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -34,7 +41,7 @@ import java.util.List;
  */
 public class Serializer {
 
-    public static class UserSerializer implements  JsonDeserializer<User> {
+    public static class UserSerializer implements JsonDeserializer<User> {
         @Override
         public User deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
                 throws JsonParseException {
@@ -204,14 +211,38 @@ public class Serializer {
         }
     }
 
-    // home page
-    public static class HomePageSerializer implements JsonDeserializer<List<HomeScreenCell>> {
+    // home page custom deserializer, depends on type of cell
+    public static class HomePageSerializer implements JsonDeserializer<List<HomeCell>> {
         @Override
-        public List<HomeScreenCell> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+        public List<HomeCell> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
                 throws JsonParseException {
-            JsonElement content = je.getAsJsonObject().get("cells");
-            return new Gson().fromJson(content, new TypeToken<List<HomeScreenCell>>() {
-            }.getType());
+            JsonArray cellJsonArr = je.getAsJsonObject().get("cells").getAsJsonArray();
+            ArrayList<HomeCell> cells = new ArrayList<>();
+
+            for (JsonElement cell : cellJsonArr) {
+                JsonObject cellObj = cell.getAsJsonObject();
+                String cellType = cellObj.get("type").getAsString();
+                JsonElement info = cellObj.get("info");
+                HomeCell newCell = new HomeCell();
+                newCell.setType(cellType);
+                if (cellType.equals("reservations")) {
+                    ArrayList<GSRReservation> reservations = new Gson().fromJson(info, new TypeToken<List<GSRReservation>>() {
+                    }.getType());
+                    newCell.setReservations(reservations);
+                } else if (cellType.equals("calendar")) {
+                    ArrayList<CalendarEvent> events = new Gson().fromJson(info, new TypeToken<List<CalendarEvent>>() {
+                    }.getType());
+                    newCell.setEvents(events);
+                } else if (cellType.equals("news") | cellType.equals("dining")
+                        | cellType.equals("laundry") | cellType.equals("courses")) {
+                    HomeCellInfo infoObj = new Gson().fromJson(info, new TypeToken<HomeCellInfo>() {
+                    }.getType());
+                    newCell.setInfo(infoObj);
+                }
+                cells.add(newCell);
+            }
+
+            return cells;
         }
     }
 
@@ -223,6 +254,17 @@ public class Serializer {
                 throws JsonParseException {
             JsonElement content = je.getAsJsonObject().get("schedule");
             return new Gson().fromJson(content, new TypeToken<List<Gym>>() {}.getType());
+        }
+    }
+
+    // for GSR Reservations
+    public static class GsrReservationSerializer implements JsonDeserializer<List<GSRReservation>> {
+
+        @Override
+        public List<GSRReservation> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+                throws JsonParseException {
+            JsonElement content = je.getAsJsonObject().get("reservations");
+            return new Gson().fromJson(content, new TypeToken<List<GSRReservation>>() {}.getType());
         }
     }
 }

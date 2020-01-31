@@ -1,14 +1,18 @@
 package com.pennapps.labs.pennmobile;
 
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -82,7 +86,7 @@ public class MenuFragment extends Fragment {
                 args.putString(getString(R.string.menu_arg_name), name);
                 myFragment.setArguments(args);
             }
-            else{
+            else {
                 myFragment = new MenuTab();
                 Bundle args = new Bundle();
                 args.putString(getString(R.string.menu_arg_name), name);
@@ -115,7 +119,6 @@ public class MenuFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_menu, container, false);
@@ -134,15 +137,31 @@ public class MenuFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.dining, menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            getActivity().onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mActivity.getActionBarToggle().setDrawerIndicatorEnabled(false);
-        mActivity.getActionBarToggle().syncState();
-        mActivity.setTitle(mDiningHall.getName());
+        getActivity().setTitle(mDiningHall.getName());
+
+        if (mActivity.getSupportActionBar() != null ) {
+            mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        if (Build.VERSION.SDK_INT > 17){
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.setSelectedTab(2);
+        }
     }
 
     @Override
@@ -150,6 +169,9 @@ public class MenuFragment extends Fragment {
         super.onDestroyView();
         getActivity().setTitle(R.string.dining);
         mActivity.removeTabs();
+        if (mActivity.getSupportActionBar() != null ) {
+            mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
         unbinder.unbind();
     }
     @Override
