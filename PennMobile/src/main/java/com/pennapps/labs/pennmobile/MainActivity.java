@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
@@ -56,6 +58,13 @@ import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.User;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
@@ -73,6 +82,10 @@ public class MainActivity extends AppCompatActivity {
     private boolean tab_showed;
     private boolean loggedIn;
     private SharedPreferences mSharedPrefs;
+
+    String url = "https://pennintouch.apps.upenn.edu/pennInTouch/jsp/fast2.do";
+    String title;
+    Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +136,29 @@ public class MainActivity extends AppCompatActivity {
         }
 
         tx.commit();
+
+        try {
+            Log.v("YURD", "YURD");
+            //Connect to the website
+            Document document = Jsoup.connect(url).get();
+
+            Log.v("TESTING JAWN", document.title());
+
+            //Get the logo source of the website
+            Elements elements = document.select("input");
+            Element  usernameElement = elements.get(0);
+            // Locate the src attribute
+            String username = usernameElement.absUrl("name");
+            Log.v("TESTING YERR", username);
+
+            // Download image from URL
+           // InputStream input = new java.net.URL(imgSrc).openStream();
+            // Decode Bitmap
+          //  bitmap = BitmapFactory.decodeStream(input);
+
+        } catch (IOException e){
+
+        }
 
     }
 

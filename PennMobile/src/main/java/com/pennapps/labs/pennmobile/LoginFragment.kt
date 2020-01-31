@@ -12,11 +12,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
 import android.widget.Button
+import android.widget.Toast
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.User
 import java.util.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import android.webkit.ValueCallback
+
+
 
 
 /**
@@ -29,6 +33,7 @@ class LoginFragment : Fragment() {
     lateinit var user: User
     private lateinit var mLabs: Labs
     lateinit var sp: SharedPreferences
+    var loginURL = "https://pennintouch.apps.upenn.edu/pennInTouch/jsp/fast2.do"
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -108,8 +113,12 @@ class LoginFragment : Fragment() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
 
+
+                webView.evaluateJavascript("document.getElementById('pennname').value;", ValueCallback<String> { s ->
+                    Log.d("LogName", s) // Prints: "this"
+                })
+
                 if (url == "https://pennintouch.apps.upenn.edu/pennInTouch/jsp/fast2.do") {
-                    obtainJavascriptInfo()
                     var sessionid = ""
                     val cookies = CookieManager.getInstance().getCookie(url).split(";")
                     for (cookie in cookies){
@@ -133,16 +142,20 @@ class LoginFragment : Fragment() {
                 return true
             }
         }
-        webView.loadUrl("https://pennintouch.apps.upenn.edu/pennInTouch/jsp/fast2.do")
+        webView.loadUrl(loginURL);
         val webSettings = webView.getSettings()
         webSettings.setJavaScriptEnabled(true)
+        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
+        webView.setWebViewClient(MyWebViewClient())
 
-        webView.addJavascriptInterface(JavaScriptInterface(), JAVASCRIPT_OBJ)
+        //webView.addJavascriptInterface(JavaScriptInterface(), JAVASCRIPT_OBJ)
 
         cancelButton.setOnClickListener {
             val fragmentTx = activity!!.supportFragmentManager.beginTransaction()
             fragmentTx.remove(this).commit()
         }
+
+        obtainJavascriptInfo()
 
     }
 
@@ -158,8 +171,8 @@ class LoginFragment : Fragment() {
                 "window.androidObj.passwordToAndroid = function(message) { " +
                 JAVASCRIPT_OBJ + ".set_password(message) };" +
                 "document.getElementById('submit2').addEventListener('click', function() {" +
-                "window.androidObj.userToAndroid('document.getElementById('pennkey').value');" +
-                "window.androidObj.userToAndroid('document.getElementById('password').value');});"
+                "window.androidObj.userToAndroid('document.getElementById('pennname').value');" +
+                "window.androidObj.passwordToAndroid('document.getElementById('password').value');});"
                 )
     }
 
@@ -171,6 +184,7 @@ class LoginFragment : Fragment() {
                 val editor = sp.edit()
                 editor.putString("pennkey", user)
                 editor.apply()
+                Toast.makeText(context, "user_name_set", Toast.LENGTH_LONG)
             }
         }
 
@@ -181,19 +195,26 @@ class LoginFragment : Fragment() {
                 editor.putString("password", pass)
                 editor.apply()
             }        }
-        fun set_pennid(id: String) {
-            activity?.let { activity ->
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                val editor = sp.edit()
-                editor.putString("pennid", id)
-                editor.apply()
-            }
-        }
     }
 
     companion object {
         private val JAVASCRIPT_OBJ = "javascript_obj"
     }
 
+
+}
+
+ class MyWebViewClient : WebViewClient() {
+
+     override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+         Log.d("URL OVERRIDING", url)
+
+
+
+         //save pennkey and password here
+
+
+         return super.shouldOverrideUrlLoading(view, url)
+     }
 
 }
