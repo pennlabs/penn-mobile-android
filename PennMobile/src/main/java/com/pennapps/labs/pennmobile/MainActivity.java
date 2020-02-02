@@ -102,6 +102,14 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
         tx.replace(R.id.content_frame, new HomeFragment());
 
+        /**
+         * The following commented code is used for testing. Don't delete.
+         */
+       // SharedPreferences.Editor editor = mSharedPrefs.edit();
+       // editor.remove("penn_password");
+       // editor.apply();
+       // editor.commit();
+
         password = mSharedPrefs.getString("penn_password", "null");
         if(password.equals("null")){
             tx.add(R.id.content_frame, new LoginFragment());

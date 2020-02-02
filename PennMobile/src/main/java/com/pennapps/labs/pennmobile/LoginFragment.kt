@@ -4,7 +4,6 @@ package com.pennapps.labs.pennmobile
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,14 +14,13 @@ import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.User
 import java.util.*
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import android.webkit.ValueCallback
-import android.R.id.edit
-
-
-
-
+import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
+import java.nio.charset.Charset
+import javax.crypto.Cipher
+import javax.crypto.KeyGenerator
+import javax.crypto.SecretKey
 
 
 /**
@@ -99,8 +97,6 @@ class LoginFragment : Fragment() {
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webView.setWebViewClient(MyWebViewClient())
 
-        //webView.addJavascriptInterface(JavaScriptInterface(), JAVASCRIPT_OBJ)
-
         cancelButton.setOnClickListener {
             val fragmentTx = activity!!.supportFragmentManager.beginTransaction()
             fragmentTx.remove(this).commit()
@@ -112,6 +108,49 @@ class LoginFragment : Fragment() {
         super.onDestroy()
     }
 
+    private fun encryptPassword(password: String){
+        if (Build.VERSION.SDK_INT >= 26) {
+            var secretKey = createSecretKey() as SecretKey
+            var cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey)
+
+            var encryptionIv = cipher.iv
+            var passwordBytes = password.toByteArray(Charset.forName("UTF-8"))
+            var encryptedPasswordBytes = cipher.doFinal(passwordBytes)
+            var encryptedPassword = Base64.getEncoder().encodeToString(encryptedPasswordBytes)
+
+            //save the encrypted password
+            val spEditor = sp.edit()
+            spEditor.putString("penn_password", encryptedPassword)
+            spEditor.apply()
+            spEditor.commit()
+            spEditor.putString("encryptionIv", Base64.getEncoder().encodeToString(encryptionIv))
+            spEditor.apply()
+            spEditor.commit()
+        }
+    }
+
+    private fun saveUsername(username: String){
+        val editor = sp.edit()
+        editor.putString("penn_user", username)
+        editor.commit()
+        editor.apply()
+    }
+
+    private fun createSecretKey (): SecretKey? {
+        if (Build.VERSION.SDK_INT >= 23) {
+            var keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore")
+            keyGenerator.init(KeyGenParameterSpec.Builder("Key", KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
+                    .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
+                    .setUserAuthenticationRequired(false)
+                    .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
+                    .build())
+            return keyGenerator.generateKey()
+        } else {
+            return null
+        }
+    }
+
     inner class MyWebViewClient : WebViewClient() {
 
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
@@ -120,23 +159,16 @@ class LoginFragment : Fragment() {
                 if (Build.VERSION.SDK_INT >= 19) {
                     webView.evaluateJavascript("document.getElementById('pennname').value;", ValueCallback<String> { s ->
                         if (s != null) {
-                            val editor = sp.edit()
-                            editor.putString("penn_user", s)
-                            editor.commit()
-                            editor.apply()
+                           saveUsername(s)
                         }
                     })
                     webView.evaluateJavascript("document.getElementById('password').value;", ValueCallback<String> { s ->
                         if (s != null) {
-                            val editor = sp.edit()
-                            editor.putString("penn_password", s)
-                            editor.commit()
-                            editor.apply()
+                            encryptPassword(s)
                         }
                     })
                 }
             }
-
             return super.shouldOverrideUrlLoading(view, url)
 
         }
