@@ -102,40 +102,19 @@ public class MainActivity extends AppCompatActivity {
 
         // Set default fragment to HomeFragment
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-        tx.replace(R.id.content_frame, new HomeFragment());
-        tx.commit();
 
         // Expandable bottom nav bar
         tabBarView = findViewById(R.id.bottom_navigation);
         onExpandableBottomNavigationItemSelected();
 
-        // TODO: testing account methods, put in the right place
-        mPlatform = getPlatformInstance();
-        mPlatform.getAccessToken("test_auth_code", "",
-                "https://pennlabs.org/pennmobile/android/callback/", "",
-                new ResponseCallback() {
-            @Override
-            public void success(Response response) {
-                Log.d("Accounts", "access token: " + response.getBody());
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Log.d("Accounts", "Error fetching access token " + error);
-            }
-        });
-
-        mPlatform.getUser("test_access_token", new ResponseCallback() {
-            @Override
-            public void success(Response response) {
-                Log.d("Accounts", "user: " + response.getBody());
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Log.d("Accounts", "Error getting user " + error);
-            }
-        });
+        loggedIn = mSharedPrefs.getBoolean("logged_in", false);
+        if(!loggedIn){
+            tx.replace(R.id.content_frame, new LoginFragment());
+            tx.commit();
+        } else {
+            tx.replace(R.id.content_frame, new HomeFragment());
+            tx.commit();
+        }
 
     }
 

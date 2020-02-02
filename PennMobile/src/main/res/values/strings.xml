@@ -248,6 +248,6 @@
     <string name="no_home_items_message">No items selected, click on settings in the top right of the screen to change this</string>
 
     <!-- Login -->
-    <string name ="login_SessionID">Login_SessionID</string>
+    <string name="login_SessionID">Login_SessionID</string>
 
 </resources>
