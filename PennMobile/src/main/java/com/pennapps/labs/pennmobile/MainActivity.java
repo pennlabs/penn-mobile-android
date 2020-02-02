@@ -9,10 +9,6 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.tabs.TabLayout;
-
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -31,13 +27,14 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-import com.google.firebase.analytics.FirebaseAnalytics;
+
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.pennapps.labs.pennmobile.ExpandedBottomNavBar.ExpandableBottomTabBar;
 import com.pennapps.labs.pennmobile.api.Labs;
-import com.pennapps.labs.pennmobile.api.PennInTouchNetworkManager;
 import com.pennapps.labs.pennmobile.api.Platform;
 import com.pennapps.labs.pennmobile.api.Serializer;
 import com.pennapps.labs.pennmobile.classes.Building;
@@ -73,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int CODE_MAP = 1;
     private ExpandableBottomTabBar tabBarView;
     private boolean tab_showed;
-    private boolean loggedIn;
+    private String password;
     private SharedPreferences mSharedPrefs;
 
     @Override
@@ -102,19 +99,18 @@ public class MainActivity extends AppCompatActivity {
 
         // Set default fragment to HomeFragment
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+        tx.replace(R.id.content_frame, new HomeFragment());
+
+        password = mSharedPrefs.getString("penn_password", "null");
+        if(password.equals("null")){
+            tx.replace(R.id.content_frame, new LoginFragment());
+        }
+
+        tx.commit();
 
         // Expandable bottom nav bar
         tabBarView = findViewById(R.id.bottom_navigation);
         onExpandableBottomNavigationItemSelected();
-
-        loggedIn = mSharedPrefs.getBoolean("logged_in", false);
-        if(!loggedIn){
-            tx.replace(R.id.content_frame, new LoginFragment());
-            tx.commit();
-        } else {
-            tx.replace(R.id.content_frame, new HomeFragment());
-            tx.commit();
-        }
 
     }
 

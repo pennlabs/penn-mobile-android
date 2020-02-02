@@ -12,6 +12,7 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.classes.User
 import android.webkit.ValueCallback
 import com.pennapps.labs.pennmobile.api.Platform.*
@@ -37,9 +38,14 @@ class LoginFragment : Fragment() {
     lateinit var codeChallenge: String
     lateinit var platformAuthUrl: String
 
+    fun saveCredentials() {
+
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         sp = PreferenceManager.getDefaultSharedPreferences(activity)
+
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
 
@@ -62,111 +68,89 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         webView = view.findViewById(R.id.webView)
         cancelButton = view.findViewById(R.id.cancel_button)
+
         webView.webViewClient = object : WebViewClient() {
+
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-                if (Build.VERSION.SDK_INT > 19){
-                    webView.evaluateJavascript("document.getElementById('pennname').value;", ValueCallback<String> { s ->
-                        Log.d("LogName", s) // Prints: "this"
-                    })
-                    if (url == "https://pennintouch.apps.upenn.edu/pennInTouch/jsp/fast2.do") {
-                        var sessionid = ""
-                        val cookies = CookieManager.getInstance().getCookie(url).split(";")
-                        for (cookie in cookies){
-                            if (cookie.take(12) == " JSESSIONID=") {
-                                sessionid = cookie.substring(12)
-                                break
-                            }
-                        }
-                        activity?.let { activity ->
-                            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                            val editor = sp.edit()
-                            editor.putString(getString(R.string.login_SessionID), sessionid)
-                            editor.apply()
+
+                if (url == "https://pennintouch.apps.upenn.edu/pennInTouch/jsp/fast2.do") {
+                    var sessionid = ""
+                    val cookies = CookieManager.getInstance().getCookie(url).split(";")
+                    for (cookie in cookies) {
+                        if (cookie.take(12) == " JSESSIONID=") {
+                            sessionid = cookie.substring(12)
+                            break
                         }
                     }
+                    activity?.let { activity ->
+                        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                        val editor = sp.edit()
+                        editor.putString(getString(R.string.login_SessionID), sessionid)
+                        editor.apply()
+                    }
                 }
-
             }
+
 
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
                 view?.loadUrl(url)
                 return true
             }
         }
-        //webView.loadUrl(loginURL);
+
         webView.loadUrl(platformAuthUrl)
         val webSettings = webView.getSettings()
         webSettings.setJavaScriptEnabled(true)
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webView.setWebViewClient(MyWebViewClient())
+
         //webView.addJavascriptInterface(JavaScriptInterface(), JAVASCRIPT_OBJ)
+
         cancelButton.setOnClickListener {
             val fragmentTx = activity!!.supportFragmentManager.beginTransaction()
             fragmentTx.remove(this).commit()
         }
-        obtainJavascriptInfo()
+
     }
-    override fun onDestroy() {
-        webView.removeJavascriptInterface(JAVASCRIPT_OBJ)
-        super.onDestroy()
-    }
-    private fun obtainJavascriptInfo() {
-        webView.loadUrl("javascript: " +
-                "window.androidObj.userToAndroid = function(message) { " +
-                JAVASCRIPT_OBJ + ".set_username(message) };" +
-                "window.androidObj.passwordToAndroid = function(message) { " +
-                JAVASCRIPT_OBJ + ".set_password(message) };" +
-                "document.getElementById('submit2').addEventListener('click', function() {" +
-                "window.androidObj.userToAndroid('document.getElementById('pennname').value');" +
-                "window.androidObj.passwordToAndroid('document.getElementById('password').value');});"
-        )
-    }
-    private inner class JavaScriptInterface {
-        @JavascriptInterface
-        fun set_username(user: String) {
-            activity?.let { activity ->
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                val editor = sp.edit()
-                editor.putString("pennkey", user)
-                editor.apply()
+
+    inner class MyWebViewClient : WebViewClient() {
+
+        override fun shouldOverrideUrlLoading(view: WebView?, url: String): Boolean {
+
+            if (url.contains("callback")) {
+                val urlArr = url.split("?code=").toTypedArray()
+                val authCode = urlArr[urlArr.size - 1]
+                Log.d("Accounts", authCode)
+                getUser(authCode)
             }
-        }
-        fun set_password(pass: String) {
-            activity?.let { activity ->
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                val editor = sp.edit()
-                editor.putString("password", pass)
-                editor.apply()
-            }    }
-        fun set_pennid(id: String) {
-            activity?.let { activity ->
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                val editor = sp.edit()
-                editor.putString("pennid", id)
-                editor.apply()
+            if (url.contains("execution") && url!!.contains("s2")) {
+                if (Build.VERSION.SDK_INT >= 19) {
+                    webView.evaluateJavascript("document.getElementById('pennname').value;", ValueCallback<String> { s ->
+                        if (s != null) {
+                            val editor = sp.edit()
+                            editor.putString("penn_user", s)
+                            editor.commit()
+                            editor.apply()
+                        }
+                    })
+                    webView.evaluateJavascript("document.getElementById('password').value;", ValueCallback<String> { s ->
+                        if (s != null) {
+                            val editor = sp.edit()
+                            editor.putString("penn_password", s)
+                            editor.commit()
+                            editor.apply()
+                        }
+                    })
+                }
             }
+
+            return super.shouldOverrideUrlLoading(view, url)
+
         }
-    }
-    companion object {
-        private val JAVASCRIPT_OBJ = "javascript_obj"
     }
 }
-class MyWebViewClient : WebViewClient() {
-    override fun shouldOverrideUrlLoading(view: WebView?, url: String): Boolean {
-        Log.d("URL OVERRIDING", url)
-        if (url.contains("callback")) {
-            val urlArr = url.split("?code=").toTypedArray()
-            val authCode = urlArr[urlArr.size - 1]
-            Log.d("Accounts", authCode)
-            getUser(authCode)
-        }
-        if ((url.contains("execution") && url.contains("weblogin"))){
-            //save pennkey and password here
-        }
-        return super.shouldOverrideUrlLoading(view, url)
-    }
-}
+
 
 private fun getUser(authCode: String) {
     val mPlatform = MainActivity.getPlatformInstance()
@@ -193,6 +177,8 @@ private fun getUser(authCode: String) {
                 }
             })
 }
+
+
 
 private fun getCodeChallenge(codeVerifier: String) : String {
 
