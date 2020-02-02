@@ -28,7 +28,9 @@ import retrofit.RetrofitError
 import retrofit.client.Response
 import java.math.BigInteger
 import java.nio.charset.Charset
+import java.security.KeyStore
 import java.security.MessageDigest
+import javax.crypto.spec.IvParameterSpec
 
 /**
  * A simple [Fragment] subclass.
@@ -141,6 +143,29 @@ class LoginFragment : Fragment() {
             spEditor.putString("encryptionIv", Base64.getEncoder().encodeToString(encryptionIv))
             spEditor.apply()
             spEditor.commit()
+        }
+    }
+
+    private fun getDecodedPassword() : String? {
+        if (Build.VERSION.SDK_INT >= 26) {
+            var base64EncryptedPassword = sp.getString("penn_password", "null")
+            var base64EncryptionIv = sp.getString("encryptionIv", "null")
+
+            var encryptionIv = Base64.getDecoder().decode(base64EncryptionIv)
+            var encryptedPassword = Base64.getDecoder().decode(base64EncryptedPassword)
+
+            var keyStore = KeyStore.getInstance("AndroidKeyStore")
+            keyStore.load(null)
+
+            var secretkey = keyStore.getKey("Key", null) as SecretKey
+            var cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7)
+            cipher.init(Cipher.DECRYPT_MODE, secretkey, IvParameterSpec(encryptionIv))
+
+            var passwordBytes = cipher.doFinal(encryptedPassword)
+            var password = String(passwordBytes, Charset.forName("UTF-8"))
+            return password
+        } else{
+            return null
         }
     }
 
