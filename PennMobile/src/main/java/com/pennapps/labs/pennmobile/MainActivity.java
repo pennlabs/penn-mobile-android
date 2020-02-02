@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -98,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(false);
         }
 
-        // Set default fragment to MainFragment
+        // Set default fragment to HomeFragment
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
         tx.replace(R.id.content_frame, new HomeFragment());
 
@@ -112,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
         password = mSharedPrefs.getString("penn_password", "null");
         if(password.equals("null")){
-            tx.add(R.id.content_frame, new LoginFragment());
+            tx.replace(R.id.content_frame, new LoginFragment());
         }
 
         tx.commit();
@@ -120,34 +119,6 @@ public class MainActivity extends AppCompatActivity {
         // Expandable bottom nav bar
         tabBarView = findViewById(R.id.bottom_navigation);
         onExpandableBottomNavigationItemSelected();
-
-        // TODO: testing account methods, put in the right place
-        mPlatform = getPlatformInstance();
-        mPlatform.getAccessToken("test_auth_code", "",
-                "https://pennlabs.org/pennmobile/android/callback/", "",
-                new ResponseCallback() {
-            @Override
-            public void success(Response response) {
-                Log.d("Accounts", "access token: " + response.getBody());
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Log.d("Accounts", "Error fetching access token " + error);
-            }
-        });
-
-        mPlatform.getUser("test_access_token", new ResponseCallback() {
-            @Override
-            public void success(Response response) {
-                Log.d("Accounts", "user: " + response.getBody());
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Log.d("Accounts", "Error getting user " + error);
-            }
-        });
 
     }
 

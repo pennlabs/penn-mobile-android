@@ -1,9 +1,13 @@
 package com.pennapps.labs.pennmobile.api;
 
+import android.util.Log;
+
 import com.pennapps.labs.pennmobile.classes.Course;
 
-import java.util.List;
+import org.apache.commons.lang3.RandomStringUtils;
 
+import java.security.MessageDigest;
+import java.util.List;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Field;
@@ -16,21 +20,15 @@ import rx.Observable;
 public interface Platform {
 
     String baseUrl = "https://platform.pennlabs.org";
-
-    @GET("/accounts/authorize?XXX")
-    Observable<List<Course>> authorize(
-            @Query("q") String name);
-
-    @GET("/accounts/authorize/?response_type=code&client_id=" +
-            "CJmaheeaQ5bJhRL0xxlxK3b8VEbLb3dMfUAvI2TN&redirect_uri=https%3A%2F%2Fpennlabs.org%" +
-            "2Fpennmobile%2Fios%2Fcallback%2F&code_challenge_method=S256" +
-            "&scope=read+introspection&state=")
-    Observable<List<Course>> login();
+    String clientID = "CJmaheeaQ5bJhRL0xxlxK3b8VEbLb3dMfUAvI2TN";
+    String redirectUri = "https%3A%2F%2Fpennlabs.org%2Fpennmobile%2Fios%2Fcallback%2F";
+    String codeVerifier = RandomStringUtils.randomAlphanumeric(64);
 
     @FormUrlEncoded
-    @POST("/accounts/token/?grant_type=authorization_code")
+    @POST("/accounts/token/")
     void getAccessToken(
             @Field("code") String authCode,
+            @Field("grant_type") String grantType,
             @Field("client_id") String clientID,
             @Field("redirect_uri") String redirectURI,
             @Field("code_verifier") String codeVerifier,
@@ -50,9 +48,10 @@ public interface Platform {
 //    }
 
     @FormUrlEncoded
-    @POST("/accounts/token/?grant_type=refresh_token")
+    @POST("/accounts/token/")
     void refreshAccessToken(
             @Field("refresh_token") String refreshToken,
+            @Field("grant_type") String grantType,
             @Field("client_id") String clientID,
             Callback<Response> callback);
 
