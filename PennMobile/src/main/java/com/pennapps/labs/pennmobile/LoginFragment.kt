@@ -11,7 +11,6 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.api.Labs
-import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.classes.User
 import java.util.*
 import android.webkit.ValueCallback
@@ -23,7 +22,9 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 
 import com.pennapps.labs.pennmobile.api.Platform.*
-import retrofit.ResponseCallback
+import com.pennapps.labs.pennmobile.classes.AccessTokenResponse
+import com.pennapps.labs.pennmobile.classes.GetUserResponse
+import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
 import java.math.BigInteger
@@ -32,9 +33,6 @@ import java.security.KeyStore
 import java.security.MessageDigest
 import javax.crypto.spec.IvParameterSpec
 
-/**
- * A simple [Fragment] subclass.
- */
 class LoginFragment : Fragment() {
 
     lateinit var webView: WebView
@@ -45,6 +43,8 @@ class LoginFragment : Fragment() {
     var loginURL = "https://pennintouch.apps.upenn.edu/pennInTouch/jsp/fast2.do"
     lateinit var codeChallenge: String
     lateinit var platformAuthUrl: String
+    lateinit var clientID: String
+    lateinit var redirectUri: String
 
     fun saveCredentials() {
 
@@ -64,8 +64,10 @@ class LoginFragment : Fragment() {
             user = arguments?.getSerializable("user") as User
         }
 
+        clientID = getString(R.string.clientID)
+        redirectUri = getString(R.string.redirectUri)
         codeChallenge = getCodeChallenge(codeVerifier)
-        platformAuthUrl = baseUrl + "/accounts/authorize/?response_type=code&client_id=" +
+        platformAuthUrl = platformBaseUrl + "/accounts/authorize/?response_type=code&client_id=" +
                 clientID + "&redirect_uri=" + redirectUri +
                 "&code_challenge_method=S256" +
                 "&code_challenge=" + codeChallenge +
@@ -91,12 +93,9 @@ class LoginFragment : Fragment() {
                             break
                         }
                     }
-                    activity?.let { activity ->
-                        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                        val editor = sp.edit()
-                        editor.putString(getString(R.string.login_SessionID), sessionid)
-                        editor.apply()
-                    }
+                    val editor = sp.edit()
+                    editor.putString(getString(R.string.login_SessionID), sessionid)
+                    editor.apply()
                 }
             }
 
@@ -114,8 +113,8 @@ class LoginFragment : Fragment() {
         webView.setWebViewClient(MyWebViewClient())
 
         cancelButton.setOnClickListener {
-            val fragmentTx = activity!!.supportFragmentManager.beginTransaction()
-            fragmentTx.remove(this).commit()
+            val fragmentTx = activity?.supportFragmentManager?.beginTransaction()
+            fragmentTx?.remove(this)?.commit()
         }
 
     }
@@ -164,7 +163,7 @@ class LoginFragment : Fragment() {
             var passwordBytes = cipher.doFinal(encryptedPassword)
             var password = String(passwordBytes, Charset.forName("UTF-8"))
             return password
-        } else{
+        } else {
             return null
         }
     }
@@ -172,7 +171,6 @@ class LoginFragment : Fragment() {
     private fun saveUsername(username: String){
         val editor = sp.edit()
         editor.putString("penn_user", username)
-        editor.commit()
         editor.apply()
     }
 
@@ -197,10 +195,9 @@ class LoginFragment : Fragment() {
             if (url.contains("callback")) {
                 val urlArr = url.split("?code=").toTypedArray()
                 val authCode = urlArr[urlArr.size - 1]
-                Log.d("Accounts", authCode)
                 getUser(authCode)
             }
-            if (url.contains("execution") && url!!.contains("s2")) {
+            if (url.contains("execution") && url.contains("s2")) {
                 if (Build.VERSION.SDK_INT >= 19) {
                     webView.evaluateJavascript("document.getElementById('pennname').value;", ValueCallback<String> { s ->
                         if (s != null) {
@@ -218,45 +215,49 @@ class LoginFragment : Fragment() {
 
         }
     }
-}
 
+    private fun getUser(authCode: String) {
+        val mPlatform = MainActivity.getPlatformInstance()
+        Log.d("Accounts", codeVerifier)
+        mPlatform.getAccessToken("application/x-www-form-urlencoded", authCode,
+                "authorization_code", clientID, redirectUri, codeVerifier,
+                object : Callback<AccessTokenResponse> {
+                    override fun success(t: AccessTokenResponse?, response: Response?) {
+                        if (response?.status == 200) {
+                            val accessToken = t?.accessToken
+                            val editor = sp.edit()
+                            editor.putString(getString(R.string.accessToken), accessToken)
+                            editor.putString(getString(R.string.refreshToken), t?.refreshToken)
+                            editor.putString(getString(R.string.expiresIn), t?.expiresIn.toString())
+                            editor.apply()
+                            mPlatform.getUser("Bearer " + accessToken, accessToken,
+                                    object : Callback<GetUserResponse> {
+                                override fun success(t: GetUserResponse?, response: Response?) {
+                                    Log.d("Accounts", "user: " + t?.user?.username)
+                                }
 
-private fun getUser(authCode: String) {
-    val mPlatform = MainActivity.getPlatformInstance()
-    Log.d("Accounts", codeVerifier)
-    mPlatform.getAccessToken(authCode, "authorization_code", clientID,
-            redirectUri, codeVerifier,
-            object : ResponseCallback() {
-                override fun success(response: Response) {
-                    Log.d("Accounts", "access token: " + response.body)
-
-                    mPlatform.getUser("test_access_token", object : ResponseCallback() {
-                        override fun success(response: Response) {
-                            Log.d("Accounts", "user: " + response.body)
+                                override fun failure(error: RetrofitError) {
+                                    Log.e("Accounts", "Error getting user $error")
+                                }
+                            })
                         }
+                    }
 
-                        override fun failure(error: RetrofitError) {
-                            Log.d("Accounts", "Error getting user $error")
-                        }
-                    })
-                }
-
-                override fun failure(error: RetrofitError) {
-                    Log.d("Accounts", "Error fetching access token $error")
-                }
-            })
-}
+                    override fun failure(error: RetrofitError) {
+                        Log.e("Accounts", "Error fetching access token $error")
+                    }
+                })
+    }
 
 
 
-private fun getCodeChallenge(codeVerifier: String) : String {
+    private fun getCodeChallenge(codeVerifier: String) : String {
 
-    Log.d("Accounts", "code verifier: " + codeVerifier)
-    val digest = MessageDigest.getInstance("SHA-256")
-    digest.reset()
-    val byteArr = digest.digest(codeVerifier.toByteArray())
-    val codeChallenge = BigInteger(1, byteArr).toString(16)
-    Log.d("Accounts", "code challenge: " + codeChallenge)
+        val digest = MessageDigest.getInstance("SHA-256")
+        digest.reset()
+        val byteArr = digest.digest(codeVerifier.toByteArray())
+        val codeChallenge = BigInteger(1, byteArr).toString(16)
 
-    return codeChallenge
+        return codeChallenge
+    }
 }

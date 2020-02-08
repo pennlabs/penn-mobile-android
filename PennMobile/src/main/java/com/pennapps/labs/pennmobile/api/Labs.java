@@ -79,11 +79,9 @@ public interface Labs {
     Observable<Review> course_review(
             @Path("id") String id);
 
-    // new
     @GET("/laundry/halls/ids")
     Observable<List<LaundryRoomSimple>> laundryRooms();
 
-    // new
     @GET("/laundry/hall/{id}")
     Observable<LaundryRoom> room(
             @Path("id") int id);

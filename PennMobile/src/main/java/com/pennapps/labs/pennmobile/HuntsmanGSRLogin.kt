@@ -97,7 +97,7 @@ class HuntsmanGSRLogin : Fragment() {
 
     // performs POST request and redirects user to GSR booking fragment
     private fun bookHuntsmanGSR(sessionid : String) {
-        mLabs?.let { mLabs ->
+        mLabs.let { mLabs ->
             mLabs.bookGSR(
                     //Passing the values
                     sessionid,

@@ -2,28 +2,25 @@ buildscript {
     repositories {
         mavenCentral()
         google()
-        maven { url 'https://maven.fabric.io/public' }
         maven { url "https://jitpack.io" }
         jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.0'
-        classpath 'io.fabric.tools:gradle:1.26.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'io.fabric'
 apply plugin: 'idea'
 apply plugin: 'com.google.gms.google-services'  // Google Services plugin
+apply plugin: 'com.google.firebase.crashlytics'
 
 repositories {
     mavenCentral()
     google()
     jcenter()
-    maven { url "https://maven.fabric.io/public" }
     maven { url "https://jitpack.io" }
 }
 
@@ -54,14 +51,12 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation('com.crashlytics.sdk.android:crashlytics:2.10.1@aar') {
-        transitive = true
-    }
-    implementation 'com.google.firebase:firebase-analytics:17.2.1'
+    implementation 'com.google.firebase:firebase-analytics:17.2.2'
+    implementation 'com.google.firebase:firebase-crashlytics:17.0.0-beta01'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'com.google.maps:google-maps-services:0.10.2'
+    implementation 'com.google.maps:google-maps-services:0.11.0'
     implementation 'org.jsoup:jsoup:1.12.1'
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.percentlayout:percentlayout:1.0.0'
     implementation 'androidx.exifinterface:exifinterface:1.1.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -70,7 +65,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'joda-time:joda-time:2.10.5'
     implementation 'org.apache.commons:commons-lang3:3.9'
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.android.material:material:1.1.0'
     implementation 'com.jakewharton:butterknife:10.2.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
     implementation 'com.squareup.retrofit:retrofit:1.9.0'
@@ -90,7 +85,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     // official release is several years old and is not thread-safe
 
-    implementation 'com.github.bumptech.glide:glide:4.8.0' // Glide for gif loading
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
+    implementation 'com.github.bumptech.glide:glide:4.11.0' // Glide for gif loading
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.3.1'
 }
 

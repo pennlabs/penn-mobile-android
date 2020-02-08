@@ -249,5 +249,8 @@
 
     <!-- Login -->
     <string name="login_SessionID">Login_SessionID</string>
+    <string name="accessToken">accessToken</string>
+    <string name="refreshToken">refreshToken</string>
+    <string name="expiresIn">expiresIn</string>
 
 </resources>

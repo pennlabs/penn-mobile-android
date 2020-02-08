@@ -9,9 +9,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.app.ActivityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -22,7 +20,6 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
@@ -56,12 +53,13 @@ import com.pennapps.labs.pennmobile.classes.Venue;
 
 import java.util.List;
 
-import io.fabric.sdk.android.Fabric;
-import retrofit.ResponseCallback;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import retrofit.android.AndroidLog;
 import retrofit.converter.GsonConverter;
+
+import static com.pennapps.labs.pennmobile.api.Platform.platformBaseUrl;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -202,9 +200,12 @@ public class MainActivity extends AppCompatActivity {
         if (mPlatform == null) {
             GsonBuilder gsonBuilder = new GsonBuilder();
             Gson gson = gsonBuilder.create();
+
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setConverter(new GsonConverter(gson))
-                    .setEndpoint("https://platform.pennlabs.org")
+                    .setLogLevel(RestAdapter.LogLevel.FULL)
+                    .setLog(new AndroidLog("Platform"))
+                    .setEndpoint(platformBaseUrl)
                     .build();
             mPlatform = restAdapter.create(Platform.class);
         }
