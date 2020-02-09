@@ -11,7 +11,6 @@ import com.pennapps.labs.pennmobile.api.Labs
 import java.util.concurrent.atomic.AtomicInteger
 
 import butterknife.BindView
-import butterknife.ButterKnife
 
 
 /**
@@ -19,9 +18,8 @@ import butterknife.ButterKnife
  */
 abstract class SearchFavoriteTab : ListFragment() {
 
-    protected var fav: Boolean = false
-    protected lateinit var type: String
-    protected var mListView: ListView? = null
+    protected var fav: Boolean? = false
+    protected lateinit var mListView: ListView
     protected lateinit var mActivity: MainActivity
     protected lateinit var mLabs: Labs
 
@@ -34,8 +32,7 @@ abstract class SearchFavoriteTab : ListFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        fav = arguments!!.getBoolean(getString(R.string.search_favorite), false)
-        type = arguments!!.getString(getString(R.string.search_list), "")
+        fav = arguments?.getBoolean(getString(R.string.search_favorite), false)
         mActivity = activity as MainActivity
         mLabs = MainActivity.getLabsInstance()
     }
@@ -50,7 +47,7 @@ abstract class SearchFavoriteTab : ListFragment() {
     protected fun noResults() {
         loadingPanel.visibility = View.GONE
         no_results.visibility = View.VISIBLE
-        mListView!!.visibility = View.GONE
+        mListView.visibility = View.GONE
         search_instructions.visibility = View.GONE
     }
 
@@ -58,7 +55,7 @@ abstract class SearchFavoriteTab : ListFragment() {
         search_instructions.visibility = View.VISIBLE
         no_results.visibility = View.GONE
         loadingPanel.visibility = View.GONE
-        mListView!!.visibility = View.GONE
+        mListView.visibility = View.GONE
     }
 
     abstract fun initList()

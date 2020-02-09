@@ -33,25 +33,25 @@ import rx.functions.Action1
 
 class CourseFragment : Fragment(), OnMapReadyCallback {
 
-    @BindView(R.id.course_activity)
+    @BindView(R.id.course_activity) @JvmField
     internal var courseActivityTextView: TextView? = null
-    @BindView(R.id.course_title)
+    @BindView(R.id.course_title) @JvmField
     internal var courseTitleTextView: TextView? = null
-    @BindView(R.id.instructor)
+    @BindView(R.id.instructor) @JvmField
     internal var instructorTextView: TextView? = null
-    @BindView(R.id.course_desc_title)
+    @BindView(R.id.course_desc_title) @JvmField
     internal var descriptionTitle: TextView? = null
-    @BindView(R.id.course_desc)
+    @BindView(R.id.course_desc) @JvmField
     internal var descriptionTextView: TextView? = null
-    @BindView(R.id.registrar_map_frame)
+    @BindView(R.id.registrar_map_frame) @JvmField
     internal var mapFrame: View? = null
-    @BindView(R.id.pcr_layout)
+    @BindView(R.id.pcr_layout) @JvmField
     internal var pcrLayout: LinearLayout? = null
-    @BindView(R.id.course_avg_course)
+    @BindView(R.id.course_avg_course) @JvmField
     internal var courseQuality: TextView? = null
-    @BindView(R.id.course_avg_instr)
+    @BindView(R.id.course_avg_instr) @JvmField
     internal var instructorQuality: TextView? = null
-    @BindView(R.id.course_avg_diff)
+    @BindView(R.id.course_avg_diff) @JvmField
     internal var courseDifficulty: TextView? = null
     private var unbinder: Unbinder? = null
 

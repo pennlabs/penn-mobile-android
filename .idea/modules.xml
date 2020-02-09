@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/PennMobile/PennMobile.iml" filepath="$PROJECT_DIR$/PennMobile/PennMobile.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Projects-penn-mobile-android.iml" filepath="$PROJECT_DIR$/Projects-penn-mobile-android.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/penn-mobile-android.iml" filepath="$PROJECT_DIR$/.idea/penn-mobile-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PennMobile/penn-mobile-android-PennMobile.iml" filepath="$PROJECT_DIR$/PennMobile/penn-mobile-android-PennMobile.iml" />
     </modules>
   </component>
 </project>

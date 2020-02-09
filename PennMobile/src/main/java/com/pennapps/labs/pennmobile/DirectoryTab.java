@@ -35,7 +35,7 @@ public class DirectoryTab extends SearchFavoriteTab {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_search_favorite_tab, container, false);
         unbinder = ButterKnife.bind(this, v);
-        mListView = (ListView) v.findViewById(android.R.id.list);
+        setMListView((ListView) v.findViewById(android.R.id.list));
         initList();
         return v;
     }
@@ -50,24 +50,20 @@ public class DirectoryTab extends SearchFavoriteTab {
         if (query.isEmpty()) {
             return;
         }
-        mLabs.people(query)
+        getMLabs().people(query)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<List<Person>>() {
                     @Override
                     public void call(final List<Person> people) {
-                        if (loadingPanel != null) {
-                            loadingPanel.setVisibility(View.GONE);
-                            if (people.isEmpty()) {
-                                if (no_results != null) {
-                                    no_results.setVisibility(View.VISIBLE);
-                                    mListView.setVisibility(View.GONE);
-                                }
-                        } else if (mListView != null) {
-                                mAdapter = new DirectoryAdapter(mActivity, people);
-                                mListView.setAdapter(mAdapter);
-                                mListView.setVisibility(View.VISIBLE);
-                                no_results.setVisibility(View.GONE);
-                            }
+                        getLoadingPanel().setVisibility(View.GONE);
+                        if (people.isEmpty()) {
+                            getNo_results().setVisibility(View.VISIBLE);
+                            getMListView().setVisibility(View.GONE);
+                        } else {
+                            mAdapter = new DirectoryAdapter(getMActivity(), people);
+                            getMListView().setAdapter(mAdapter);
+                            getMListView().setVisibility(View.VISIBLE);
+                            getNo_results().setVisibility(View.GONE);
                         }
                     }
                 }, new Action1<Throwable>() {
@@ -80,24 +76,24 @@ public class DirectoryTab extends SearchFavoriteTab {
 
     @Override
     public void initList() {
-        if (fav) {
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        if (getFav()) {
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getMActivity());
             Gson gson = new Gson();
             Set<String> starred = sp.getStringSet(getString(R.string.search_dir_star), new HashSet<String>());
             if (starred.isEmpty()) {
                 notFavoriteInit();
             } else {
-                if (loadingPanel.getVisibility() == View.VISIBLE) {
-                    loadingPanel.setVisibility(View.GONE);
+                if (getLoadingPanel().getVisibility() == View.VISIBLE) {
+                    getLoadingPanel().setVisibility(View.GONE);
                 }
-                if (mListView.getVisibility() == View.GONE) {
-                    mListView.setVisibility(View.VISIBLE);
+                if (getMListView().getVisibility() == View.GONE) {
+                    getMListView().setVisibility(View.VISIBLE);
                 }
-                if (no_results.getVisibility() == View.VISIBLE) {
-                    no_results.setVisibility(View.GONE);
+                if (getNo_results().getVisibility() == View.VISIBLE) {
+                    getNo_results().setVisibility(View.GONE);
                 }
-                if (search_instructions.getVisibility() == View.VISIBLE) {
-                    search_instructions.setVisibility(View.GONE);
+                if (getSearch_instructions().getVisibility() == View.VISIBLE) {
+                    getSearch_instructions().setVisibility(View.GONE);
                 }
                 List<Person> people = new LinkedList<>();
                 for (String s : starred) {
@@ -107,11 +103,11 @@ public class DirectoryTab extends SearchFavoriteTab {
                         people.add(person);
                     }
                 }
-                mAdapter = new DirectoryAdapter(mActivity, people);
-                mListView.setAdapter(mAdapter);
-                mListView.setOnItemClickListener(null);
+                mAdapter = new DirectoryAdapter(getMActivity(), people);
+                getMListView().setAdapter(mAdapter);
+                getMListView().setOnItemClickListener(null);
             }
-            mActivity.closeKeyboard();
+            getMActivity().closeKeyboard();
         } else {
             notFavoriteInit();
         }
@@ -120,10 +116,10 @@ public class DirectoryTab extends SearchFavoriteTab {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (fav) {
-            search_instructions.setText(getString(R.string.search_no_fav));
+        if (getFav()) {
+            getSearch_instructions().setText(getString(R.string.search_no_fav));
         } else {
-            search_instructions.setText(getString(R.string.directory_instructions));
+            getSearch_instructions().setText(getString(R.string.directory_instructions));
         }
     }
 
