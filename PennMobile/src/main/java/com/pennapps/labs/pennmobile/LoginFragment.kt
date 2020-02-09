@@ -17,6 +17,7 @@ import android.webkit.ValueCallback
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Log
+import androidx.fragment.app.FragmentTransaction
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
@@ -54,7 +55,7 @@ class LoginFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         sp = PreferenceManager.getDefaultSharedPreferences(activity)
 
-        return inflater.inflate(R.layout.fragment_login, container, false)
+        return inflater.inflate(R.layout.fragment_login_webview, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,11 +95,10 @@ class LoginFragment : Fragment() {
                         }
                     }
                     val editor = sp.edit()
-                    editor.putString(getString(R.string.login_SessionID), sessionid)
+                    editor.putString(getString(R.string.login_sessionID), sessionid)
                     editor.apply()
                 }
             }
-
 
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
                 view?.loadUrl(url)
@@ -157,7 +157,8 @@ class LoginFragment : Fragment() {
             keyStore.load(null)
 
             var secretkey = keyStore.getKey("Key", null) as SecretKey
-            var cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7)
+            var cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" +
+                    KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7)
             cipher.init(Cipher.DECRYPT_MODE, secretkey, IvParameterSpec(encryptionIv))
 
             var passwordBytes = cipher.doFinal(encryptedPassword)
@@ -170,7 +171,7 @@ class LoginFragment : Fragment() {
 
     private fun saveUsername(username: String){
         val editor = sp.edit()
-        editor.putString("penn_user", username)
+        editor.putString(getString(R.string.penn_user), username)
         editor.apply()
     }
 
@@ -197,7 +198,8 @@ class LoginFragment : Fragment() {
                 val authCode = urlArr[urlArr.size - 1]
                 getUser(authCode)
             }
-            if (url.contains("execution") && url.contains("s2")) {
+            if (url.contains("weblogin") || url.contains("pennkey")) {
+            //if (url.contains("execution") && url.contains("s2")) {
                 if (Build.VERSION.SDK_INT >= 19) {
                     webView.evaluateJavascript("document.getElementById('pennname').value;", ValueCallback<String> { s ->
                         if (s != null) {
@@ -219,21 +221,30 @@ class LoginFragment : Fragment() {
     private fun getUser(authCode: String) {
         val mPlatform = MainActivity.getPlatformInstance()
         Log.d("Accounts", codeVerifier)
-        mPlatform.getAccessToken("application/x-www-form-urlencoded", authCode,
+        mPlatform.getAccessToken(authCode,
                 "authorization_code", clientID, redirectUri, codeVerifier,
                 object : Callback<AccessTokenResponse> {
                     override fun success(t: AccessTokenResponse?, response: Response?) {
                         if (response?.status == 200) {
                             val accessToken = t?.accessToken
                             val editor = sp.edit()
-                            editor.putString(getString(R.string.accessToken), accessToken)
-                            editor.putString(getString(R.string.refreshToken), t?.refreshToken)
-                            editor.putString(getString(R.string.expiresIn), t?.expiresIn.toString())
+                            editor.putString(getString(R.string.access_token), accessToken)
+                            editor.putString(getString(R.string.refresh_token), t?.refreshToken)
+                            editor.putString(getString(R.string.expires_in), t?.expiresIn.toString())
                             editor.apply()
                             mPlatform.getUser("Bearer " + accessToken, accessToken,
                                     object : Callback<GetUserResponse> {
                                 override fun success(t: GetUserResponse?, response: Response?) {
                                     Log.d("Accounts", "user: " + t?.user?.username)
+                                    editor.putString(getString(R.string.first_name), t?.user?.firstName)
+                                    editor.putString(getString(R.string.last_name), t?.user?.lastName)
+                                    editor.apply()
+                                    // After getting the user, go to homepage
+                                    val fragmentManager = (context as MainActivity).supportFragmentManager
+                                    fragmentManager.beginTransaction()
+                                            .replace(R.id.content_frame, HomeFragment())
+                                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                            .commit()
                                 }
 
                                 override fun failure(error: RetrofitError) {

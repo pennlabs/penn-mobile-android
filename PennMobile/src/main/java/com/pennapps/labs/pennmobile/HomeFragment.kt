@@ -100,7 +100,13 @@ class HomeFragment : Fragment()  {
     override fun onResume() {
         super.onResume()
         mActivity.removeTabs()
-        mActivity.setTitle(R.string.home)
+        val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
+        val firstName = sp.getString(getString(R.string.first_name), null)
+        if (firstName != null) {
+            mActivity.title = "Welcome, $firstName!"
+        } else {
+            mActivity.setTitle(R.string.main_title)
+        }
         if (Build.VERSION.SDK_INT > 17){
             mActivity.setSelectedTab(0)
         }

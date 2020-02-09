@@ -95,10 +95,6 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(false);
         }
 
-        // Set default fragment to HomeFragment
-        FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-        tx.replace(R.id.content_frame, new HomeFragment());
-
         /**
          * The following commented code is used for testing. Don't delete.
          */
@@ -107,9 +103,14 @@ public class MainActivity extends AppCompatActivity {
        // editor.apply();
        // editor.commit();
 
-        password = mSharedPrefs.getString("penn_password", "null");
-        if(password.equals("null")){
+        // Set default fragment to HomeFragment
+        FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+        password = mSharedPrefs.getString(getString(R.string.penn_password), null);
+
+        if (password == null){
             tx.replace(R.id.content_frame, new LoginFragment());
+        } else {
+            tx.replace(R.id.content_frame, new HomeFragment());
         }
 
         tx.commit();
@@ -179,7 +180,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        setTitle(R.string.main_title);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)

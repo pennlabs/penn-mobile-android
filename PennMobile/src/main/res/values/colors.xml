@@ -34,9 +34,6 @@
     <color name="star_color_off">#cccccc</color>
     <color name="star_color_on">#f4b400</color>
 
-    <color name="circle_color_red">#E52025</color>
-    <color name="circle_color_green">#66CC00</color>
-
     <color name="map_card">#FAFAFA</color>
     <color name="avail_color_green">#8BC34A</color>
     <color name="avail_color_red">#F44336</color>
@@ -48,4 +45,7 @@
     <color name="gsr_text_gray">#DFDFDF</color>
     <color name="washer_blue">#3498db</color>
     <color name="dryer_red">#d35400</color>
+    <color name="gsr_cancel_red">#E25152</color>
+
+    <color name="pennmobile_blue">#1D79CE</color>
 </resources>

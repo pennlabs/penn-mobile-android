@@ -29,7 +29,6 @@ public interface Platform {
     @FormUrlEncoded
     @POST("/accounts/token/")
     void getAccessToken(
-            @Header("Content-Type") String contentType,
             @Field("code") String authCode,
             @Field("grant_type") String grantType,
             @Field("client_id") String clientID,
@@ -51,4 +50,5 @@ public interface Platform {
             @Header("Authorization") String authorizationHeader,
             @Field("token") String token,
             Callback<GetUserResponse> callback);
+
 }
