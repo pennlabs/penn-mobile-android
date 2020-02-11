@@ -107,6 +107,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         editor.putBoolean("logged_in", false);
                         editor.commit();
                         dialog.cancel();
+                        ((MainActivity) getActivity()).startLoginFragment();
                     }
                 });
                 dialog.setButton2("Cancel", new DialogInterface.OnClickListener() {

@@ -53,8 +53,6 @@ import com.pennapps.labs.pennmobile.classes.Venue;
 
 import java.util.List;
 
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit.RestAdapter;
 import retrofit.android.AndroidLog;
 import retrofit.converter.GsonConverter;
@@ -67,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private static Platform mPlatform;
     private static final int CODE_MAP = 1;
     private ExpandableBottomTabBar tabBarView;
+    private Toolbar toolbar;
     private boolean tab_showed;
     private String password;
     private SharedPreferences mSharedPrefs;
@@ -82,7 +81,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        tabBarView = findViewById(R.id.bottom_navigation);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -103,22 +103,14 @@ public class MainActivity extends AppCompatActivity {
        // editor.apply();
        // editor.commit();
 
-        // Set default fragment to HomeFragment
-        FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+        // Show HomeFragment if logged in, LoginWebviewFragment otherwise
         password = mSharedPrefs.getString(getString(R.string.penn_password), null);
 
         if (password == null){
-            tx.replace(R.id.content_frame, new LoginFragment());
+            startLoginFragment();
         } else {
-            tx.replace(R.id.content_frame, new HomeFragment());
+            startHomeFragment();
         }
-
-        tx.commit();
-
-        // Expandable bottom nav bar
-        tabBarView = findViewById(R.id.bottom_navigation);
-        onExpandableBottomNavigationItemSelected();
-
     }
 
     private void onExpandableBottomNavigationItemSelected() {
@@ -194,6 +186,21 @@ public class MainActivity extends AppCompatActivity {
         if (view != null) {
             inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
+    }
+
+    public void startHomeFragment() {
+        Fragment fragment = new HomeFragment();
+        fragmentTransact(fragment);
+        toolbar.setVisibility(View.VISIBLE);
+        tabBarView.setVisibility(View.VISIBLE);
+        onExpandableBottomNavigationItemSelected();
+    }
+
+    public void startLoginFragment() {
+        Fragment fragment = new LoginFragment();
+        fragmentTransact(fragment);
+        toolbar.setVisibility(View.GONE);
+        tabBarView.setVisibility(View.GONE);
     }
 
     public static Platform getPlatformInstance() {
