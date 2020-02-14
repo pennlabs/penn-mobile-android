@@ -67,6 +67,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 final EditText lastName = dialog.findViewById(R.id.last_name);
                 final EditText email = dialog.findViewById(R.id.email);
 
+                firstName.setText(sp.getString("First name", null));
+                lastName.setText(sp.getString("Last name", null));
+                email.setText(sp.getString("Email", null));
+
                 cancelButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -77,9 +81,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 saveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        editor.putString("first_name", firstName.getText().toString());
-                        editor.putString("last_name", lastName.getText().toString());
-                        editor.putString("email", email.getText().toString());
+                        editor.putString("First name", firstName.getText().toString());
+                        editor.putString("Last name", lastName.getText().toString());
+                        editor.putString("Email", email.getText().toString());
 
                         editor.commit();
                         dialog.cancel();
@@ -104,6 +108,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 dialog.setButton("Logout", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        android.webkit.CookieManager.getInstance().removeAllCookie();
                         editor.putBoolean("logged_in", false);
                         editor.commit();
                         dialog.cancel();

@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
        // editor.commit();
 
         // Show HomeFragment if logged in, LoginWebviewFragment otherwise
-        password = mSharedPrefs.getString(getString(R.string.penn_password), null);
+        password = mSharedPrefs.getString("penn_password", null);
 
         if (password == null){
             startLoginFragment();

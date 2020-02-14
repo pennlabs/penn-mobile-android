@@ -69,10 +69,7 @@ class LoginWebviewFragment : Fragment() {
         redirectUri = getString(R.string.redirectUri)
         codeChallenge = getCodeChallenge(codeVerifier)
         platformAuthUrl = platformBaseUrl + "/accounts/authorize/?response_type=code&client_id=" +
-                clientID + "&redirect_uri=" + redirectUri +
-                "&code_challenge_method=S256" +
-                "&code_challenge=" + codeChallenge +
-                "&scope=read+introspection&state="
+                clientID+ "&redirect_uri=" + redirectUri + "&code_challenge_method=S256" + "&code_challenge=" + codeChallenge + "&scope=read+introspection&state="
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -105,7 +102,6 @@ class LoginWebviewFragment : Fragment() {
                 return true
             }
         }
-
         webView.loadUrl(platformAuthUrl)
         val webSettings = webView.getSettings()
         webSettings.setJavaScriptEnabled(true)
@@ -192,13 +188,12 @@ class LoginWebviewFragment : Fragment() {
     inner class MyWebViewClient : WebViewClient() {
 
         override fun shouldOverrideUrlLoading(view: WebView?, url: String): Boolean {
-
             if (url.contains("callback")) {
                 val urlArr = url.split("?code=").toTypedArray()
                 val authCode = urlArr[urlArr.size - 1]
                 getUser(authCode)
             }
-            if (url.contains("weblogin") || url.contains("pennkey")) {
+            if (url.contains("weblogin") && url.contains("pennkey")) {
             //if (url.contains("execution") && url.contains("s2")) {
                 if (Build.VERSION.SDK_INT >= 19) {
                     webView.evaluateJavascript("document.getElementById('pennname').value;", ValueCallback<String> { s ->
@@ -238,6 +233,7 @@ class LoginWebviewFragment : Fragment() {
                                     Log.d("Accounts", "user: " + t?.user?.username)
                                     editor.putString(getString(R.string.first_name), t?.user?.firstName)
                                     editor.putString(getString(R.string.last_name), t?.user?.lastName)
+                                    editor.putString("Email", t?.user?.email)
                                     editor.apply()
                                     // After getting the user, go to homepage
                                     (context as MainActivity).startHomeFragment()
