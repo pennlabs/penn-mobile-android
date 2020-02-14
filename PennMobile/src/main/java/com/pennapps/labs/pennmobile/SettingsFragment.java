@@ -83,7 +83,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     public void onClick(View view) {
                         editor.putString("First name", firstName.getText().toString());
                         editor.putString("Last name", lastName.getText().toString());
-                        editor.putString("Email", email.getText().toString());
+                        editor.putString(getString(R.string.email), email.getText().toString());
 
                         editor.commit();
                         dialog.cancel();
@@ -97,7 +97,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
 
-        logoutButton = findPreference("pref_account_logout");
+        logoutButton = findPreference("pref_account_logout"); //TODO: change to login / logout
         logoutButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {

@@ -194,7 +194,6 @@ class LoginWebviewFragment : Fragment() {
                 getUser(authCode)
             }
             if (url.contains("weblogin") && url.contains("pennkey")) {
-            //if (url.contains("execution") && url.contains("s2")) {
                 if (Build.VERSION.SDK_INT >= 19) {
                     webView.evaluateJavascript("document.getElementById('pennname').value;", ValueCallback<String> { s ->
                         if (s != null) {
@@ -226,14 +225,14 @@ class LoginWebviewFragment : Fragment() {
                             editor.putString(getString(R.string.access_token), accessToken)
                             editor.putString(getString(R.string.refresh_token), t?.refreshToken)
                             editor.putString(getString(R.string.expires_in), t?.expiresIn.toString())
-                            editor.apply()
+                            editor.apply() // TODO: use refresh token to get access token when it expires
                             mPlatform.getUser("Bearer " + accessToken, accessToken,
                                     object : Callback<GetUserResponse> {
                                 override fun success(t: GetUserResponse?, response: Response?) {
                                     Log.d("Accounts", "user: " + t?.user?.username)
                                     editor.putString(getString(R.string.first_name), t?.user?.firstName)
                                     editor.putString(getString(R.string.last_name), t?.user?.lastName)
-                                    editor.putString("Email", t?.user?.email)
+                                    editor.putString(getString(R.string.email), t?.user?.email)
                                     editor.apply()
                                     // After getting the user, go to homepage
                                     (context as MainActivity).startHomeFragment()
