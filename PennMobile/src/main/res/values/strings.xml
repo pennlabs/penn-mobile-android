@@ -229,7 +229,7 @@
     <string name="penn_user">pennUser</string>
     <string name="penn_password">pennPassword</string>
     <string name="title_activity_login">Sign in</string>
-    <string name="email">Email</string>
+    <string name="pennkey">pennkey</string>
 
     <!-- Accounts -->
     <string name="prompt_password">Password</string>

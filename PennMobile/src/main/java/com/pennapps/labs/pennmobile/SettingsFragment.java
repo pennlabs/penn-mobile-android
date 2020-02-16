@@ -10,6 +10,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.appcompat.view.ContextThemeWrapper;
@@ -22,12 +24,11 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-import butterknife.OnClick;
-
 public class SettingsFragment extends PreferenceFragmentCompat {
 
-    Preference accountSettings;
-    Preference logoutButton;
+    private Preference accountSettings;
+    private Preference logInOutButton;
+    private MainActivity mActivity;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -36,7 +37,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final Context context = new ContextThemeWrapper(getActivity(), R.style.ReferenceTheme);
+        Context context = new ContextThemeWrapper(getActivity(), R.style.ReferenceTheme);
+        mActivity = (MainActivity) getActivity();
         LayoutInflater localInflater = inflater.cloneInContext(context);
         return super.onCreateView(localInflater, container, savedInstanceState);
     }
@@ -45,7 +47,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mActivity);
         final SharedPreferences.Editor editor = sp.edit();
 
         accountSettings = findPreference("pref_account_edit");
@@ -67,9 +69,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 final EditText lastName = dialog.findViewById(R.id.last_name);
                 final EditText email = dialog.findViewById(R.id.email);
 
-                firstName.setText(sp.getString("First name", null));
-                lastName.setText(sp.getString("Last name", null));
-                email.setText(sp.getString("Email", null));
+                firstName.setText(sp.getString(getString(R.string.first_name), null));
+                lastName.setText(sp.getString(getString(R.string.last_name), null));
+                email.setText(sp.getString(getString(R.string.email_address), null));
 
                 cancelButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -81,9 +83,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 saveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        editor.putString("First name", firstName.getText().toString());
-                        editor.putString("Last name", lastName.getText().toString());
-                        editor.putString(getString(R.string.email), email.getText().toString());
+                        editor.putString(getString(R.string.first_name), firstName.getText().toString());
+                        editor.putString(getString(R.string.last_name), lastName.getText().toString());
+                        editor.putString(getString(R.string.email_address), email.getText().toString());
 
                         editor.commit();
                         dialog.cancel();
@@ -97,31 +99,49 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
 
-        logoutButton = findPreference("pref_account_logout"); //TODO: change to login / logout
-        logoutButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        logInOutButton = findPreference("pref_account_login_logout");
+
+        String pennkey = sp.getString(getString(R.string.pennkey), "");
+
+        if (!pennkey.equals("")) {
+            logInOutButton.setTitle("Log out");
+        } else {
+            logInOutButton.setTitle("Log in");
+        }
+
+        logInOutButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
 
-                final AlertDialog dialog = new AlertDialog.Builder(getContext()).create();
-                dialog.setTitle("Logout");
-                dialog.setMessage("Are you sure you want to logout?");
-                dialog.setButton("Logout", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        android.webkit.CookieManager.getInstance().removeAllCookie();
-                        editor.putBoolean("logged_in", false);
-                        editor.commit();
-                        dialog.cancel();
-                        ((MainActivity) getActivity()).startLoginFragment();
-                    }
-                });
-                dialog.setButton2("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                dialog.show();
+                if (!pennkey.equals("")) {
+                    final AlertDialog dialog = new AlertDialog.Builder(getContext()).create();
+                    dialog.setTitle("Log out");
+                    dialog.setMessage("Are you sure you want to log out?");
+                    dialog.setButton("Logout", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            android.webkit.CookieManager.getInstance().removeAllCookie();
+                            editor.remove(getString(R.string.penn_password));
+                            editor.remove(getString(R.string.penn_user));
+                            editor.remove(getString(R.string.first_name));
+                            editor.remove(getString(R.string.last_name));
+                            editor.remove(getString(R.string.email_address));
+                            editor.remove(getString(R.string.pennkey));
+                            editor.apply();
+                            dialog.cancel();
+                            mActivity.startLoginFragment();
+                        }
+                    });
+                    dialog.setButton2("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    dialog.show();
+                } else {
+                    mActivity.startLoginFragment();
+                }
 
                 return true;
             }
@@ -131,11 +151,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onResume(){
         super.onResume();
-        ((MainActivity) getActivity()).removeTabs();
-        getActivity().setTitle(R.string.action_settings);
+        mActivity.removeTabs();
+        mActivity.setTitle(R.string.action_settings);
         if (Build.VERSION.SDK_INT > 17){
-            MainActivity mainActivity = (MainActivity) getActivity();
-            mainActivity.setSelectedTab(11);
+            mActivity.setSelectedTab(11);
         }
     }
 }

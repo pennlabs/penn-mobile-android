@@ -40,6 +40,7 @@ class LoginWebviewFragment : Fragment() {
     lateinit var cancelButton: Button
     lateinit var user: User
     private lateinit var mLabs: Labs
+    private lateinit var mActivity: MainActivity
     lateinit var sp: SharedPreferences
     var loginURL = "https://pennintouch.apps.upenn.edu/pennInTouch/jsp/fast2.do"
     lateinit var codeChallenge: String
@@ -64,6 +65,7 @@ class LoginWebviewFragment : Fragment() {
         arguments?.let {
             user = arguments?.getSerializable("user") as User
         }
+        mActivity = activity as MainActivity
 
         clientID = getString(R.string.clientID)
         redirectUri = getString(R.string.redirectUri)
@@ -79,24 +81,6 @@ class LoginWebviewFragment : Fragment() {
 
         webView.webViewClient = object : WebViewClient() {
 
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-
-                if (url == "https://pennintouch.apps.upenn.edu/pennInTouch/jsp/fast2.do") {
-                    var sessionid = ""
-                    val cookies = CookieManager.getInstance().getCookie(url).split(";")
-                    for (cookie in cookies) {
-                        if (cookie.take(12) == " JSESSIONID=") {
-                            sessionid = cookie.substring(12)
-                            break
-                        }
-                    }
-                    val editor = sp.edit()
-                    editor.putString(getString(R.string.login_sessionID), sessionid)
-                    editor.apply()
-                }
-            }
-
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
                 view?.loadUrl(url)
                 return true
@@ -109,14 +93,9 @@ class LoginWebviewFragment : Fragment() {
         webView.setWebViewClient(MyWebViewClient())
 
         cancelButton.setOnClickListener {
-            val fragmentTx = activity?.supportFragmentManager?.beginTransaction()
-            fragmentTx?.remove(this)?.commit()
+            mActivity.startLoginFragment()
         }
 
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     private fun encryptPassword(password: String){
@@ -188,7 +167,7 @@ class LoginWebviewFragment : Fragment() {
     inner class MyWebViewClient : WebViewClient() {
 
         override fun shouldOverrideUrlLoading(view: WebView?, url: String): Boolean {
-            if (url.contains("callback")) {
+            if (url.contains("callback") && url.contains("?code=")) {
                 val urlArr = url.split("?code=").toTypedArray()
                 val authCode = urlArr[urlArr.size - 1]
                 getUser(authCode)
@@ -208,13 +187,12 @@ class LoginWebviewFragment : Fragment() {
                 }
             }
             return super.shouldOverrideUrlLoading(view, url)
-
         }
     }
 
     private fun getUser(authCode: String) {
         val mPlatform = MainActivity.getPlatformInstance()
-        Log.d("Accounts", codeVerifier)
+        Log.d("Accounts", "authcode " + authCode)
         mPlatform.getAccessToken(authCode,
                 "authorization_code", clientID, redirectUri, codeVerifier,
                 object : Callback<AccessTokenResponse> {
@@ -232,10 +210,11 @@ class LoginWebviewFragment : Fragment() {
                                     Log.d("Accounts", "user: " + t?.user?.username)
                                     editor.putString(getString(R.string.first_name), t?.user?.firstName)
                                     editor.putString(getString(R.string.last_name), t?.user?.lastName)
-                                    editor.putString(getString(R.string.email), t?.user?.email)
+                                    editor.putString(getString(R.string.email_address), t?.user?.email)
+                                    editor.putString(getString(R.string.pennkey), t?.user?.username)
                                     editor.apply()
                                     // After getting the user, go to homepage
-                                    (context as MainActivity).startHomeFragment()
+                                    mActivity.startHomeFragment()
                                 }
 
                                 override fun failure(error: RetrofitError) {

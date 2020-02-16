@@ -10,8 +10,7 @@
             android:summary="Modify your name and email"/>
 
         <Preference
-            android:key="pref_account_logout"
-            android:title="Logout" />
+            android:key="pref_account_login_logout" />
 
     </PreferenceCategory>
 

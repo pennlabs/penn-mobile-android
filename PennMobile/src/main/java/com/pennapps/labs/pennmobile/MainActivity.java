@@ -103,10 +103,10 @@ public class MainActivity extends AppCompatActivity {
        // editor.apply();
        // editor.commit();
 
-        // Show HomeFragment if logged in, LoginWebviewFragment otherwise
-        password = mSharedPrefs.getString("penn_password", null);
+        // Show HomeFragment if logged in, LoginFragment otherwise
+        String pennkey = mSharedPrefs.getString(getString(R.string.pennkey), null);
 
-        if (password == null) {
+        if (pennkey == null) {
             startLoginFragment();
         } else {
             startHomeFragment();
@@ -190,7 +190,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void startHomeFragment() {
         Fragment fragment = new HomeFragment();
-        fragmentTransact(fragment);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit();
         toolbar.setVisibility(View.VISIBLE);
         tabBarView.setVisibility(View.VISIBLE);
         onExpandableBottomNavigationItemSelected();
@@ -198,7 +202,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void startLoginFragment() {
         Fragment fragment = new LoginFragment();
-        fragmentTransact(fragment);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit();
         toolbar.setVisibility(View.GONE);
         tabBarView.setVisibility(View.GONE);
     }
