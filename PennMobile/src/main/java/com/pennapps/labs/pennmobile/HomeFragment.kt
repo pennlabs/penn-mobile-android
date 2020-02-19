@@ -76,7 +76,7 @@ class HomeFragment : Fragment()  {
                 val gsrBookingCell = HomeCell()
                 gsrBookingCell.type = "gsr_booking"
                 gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "VP Weigle")
-                cells?.add(cells?.size - 1, gsrBookingCell)
+                cells?.add(cells.size - 1, gsrBookingCell)
                 home_cells_rv?.adapter = HomeAdapter(ArrayList(cells))
                 loadingPanel?.visibility = View.GONE
                 home_refresh_layout?.isRefreshing = false
@@ -84,7 +84,7 @@ class HomeFragment : Fragment()  {
         }, { throwable ->
             mActivity.runOnUiThread {
                 throwable.printStackTrace()
-                Toast.makeText(activity, "Error: Could not load Home page", Toast.LENGTH_LONG).show()
+                Toast.makeText(mActivity, "Error: Could not load Home page", Toast.LENGTH_LONG).show()
                 loadingPanel?.visibility = View.GONE
                 home_refresh_layout?.isRefreshing = false
             }

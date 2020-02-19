@@ -20,6 +20,7 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.provider.Settings;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -48,7 +50,7 @@ import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
 import com.pennapps.labs.pennmobile.classes.Person;
-import com.pennapps.labs.pennmobile.classes.User;
+import com.pennapps.labs.pennmobile.classes.Account;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
 import java.util.List;
@@ -105,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Show HomeFragment if logged in, LoginFragment otherwise
         String pennkey = mSharedPrefs.getString(getString(R.string.pennkey), null);
+        pennkey = null; // for testing
 
         if (pennkey == null) {
             startLoginFragment();
@@ -270,10 +273,12 @@ public class MainActivity extends AppCompatActivity {
             gsonBuilder.registerTypeAdapter(new TypeToken<List<HomeCell>>(){
             }.getType(), new Serializer.HomePageSerializer());
             //get user
-            gsonBuilder.registerTypeAdapter(User.class, new Serializer.UserSerializer());
+            gsonBuilder.registerTypeAdapter(Account.class, new Serializer.UserSerializer());
             Gson gson = gsonBuilder.create();
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setConverter(new GsonConverter(gson))
+                    .setLogLevel(RestAdapter.LogLevel.FULL)
+                    .setLog(new AndroidLog("Labs"))
                     .setEndpoint("https://api.pennlabs.org")
                     .build();
             mLabs = restAdapter.create(Labs.class);

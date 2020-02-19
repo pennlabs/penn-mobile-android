@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
@@ -11,21 +12,24 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.api.Labs
-import com.pennapps.labs.pennmobile.classes.User
 import java.util.*
 import android.webkit.ValueCallback
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Log
-import androidx.fragment.app.FragmentTransaction
+import android.widget.Toast
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.google.gson.Gson
+import com.pennapps.labs.pennmobile.api.Platform
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 
 import com.pennapps.labs.pennmobile.api.Platform.*
-import com.pennapps.labs.pennmobile.classes.AccessTokenResponse
-import com.pennapps.labs.pennmobile.classes.GetUserResponse
+import com.pennapps.labs.pennmobile.classes.*
+import org.json.JSONObject
 import retrofit.Callback
+import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
 import java.math.BigInteger
@@ -38,8 +42,9 @@ class LoginWebviewFragment : Fragment() {
 
     lateinit var webView: WebView
     lateinit var cancelButton: Button
-    lateinit var user: User
+    lateinit var user: Account
     private lateinit var mLabs: Labs
+    private lateinit var mPlatform: Platform
     private lateinit var mActivity: MainActivity
     lateinit var sp: SharedPreferences
     var loginURL = "https://pennintouch.apps.upenn.edu/pennInTouch/jsp/fast2.do"
@@ -62,8 +67,9 @@ class LoginWebviewFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mLabs = MainActivity.getLabsInstance()
+        mPlatform = MainActivity.getPlatformInstance()
         arguments?.let {
-            user = arguments?.getSerializable("user") as User
+            user = arguments?.getSerializable("user") as Account
         }
         mActivity = activity as MainActivity
 
@@ -152,16 +158,15 @@ class LoginWebviewFragment : Fragment() {
 
     private fun createSecretKey (): SecretKey? {
         if (Build.VERSION.SDK_INT >= 23) {
-            var keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore")
+            val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore")
             keyGenerator.init(KeyGenParameterSpec.Builder("Key", KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
                     .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
                     .setUserAuthenticationRequired(false)
                     .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
                     .build())
             return keyGenerator.generateKey()
-        } else {
-            return null
         }
+        return null
     }
 
     inner class MyWebViewClient : WebViewClient() {
@@ -175,12 +180,12 @@ class LoginWebviewFragment : Fragment() {
             if (url.contains("weblogin") && url.contains("pennkey")) {
                 if (Build.VERSION.SDK_INT >= 19) {
                     webView.evaluateJavascript("document.getElementById('pennname').value;", ValueCallback<String> { s ->
-                        if (s != null) {
+                        if (s != null || s != "null") {
                            saveUsername(s)
                         }
                     })
                     webView.evaluateJavascript("document.getElementById('password').value;", ValueCallback<String> { s ->
-                        if (s != null) {
+                        if (s != null || s != "null") {
                             encryptPassword(s)
                         }
                     })
@@ -191,11 +196,10 @@ class LoginWebviewFragment : Fragment() {
     }
 
     private fun getUser(authCode: String) {
-        val mPlatform = MainActivity.getPlatformInstance()
-        Log.d("Accounts", "authcode " + authCode)
         mPlatform.getAccessToken(authCode,
                 "authorization_code", clientID, redirectUri, codeVerifier,
                 object : Callback<AccessTokenResponse> {
+
                     override fun success(t: AccessTokenResponse?, response: Response?) {
                         if (response?.status == 200) {
                             val accessToken = t?.accessToken
@@ -203,9 +207,11 @@ class LoginWebviewFragment : Fragment() {
                             editor.putString(getString(R.string.access_token), accessToken)
                             editor.putString(getString(R.string.refresh_token), t?.refreshToken)
                             editor.putString(getString(R.string.expires_in), t?.expiresIn.toString())
-                            editor.apply() // TODO: use refresh token to get access token when it expires
+                            editor.apply()
+
                             mPlatform.getUser("Bearer " + accessToken, accessToken,
                                     object : Callback<GetUserResponse> {
+
                                 override fun success(t: GetUserResponse?, response: Response?) {
                                     Log.d("Accounts", "user: " + t?.user?.username)
                                     editor.putString(getString(R.string.first_name), t?.user?.firstName)
@@ -213,8 +219,9 @@ class LoginWebviewFragment : Fragment() {
                                     editor.putString(getString(R.string.email_address), t?.user?.email)
                                     editor.putString(getString(R.string.pennkey), t?.user?.username)
                                     editor.apply()
-                                    // After getting the user, go to homepage
-                                    mActivity.startHomeFragment()
+
+                                    saveAccount(Account(t?.user?.firstName, t?.user?.lastName,
+                                            t?.user?.username, t?.user?.email, t?.user?.affiliation))
                                 }
 
                                 override fun failure(error: RetrofitError) {
@@ -230,7 +237,23 @@ class LoginWebviewFragment : Fragment() {
                 })
     }
 
+    private fun saveAccount(account: Account) {
+        mLabs.saveAccount(account, object : Callback<SaveAccountResponse> {
 
+            override fun success(t: SaveAccountResponse?, response: Response?) {
+                Log.d("Accounts", "accountID: " + t?.accountID)
+                val editor = sp.edit()
+                editor.putString(getString(R.string.accountID), t?.accountID)
+                editor.apply()
+                // After saving the account, go to homepage
+                mActivity.startHomeFragment()
+            }
+
+            override fun failure(error: RetrofitError) {
+                Log.e("Accounts", "Error saving account $error")
+            }
+        })
+    }
 
     private fun getCodeChallenge(codeVerifier: String) : String {
 

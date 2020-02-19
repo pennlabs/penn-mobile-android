@@ -404,7 +404,7 @@ class GsrFragment : Fragment() {
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
-                // User did not change the duration
+                // Account did not change the duration
             }
         }
     }

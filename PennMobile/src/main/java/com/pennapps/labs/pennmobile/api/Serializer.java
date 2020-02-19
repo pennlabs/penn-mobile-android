@@ -1,7 +1,5 @@
 package com.pennapps.labs.pennmobile.api;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
@@ -25,11 +23,8 @@ import com.pennapps.labs.pennmobile.classes.HomeCellInfo;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
-import com.pennapps.labs.pennmobile.classes.User;
+import com.pennapps.labs.pennmobile.classes.Account;
 import com.pennapps.labs.pennmobile.classes.Venue;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -41,12 +36,12 @@ import java.util.List;
  */
 public class Serializer {
 
-    public static class UserSerializer implements JsonDeserializer<User> {
+    public static class UserSerializer implements JsonDeserializer<Account> {
         @Override
-        public User deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+        public Account deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
                 throws JsonParseException {
             JsonElement content = je.getAsJsonObject();
-            return new Gson().fromJson(content, User.class);
+            return new Gson().fromJson(content, Account.class);
         }
     }
 
