@@ -74,7 +74,9 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                 labs.cancelReservation("test_android", bookingID, sessionID, object : ResponseCallback() {
                     // TODO: change to actual device id
                     override fun success(response: Response) {
-                        reservations.removeAt(position)
+                        if (reservations.size > position) {
+                            reservations.removeAt(position)
+                        }
                         run {
                             if (reservations.size == 0) {
                                 var intent = Intent("refresh")

@@ -32,7 +32,6 @@ class LoginFragment : Fragment() {
         val v = inflater.inflate(R.layout.fragment_login, container, false)
 
         val fragmentManager = mActivity.supportFragmentManager
-        fragmentManager.popBackStack() //TODO: handle back button pressed
         var gif = R.drawable.login_background
         if (Build.VERSION.SDK_INT > 28 && (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) {
             gif = R.drawable.login_background_dark
@@ -57,6 +56,14 @@ class LoginFragment : Fragment() {
         }
 
         v.guest_button?.setOnClickListener {
+            val editor = PreferenceManager.getDefaultSharedPreferences(activity).edit()
+            editor.remove(getString(R.string.penn_password))
+            editor.remove(getString(R.string.penn_user))
+            editor.remove(getString(R.string.first_name))
+            editor.remove(getString(R.string.last_name))
+            editor.remove(getString(R.string.email_address))
+            editor.remove(getString(R.string.pennkey))
+            editor.apply()
             mActivity.startHomeFragment()
         }
 

@@ -59,8 +59,6 @@ class LoginWebviewFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        sp = PreferenceManager.getDefaultSharedPreferences(activity)
-
         return inflater.inflate(R.layout.fragment_login_webview, container, false)
     }
 
@@ -72,6 +70,7 @@ class LoginWebviewFragment : Fragment() {
             user = arguments?.getSerializable("user") as Account
         }
         mActivity = activity as MainActivity
+        sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
 
         clientID = getString(R.string.clientID)
         redirectUri = getString(R.string.redirectUri)

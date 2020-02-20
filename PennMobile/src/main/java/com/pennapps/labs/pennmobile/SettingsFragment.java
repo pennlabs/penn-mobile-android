@@ -101,7 +101,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         logInOutButton = findPreference("pref_account_login_logout");
 
-        String pennkey = sp.getString(getString(R.string.pennkey), "");
+        final String pennkey = sp.getString(getString(R.string.pennkey), "");
 
         if (!pennkey.equals("")) {
             logInOutButton.setTitle("Log out");
