@@ -43,7 +43,7 @@ public interface Platform {
             @Field("refresh_token") String refreshToken,
             @Field("grant_type") String grantType,
             @Field("client_id") String clientID,
-            Callback<Response> callback);
+            Callback<AccessTokenResponse> callback);
 
     @FormUrlEncoded
     @POST("/accounts/introspect/")

@@ -24,7 +24,7 @@ import android.provider.Settings.Secure
 import androidx.preference.PreferenceManager
 import androidx.core.content.ContextCompat.getSystemService
 import android.telephony.TelephonyManager
-
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 
 
 class HomeFragment : Fragment()  {
@@ -65,13 +65,13 @@ class HomeFragment : Fragment()  {
         // get session id from shared preferences
         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
         val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
+        val accountID = sp.getString(getString(R.string.accountID), "")
 
-        val deviceID = Secure.getString(mActivity.contentResolver,
-                Secure.ANDROID_ID) ?: "test"
+        val oAuth2NetworkManager = OAuth2NetworkManager(mActivity)
 
         // get API data
-        val labs = MainActivity.getLabsInstance() //TODO: get for an account id
-        labs.getHomePage(deviceID, null, null).subscribe({ cells ->
+        val labs = MainActivity.getLabsInstance()
+        labs.getHomePage(oAuth2NetworkManager.getDeviceId(), accountID, sessionID).subscribe({ cells ->
             mActivity.runOnUiThread {
                 val gsrBookingCell = HomeCell()
                 gsrBookingCell.type = "gsr_booking"

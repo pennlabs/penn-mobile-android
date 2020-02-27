@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import android.view.LayoutInflater
@@ -129,7 +130,8 @@ class BookGsrFragment : Fragment() {
                                 editor.apply()
                             }
                             else {
-                                Toast.makeText(activity, "GSR booking failed with " + result.getError(), Toast.LENGTH_LONG).show()
+                                Toast.makeText(activity, "GSR booking failed", Toast.LENGTH_LONG).show()
+                                Log.e("BookGsrFragment", "GSR booking failed with " + result.getError())
                             }
                             // go back to GSR fragment
                             val fragmentManager = (context as MainActivity).supportFragmentManager

@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile
 
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import android.view.LayoutInflater
@@ -120,7 +121,8 @@ class HuntsmanGSRLogin : Fragment() {
                                 Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
                             }
                             else {
-                                Toast.makeText(activity, "GSR booking failed: " + result.getError(), Toast.LENGTH_LONG).show()
+                                Log.e("HuntsmanGSRLogin", "GSR booking failed: " + result.getError())
+                                Toast.makeText(activity, "GSR booking failed", Toast.LENGTH_LONG).show()
                                 activity?.let { activity ->
                                     val sp = PreferenceManager.getDefaultSharedPreferences(activity)
                                     val editor = sp.edit()

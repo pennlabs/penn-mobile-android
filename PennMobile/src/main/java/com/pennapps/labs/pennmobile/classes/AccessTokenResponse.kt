@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 class AccessTokenResponse {
     @SerializedName("expires_in")
     @Expose
-    var expiresIn: Integer? = null
+    var expiresIn: String? = null
     @SerializedName("access_token")
     @Expose
     var accessToken: String? = null

@@ -123,18 +123,6 @@ public interface Labs {
     @GET("/events/fling")
     Observable<List<FlingEvent>> getFlingEvents();
 
-    // used for testing purposes only
-    @GET("/laundry/preferences")
-    Observable<List<Integer>> testPref(
-            @Header("X-Device-ID") String deviceID);
-
-    @FormUrlEncoded
-    @POST("/laundry/preferences")
-    void sendLaundryPref(
-            @Header("X-Device-ID") String deviceID,
-            @Field("rooms") String rooms,
-            Callback<Response> callback);
-
     // home page
     @GET("/homepage")
     Observable<List<HomeCell>> getHomePage(
@@ -164,4 +152,16 @@ public interface Labs {
     void saveAccount(
             @Body Account account,
             Callback<SaveAccountResponse> callback);
+
+    // used for testing purposes only
+    @GET("/laundry/preferences")
+    Observable<List<Integer>> getLaundryPref(
+            @Header("X-Device-ID") String deviceID);
+
+    @FormUrlEncoded
+    @POST("/laundry/preferences")
+    void sendLaundryPref(
+            @Header("X-Device-ID") String deviceID,
+            @Field("rooms") String rooms,
+            Callback<Response> callback);
 }

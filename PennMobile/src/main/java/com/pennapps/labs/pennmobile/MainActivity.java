@@ -32,6 +32,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.pennapps.labs.pennmobile.ExpandedBottomNavBar.ExpandableBottomTabBar;
 import com.pennapps.labs.pennmobile.api.Labs;
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager;
 import com.pennapps.labs.pennmobile.api.Platform;
 import com.pennapps.labs.pennmobile.api.Serializer;
 import com.pennapps.labs.pennmobile.classes.Building;
@@ -98,17 +99,18 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(false);
         }
 
+        OAuth2NetworkManager oAuth2NetworkManager = new OAuth2NetworkManager(this);
+
         /**
          * The following commented code is used for testing. Don't delete.
          */
-       // SharedPreferences.Editor editor = mSharedPrefs.edit();
-       // editor.remove("penn_password");
-       // editor.apply();
-       // editor.commit();
+        SharedPreferences.Editor editor = mSharedPrefs.edit();
+        editor.remove(getString(R.string.pennkey));
+        editor.apply();
+        editor.commit();
 
         // Show HomeFragment if logged in, LoginFragment otherwise
         String pennkey = mSharedPrefs.getString(getString(R.string.pennkey), null);
-        pennkey = null; // for testing
 
         if (pennkey == null) {
             startLoginFragment();
@@ -276,8 +278,6 @@ public class MainActivity extends AppCompatActivity {
             Gson gson = gsonBuilder.create();
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setConverter(new GsonConverter(gson))
-                    .setLogLevel(RestAdapter.LogLevel.FULL)
-                    .setLog(new AndroidLog("Labs"))
                     .setEndpoint("https://api.pennlabs.org")
                     .build();
             mLabs = restAdapter.create(Labs.class);

@@ -265,7 +265,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
 
     private void getPreferencesData() {
         labs = MainActivity.getLabsInstance();
-        labs.testPref("test_android").subscribe(new Action1<List<Integer>>() {
+        labs.getLaundryPref("test_android").subscribe(new Action1<List<Integer>>() {
             @Override
             public void call(List<Integer> integers) {
             }
@@ -284,7 +284,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
             }
         }
 
-        //prefernces must be in the form of 1,2,3 (exclude brackets)
+        //preferences must be in the form of 1,2,3 (exclude brackets)
         String api_prepared_string = favoriteLaundryRooms.toString();
         api_prepared_string = api_prepared_string.substring(1, api_prepared_string.length() - 1);
 

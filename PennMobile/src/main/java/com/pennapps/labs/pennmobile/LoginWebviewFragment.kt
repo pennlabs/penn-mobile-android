@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile
 
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
@@ -17,9 +16,6 @@ import android.webkit.ValueCallback
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Log
-import android.widget.Toast
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.google.gson.Gson
 import com.pennapps.labs.pennmobile.api.Platform
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
@@ -27,9 +23,7 @@ import javax.crypto.SecretKey
 
 import com.pennapps.labs.pennmobile.api.Platform.*
 import com.pennapps.labs.pennmobile.classes.*
-import org.json.JSONObject
 import retrofit.Callback
-import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
 import java.math.BigInteger
@@ -39,6 +33,8 @@ import java.security.MessageDigest
 import javax.crypto.spec.IvParameterSpec
 
 class LoginWebviewFragment : Fragment() {
+
+    //TODO: refactor to separate webview UI from actual loggin in networking, put in OAuth2NetworkManager
 
     lateinit var webView: WebView
     lateinit var cancelButton: Button
@@ -52,10 +48,6 @@ class LoginWebviewFragment : Fragment() {
     lateinit var platformAuthUrl: String
     lateinit var clientID: String
     lateinit var redirectUri: String
-
-    fun saveCredentials() {
-
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -103,7 +95,7 @@ class LoginWebviewFragment : Fragment() {
 
     }
 
-    private fun encryptPassword(password: String){
+    private fun encryptPassword(password: String) {
         if (Build.VERSION.SDK_INT >= 26) {
             var secretKey = createSecretKey() as SecretKey
             var cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
@@ -170,11 +162,16 @@ class LoginWebviewFragment : Fragment() {
 
     inner class MyWebViewClient : WebViewClient() {
 
+        override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+            Log.d("Login", error.toString())
+            super.onReceivedError(view, request, error)
+        }
+
         override fun shouldOverrideUrlLoading(view: WebView?, url: String): Boolean {
             if (url.contains("callback") && url.contains("?code=")) {
                 val urlArr = url.split("?code=").toTypedArray()
                 val authCode = urlArr[urlArr.size - 1]
-                getUser(authCode)
+                initiateAuthentication(authCode)
             }
             if (url.contains("weblogin") && url.contains("pennkey")) {
                 if (Build.VERSION.SDK_INT >= 19) {
@@ -194,7 +191,7 @@ class LoginWebviewFragment : Fragment() {
         }
     }
 
-    private fun getUser(authCode: String) {
+    private fun initiateAuthentication(authCode: String) {
         mPlatform.getAccessToken(authCode,
                 "authorization_code", clientID, redirectUri, codeVerifier,
                 object : Callback<AccessTokenResponse> {
@@ -205,33 +202,38 @@ class LoginWebviewFragment : Fragment() {
                             val editor = sp.edit()
                             editor.putString(getString(R.string.access_token), accessToken)
                             editor.putString(getString(R.string.refresh_token), t?.refreshToken)
-                            editor.putString(getString(R.string.expires_in), t?.expiresIn.toString())
+                            editor.putString(getString(R.string.expires_in), t?.expiresIn)
                             editor.apply()
-
-                            mPlatform.getUser("Bearer " + accessToken, accessToken,
-                                    object : Callback<GetUserResponse> {
-
-                                override fun success(t: GetUserResponse?, response: Response?) {
-                                    Log.d("Accounts", "user: " + t?.user?.username)
-                                    editor.putString(getString(R.string.first_name), t?.user?.firstName)
-                                    editor.putString(getString(R.string.last_name), t?.user?.lastName)
-                                    editor.putString(getString(R.string.email_address), t?.user?.email)
-                                    editor.putString(getString(R.string.pennkey), t?.user?.username)
-                                    editor.apply()
-
-                                    saveAccount(Account(t?.user?.firstName, t?.user?.lastName,
-                                            t?.user?.username, t?.user?.email, t?.user?.affiliation))
-                                }
-
-                                override fun failure(error: RetrofitError) {
-                                    Log.e("Accounts", "Error getting user $error")
-                                }
-                            })
+                            getUser(accessToken)
                         }
                     }
 
                     override fun failure(error: RetrofitError) {
                         Log.e("Accounts", "Error fetching access token $error")
+                    }
+                })
+    }
+
+    private fun getUser(accessToken: String?) {
+        mPlatform.getUser("Bearer " + accessToken, accessToken,
+                object : Callback<GetUserResponse> {
+
+                    override fun success(t: GetUserResponse?, response: Response?) {
+                        Log.d("Accounts", "user: " + t?.user?.username)
+                        val user = t?.user
+                        val editor = sp.edit()
+                        editor.putString(getString(R.string.first_name), user?.firstName)
+                        editor.putString(getString(R.string.last_name), user?.lastName)
+                        editor.putString(getString(R.string.email_address), user?.email)
+                        editor.putString(getString(R.string.pennkey), user?.username)
+                        editor.apply()
+
+                        saveAccount(Account(user?.firstName, user?.lastName,
+                                user?.username, user?.pennid, user?.email, user?.affiliation))
+                    }
+
+                    override fun failure(error: RetrofitError) {
+                        Log.e("Accounts", "Error getting user $error")
                     }
                 })
     }

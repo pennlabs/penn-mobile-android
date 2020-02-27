@@ -1,35 +1,13 @@
 package com.pennapps.labs.pennmobile.classes
 
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
-import java.io.Serializable
-
-class Account (firstName: String?, lastName: String?, pennkey: String?, email: String?,
+class Account (firstName: String?, lastName: String?, pennkey: String?, pennid: Int?, email: String?,
                affiliation: Array<String>?) {
 
-    val first_name = firstName
-    val last_name = lastName
+    val first = firstName
+    val last = lastName
     val pennkey = pennkey
+    val pennid = pennid
     val email = email
     val affiliation = affiliation
-
-//    @SerializedName("first_name")
-//    @Expose
-//    val firstName: String? = null
-//    @SerializedName("last_name")
-//    @Expose
-//    val lastName: String? = null
-//    @SerializedName("pennid")
-//    @Expose
-//    val pennid: Int? = null
-//    @SerializedName("username")
-//    @Expose
-//    val username: String? = null
-//    @SerializedName("email")
-//    @Expose
-//    val email: String? = null
-//    @SerializedName("affiliation")
-//    @Expose
-//    val affiliation: Array<String>? = null
 
 }
