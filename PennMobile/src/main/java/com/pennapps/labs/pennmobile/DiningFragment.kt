@@ -56,7 +56,7 @@ class DiningFragment : Fragment() {
         v.dining_swiperefresh?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
         v.dining_halls_recycler_view?.layoutManager = LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false)
         val divider = DividerItemDecoration(mActivity, LinearLayoutManager.VERTICAL)
-        v.dining_halls_recycler_view?.addItemDecoration(divider)
+       // v.dining_halls_recycler_view?.addItemDecoration(divider)
         getDiningHalls()
         return v
     }
