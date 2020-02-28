@@ -3,99 +3,118 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clipToPadding="false">
 
-    <TextView
-        android:id="@+id/gsr_date_text"
-        android:text="@string/date"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/gsr_selection"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/gsr_select_date"
-        app:layout_constraintEnd_toEndOf="@id/gsr_select_date"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/gsr_select_date"/>
+        android:background="@color/color_background"
+        android:elevation="2dp"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:id="@+id/gsr_select_date"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:minWidth="0dp"
-        android:background="@android:color/transparent"
-        android:textColor="@color/color_primary"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/gsr_selection"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/gsr_select_time"
-        app:layout_constraintTop_toBottomOf="@id/gsr_date_text" />
+        <Button
+            android:id="@+id/gsr_select_date"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp"
+            android:background="@android:color/transparent"
+            android:minWidth="0dp"
+            android:textColor="@color/color_primary_dark"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/gsr_select_time"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/gsr_date_text" />
 
-    <TextView
-        android:id="@+id/gsr_time_text"
-        android:text="@string/time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/gsr_select_time"
-        app:layout_constraintEnd_toEndOf="@id/gsr_select_time"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/gsr_select_time"/>
+        <Button
+            android:id="@+id/gsr_select_time"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp"
+            android:background="@android:color/transparent"
+            android:minWidth="0dp"
+            android:textColor="@color/color_primary_dark"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/gsr_building_selection"
+            app:layout_constraintStart_toEndOf="@id/gsr_select_date"
+            app:layout_constraintTop_toBottomOf="@id/gsr_time_text" />
 
-    <Button
-        android:id="@+id/gsr_select_time"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:minWidth="0dp"
-        android:background="@android:color/transparent"
-        android:textColor="@color/color_primary"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/gsr_selection"
-        app:layout_constraintStart_toEndOf="@id/gsr_select_date"
-        app:layout_constraintEnd_toStartOf="@+id/gsr_building_selection"
-        app:layout_constraintTop_toBottomOf="@id/gsr_time_text" />
+        <Spinner
+            android:id="@+id/gsr_building_selection"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp"
+            android:background="@null"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/gsr_duration"
+            app:layout_constraintStart_toEndOf="@id/gsr_select_time"
+            app:layout_constraintTop_toBottomOf="@id/gsr_building_text" />
 
-    <TextView
-        android:id="@+id/gsr_building_text"
-        android:text="@string/gsr_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/gsr_building_selection"
-        app:layout_constraintEnd_toEndOf="@id/gsr_building_selection"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/gsr_building_selection"/>
+        <Spinner
+            android:id="@+id/gsr_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp"
+            android:background="@null"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/gsr_building_selection"
+            app:layout_constraintTop_toBottomOf="@id/gsr_duration_text" />
 
-    <Spinner
-        android:id="@+id/gsr_building_selection"
-        android:layout_width="150dp"
-        android:layout_height="40dp"
-        android:background="@null"
-        app:layout_constraintBottom_toTopOf="@+id/gsr_selection"
-        app:layout_constraintStart_toEndOf="@id/gsr_select_time"
-        app:layout_constraintEnd_toStartOf="@id/gsr_duration"
-        app:layout_constraintTop_toBottomOf="@id/gsr_building_text" />
+        <TextView
+            android:id="@+id/gsr_building_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/gsr_location"
+            app:layout_constraintEnd_toEndOf="@id/gsr_building_selection"
+            app:layout_constraintStart_toStartOf="@id/gsr_building_selection"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/gsr_duration_text"
-        android:text="@string/duration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/gsr_duration"
-        app:layout_constraintEnd_toEndOf="@id/gsr_duration"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/gsr_duration"/>
+        <TextView
+            android:id="@+id/gsr_time_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/time"
+            app:layout_constraintEnd_toEndOf="@id/gsr_select_time"
+            app:layout_constraintStart_toStartOf="@id/gsr_select_time"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <Spinner
-        android:id="@+id/gsr_duration"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:background="@null"
-        app:layout_constraintBottom_toTopOf="@+id/gsr_selection"
-        app:layout_constraintStart_toEndOf="@+id/gsr_building_selection"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/gsr_duration_text" />
+        <TextView
+            android:id="@+id/gsr_duration_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/duration"
+            app:layout_constraintEnd_toEndOf="@id/gsr_duration"
+            app:layout_constraintStart_toStartOf="@id/gsr_duration"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/gsr_date_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/date"
+            app:layout_constraintEnd_toEndOf="@id/gsr_select_date"
+            app:layout_constraintStart_toStartOf="@id/gsr_select_date"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/gsr_no_rooms"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="16dp"
+        android:padding="32dp"
         android:text="@string/no_gsr_rooms"
         android:visibility="gone"
         android:textColor="@color/text_color"
@@ -115,6 +134,7 @@
     <LinearLayout
         android:id="@+id/gsr_loading"
         app:layout_constraintTop_toBottomOf="@id/gsr_selection"
+        android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -136,12 +156,5 @@
             android:layout_height="wrap_content"
             tools:list_item="@layout/gsr_building" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/gsr_selection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="80dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,6 +3,7 @@
     <item android:id="@+id/registrar_search"
         android:icon="?attr/searchIcon"
         android:hint="@string/registrar_search"
+        android:iconTint="@color/color_primary_dark"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         android:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always"

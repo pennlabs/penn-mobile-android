@@ -46,16 +46,14 @@ class BookGsrFragment : Fragment() {
             endTime = arguments.getString("endTime") ?: ""
         }
         mLabs = MainActivity.getLabsInstance()
-        activity?.let {activity ->
-            activity.setTitle(R.string.gsr)
-        }
+        val mActivity : MainActivity? = activity as MainActivity
+        mActivity?.setTitle(R.string.gsr)
     }
 
     override fun onResume() {
         super.onResume()
-        activity?.let { activity ->
-            activity.setTitle(R.string.gsr)
-        }
+        val mActivity : MainActivity? = activity as MainActivity
+        mActivity?.setTitle(R.string.gsr)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

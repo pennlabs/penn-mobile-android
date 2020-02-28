@@ -4,7 +4,8 @@
 
     <item
         android:id="@+id/laundry_settings"
-        android:icon="@drawable/ic_settings_white"
+        android:icon="@drawable/ic_bottom_nav_settings_blue"
+        android:tint="@color/color_primary_dark"
         android:orderInCategory="1"
         android:title="@string/laundry_settings"
         app:showAsAction="ifRoom" />

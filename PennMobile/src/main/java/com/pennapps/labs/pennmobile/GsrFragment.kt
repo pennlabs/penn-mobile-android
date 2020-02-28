@@ -174,10 +174,11 @@ class GsrFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as MainActivity).removeTabs()
-        activity?.setTitle(R.string.gsr)
+        val mActivity : MainActivity? = activity as MainActivity
+        mActivity?.removeTabs()
+        mActivity?.setTitle(R.string.gsr)
         if (Build.VERSION.SDK_INT > 17){
-            (activity as MainActivity).setSelectedTab(1)
+            mActivity?.setSelectedTab(1)
         }
         populateDropDownGSR()
     }

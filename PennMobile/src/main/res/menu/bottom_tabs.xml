@@ -27,8 +27,6 @@
         android:title="@string/laundry"
         tools:ignore="MissingPrefix" />
 
-
-
     <tab
         android:id="@+id/nav_fitness"
         android:icon="@drawable/ic_bottom_nav_health_grey"

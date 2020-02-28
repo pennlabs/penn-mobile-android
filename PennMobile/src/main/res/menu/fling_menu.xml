@@ -4,6 +4,7 @@
     <item
         android:id="@+id/fling_raffle"
         android:icon="@drawable/ic_launch_white_24dp"
+        android:iconTint="@color/color_primary_dark"
         android:orderInCategory="1"
         android:title="@string/spec_spring_fling_2019_raffle"
         app:showAsAction="ifRoom" />

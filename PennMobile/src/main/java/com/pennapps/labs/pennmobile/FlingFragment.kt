@@ -64,8 +64,9 @@ class FlingFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as MainActivity).removeTabs()
-        activity?.setTitle(R.string.spring_fling)
+        val mActivity : MainActivity? = activity as MainActivity
+        mActivity?.removeTabs()
+        mActivity?.setTitle(R.string.spring_fling)
         if (Build.VERSION.SDK_INT > 17){
             (activity as MainActivity).setSelectedTab(9)
         }

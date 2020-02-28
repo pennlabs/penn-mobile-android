@@ -81,6 +81,7 @@ public class NsoFragment extends SearchFavoriteFragment {
     @Override
     public void onResume() {
         super.onResume();
+
         getActivity().setTitle(R.string.nso);
     }
 

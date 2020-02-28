@@ -3,6 +3,7 @@
     <item android:id="@+id/directory_search"
         android:icon="?attr/searchIcon"
         android:hint="@string/directory_search"
+        android:tint="@color/color_primary_dark"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         android:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always"

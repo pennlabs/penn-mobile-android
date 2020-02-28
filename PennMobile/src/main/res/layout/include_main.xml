@@ -121,9 +121,19 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:background="@color/white"
                 app:layout_scrollFlags="scroll|enterAlways"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Penn Mobile"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/color_primary_dark"
+                    android:layout_gravity="center"
+                    android:id="@+id/toolbar_title" />
 
             </androidx.appcompat.widget.Toolbar>
 

@@ -10,6 +10,7 @@ import android.os.StrictMode;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int CODE_MAP = 1;
     private ExpandableBottomTabBar tabBarView;
     private Toolbar toolbar;
+    private TextView toolbarTitle;
     private boolean tab_showed;
     private FragmentManager fragmentManager;
     private String password;
@@ -85,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         tabBarView = findViewById(R.id.bottom_navigation);
         toolbar = findViewById(R.id.toolbar);
+        toolbarTitle = findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
 
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -98,8 +101,6 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             getSupportActionBar().setHomeButtonEnabled(false);
         }
-
-        OAuth2NetworkManager oAuth2NetworkManager = new OAuth2NetworkManager(this);
 
         /**
          * The following commented code is used for testing. Don't delete.
@@ -400,6 +401,13 @@ public class MainActivity extends AppCompatActivity {
                             .commitAllowingStateLoss();
                 }
             });
+        }
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        if (toolbarTitle != null) {
+            toolbarTitle.setText(title);
         }
     }
     

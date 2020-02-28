@@ -82,10 +82,11 @@ class AboutFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as MainActivity).removeTabs()
-        activity?.setTitle(R.string.about)
+        val mActivity : MainActivity? = activity as MainActivity
+        mActivity?.removeTabs()
+        mActivity?.setTitle(R.string.about)
         if (Build.VERSION.SDK_INT > 17) {
-            (activity as MainActivity).setSelectedTab(12)
+            mActivity?.setSelectedTab(12)
         }
     }
 

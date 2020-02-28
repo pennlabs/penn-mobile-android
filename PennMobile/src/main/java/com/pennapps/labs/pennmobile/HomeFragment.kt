@@ -103,7 +103,7 @@ class HomeFragment : Fragment()  {
         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
         val firstName = sp.getString(getString(R.string.first_name), null)
         if (firstName != null) {
-            mActivity.title = "Welcome, $firstName!"
+            mActivity.setTitle("Welcome, $firstName!")
         } else {
             mActivity.setTitle(R.string.main_title)
         }
