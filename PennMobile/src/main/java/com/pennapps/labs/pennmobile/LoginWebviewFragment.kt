@@ -34,7 +34,7 @@ import javax.crypto.spec.IvParameterSpec
 
 class LoginWebviewFragment : Fragment() {
 
-    //TODO: refactor to separate webview UI from actual loggin in networking, put in OAuth2NetworkManager
+    //TODO: refactor to separate webview UI from actual logging in networking, put in OAuth2NetworkManager
 
     lateinit var webView: WebView
     lateinit var cancelButton: Button
@@ -43,7 +43,6 @@ class LoginWebviewFragment : Fragment() {
     private lateinit var mPlatform: Platform
     private lateinit var mActivity: MainActivity
     lateinit var sp: SharedPreferences
-    var loginURL = "https://pennintouch.apps.upenn.edu/pennInTouch/jsp/fast2.do"
     lateinit var codeChallenge: String
     lateinit var platformAuthUrl: String
     lateinit var clientID: String
@@ -68,7 +67,8 @@ class LoginWebviewFragment : Fragment() {
         redirectUri = getString(R.string.redirectUri)
         codeChallenge = getCodeChallenge(codeVerifier)
         platformAuthUrl = platformBaseUrl + "/accounts/authorize/?response_type=code&client_id=" +
-                clientID+ "&redirect_uri=" + redirectUri + "&code_challenge_method=S256" + "&code_challenge=" + codeChallenge + "&scope=read+introspection&state="
+                clientID+ "&redirect_uri=" + redirectUri + "&code_challenge_method=S256" +
+                "&code_challenge=" + codeChallenge + "&scope=read+introspection&state="
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -2,8 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/support_contacts_add"
-        android:icon="@drawable/baseline_save_alt_white_24dp"
-        android:iconTint="@color/color_primary_dark"
+        android:icon="@drawable/ic_contacts_download_blue"
         app:showAsAction="always"
         android:title="@string/search_title"/>
 </menu>
