@@ -127,6 +127,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             editor.remove(getString(R.string.last_name));
                             editor.remove(getString(R.string.email_address));
                             editor.remove(getString(R.string.pennkey));
+                            editor.remove(getString(R.string.accountID));
+                            editor.remove(getString(R.string.access_token));
                             editor.apply();
                             dialog.cancel();
                             mActivity.startLoginFragment();

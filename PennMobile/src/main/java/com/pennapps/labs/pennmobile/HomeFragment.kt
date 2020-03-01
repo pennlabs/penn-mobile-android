@@ -66,12 +66,15 @@ class HomeFragment : Fragment()  {
         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
         val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
         val accountID = sp.getString(getString(R.string.accountID), "")
+        val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
 
-        val oAuth2NetworkManager = OAuth2NetworkManager(mActivity)
+        Log.d("Home", "account id: " + accountID)
+        Log.d("Home", "session id: " +  sessionID)
+        Log.d("Home", "device id: " + deviceID)
 
         // get API data
         val labs = MainActivity.getLabsInstance()
-        labs.getHomePage(oAuth2NetworkManager.getDeviceId(), accountID, sessionID).subscribe({ cells ->
+        labs.getHomePage(deviceID, accountID, sessionID).subscribe({ cells ->
             mActivity.runOnUiThread {
                 val gsrBookingCell = HomeCell()
                 gsrBookingCell.type = "gsr_booking"

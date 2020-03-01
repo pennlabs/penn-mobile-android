@@ -155,8 +155,8 @@ class LaundrySettingsFragment : Fragment() {
         loadingPanel?.visibility = View.VISIBLE
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
     }
 }

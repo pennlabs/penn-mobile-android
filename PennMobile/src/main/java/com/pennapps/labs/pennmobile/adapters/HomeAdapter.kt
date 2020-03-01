@@ -120,6 +120,10 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
     private fun bindDiningCell(holder: ViewHolder, cell: HomeCell) {
         holder.itemView.home_card_title.text = "Favorites"
         holder.itemView.home_card_subtitle.text = "DINING HALLS"
+        holder.itemView.dining_prefs_btn.visibility = View.VISIBLE
+        holder.itemView.dining_prefs_btn.setOnClickListener {
+            // TODO: show list of dining halls and save prefs
+        }
 
         mLabs.venues()
                 .flatMap { venues -> Observable.from(venues) }
@@ -172,9 +176,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
                 builder?.addMenuItem("Share", PendingIntent.getActivity(mContext, 0,
                         share, PendingIntent.FLAG_CANCEL_CURRENT))
                 customTabsIntent = builder?.build()
-                mActivity?.let { activity ->
-                    customTabsIntent?.launchUrl(activity, Uri.parse(url))
-                }
+                customTabsIntent?.launchUrl(mActivity, Uri.parse(url))
             } else {
                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 startActivity(mContext, browserIntent, null)

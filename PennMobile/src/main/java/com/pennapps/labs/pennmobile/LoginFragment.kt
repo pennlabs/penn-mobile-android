@@ -63,6 +63,8 @@ class LoginFragment : Fragment() {
             editor.remove(getString(R.string.last_name))
             editor.remove(getString(R.string.email_address))
             editor.remove(getString(R.string.pennkey))
+            editor.remove(getString(R.string.access_token))
+            editor.remove(getString(R.string.accountID))
             editor.apply()
             mActivity.startHomeFragment()
         }
