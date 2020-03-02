@@ -153,7 +153,6 @@ public interface Labs {
             @Body Account account,
             Callback<SaveAccountResponse> callback);
 
-    // used for testing purposes only
     @GET("/laundry/preferences")
     Observable<List<Integer>> getLaundryPref(
             @Header("X-Device-ID") String deviceID);
@@ -163,5 +162,12 @@ public interface Labs {
     void sendLaundryPref(
             @Header("X-Device-ID") String deviceID,
             @Field("rooms") String rooms,
+            Callback<Response> callback);
+
+    @FormUrlEncoded
+    @POST("/dining/preferences")
+    void sendDiningPref(
+            @Header("X-Device-ID") String deviceID,
+            @Field("venues") String venues,
             Callback<Response> callback);
 }

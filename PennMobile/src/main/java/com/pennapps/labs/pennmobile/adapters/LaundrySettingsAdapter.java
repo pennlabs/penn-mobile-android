@@ -60,11 +60,6 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
             editor.putInt(s, 0);
             editor.apply();
         }
-
-
-        getPreferencesData();
-
-
     }
 
     @Override

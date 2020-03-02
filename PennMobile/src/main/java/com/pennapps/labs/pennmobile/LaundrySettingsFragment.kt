@@ -26,7 +26,6 @@ class LaundrySettingsFragment : Fragment() {
     private lateinit var mActivity: MainActivity
     private lateinit var mLabs: Labs
     private lateinit var mContext: Context
-    private var mSwipeRefreshLayout: SwipeRefreshLayout? = null
     internal var mHelpLayout: RelativeLayout? = null
 
     private var sp: SharedPreferences? = null
@@ -51,9 +50,6 @@ class LaundrySettingsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_laundry_settings, container, false)
-
-        mSwipeRefreshLayout = view.laundry_settings_swiperefresh
-        mSwipeRefreshLayout?.setOnRefreshListener{ getHalls() }
 
         // set up shared preferences
         sp = PreferenceManager.getDefaultSharedPreferences(mContext)
@@ -128,14 +124,12 @@ class LaundrySettingsFragment : Fragment() {
 
                         loadingPanel?.visibility = View.GONE
                         no_results?.visibility = View.GONE
-                        mSwipeRefreshLayout?.isRefreshing = false
                     }
                 }, {
                     mActivity.runOnUiThread {
                         loadingPanel?.visibility = View.GONE
                         no_results?.visibility = View.VISIBLE
                         mHelpLayout?.visibility = View.GONE
-                        mSwipeRefreshLayout?.isRefreshing = false
                     }
                 })
     }

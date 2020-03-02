@@ -201,9 +201,9 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.content_frame, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit();
+        onExpandableBottomNavigationItemSelected();
         toolbar.setVisibility(View.VISIBLE);
         tabBarView.setVisibility(View.VISIBLE);
-        onExpandableBottomNavigationItemSelected();
     }
 
     public void startLoginFragment() {
@@ -356,7 +356,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void fragmentTransact(Fragment fragment) {
+    public void fragmentTransact(Fragment fragment) {
         if (fragment != null) {
             final Fragment frag = fragment;
             runOnUiThread(new Runnable() {

@@ -16,6 +16,8 @@ import android.webkit.ValueCallback
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Log
+import android.view.View.INVISIBLE
+import android.widget.LinearLayout
 import com.pennapps.labs.pennmobile.api.Platform
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
@@ -23,6 +25,7 @@ import javax.crypto.SecretKey
 
 import com.pennapps.labs.pennmobile.api.Platform.*
 import com.pennapps.labs.pennmobile.classes.*
+import kotlinx.android.synthetic.main.fragment_login_webview.view.*
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
@@ -34,9 +37,8 @@ import javax.crypto.spec.IvParameterSpec
 
 class LoginWebviewFragment : Fragment() {
 
-    //TODO: refactor to separate webview UI from actual logging in networking, put in OAuth2NetworkManager
-
     lateinit var webView: WebView
+    lateinit var headerLayout: LinearLayout
     lateinit var cancelButton: Button
     lateinit var user: Account
     private lateinit var mLabs: Labs
@@ -74,15 +76,9 @@ class LoginWebviewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         webView = view.findViewById(R.id.webView)
+        headerLayout = view.linear_layout
         cancelButton = view.findViewById(R.id.cancel_button)
 
-        webView.webViewClient = object : WebViewClient() {
-
-            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                view?.loadUrl(url)
-                return true
-            }
-        }
         webView.loadUrl(platformAuthUrl)
         val webSettings = webView.getSettings()
         webSettings.setJavaScriptEnabled(true)
@@ -162,9 +158,10 @@ class LoginWebviewFragment : Fragment() {
 
     inner class MyWebViewClient : WebViewClient() {
 
-        override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
-            Log.d("Login", error.toString())
-            super.onReceivedError(view, request, error)
+        override fun onReceivedHttpError(view: WebView?, request: WebResourceRequest?, errorResponse: WebResourceResponse?) {
+            view?.visibility = INVISIBLE
+            headerLayout.visibility = INVISIBLE
+            super.onReceivedHttpError(view, request, errorResponse)
         }
 
         override fun shouldOverrideUrlLoading(view: WebView?, url: String): Boolean {
