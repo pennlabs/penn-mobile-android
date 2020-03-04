@@ -95,10 +95,10 @@ class HuntsmanGSRLogin : Fragment() {
     }
 
     // performs POST request and redirects user to GSR booking fragment
-    private fun bookHuntsmanGSR(sessionid : String) {
+    private fun bookHuntsmanGSR(sessionID : String) {
         mLabs.bookGSR(
                 //Passing the values
-                sessionid,
+                sessionID,
                 Integer.parseInt(gsrLocationCode),
                 Integer.parseInt(gsrID),
                 startTime,

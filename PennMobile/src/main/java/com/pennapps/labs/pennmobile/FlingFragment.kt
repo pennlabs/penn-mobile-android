@@ -58,7 +58,7 @@ class FlingFragment : Fragment() {
                 fling_fragment_recyclerview?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 fling_fragment_recyclerview?.adapter = FlingRecyclerViewAdapter(context, flingEvents)
             }
-        }, { activity?.runOnUiThread { Toast.makeText(activity, "Error: Could not retrieve Spring Fling schedule", Toast.LENGTH_LONG).show() } })
+        }, { activity?.runOnUiThread { Toast.makeText(activity, "Could not retrieve Spring Fling schedule", Toast.LENGTH_LONG).show() } })
         return view
     }
 

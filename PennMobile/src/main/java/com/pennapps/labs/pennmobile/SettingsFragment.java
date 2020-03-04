@@ -101,9 +101,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         logInOutButton = findPreference("pref_account_login_logout");
 
-        final String pennkey = sp.getString(getString(R.string.pennkey), "");
+        final String pennkey = sp.getString(getString(R.string.pennkey), null);
 
-        if (!pennkey.equals("")) {
+        if (pennkey != null) {
             logInOutButton.setTitle("Log out");
         } else {
             logInOutButton.setTitle("Log in");
@@ -113,7 +113,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             @Override
             public boolean onPreferenceClick(Preference preference) {
 
-                if (!pennkey.equals("")) {
+                if (pennkey != null) {
                     final AlertDialog dialog = new AlertDialog.Builder(getContext()).create();
                     dialog.setTitle("Log out");
                     dialog.setMessage("Are you sure you want to log out?");
@@ -129,6 +129,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             editor.remove(getString(R.string.pennkey));
                             editor.remove(getString(R.string.accountID));
                             editor.remove(getString(R.string.access_token));
+                            editor.remove(getString(R.string.guest_mode));
                             editor.apply();
                             dialog.cancel();
                             mActivity.startLoginFragment();

@@ -1,11 +1,11 @@
 package com.pennapps.labs.pennmobile
 
-import android.annotation.TargetApi
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -14,15 +14,13 @@ import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.pennapps.labs.pennmobile.adapters.GsrBuildingAdapter
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.GSRContainer
 import com.pennapps.labs.pennmobile.classes.GSRRoom
 import com.pennapps.labs.pennmobile.classes.GSRSlot
 import kotlinx.android.synthetic.main.fragment_gsr.*
 import kotlinx.android.synthetic.main.fragment_gsr.view.*
-import kotlinx.android.synthetic.main.no_results.*
-import kotlinx.android.synthetic.main.no_results.view.*
-import kotlinx.android.synthetic.main.no_results.view.no_results
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import java.util.*
@@ -189,7 +187,6 @@ class GsrFragment : Fragment() {
         val location = mapGSR(gsrLocationDropDown.selectedItem.toString())
         if (location == -1) {
             showNoResults()
-            Toast.makeText(activity, "Error: could not load buildings", Toast.LENGTH_LONG).show()
         } else {
             // display loading screen if user did not use swipe refresh
             if (!calledByRefreshLayout) {
@@ -220,7 +217,6 @@ class GsrFragment : Fragment() {
                             if (gsrRooms == null) {
                                 // a certification error causes "room" field to remain null
                                 showNoResults()
-                                Toast.makeText(activity, "Error: Could not load GSRs", Toast.LENGTH_SHORT).show()
                             } else {
                                 for (i in gsrRooms.indices) {
                                     val gsrRoom = gsrRooms[i]
@@ -261,7 +257,6 @@ class GsrFragment : Fragment() {
                     activity ->
                     activity.runOnUiThread {
                         showNoResults()
-                        Toast.makeText(activity, "Error: could not load GSRs", Toast.LENGTH_LONG).show()
                         selectDateButton.isClickable = true
                         selectTimeButton.isClickable = true
                         gsrLocationDropDown.isEnabled = true

@@ -40,6 +40,8 @@ class FitnessAdapter(private val gyms: List<Gym>)// get gym data from fragment (
             openClosed = "CLOSED"
             // set background to red for closed
             holder.itemView.gym_status_view.setBackgroundResource(R.drawable.label_red)
+        } else {
+            holder.itemView.gym_status_view.setBackgroundResource(R.drawable.label_green)
         }
 
         // get first word in name

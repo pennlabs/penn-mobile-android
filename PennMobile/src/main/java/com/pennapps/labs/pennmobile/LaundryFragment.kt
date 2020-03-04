@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.*
@@ -162,7 +163,7 @@ class LaundryFragment : Fragment() {
     }
 
     private fun addRoom(i: Int) {
-        mLabs?.room(i)?.subscribe({ room ->
+        mLabs.room(i)?.subscribe({ room ->
                     room.id = i
                     addRoomToList(room)
 
@@ -198,12 +199,13 @@ class LaundryFragment : Fragment() {
                         no_results?.visibility = View.VISIBLE
                         laundry_help_text?.visibility = View.GONE
                         laundry_machine_refresh?.isRefreshing = false
+                        Log.e("Laundry", "Error getting laundry data: " + it.stackTrace)
                     }
                 })
     }
 
     private fun addAvailability(i: Int) {
-        mLabs?.usage(i)?.subscribe({ usage ->
+        mLabs.usage(i)?.subscribe({ usage ->
                     usage.id = i
                     addUsageToList(usage)
                 }, {

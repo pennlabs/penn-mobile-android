@@ -22,7 +22,7 @@
     <string name="labs_icon">Penn Labs</string>
     <string name="course_desc_title">Description</string>
     <string name="add_contact">Add contact</string>
-    <string name="no_results">No results found.</string>
+    <string name="no_results">No results found</string>
     <string name="action_licenses">Open Source Licenses</string>
     <string name="save_contacts">Select Contacts to Save</string>
 
@@ -240,6 +240,7 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="guest_mode">"Guest"</string>
 
 
     <string-array name="previous_course_array">

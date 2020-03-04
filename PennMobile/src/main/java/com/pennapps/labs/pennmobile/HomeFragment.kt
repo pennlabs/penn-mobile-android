@@ -4,6 +4,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.Configuration
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -68,10 +71,6 @@ class HomeFragment : Fragment()  {
         val accountID = sp.getString(getString(R.string.accountID), "")
         val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
 
-        Log.d("Home", "account id: " + accountID)
-        Log.d("Home", "session id: " +  sessionID)
-        Log.d("Home", "device id: " + deviceID)
-
         // get API data
         val labs = MainActivity.getLabsInstance()
         labs.getHomePage(deviceID, accountID, sessionID).subscribe({ cells ->
@@ -87,7 +86,7 @@ class HomeFragment : Fragment()  {
         }, { throwable ->
             mActivity.runOnUiThread {
                 throwable.printStackTrace()
-                Toast.makeText(mActivity, "Error: Could not load Home page", Toast.LENGTH_LONG).show()
+                Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
                 loadingPanel?.visibility = View.GONE
                 home_refresh_layout?.isRefreshing = false
             }

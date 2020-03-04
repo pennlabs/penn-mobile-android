@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -59,6 +60,7 @@ import retrofit.RestAdapter;
 import retrofit.android.AndroidLog;
 import retrofit.converter.GsonConverter;
 
+import static android.content.res.Configuration.UI_MODE_NIGHT_YES;
 import static com.pennapps.labs.pennmobile.api.Platform.platformBaseUrl;
 
 public class MainActivity extends AppCompatActivity {
@@ -84,6 +86,11 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onCreate(savedInstanceState);
 
+        if ((getApplicationContext().getResources().getConfiguration().uiMode &
+                Configuration.UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES) {
+            setTheme(R.style.DarkBackground);
+        }
+
         setContentView(R.layout.activity_main);
         tabBarView = findViewById(R.id.bottom_navigation);
         toolbar = findViewById(R.id.toolbar);
@@ -105,15 +112,16 @@ public class MainActivity extends AppCompatActivity {
         /**
          * The following commented code is used for testing. Don't delete.
          */
-        SharedPreferences.Editor editor = mSharedPrefs.edit();
-        editor.remove(getString(R.string.pennkey));
-        editor.apply();
-        editor.commit();
+//        SharedPreferences.Editor editor = mSharedPrefs.edit();
+//        editor.remove(getString(R.string.pennkey));
+//        editor.apply();
+//        editor.commit();
 
-        // Show HomeFragment if logged in, LoginFragment otherwise
+        // Show HomeFragment if logged in, LoginFragment if
         String pennkey = mSharedPrefs.getString(getString(R.string.pennkey), null);
+        Boolean guestMode = mSharedPrefs.getBoolean(getString(R.string.guest_mode), false);
 
-        if (pennkey == null) {
+        if (pennkey == null && !guestMode) {
             startLoginFragment();
         } else {
             startHomeFragment();
@@ -200,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit();
+                .commitNow();
         onExpandableBottomNavigationItemSelected();
         toolbar.setVisibility(View.VISIBLE);
         tabBarView.setVisibility(View.VISIBLE);

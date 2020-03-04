@@ -45,8 +45,8 @@ class FitnessFragment : Fragment() {
                 LinearLayoutManager.VERTICAL, false)
 
         // add divider
-        val divider = DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
-        view.gym_list.addItemDecoration(divider)
+//        val divider = DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
+//        view.gym_list.addItemDecoration(divider)
 
         // handle swipe to refresh
         view.gym_refresh_layout.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
@@ -77,7 +77,7 @@ class FitnessFragment : Fragment() {
         }, { throwable ->
             mActivity.runOnUiThread {
                 throwable.printStackTrace()
-                Toast.makeText(activity, "Error: Could not load gym information", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "Could not load gym information", Toast.LENGTH_LONG).show()
                 loadingPanel?.visibility = View.GONE
                 no_results?.visibility = View.VISIBLE
                 gym_refresh_layout?.isRefreshing = false

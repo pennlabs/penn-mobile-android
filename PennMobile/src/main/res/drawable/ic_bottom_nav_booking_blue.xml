@@ -9,7 +9,7 @@
       <clip-path android:pathData="M-631.16,-631.16h776.95v776.95h-776.95z M 0,0"/>
       <path
           android:pathData="M0,0h63.07v63.07h-63.07z"
-          android:fillColor="@color/color_primary_dark"/>
+          android:fillColor="@color/color_bottom_nav_selected"/>
     </group>
   </group>
   <group>
@@ -18,7 +18,7 @@
       <clip-path android:pathData="M-631.16,-631.16h776.95v776.95h-776.95z M 0,0"/>
       <path
           android:pathData="M32.91,32.91h30.16v30.16h-30.16z"
-          android:fillColor="@color/color_primary_dark"/>
+          android:fillColor="@color/color_bottom_nav_selected"/>
     </group>
   </group>
   <group>
@@ -27,7 +27,7 @@
       <clip-path android:pathData="M-631.16,-631.16h776.95v776.95h-776.95z M 0,0"/>
       <path
           android:pathData="M40.22,40.22h15.54v15.54h-15.54z"
-          android:fillColor="@color/color_primary_dark"/>
+          android:fillColor="@color/color_bottom_nav_selected"/>
     </group>
   </group>
 </vector>

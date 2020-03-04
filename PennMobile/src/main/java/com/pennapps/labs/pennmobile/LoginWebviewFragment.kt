@@ -216,7 +216,6 @@ class LoginWebviewFragment : Fragment() {
                 object : Callback<GetUserResponse> {
 
                     override fun success(t: GetUserResponse?, response: Response?) {
-                        Log.d("Accounts", "user: " + t?.user?.username)
                         val user = t?.user
                         val editor = sp.edit()
                         editor.putString(getString(R.string.first_name), user?.firstName)
@@ -239,7 +238,6 @@ class LoginWebviewFragment : Fragment() {
         mLabs.saveAccount(account, object : Callback<SaveAccountResponse> {
 
             override fun success(t: SaveAccountResponse?, response: Response?) {
-                Log.d("Accounts", "accountID: " + t?.accountID)
                 val editor = sp.edit()
                 editor.putString(getString(R.string.accountID), t?.accountID)
                 editor.apply()

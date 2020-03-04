@@ -7,12 +7,17 @@
         <item name="android:textColor">@color/text_color</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:textColorSecondary">@color/color_primary_dark</item>
+        <item name="android:textColorSecondary">@color/color_toolbar_text</item>
         <item name="android:fontFamily">@font/segoe_ui</item>
     </style>
 
     <style name="DarkModeApi29" tools:targetApi="29">
         <item name="android:forceDarkAllowed">true</item>
+    </style>
+
+    <style name="DarkBackground" tools:targetApi="29">
+        <item name="android:forceDarkAllowed">true</item>
+        <item name="android:colorBackground">@color/black</item>
     </style>
 
     <style name="AppTheme.Launcher">
@@ -94,6 +99,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/secondary_text_color</item>
     </style>
 
     <style name="HallName">
@@ -148,9 +154,8 @@
         <item name="android:layout_marginLeft">50dp</item>
         <item name="android:layout_marginTop">75dp</item>
         <item name="android:gravity">center_vertical|center_horizontal</item>
-        <item name="android:textSize">20sp</item>
         <item name="android:visibility">gone</item>
-        <item name="android:textColor">@color/text_color</item>
+        <item name="android:textColor">@color/secondary_text_color</item>
     </style>
 
     <style name="LaundrySwitch">

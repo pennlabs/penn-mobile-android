@@ -7,14 +7,14 @@
       android:pathData="M28.91,2L28.92,2A26.91,26.91 0,0 1,55.83 28.91L55.83,28.93A26.91,26.91 0,0 1,28.92 55.84L28.91,55.84A26.91,26.91 0,0 1,2 28.93L2,28.91A26.91,26.91 0,0 1,28.91 2z"
       android:strokeWidth="4"
       android:fillColor="#00000000"
-      android:strokeColor="@color/color_primary_dark"/>
+      android:strokeColor="@color/color_bottom_nav_selected"/>
   <path
       android:pathData="M14.51,28.92m-3.56,0a3.56,3.56 0,1 1,7.12 0a3.56,3.56 0,1 1,-7.12 0"
-      android:fillColor="@color/color_primary_dark"/>
+      android:fillColor="@color/color_bottom_nav_selected"/>
   <path
       android:pathData="M29.1,28.92m-3.56,0a3.56,3.56 0,1 1,7.12 0a3.56,3.56 0,1 1,-7.12 0"
-      android:fillColor="@color/color_primary_dark"/>
+      android:fillColor="@color/color_bottom_nav_selected"/>
   <path
       android:pathData="M43.32,28.92m-3.56,0a3.56,3.56 0,1 1,7.12 0a3.56,3.56 0,1 1,-7.12 0"
-      android:fillColor="@color/color_primary_dark"/>
+      android:fillColor="@color/color_bottom_nav_selected"/>
 </vector>

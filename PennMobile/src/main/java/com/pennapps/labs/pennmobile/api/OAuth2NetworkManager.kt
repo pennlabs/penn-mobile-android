@@ -20,7 +20,6 @@ class OAuth2NetworkManager(mActivity: MainActivity) {
 
     fun getDeviceId() : String {
         val deviceID = Settings.Secure.getString(mActivity.contentResolver, Settings.Secure.ANDROID_ID) ?: "test"
-        Log.d("Accounts", "device id: " + deviceID)
         return deviceID
     }
 
@@ -42,7 +41,7 @@ class OAuth2NetworkManager(mActivity: MainActivity) {
         }
     }
 
-    fun refreshAccessToken() {
+    private fun refreshAccessToken() {
         val refreshToken = sp.getString(mActivity.getString(R.string.refresh_token), "")
         val clientID = sp.getString(mActivity.getString(R.string.clientID), "")
 
@@ -57,7 +56,6 @@ class OAuth2NetworkManager(mActivity: MainActivity) {
                             editor.putString(mActivity.getString(R.string.refresh_token), t?.refreshToken)
                             editor.putString(mActivity.getString(R.string.expires_in), t?.expiresIn)
                             editor.apply()
-                            Log.d("Accounts", t?.accessToken)
                         }
                     }
 
@@ -67,24 +65,6 @@ class OAuth2NetworkManager(mActivity: MainActivity) {
                     }
                 })
     }
-
-// Java code for Async task
-
-//    new AsyncTask<String, String, String>() {
-//        protected String doInBackground(String... inputs) {
-//            try {
-//                Thread.sleep(3000);
-//            } catch (Exception e) {
-//
-//            }
-//            return null;
-//        }
-//        protected void onPostExecute(String input) {
-//            resultTv.setText("?");
-//            resultTv.setTextColor(getColor(R.color.blue));
-//            getNewNumbers(difficulty);
-//        }
-//    }.execute();
 
 
 }

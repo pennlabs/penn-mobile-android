@@ -21,7 +21,6 @@ import com.pennapps.labs.pennmobile.classes.HomeCell
 import com.pennapps.labs.pennmobile.classes.Venue
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.home_base_card.view.*
-import kotlinx.android.synthetic.main.home_dining_item.view.*
 import kotlinx.android.synthetic.main.home_news_card.view.*
 import rx.Observable
 

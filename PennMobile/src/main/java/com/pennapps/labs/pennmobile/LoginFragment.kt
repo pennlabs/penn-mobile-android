@@ -65,6 +65,7 @@ class LoginFragment : Fragment() {
             editor.remove(getString(R.string.pennkey))
             editor.remove(getString(R.string.access_token))
             editor.remove(getString(R.string.accountID))
+            editor.putBoolean(getString(R.string.guest_mode), true)
             editor.apply()
             mActivity.startHomeFragment()
         }

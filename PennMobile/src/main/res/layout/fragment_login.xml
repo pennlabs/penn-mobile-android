@@ -33,7 +33,6 @@
         android:layout_height="50sp"
         android:layout_marginBottom="35dp"
         android:background="@drawable/very_rounded_corners"
-        android:backgroundTint="@color/pennmobile_blue"
         android:text="@string/pennkey_login"
         android:textColor="@color/white"
         android:textSize="16sp"

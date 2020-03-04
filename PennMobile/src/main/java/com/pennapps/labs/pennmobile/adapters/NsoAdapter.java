@@ -94,7 +94,6 @@ public class NsoAdapter extends ArrayAdapter<RSSItem> {
             holder.tvTime.setText(getEventTime(item));
         } catch (ParseException e) {
             //ignore
-//            Log.d("NSO", "parse error:", e);
         }
         holder.tvDescription.setText(getDescription(item));
 

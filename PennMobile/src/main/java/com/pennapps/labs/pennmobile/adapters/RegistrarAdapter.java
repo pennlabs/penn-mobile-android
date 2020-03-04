@@ -80,7 +80,7 @@ public class RegistrarAdapter extends ArrayAdapter<Course> {
         holder.courseTitle.setText(course.course_title);
         holder.courseActivity.setText(course.activity);
         holder.courseTimes.setText(meetTimes.toString());
-        holder.courseTimes.setTextColor(view.getResources().getColor(R.color.secondary_text));
+        holder.courseTimes.setTextColor(view.getResources().getColor(R.color.settings_grey));
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(view.getContext());
         Set<String> starredCourses = sharedPref.getStringSet(mContext.getResources().getString(R.string.search_reg_star), new HashSet<String>());

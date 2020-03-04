@@ -33,7 +33,11 @@
     <color name="logo_dark_blue">#12274B</color>
     <color name="logo_light_blue">#2B9BE5</color>
     <color name="text_color">#1A1A1A</color>
-    <color name="secondary_text">#737373</color>
+    <color name="secondary_text_color">#676767</color>
+    <color name="settings_grey">#737373</color>
+    <color name="color_toolbar_text">#1A1A1A</color>
+    <color name="color_bottom_nav_selected">#1D79CE</color>
+    <color name="color_bottom_nav_unselected">#B5B6B6</color>
 
     <color name="star_color_off">#cccccc</color>
     <color name="star_color_on">#f4b400</color>
@@ -52,6 +56,5 @@
     <color name="gsr_cancel_red">#E25152</color>
 
     <color name="pennmobile_blue">#1D79CE</color>
-    <color name="nav_grey">#B5B6B6</color>
 
 </resources>

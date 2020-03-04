@@ -1,10 +1,11 @@
-package com.pennapps.labs.pennmobile
+package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.pennapps.labs.pennmobile.*
 import org.joda.time.DateTime
 
 class GsrRoomAdapter(internal var timeRanges: ArrayList<String>, internal var ids: ArrayList<String>,

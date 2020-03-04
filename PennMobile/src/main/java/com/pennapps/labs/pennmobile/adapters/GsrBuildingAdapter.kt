@@ -1,10 +1,12 @@
-package com.pennapps.labs.pennmobile
+package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.pennapps.labs.pennmobile.GsrBuildingHolder
+import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.GSRContainer
 import org.joda.time.DateTime
 import java.util.*
