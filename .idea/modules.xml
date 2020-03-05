@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/PennMobile/PennMobile.iml" filepath="$PROJECT_DIR$/PennMobile/PennMobile.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/penn-mobile-android.iml" filepath="$PROJECT_DIR$/.idea/penn-mobile-android.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sahitpenmatcha-penn-mobile-android.iml" filepath="$PROJECT_DIR$/sahitpenmatcha-penn-mobile-android.iml" />
     </modules>
   </component>
 </project>
