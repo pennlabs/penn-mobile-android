@@ -202,10 +202,11 @@ class NewsFragment : ListFragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as MainActivity).removeTabs()
-        activity?.setTitle(R.string.news)
+        val mActivity : MainActivity? = activity as MainActivity
+        mActivity?.removeTabs()
+        mActivity?.setTitle(R.string.news)
         if (Build.VERSION.SDK_INT > 17){
-            (activity as MainActivity).setSelectedTab(8)
+            mActivity?.setSelectedTab(8)
         }
     }
 

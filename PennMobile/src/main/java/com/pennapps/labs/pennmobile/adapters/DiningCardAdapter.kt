@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -17,7 +18,7 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.home_dining_item.view.*
+import kotlinx.android.synthetic.main.dining_list_item.view.*
 import rx.android.schedulers.AndroidSchedulers
 import rx.functions.Action1
 
@@ -92,7 +93,8 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
         mActivity = mContext as MainActivity
         mLabs = MainActivity.getLabsInstance()
 
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.home_dining_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.dining_list_item, parent, false)
+        view?.dining_progress?.visibility = GONE
         return ViewHolder(view)
     }
 

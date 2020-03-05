@@ -19,7 +19,7 @@
             android:contentDescription="@string/add_contact"
             android:scaleType="fitXY"
             android:src="@drawable/ic_person_add_black_36dp"
-            android:tint="@color/secondary_text"
+            android:tint="@color/settings_grey"
             android:layout_centerInParent="true"
             android:id="@+id/contact_icon"
             />
@@ -75,7 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="13sp"
-            android:textColor="@color/secondary_text" />
+            android:textColor="@color/settings_grey" />
 
     </RelativeLayout>
 

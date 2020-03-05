@@ -1,12 +1,8 @@
 package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.text.Layout
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
@@ -28,12 +24,8 @@ import com.squareup.picasso.Picasso
 import java.util.Collections
 import java.util.Comparator
 
-import butterknife.BindView
-import butterknife.ButterKnife
 import kotlinx.android.synthetic.main.dining_list_item.view.*
-import kotlinx.android.synthetic.main.home_dining_item.view.*
 import rx.android.schedulers.AndroidSchedulers
-import rx.functions.Action1
 
 class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Adapter<DiningAdapter.DiningViewHolder>() {
     private lateinit var mLabs: Labs
@@ -164,10 +156,10 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
     class DiningViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         val layout: ConstraintLayout? = view.dining_list_item_layout
-        val hallNameTV: TextView? = view.dining_hall_name
-        val hallStatus: TextView? = view.dining_hall_status
-        val hallImage: ImageView? = view.dining_hall_image
-        val hallHours: TextView? = view.dining_hall_hours
+        val hallNameTV: TextView? = view.item_dining_name
+        val hallStatus: TextView? = view.item_dining_status
+        val hallImage: ImageView? = view.item_dining_image
+        val hallHours: TextView? = view.item_dining_hours
         val menuArrow: ImageView? = view.dining_hall_menu_indicator
         val progressBar: ProgressBar? = view.dining_progress
     }

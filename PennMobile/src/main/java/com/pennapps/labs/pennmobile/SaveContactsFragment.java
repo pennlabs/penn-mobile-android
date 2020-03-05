@@ -98,7 +98,8 @@ public class SaveContactsFragment extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle(R.string.save_contacts);
+        MainActivity mActivity = (MainActivity) getActivity();
+        mActivity.setTitle(R.string.save_contacts);
     }
 
     private void addContacts() {

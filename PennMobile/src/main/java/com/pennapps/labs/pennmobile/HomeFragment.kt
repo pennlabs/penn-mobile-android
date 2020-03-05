@@ -4,6 +4,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.Configuration
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -24,7 +27,7 @@ import android.provider.Settings.Secure
 import androidx.preference.PreferenceManager
 import androidx.core.content.ContextCompat.getSystemService
 import android.telephony.TelephonyManager
-
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 
 
 class HomeFragment : Fragment()  {
@@ -63,20 +66,19 @@ class HomeFragment : Fragment()  {
     private fun getHomePage() {
 
         // get session id from shared preferences
-        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+        val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
         val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
-
-        val deviceID = Secure.getString(mActivity.contentResolver,
-                Secure.ANDROID_ID) ?: "test"
+        val accountID = sp.getString(getString(R.string.accountID), "")
+        val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
 
         // get API data
-        val labs = MainActivity.getLabsInstance() //TODO: get for an account id
-        labs.getHomePage(deviceID, null, null).subscribe({ cells ->
+        val labs = MainActivity.getLabsInstance()
+        labs.getHomePage(deviceID, accountID, sessionID).subscribe({ cells ->
             mActivity.runOnUiThread {
                 val gsrBookingCell = HomeCell()
                 gsrBookingCell.type = "gsr_booking"
                 gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "VP Weigle")
-                cells?.add(cells?.size - 1, gsrBookingCell)
+                cells?.add(cells.size - 1, gsrBookingCell)
                 home_cells_rv?.adapter = HomeAdapter(ArrayList(cells))
                 loadingPanel?.visibility = View.GONE
                 home_refresh_layout?.isRefreshing = false
@@ -84,7 +86,7 @@ class HomeFragment : Fragment()  {
         }, { throwable ->
             mActivity.runOnUiThread {
                 throwable.printStackTrace()
-                Toast.makeText(activity, "Error: Could not load Home page", Toast.LENGTH_LONG).show()
+                Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
                 loadingPanel?.visibility = View.GONE
                 home_refresh_layout?.isRefreshing = false
             }
@@ -100,7 +102,13 @@ class HomeFragment : Fragment()  {
     override fun onResume() {
         super.onResume()
         mActivity.removeTabs()
-        mActivity.setTitle(R.string.home)
+        val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
+        val firstName = sp.getString(getString(R.string.first_name), null)
+        if (firstName != null) {
+            mActivity.setTitle("Welcome, $firstName!")
+        } else {
+            mActivity.setTitle(R.string.main_title)
+        }
         if (Build.VERSION.SDK_INT > 17){
             mActivity.setSelectedTab(0)
         }

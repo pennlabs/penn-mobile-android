@@ -86,7 +86,7 @@ public class SupportFragment extends ListFragment {
     public void onResume() {
         super.onResume();
         mActivity.removeTabs();
-        getActivity().setTitle(R.string.support);
+        mActivity.setTitle(R.string.support);
         if (Build.VERSION.SDK_INT > 17){
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.setSelectedTab(10);

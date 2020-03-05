@@ -54,7 +54,7 @@
         android:layout_below="@+id/tv_event_time"
         android:layout_toLeftOf="@id/star_event"
         android:paddingBottom="2dp"
-        android:textColor="@color/secondary_text"
+        android:textColor="@color/settings_grey"
         android:textSize="16sp"
         tools:text="Sign up here to take a trip to bank and phone companies with the ePHINS and iPHINS to get settled in Philadelphia." />
 

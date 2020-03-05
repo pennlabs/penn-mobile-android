@@ -152,7 +152,7 @@ public class MenuFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle(mDiningHall.getName());
+        mActivity.setTitle(mDiningHall.getName());
 
         if (mActivity.getSupportActionBar() != null ) {
             mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -167,7 +167,7 @@ public class MenuFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        getActivity().setTitle(R.string.dining);
+        mActivity.setTitle(R.string.dining);
         mActivity.removeTabs();
         if (mActivity.getSupportActionBar() != null ) {
             mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);

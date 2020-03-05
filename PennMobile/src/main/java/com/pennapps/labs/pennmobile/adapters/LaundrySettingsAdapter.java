@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile.adapters;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.pennapps.labs.pennmobile.MainActivity;
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.api.Labs;
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
     private List<Switch> switches = new ArrayList<>();
     private int maxNumRooms = 3;
     private Labs labs;
+    private String deviceID;
 
     public LaundrySettingsAdapter(Context context, HashMap<String, List<LaundryRoomSimple>> laundryRooms, List<String> laundryHalls) {
         this.mContext = context;
@@ -46,6 +49,8 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
         this.laundryRooms = laundryRooms;
         sp = PreferenceManager.getDefaultSharedPreferences(mContext);
         s = mContext.getString(R.string.num_rooms_selected_pref);
+        MainActivity mainActivity = (MainActivity) mContext;
+        deviceID = (new OAuth2NetworkManager(mainActivity)).getDeviceId();
 
         labs = MainActivity.getLabsInstance();
 
@@ -55,11 +60,6 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
             editor.putInt(s, 0);
             editor.apply();
         }
-
-
-        getPreferencesData();
-
-
     }
 
     @Override
@@ -265,7 +265,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
 
     private void getPreferencesData() {
         labs = MainActivity.getLabsInstance();
-        labs.testPref("test_android").subscribe(new Action1<List<Integer>>() {
+        labs.getLaundryPref(deviceID).subscribe(new Action1<List<Integer>>() {
             @Override
             public void call(List<Integer> integers) {
             }
@@ -284,17 +284,19 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
             }
         }
 
-        //prefernces must be in the form of 1,2,3 (exclude brackets)
+        //preferences must be in the form of 1,2,3 (exclude brackets)
         String api_prepared_string = favoriteLaundryRooms.toString();
         api_prepared_string = api_prepared_string.substring(1, api_prepared_string.length() - 1);
 
-        labs.sendLaundryPref("test_android", api_prepared_string, new ResponseCallback() {
+        labs.sendLaundryPref(deviceID, api_prepared_string, new ResponseCallback() {
             @Override
             public void success(Response response) {
+                Log.i("Laundry", "Saved laundry preferences");
             }
 
             @Override
             public void failure(RetrofitError error) {
+                Log.e("Laundry", "Error saving laundry preferences: " + error);
             }
         });
     }

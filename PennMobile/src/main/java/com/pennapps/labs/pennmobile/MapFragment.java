@@ -1203,7 +1203,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 .radius(CIRCLE_SIZE)
                 .fillColor(getResources().getColor(R.color.white))
                 .strokeWidth(3)
-                .strokeColor(getResources().getColor(R.color.secondary_text))
+                .strokeColor(getResources().getColor(R.color.settings_grey))
                 .zIndex(1)));
         busStopAdded.add(busStop);
     }

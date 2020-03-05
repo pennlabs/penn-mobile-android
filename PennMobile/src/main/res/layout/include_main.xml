@@ -121,10 +121,21 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
+                android:background="@color/white"
                 app:layout_scrollFlags="scroll|enterAlways"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Penn Mobile"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/color_toolbar_text"
+                    android:layout_gravity="center"
+                    android:id="@+id/toolbar_title" />
+
+            </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -152,7 +163,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:max_tab_count="5"
             app:more_icon_resource="@drawable/ic_bottom_nav_more_grey"
-            app:selected_tab_text_color="@color/color_primary_dark"
+            app:selected_tab_text_color="@color/color_bottom_nav_selected"
             app:tab_resource="@menu/bottom_tabs"
             tools:ignore="SmallSp" />
 

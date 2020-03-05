@@ -43,7 +43,7 @@
         android:id="@+id/map_search_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/map_card"
+        android:background="@color/color_background"
         android:orientation="vertical"
         android:padding="10dp"
         android:visibility="gone"
@@ -61,7 +61,7 @@
             android:id="@+id/map_search_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/secondary_text"
+            android:textColor="@color/settings_grey"
             android:textSize="13sp" />
     </LinearLayout>
 

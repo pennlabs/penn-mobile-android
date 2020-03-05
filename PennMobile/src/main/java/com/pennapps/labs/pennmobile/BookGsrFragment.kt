@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import android.view.LayoutInflater
@@ -37,6 +38,7 @@ class BookGsrFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         arguments?.let {arguments ->
             gsrID = arguments.getString("gsrID") ?: ""
             gsrLocationCode = arguments.getString("gsrLocationCode") ?: ""
@@ -44,16 +46,14 @@ class BookGsrFragment : Fragment() {
             endTime = arguments.getString("endTime") ?: ""
         }
         mLabs = MainActivity.getLabsInstance()
-        activity?.let {activity ->
-            activity.setTitle(R.string.gsr)
-        }
+        val mActivity : MainActivity? = activity as MainActivity
+        mActivity?.setTitle(R.string.gsr)
     }
 
     override fun onResume() {
         super.onResume()
-        activity?.let { activity ->
-            activity.setTitle(R.string.gsr)
-        }
+        val mActivity : MainActivity? = activity as MainActivity
+        mActivity?.setTitle(R.string.gsr)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -128,7 +128,8 @@ class BookGsrFragment : Fragment() {
                                 editor.apply()
                             }
                             else {
-                                Toast.makeText(activity, "GSR booking failed with " + result.getError(), Toast.LENGTH_LONG).show()
+                                Toast.makeText(activity, "GSR booking failed", Toast.LENGTH_LONG).show()
+                                Log.e("BookGsrFragment", "GSR booking failed with " + result.getError())
                             }
                             // go back to GSR fragment
                             val fragmentManager = (context as MainActivity).supportFragmentManager

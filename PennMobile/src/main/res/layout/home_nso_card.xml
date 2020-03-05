@@ -41,7 +41,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_chevron_right_black_24dp" />
+                android:src="@drawable/ic_chevron_right_black_24dp"
+                android:tint="@color/settings_grey"/>
 
         </RelativeLayout>
 

@@ -36,16 +36,9 @@
 
     </RelativeLayout>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/laundry_settings_swiperefresh"
+    <ExpandableListView
+        android:id="@+id/laundry_building_expandable_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ExpandableListView
-            android:id="@+id/laundry_building_expandable_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:groupIndicator="@null" />
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        android:layout_height="match_parent"
+        android:groupIndicator="@null" />
 </LinearLayout>

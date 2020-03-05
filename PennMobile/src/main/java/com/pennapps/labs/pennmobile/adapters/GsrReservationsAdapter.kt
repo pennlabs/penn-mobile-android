@@ -24,8 +24,10 @@ import kotlin.Result.Companion.success
 import android.R.attr.radius
 import android.content.Intent
 import android.content.res.Resources
+import android.provider.Settings
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.widget.Toast.LENGTH_SHORT
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import kotlinx.android.synthetic.main.fragment_gsr_reservations.*
 
 
@@ -71,10 +73,11 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                 val sessionID = if (reservation.info == null) sp.getString(mContext.getString(R.string.huntsmanGSR_SessionID), "") else null
 
                 val labs = MainActivity.getLabsInstance()
-                labs.cancelReservation("test_android", bookingID, sessionID, object : ResponseCallback() {
-                    // TODO: change to actual device id
+                labs.cancelReservation(null, bookingID, sessionID, object : ResponseCallback() {
                     override fun success(response: Response) {
-                        reservations.removeAt(position)
+                        if (reservations.size > position) {
+                            reservations.removeAt(position)
+                        }
                         run {
                             if (reservations.size == 0) {
                                 var intent = Intent("refresh")

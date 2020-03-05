@@ -4,7 +4,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.Configuration
 import android.content.res.Resources
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import androidx.fragment.app.Fragment
@@ -56,7 +59,7 @@ class GsrReservationsFragment : Fragment() {
     private fun getReservations() {
 
         // get email and session id from shared preferences
-        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+        val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
         val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
         val email = sp.getString(getString(R.string.email_address), "")
 

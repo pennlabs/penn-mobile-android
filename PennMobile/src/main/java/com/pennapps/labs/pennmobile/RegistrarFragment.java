@@ -80,7 +80,7 @@ public class RegistrarFragment extends SearchFavoriteFragment {
     public void onResume() {
         super.onResume();
         mActivity.removeTabs();
-        getActivity().setTitle(R.string.registrar);
+        mActivity.setTitle(R.string.registrar);
         if (Build.VERSION.SDK_INT > 17){
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.setSelectedTab(6);

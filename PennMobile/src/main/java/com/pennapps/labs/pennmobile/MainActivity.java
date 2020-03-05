@@ -2,34 +2,40 @@ package com.pennapps.labs.pennmobile;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.tabs.TabLayout;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.pennapps.labs.pennmobile.ExpandedBottomNavBar.ExpandableBottomTabBar;
 import com.pennapps.labs.pennmobile.api.Labs;
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager;
+import com.pennapps.labs.pennmobile.api.Platform;
 import com.pennapps.labs.pennmobile.api.Serializer;
 import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
@@ -45,19 +51,30 @@ import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
 import com.pennapps.labs.pennmobile.classes.Person;
+import com.pennapps.labs.pennmobile.classes.Account;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
 import java.util.List;
 
 import retrofit.RestAdapter;
+import retrofit.android.AndroidLog;
 import retrofit.converter.GsonConverter;
+
+import static android.content.res.Configuration.UI_MODE_NIGHT_YES;
+import static com.pennapps.labs.pennmobile.api.Platform.platformBaseUrl;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ExpandableBottomTabBar tabBarView;
     private static Labs mLabs;
+    private static Platform mPlatform;
     private static final int CODE_MAP = 1;
+    private ExpandableBottomTabBar tabBarView;
+    private Toolbar toolbar;
+    private TextView toolbarTitle;
     private boolean tab_showed;
+    private FragmentManager fragmentManager;
+    private String password;
+    private SharedPreferences mSharedPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,26 +86,46 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onCreate(savedInstanceState);
 
+        if ((getApplicationContext().getResources().getConfiguration().uiMode &
+                Configuration.UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES) {
+            setTheme(R.style.DarkBackground);
+        }
+
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        tabBarView = findViewById(R.id.bottom_navigation);
+        toolbar = findViewById(R.id.toolbar);
+        toolbarTitle = findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
+
+        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+
+        fragmentManager = getSupportFragmentManager();
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             getSupportActionBar().setHomeButtonEnabled(false);
         }
 
-        // Set default fragment to HomeFragment
-        FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-        tx.replace(R.id.content_frame, new HomeFragment());
-        tx.commit();
+        /**
+         * The following commented code is used for testing. Don't delete.
+         */
+//        SharedPreferences.Editor editor = mSharedPrefs.edit();
+//        editor.remove(getString(R.string.pennkey));
+//        editor.apply();
+//        editor.commit();
 
-        // Expandable bottom nav bar
-        tabBarView = findViewById(R.id.bottom_navigation);
-        onExpandableBottomNavigationItemSelected();
+        // Show HomeFragment if logged in, LoginFragment if
+        String pennkey = mSharedPrefs.getString(getString(R.string.pennkey), null);
+        Boolean guestMode = mSharedPrefs.getBoolean(getString(R.string.guest_mode), false);
+
+        if (pennkey == null && !guestMode) {
+            startLoginFragment();
+        } else {
+            startHomeFragment();
+        }
     }
 
     private void onExpandableBottomNavigationItemSelected() {
@@ -150,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        setTitle(R.string.main_title);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -165,6 +201,43 @@ public class MainActivity extends AppCompatActivity {
         if (view != null) {
             inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
+    }
+
+    public void startHomeFragment() {
+        Fragment fragment = new HomeFragment();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commitNow();
+        onExpandableBottomNavigationItemSelected();
+        toolbar.setVisibility(View.VISIBLE);
+        tabBarView.setVisibility(View.VISIBLE);
+    }
+
+    public void startLoginFragment() {
+        Fragment fragment = new LoginFragment();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit();
+        toolbar.setVisibility(View.GONE);
+        tabBarView.setVisibility(View.GONE);
+    }
+
+    public static Platform getPlatformInstance() {
+        if (mPlatform == null) {
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            Gson gson = gsonBuilder.create();
+
+            RestAdapter restAdapter = new RestAdapter.Builder()
+                    .setConverter(new GsonConverter(gson))
+                    .setLogLevel(RestAdapter.LogLevel.FULL)
+                    .setLog(new AndroidLog("Platform"))
+                    .setEndpoint(platformBaseUrl)
+                    .build();
+            mPlatform = restAdapter.create(Platform.class);
+        }
+        return mPlatform;
     }
 
     public static Labs getLabsInstance() {
@@ -209,7 +282,8 @@ public class MainActivity extends AppCompatActivity {
             // gets homepage
             gsonBuilder.registerTypeAdapter(new TypeToken<List<HomeCell>>(){
             }.getType(), new Serializer.HomePageSerializer());
-
+            //get user
+            gsonBuilder.registerTypeAdapter(Account.class, new Serializer.UserSerializer());
             Gson gson = gsonBuilder.create();
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setConverter(new GsonConverter(gson))
@@ -290,14 +364,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void fragmentTransact(Fragment fragment) {
+    public void fragmentTransact(Fragment fragment) {
         if (fragment != null) {
             final Fragment frag = fragment;
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        FragmentManager fragmentManager = getSupportFragmentManager();
                         fragmentManager.beginTransaction()
                                 .replace(R.id.content_frame, frag)
                                 .addToBackStack("Main Activity")
@@ -329,7 +402,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     Fragment fragment = new MapFragment();
-                    FragmentManager fragmentManager = getSupportFragmentManager();
                     fragmentManager.beginTransaction()
                             .replace(R.id.content_frame, fragment)
                             .addToBackStack(null)
@@ -337,6 +409,13 @@ public class MainActivity extends AppCompatActivity {
                             .commitAllowingStateLoss();
                 }
             });
+        }
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        if (toolbarTitle != null) {
+            toolbarTitle.setText(title);
         }
     }
     

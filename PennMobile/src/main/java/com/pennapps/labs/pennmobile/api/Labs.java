@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.api;
 
+import com.google.gson.annotations.JsonAdapter;
 import com.pennapps.labs.pennmobile.classes.Building;
 import com.pennapps.labs.pennmobile.classes.BusRoute;
 import com.pennapps.labs.pennmobile.classes.BusStop;
@@ -15,18 +16,23 @@ import com.pennapps.labs.pennmobile.classes.HomeCell;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
+import com.pennapps.labs.pennmobile.classes.OAuthUser;
 import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Review;
+import com.pennapps.labs.pennmobile.classes.Account;
+import com.pennapps.labs.pennmobile.classes.SaveAccountResponse;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
 import java.util.List;
 
 import retrofit.Callback;
 import retrofit.client.Response;
+import retrofit.http.Body;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.Header;
+import retrofit.http.Headers;
 import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -37,6 +43,11 @@ import rx.Observable;
  * Retrofit interface to the Penn Labs API
  */
 public interface Labs {
+
+    @GET("/registrar/search/person/{person_id}")
+    Observable<Account> user(
+            @Path("person_id") String person_id);
+
     @GET("/registrar/search")
     Observable<List<Course>> courses(
             @Query("q") String name);
@@ -73,11 +84,9 @@ public interface Labs {
     Observable<Review> course_review(
             @Path("id") String id);
 
-    // new
     @GET("/laundry/halls/ids")
     Observable<List<LaundryRoomSimple>> laundryRooms();
 
-    // new
     @GET("/laundry/hall/{id}")
     Observable<LaundryRoom> room(
             @Path("id") int id);
@@ -114,18 +123,6 @@ public interface Labs {
     @GET("/events/fling")
     Observable<List<FlingEvent>> getFlingEvents();
 
-    // used for testing purposes only
-    @GET("/laundry/preferences")
-    Observable<List<Integer>> testPref(
-            @Header("X-Device-ID") String deviceID);
-
-    @FormUrlEncoded
-    @POST("/laundry/preferences")
-    void sendLaundryPref(
-            @Header("X-Device-ID") String deviceID,
-            @Field("rooms") String rooms,
-            Callback<Response> callback);
-
     // home page
     @GET("/homepage")
     Observable<List<HomeCell>> getHomePage(
@@ -147,5 +144,30 @@ public interface Labs {
             @Header("X-Device-ID") String deviceID,
             @Field("booking_id") String bookingID,
             @Field("sessionid") String sessionID,
+            Callback<Response> callback);
+
+    // accounts
+    @Headers({"Content-Type: application/json"})
+    @POST("/account/register")
+    void saveAccount(
+            @Body Account account,
+            Callback<SaveAccountResponse> callback);
+
+    @GET("/laundry/preferences")
+    Observable<List<Integer>> getLaundryPref(
+            @Header("X-Device-ID") String deviceID);
+
+    @FormUrlEncoded
+    @POST("/laundry/preferences")
+    void sendLaundryPref(
+            @Header("X-Device-ID") String deviceID,
+            @Field("rooms") String rooms,
+            Callback<Response> callback);
+
+    @FormUrlEncoded
+    @POST("/dining/preferences")
+    void sendDiningPref(
+            @Header("X-Device-ID") String deviceID,
+            @Field("venues") String venues,
             Callback<Response> callback);
 }

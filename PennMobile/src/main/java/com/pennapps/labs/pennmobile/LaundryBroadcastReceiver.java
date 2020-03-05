@@ -76,6 +76,8 @@ public class LaundryBroadcastReceiver extends BroadcastReceiver {
 
         // cancel intent after notification/alarm goes off
         PendingIntent fromIntent = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_NO_CREATE);
-        fromIntent.cancel();
+        if (fromIntent != null) {
+            fromIntent.cancel();
+        }
     }
 }

@@ -58,14 +58,15 @@ class FlingFragment : Fragment() {
                 fling_fragment_recyclerview?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 fling_fragment_recyclerview?.adapter = FlingRecyclerViewAdapter(context, flingEvents)
             }
-        }, { activity?.runOnUiThread { Toast.makeText(activity, "Error: Could not retrieve Spring Fling schedule", Toast.LENGTH_LONG).show() } })
+        }, { activity?.runOnUiThread { Toast.makeText(activity, "Could not retrieve Spring Fling schedule", Toast.LENGTH_LONG).show() } })
         return view
     }
 
     override fun onResume() {
         super.onResume()
-        (activity as MainActivity).removeTabs()
-        activity?.setTitle(R.string.spring_fling)
+        val mActivity : MainActivity? = activity as MainActivity
+        mActivity?.removeTabs()
+        mActivity?.setTitle(R.string.spring_fling)
         if (Build.VERSION.SDK_INT > 17){
             (activity as MainActivity).setSelectedTab(9)
         }

@@ -15,8 +15,8 @@
         tools:ignore="MissingPrefix" />
     <tab
         android:id="@+id/nav_dining"
-        android:icon="@drawable/ic_bottom_nav_dining_grey"
-        icon_pressed= "@drawable/ic_bottom_nav_dining_blue"
+        android:icon="@drawable/ic_dining_grey"
+        icon_pressed= "@drawable/ic_dining_blue"
         android:title="@string/dining"
         tools:ignore="MissingPrefix" />
 
@@ -26,8 +26,6 @@
         icon_pressed= "@drawable/ic_bottom_nav_laundry_blue"
         android:title="@string/laundry"
         tools:ignore="MissingPrefix" />
-
-
 
     <tab
         android:id="@+id/nav_fitness"
@@ -61,8 +59,8 @@
 
     <tab
         android:id="@+id/nav_fling"
-        android:icon="@drawable/ic_bottom_nav_fling_grey"
-        icon_pressed= "@drawable/ic_bottom_nav_fling_blue"
+        android:icon="@drawable/ic_spring_fling_grey"
+        icon_pressed= "@drawable/ic_spring_fling_blue"
         android:title="@string/spring_fling"
         tools:ignore="MissingPrefix" />
 
@@ -82,8 +80,8 @@
 
     <tab
         android:id="@+id/nav_about"
-        android:icon="@drawable/ic_bottom_nav_info_grey"
-        icon_pressed= "@drawable/ic_bottom_nav_info_blue"
+        android:icon="@drawable/ic_info_grey"
+        icon_pressed= "@drawable/ic_info_blue"
         android:title="@string/about"
         tools:ignore="MissingPrefix" />
 
