@@ -241,6 +241,7 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="guest_mode">"Guest"</string>
+    <string name="shibboleth_authed_in">"Authed in with Shibboleth"</string>
 
 
     <string-array name="previous_course_array">

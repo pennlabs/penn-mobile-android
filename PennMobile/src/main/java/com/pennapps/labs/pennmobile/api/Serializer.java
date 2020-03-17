@@ -171,7 +171,7 @@ public class Serializer {
             }.getType());
         }
     }
-  
+
     // gets laundry usage
     public static class LaundryUsageSerializer implements JsonDeserializer<LaundryUsage> {
         @Override
@@ -241,7 +241,7 @@ public class Serializer {
         }
     }
 
-    // for FITNESS!
+    // for fitness
     public static class GymSerializer implements JsonDeserializer<List<Gym>> {
 
         @Override

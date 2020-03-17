@@ -15,15 +15,19 @@ import java.util.*
 import android.webkit.ValueCallback
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
+import android.util.Base64.URL_SAFE
 import android.util.Log
 import android.view.View.INVISIBLE
 import android.widget.LinearLayout
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.Platform
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 
 import com.pennapps.labs.pennmobile.api.Platform.*
+import com.pennapps.labs.pennmobile.api.Platform.Companion.codeVerifier
+import com.pennapps.labs.pennmobile.api.Platform.Companion.platformBaseUrl
 import com.pennapps.labs.pennmobile.classes.*
 import kotlinx.android.synthetic.main.fragment_login_webview.view.*
 import retrofit.Callback
@@ -44,6 +48,7 @@ class LoginWebviewFragment : Fragment() {
     private lateinit var mLabs: Labs
     private lateinit var mPlatform: Platform
     private lateinit var mActivity: MainActivity
+    private lateinit var oAuth2NetworkManager: OAuth2NetworkManager
     lateinit var sp: SharedPreferences
     lateinit var codeChallenge: String
     lateinit var platformAuthUrl: String
@@ -64,10 +69,11 @@ class LoginWebviewFragment : Fragment() {
         }
         mActivity = activity as MainActivity
         sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
+        oAuth2NetworkManager = OAuth2NetworkManager(mActivity)
 
         clientID = getString(R.string.clientID)
         redirectUri = getString(R.string.redirectUri)
-        codeChallenge = getCodeChallenge(codeVerifier)
+        codeChallenge = OAuth2NetworkManager.getCodeChallenge(codeVerifier)
         platformAuthUrl = platformBaseUrl + "/accounts/authorize/?response_type=code&client_id=" +
                 clientID+ "&redirect_uri=" + redirectUri + "&code_challenge_method=S256" +
                 "&code_challenge=" + codeChallenge + "&scope=read+introspection&state="
@@ -113,24 +119,24 @@ class LoginWebviewFragment : Fragment() {
         }
     }
 
-    private fun getDecodedPassword() : String? {
+    fun getDecodedPassword() : String? {
         if (Build.VERSION.SDK_INT >= 26) {
-            var base64EncryptedPassword = sp.getString("penn_password", "null")
-            var base64EncryptionIv = sp.getString("encryptionIv", "null")
+            val base64EncryptedPassword = sp.getString("penn_password", "null")
+            val base64EncryptionIv = sp.getString("encryptionIv", "null")
 
-            var encryptionIv = Base64.getDecoder().decode(base64EncryptionIv)
-            var encryptedPassword = Base64.getDecoder().decode(base64EncryptedPassword)
+            val encryptionIv = Base64.getDecoder().decode(base64EncryptionIv)
+            val encryptedPassword = Base64.getDecoder().decode(base64EncryptedPassword)
 
-            var keyStore = KeyStore.getInstance("AndroidKeyStore")
+            val keyStore = KeyStore.getInstance("AndroidKeyStore")
             keyStore.load(null)
 
-            var secretkey = keyStore.getKey("Key", null) as SecretKey
-            var cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" +
+            val secretkey = keyStore.getKey("Key", null) as SecretKey
+            val cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" +
                     KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7)
             cipher.init(Cipher.DECRYPT_MODE, secretkey, IvParameterSpec(encryptionIv))
 
-            var passwordBytes = cipher.doFinal(encryptedPassword)
-            var password = String(passwordBytes, Charset.forName("UTF-8"))
+            val passwordBytes = cipher.doFinal(encryptedPassword)
+            val password = String(passwordBytes, Charset.forName("UTF-8"))
             return password
         } else {
             return null
@@ -168,17 +174,17 @@ class LoginWebviewFragment : Fragment() {
             if (url.contains("callback") && url.contains("?code=")) {
                 val urlArr = url.split("?code=").toTypedArray()
                 val authCode = urlArr[urlArr.size - 1]
-                initiateAuthentication(authCode)
+                oAuth2NetworkManager.initiateAuthentication(authCode)
             }
             if (url.contains("weblogin") && url.contains("pennkey")) {
                 if (Build.VERSION.SDK_INT >= 19) {
                     webView.evaluateJavascript("document.getElementById('pennname').value;", ValueCallback<String> { s ->
-                        if (s != null || s != "null") {
+                        if (s != null && s != "null") {
                            saveUsername(s)
                         }
                     })
                     webView.evaluateJavascript("document.getElementById('password').value;", ValueCallback<String> { s ->
-                        if (s != null || s != "null") {
+                        if (s != null && s != "null") {
                             encryptPassword(s)
                         }
                     })
@@ -188,76 +194,4 @@ class LoginWebviewFragment : Fragment() {
         }
     }
 
-    private fun initiateAuthentication(authCode: String) {
-        mPlatform.getAccessToken(authCode,
-                "authorization_code", clientID, redirectUri, codeVerifier,
-                object : Callback<AccessTokenResponse> {
-
-                    override fun success(t: AccessTokenResponse?, response: Response?) {
-                        if (response?.status == 200) {
-                            val accessToken = t?.accessToken
-                            val editor = sp.edit()
-                            editor.putString(getString(R.string.access_token), accessToken)
-                            editor.putString(getString(R.string.refresh_token), t?.refreshToken)
-                            editor.putString(getString(R.string.expires_in), t?.expiresIn)
-                            editor.apply()
-                            getUser(accessToken)
-                        }
-                    }
-
-                    override fun failure(error: RetrofitError) {
-                        Log.e("Accounts", "Error fetching access token $error")
-                    }
-                })
-    }
-
-    private fun getUser(accessToken: String?) {
-        mPlatform.getUser("Bearer " + accessToken, accessToken,
-                object : Callback<GetUserResponse> {
-
-                    override fun success(t: GetUserResponse?, response: Response?) {
-                        val user = t?.user
-                        val editor = sp.edit()
-                        editor.putString(getString(R.string.first_name), user?.firstName)
-                        editor.putString(getString(R.string.last_name), user?.lastName)
-                        editor.putString(getString(R.string.email_address), user?.email)
-                        editor.putString(getString(R.string.pennkey), user?.username)
-                        editor.apply()
-
-                        saveAccount(Account(user?.firstName, user?.lastName,
-                                user?.username, user?.pennid, user?.email, user?.affiliation))
-                    }
-
-                    override fun failure(error: RetrofitError) {
-                        Log.e("Accounts", "Error getting user $error")
-                    }
-                })
-    }
-
-    private fun saveAccount(account: Account) {
-        mLabs.saveAccount(account, object : Callback<SaveAccountResponse> {
-
-            override fun success(t: SaveAccountResponse?, response: Response?) {
-                val editor = sp.edit()
-                editor.putString(getString(R.string.accountID), t?.accountID)
-                editor.apply()
-                // After saving the account, go to homepage
-                mActivity.startHomeFragment()
-            }
-
-            override fun failure(error: RetrofitError) {
-                Log.e("Accounts", "Error saving account $error")
-            }
-        })
-    }
-
-    private fun getCodeChallenge(codeVerifier: String) : String {
-
-        val digest = MessageDigest.getInstance("SHA-256")
-        digest.reset()
-        val byteArr = digest.digest(codeVerifier.toByteArray())
-        val codeChallenge = BigInteger(1, byteArr).toString(16)
-
-        return codeChallenge
-    }
 }

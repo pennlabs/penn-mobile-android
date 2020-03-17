@@ -33,6 +33,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.pennapps.labs.pennmobile.ExpandedBottomNavBar.ExpandableBottomTabBar;
+import com.pennapps.labs.pennmobile.api.CampusExpressNetworkManager;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager;
 import com.pennapps.labs.pennmobile.api.Platform;
@@ -109,6 +110,9 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(false);
         }
 
+        CampusExpressNetworkManager campusExpressNetworkManager = new CampusExpressNetworkManager(this);
+        campusExpressNetworkManager.getDiningBalance();
+
         /**
          * The following commented code is used for testing. Don't delete.
          */
@@ -119,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Show HomeFragment if logged in, LoginFragment if
         String pennkey = mSharedPrefs.getString(getString(R.string.pennkey), null);
-        Boolean guestMode = mSharedPrefs.getBoolean(getString(R.string.guest_mode), false);
+        boolean guestMode = mSharedPrefs.getBoolean(getString(R.string.guest_mode), false);
 
         if (pennkey == null && !guestMode) {
             startLoginFragment();

@@ -78,8 +78,9 @@ class HomeFragment : Fragment()  {
                 val gsrBookingCell = HomeCell()
                 gsrBookingCell.type = "gsr_booking"
                 gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "VP Weigle")
-                cells?.add(cells.size - 1, gsrBookingCell)
-                home_cells_rv?.adapter = HomeAdapter(ArrayList(cells))
+                val cellsList = cells as ArrayList<HomeCell>
+                cellsList.add(cells.size - 1, gsrBookingCell)
+                home_cells_rv?.adapter = HomeAdapter(cellsList)
                 loadingPanel?.visibility = View.GONE
                 home_refresh_layout?.isRefreshing = false
             }

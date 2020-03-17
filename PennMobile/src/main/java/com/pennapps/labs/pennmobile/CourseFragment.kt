@@ -160,7 +160,7 @@ class CourseFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun drawCourseMap() {
-        val buildingCode = course?.buildingCode
+        val buildingCode = course?.buildingCode ?: ""
         val meetingLocation = course?.meetingLocation ?: ""
         if (buildingCode != "") {
             mLabs.buildings(buildingCode)

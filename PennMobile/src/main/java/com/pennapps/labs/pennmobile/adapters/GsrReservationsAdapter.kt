@@ -68,7 +68,7 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
             builder.setMessage("Please confirm that you wish to delete this booking.")
 
             builder.setPositiveButton("Confirm") { _, _ ->
-                val bookingID = reservation.booking_id
+                val bookingID = reservation.booking_id ?: ""
                 val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
                 val sessionID = if (reservation.info == null) sp.getString(mContext.getString(R.string.huntsmanGSR_SessionID), "") else null
 
