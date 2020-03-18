@@ -15,8 +15,6 @@ import java.util.*
 import android.webkit.ValueCallback
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import android.util.Base64.URL_SAFE
-import android.util.Log
 import android.view.View.INVISIBLE
 import android.widget.LinearLayout
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
@@ -25,18 +23,12 @@ import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 
-import com.pennapps.labs.pennmobile.api.Platform.*
 import com.pennapps.labs.pennmobile.api.Platform.Companion.codeVerifier
 import com.pennapps.labs.pennmobile.api.Platform.Companion.platformBaseUrl
 import com.pennapps.labs.pennmobile.classes.*
 import kotlinx.android.synthetic.main.fragment_login_webview.view.*
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
-import java.math.BigInteger
 import java.nio.charset.Charset
 import java.security.KeyStore
-import java.security.MessageDigest
 import javax.crypto.spec.IvParameterSpec
 
 class LoginWebviewFragment : Fragment() {
@@ -52,8 +44,8 @@ class LoginWebviewFragment : Fragment() {
     lateinit var sp: SharedPreferences
     lateinit var codeChallenge: String
     lateinit var platformAuthUrl: String
-    lateinit var clientID: String
-    lateinit var redirectUri: String
+    private lateinit var clientID: String
+    private lateinit var redirectUri: String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -86,10 +78,10 @@ class LoginWebviewFragment : Fragment() {
         cancelButton = view.findViewById(R.id.cancel_button)
 
         webView.loadUrl(platformAuthUrl)
-        val webSettings = webView.getSettings()
-        webSettings.setJavaScriptEnabled(true)
-        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
-        webView.setWebViewClient(MyWebViewClient())
+        val webSettings = webView.settings
+        webSettings.javaScriptEnabled = true
+        webSettings.javaScriptCanOpenWindowsAutomatically = true;
+        webView.webViewClient = MyWebViewClient()
 
         cancelButton.setOnClickListener {
             mActivity.startLoginFragment()
@@ -99,14 +91,14 @@ class LoginWebviewFragment : Fragment() {
 
     private fun encryptPassword(password: String) {
         if (Build.VERSION.SDK_INT >= 26) {
-            var secretKey = createSecretKey() as SecretKey
-            var cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
+            val secretKey = createSecretKey() as SecretKey
+            val cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey)
 
-            var encryptionIv = cipher.iv
-            var passwordBytes = password.toByteArray(Charset.forName("UTF-8"))
-            var encryptedPasswordBytes = cipher.doFinal(passwordBytes)
-            var encryptedPassword = Base64.getEncoder().encodeToString(encryptedPasswordBytes)
+            val encryptionIv = cipher.iv
+            val passwordBytes = password.toByteArray(Charset.forName("UTF-8"))
+            val encryptedPasswordBytes = cipher.doFinal(passwordBytes)
+            val encryptedPassword = Base64.getEncoder().encodeToString(encryptedPasswordBytes)
 
             //save the encrypted password
             val spEditor = sp.edit()
@@ -119,10 +111,11 @@ class LoginWebviewFragment : Fragment() {
         }
     }
 
-    fun getDecodedPassword() : String? {
+    fun getDecodedPassword(mActivity : MainActivity) : String? {
         if (Build.VERSION.SDK_INT >= 26) {
-            val base64EncryptedPassword = sp.getString("penn_password", "null")
-            val base64EncryptionIv = sp.getString("encryptionIv", "null")
+            sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
+            val base64EncryptedPassword = sp.getString("penn_password", null)
+            val base64EncryptionIv = sp.getString("encryptionIv", null)
 
             val encryptionIv = Base64.getDecoder().decode(base64EncryptionIv)
             val encryptedPassword = Base64.getDecoder().decode(base64EncryptedPassword)
@@ -136,8 +129,7 @@ class LoginWebviewFragment : Fragment() {
             cipher.init(Cipher.DECRYPT_MODE, secretkey, IvParameterSpec(encryptionIv))
 
             val passwordBytes = cipher.doFinal(encryptedPassword)
-            val password = String(passwordBytes, Charset.forName("UTF-8"))
-            return password
+            return String(passwordBytes, Charset.forName("UTF-8"))
         } else {
             return null
         }
