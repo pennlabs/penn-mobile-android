@@ -113,8 +113,8 @@ public class MainActivity extends AppCompatActivity {
         CampusExpressNetworkManager campusExpressNetworkManager = new CampusExpressNetworkManager(this);
         campusExpressNetworkManager.getDiningBalance();
 
-        /**
-         * The following commented code is used for testing. Don't delete.
+        /*
+          The following commented code is used for testing. Don't delete.
          */
 //        SharedPreferences.Editor editor = mSharedPrefs.edit();
 //        editor.remove(getString(R.string.pennkey));
