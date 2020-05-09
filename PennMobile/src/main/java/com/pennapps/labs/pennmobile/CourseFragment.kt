@@ -89,14 +89,12 @@ class CourseFragment : Fragment(), OnMapReadyCallback {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
-        if (menu != null) {
-            val searchMenuItem = menu.findItem(R.id.registrar_search)
-            if (searchMenuItem != null) {
-                val searchView = searchMenuItem.actionView as SearchView
-                searchView.isEnabled = false
-                searchMenuItem.isVisible = false
-                searchView.clearFocus()
-            }
+        val searchMenuItem = menu.findItem(R.id.registrar_search)
+        if (searchMenuItem != null) {
+            val searchView = searchMenuItem.actionView as SearchView
+            searchView.isEnabled = false
+            searchMenuItem.isVisible = false
+            searchView.clearFocus()
         }
     }
 
@@ -120,8 +118,8 @@ class CourseFragment : Fragment(), OnMapReadyCallback {
     override fun onResume() {
         super.onResume()
         if (containsNum(mActivity.title)) {
-            val builder = StringBuilder(activity!!.title)
-            val fav = getString(R.string.registrar_search) != null && arguments?.getBoolean(getString(R.string.registrar_search), false) ?: false
+            val builder = StringBuilder(mActivity.title)
+            val fav = arguments?.getBoolean(getString(R.string.registrar_search), false) ?: false
             if (fav) {
                 builder.append(" - ").append(course?.name)
             } else {
@@ -146,8 +144,8 @@ class CourseFragment : Fragment(), OnMapReadyCallback {
     override fun onDestroyView() {
         super.onDestroyView()
         if (mActivity.title.toString().contains("-")) {
-            val builder = StringBuilder(activity!!.title)
-            val fav = getString(R.string.registrar_search) != null && arguments?.getBoolean(getString(R.string.registrar_search), false) ?: false
+            val builder = StringBuilder(mActivity.title)
+            val fav = arguments?.getBoolean(getString(R.string.registrar_search), false) ?: false
             if (fav) {
                 builder.delete(builder.indexOf(" - "), builder.length)
             } else {

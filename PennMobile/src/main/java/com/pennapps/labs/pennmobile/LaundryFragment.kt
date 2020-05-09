@@ -65,7 +65,7 @@ class LaundryFragment : Fragment() {
 
         // get num rooms to display
         sp = PreferenceManager.getDefaultSharedPreferences(mContext)
-        numRooms = sp?.getInt(mContext?.getString(R.string.num_rooms_pref), 100) ?: 0
+        numRooms = sp?.getInt(mContext.getString(R.string.num_rooms_pref), 100) ?: 0
         count = 0
         for (i in 0 until numRooms) {
             if (sp!!.getBoolean(Integer.toString(i), false)) {
@@ -111,12 +111,12 @@ class LaundryFragment : Fragment() {
         super.onResume()
         mActivity.removeTabs()
 
-        numRooms = sp?.getInt(mContext?.getString(R.string.num_rooms_pref), 100) ?: 0
+        numRooms = sp?.getInt(mContext.getString(R.string.num_rooms_pref), 100) ?: 0
 
         // get num rooms to display
         count = 0
         for (i in 0 until numRooms) {
-            if (sp?.getBoolean(Integer.toString(i), false) == true) {
+            if (sp?.getBoolean(i.toString(), false) == true) {
                 count += 1
             }
         }

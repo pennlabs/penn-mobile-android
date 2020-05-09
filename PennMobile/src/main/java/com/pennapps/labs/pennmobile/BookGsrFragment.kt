@@ -26,7 +26,7 @@ class BookGsrFragment : Fragment() {
     internal lateinit var lastNameEt: EditText
     internal lateinit var emailEt: EditText
     // submit button
-    internal lateinit var submit: Button
+    private lateinit var submit: Button
 
     private lateinit var mLabs: Labs
 
@@ -97,62 +97,60 @@ class BookGsrFragment : Fragment() {
             sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "") ?: ""
         }
 
-        mLabs?.let { mLabs ->
-            mLabs.bookGSR(
-                    //Passing the values
-                    sessionID,
-                    gsrLocationCode,
-                    gsrId,
-                    startTime,
-                    endTime,
-                    firstNameEt.text.toString(),
-                    lastNameEt.text.toString(),
-                    emailEt.text.toString(),
-                    "Penn Mobile GSR",
-                    "2158986533",
-                    "2-3",
+        mLabs.bookGSR(
+                //Passing the values
+                sessionID,
+                gsrLocationCode,
+                gsrId,
+                startTime,
+                endTime,
+                firstNameEt.text.toString(),
+                lastNameEt.text.toString(),
+                emailEt.text.toString(),
+                "Penn Mobile GSR",
+                "2158986533",
+                "2-3",
 
-                    //Creating an anonymous callback
-                    object : Callback<GSRBookingResult> {
-                        override fun success(result: GSRBookingResult, response: Response) {
-                            //Displaying the output as a toast and go back to GSR fragment
-                            if (result.getResults() == true) {
-                                Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
+                //Creating an anonymous callback
+                object : Callback<GSRBookingResult> {
+                    override fun success(result: GSRBookingResult, response: Response) {
+                        //Displaying the output as a toast and go back to GSR fragment
+                        if (result.getResults() == true) {
+                            Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
 
-                                // Save user info in shared preferences
-                                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                                val editor = sp.edit()
-                                editor.putString(getString(R.string.first_name), firstNameEt.text.toString())
-                                editor.putString(getString(R.string.last_name), lastNameEt.text.toString())
-                                editor.putString(getString(R.string.email_address), emailEt.text.toString())
-                                editor.apply()
-                            }
-                            else {
-                                Toast.makeText(activity, "GSR booking failed", Toast.LENGTH_LONG).show()
-                                Log.e("BookGsrFragment", "GSR booking failed with " + result.getError())
-                            }
-                            // go back to GSR fragment
-                            val fragmentManager = (context as MainActivity).supportFragmentManager
-                            fragmentManager.beginTransaction()
-                                    .replace(R.id.content_frame, GsrTabbedFragment())
-                                    .addToBackStack("GSR Fragment")
-                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                    .commit()
+                            // Save user info in shared preferences
+                            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                            val editor = sp.edit()
+                            editor.putString(getString(R.string.first_name), firstNameEt.text.toString())
+                            editor.putString(getString(R.string.last_name), lastNameEt.text.toString())
+                            editor.putString(getString(R.string.email_address), emailEt.text.toString())
+                            editor.apply()
                         }
-
-                        override fun failure(error: RetrofitError) {
-                            //If any error occurred displaying the error as toast
-                            Toast.makeText(activity, "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
-                            val fragmentManager = (context as MainActivity).supportFragmentManager
-                            fragmentManager.beginTransaction()
-                                    .replace(R.id.content_frame, GsrTabbedFragment())
-                                    .addToBackStack("GSR Fragment")
-                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                    .commit()
+                        else {
+                            Toast.makeText(activity, "GSR booking failed", Toast.LENGTH_LONG).show()
+                            Log.e("BookGsrFragment", "GSR booking failed with " + result.getError())
                         }
+                        // go back to GSR fragment
+                        val fragmentManager = (context as MainActivity).supportFragmentManager
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.content_frame, GsrTabbedFragment())
+                                .addToBackStack("GSR Fragment")
+                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                .commit()
                     }
-            )
-        }
+
+                    override fun failure(error: RetrofitError) {
+                        //If any error occurred displaying the error as toast
+                        Toast.makeText(activity, "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
+                        val fragmentManager = (context as MainActivity).supportFragmentManager
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.content_frame, GsrTabbedFragment())
+                                .addToBackStack("GSR Fragment")
+                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                .commit()
+                    }
+                }
+        )
     }
 
     companion object {
@@ -169,4 +167,4 @@ class BookGsrFragment : Fragment() {
         }
     }
 
-}// Required empty public constructor
+}
