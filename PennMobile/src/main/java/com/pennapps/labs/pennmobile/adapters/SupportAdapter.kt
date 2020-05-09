@@ -23,7 +23,6 @@ class SupportAdapter(context: Context, contacts: List<Person?>) : ArrayAdapter<P
 
         view.support_name?.text = currentPerson?.name
 
-        //holder.name?.text = currentPerson?.name
         if (currentPerson?.phone_words == "") {
             view.support_phone?.text = currentPerson.phone
         } else {

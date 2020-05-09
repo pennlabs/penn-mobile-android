@@ -107,7 +107,7 @@ class GsrFragment : Fragment() {
          * On Click functions for buttons
          */
 
-        //set start time button
+        // set start time button
         selectTimeButton.setOnClickListener {
             // Get Current Time
             val c = Calendar.getInstance()
@@ -128,7 +128,7 @@ class GsrFragment : Fragment() {
             timePickerDialog.show()
         }
 
-        //day for gsr
+        // day for gsr
         selectDateButton.setOnClickListener {
             // Get Current Date
             val c = Calendar.getInstance()
@@ -243,7 +243,7 @@ class GsrFragment : Fragment() {
                             }
 
                             gsr_rooms_list?.adapter = (context?.let {
-                                GsrBuildingAdapter(it, mGSRS, Integer.toString(location), (durationDropDown.selectedItemPosition + 1) * 30)
+                                GsrBuildingAdapter(it, mGSRS, location.toString(), (durationDropDown.selectedItemPosition + 1) * 30)
                             })
 
                             mGSRS = ArrayList()
@@ -305,7 +305,7 @@ class GsrFragment : Fragment() {
                 val gsrName = gsrRoom.name ?: ""
                 val gsrRoomId = gsrRoom.room_id ?: 0
                 insertGSRSlot(gsrName, "$stringStartTime-$stringEndTime",
-                        startTime, Integer.toString(gsrRoomId))
+                        startTime, gsrRoomId.toString())
             }
         }
     }
@@ -320,7 +320,7 @@ class GsrFragment : Fragment() {
                             val emptyArray = arrayOfNulls<String>(0)
                             val emptyAdapter = ArrayAdapter<String>(activity,
                                     android.R.layout.simple_spinner_dropdown_item, emptyArray)
-                            gsrLocationDropDown?.adapter = emptyAdapter
+                            gsrLocationDropDown.adapter = emptyAdapter
 
                             val numLocations = locations.size
 
@@ -348,9 +348,9 @@ class GsrFragment : Fragment() {
                             val gsrs = gsrHashMap.keys.toList().toTypedArray()
 
                             val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
-                            gsrLocationDropDown?.adapter = adapter
+                            gsrLocationDropDown.adapter = adapter
 
-                            durationDropDown?.adapter = if (gsrLocationDropDown?.selectedItem.toString() == "Huntsman Hall")
+                            durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman Hall")
                                 huntsmanDurationAdapter else durationAdapter
                             searchForGSR(false)
                         }
@@ -394,7 +394,7 @@ class GsrFragment : Fragment() {
             }
         }
 
-        durationDropDown?.onItemSelectedListener = object : OnItemSelectedListener {
+        durationDropDown.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
                 searchForGSR(false)
             }
