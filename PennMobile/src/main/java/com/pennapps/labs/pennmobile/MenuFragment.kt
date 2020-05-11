@@ -7,17 +7,19 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.pennapps.labs.pennmobile.classes.DiningHall
+import kotlinx.android.synthetic.main.fragment_menu.view.*
 import org.apache.commons.lang3.StringUtils
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class MenuFragment : Fragment() {
-    var pageAdapter: TabAdapter? = null
-    var pager: ViewPager? = null
+
     private var mDiningHall: DiningHall? = null
     private lateinit var mActivity: MainActivity
+    private var pageAdapter: PagerAdapter? = null
 
     inner class TabAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
 
@@ -95,11 +97,11 @@ class MenuFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_menu, container, false)
         pageAdapter = TabAdapter(mActivity.supportFragmentManager)
-        pageAdapter?.addTabs(mDiningHall)
-        pager = v.findViewById<View>(R.id.menu_pager) as ViewPager
-        pager?.adapter = pageAdapter
+        (pageAdapter as TabAdapter).addTabs(mDiningHall)
+        val pager : ViewPager = v.menu_pager
+        pager.adapter = pageAdapter
         v.setBackgroundColor(Color.WHITE)
-        mActivity.addTabs(pageAdapter, pager, true)
+        mActivity.addTabs(pageAdapter as TabAdapter, pager, true)
         return v
     }
 
@@ -123,14 +125,10 @@ class MenuFragment : Fragment() {
         if (mActivity.supportActionBar != null) {
             mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
-        if (Build.VERSION.SDK_INT > 17) {
-            mActivity.setSelectedTab(2)
-        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        mActivity.setTitle(R.string.dining)
         mActivity.removeTabs()
         if (mActivity.supportActionBar != null) {
             mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)

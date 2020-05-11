@@ -15,7 +15,6 @@ import java.util.*
 
 class MenuTab : Fragment() {
 
-    var menuParent: LinearLayout? = null
     var meal: String? = null
     var stationInfo = HashMap<String, List<String>?>() // {station name: foods}
     private lateinit var stations: ArrayList<String>

@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -34,9 +35,10 @@ class DiningFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mLabs = MainActivity.getLabsInstance()
+        mLabs = MainActivity.labsInstance
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()
+        setHasOptionsMenu(true)
 
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "1")
@@ -64,12 +66,16 @@ class DiningFragment : Fragment() {
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
         // sort the dining halls in the user-specified order
         val order = sp.getString("dining_sortBy", "RESIDENTIAL")
-        if (order == "RESIDENTIAL") {
-            menu.findItem(R.id.action_sort_residential).isChecked = true
-        } else if (order == "NAME") {
-            menu.findItem(R.id.action_sort_name).isChecked = true
-        } else {
-            menu.findItem(R.id.action_sort_open).isChecked = true
+        when (order) {
+            "RESIDENTIAL" -> {
+                menu.findItem(R.id.action_sort_residential).isChecked = true
+            }
+            "NAME" -> {
+                menu.findItem(R.id.action_sort_name).isChecked = true
+            }
+            else -> {
+                menu.findItem(R.id.action_sort_open).isChecked = true
+            }
         }
         val diningInfoFragment = fragmentManager?.findFragmentByTag("DINING_INFO_FRAGMENT")
         menu.setGroupVisible(R.id.action_sort_by, diningInfoFragment == null || !diningInfoFragment.isVisible)

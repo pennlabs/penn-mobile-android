@@ -62,7 +62,7 @@ class FitnessFragment : Fragment() {
 
     private fun getGymData() {
         // get API data
-        val labs = MainActivity.getLabsInstance()
+        val labs = MainActivity.labsInstance
         labs.gymData.subscribe({ gyms ->
             mActivity.runOnUiThread {
                 gym_list?.adapter = FitnessAdapter(gyms)

@@ -42,7 +42,7 @@ class DiningInfoFragment : Fragment(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         mDiningHall = arguments?.getParcelable("DiningHall")
         mActivity = activity as MainActivity
-        mLabs = MainActivity.getLabsInstance()
+        mLabs = MainActivity.labsInstance
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

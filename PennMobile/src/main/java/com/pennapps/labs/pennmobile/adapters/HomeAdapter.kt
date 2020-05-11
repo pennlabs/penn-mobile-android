@@ -52,7 +52,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         mContext = parent.context
-        mLabs = MainActivity.getLabsInstance()
+        mLabs = MainActivity.labsInstance
         mActivity = mContext as MainActivity
 
         return when (viewType) {

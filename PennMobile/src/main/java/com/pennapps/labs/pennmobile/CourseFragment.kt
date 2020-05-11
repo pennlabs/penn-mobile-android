@@ -2,7 +2,6 @@ package com.pennapps.labs.pennmobile
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.appcompat.widget.SearchView
 import android.view.LayoutInflater
 import android.view.Menu
@@ -65,7 +64,7 @@ class CourseFragment : Fragment(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         course = arguments?.getParcelable(getString(R.string.course_bundle_arg))
-        mLabs = MainActivity.getLabsInstance()
+        mLabs = MainActivity.labsInstance
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()
         fav = arguments?.getBoolean(getString(R.string.search_favorite), false)
@@ -164,7 +163,7 @@ class CourseFragment : Fragment(), OnMapReadyCallback {
             mLabs.buildings(buildingCode)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ buildings ->
-                        if (!buildings.isEmpty()) {
+                        if (buildings.isNotEmpty()) {
                             drawMarker(buildings[0].latLng, meetingLocation)
                         }
                     }, { })

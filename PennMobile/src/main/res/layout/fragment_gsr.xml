@@ -25,8 +25,8 @@
             android:textColor="@color/color_primary"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/gsr_select_time"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/gsr_date_text"
+            app:layout_constraintStart_toStartOf="@+id/gsr_date_text"
             app:layout_constraintTop_toBottomOf="@id/gsr_date_text" />
 
         <Button
@@ -40,8 +40,8 @@
             android:textColor="@color/color_primary"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/gsr_building_selection"
-            app:layout_constraintStart_toEndOf="@id/gsr_select_date"
+            app:layout_constraintEnd_toEndOf="@+id/gsr_time_text"
+            app:layout_constraintStart_toStartOf="@+id/gsr_time_text"
             app:layout_constraintTop_toBottomOf="@id/gsr_time_text" />
 
         <Spinner
@@ -51,9 +51,12 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="16dp"
             android:background="@null"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:spinnerMode="dropdown"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/gsr_duration"
-            app:layout_constraintStart_toEndOf="@id/gsr_select_time"
+            app:layout_constraintEnd_toEndOf="@+id/gsr_building_text"
+            app:layout_constraintStart_toStartOf="@+id/gsr_building_text"
             app:layout_constraintTop_toBottomOf="@id/gsr_building_text" />
 
         <Spinner
@@ -64,8 +67,8 @@
             android:layout_marginBottom="16dp"
             android:background="@null"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/gsr_building_selection"
+            app:layout_constraintEnd_toEndOf="@+id/gsr_duration_text"
+            app:layout_constraintStart_toStartOf="@+id/gsr_duration_text"
             app:layout_constraintTop_toBottomOf="@id/gsr_duration_text" />
 
         <TextView
@@ -74,18 +77,19 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/gsr_location"
-            app:layout_constraintEnd_toEndOf="@id/gsr_building_selection"
-            app:layout_constraintStart_toStartOf="@id/gsr_building_selection"
+            app:layout_constraintEnd_toStartOf="@+id/gsr_duration_text"
+            app:layout_constraintStart_toEndOf="@+id/gsr_time_text"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/gsr_time_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginLeft="50dp"
             android:layout_marginTop="16dp"
             android:text="@string/time"
-            app:layout_constraintEnd_toEndOf="@id/gsr_select_time"
-            app:layout_constraintStart_toStartOf="@id/gsr_select_time"
+            app:layout_constraintStart_toEndOf="@+id/gsr_date_text"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -93,19 +97,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
             android:text="@string/duration"
-            app:layout_constraintEnd_toEndOf="@id/gsr_duration"
-            app:layout_constraintStart_toStartOf="@id/gsr_duration"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/gsr_date_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
             android:layout_marginTop="16dp"
             android:text="@string/date"
-            app:layout_constraintEnd_toEndOf="@id/gsr_select_date"
-            app:layout_constraintStart_toStartOf="@id/gsr_select_date"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

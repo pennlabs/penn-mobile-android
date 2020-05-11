@@ -204,7 +204,8 @@ class NewsFragment : ListFragment() {
     }
 
     override fun onDestroyView() {
-        (activity as MainActivity).removeTabs()
+        val mActivity : MainActivity? = activity as MainActivity
+        mActivity?.removeTabs()
         super.onDestroyView()
     }
 }

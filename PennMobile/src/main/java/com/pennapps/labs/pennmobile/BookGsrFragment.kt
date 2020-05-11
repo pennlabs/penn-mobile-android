@@ -45,7 +45,7 @@ class BookGsrFragment : Fragment() {
             startTime = arguments.getString("startTime") ?: ""
             endTime = arguments.getString("endTime") ?: ""
         }
-        mLabs = MainActivity.getLabsInstance()
+        mLabs = MainActivity.labsInstance
         val mActivity : MainActivity? = activity as MainActivity
         mActivity?.setTitle(R.string.gsr)
     }

@@ -35,7 +35,7 @@ class LaundrySettingsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mLabs = MainActivity.getLabsInstance()
+        mLabs = MainActivity.labsInstance
         mActivity = activity as MainActivity
         mContext = mActivity
         mActivity.closeKeyboard()
