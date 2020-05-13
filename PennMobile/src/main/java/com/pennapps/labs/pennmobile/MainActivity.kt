@@ -78,20 +78,17 @@ class MainActivity : AppCompatActivity() {
         tabBarView?.setOnTabClickedListener { view, tabPos ->
             var fragment: Fragment? = null
             when (tabPos) {
-                0 -> if (fragmentManager.backStackEntryCount > 0) {
+                HOME -> if (fragmentManager.backStackEntryCount > 0) {
                     fragment = HomeFragment()
                 }
-                1 -> fragment = GsrTabbedFragment()
-                2 -> fragment = DiningFragment()
-                3 -> fragment = LaundryFragment()
-                5 -> fragment = FitnessFragment()
-                6 -> fragment = RegistrarFragment()
-                7 -> fragment = DirectoryFragment()
-                8 -> fragment = NewsFragment()
-                9 -> fragment = FlingFragment()
-                10 -> fragment = SupportFragment()
-                11 -> fragment = SettingsFragment()
-                12 -> fragment = AboutFragment()
+                GSR -> fragment = GsrTabbedFragment()
+                DINING -> fragment = DiningFragment()
+                LAUNDRY -> fragment = LaundryFragment()
+                FITNESS -> fragment = FitnessFragment()
+                NEWS -> fragment = NewsFragment()
+                SUPPORT -> fragment = SupportFragment()
+                SETTINGS -> fragment = SettingsFragment()
+                ABOUT -> fragment = AboutFragment()
             }
             fragmentTransact(fragment)
         }
@@ -191,6 +188,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
+        // 4 corresponds to the More button
+        const val HOME = 0
+        const val GSR = 1
+        const val DINING = 2
+        const val LAUNDRY = 3
+        const val FITNESS = 5
+        const val NEWS = 6
+        const val SUPPORT = 7
+        const val SETTINGS = 8
+        const val ABOUT = 9
+
         private var mLabs: Labs? = null
         private var mPlatform: Platform? = null
         val platformInstance: Platform?

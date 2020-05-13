@@ -176,7 +176,7 @@ class GsrFragment : Fragment() {
         mActivity?.removeTabs()
         mActivity?.setTitle(R.string.gsr)
         if (Build.VERSION.SDK_INT > 17){
-            mActivity?.setSelectedTab(1)
+            mActivity?.setSelectedTab(MainActivity.GSR)
         }
         populateDropDownGSR()
     }

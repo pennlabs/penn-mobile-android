@@ -148,7 +148,7 @@ class DiningFragment : Fragment() {
         mActivity.removeTabs()
         mActivity.setTitle(R.string.dining)
         if (Build.VERSION.SDK_INT > 17) {
-            mActivity.setSelectedTab(2)
+            mActivity.setSelectedTab(MainActivity.DINING)
         }
     }
 

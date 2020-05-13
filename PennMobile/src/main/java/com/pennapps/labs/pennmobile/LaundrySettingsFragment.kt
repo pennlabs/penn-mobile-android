@@ -144,7 +144,7 @@ class LaundrySettingsFragment : Fragment() {
         mActivity.removeTabs()
         mActivity.setTitle(R.string.laundry)
         if (Build.VERSION.SDK_INT > 17){
-            mActivity.setSelectedTab(3)
+            mActivity.setSelectedTab(MainActivity.LAUNDRY)
         }
         loadingPanel?.visibility = View.VISIBLE
     }

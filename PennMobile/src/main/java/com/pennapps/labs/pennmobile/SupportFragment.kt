@@ -71,7 +71,7 @@ class SupportFragment : ListFragment() {
         mActivity.removeTabs()
         mActivity.setTitle(R.string.support)
         if (Build.VERSION.SDK_INT > 17) {
-            mActivity.setSelectedTab(10)
+            mActivity.setSelectedTab(MainActivity.SUPPORT)
         }
     }
 }

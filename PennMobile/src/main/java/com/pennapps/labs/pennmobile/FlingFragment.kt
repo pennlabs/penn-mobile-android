@@ -68,7 +68,7 @@ class FlingFragment : Fragment() {
         mActivity?.removeTabs()
         mActivity?.setTitle(R.string.spring_fling)
         if (Build.VERSION.SDK_INT > 17){
-            (activity as MainActivity).setSelectedTab(9)
+            mActivity?.setSelectedTab(7)
         }
     }
 }

@@ -199,7 +199,7 @@ class NewsFragment : ListFragment() {
         mActivity?.removeTabs()
         mActivity?.setTitle(R.string.news)
         if (Build.VERSION.SDK_INT > 17){
-            mActivity?.setSelectedTab(8)
+            mActivity?.setSelectedTab(MainActivity.NEWS)
         }
     }
 

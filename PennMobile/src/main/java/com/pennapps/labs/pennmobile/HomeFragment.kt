@@ -111,7 +111,7 @@ class HomeFragment : Fragment()  {
             mActivity.setTitle(R.string.main_title)
         }
         if (Build.VERSION.SDK_INT > 17){
-            mActivity.setSelectedTab(0)
+            mActivity.setSelectedTab(MainActivity.HOME)
         }
     }
 }
