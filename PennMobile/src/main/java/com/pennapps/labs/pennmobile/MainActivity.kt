@@ -240,8 +240,6 @@ class MainActivity : AppCompatActivity() {
                     val gson = gsonBuilder.create()
                     val restAdapter = RestAdapter.Builder()
                             .setConverter(GsonConverter(gson))
-                            .setLogLevel(RestAdapter.LogLevel.FULL)
-                            .setLog(AndroidLog("Labs"))
                             .setEndpoint("https://api.pennlabs.org")
                             .build()
                     mLabs = restAdapter.create(Labs::class.java)

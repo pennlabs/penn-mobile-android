@@ -10,7 +10,6 @@ import com.google.gson.annotations.SerializedName
 //class that keeps track of all the GSR rooms themselves
 class GSR {
 
-
     @SerializedName("location_id")
     @Expose
     var location_id: Int? = null
