@@ -48,7 +48,7 @@ public class DirectoryFragment extends SearchFavoriteFragment {
     }
 
     @Override
-    protected ListTabAdapter getAdapter() { // TODO: weird bug, when you hit back button from the registrar to directory fragment top tabs don't show
+    protected ListTabAdapter getAdapter() {
         if (adapter == null){
             adapter = new DirectoryTabAdapter(mActivity.getSupportFragmentManager());
         }

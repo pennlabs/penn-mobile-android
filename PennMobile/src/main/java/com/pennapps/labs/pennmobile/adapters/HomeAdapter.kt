@@ -30,7 +30,6 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
 
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
-
     private lateinit var mLabs: Labs
 
     private var mCustomTabsClient: CustomTabsClient? = null
@@ -40,6 +39,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
     private var builder: CustomTabsIntent.Builder? = null
 
     companion object {
+        // Types of Home Cells
         private const val NOT_SUPPORTED = -1
         private const val RESERVATIONS = 0
         private const val DINING = 1
@@ -48,6 +48,8 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         private const val COURSES = 4
         private const val LAUNDRY = 5
         private const val GSR_BOOKING = 6
+        private const val POST = 7
+        private const val FEATURE = 8
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -78,6 +80,8 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
             //"courses" -> bindCoursesCell(holder, cell)
             "laundry" -> bindLaundryCell(holder, cell)
             "gsr_booking" -> bindGsrBookingCell(holder, cell)
+            "feature" -> bindFeatureCell(holder, cell)
+            "post" -> bindPostCell(holder, cell)
             else -> Log.i("HomeAdapter", "Unsupported type of data at position " + position)
         }
     }
@@ -100,6 +104,8 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
             //"courses" -> COURSES
             "laundry" -> LAUNDRY
             "gsr_booking" -> GSR_BOOKING
+            "feature" -> FEATURE
+            "post" -> POST
             else -> NOT_SUPPORTED
         }
     }
@@ -131,8 +137,8 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
                 .toList()
                 .subscribe { diningHalls ->
                     mActivity.runOnUiThread {
-                        var favorites: ArrayList<DiningHall> = arrayListOf()
-                        var favoritesIdList: List<Int>? = cell.info?.venues
+                        val favorites: ArrayList<DiningHall> = arrayListOf()
+                        val favoritesIdList: List<Int>? = cell.info?.venues
                         diningHalls.forEach {
                             if (favoritesIdList?.contains(it.id) == true) {
                                 favorites.add(it)
@@ -222,6 +228,18 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
                 LinearLayoutManager.VERTICAL, false)
         holder.itemView.home_card_rv.adapter = HomeGsrBuildingAdapter(ArrayList(buildings))
+    }
+
+    private fun bindPostCell(holder: ViewHolder, cell: HomeCell) {
+        val title = cell.info?.title ?: "Post"
+        holder.itemView.home_card_title.text = title
+        holder.itemView.home_card_subtitle.text = "POST"
+    }
+
+    private fun bindFeatureCell(holder: ViewHolder, cell: HomeCell) {
+        val title = cell.info?.title ?: "Feature"
+        holder.itemView.home_card_title.text = title
+        holder.itemView.home_card_subtitle.text = "FEATURE"
     }
 
     // Chrome custom tabs to launch news site
