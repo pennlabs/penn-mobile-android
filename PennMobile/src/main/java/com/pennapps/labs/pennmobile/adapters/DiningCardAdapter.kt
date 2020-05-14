@@ -91,7 +91,7 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         mContext = parent.context
         mActivity = mContext as MainActivity
-        mLabs = MainActivity.getLabsInstance()
+        mLabs = MainActivity.labsInstance
 
         val view = LayoutInflater.from(parent.context).inflate(R.layout.dining_list_item, parent, false)
         view?.dining_progress?.visibility = GONE

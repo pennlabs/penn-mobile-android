@@ -19,7 +19,6 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
-import butterknife.ButterKnife
 import com.google.firebase.analytics.FirebaseAnalytics
 import java.util.ArrayList
 
@@ -54,7 +53,6 @@ class NewsFragment : ListFragment() {
             newsLogo.setImageResource(news[position].image)
             newsDetails.text = news[position].description
             return rowView
-
         }
     }
 
@@ -102,7 +100,7 @@ class NewsFragment : ListFragment() {
         val serviceIntent = Intent(SERVICE_ACTION)
         serviceIntent.setPackage("com.android.chrome")
         val resolveInfos = context.packageManager.queryIntentServices(serviceIntent, 0)
-        return !(resolveInfos == null || resolveInfos.isEmpty())
+        return resolveInfos.isNotEmpty()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -115,7 +113,7 @@ class NewsFragment : ListFragment() {
         mListView = listView
         builder = CustomTabsIntent.Builder()
         share = Intent(Intent.ACTION_SEND)
-        share?.setType("text/plain")
+        share?.type = "text/plain"
         builder?.setToolbarColor(0x3E50B4)
         context?.let { context ->
             builder?.setStartAnimations(context,
@@ -142,12 +140,7 @@ class NewsFragment : ListFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        inflater?.let { inflater ->
-            val v = inflater.inflate(R.layout.fragment_news, container, false)
-            ButterKnife.bind(this, v)
-            return v
-        }
-
+        return inflater.inflate(R.layout.fragment_news, container, false)
     }
 
     private fun addNews() {
@@ -206,12 +199,13 @@ class NewsFragment : ListFragment() {
         mActivity?.removeTabs()
         mActivity?.setTitle(R.string.news)
         if (Build.VERSION.SDK_INT > 17){
-            mActivity?.setSelectedTab(8)
+            mActivity?.setSelectedTab(MainActivity.NEWS)
         }
     }
 
     override fun onDestroyView() {
-        (activity as MainActivity).removeTabs()
+        val mActivity : MainActivity? = activity as MainActivity
+        mActivity?.removeTabs()
         super.onDestroyView()
     }
 }

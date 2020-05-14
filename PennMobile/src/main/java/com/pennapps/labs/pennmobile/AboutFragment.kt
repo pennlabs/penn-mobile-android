@@ -86,7 +86,7 @@ class AboutFragment : Fragment() {
         mActivity?.removeTabs()
         mActivity?.setTitle(R.string.about)
         if (Build.VERSION.SDK_INT > 17) {
-            mActivity?.setSelectedTab(12)
+            mActivity?.setSelectedTab(MainActivity.ABOUT)
         }
     }
 

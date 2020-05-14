@@ -41,15 +41,11 @@ class FitnessFragment : Fragment() {
 
 
         // set layout manager for RecyclerView
-        view.gym_list.layoutManager = LinearLayoutManager(context,
+        view.gym_list?.layoutManager = LinearLayoutManager(context,
                 LinearLayoutManager.VERTICAL, false)
 
-        // add divider
-//        val divider = DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
-//        view.gym_list.addItemDecoration(divider)
-
         // handle swipe to refresh
-        view.gym_refresh_layout.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
+        view.gym_refresh_layout?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
 
         return view
     }
@@ -62,7 +58,7 @@ class FitnessFragment : Fragment() {
 
     private fun getGymData() {
         // get API data
-        val labs = MainActivity.getLabsInstance()
+        val labs = MainActivity.labsInstance
         labs.gymData.subscribe({ gyms ->
             mActivity.runOnUiThread {
                 gym_list?.adapter = FitnessAdapter(gyms)
@@ -90,14 +86,7 @@ class FitnessFragment : Fragment() {
         mActivity.removeTabs()
         mActivity.setTitle(R.string.fitness)
         if (Build.VERSION.SDK_INT > 17){
-            mActivity.setSelectedTab(5)
-        }
-    }
-
-    companion object {
-
-        fun newInstance(): FitnessFragment {
-            return FitnessFragment()
+            mActivity.setSelectedTab(MainActivity.FITNESS)
         }
     }
 }

@@ -52,7 +52,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         mContext = parent.context
-        mLabs = MainActivity.getLabsInstance()
+        mLabs = MainActivity.labsInstance
         mActivity = mContext as MainActivity
 
         return when (viewType) {
@@ -245,7 +245,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         val serviceIntent = Intent("android.support.customtabs.action.CustomTabsService")
         serviceIntent.setPackage("com.android.chrome")
         val resolveInfos = context.packageManager.queryIntentServices(serviceIntent, 0)
-        return !(resolveInfos == null || resolveInfos.isEmpty())
+        return resolveInfos.isNotEmpty()
     }
 
 }

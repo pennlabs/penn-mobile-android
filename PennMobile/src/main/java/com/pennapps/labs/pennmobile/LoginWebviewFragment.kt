@@ -42,7 +42,7 @@ class LoginWebviewFragment : Fragment() {
     lateinit var cancelButton: Button
     lateinit var user: Account
     private lateinit var mLabs: Labs
-    private lateinit var mPlatform: Platform
+    private var mPlatform: Platform? = null
     private lateinit var mActivity: MainActivity
     lateinit var sp: SharedPreferences
     lateinit var codeChallenge: String
@@ -57,8 +57,8 @@ class LoginWebviewFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mLabs = MainActivity.getLabsInstance()
-        mPlatform = MainActivity.getPlatformInstance()
+        mLabs = MainActivity.labsInstance
+        mPlatform = MainActivity.platformInstance
         arguments?.let {
             user = arguments?.getSerializable("user") as Account
         }
@@ -189,7 +189,7 @@ class LoginWebviewFragment : Fragment() {
     }
 
     private fun initiateAuthentication(authCode: String) {
-        mPlatform.getAccessToken(authCode,
+        mPlatform?.getAccessToken(authCode,
                 "authorization_code", clientID, redirectUri, codeVerifier,
                 object : Callback<AccessTokenResponse> {
 
@@ -212,7 +212,7 @@ class LoginWebviewFragment : Fragment() {
     }
 
     private fun getUser(accessToken: String?) {
-        mPlatform.getUser("Bearer " + accessToken, accessToken,
+        mPlatform?.getUser("Bearer $accessToken", accessToken,
                 object : Callback<GetUserResponse> {
 
                     override fun success(t: GetUserResponse?, response: Response?) {

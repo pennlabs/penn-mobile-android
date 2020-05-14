@@ -52,7 +52,7 @@ class FlingFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_fling, container, false)
-        val labs = MainActivity.getLabsInstance()
+        val labs = MainActivity.labsInstance
         labs.flingEvents.subscribe({ flingEvents ->
             activity?.runOnUiThread {
                 fling_fragment_recyclerview?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -68,7 +68,7 @@ class FlingFragment : Fragment() {
         mActivity?.removeTabs()
         mActivity?.setTitle(R.string.spring_fling)
         if (Build.VERSION.SDK_INT > 17){
-            (activity as MainActivity).setSelectedTab(9)
+            mActivity?.setSelectedTab(7)
         }
     }
 }

@@ -35,7 +35,7 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiningViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.dining_list_item, parent, false)
-        mLabs = MainActivity.getLabsInstance()
+        mLabs = MainActivity.labsInstance
         loaded = BooleanArray(diningHalls.size)
         context = parent.context
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
@@ -100,7 +100,7 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
 
                 val fragmentManager = mainActivity.supportFragmentManager
                 fragmentManager.beginTransaction()
-                        .replace(R.id.dining_fragment, fragment, "DINING_INFO_FRAGMENT")
+                        .replace(R.id.content_frame, fragment, "DINING_INFO_FRAGMENT")
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .addToBackStack(null)
                         .commitAllowingStateLoss()

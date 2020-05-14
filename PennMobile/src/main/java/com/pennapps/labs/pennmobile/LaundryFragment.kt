@@ -48,7 +48,7 @@ class LaundryFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mLabs = MainActivity.getLabsInstance()
+        mLabs = MainActivity.labsInstance
         mActivity = activity as MainActivity
         mContext = mActivity
         setHasOptionsMenu(true)
@@ -65,7 +65,7 @@ class LaundryFragment : Fragment() {
 
         // get num rooms to display
         sp = PreferenceManager.getDefaultSharedPreferences(mContext)
-        numRooms = sp?.getInt(mContext?.getString(R.string.num_rooms_pref), 100) ?: 0
+        numRooms = sp?.getInt(mContext.getString(R.string.num_rooms_pref), 100) ?: 0
         count = 0
         for (i in 0 until numRooms) {
             if (sp!!.getBoolean(Integer.toString(i), false)) {
@@ -111,18 +111,18 @@ class LaundryFragment : Fragment() {
         super.onResume()
         mActivity.removeTabs()
 
-        numRooms = sp?.getInt(mContext?.getString(R.string.num_rooms_pref), 100) ?: 0
+        numRooms = sp?.getInt(mContext.getString(R.string.num_rooms_pref), 100) ?: 0
 
         // get num rooms to display
         count = 0
         for (i in 0 until numRooms) {
-            if (sp?.getBoolean(Integer.toString(i), false) == true) {
+            if (sp?.getBoolean(i.toString(), false) == true) {
                 count += 1
             }
         }
         mActivity.setTitle(R.string.laundry)
         if (Build.VERSION.SDK_INT > 17){
-            mActivity.setSelectedTab(3)
+            mActivity.setSelectedTab(MainActivity.LAUNDRY)
         }
         loadingPanel?.visibility = View.VISIBLE
         updateRooms()

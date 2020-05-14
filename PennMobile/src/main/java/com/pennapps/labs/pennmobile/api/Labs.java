@@ -1,9 +1,6 @@
 package com.pennapps.labs.pennmobile.api;
 
-import com.google.gson.annotations.JsonAdapter;
 import com.pennapps.labs.pennmobile.classes.Building;
-import com.pennapps.labs.pennmobile.classes.BusRoute;
-import com.pennapps.labs.pennmobile.classes.BusStop;
 import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.FlingEvent;
@@ -16,7 +13,6 @@ import com.pennapps.labs.pennmobile.classes.HomeCell;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
-import com.pennapps.labs.pennmobile.classes.OAuthUser;
 import com.pennapps.labs.pennmobile.classes.Person;
 import com.pennapps.labs.pennmobile.classes.Review;
 import com.pennapps.labs.pennmobile.classes.Account;
@@ -66,19 +62,6 @@ public interface Labs {
     @GET("/dining/daily_menu/{id}")
     Observable<DiningHall> daily_menu(
             @Path("id") int id);
-
-    @GET("/transit/stops")
-    Observable<List<BusStop>> bus_stops();
-
-    @GET("/transit/routes")
-    Observable<List<BusRoute>> routes();
-
-    @GET("/transit/routing")
-    Observable<BusRoute> routing(
-            @Query("latFrom") String latFrom,
-            @Query("latTo") String latTo,
-            @Query("lonFrom") String lonFrom,
-            @Query("lonTo") String lonTo);
 
     @GET("/pcr/{id}")
     Observable<Review> course_review(

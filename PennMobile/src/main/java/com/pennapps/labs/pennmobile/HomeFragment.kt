@@ -72,7 +72,7 @@ class HomeFragment : Fragment()  {
         val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
 
         // get API data
-        val labs = MainActivity.getLabsInstance()
+        val labs = MainActivity.labsInstance
         labs.getHomePage(deviceID, accountID, sessionID).subscribe({ cells ->
             mActivity.runOnUiThread {
                 val gsrBookingCell = HomeCell()
@@ -85,6 +85,7 @@ class HomeFragment : Fragment()  {
             }
         }, { throwable ->
             mActivity.runOnUiThread {
+                Log.e("Home", "Could not load Home page")
                 throwable.printStackTrace()
                 Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
                 loadingPanel?.visibility = View.GONE
@@ -110,7 +111,7 @@ class HomeFragment : Fragment()  {
             mActivity.setTitle(R.string.main_title)
         }
         if (Build.VERSION.SDK_INT > 17){
-            mActivity.setSelectedTab(0)
+            mActivity.setSelectedTab(MainActivity.HOME)
         }
     }
 }
