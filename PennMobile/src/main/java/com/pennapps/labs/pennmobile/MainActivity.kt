@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
@@ -29,6 +30,8 @@ import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Serializer.*
 import com.pennapps.labs.pennmobile.classes.*
+import com.pennapps.labs.pennmobile.floatingbottombar.ExpandableBottomBarMenuItem
+import kotlinx.android.synthetic.main.include_main.*
 import retrofit.RestAdapter
 import retrofit.android.AndroidLog
 import retrofit.converter.GsonConverter
@@ -65,17 +68,41 @@ class MainActivity : AppCompatActivity() {
         StrictMode.setThreadPolicy(policy)
 
         // Show HomeFragment if logged in, otherwise show LoginFragment
-        val pennkey = mSharedPrefs.getString(getString(R.string.pennkey), null)
+        val pennKey = mSharedPrefs.getString(getString(R.string.pennkey), null)
         val guestMode = mSharedPrefs.getBoolean(getString(R.string.guest_mode), false)
-        if (pennkey == null && !guestMode) {
+        if (pennKey == null && !guestMode) {
             startLoginFragment()
         } else {
             startHomeFragment()
         }
+        expandable_bottom_bar.addItems(
+                ExpandableBottomBarMenuItem.Builder(this)
+                        // Home
+                        .addItem(R.id.icon_home, R.drawable.ic_home_grey)
+                        .textRes(R.string.floating_bottom_bar_home)
+                        .colorRes(R.color.floating_bottom_bar_selected).create()
+                        // Dining
+                        .addItem(R.id.icon_extra, R.drawable.ic_dining_grey)
+                        .textRes(R.string.floating_bottom_bar_dining)
+                        .colorRes(R.color.floating_bottom_bar_selected).create()
+                        // Gsr Booking
+                        .addItem(R.id.icon_likes, R.drawable.ic_gsr_grey)
+                        .textRes(R.string.floating_bottom_bar_gsr_booking)
+                        .colorRes(R.color.floating_bottom_bar_selected).create()
+                        // Laundry
+                        .addItem(R.id.icon_bookmarks, R.drawable.ic_laundry_grey)
+                        .textRes(R.string.floating_bottom_bar_laundry)
+                        .colorRes(R.color.floating_bottom_bar_selected).create()
+                        // More
+                        .addItem(R.id.icon_settings, R.drawable.ic_more_grey)
+                        .textRes(R.string.floating_bottom_bar_more)
+                        .colorRes(R.color.floating_bottom_bar_selected).create()
+                        .build()
+        )
     }
 
     private fun onExpandableBottomNavigationItemSelected() {
-        tabBarView?.setOnTabClickedListener { view, tabPos ->
+        tabBarView?.setOnTabClickedListener { _, tabPos ->
             var fragment: Fragment? = null
             when (tabPos) {
                 HOME -> if (fragmentManager.backStackEntryCount > 0) {
@@ -116,7 +143,7 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         onExpandableBottomNavigationItemSelected()
         toolbar?.visibility = View.VISIBLE
-        tabBarView?.visibility = View.VISIBLE
+        tabBarView?.visibility = View.INVISIBLE
     }
 
     fun startLoginFragment() {

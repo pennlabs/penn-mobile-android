@@ -47,10 +47,31 @@
             android:id="@+id/content_frame"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+            android:layout_marginBottom="65dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appbar" />
+            app:layout_constraintTop_toBottomOf="@+id/appbar"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <com.pennapps.labs.pennmobile.floatingbottombar.ExpandableBottomBar
+            android:id="@+id/expandable_bottom_bar"
+            android:layout_width="0dp"
+            android:layout_height="65dp"
+            android:layout_margin="18dp"
+            app:exb_backgroundColor="#FFFFFF"
+            app:exb_backgroundCornerRadius="16dp"
+            app:exb_itemBackgroundCornerRadius="0dp"
+            app:exb_itemBackgroundOpacity="0.2"
+            app:exb_itemInactiveColor="#aeadad"
+            app:exb_item_horizontal_margin="0dp"
+            app:exb_item_horizontal_padding="0dp"
+            app:exb_item_vertical_margin="0dp"
+            app:exb_item_vertical_padding="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <com.pennapps.labs.pennmobile.ExpandedBottomNavBar.ExpandableBottomTabBar
             android:id="@+id/bottom_navigation"
@@ -66,6 +87,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:max_tab_count="5"
+            android:visibility="invisible"
             app:more_icon_resource="@drawable/ic_bottom_nav_more_grey"
             app:selected_tab_text_color="@color/color_bottom_nav_selected"
             app:tab_resource="@menu/bottom_tabs"

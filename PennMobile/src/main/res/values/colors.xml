@@ -56,5 +56,6 @@
     <color name="gsr_cancel_red">#E25152</color>
 
     <color name="pennmobile_blue">#1D79CE</color>
+    <color name="floating_bottom_bar_selected">#257FE2</color>
 
 </resources>

@@ -29,6 +29,10 @@
     <!--Home Screen -->
     <string name="home">Home</string>
 
+    <!--Floating Bottom Bar -->
+    <string name="accessibility_description">Screen menu</string>
+    <string name="accessibility_item_description">%1$s menu item</string>
+
     <!-- Search -->
     <string name="registrar_search">Search for courses</string>
     <string name="transit_search">Search for destinations</string>
@@ -241,6 +245,11 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="guest_mode">"Guest"</string>
+    <string name="floating_bottom_bar_home">Home</string>
+    <string name="floating_bottom_bar_dining">Dining</string>
+    <string name="floating_bottom_bar_gsr_booking">GSR</string>
+    <string name="floating_bottom_bar_laundry">Laundry</string>
+    <string name="floating_bottom_bar_more">More</string>
 
 
     <string-array name="previous_course_array">

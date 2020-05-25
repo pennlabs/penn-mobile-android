@@ -170,4 +170,20 @@
         <attr name="more_icon_resource" format="integer"/>
     </declare-styleable>
 
+    <style name="fontBottomBar">
+        <item name="android:fontFamily">@font/sf_pro_rounded_medium</item>
+    </style>
+    <style name="ExpandableBottomBar">
+        <item name="exb_backgroundColor">#FFF</item>
+        <item name="exb_backgroundCornerRadius">0dp</item>
+        <item name="exb_itemInactiveColor">#000</item>
+        <item name="exb_itemBackgroundCornerRadius">30dp</item>
+        <item name="exb_itemBackgroundOpacity">0.2</item>
+        <item name="exb_transitionDuration">100</item>
+        <item name="exb_item_vertical_margin">24dp</item>
+        <item name="exb_item_horizontal_margin">5dp</item>
+        <item name="exb_item_vertical_padding">10dp</item>
+        <item name="exb_item_horizontal_padding">15dp</item>
+    </style>
+
 </resources>
