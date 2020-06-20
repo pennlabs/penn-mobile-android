@@ -1,22 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:showIn="@layout/activity_main">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/linearLayout"
+    <FrameLayout
+        android:id="@+id/content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_marginBottom="16dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="278dp"
+        android:layout_height="271dp"
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -27,51 +35,9 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/white"
                 app:layout_scrollFlags="scroll|enterAlways"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Penn Mobile"
-                    android:textSize="20dp"
-                    android:textStyle="bold"
-                    android:textColor="@color/color_toolbar_text"
-                    android:layout_gravity="center"
-                    android:id="@+id/toolbar_title" />
-
-            </androidx.appcompat.widget.Toolbar>
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
         </com.google.android.material.appbar.AppBarLayout>
-
-        <FrameLayout
-            android:id="@+id/content_frame"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="65dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appbar"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <com.pennapps.labs.pennmobile.floatingbottombar.ExpandableBottomBar
-            android:id="@+id/expandable_bottom_bar"
-            android:layout_width="0dp"
-            android:layout_height="65dp"
-            android:layout_margin="18dp"
-            app:exb_backgroundColor="#FFFFFF"
-            app:exb_backgroundCornerRadius="16dp"
-            app:exb_itemBackgroundCornerRadius="0dp"
-            app:exb_itemBackgroundOpacity="0.2"
-            app:exb_itemInactiveColor="#aeadad"
-            app:exb_item_horizontal_margin="0dp"
-            app:exb_item_horizontal_padding="0dp"
-            app:exb_item_vertical_margin="0dp"
-            app:exb_item_vertical_padding="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
 
         <com.pennapps.labs.pennmobile.ExpandedBottomNavBar.ExpandableBottomTabBar
             android:id="@+id/bottom_navigation"
@@ -82,17 +48,36 @@
             android:gravity="bottom"
             android:textColor="#b5b6b6"
             android:textSize="12sp"
+            android:visibility="invisible"
             app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:max_tab_count="5"
-            android:visibility="invisible"
             app:more_icon_resource="@drawable/ic_bottom_nav_more_grey"
             app:selected_tab_text_color="@color/color_bottom_nav_selected"
             app:tab_resource="@menu/bottom_tabs"
             tools:ignore="SmallSp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.pennapps.labs.pennmobile.floatingbottombar.ExpandableBottomBar
+        android:id="@+id/expandable_bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp"
+        android:layout_marginBottom="8dp"
+        app:exb_backgroundColor="#FFFFFF"
+        app:exb_backgroundCornerRadius="16dp"
+        app:exb_itemBackgroundCornerRadius="0dp"
+        app:exb_itemBackgroundOpacity="0.2"
+        app:exb_itemInactiveColor="#aeadad"
+        app:exb_item_horizontal_margin="0dp"
+        app:exb_item_horizontal_padding="0dp"
+        app:exb_item_vertical_margin="0dp"
+        app:exb_item_vertical_padding="0dp"
+        app:layout_behavior=".floatingbottombar.behavior.ExpandableBottomBarScrollableBehavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

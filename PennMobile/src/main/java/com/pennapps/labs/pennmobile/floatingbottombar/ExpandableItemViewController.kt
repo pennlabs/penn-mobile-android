@@ -28,6 +28,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.AccessibilityDelegateCompat
 import androidx.core.view.ViewCompat.setAccessibilityDelegate
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
+import com.google.android.material.textview.MaterialTextView
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.floatingbottombar.utils.DrawableHelper
 import com.pennapps.labs.pennmobile.floatingbottombar.utils.createChain
@@ -218,7 +219,7 @@ internal open class ExpandableItemViewController(
                 )
             }
 
-            val textView = AppCompatTextView(context).apply {
+            val textView = MaterialTextView(context).apply {
                 val rawText = SpannableString(menuItem.text)
                 rawText.setSpan(
                         StyleSpan(Typeface.BOLD),
@@ -226,14 +227,11 @@ internal open class ExpandableItemViewController(
                         rawText.length,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                setTextColor(backgroundColorSelector)
                 text = rawText
                 gravity = Gravity.CENTER
                 visibility = View.INVISIBLE
                 textSize = 12F
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    setTextAppearance(R.style.fontBottomBar)
-                }
+                setTextColor(backgroundColorSelector)
                 typeface = Typeface.DEFAULT_BOLD
             }
 
@@ -296,8 +294,6 @@ internal open class ExpandableItemViewController(
                 addView(itemView)
                 addView(highlight, highlightLayoutParams)
             }
-
-
 
             return ExpandableItemViewController(
                     menuItem,

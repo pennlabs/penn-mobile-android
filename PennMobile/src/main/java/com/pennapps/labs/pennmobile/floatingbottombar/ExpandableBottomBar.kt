@@ -32,29 +32,35 @@ typealias OnItemClickListener = (v: View, menuItem: ExpandableBottomBarMenuItem)
  * Widget, which implements bottom bar navigation pattern
  */
 class ExpandableBottomBar @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = R.attr.exb_expandableButtonBarDefaultStyle
-) : ConstraintLayout(context, attrs, defStyleAttr), CoordinatorLayout.AttachedBehavior {
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = R.attr.exb_expandableButtonBarDefaultStyle
+) : ConstraintLayout(context, attrs, defStyleAttr),
+        CoordinatorLayout.AttachedBehavior {
 
     @FloatRange(from = 0.0, to = 1.0)
     private var backgroundOpacity: Float = 0F
+
     @FloatRange(from = 0.0)
     private var backgroundCornerRadius: Float = 0F
+
     @IntRange(from = 0)
     private var menuItemHorizontalMargin: Int = 0
+
     @IntRange(from = 0)
     private var menuItemVerticalMargin: Int = 0
+
     @IntRange(from = 0)
     private var menuHorizontalPadding: Int = 0
+
     @IntRange(from = 0)
     private var menuVerticalPadding: Int = 0
 
     @ColorInt
     private var itemInactiveColor: Int = Color.parseColor("#aeadad")
     private val backgroundStates = arrayOf(
-        intArrayOf(android.R.attr.state_selected),
-        intArrayOf(-android.R.attr.state_selected)
+            intArrayOf(android.R.attr.state_selected),
+            intArrayOf(-android.R.attr.state_selected)
     )
 
     private var transitionDuration: Int = 0
@@ -65,7 +71,7 @@ class ExpandableBottomBar @JvmOverloads constructor(
     private val viewControllers: MutableMap<Int, ExpandableItemViewController> = mutableMapOf()
     private val stateController = ExpandableBottomBarStateController(this)
 
-    private var onItemSelectedListener: OnItemClickListener? = null
+    internal var onItemSelectedListener: OnItemClickListener? = null
     private var onItemReselectedListener: OnItemClickListener? = null
 
     init {
@@ -73,7 +79,7 @@ class ExpandableBottomBar @JvmOverloads constructor(
     }
 
     override fun getBehavior(): CoordinatorLayout.Behavior<*> =
-        ExpandableBottomBarBehavior<ExpandableBottomBar>()
+            ExpandableBottomBarBehavior<ExpandableBottomBar>()
 
     private fun initAttrs(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         if (attrs == null) {
@@ -83,44 +89,44 @@ class ExpandableBottomBar @JvmOverloads constructor(
         contentDescription = resources.getString(R.string.accessibility_description)
 
         val typedArray = context.obtainStyledAttributes(
-            attrs, R.styleable.ExpandableBottomBar,
-            defStyleAttr, R.style.ExpandableBottomBar
+                attrs, R.styleable.ExpandableBottomBar,
+                defStyleAttr, R.style.ExpandableBottomBar
         )
 
         backgroundOpacity =
-            typedArray.getFloat(R.styleable.ExpandableBottomBar_exb_itemBackgroundOpacity, 0.2F)
+                typedArray.getFloat(R.styleable.ExpandableBottomBar_exb_itemBackgroundOpacity, 0.2F)
         backgroundCornerRadius = typedArray.getDimension(
-            R.styleable.ExpandableBottomBar_exb_itemBackgroundCornerRadius,
-            30F.toPx()
+                R.styleable.ExpandableBottomBar_exb_itemBackgroundCornerRadius,
+                30F.toPx()
         )
         transitionDuration =
-            typedArray.getInt(R.styleable.ExpandableBottomBar_exb_transitionDuration, 100)
+                typedArray.getInt(R.styleable.ExpandableBottomBar_exb_transitionDuration, 100)
         itemInactiveColor =
-            typedArray.getColor(R.styleable.ExpandableBottomBar_exb_itemInactiveColor, Color.BLACK)
+                typedArray.getColor(R.styleable.ExpandableBottomBar_exb_itemInactiveColor, Color.BLACK)
         menuItemHorizontalMargin = typedArray.getDimension(
-            R.styleable.ExpandableBottomBar_exb_item_horizontal_margin,
-            5F.toPx()
+                R.styleable.ExpandableBottomBar_exb_item_horizontal_margin,
+                5F.toPx()
         ).toInt()
         menuItemVerticalMargin = typedArray.getDimension(
-            R.styleable.ExpandableBottomBar_exb_item_vertical_margin,
-            5F.toPx()
+                R.styleable.ExpandableBottomBar_exb_item_vertical_margin,
+                5F.toPx()
         ).toInt()
         menuHorizontalPadding = typedArray.getDimension(
-            R.styleable.ExpandableBottomBar_exb_item_horizontal_padding,
-            15F.toPx()
+                R.styleable.ExpandableBottomBar_exb_item_horizontal_padding,
+                15F.toPx()
         ).toInt()
         menuVerticalPadding = typedArray.getDimension(
-            R.styleable.ExpandableBottomBar_exb_item_vertical_padding,
-            10F.toPx()
+                R.styleable.ExpandableBottomBar_exb_item_vertical_padding,
+                10F.toPx()
         ).toInt()
 
         val backgroundColor =
-            typedArray.getColor(R.styleable.ExpandableBottomBar_exb_backgroundColor, Color.WHITE)
+                typedArray.getColor(R.styleable.ExpandableBottomBar_exb_backgroundColor, Color.WHITE)
         val backgroundCornerRadius =
-            typedArray.getDimension(R.styleable.ExpandableBottomBar_exb_backgroundCornerRadius, 0F)
+                typedArray.getDimension(R.styleable.ExpandableBottomBar_exb_backgroundCornerRadius, 0F)
 
         background =
-            DrawableHelper.createShapeDrawable(backgroundColor, backgroundCornerRadius, 1.0F)
+                DrawableHelper.createShapeDrawable(backgroundColor, backgroundCornerRadius, 1.0F)
 
         applyForApiLAndHigher {
             elevation = 6F
@@ -178,34 +184,31 @@ class ExpandableBottomBar @JvmOverloads constructor(
             when (item.itemId) {
                 firstItemId -> {
                     viewController.attachTo(
-                        this,
-                        prevIconId, nextIconId,
-                        80, menuItemHorizontalMargin, menuItemVerticalMargin, menuItemVerticalMargin
+                            this,
+                            prevIconId, nextIconId,
+                            80, menuItemHorizontalMargin, menuItemVerticalMargin, menuItemVerticalMargin
                     )
                 }
                 lastItemId -> {
                     viewController.attachTo(
-                        this,
-                        prevIconId, nextIconId,
-                        menuItemHorizontalMargin, 80, menuItemVerticalMargin, menuItemVerticalMargin
+                            this,
+                            prevIconId, nextIconId,
+                            menuItemHorizontalMargin, 80, menuItemVerticalMargin, menuItemVerticalMargin
                     )
                 }
                 else -> {
                     viewController.attachTo(
-                        this,
-                        prevIconId,
-                        nextIconId,
-                        menuItemHorizontalMargin,
-                        menuItemHorizontalMargin,
-                        menuItemVerticalMargin,
-                        menuItemVerticalMargin
+                            this,
+                            prevIconId,
+                            nextIconId,
+                            menuItemHorizontalMargin,
+                            menuItemHorizontalMargin,
+                            menuItemVerticalMargin,
+                            menuItemVerticalMargin
                     )
                 }
             }
-
-
         }
-
         madeMenuItemsAccessible(items)
     }
 
@@ -223,7 +226,7 @@ class ExpandableBottomBar @JvmOverloads constructor(
      * Returns currently selected item
      */
     fun getSelected(): ExpandableBottomBarMenuItem =
-        viewControllers.getValue(selectedItemId).menuItem
+            viewControllers.getValue(selectedItemId).menuItem
 
     private fun madeMenuItemsAccessible(items: List<ExpandableBottomBarMenuItem>) {
         for ((i, item) in items.withIndex()) {
@@ -239,19 +242,19 @@ class ExpandableBottomBar @JvmOverloads constructor(
         val selectedStateColorList = ColorStateList(backgroundStates, colors)
 
         val viewController =
-            ExpandableItemViewController.Builder(menuItem)
-                .itemMargins(menuHorizontalPadding, menuVerticalPadding)
-                .itemBackground(backgroundCornerRadius, backgroundOpacity)
-                .itemsColors(selectedStateColorList)
-                .onItemClickListener { v: View ->
-                    if (!v.isSelected) {
-                        onItemSelected(menuItem)
-                        onItemSelectedListener?.invoke(v, menuItem)
-                    } else {
-                        onItemReselectedListener?.invoke(v, menuItem)
-                    }
-                }
-                .build(context)
+                ExpandableItemViewController.Builder(menuItem)
+                        .itemMargins(menuHorizontalPadding, menuVerticalPadding)
+                        .itemBackground(backgroundCornerRadius, backgroundOpacity)
+                        .itemsColors(selectedStateColorList)
+                        .onItemClickListener { v: View ->
+                            if (!v.isSelected) {
+                                onItemSelected(menuItem)
+                                onItemSelectedListener?.invoke(v, menuItem)
+                            } else {
+                                onItemReselectedListener?.invoke(v, menuItem)
+                            }
+                        }
+                        .build(context)
 
         if (selectedItemId == menuItem.itemId) {
             viewController.select()
@@ -288,15 +291,16 @@ class ExpandableBottomBar @JvmOverloads constructor(
     }
 
     internal class ExpandableBottomBarStateController(
-        private val expandableBottomBar: ExpandableBottomBar
+            private val expandableBottomBar: ExpandableBottomBar
     ) {
 
         fun store(superState: Parcelable?) =
-            SavedState(expandableBottomBar.selectedItemId, superState)
+                SavedState(expandableBottomBar.selectedItemId, superState)
 
         fun restore(state: SavedState) {
             val selectedItemId = state.selectedItem
-            val viewController = expandableBottomBar.viewControllers.getValue(selectedItemId)
+            val viewController = expandableBottomBar
+                    .viewControllers.getValue(selectedItemId)
             expandableBottomBar.onItemSelected(viewController.menuItem)
         }
     }

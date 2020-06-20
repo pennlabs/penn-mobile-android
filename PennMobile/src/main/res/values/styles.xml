@@ -9,6 +9,10 @@
         <item name="windowNoTitle">true</item>
         <item name="android:textColorSecondary">@color/color_toolbar_text</item>
         <item name="android:fontFamily">@font/segoe_ui</item>
+        <item name="android:windowBackground">@color/windowBackground</item>
+        <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">true</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent</item>
     </style>
 
     <style name="DarkModeApi29" tools:targetApi="29">
@@ -172,6 +176,7 @@
 
     <style name="fontBottomBar">
         <item name="android:fontFamily">@font/sf_pro_rounded_medium</item>
+        <item name="android:textColor">@color/floating_bottom_bar_selected</item>
     </style>
     <style name="ExpandableBottomBar">
         <item name="exb_backgroundColor">#FFF</item>
@@ -186,4 +191,42 @@
         <item name="exb_item_horizontal_padding">15dp</item>
     </style>
 
+    <style name="title_fragment">
+        <item name="android:textColor">#ff13284b</item>
+        <item name="fontFamily">@font/gilroy_extra_bold</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="title_date">
+        <item name="android:textColor">#adadad</item>
+        <item name="fontFamily">@font/sf_pro_display_bold</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="profile_initials">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="fontFamily">@font/sf_pro_rounded_bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <style name="AppTheme.AppBarOverlay.Light" parent="ThemeOverlay.AppCompat.Light"/>
+
+    <color name="windowBackground">#FFFFFF</color>
+
+    <style name="home_cell_subtitle">
+        <item name="android:textColor">#ADADAD</item>
+        <item name="fontFamily">@font/gilroy_light</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="home_cell_title">
+        <item name="android:textColor">#ff13284b</item>
+        <item name="fontFamily">@font/gilroy_extra_bold</item>
+        <item name="android:textSize">21sp</item>
+    </style>
 </resources>

@@ -13,62 +13,136 @@
         android:id="@+id/home_news_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardCornerRadius="8dp"
+        app:cardCornerRadius="16dp"
         app:cardElevation="2dp"
-        app:cardUseCompatPadding="true">
+        app:cardUseCompatPadding="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
+            android:id="@+id/news_card_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:weightSum="10">
 
             <ImageView
                 android:id="@+id/home_news_iv"
-                android:layout_width="0dp"
-                android:layout_height="230dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_width="match_parent"
+                android:layout_height="210dp" />
 
-            <TextView
-                android:id="@+id/home_news_subtitle"
-                android:layout_width="wrap_content"
+            <eightbitlab.com.blurview.BlurView
+                android:id="@+id/blurView"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/home_news_title" />
+                android:layout_gravity="bottom"
+                android:elevation="8dp"
+                android:outlineProvider="bounds"
+                app:blurOverlayColor="@color/blurColorOverlay"
+                tools:targetApi="lollipop">
 
-            <TextView
-                android:id="@+id/home_news_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/home_news_iv" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent">
 
-            <TextView
-                android:id="@+id/home_news_timestamp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/home_news_title" />
+                    <ImageView
+                        android:id="@+id/news_card_logo"
+                        android:layout_width="135dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="12dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_daily_pennsylvanian" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                    <ImageView
+                        android:id="@+id/dot_divider"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginLeft="4dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/news_card_logo"
+                        app:layout_constraintStart_toEndOf="@+id/news_card_logo"
+                        app:layout_constraintTop_toTopOf="@+id/news_card_logo"
+                        app:srcCompat="@drawable/ic_white_dot" />
+
+                    <TextView
+                        android:id="@+id/home_news_timestamp"
+                        style="@style/home_cell_subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginLeft="4dp"
+                        android:textSize="12sp"
+                        app:autoSizeTextType="none"
+                        app:layout_constraintBottom_toBottomOf="@+id/news_card_logo"
+                        app:layout_constraintStart_toEndOf="@+id/dot_divider"
+                        app:layout_constraintTop_toTopOf="@+id/news_card_logo" />
+
+                    <TextView
+                        android:id="@+id/home_news_title"
+                        style="@style/home_cell_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/gilroy_bold"
+                        android:maxLines="3"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        app:autoSizeMaxTextSize="14sp"
+                        app:layout_constraintBottom_toTopOf="@+id/button"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/news_card_logo" />
+
+                    <TextView
+                        android:id="@+id/home_news_subtitle"
+                        style="@style/home_cell_subtitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/home_news_title"
+                        app:layout_constraintTop_toBottomOf="@+id/home_news_title" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/button"
+                        android:layout_width="match_parent"
+                        android:layout_height="38dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="20dp"
+                        android:background="@drawable/button_background"
+                        android:fontFamily="@font/gilroy_extra_bold"
+                        android:hapticFeedbackEnabled="true"
+                        android:text="Read Article"
+                        android:textAllCaps="false"
+                        android:textColor="#ff13284b"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </eightbitlab.com.blurview.BlurView>
+
+
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

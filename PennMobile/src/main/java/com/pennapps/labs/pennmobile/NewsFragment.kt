@@ -46,7 +46,7 @@ class NewsFragment : ListFragment() {
             val rowView = inflater.inflate(R.layout.news_list_item, null, true)
 
             val newsName = rowView.findViewById(R.id.news_name) as TextView
-            val newsLogo = rowView.findViewById(R.id.news_logo) as ImageView
+            val newsLogo = rowView.findViewById(R.id.news_card_logo) as ImageView
             val newsDetails = rowView.findViewById(R.id.news_details) as TextView
 
             newsName.text = news[position].name

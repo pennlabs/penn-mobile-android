@@ -250,6 +250,7 @@
     <string name="floating_bottom_bar_gsr_booking">GSR</string>
     <string name="floating_bottom_bar_laundry">Laundry</string>
     <string name="floating_bottom_bar_more">More</string>
+    <string name="initials">Initials</string>
 
 
     <string-array name="previous_course_array">

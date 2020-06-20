@@ -1,37 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    tools:showIn="@layout/activity_main">
 
-    <include layout="@layout/no_results" />
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:elevation="0dp"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:elevation="0dp"
+        tools:targetApi="lollipop">
 
-    <include layout="@layout/loading_panel" />
+        <FrameLayout
+            android:id="@+id/appbar_container"
+            android:layout_width="match_parent"
+            android:layout_height="80dp">
 
-    <FrameLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/profile"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="36dp"
+                android:layout_marginRight="36dp">
+
+                <ImageView
+                    android:id="@+id/profile_background"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_appbar_profile_background" />
+
+                <TextView
+                    android:id="@+id/initials"
+                    style="@style/profile_initials"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DL"
+                    app:layout_constraintBottom_toBottomOf="@+id/profile_background"
+                    app:layout_constraintEnd_toEndOf="@+id/profile_background"
+                    app:layout_constraintStart_toStartOf="@+id/profile_background"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/date_view"
+                style="@style/title_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|top"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="20dp"
+                android:text="SUNDAY, JAN 2019" />
+
+            <TextView
+                android:id="@+id/title_view"
+                style="@style/title_fragment"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|start"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginBottom="4dp"
+                android:maxLines="1"
+                android:paddingEnd="24dp"
+                android:paddingRight="24dp"
+                android:text="Activity"
+                app:autoSizeTextType="uniform" />
+
+            <ImageView
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:visibility="visible"
+                app:srcCompat="@drawable/ic_app_bar_divider" />
+
+        </FrameLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <TextView
-            android:id="@+id/laundry_help_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="@string/laundry_help_text" />
+        <include layout="@layout/no_results" />
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/laundry_machine_refresh"
+        <include layout="@layout/loading_panel" />
+
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:visibility="visible">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/favorite_laundry_list"
+            <TextView
+                android:id="@+id/laundry_help_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="@string/laundry_help_text" />
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/laundry_machine_refresh"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent">
 
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/favorite_laundry_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
-    </FrameLayout>
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-</LinearLayout>
+        </FrameLayout>
+
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

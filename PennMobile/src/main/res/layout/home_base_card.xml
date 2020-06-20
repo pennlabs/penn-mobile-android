@@ -24,25 +24,25 @@
 
             <TextView
                 android:id="@+id/home_card_subtitle"
+                style="@style/home_cell_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
-                android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/home_card_title"
+                style="@style/home_cell_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="12dp"
-                android:textSize="24sp"
+                android:layout_marginTop="4dp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/home_card_subtitle" />
@@ -51,7 +51,6 @@
                 android:id="@+id/home_card_rv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
                 android:layout_marginBottom="12dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -61,11 +60,11 @@
             <Button
                 android:id="@+id/dining_prefs_btn"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginTop="16dp"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginTop="18dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginRight="22dp"
                 android:background="@drawable/ic_settings"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"

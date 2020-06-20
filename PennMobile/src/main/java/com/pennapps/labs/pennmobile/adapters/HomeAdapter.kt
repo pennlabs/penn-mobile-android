@@ -1,27 +1,35 @@
 package com.pennapps.labs.pennmobile.adapters
 
 import android.app.PendingIntent
-import android.content.*
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import androidx.browser.customtabs.*
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
+import androidx.browser.customtabs.CustomTabsClient
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.browser.customtabs.CustomTabsServiceConnection
+import androidx.browser.customtabs.CustomTabsSession
+import androidx.core.content.ContextCompat.getColor
+import androidx.core.content.ContextCompat.startActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.*
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.HomeCell
-import com.pennapps.labs.pennmobile.classes.Venue
 import com.squareup.picasso.Picasso
+import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.android.synthetic.main.home_base_card.view.*
 import kotlinx.android.synthetic.main.home_news_card.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import rx.Observable
 
 
@@ -149,9 +157,25 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         val info = cell.info
         holder.itemView.home_news_title.text = info?.title
         holder.itemView.home_news_subtitle.text = info?.source
-        holder.itemView.home_news_timestamp.text = info?.timestamp
+        holder.itemView.home_news_timestamp.text = info?.timestamp?.trim()
 
-        Picasso.get().load(info?.imageUrl).fit().centerCrop().into(holder.itemView.home_news_iv)
+        Picasso.get()
+                .load(info?.imageUrl)
+                .fit()
+                .centerCrop()
+                .into(holder.itemView.home_news_iv)
+
+        GlobalScope.launch(Dispatchers.Default) {
+            holder.itemView.news_card_container.background = BitmapDrawable(holder.view.resources,
+                    Picasso.get().load(info?.imageUrl).get())
+        }
+        val radius = 25f
+
+        holder.itemView.blurView.setupWith(holder.itemView.news_card_container)
+                .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))
+                .setBlurAlgorithm(RenderScriptBlur(mContext))
+                .setBlurRadius(radius)
+                .setHasFixedTransformationMatrix(true)
 
         holder.itemView.home_news_card.setOnClickListener {
 
@@ -210,7 +234,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
                 holder.itemView.home_card_rv.adapter = LaundryRoomAdapter(mContext, rooms, null, true)
             }
 
-        }, { throwable -> mActivity.runOnUiThread { throwable.printStackTrace() } } )
+        }, { throwable -> mActivity.runOnUiThread { throwable.printStackTrace() } })
     }
 
     private fun bindGsrBookingCell(holder: ViewHolder, cell: HomeCell) {

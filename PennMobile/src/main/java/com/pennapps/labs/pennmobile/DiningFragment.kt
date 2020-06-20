@@ -2,31 +2,27 @@ package com.pennapps.labs.pennmobile
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.view.*
+import android.widget.LinearLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
 import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.DiningAdapter
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.Venue
+import com.pennapps.labs.pennmobile.collapsingtoolbar.behavior.ToolbarBehavior
 import kotlinx.android.synthetic.main.fragment_dining.*
+import kotlinx.android.synthetic.main.fragment_dining.title_view
 import kotlinx.android.synthetic.main.fragment_dining.view.*
+import kotlinx.android.synthetic.main.fragment_dining.view.appbar_home
+import kotlinx.android.synthetic.main.fragment_dining.view.profile
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.no_results.*
 import rx.Observable
-import rx.functions.Action1
-import rx.functions.Func1
 
 class DiningFragment : Fragment() {
 
@@ -53,20 +49,25 @@ class DiningFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val v = inflater.inflate(R.layout.fragment_dining, container, false)
-        v.dining_swiperefresh?.setOnRefreshListener { getDiningHalls() }
-        v.dining_swiperefresh?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
-        v.dining_halls_recycler_view?.layoutManager = LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false)
+        val view = inflater.inflate(R.layout.fragment_dining, container, false)
+        view.dining_swiperefresh?.setOnRefreshListener { getDiningHalls() }
+        view.dining_swiperefresh?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
+        view.dining_halls_recycler_view?.layoutManager = LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false)
         getDiningHalls()
-        return v
+        initAppBar(view)
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setTitle("Dining")
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.dining_sort, menu)
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
         // sort the dining halls in the user-specified order
-        val order = sp.getString("dining_sortBy", "RESIDENTIAL")
-        when (order) {
+        when (sp.getString("dining_sortBy", "RESIDENTIAL")) {
             "RESIDENTIAL" -> {
                 menu.findItem(R.id.action_sort_residential).isChecked = true
             }
@@ -133,6 +134,7 @@ class DiningFragment : Fragment() {
                             no_results?.visibility = View.GONE
                         }
                         dining_swiperefresh?.isRefreshing = false
+                        view?.let { displaySnack(it, "Just Updated") }
                     }
                 }, {
                     mActivity.runOnUiThread {
@@ -150,6 +152,46 @@ class DiningFragment : Fragment() {
         if (Build.VERSION.SDK_INT > 17) {
             mActivity.setSelectedTab(MainActivity.DINING)
         }
+    }
+
+    private fun initAppBar(view: View) {
+        // Appbar behavior init
+        if (Build.VERSION.SDK_INT > 16) {
+            (view.appbar_home.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
+        }
+        view.profile.setOnClickListener { _ ->
+            displaySnack(view, "Meow")
+        }
+    }
+
+    private fun setTitle(title: CharSequence) {
+        title_view.text = title
+    }
+
+
+    /**
+     * Shows SnackBar message right below the app bar
+     */
+    @Suppress("DEPRECATION")
+    private fun displaySnack(view: View, text: String) {
+        val snackBar = Snackbar.make(view.snack_bar_dining, text, Snackbar.LENGTH_SHORT)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            snackBar.setTextColor(resources.getColor(R.color.white, context?.theme))
+            snackBar.setBackgroundTint(resources.getColor(R.color.penn_mobile_grey, context?.theme))
+        } else {
+            snackBar.setTextColor(resources.getColor(R.color.white))
+            snackBar.setBackgroundTint(resources.getColor(R.color.penn_mobile_grey))
+        }
+        // SnackBar message and action TextViews are placed inside a LinearLayout
+        val snackBarLayout = snackBar.view as Snackbar.SnackbarLayout
+        for (i in 0 until snackBarLayout.childCount) {
+            val parent = snackBarLayout.getChildAt(i)
+            if (parent is LinearLayout) {
+                parent.rotation = 180F
+                break
+            }
+        }
+        snackBar.show()
     }
 
     companion object {

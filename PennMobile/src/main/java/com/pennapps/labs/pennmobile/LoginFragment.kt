@@ -34,7 +34,7 @@ class LoginFragment : Fragment() {
         val fragmentManager = mActivity.supportFragmentManager
         var gif = R.drawable.login_background
         if (Build.VERSION.SDK_INT > 28 && (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) {
-            gif = R.drawable.login_background_dark
+            //gif = R.drawable.login_background_dark
         }
 
         Glide.with(this).asGif().load(gif).listener(object : RequestListener<GifDrawable> {

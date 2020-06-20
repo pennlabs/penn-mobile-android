@@ -69,7 +69,7 @@ class LoginWebviewFragment : Fragment() {
         redirectUri = getString(R.string.redirectUri)
         codeChallenge = getCodeChallenge(codeVerifier)
         platformAuthUrl = platformBaseUrl + "/accounts/authorize/?response_type=code&client_id=" +
-                clientID+ "&redirect_uri=" + redirectUri + "&code_challenge_method=S256" +
+                clientID + "&redirect_uri=" + redirectUri + "&code_challenge_method=S256" +
                 "&code_challenge=" + codeChallenge + "&scope=read+introspection&state="
     }
 
@@ -113,7 +113,7 @@ class LoginWebviewFragment : Fragment() {
         }
     }
 
-    private fun getDecodedPassword() : String? {
+    private fun getDecodedPassword(): String? {
         if (Build.VERSION.SDK_INT >= 26) {
             var base64EncryptedPassword = sp.getString("penn_password", "null")
             var base64EncryptionIv = sp.getString("encryptionIv", "null")
@@ -137,13 +137,13 @@ class LoginWebviewFragment : Fragment() {
         }
     }
 
-    private fun saveUsername(username: String){
+    private fun saveUsername(username: String) {
         val editor = sp.edit()
         editor.putString(getString(R.string.penn_user), username)
         editor.apply()
     }
 
-    private fun createSecretKey (): SecretKey? {
+    private fun createSecretKey(): SecretKey? {
         if (Build.VERSION.SDK_INT >= 23) {
             val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore")
             keyGenerator.init(KeyGenParameterSpec.Builder("Key", KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
@@ -174,7 +174,7 @@ class LoginWebviewFragment : Fragment() {
                 if (Build.VERSION.SDK_INT >= 19) {
                     webView.evaluateJavascript("document.getElementById('pennname').value;", ValueCallback<String> { s ->
                         if (s != null || s != "null") {
-                           saveUsername(s)
+                            saveUsername(s)
                         }
                     })
                     webView.evaluateJavascript("document.getElementById('password').value;", ValueCallback<String> { s ->
@@ -220,6 +220,13 @@ class LoginWebviewFragment : Fragment() {
                         val editor = sp.edit()
                         editor.putString(getString(R.string.first_name), user?.firstName)
                         editor.putString(getString(R.string.last_name), user?.lastName)
+                        var initials = ""
+                        try {
+                            initials = initials + user?.firstName?.first() + user?.lastName?.first()
+                            initials.capitalize()
+                        } catch (ignored: Exception) {
+                        }
+                        editor.putString(getString(R.string.initials), initials)
                         editor.putString(getString(R.string.email_address), user?.email)
                         editor.putString(getString(R.string.pennkey), user?.username)
                         editor.apply()
@@ -251,7 +258,7 @@ class LoginWebviewFragment : Fragment() {
         })
     }
 
-    private fun getCodeChallenge(codeVerifier: String) : String {
+    private fun getCodeChallenge(codeVerifier: String): String {
 
         val digest = MessageDigest.getInstance("SHA-256")
         digest.reset()

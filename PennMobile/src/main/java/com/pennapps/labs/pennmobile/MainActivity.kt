@@ -4,13 +4,11 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -40,7 +38,6 @@ class MainActivity : AppCompatActivity() {
 
     private var tabBarView: ExpandableBottomTabBar? = null
     private var toolbar: Toolbar? = null
-    private var toolbarTitle: TextView? = null
     private var tabShowed = false
     private lateinit var fragmentManager: FragmentManager
     private lateinit var mSharedPrefs: SharedPreferences
@@ -56,9 +53,9 @@ class MainActivity : AppCompatActivity() {
             setTheme(R.style.DarkBackground)
         }
         setContentView(R.layout.activity_main)
+
         tabBarView = findViewById(R.id.bottom_navigation)
         toolbar = findViewById(R.id.toolbar)
-        toolbarTitle = findViewById(R.id.toolbar_title)
         setSupportActionBar(toolbar)
         fragmentManager = supportFragmentManager
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
@@ -102,6 +99,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onExpandableBottomNavigationItemSelected() {
+        expandable_bottom_bar.onItemSelectedListener = { v, item ->
+            var fragment: Fragment? = null
+            when (item.text as String) {
+                "Home" -> if (fragmentManager.backStackEntryCount > 0) {
+                    fragment = HomeFragment()
+                }
+                "Dining" -> fragment = DiningFragment()
+                "GSR" -> fragment = GsrTabbedFragment()
+                "Laundry" -> fragment = LaundryFragment()
+                "More" -> fragment = AboutFragment()
+            }
+            fragmentTransact(fragment)
+        }
         tabBarView?.setOnTabClickedListener { _, tabPos ->
             var fragment: Fragment? = null
             when (tabPos) {
@@ -164,7 +174,7 @@ class MainActivity : AppCompatActivity() {
         if (tabShowed) {
             return
         }
-        val appBar = findViewById<View>(R.id.appbar) as AppBarLayout
+        val appBar = findViewById<View>(R.id.appbar_home) as AppBarLayout
         val tabLayout = layoutInflater.inflate(R.layout.tab_layout, null) as TabLayout
         tabLayout.post { tabLayout.setupWithViewPager(pager) }
         if (!scrollable) {
@@ -177,7 +187,7 @@ class MainActivity : AppCompatActivity() {
 
     fun removeTabs() {
         tabShowed = false
-        val appBar = findViewById<View>(R.id.appbar) as AppBarLayout
+        val appBar = findViewById<View>(R.id.appbar_home) as AppBarLayout
 
         if (appBar.childCount >= 2) {
             appBar.removeViewAt(1)
@@ -210,8 +220,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Deprecated, each fragment has it's own app bar now
     override fun setTitle(title: CharSequence) {
-        toolbarTitle?.text = title
+        //title_view.text = title
     }
 
     companion object {
