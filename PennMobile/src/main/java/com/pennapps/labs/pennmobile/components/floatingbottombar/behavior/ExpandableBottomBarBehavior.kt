@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile.floatingbottombar.behavior
+package com.pennapps.labs.pennmobile.components.floatingbottombar.behavior
 
 import android.content.Context
 import android.util.AttributeSet

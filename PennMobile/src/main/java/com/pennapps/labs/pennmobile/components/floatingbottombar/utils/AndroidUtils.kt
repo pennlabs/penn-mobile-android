@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile.floatingbottombar.utils
+package com.pennapps.labs.pennmobile.components.floatingbottombar.utils
 
 import android.os.Build
 

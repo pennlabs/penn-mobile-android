@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile.collapsingtoolbar.behavior
+package com.pennapps.labs.pennmobile.components.collapsingtoolbar
 
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener

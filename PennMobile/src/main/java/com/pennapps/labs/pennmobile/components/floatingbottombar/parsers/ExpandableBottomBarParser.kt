@@ -1,11 +1,11 @@
-package com.pennapps.labs.pennmobile.floatingbottombar.parsers
+package com.pennapps.labs.pennmobile.components.floatingbottombar.parsers
 
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
 import android.util.Xml
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.floatingbottombar.ExpandableBottomBarMenuItem
+import com.pennapps.labs.pennmobile.components.floatingbottombar.ExpandableBottomBarMenuItem
 import org.xmlpull.v1.XmlPullParser
 
 internal class ExpandableBottomBarParser(private val context: Context) {

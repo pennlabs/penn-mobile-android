@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile.floatingbottombar
+package com.pennapps.labs.pennmobile.components.floatingbottombar
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -21,7 +21,6 @@ import androidx.annotation.FloatRange
 import androidx.annotation.Px
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -30,8 +29,8 @@ import androidx.core.view.ViewCompat.setAccessibilityDelegate
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.google.android.material.textview.MaterialTextView
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.floatingbottombar.utils.DrawableHelper
-import com.pennapps.labs.pennmobile.floatingbottombar.utils.createChain
+import com.pennapps.labs.pennmobile.components.floatingbottombar.utils.DrawableHelper
+import com.pennapps.labs.pennmobile.components.floatingbottombar.utils.createChain
 
 internal open class ExpandableItemViewController(
         internal val menuItem: ExpandableBottomBarMenuItem,

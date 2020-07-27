@@ -1,11 +1,11 @@
-package com.pennapps.labs.pennmobile.floatingbottombar.behavior
+package com.pennapps.labs.pennmobile.components.floatingbottombar.behavior
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
-import com.pennapps.labs.pennmobile.floatingbottombar.utils.clamp
+import com.pennapps.labs.pennmobile.components.floatingbottombar.utils.clamp
 
 class ExpandableBottomBarScrollableBehavior<V : View> :
         ExpandableBottomBarBehavior<V> {

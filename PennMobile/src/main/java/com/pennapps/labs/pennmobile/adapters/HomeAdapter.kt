@@ -7,10 +7,12 @@ import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.browser.customtabs.CustomTabsServiceConnection
@@ -192,7 +194,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
             CustomTabsClient.bindCustomTabsService(mContext,
                     NewsFragment.CUSTOM_TAB_PACKAGE_NAME, connection)
 
-            if (isChromeCustomTabsSupported(mContext)) {
+            if (mContext.isChromeCustomTabsSupported()) {
                 share?.putExtra(Intent.EXTRA_TEXT, url)
                 builder?.addMenuItem("Share", PendingIntent.getActivity(mContext, 0,
                         share, PendingIntent.FLAG_CANCEL_CURRENT))
@@ -265,10 +267,11 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         }
     }
 
-    private fun isChromeCustomTabsSupported(context: Context): Boolean {
+    /** Checks if the chrome tab is supported on the current device. */
+    private fun Context.isChromeCustomTabsSupported(): Boolean {
         val serviceIntent = Intent("android.support.customtabs.action.CustomTabsService")
         serviceIntent.setPackage("com.android.chrome")
-        val resolveInfos = context.packageManager.queryIntentServices(serviceIntent, 0)
+        val resolveInfos = this.packageManager.queryIntentServices(serviceIntent, 0)
         return resolveInfos.isNotEmpty()
     }
 

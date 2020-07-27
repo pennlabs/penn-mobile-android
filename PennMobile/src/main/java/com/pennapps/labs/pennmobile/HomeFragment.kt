@@ -4,37 +4,28 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.res.Resources
-import android.graphics.*
 import android.os.Build
 import android.os.Bundle
-import android.renderscript.RenderScript
 import android.util.Log
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.HomeAdapter
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.classes.HomeCell
-import com.pennapps.labs.pennmobile.collapsingtoolbar.behavior.ImageHelper
-import com.pennapps.labs.pennmobile.collapsingtoolbar.behavior.ToolbarBehavior
+import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
-import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.loading_panel.*
-import kotlin.math.abs
 
 
 class HomeFragment : Fragment() {
@@ -161,27 +152,28 @@ class HomeFragment : Fragment() {
      */
     @Suppress("DEPRECATION")
     private fun displaySnack(view: View, text: String) {
-        val snackBar = Snackbar.make(view.snack_bar_location, text, Snackbar.LENGTH_SHORT)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            snackBar.setTextColor(resources.getColor(R.color.white, context?.theme))
-            snackBar.setBackgroundTint(resources.getColor(R.color.penn_mobile_grey, context?.theme))
-        } else {
-            snackBar.setTextColor(resources.getColor(R.color.white))
-            snackBar.setBackgroundTint(resources.getColor(R.color.penn_mobile_grey))
-        }
-
-        // SnackBar message and action TextViews are placed inside a LinearLayout
-        val snackBarLayout = snackBar.view as Snackbar.SnackbarLayout
-
-        // Flips the orientation
-        for (i in 0 until snackBarLayout.childCount) {
-            val parent = snackBarLayout.getChildAt(i)
-            if (parent is LinearLayout) {
-                parent.rotation = 180F
-                break
-            }
-        }
-        snackBar.show()
+        (view as ViewGroup).showErrorSneaker(message = text, doOnRetry = { getHomePage() })
+//        val snackBar = Snackbar.make(view.snack_bar_location, text, Snackbar.LENGTH_SHORT)
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            snackBar.setTextColor(resources.getColor(R.color.white, context?.theme))
+//            snackBar.setBackgroundTint(resources.getColor(R.color.penn_mobile_grey, context?.theme))
+//        } else {
+//            snackBar.setTextColor(resources.getColor(R.color.white))
+//            snackBar.setBackgroundTint(resources.getColor(R.color.penn_mobile_grey))
+//        }
+//
+//        // SnackBar message and action TextViews are placed inside a LinearLayout
+//        val snackBarLayout = snackBar.view as Snackbar.SnackbarLayout
+//
+//        // Flips the orientation
+//        for (i in 0 until snackBarLayout.childCount) {
+//            val parent = snackBarLayout.getChildAt(i)
+//            if (parent is LinearLayout) {
+//                parent.rotation = 180F
+//                break
+//            }
+//        }
+//        snackBar.show()
     }
 }

@@ -1,14 +1,20 @@
 package com.pennapps.labs.pennmobile
 
+import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -23,12 +29,15 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.pennapps.labs.pennmobile.ExpandedBottomNavBar.ExpandableBottomTabBar
+import com.pennapps.labs.pennmobile.components.expandedbottomnavbar.ExpandableBottomTabBar
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Serializer.*
 import com.pennapps.labs.pennmobile.classes.*
-import com.pennapps.labs.pennmobile.floatingbottombar.ExpandableBottomBarMenuItem
+import com.pennapps.labs.pennmobile.components.floatingbottombar.ExpandableBottomBarMenuItem
+import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
+import eightbitlab.com.blurview.RenderScriptBlur
+import kotlinx.android.synthetic.main.custom_sneaker_view.view.*
 import kotlinx.android.synthetic.main.include_main.*
 import retrofit.RestAdapter
 import retrofit.android.AndroidLog
@@ -214,7 +223,18 @@ class MainActivity : AppCompatActivity() {
         if (grantResults.isEmpty() || grantResults[0] == PackageManager.PERMISSION_DENIED) {
             when (requestCode) {
                 SaveContactsFragment.permission_read -> showErrorToast(R.string.ask_contacts_fail)
-                else -> showErrorToast(R.string.ask_location_fail)
+                else -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        (applicationContext as Activity).window.decorView
+                                .findViewById<ViewGroup>(R.id.include)
+                                .showErrorSneaker(getString(R.string.ask_location_fail), null)
+                    } else {
+                        runOnUiThread {
+                            Toast.makeText(applicationContext, R.string.ask_location_fail,
+                                    Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
             }
             return
         }
@@ -293,4 +313,26 @@ class MainActivity : AppCompatActivity() {
                 return mLabs!!
             }
     }
+}
+
+/** Shows an error sneaker given a view group with an optional retry function */
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+fun ViewGroup.showErrorSneaker(message: String, doOnRetry: (() -> Unit)?) {
+    val sneaker = Sneaker.with(this)
+    val view = LayoutInflater.from(this.context)
+            .inflate(R.layout.custom_sneaker_view, sneaker.getView(), false)
+
+    view.blurView.setupWith(this)
+            .setFrameClearDrawable(ColorDrawable(Color.parseColor("#00FFFFFF")))
+            .setBlurAlgorithm(RenderScriptBlur(this.context))
+            .setBlurRadius(20f)
+            .setHasFixedTransformationMatrix(true)
+            .setOverlayColor(resources.getColor(R.color.blurColorOverlay))
+
+    val retryBtn = view.findViewById<TextView>(R.id.retryButton)
+    doOnRetry ?: run { retryBtn.visibility = View.GONE }
+    retryBtn.setOnClickListener { doOnRetry?.invoke() }
+
+    view.findViewById<TextView>(R.id.errorMessage).text = message
+    sneaker.sneakCustom(view).setCornerRadius(12, 16).setMessage(message)
 }

@@ -14,7 +14,7 @@ import com.pennapps.labs.pennmobile.adapters.DiningAdapter
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.Venue
-import com.pennapps.labs.pennmobile.collapsingtoolbar.behavior.ToolbarBehavior
+import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import kotlinx.android.synthetic.main.fragment_dining.*
 import kotlinx.android.synthetic.main.fragment_dining.title_view
 import kotlinx.android.synthetic.main.fragment_dining.view.*

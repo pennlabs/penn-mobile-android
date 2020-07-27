@@ -1,7 +1,6 @@
-package com.pennapps.labs.pennmobile.floatingbottombar
+package com.pennapps.labs.pennmobile.components.floatingbottombar
 
 import android.content.Context
-import android.graphics.Color
 import androidx.annotation.*
 import androidx.core.content.ContextCompat
 import java.lang.IllegalStateException

@@ -1,20 +1,14 @@
-package com.pennapps.labs.pennmobile.collapsingtoolbar.behavior
+package com.pennapps.labs.pennmobile.components.collapsingtoolbar
 
-import android.graphics.*
 import android.os.Build
-import android.renderscript.RenderScript
-import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import com.google.android.material.appbar.AppBarLayout
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.floatingbottombar.utils.clamp
-import kotlinx.android.synthetic.main.fragment_home.view.*
-import kotlin.math.abs
+import com.pennapps.labs.pennmobile.components.floatingbottombar.utils.clamp
 
 
 /**

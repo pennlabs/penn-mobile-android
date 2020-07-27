@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile.collapsingtoolbar.behavior
+package com.pennapps.labs.pennmobile.components.collapsingtoolbar
 
 import android.graphics.*
 import android.os.Build

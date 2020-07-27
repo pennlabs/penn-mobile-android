@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile.floatingbottombar
+package com.pennapps.labs.pennmobile.components.floatingbottombar
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -16,12 +16,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.floatingbottombar.behavior.ExpandableBottomBarBehavior
-import com.pennapps.labs.pennmobile.floatingbottombar.parsers.ExpandableBottomBarParser
-import com.pennapps.labs.pennmobile.floatingbottombar.state.SavedState
-import com.pennapps.labs.pennmobile.floatingbottombar.utils.DrawableHelper
-import com.pennapps.labs.pennmobile.floatingbottombar.utils.applyForApiLAndHigher
-import com.pennapps.labs.pennmobile.floatingbottombar.utils.toPx
+import com.pennapps.labs.pennmobile.components.floatingbottombar.behavior.ExpandableBottomBarBehavior
+import com.pennapps.labs.pennmobile.components.floatingbottombar.parsers.ExpandableBottomBarParser
+import com.pennapps.labs.pennmobile.components.floatingbottombar.state.SavedState
+import com.pennapps.labs.pennmobile.components.floatingbottombar.utils.DrawableHelper
+import com.pennapps.labs.pennmobile.components.floatingbottombar.utils.applyForApiLAndHigher
+import com.pennapps.labs.pennmobile.components.floatingbottombar.utils.toPx
 
 
 internal const val ITEM_NOT_SELECTED = -1

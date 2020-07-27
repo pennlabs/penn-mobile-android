@@ -11,11 +11,11 @@
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="24dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/ConstraintLayout"
         android:layout_width="278dp"
         android:layout_height="271dp"
         android:orientation="vertical"
@@ -39,7 +39,7 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <com.pennapps.labs.pennmobile.ExpandedBottomNavBar.ExpandableBottomTabBar
+        <com.pennapps.labs.pennmobile.components.expandedbottomnavbar.ExpandableBottomTabBar
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -61,14 +61,14 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.pennapps.labs.pennmobile.floatingbottombar.ExpandableBottomBar
+    <com.pennapps.labs.pennmobile.components.floatingbottombar.ExpandableBottomBar
         android:id="@+id/expandable_bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:layout_gravity="bottom"
-        android:layout_marginLeft="18dp"
-        android:layout_marginRight="18dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
         app:exb_backgroundColor="#FFFFFF"
         app:exb_backgroundCornerRadius="16dp"
         app:exb_itemBackgroundCornerRadius="0dp"
@@ -78,6 +78,6 @@
         app:exb_item_horizontal_padding="0dp"
         app:exb_item_vertical_margin="0dp"
         app:exb_item_vertical_padding="0dp"
-        app:layout_behavior=".floatingbottombar.behavior.ExpandableBottomBarScrollableBehavior" />
+        app:layout_behavior=".components.floatingbottombar.behavior.ExpandableBottomBarScrollableBehavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

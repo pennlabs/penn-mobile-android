@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile.ExpandedBottomNavBar;
+package com.pennapps.labs.pennmobile.components.expandedbottomnavbar;
 
 import android.content.Context;
 import android.content.res.Resources;

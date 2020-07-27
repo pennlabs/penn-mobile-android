@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="16dp"
+    android:paddingLeft="12dp"
     android:paddingTop="8dp"
-    android:paddingRight="16dp">
+    android:paddingRight="12dp">
 
 
     <androidx.cardview.widget.CardView
@@ -31,7 +31,7 @@
             <ImageView
                 android:id="@+id/home_news_iv"
                 android:layout_width="match_parent"
-                android:layout_height="210dp" />
+                android:layout_height="200dp" />
 
             <eightbitlab.com.blurview.BlurView
                 android:id="@+id/blurView"
