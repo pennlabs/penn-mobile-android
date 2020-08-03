@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
+import androidx.appcompat.widget.ViewUtils
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -460,10 +461,11 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
     fun sneakCustom(layout: View): Sneaker {
         sneakerView.setCustomView(layout)
         val layoutParams = CoordinatorLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
         )
         layoutParams.behavior = AppBarLayout.ScrollingViewBehavior()
         layoutParams.anchorGravity = Gravity.BOTTOM
+        layoutParams.bottomMargin = Utils.convertToDp(context, 52f)
         with(sneakerView) {
             this.layoutParams = layoutParams
         }

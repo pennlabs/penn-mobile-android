@@ -83,23 +83,18 @@ class MainActivity : AppCompatActivity() {
         }
         expandable_bottom_bar.addItems(
                 ExpandableBottomBarMenuItem.Builder(this)
-                        // Home
                         .addItem(R.id.icon_home, R.drawable.ic_home_grey)
                         .textRes(R.string.floating_bottom_bar_home)
                         .colorRes(R.color.floating_bottom_bar_selected).create()
-                        // Dining
                         .addItem(R.id.icon_extra, R.drawable.ic_dining_grey)
                         .textRes(R.string.floating_bottom_bar_dining)
                         .colorRes(R.color.floating_bottom_bar_selected).create()
-                        // Gsr Booking
                         .addItem(R.id.icon_likes, R.drawable.ic_gsr_grey)
                         .textRes(R.string.floating_bottom_bar_gsr_booking)
                         .colorRes(R.color.floating_bottom_bar_selected).create()
-                        // Laundry
                         .addItem(R.id.icon_bookmarks, R.drawable.ic_laundry_grey)
                         .textRes(R.string.floating_bottom_bar_laundry)
                         .colorRes(R.color.floating_bottom_bar_selected).create()
-                        // More
                         .addItem(R.id.icon_settings, R.drawable.ic_more_grey)
                         .textRes(R.string.floating_bottom_bar_more)
                         .colorRes(R.color.floating_bottom_bar_selected).create()
@@ -325,9 +320,9 @@ fun ViewGroup.showErrorSneaker(message: String, doOnRetry: (() -> Unit)?) {
     view.blurView.setupWith(this)
             .setFrameClearDrawable(ColorDrawable(Color.parseColor("#00FFFFFF")))
             .setBlurAlgorithm(RenderScriptBlur(this.context))
-            .setBlurRadius(20f)
+            .setBlurRadius(10f)
             .setHasFixedTransformationMatrix(true)
-            .setOverlayColor(resources.getColor(R.color.blurColorOverlay))
+            .setOverlayColor(resources.getColor(R.color.sneakerBlurColorOverlay))
 
     val retryBtn = view.findViewById<TextView>(R.id.retryButton)
     doOnRetry ?: run { retryBtn.visibility = View.GONE }

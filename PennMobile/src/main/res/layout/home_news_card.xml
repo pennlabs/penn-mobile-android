@@ -40,7 +40,7 @@
                 android:layout_gravity="bottom"
                 android:elevation="8dp"
                 android:outlineProvider="bounds"
-                app:blurOverlayColor="@color/blurColorOverlay"
+                app:blurOverlayColor="@color/newsCardBlurColorOverlay"
                 tools:targetApi="lollipop">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -125,7 +125,7 @@
                         android:layout_height="38dp"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
-                        android:layout_marginBottom="20dp"
+                        android:layout_marginBottom="16dp"
                         android:background="@drawable/button_background"
                         android:fontFamily="@font/gilroy_extra_bold"
                         android:hapticFeedbackEnabled="true"

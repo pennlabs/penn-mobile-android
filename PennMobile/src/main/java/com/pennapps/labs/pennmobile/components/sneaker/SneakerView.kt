@@ -15,7 +15,7 @@ import com.pennapps.labs.pennmobile.R
 internal class SneakerView(context: Context?) : LinearLayout(context) {
     init {
         id = R.id.mainLayout
-        layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
     }
 
     private val DEFAULT_VALUE = -100000
@@ -82,5 +82,10 @@ internal class SneakerView(context: Context?) : LinearLayout(context) {
 
     fun setCustomView(view: View) {
         addView(view, 0)
+        with (view){
+            val layoutParams = this.layoutParams
+            (layoutParams as LayoutParams).gravity = Gravity.BOTTOM
+            this.layoutParams = layoutParams
+        }
     }
 }
