@@ -36,6 +36,7 @@ import com.pennapps.labs.pennmobile.api.Serializer.*
 import com.pennapps.labs.pennmobile.classes.*
 import com.pennapps.labs.pennmobile.components.floatingbottombar.ExpandableBottomBarMenuItem
 import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
+import com.pennapps.labs.pennmobile.utils.Utils
 import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.android.synthetic.main.custom_sneaker_view.view.*
 import kotlinx.android.synthetic.main.include_main.*
@@ -62,6 +63,7 @@ class MainActivity : AppCompatActivity() {
             setTheme(R.style.DarkBackground)
         }
         setContentView(R.layout.activity_main)
+        Utils.getCurrentSystemTime()
 
         tabBarView = findViewById(R.id.bottom_navigation)
         toolbar = findViewById(R.id.toolbar)
@@ -205,7 +207,7 @@ class MainActivity : AppCompatActivity() {
                     fragmentManager.beginTransaction()
                             .replace(R.id.content_frame, fragment)
                             .addToBackStack(null)
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .setTransition(FragmentTransaction.TRANSIT_NONE)
                             .commit()
                 } catch (e: IllegalStateException) {
                     //ignore because the onSaveInstanceState etc states are called when activity is going to background etc

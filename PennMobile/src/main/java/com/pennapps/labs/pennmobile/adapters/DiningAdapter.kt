@@ -53,6 +53,7 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
             holder.progressBar?.visibility = View.VISIBLE
 
             holder.hallNameTV?.text = diningHall.name
+            holder.hallNameTV?.isSelected = true
             Picasso.get().load(diningHall.image).fit().centerCrop().into(holder.hallImage)
 
             if (diningHall.isOpen) {

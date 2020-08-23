@@ -112,7 +112,7 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
         int offlineWashers = washerList.getOffline();
         int outOfOrderWashers = washerList.getOutOfOrder();
         int totalWashers = openWashers + runningWashers + offlineWashers + outOfOrderWashers;
-        holder.washerAvailability.setText(openWashers + " / " + totalWashers + " open");
+        holder.washerAvailability.setText(openWashers + " of " + totalWashers + " Open");
 
         MachineList dryerList = room.getMachines().getDryers();
         int openDryers = dryerList.getOpen();

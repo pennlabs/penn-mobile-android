@@ -221,17 +221,16 @@ internal open class ExpandableItemViewController(
             val textView = MaterialTextView(context).apply {
                 val rawText = SpannableString(menuItem.text)
                 rawText.setSpan(
-                        StyleSpan(Typeface.BOLD),
+                        StyleSpan(Typeface.NORMAL),
                         0,
                         rawText.length,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        Spannable.SPAN_PARAGRAPH
                 )
                 text = rawText
                 gravity = Gravity.CENTER
                 visibility = View.INVISIBLE
-                textSize = 12F
+                textSize = 11.5F
                 setTextColor(backgroundColorSelector)
-                typeface = Typeface.DEFAULT_BOLD
             }
 
             val itemLayoutParams = LinearLayout.LayoutParams(
@@ -247,7 +246,7 @@ internal open class ExpandableItemViewController(
                     LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply {
                 gravity = Gravity.CENTER
-                setMargins(0, 0, 0, 8)
+                setMargins(0, 24, 0, 12)
             }
 
             val indicatorLayoutParams = LinearLayout.LayoutParams(

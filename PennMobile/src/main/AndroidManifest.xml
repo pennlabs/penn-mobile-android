@@ -31,8 +31,12 @@
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="18a765536e6539a73a15dd36c369ed29cfb91aa1" />
+      <meta-data
+          android:name="preloaded_fonts"
+          android:resource="@array/preloaded_fonts"
+          />
 
-        <receiver
+      <receiver
             android:name=".LaundryBroadcastReceiver"
             android:enabled="true"
             android:exported="true" /> <!-- receiver for laundry -->

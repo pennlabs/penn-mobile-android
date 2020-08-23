@@ -73,7 +73,7 @@
         app:exb_backgroundCornerRadius="16dp"
         app:exb_itemBackgroundCornerRadius="0dp"
         app:exb_itemBackgroundOpacity="0.2"
-        app:exb_itemInactiveColor="#aeadad"
+        app:exb_itemInactiveColor="#adadad"
         app:exb_item_horizontal_margin="0dp"
         app:exb_item_horizontal_padding="0dp"
         app:exb_item_vertical_margin="0dp"

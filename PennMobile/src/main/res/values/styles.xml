@@ -8,8 +8,10 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:textColorSecondary">@color/color_toolbar_text</item>
-        <item name="android:fontFamily">@font/segoe_ui</item>
+        <item name="android:fontFamily">@font/sf_pro_display_regular</item>
         <item name="android:windowBackground">@color/windowBackground</item>
+        <item name="android:colorEdgeEffect"
+              tools:targetApi="lollipop">@color/overScrollColor</item>
         <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">true</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent</item>
@@ -25,7 +27,7 @@
     </style>
 
     <style name="AppTheme.Launcher">
-        <item name="android:windowBackground">@drawable/splash_page</item>
+        <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
 
     <style name="ReferenceTheme" parent="@style/PreferenceThemeOverlay">
@@ -109,7 +111,8 @@
     <style name="HallName">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">17sp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">#13284B</item>
     </style>
 
     <style name="DiningStatusLabel">
@@ -175,7 +178,7 @@
     </declare-styleable>
 
     <style name="fontBottomBar">
-        <item name="android:fontFamily">@font/sf_pro_rounded_medium</item>
+        <item name="android:fontFamily">@font/sf_pro_display_medium</item>
         <item name="android:textColor">@color/floating_bottom_bar_selected</item>
     </style>
     <style name="ExpandableBottomBar">
@@ -194,7 +197,7 @@
     <style name="title_fragment">
         <item name="android:textColor">#ff13284b</item>
         <item name="fontFamily">@font/gilroy_extra_bold</item>
-        <item name="android:textSize">32sp</item>
+        <item name="android:textSize">28sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
@@ -217,16 +220,17 @@
     <style name="AppTheme.AppBarOverlay.Light" parent="ThemeOverlay.AppCompat.Light"/>
 
     <color name="windowBackground">#FFFFFF</color>
+    <color name="overScrollColor">#9BAACC</color>
 
     <style name="home_cell_subtitle">
         <item name="android:textColor">#ADADAD</item>
-        <item name="fontFamily">@font/gilroy_light</item>
-        <item name="android:textSize">13sp</item>
+        <item name="fontFamily">@font/sf_pro_display_regular</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
     <style name="home_cell_title">
         <item name="android:textColor">#ff13284b</item>
         <item name="fontFamily">@font/gilroy_extra_bold</item>
-        <item name="android:textSize">21sp</item>
+        <item name="android:textSize">20sp</item>
     </style>
 </resources>

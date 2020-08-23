@@ -55,10 +55,11 @@
                         android:layout_height="16dp"
                         android:layout_marginStart="16dp"
                         android:layout_marginLeft="16dp"
-                        android:layout_marginTop="12dp"
+                        android:layout_marginTop="10dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_daily_pennsylvanian" />
+                        app:srcCompat="@drawable/ic_daily_pennsylvanian"
+                        />
 
                     <ImageView
                         android:id="@+id/dot_divider"
@@ -78,24 +79,25 @@
                         android:layout_height="0dp"
                         android:layout_marginStart="4dp"
                         android:layout_marginLeft="4dp"
+                        android:layout_marginBottom="1dp"
                         android:textSize="12sp"
                         app:autoSizeTextType="none"
                         app:layout_constraintBottom_toBottomOf="@+id/news_card_logo"
                         app:layout_constraintStart_toEndOf="@+id/dot_divider"
-                        app:layout_constraintTop_toTopOf="@+id/news_card_logo" />
+                        />
 
                     <TextView
                         android:id="@+id/home_news_title"
-                        style="@style/home_cell_title"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
+                        android:layout_marginStart="16dp"
                         android:layout_marginLeft="16dp"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="16dp"
                         android:layout_marginRight="16dp"
                         android:layout_marginBottom="8dp"
                         android:ellipsize="end"
-                        android:fontFamily="@font/gilroy_bold"
+                        android:fontFamily="@font/sf_pro_display_medium"
                         android:maxLines="3"
                         android:textColor="@color/white"
                         android:textSize="14sp"
@@ -103,7 +105,8 @@
                         app:layout_constraintBottom_toTopOf="@+id/button"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/news_card_logo" />
+                        app:layout_constraintTop_toBottomOf="@+id/news_card_logo"
+                        />
 
                     <TextView
                         android:id="@+id/home_news_subtitle"
@@ -123,9 +126,11 @@
                         android:id="@+id/button"
                         android:layout_width="match_parent"
                         android:layout_height="38dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginRight="12dp"
+                        android:layout_marginBottom="12dp"
                         android:background="@drawable/button_background"
                         android:fontFamily="@font/gilroy_extra_bold"
                         android:hapticFeedbackEnabled="true"
@@ -135,7 +140,8 @@
                         android:textSize="16sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

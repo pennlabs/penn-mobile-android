@@ -40,13 +40,13 @@
                 android:layout_gravity="start|top"
                 android:layout_marginStart="24dp"
                 android:layout_marginLeft="24dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="24dp"
                 android:text="SUNDAY, JAN 2019" />
 
             <TextView
                 android:id="@+id/title_view"
                 style="@style/title_fragment"
-                android:layout_width="200dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|bottom"
                 android:layout_marginStart="24dp"
@@ -54,7 +54,7 @@
                 android:layout_marginBottom="4dp"
                 android:maxLines="1"
                 android:text="Activity"
-                app:autoSizeTextType="uniform" />
+                />
 
 
             <!--            </LinearLayout>-->

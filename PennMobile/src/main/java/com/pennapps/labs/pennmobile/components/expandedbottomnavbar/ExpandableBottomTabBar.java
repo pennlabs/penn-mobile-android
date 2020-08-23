@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.R;
 
+import com.pennapps.labs.pennmobile.utils.Utils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

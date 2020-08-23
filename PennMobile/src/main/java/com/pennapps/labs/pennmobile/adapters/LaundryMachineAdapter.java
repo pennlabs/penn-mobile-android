@@ -98,9 +98,9 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
         // if open
         else if (timeRemaining == OPEN_LABEL) {
             if (mMachineType.equals(mContext.getString(R.string.washer))) {
-                holder.machineView.setImageResource(R.drawable.washer_available);
+                holder.machineView.setImageResource(R.drawable.ic_washer_available);
             } else {
-                holder.machineView.setImageResource(R.drawable.dryer_available);
+                holder.machineView.setImageResource(R.drawable.ic_dryer_available);
             }
             holder.timeTextView.setText(R.string.open);
             holder.alarmSwitch.setVisibility(View.GONE);
@@ -169,55 +169,53 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
             mSwitch.setChecked(true);
         }
 
-        mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        mSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-                final AlarmManager alarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+            final AlarmManager alarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
 
-                // checked button
-                if (isChecked) {
+            // checked button
+            if (isChecked) {
 
-                    final PendingIntent alarmIntent = PendingIntent.getBroadcast(mContext, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    // for testing 10 second notification
-                    //alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 10000, alarmIntent);
+                final PendingIntent
+                    alarmIntent1 = PendingIntent.getBroadcast(mContext, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                // for testing 10 second notification
+                //alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 10000, alarmIntent);
 
-                    alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + time * 60000, alarmIntent);
+                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + time * 60000,
+                    alarmIntent1);
 
-                    // snackbar
-                    StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.append("Alarm set for " + time + " minutes");
-                    Snackbar snackbar = Snackbar.make(buttonView, stringBuilder, Snackbar.LENGTH_SHORT);
-                    View subView = snackbar.getView();
-                    TextView snackTextView = (TextView) subView.findViewById(R.id.snackbar_text);
-                    snackTextView.setTextColor(ContextCompat.getColor(mContext, R.color.white));
-                    snackbar.show();
+                // SnackBar
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("Alarm set for ").append(time).append(" minutes");
+                Snackbar snackbar = Snackbar.make(buttonView, stringBuilder, Snackbar.LENGTH_SHORT);
+                View subView = snackbar.getView();
+                TextView snackTextView = (TextView) subView.findViewById(R.id.snackbar_text);
+                snackTextView.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+                snackbar.show();
+            }
+
+            // unchecked button
+            else {
+                // cancel alarm if exists
+                final PendingIntent
+                    alarmIntent1 = PendingIntent.getBroadcast(mContext, id, intent, PendingIntent.FLAG_NO_CREATE);
+                if (alarmIntent1 != null) {
+                    alarmManager.cancel(alarmIntent1);
+                    alarmIntent1.cancel();
                 }
 
-                // unchecked button
-                else {
-                    // cancel alarm if exists
-                    final PendingIntent alarmIntent = PendingIntent.getBroadcast(mContext, id, intent, PendingIntent.FLAG_NO_CREATE);
-                    if (alarmIntent != null) {
-                        alarmManager.cancel(alarmIntent);
-                        alarmIntent.cancel();
-                    }
-
-                    if (buttonView.getContext() == null) {
-                        return;
-                    }
-
-                    // snackbar
-                    StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.append("Alarm off");
-                    if (buttonView != null) {
-                        Snackbar snackbar = Snackbar.make(buttonView, stringBuilder, Snackbar.LENGTH_SHORT);
-                        View subView = snackbar.getView();
-                        TextView snackTextView = subView.findViewById(R.id.snackbar_text);
-                        snackTextView.setTextColor(ContextCompat.getColor(mContext, R.color.white));
-                        snackbar.show();
-                    }
+                if (buttonView.getContext() == null) {
+                    return;
                 }
+
+                // SnackBar
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("Alarm off");
+                Snackbar snackbar = Snackbar.make(buttonView, stringBuilder, Snackbar.LENGTH_SHORT);
+                View subView = snackbar.getView();
+                TextView snackTextView = subView.findViewById(R.id.snackbar_text);
+                snackTextView.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+                snackbar.show();
             }
         });
     }
