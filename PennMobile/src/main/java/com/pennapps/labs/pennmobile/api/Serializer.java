@@ -1,5 +1,7 @@
 package com.pennapps.labs.pennmobile.api;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
@@ -186,7 +188,7 @@ public class Serializer {
                     }.getType());
                     newCell.setEvents(events);
                 } else if (cellType.equals("news") | cellType.equals("dining")
-                        | cellType.equals("laundry") | cellType.equals("courses")) {
+                        | cellType.equals("laundry") | cellType.equals("courses") | cellType.equals("post")) {
                     HomeCellInfo infoObj = new Gson().fromJson(info, new TypeToken<HomeCellInfo>() {
                     }.getType());
                     newCell.setInfo(infoObj);

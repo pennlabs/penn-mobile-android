@@ -4,7 +4,6 @@ import android.app.PendingIntent
 import android.content.*
 import android.net.Uri
 import androidx.browser.customtabs.*
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,16 +11,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import com.pennapps.labs.pennmobile.*
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.HomeCell
-import com.pennapps.labs.pennmobile.classes.Venue
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.home_base_card.view.*
-import kotlinx.android.synthetic.main.home_news_card.view.*
+import kotlinx.android.synthetic.main.home_post_card.view.*
 import rx.Observable
 
 
@@ -30,7 +26,6 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
 
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
-
     private lateinit var mLabs: Labs
 
     private var mCustomTabsClient: CustomTabsClient? = null
@@ -40,14 +35,15 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
     private var builder: CustomTabsIntent.Builder? = null
 
     companion object {
+        // Types of Home Cells
         private const val NOT_SUPPORTED = -1
         private const val RESERVATIONS = 0
         private const val DINING = 1
         private const val CALENDAR = 2
         private const val NEWS = 3
-        private const val COURSES = 4
         private const val LAUNDRY = 5
         private const val GSR_BOOKING = 6
+        private const val POST = 7
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -57,7 +53,10 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
 
         return when (viewType) {
             NEWS -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_news_card, parent, false))
+                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_post_card, parent, false))
+            }
+            POST -> {
+                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_post_card, parent, false))
             }
             NOT_SUPPORTED -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.empty_view, parent, false))
@@ -75,10 +74,10 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
             "dining" -> bindDiningCell(holder, cell)
             "calendar" -> bindCalendarCell(holder, cell)
             "news" -> bindNewsCell(holder, cell)
-            //"courses" -> bindCoursesCell(holder, cell)
             "laundry" -> bindLaundryCell(holder, cell)
             "gsr_booking" -> bindGsrBookingCell(holder, cell)
-            else -> Log.i("HomeAdapter", "Unsupported type of data at position " + position)
+            "post" -> bindPostCell(holder, cell)
+            else -> Log.i("HomeAdapter", "Unsupported type of data at position $position")
         }
     }
 
@@ -92,14 +91,18 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
 
     override fun getItemViewType(position: Int): Int {
         val cell = cells[position]
+        if (cell.info?.isTest == true) {
+            Log.i("HomeAdapter", "Test Portal post")
+            return NOT_SUPPORTED
+        }
         return when (cell.type) {
             "reservations" -> RESERVATIONS
             "dining" -> DINING
             "calendar" -> CALENDAR
             "news" -> NEWS
-            //"courses" -> COURSES
             "laundry" -> LAUNDRY
             "gsr_booking" -> GSR_BOOKING
+            "post" -> POST
             else -> NOT_SUPPORTED
         }
     }
@@ -131,8 +134,8 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
                 .toList()
                 .subscribe { diningHalls ->
                     mActivity.runOnUiThread {
-                        var favorites: ArrayList<DiningHall> = arrayListOf()
-                        var favoritesIdList: List<Int>? = cell.info?.venues
+                        val favorites: ArrayList<DiningHall> = arrayListOf()
+                        val favoritesIdList: List<Int>? = cell.info?.venues
                         diningHalls.forEach {
                             if (favoritesIdList?.contains(it.id) == true) {
                                 favorites.add(it)
@@ -147,13 +150,14 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
 
     private fun bindNewsCell(holder: ViewHolder, cell: HomeCell) {
         val info = cell.info
-        holder.itemView.home_news_title.text = info?.title
-        holder.itemView.home_news_subtitle.text = info?.source
-        holder.itemView.home_news_timestamp.text = info?.timestamp
+        holder.itemView.home_post_title.text = info?.title
+        holder.itemView.home_post_subtitle.text = info?.subtitle
+        holder.itemView.home_post_source.text = info?.source
+        holder.itemView.home_post_timestamp.text = info?.timestamp
 
-        Picasso.get().load(info?.imageUrl).fit().centerCrop().into(holder.itemView.home_news_iv)
+        Picasso.get().load(info?.imageUrl).fit().centerCrop().into(holder.itemView.home_post_iv)
 
-        holder.itemView.home_news_card.setOnClickListener {
+        holder.itemView.home_post_card.setOnClickListener {
 
             val url = info?.articleUrl
 
@@ -222,6 +226,43 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
                 LinearLayoutManager.VERTICAL, false)
         holder.itemView.home_card_rv.adapter = HomeGsrBuildingAdapter(ArrayList(buildings))
+    }
+
+    private fun bindPostCell(holder: ViewHolder, cell: HomeCell) {
+        val info = cell.info
+        holder.itemView.home_post_title.text = info?.title
+        holder.itemView.home_post_subtitle.text = info?.subtitle
+        holder.itemView.home_post_source.text = info?.source
+        holder.itemView.home_post_timestamp.text = info?.timeLabel
+
+        Picasso.get().load(info?.imageUrl).fit().centerCrop().into(holder.itemView.home_post_iv)
+
+        holder.itemView.home_post_card.setOnClickListener {
+
+            val url = info?.postUrl
+
+            val connection = NewsCustomTabsServiceConnection()
+            builder = CustomTabsIntent.Builder()
+            share = Intent(Intent.ACTION_SEND)
+            share?.type = "text/plain"
+            builder?.setToolbarColor(0x3E50B4)
+            builder?.setStartAnimations(mContext,
+                    R.anim.abc_popup_enter,
+                    R.anim.abc_popup_exit)
+            CustomTabsClient.bindCustomTabsService(mContext,
+                    NewsFragment.CUSTOM_TAB_PACKAGE_NAME, connection)
+
+            if (isChromeCustomTabsSupported(mContext)) {
+                share?.putExtra(Intent.EXTRA_TEXT, url)
+                builder?.addMenuItem("Share", PendingIntent.getActivity(mContext, 0,
+                        share, PendingIntent.FLAG_CANCEL_CURRENT))
+                customTabsIntent = builder?.build()
+                customTabsIntent?.launchUrl(mActivity, Uri.parse(url))
+            } else {
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                startActivity(mContext, browserIntent, null)
+            }
+        }
     }
 
     // Chrome custom tabs to launch news site
