@@ -188,7 +188,8 @@ public class Serializer {
                     }.getType());
                     newCell.setEvents(events);
                 } else if (cellType.equals("news") | cellType.equals("dining")
-                        | cellType.equals("laundry") | cellType.equals("courses") | cellType.equals("post")) {
+                        | cellType.equals("laundry") | cellType.equals("courses") | cellType.equals("post")
+                        | cellType.equals("feature")) {
                     HomeCellInfo infoObj = new Gson().fromJson(info, new TypeToken<HomeCellInfo>() {
                     }.getType());
                     newCell.setInfo(infoObj);

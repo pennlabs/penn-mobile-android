@@ -20,8 +20,8 @@ class FlingFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-
         mActivity = activity as MainActivity
+        mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "7")
@@ -36,7 +36,11 @@ class FlingFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle presses on the action bar items
-        return when (item.itemId) {
+        when (item.itemId) {
+            android.R.id.home -> {
+                mActivity.onBackPressed()
+                return true
+            }
             R.id.fling_raffle -> {
                 val url = "https://docs.google.com/forms/d/e/1FAIpQLSexkehYfGgyAa7RagaCl8rze4KUKQSX9TbcvvA6iXp34TyHew/viewform"
                 val builder = Builder()
@@ -44,8 +48,8 @@ class FlingFragment : Fragment() {
                 customTabsIntent.launchUrl(mActivity, Uri.parse(url))
                 true
             }
-            else -> super.onOptionsItemSelected(item)
         }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -62,13 +66,15 @@ class FlingFragment : Fragment() {
         return view
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+    }
+
     override fun onResume() {
         super.onResume()
         val mActivity : MainActivity? = activity as MainActivity
         mActivity?.removeTabs()
         mActivity?.setTitle(R.string.spring_fling)
-        if (Build.VERSION.SDK_INT > 17){
-            mActivity?.setSelectedTab(7)
-        }
     }
 }
