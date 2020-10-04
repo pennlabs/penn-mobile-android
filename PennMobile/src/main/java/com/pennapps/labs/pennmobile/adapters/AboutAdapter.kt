@@ -33,6 +33,7 @@ class AboutAdapter(private var members: ArrayList<String>)
             "Sophia Ye" -> R.drawable.sophia
             "Sahit Penmatcha" -> R.drawable.sahit
             "Vishesh Patel" -> R.drawable.vishesh
+            "Awad Irfan" -> R.drawable.awad
             else -> null
         }
         if (imageId != null) holder.view.person_iv?.setImageResource(imageId)
