@@ -4,30 +4,28 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.res.Configuration
-import android.graphics.Color
-import android.graphics.PorterDuff
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.HomeAdapter
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.classes.HomeCell
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
-import android.provider.Settings.Secure
-import androidx.preference.PreferenceManager
-import androidx.core.content.ContextCompat.getSystemService
-import android.telephony.TelephonyManager
-import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 
 
 class HomeFragment : Fragment()  {
@@ -48,8 +46,10 @@ class HomeFragment : Fragment()  {
         FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
         view.home_cells_rv.layoutManager = LinearLayoutManager(context,
@@ -63,7 +63,14 @@ class HomeFragment : Fragment()  {
         return view
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun getHomePage() {
+
+        if (!(isOnline(context))) {
+            Log.d("WIFI", "Reached this line")
+            //not connected to internet
+
+        }
 
         // get session id from shared preferences
         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
@@ -95,6 +102,7 @@ class HomeFragment : Fragment()  {
     }
 
     private val broadcastReceiver = object: BroadcastReceiver() {
+        @RequiresApi(Build.VERSION_CODES.M)
         override fun onReceive(context: Context?, intent: Intent?) {
             getHomePage()
         }
@@ -113,5 +121,29 @@ class HomeFragment : Fragment()  {
         if (Build.VERSION.SDK_INT > 17){
             mActivity.setSelectedTab(MainActivity.HOME)
         }
+    }
+
+    //checks if internet is connected
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun isOnline(context: Context?): Boolean {
+        val connectivityManager =
+                context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (connectivityManager != null) {
+            val capabilities =
+                    connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+            if (capabilities != null) {
+                if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                    return true
+                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                    return true
+                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                    return true
+                }
+            }
+        }
+        return false
     }
 }
