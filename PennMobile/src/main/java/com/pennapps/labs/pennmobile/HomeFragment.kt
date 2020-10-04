@@ -75,11 +75,6 @@ class HomeFragment : Fragment()  {
         val labs = MainActivity.labsInstance
         labs.getHomePage(deviceID, accountID, sessionID).subscribe({ cells ->
             mActivity.runOnUiThread {
-                // TODO: remove, just for testing
-                val flingCell = HomeCell()
-                flingCell.type = "feature"
-                cells?.add(flingCell)
-
                 val gsrBookingCell = HomeCell()
                 gsrBookingCell.type = "gsr_booking"
                 gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "VP Weigle")

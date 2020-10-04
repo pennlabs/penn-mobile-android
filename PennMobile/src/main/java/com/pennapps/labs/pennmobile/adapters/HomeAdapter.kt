@@ -274,13 +274,12 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
     // Returns an announcement for a Penn Mobile feature, such as Spring Fling
     private fun bindFeatureCell(holder: ViewHolder, cell: HomeCell) {
         val info = cell.info
-        holder.itemView.home_post_title?.text = info?.title ?: "Tap to view the Fling schedule, performers, and more!"
+        holder.itemView.home_post_title?.text = info?.title
         holder.itemView.home_post_subtitle?.text = info?.description
-        holder.itemView.home_post_source?.text = info?.source ?: "Spring Fling"
-        holder.itemView.home_post_timestamp?.text = info?.timestamp ?: "Saturday 4/13"
-        // val imageUrl = info?.imageUrl ?:
+        holder.itemView.home_post_source?.text = info?.source
+        holder.itemView.home_post_timestamp?.text = info?.timestamp
         if (info?.imageUrl != null) {
-            Picasso.get().load(info?.imageUrl).fit().centerCrop().into(holder.itemView.home_post_iv)
+            Picasso.get().load(info.imageUrl).fit().centerCrop().into(holder.itemView.home_post_iv)
         }
 
         // For now, we only use Feature cards for Spring Fling so we show the Fling Fragment
