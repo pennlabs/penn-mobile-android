@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
@@ -23,6 +25,9 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.HomeAdapter
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.classes.HomeCell
+import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
+import eightbitlab.com.blurview.RenderScriptBlur
+import kotlinx.android.synthetic.main.custom_sneaker_view.view.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
@@ -66,11 +71,24 @@ class HomeFragment : Fragment()  {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun getHomePage() {
 
+        /*
         if (!(isOnline(context))) {
-            Log.d("WIFI", "Reached this line")
-            //not connected to internet
 
+            view?.let { displaySnack(it, "Not Connected to Wi-Fi") }
+
+            /*
+            var cells = ArrayList<HomeCell>()
+            val notConnected = HomeCell()
+            notConnected.type = "internet_connection"
+            cells.add(notConnected)
+            home_cells_rv?.adapter = HomeAdapter(ArrayList(cells))
+            loadingPanel?.visibility = View.GONE
+            home_refresh_layout?.isRefreshing = false
+            Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
+            */
+            return
         }
+        */
 
         // get session id from shared preferences
         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
@@ -89,14 +107,18 @@ class HomeFragment : Fragment()  {
                 home_cells_rv?.adapter = HomeAdapter(ArrayList(cells))
                 loadingPanel?.visibility = View.GONE
                 home_refresh_layout?.isRefreshing = false
+
+
             }
         }, { throwable ->
             mActivity.runOnUiThread {
+
                 Log.e("Home", "Could not load Home page")
                 throwable.printStackTrace()
                 Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
                 loadingPanel?.visibility = View.GONE
                 home_refresh_layout?.isRefreshing = false
+                view?.let { displaySnack(it, "Not Connected to Wi-Fi") }
             }
         })
     }
@@ -146,4 +168,10 @@ class HomeFragment : Fragment()  {
         }
         return false
     }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun displaySnack(view: View, text: String) {
+        (view as ViewGroup).showErrorSneaker(message = text, doOnRetry = { getHomePage() })
+    }
 }
+

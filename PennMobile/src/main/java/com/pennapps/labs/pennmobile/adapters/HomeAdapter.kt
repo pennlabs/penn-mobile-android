@@ -45,6 +45,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         private const val GSR_BOOKING = 6
         private const val POST = 7
         private const val FEATURE = 8
+        private const val INTERNET_CONNECTION = 9
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -82,6 +83,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
             "gsr_booking" -> bindGsrBookingCell(holder, cell)
             "post" -> bindPostCell(holder, cell)
             "feature" -> bindFeatureCell(holder, cell)
+            "internet_connection" -> bindNoInternetConnectionCell(holder, cell)
             else -> Log.i("HomeAdapter", "Unsupported type of data at position $position")
         }
     }
@@ -107,10 +109,15 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
             "news" -> NEWS
             "laundry" -> LAUNDRY
             "gsr_booking" -> GSR_BOOKING
+            "internet_connection" -> INTERNET_CONNECTION
             "post" -> POST
             "feature" -> FEATURE
             else -> NOT_SUPPORTED
         }
+    }
+
+    private fun bindNoInternetConnectionCell(holder: ViewHolder, cell: HomeCell) {
+        holder.itemView.home_card_title.text = "You are not connected to Wi-Fi"
     }
 
     private fun bindHomeReservationsCell(holder: ViewHolder, cell: HomeCell) {
