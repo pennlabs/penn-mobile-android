@@ -66,6 +66,8 @@ class FitnessFragment : Fragment() {
                 loadingPanel?.visibility = View.GONE
                 if (gyms.size > 0) {
                     no_results?.visibility = View.GONE
+                } else {
+                    no_results?.visibility = View.VISIBLE
                 }
                 // stop refreshing
                 gym_refresh_layout?.isRefreshing = false

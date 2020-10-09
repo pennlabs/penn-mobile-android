@@ -10,10 +10,10 @@
         android:id="@+id/gsr_no_reservations"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="32dp"
+        style="@style/NoResults"
         android:text="@string/no_gsr_reservations"
+        android:padding="32dp"
         android:visibility="gone"
-        android:textColor="@color/text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
