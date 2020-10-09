@@ -44,6 +44,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         private const val LAUNDRY = 5
         private const val GSR_BOOKING = 6
         private const val POST = 7
+        private const val FEATURE = 8
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -56,6 +57,9 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_post_card, parent, false))
             }
             POST -> {
+                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_post_card, parent, false))
+            }
+            FEATURE -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_post_card, parent, false))
             }
             NOT_SUPPORTED -> {
@@ -77,6 +81,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
             "laundry" -> bindLaundryCell(holder, cell)
             "gsr_booking" -> bindGsrBookingCell(holder, cell)
             "post" -> bindPostCell(holder, cell)
+            "feature" -> bindFeatureCell(holder, cell)
             else -> Log.i("HomeAdapter", "Unsupported type of data at position $position")
         }
     }
@@ -103,6 +108,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
             "laundry" -> LAUNDRY
             "gsr_booking" -> GSR_BOOKING
             "post" -> POST
+            "feature" -> FEATURE
             else -> NOT_SUPPORTED
         }
     }
@@ -265,7 +271,23 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         }
     }
 
-    // Chrome custom tabs to launch news site
+    // Returns an announcement for a Penn Mobile feature, such as Spring Fling
+    private fun bindFeatureCell(holder: ViewHolder, cell: HomeCell) {
+        val info = cell.info
+        holder.itemView.home_post_title?.text = info?.title
+        holder.itemView.home_post_subtitle?.text = info?.description
+        holder.itemView.home_post_source?.text = info?.source
+        holder.itemView.home_post_timestamp?.text = info?.timestamp
+        if (info?.imageUrl != null) {
+            Picasso.get().load(info.imageUrl).fit().centerCrop().into(holder.itemView.home_post_iv)
+        }
+
+        // For now, we only use Feature cards for Spring Fling so we show the Fling Fragment
+        holder.itemView.home_post_card.setOnClickListener {
+            mActivity.fragmentTransact(FlingFragment())
+        }
+    }
+        // Chrome custom tabs to launch news site
 
     internal inner class NewsCustomTabsServiceConnection : CustomTabsServiceConnection() {
 
