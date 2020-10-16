@@ -38,7 +38,7 @@ class LoginWebviewFragment : Fragment() {
     lateinit var cancelButton: Button
     lateinit var user: Account
     private lateinit var mLabs: Labs
-    private lateinit var mPlatform: Platform
+    private var mPlatform: Platform? = null
     private lateinit var mActivity: MainActivity
     private lateinit var oAuth2NetworkManager: OAuth2NetworkManager
     lateinit var sp: SharedPreferences
@@ -54,8 +54,8 @@ class LoginWebviewFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mLabs = MainActivity.getLabsInstance()
-        mPlatform = MainActivity.getPlatformInstance()
+        mLabs = MainActivity.labsInstance
+        mPlatform = MainActivity.platformInstance
         arguments?.let {
             user = arguments?.getSerializable("user") as Account
         }

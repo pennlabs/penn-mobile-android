@@ -139,13 +139,11 @@
     <string name="open_browser">Open in Browser</string>
     <string name="news_sharing">Share link</string>
 
-    <!-- News -->
+    <!-- About -->
     <string name="licenses">LICENSES</string>
     <string name="hi_we_are_labs">
     Hi, we\'re Penn Labs: a team of student software engineers, product designers, and business developers.
     </string>
-
-    <!-- About -->
     <string name="labs_mission">
     Penn Labs empowers others to make connections: connections to resources, connections to people, and connections to the greater Penn community.\n\nOur ultimate goal is improving the Penn community. We aim to do so not only by creating high quality products, but also by giving back to the community with educational resources and technical support.
     </string>
@@ -219,11 +217,9 @@
     <string name="pennkey_login">LOG IN WITH PENNKEY</string>
     <string name="guest_login">CONTINUE AS GUEST</string>
 
-
+    <!-- Login -->
     <string name="login_sessionID">loginSessionID</string>
     <string name="access_token">accessToken</string>
-
-    <!-- Login -->
     <string name="refresh_token">refreshToken</string>
     <string name="expires_in">expiresIn</string>
     <string name="penn_user">pennUser</string>

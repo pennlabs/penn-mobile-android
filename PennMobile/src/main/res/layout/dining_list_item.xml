@@ -50,6 +50,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="4dp"
+        app:autoSizeTextType="uniform"
+        android:lines="1"
         app:layout_constraintEnd_toStartOf="@+id/dining_loading_guideline"
         app:layout_constraintStart_toEndOf="@id/item_dining_image_cardview"
         app:layout_constraintTop_toTopOf="@+id/item_dining_image_cardview"
@@ -64,16 +66,15 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="4dp"
-        android:autoSizeMaxTextSize="13sp"
-        android:autoSizeMinTextSize="9sp"
-        android:autoSizeStepGranularity="2sp"
-        android:autoSizeTextType="uniform"
+        app:autoSizeMaxTextSize="13sp"
+        app:autoSizeMinTextSize="9sp"
+        app:autoSizeStepGranularity="2sp"
+        app:autoSizeTextType="uniform"
         style="@style/Menu"
         app:layout_constraintBottom_toBottomOf="@+id/item_dining_image_cardview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/item_dining_image_cardview"
-        tools:text="Closes at 9:00PM"
-        tools:visibility="visible" />
+        tools:text="Closes at 9:00PM" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/dining_loading_guideline"

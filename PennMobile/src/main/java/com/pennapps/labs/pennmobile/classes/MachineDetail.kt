@@ -27,12 +27,10 @@ class MachineDetail : Comparable<MachineDetail> {
 
     override fun compareTo(machineDetail: MachineDetail): Int {
 
-        return if (timeRemaining == machineDetail.timeRemaining) {
-            0
-        } else if (timeRemaining > machineDetail.timeRemaining) {
-            1
-        } else {
-            -1
+        return when {
+            (timeRemaining == machineDetail.timeRemaining) -> 0
+            (timeRemaining > machineDetail.timeRemaining) -> 1
+            else -> -1
         }
     }
 }

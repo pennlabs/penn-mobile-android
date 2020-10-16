@@ -63,7 +63,7 @@ class GsrReservationsFragment : Fragment() {
         val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
         val email = sp.getString(getString(R.string.email_address), "")
 
-        val labs = MainActivity.getLabsInstance()
+        val labs = MainActivity.labsInstance
         labs.getGsrReservations(email, sessionID).subscribe({ reservations ->
             mActivity.runOnUiThread {
                 gsr_reservations_rv?.adapter = GsrReservationsAdapter(ArrayList(reservations))

@@ -26,7 +26,7 @@ class BookGsrFragment : Fragment() {
     internal lateinit var lastNameEt: EditText
     internal lateinit var emailEt: EditText
     // submit button
-    internal lateinit var submit: Button
+    private lateinit var submit: Button
 
     private lateinit var mLabs: Labs
 
@@ -39,12 +39,13 @@ class BookGsrFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        gsrID = arguments?.getString("gsrID") ?: ""
-        gsrLocationCode = arguments?.getString("gsrLocationCode") ?: ""
-        startTime = arguments?.getString("startTime") ?: ""
-        endTime = arguments?.getString("endTime") ?: ""
-
-        mLabs = MainActivity.getLabsInstance()
+        arguments?.let {arguments ->
+            gsrID = arguments.getString("gsrID") ?: ""
+            gsrLocationCode = arguments.getString("gsrLocationCode") ?: ""
+            startTime = arguments.getString("startTime") ?: ""
+            endTime = arguments.getString("endTime") ?: ""
+        }
+        mLabs = MainActivity.labsInstance
         val mActivity : MainActivity? = activity as MainActivity
         mActivity?.setTitle(R.string.gsr)
     }
@@ -88,10 +89,13 @@ class BookGsrFragment : Fragment() {
         return v
     }
 
-    private fun bookGSR(gsrId: Int, gsrLocationCode: Int, startTime: String, endTime: String) {
+    private fun bookGSR(gsrId: Int, gsrLocationCode: Int, startTime: String?, endTime: String?) {
 
-        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-        val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "") ?: ""
+        var sessionID = ""
+        activity?.let { activity ->
+            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+            sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "") ?: ""
+        }
 
         mLabs.bookGSR(
                 //Passing the values
@@ -163,4 +167,4 @@ class BookGsrFragment : Fragment() {
         }
     }
 
-}// Required empty public constructor
+}

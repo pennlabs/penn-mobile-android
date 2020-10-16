@@ -29,7 +29,7 @@ class DiningSettingsFragment : Fragment() {
         setHasOptionsMenu(true)
         mActivity = activity as MainActivity
         mActivity.title = "Select Favorites"
-        mLabs = MainActivity.getLabsInstance()
+        mLabs = MainActivity.labsInstance
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

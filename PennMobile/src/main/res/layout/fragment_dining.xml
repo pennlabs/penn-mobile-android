@@ -8,23 +8,28 @@
 
     <include layout="@layout/loading_panel" />
 
-    <TextView
-        android:id="@+id/dining_hall_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Dining Halls"
-        style="@style/InfoText"
-        android:textStyle="bold"
-        android:layout_marginTop="15dp"
-        android:textSize="22dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginBottom="10dp"/>
-
     <FrameLayout
         tools:visibility="visible"
         android:id="@+id/dining_fragment"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/dining_hall_text"
+            android:visibility="gone"
+            style="@style/InfoText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="10dp"
+            android:text="Dining Halls"
+            android:textSize="22dp"
+            android:textStyle="bold" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/dining_swiperefresh"
@@ -37,7 +42,10 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 tools:list_item="@layout/dining_list_item" />
+
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        </LinearLayout>
     </FrameLayout>
 
 </LinearLayout>

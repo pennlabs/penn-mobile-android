@@ -72,7 +72,7 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                 val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
                 val sessionID = if (reservation.info == null) sp.getString(mContext.getString(R.string.huntsmanGSR_SessionID), "") else null
 
-                val labs = MainActivity.getLabsInstance()
+                val labs = MainActivity.labsInstance
                 labs.cancelReservation(null, bookingID, sessionID, object : ResponseCallback() {
                     override fun success(response: Response) {
                         if (reservations.size > position) {

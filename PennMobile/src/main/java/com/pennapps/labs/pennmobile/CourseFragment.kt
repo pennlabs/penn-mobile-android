@@ -2,7 +2,6 @@ package com.pennapps.labs.pennmobile
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.appcompat.widget.SearchView
 import android.view.LayoutInflater
 import android.view.Menu
@@ -65,7 +64,7 @@ class CourseFragment : Fragment(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         course = arguments?.getParcelable(getString(R.string.course_bundle_arg))
-        mLabs = MainActivity.getLabsInstance()
+        mLabs = MainActivity.labsInstance
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()
         fav = arguments?.getBoolean(getString(R.string.search_favorite), false)
@@ -89,14 +88,12 @@ class CourseFragment : Fragment(), OnMapReadyCallback {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
-        if (menu != null) {
-            val searchMenuItem = menu.findItem(R.id.registrar_search)
-            if (searchMenuItem != null) {
-                val searchView = searchMenuItem.actionView as SearchView
-                searchView.isEnabled = false
-                searchMenuItem.isVisible = false
-                searchView.clearFocus()
-            }
+        val searchMenuItem = menu.findItem(R.id.registrar_search)
+        if (searchMenuItem != null) {
+            val searchView = searchMenuItem.actionView as SearchView
+            searchView.isEnabled = false
+            searchMenuItem.isVisible = false
+            searchView.clearFocus()
         }
     }
 
@@ -120,8 +117,8 @@ class CourseFragment : Fragment(), OnMapReadyCallback {
     override fun onResume() {
         super.onResume()
         if (containsNum(mActivity.title)) {
-            val builder = StringBuilder(activity!!.title)
-            val fav = getString(R.string.registrar_search) != null && arguments?.getBoolean(getString(R.string.registrar_search), false) ?: false
+            val builder = StringBuilder(mActivity.title)
+            val fav = arguments?.getBoolean(getString(R.string.registrar_search), false) ?: false
             if (fav) {
                 builder.append(" - ").append(course?.name)
             } else {
@@ -146,8 +143,8 @@ class CourseFragment : Fragment(), OnMapReadyCallback {
     override fun onDestroyView() {
         super.onDestroyView()
         if (mActivity.title.toString().contains("-")) {
-            val builder = StringBuilder(activity!!.title)
-            val fav = getString(R.string.registrar_search) != null && arguments?.getBoolean(getString(R.string.registrar_search), false) ?: false
+            val builder = StringBuilder(mActivity.title)
+            val fav = arguments?.getBoolean(getString(R.string.registrar_search), false) ?: false
             if (fav) {
                 builder.delete(builder.indexOf(" - "), builder.length)
             } else {
@@ -166,7 +163,7 @@ class CourseFragment : Fragment(), OnMapReadyCallback {
             mLabs.buildings(buildingCode)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ buildings ->
-                        if (!buildings.isEmpty()) {
+                        if (buildings.isNotEmpty()) {
                             drawMarker(buildings[0].latLng, meetingLocation)
                         }
                     }, { })

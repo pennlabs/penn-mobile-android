@@ -58,7 +58,8 @@ class AboutFragment : Fragment() {
 
         v.our_team_rv?.layoutManager = GridLayoutManager(context, 3)
         val members = arrayListOf("Marta García Ferreiro", "Davies Lumumba",
-                "Sahit Penmatcha", "Varun Ramakrishnan", "Anna Wang", "Sophia Ye")
+                "Sahit Penmatcha", "Varun Ramakrishnan", "Anna Wang", "Sophia Ye", "Awad Irfan",
+                "Vishesh Patel", "Liz Powell", "Anna Jiang")
         v.our_team_rv?.adapter = AboutAdapter(members)
         ViewCompat.setNestedScrollingEnabled(v.our_team_rv, false)
 
@@ -86,7 +87,7 @@ class AboutFragment : Fragment() {
         mActivity?.removeTabs()
         mActivity?.setTitle(R.string.about)
         if (Build.VERSION.SDK_INT > 17) {
-            mActivity?.setSelectedTab(12)
+            mActivity?.setSelectedTab(MainActivity.ABOUT)
         }
     }
 
