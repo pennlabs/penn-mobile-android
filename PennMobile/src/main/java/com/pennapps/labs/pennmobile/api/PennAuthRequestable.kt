@@ -1,29 +1,28 @@
 package com.pennapps.labs.pennmobile.api
 
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.preference.PreferenceManager
+import com.google.gson.GsonBuilder
 import com.pennapps.labs.pennmobile.LoginWebviewFragment
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import okhttp3.OkHttpClient
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.converter.scalars.ScalarsConverterFactory
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import okhttp3.logging.HttpLoggingInterceptor
+import retrofit.ResponseCallback
+import retrofit.RestAdapter
+import retrofit.RetrofitError
+import retrofit.android.AndroidLog
+import retrofit.client.Response
+import retrofit.converter.GsonConverter
 
+class PennAuthRequestable (mActivity: MainActivity) {
 
-class PennAuthRequestable (private var mActivity: MainActivity, private var baseUrl: String) {
-
+    private var mPlatform = MainActivity.getPlatformInstance()
+    private var mLabs = MainActivity.getLabsInstance()
+    private var mActivity = mActivity
     private val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
-    private val mInstance = getInstanceFromBaseUrl(baseUrl)
-    val editor: SharedPreferences.Editor? = sp.edit()
+    val editor = sp.edit()
 
-    private val pennkeyLoginBaseUrl : String = "https://weblogin.pennkey.upenn.edu"
-    private val authUrl : String = "https://weblogin.pennkey.upenn.edu/idp/profile"
+    val pennkeyLoginBaseUrl : String = "https://weblogin.pennkey.upenn.edu"
+    val authUrl : String = "https://weblogin.pennkey.upenn.edu/idp/profile"
 
     val pennInTouchBaseUrl = "https://pennintouch.apps.upenn.edu/pennInTouch/jsp/fast2.do"
     val pennInTouchDegreeUrl = "https://pennintouch.apps.upenn.edu/pennInTouch/jsp/fast2.do?fastStart=mobileAdvisors"
@@ -31,156 +30,131 @@ class PennAuthRequestable (private var mActivity: MainActivity, private var base
 
     /**
      * Created by Marta on 3/10/2020.
-     * make request, if responseUrl == targetUrl you're done, set shibboleth logged in to true in shared prefs
+     * make request, if responseUrl == targetUrl set shibboleth logged in to true in shared prefs
      * else if responseUrl.contains(authUrl) then makeRequestWithAuth
      * else makeRequestWithShibboleth
      */
 
-    fun makeAuthRequest(targetUrl: String, shibbolethUrl: String, callback: (Response<String>?, Error?) -> Unit) {
+    fun makeAuthRequest(baseUrl: String, target: String, shibbolethUrl: String, callback: (Response?, Error?) -> Unit) {
 
-        val call : Call<String> = mInstance.makeAuthRequest(targetUrl)
-        call.enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                // response.isSuccessful is true if the response code is 2xx
-                if (response.isSuccessful) {
-                    val html = response.body() ?: ""
-                    val responseUrl = response.raw().request.url.toString()
-                    when {
-                        responseUrl == targetUrl -> {
-                            editor?.putBoolean(mActivity.getString(R.string.shibboleth_authed_in), true)
-                            callback(response, null)
-                        }
-                        responseUrl.contains(authUrl) -> {
-                            makeRequestWithAuth(targetUrl, shibbolethUrl, html, callback)
-                        }
-                        else -> {
-                            makeRequestWithShibboleth(targetUrl, shibbolethUrl, html, callback)
-                        }
-                    }
+        val mInstance = getInstanceFromBaseUrl(baseUrl)
+        val targetUrl = "$baseUrl/$target"
 
-                } else {
-                    val errorBody = response.errorBody()
-                    editor?.putBoolean(mActivity.getString(R.string.shibboleth_authed_in), false)
-                    Log.e("Accounts", "Make auth request error: $errorBody")
-                    callback(null, Error("Error making auth request"))
+        mInstance.makeAuthRequest(target).subscribe({ response ->
+            val responseUrl = response.url
+            when {
+                responseUrl == targetUrl -> {
+                    editor.putBoolean(mActivity.getString(R.string.shibboleth_authed_in), true)
+                    callback(response, null)
+                }
+                responseUrl.contains(authUrl) -> {
+                    makeRequestWithAuth(targetUrl, shibbolethUrl, response.body.toString(), callback)
+                }
+                else -> {
+                    makeRequestWithShibboleth(targetUrl, shibbolethUrl, response.body.toString(), callback)
                 }
             }
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                editor?.putBoolean(mActivity.getString(R.string.shibboleth_authed_in), false)
-                t.printStackTrace()
-                callback(null, Error("Error making auth request"))
-            }
+
+        }, { throwable ->
+            editor.putBoolean(mActivity.getString(R.string.shibboleth_authed_in), false)
+            Log.e("Accounts", "make auth request error " + throwable)
+            callback(null, Error("Error making auth request"))
         })
         // store cookies
     }
 
     private fun makeRequestWithAuth(targetUrl: String, shibbolethUrl: String, html: String,
-                                    callback: (Response<String>?, Error?) -> Unit) {
+                                    callback: (Response?, Error?) -> Unit) {
 
-        // if the html doesn't match <form action="some action url" method="POST" id="login-form">, send error
+        // if it doesn't match the form <form action="some action url" method="POST" id="login-form">, send error
+
         val actionUrl = html.substringAfter("<form action=\"", "")
                 .substringBefore( "\" method=\"POST\" id=\"login-form\">", "")
         if (actionUrl == "") {
             callback(null, Error("Error making request with auth"))
-            //return
         }
 
         val password = LoginWebviewFragment().getDecodedPassword(mActivity)
         val pennkey = sp.getString(mActivity.getString(R.string.pennkey), null)
 
         if (password == null || pennkey == null) {
-            editor?.putBoolean(mActivity.getString(R.string.shibboleth_authed_in), false)
+            editor.putBoolean(mActivity.getString(R.string.shibboleth_authed_in), false)
             Log.e("Accounts", "Missing pennkey or password")
-            callback(null, Error("Missing pennkey or password"))
+            callback(null, Error("Error making request with auth"))
             return
         }
 
-//        val url = targetUrl + actionUrl
-        val url = "https://weblogin.pennkey.upenn.edu/idp/profile/SAML2/Redirect/SSO?execution=e1s1"
+        val url = pennkeyLoginBaseUrl + actionUrl
+
+        val mInstance = getInstanceFromBaseUrl(url)
 
         // make post request with params, when done either two step or makeRequestWithShibboleth
-        val call : Call<String> = mInstance.makeRequestWithAuth(url, pennkey, password, "")
-        call.enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                if (response.isSuccessful) {
-                    val responseHtml = response.body() ?: ""
-                    if (responseHtml.contains("two-step-form")) {
-                        callback(null, Error("Need to two fac"))
-                    } else {
-                        makeRequestWithShibboleth(targetUrl, shibbolethUrl, responseHtml, callback)
-                    }
-                } else {
-                    val errorBody = response.errorBody()
-                    editor?.putBoolean(mActivity.getString(R.string.shibboleth_authed_in), false)
-                    Log.e("Accounts", "Make request with auth error: $errorBody")
-                    callback(null, Error("Error making request with auth"))
-                }
+        mInstance.makeRequestWithAuth(pennkey, password, "", object : ResponseCallback() {
+            override fun success(response: Response) {
+                Log.d("Accounts", "make request with auth response url " + response.url)
+                makeRequestWithShibboleth(targetUrl, shibbolethUrl, response.body.toString(), callback)
             }
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                editor?.putBoolean(mActivity.getString(R.string.shibboleth_authed_in), false)
-                t.printStackTrace()
-                callback(null, Error("Error making request with auth"))
+
+            override fun failure(error: RetrofitError) {
+                editor.putBoolean(mActivity.getString(R.string.shibboleth_authed_in), false)
+                Log.e("Accounts", "Error making request with auth " + error)
             }
         })
 
     }
 
     private fun makeRequestWithShibboleth(targetUrl: String, shibbolethUrl: String, html: String,
-                                          callback: (Response<String>?, Error?) -> Unit) {
+                                          callback: (Response?, Error?) -> Unit) {
+
+//        guard let samlResponse = html.getMatches(for: "<input type=\"hidden\" name=\"SAMLResponse\" value=\"(.*?)\"/>").first,
+//        let relayState = html.getMatches(for: "<input type=\"hidden\" name=\"RelayState\" value=\"(.*?)\"/>").first?.replacingOccurrences(of: "&#x3a;", with: ":") else {
+//            UserDefaults.standard.setShibbolethAuth(authedIn: false)
+//            completionHandler(nil, nil, NetworkingError.authenticationError)
+//            return
+//        }
 
         val samlResponse = html.substringAfter("<input type=\"hidden\" name=\"SAMLResponse\" value=\"", "")
                 .substringBefore( "\"/>", "")
         val relayState = html.substringAfter("<input type=\"hidden\" name=\"RelayState\" value=\"", "")
-                .substringBefore("\"/>", "").replace("&#x3a;", ":")
+                .substringBefore("\"/>", "").replace("&#58;", ":")
         if (samlResponse == "" || relayState == "") {
-            callback(null, Error("Error making request with shibboleth"))
-            //return
+            callback(null, Error("Error making request with auth"))
+            return
         }
 
-        val call : Call<String> = mInstance.makeRequestWithShibboleth(shibbolethUrl, relayState, samlResponse)
-        call.enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                if (response.isSuccessful) {
-                    val responseUrl = response.raw().request.url.toString()
-                    if (responseUrl == targetUrl) {
-                        editor?.putBoolean(mActivity.getString(R.string.shibboleth_authed_in), true)
-                        callback(response, null)
-                    } else {
-                        callback(null, Error("Error making request with shibboleth"))
-                    }
+        val mInstance = getInstanceFromBaseUrl(shibbolethUrl)
+
+        mInstance.makeRequestWithShibboleth(relayState, samlResponse, object : ResponseCallback() {
+            override fun success(response: Response) {
+
+                if (response.url == targetUrl) {
+                    editor.putBoolean(mActivity.getString(R.string.shibboleth_authed_in), true)
+                    callback(response, null)
                 } else {
-                    val errorBody = response.errorBody()
-                    editor?.putBoolean(mActivity.getString(R.string.shibboleth_authed_in), false)
-                    Log.e("Accounts", "Make request with shibboleth error: $errorBody")
                     callback(null, Error("Error making request with shibboleth"))
                 }
             }
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                editor?.putBoolean(mActivity.getString(R.string.shibboleth_authed_in), false)
-                t.printStackTrace()
-                callback(null, Error("Error making request with shibboleth"))
+
+            override fun failure(error: RetrofitError) {
+                editor.putBoolean(mActivity.getString(R.string.shibboleth_authed_in), false)
+                Log.e("Accounts", "Error making request with shibboleth " + error)
             }
         })
-
     }
 
     companion object {
         fun getInstanceFromBaseUrl(baseUrl : String): PennAuthRequestableInterface {
+            val gsonBuilder = GsonBuilder()
+            val gson = gsonBuilder.create()
 
-            // Interceptor to add logging
-            val logging = HttpLoggingInterceptor()
-            logging.level = HttpLoggingInterceptor.Level.BODY
-            val httpClient = OkHttpClient.Builder()
-            httpClient.addInterceptor(logging)
-
-            val retrofit = Retrofit.Builder()
-                    .addConverterFactory(ScalarsConverterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .baseUrl(baseUrl)
-                    .client(httpClient.build())
+            val restAdapter = RestAdapter.Builder()
+                    .setConverter(GsonConverter(gson))
+                    .setLogLevel(RestAdapter.LogLevel.FULL)
+                    .setLog(AndroidLog("PennAuthRequestable"))
+                    .setEndpoint(baseUrl)
                     .build()
 
-            return retrofit.create(PennAuthRequestableInterface::class.java)
+            return restAdapter.create(PennAuthRequestableInterface::class.java)
         }
     }
 }

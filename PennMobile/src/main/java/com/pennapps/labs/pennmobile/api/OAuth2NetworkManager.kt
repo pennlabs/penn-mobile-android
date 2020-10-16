@@ -16,11 +16,13 @@ import retrofit.client.Response
 import java.security.MessageDigest
 import java.util.*
 
-class OAuth2NetworkManager(private val mActivity: MainActivity) {
+class OAuth2NetworkManager(mActivity: MainActivity) {
 
-    private val mPlatform = MainActivity.getPlatformInstance()
-    private val mLabs = MainActivity.getLabsInstance()
+    private var mPlatform = MainActivity.getPlatformInstance()
+    private var mLabs = MainActivity.getLabsInstance()
+    private var mActivity = mActivity
     private val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
+    val editor = sp.edit()
 
     fun getDeviceId() : String {
         val deviceID = Settings.Secure.getString(mActivity.contentResolver, Settings.Secure.ANDROID_ID) ?: "test"
@@ -55,7 +57,6 @@ class OAuth2NetworkManager(private val mActivity: MainActivity) {
 
                     override fun success(t: AccessTokenResponse?, response: Response?) {
                         if (response?.status == 200) {
-                            val editor = sp.edit()
                             editor.putString(mActivity.getString(R.string.access_token), t?.accessToken)
                             editor.putString(mActivity.getString(R.string.refresh_token), t?.refreshToken)
                             editor.putString(mActivity.getString(R.string.expires_in), t?.expiresIn)
