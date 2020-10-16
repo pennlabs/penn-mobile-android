@@ -14,14 +14,4 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/pref_courses_title">
-
-    <CheckBoxPreference
-        android:key="pref_recitations"
-        android:title="@string/pref_recitations"
-        android:summary="@string/pref_recitations_summ"
-        android:defaultValue="true"/>
-    </PreferenceCategory>
-
 </PreferenceScreen>
