@@ -2,8 +2,6 @@ package com.pennapps.labs.pennmobile
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment

@@ -15,8 +15,8 @@ import retrofit.converter.GsonConverter
 
 class PennAuthRequestable (mActivity: MainActivity) {
 
-    private var mPlatform = MainActivity.getPlatformInstance()
-    private var mLabs = MainActivity.getLabsInstance()
+    private var mPlatform = MainActivity.platformInstance
+    private var mLabs = MainActivity.labsInstance
     private var mActivity = mActivity
     private val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
     val editor = sp.edit()
@@ -30,7 +30,7 @@ class PennAuthRequestable (mActivity: MainActivity) {
 
     /**
      * Created by Marta on 3/10/2020.
-     * make request, if responseUrl == targetUrl set shibboleth logged in to true in shared prefs
+     * Make request, if responseUrl == targetUrl set shibboleth logged in to true in shared prefs
      * else if responseUrl.contains(authUrl) then makeRequestWithAuth
      * else makeRequestWithShibboleth
      */
@@ -42,6 +42,7 @@ class PennAuthRequestable (mActivity: MainActivity) {
 
         mInstance.makeAuthRequest(target).subscribe({ response ->
             val responseUrl = response.url
+            val charset = Charsets.UTF_8
             when {
                 responseUrl == targetUrl -> {
                     editor.putBoolean(mActivity.getString(R.string.shibboleth_authed_in), true)
@@ -106,19 +107,12 @@ class PennAuthRequestable (mActivity: MainActivity) {
     private fun makeRequestWithShibboleth(targetUrl: String, shibbolethUrl: String, html: String,
                                           callback: (Response?, Error?) -> Unit) {
 
-//        guard let samlResponse = html.getMatches(for: "<input type=\"hidden\" name=\"SAMLResponse\" value=\"(.*?)\"/>").first,
-//        let relayState = html.getMatches(for: "<input type=\"hidden\" name=\"RelayState\" value=\"(.*?)\"/>").first?.replacingOccurrences(of: "&#x3a;", with: ":") else {
-//            UserDefaults.standard.setShibbolethAuth(authedIn: false)
-//            completionHandler(nil, nil, NetworkingError.authenticationError)
-//            return
-//        }
-
         val samlResponse = html.substringAfter("<input type=\"hidden\" name=\"SAMLResponse\" value=\"", "")
                 .substringBefore( "\"/>", "")
         val relayState = html.substringAfter("<input type=\"hidden\" name=\"RelayState\" value=\"", "")
-                .substringBefore("\"/>", "").replace("&#58;", ":")
+                .substringBefore("\"/>", "").replace("&#x3a;", ":")
         if (samlResponse == "" || relayState == "") {
-            callback(null, Error("Error making request with auth"))
+            callback(null, Error("Error making request with shibboleth"))
             return
         }
 
@@ -126,7 +120,6 @@ class PennAuthRequestable (mActivity: MainActivity) {
 
         mInstance.makeRequestWithShibboleth(relayState, samlResponse, object : ResponseCallback() {
             override fun success(response: Response) {
-
                 if (response.url == targetUrl) {
                     editor.putBoolean(mActivity.getString(R.string.shibboleth_authed_in), true)
                     callback(response, null)
@@ -134,7 +127,6 @@ class PennAuthRequestable (mActivity: MainActivity) {
                     callback(null, Error("Error making request with shibboleth"))
                 }
             }
-
             override fun failure(error: RetrofitError) {
                 editor.putBoolean(mActivity.getString(R.string.shibboleth_authed_in), false)
                 Log.e("Accounts", "Error making request with shibboleth " + error)

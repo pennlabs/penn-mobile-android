@@ -25,6 +25,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.pennapps.labs.pennmobile.ExpandedBottomNavBar.ExpandableBottomTabBar
+import com.pennapps.labs.pennmobile.api.CampusExpressNetworkManager
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Serializer.*
@@ -64,14 +65,16 @@ class MainActivity : AppCompatActivity() {
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
+        CampusExpressNetworkManager(this).getDiningBalance()
+
         // Show HomeFragment if logged in, otherwise show LoginFragment
-        val pennkey = mSharedPrefs.getString(getString(R.string.pennkey), null)
-        val guestMode = mSharedPrefs.getBoolean(getString(R.string.guest_mode), false)
-        if (pennkey == null && !guestMode) {
-            startLoginFragment()
-        } else {
-            startHomeFragment()
-        }
+//        val pennkey = mSharedPrefs.getString(getString(R.string.pennkey), null)
+//        val guestMode = mSharedPrefs.getBoolean(getString(R.string.guest_mode), false)
+//        if (pennkey == null && !guestMode) {
+//            startLoginFragment()
+//        } else {
+//            startHomeFragment()
+//        }
     }
 
     private fun onExpandableBottomNavigationItemSelected() {

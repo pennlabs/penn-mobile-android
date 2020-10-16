@@ -2,12 +2,8 @@ package com.pennapps.labs.pennmobile
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -25,8 +21,6 @@ import kotlinx.android.synthetic.main.fragment_dining.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.no_results.*
 import rx.Observable
-import rx.functions.Action1
-import rx.functions.Func1
 
 class DiningFragment : Fragment() {
 

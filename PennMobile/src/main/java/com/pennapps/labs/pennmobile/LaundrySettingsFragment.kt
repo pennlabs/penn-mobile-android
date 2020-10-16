@@ -9,7 +9,6 @@ import android.widget.Button
 import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.LaundrySettingsAdapter
 import com.pennapps.labs.pennmobile.api.Labs

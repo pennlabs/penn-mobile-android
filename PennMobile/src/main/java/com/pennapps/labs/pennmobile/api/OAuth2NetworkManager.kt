@@ -16,10 +16,10 @@ import retrofit.client.Response
 import java.security.MessageDigest
 import java.util.*
 
-class OAuth2NetworkManager(mActivity: MainActivity) {
+class OAuth2NetworkManager(private var mActivity: MainActivity) {
 
     private var mPlatform = MainActivity.platformInstance
-    private var mActivity = mActivity
+    private val mLabs = MainActivity.labsInstance
     private val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
     val editor = sp.edit()
 
@@ -73,7 +73,7 @@ class OAuth2NetworkManager(mActivity: MainActivity) {
     fun initiateAuthentication(authCode: String) {
         val clientID = mActivity.getString(R.string.clientID)
         val redirectUri = mActivity.getString(R.string.redirectUri)
-        mPlatform.getAccessToken(authCode,
+        mPlatform?.getAccessToken(authCode,
                 "authorization_code", clientID, redirectUri, Platform.codeVerifier,
                 object : Callback<AccessTokenResponse> {
 
@@ -98,7 +98,7 @@ class OAuth2NetworkManager(mActivity: MainActivity) {
     }
 
     private fun getUser(accessToken: String) {
-        mPlatform.getUser("Bearer " + accessToken, accessToken,
+        mPlatform?.getUser("Bearer " + accessToken, accessToken,
                 object : Callback<GetUserResponse> {
 
                     override fun success(t: GetUserResponse?, response: Response?) {

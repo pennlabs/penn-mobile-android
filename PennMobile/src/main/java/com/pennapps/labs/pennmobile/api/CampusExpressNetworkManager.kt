@@ -6,8 +6,8 @@ import com.pennapps.labs.pennmobile.MainActivity
 
 class CampusExpressNetworkManager(mActivity: MainActivity) {
 
-    private var mPlatform = MainActivity.getPlatformInstance()
-    private var mLabs = MainActivity.getLabsInstance()
+    private var mPlatform = MainActivity.platformInstance
+    private var mLabs = MainActivity.labsInstance
     private var mActivity = mActivity
     private val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
     val editor = sp.edit()
@@ -25,6 +25,18 @@ class CampusExpressNetworkManager(mActivity: MainActivity) {
                 Log.d("Accounts", "get dining balance done! $response")
             } else {
                 Log.e("Accounts", "error getting dining balance $error")
+            }
+        }
+    }
+
+    fun getHousing() {
+        val mPennAuthRequestable = PennAuthRequestable(mActivity)
+        mPennAuthRequestable.makeAuthRequest(baseUrl, housingString, campusExpressShibbolethUrl) {
+            response, error ->
+            if (error == null) {
+                Log.d("Accounts", "get housing done! $response")
+            } else {
+                Log.e("Accounts", "Error getting housing: $error")
             }
         }
     }

@@ -20,7 +20,6 @@ import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.dining_list_item.view.*
 import rx.android.schedulers.AndroidSchedulers
-import rx.functions.Action1
 
 
 class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<DiningCardAdapter.ViewHolder>() {
