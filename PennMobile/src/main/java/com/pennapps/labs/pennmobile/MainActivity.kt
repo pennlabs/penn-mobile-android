@@ -6,9 +6,12 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,6 +39,7 @@ import com.pennapps.labs.pennmobile.classes.*
 import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
 import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.android.synthetic.main.custom_sneaker_view.view.*
+import kotlinx.android.synthetic.main.fragment_home.*
 import retrofit.RestAdapter
 import retrofit.android.AndroidLog
 import retrofit.converter.GsonConverter
@@ -70,6 +74,7 @@ class MainActivity : AppCompatActivity() {
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
+
 
         // Show HomeFragment if logged in, otherwise show LoginFragment
         val pennkey = mSharedPrefs.getString(getString(R.string.pennkey), null)
@@ -268,7 +273,7 @@ class MainActivity : AppCompatActivity() {
 /** Shows an error sneaker given a view group with an optional retry function */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 fun ViewGroup.showErrorSneaker(message: String, doOnRetry: (() -> Unit)?) {
-    val sneaker = Sneaker.with(this)
+    val sneaker = Sneaker.with(this).autoHide(false)
     val view = LayoutInflater.from(this.context)
             .inflate(R.layout.custom_sneaker_view, sneaker.getView(), false)
 
@@ -285,4 +290,28 @@ fun ViewGroup.showErrorSneaker(message: String, doOnRetry: (() -> Unit)?) {
 
     view.findViewById<TextView>(R.id.errorMessage).text = message
     sneaker.sneakCustom(view).setCornerRadius(12, 16).setMessage(message)
+}
+
+//checks if internet is connected
+@RequiresApi(Build.VERSION_CODES.M)
+fun isOnline(context: Context?): Boolean {
+    val connectivityManager =
+            context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    if (connectivityManager != null) {
+        val capabilities =
+                connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                return true
+            }
+        }
+    }
+    return false
 }

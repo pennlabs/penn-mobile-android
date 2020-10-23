@@ -41,6 +41,30 @@
 
             </androidx.appcompat.widget.Toolbar>
 
+
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/internetConnection"
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                android:background="@color/red"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+                <TextView
+                    android:id="@+id/internetConnection_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Not Connected to Internet"
+                    android:textColor="@color/white"
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
+
+            </androidx.appcompat.widget.Toolbar>
+
+
+
         </com.google.android.material.appbar.AppBarLayout>
 
         <FrameLayout

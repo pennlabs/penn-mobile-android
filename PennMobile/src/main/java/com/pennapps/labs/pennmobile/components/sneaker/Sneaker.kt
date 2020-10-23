@@ -454,6 +454,7 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
                     removeView(sneakerView)
                     mDismissListener?.onDismiss()
                 }, mDuration.toLong())
+
             }
         }
     }
@@ -482,6 +483,7 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
                     removeView(sneakerView)
                     mDismissListener?.onDismiss()
                 }, mDuration.toLong())
+
             }
         }
         return this

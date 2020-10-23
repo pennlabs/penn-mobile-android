@@ -5,17 +5,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.Toolbar
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -25,9 +24,6 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.HomeAdapter
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.classes.HomeCell
-import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
-import eightbitlab.com.blurview.RenderScriptBlur
-import kotlinx.android.synthetic.main.custom_sneaker_view.view.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
@@ -49,6 +45,7 @@ class HomeFragment : Fragment()  {
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Home")
         bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
         FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
+        //internetConnectionHome?.visibility = View.GONE
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -71,30 +68,29 @@ class HomeFragment : Fragment()  {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun getHomePage() {
 
-        /*
-        if (!(isOnline(context))) {
-
-            view?.let { displaySnack(it, "Not Connected to Wi-Fi") }
-
-            /*
-            var cells = ArrayList<HomeCell>()
-            val notConnected = HomeCell()
-            notConnected.type = "internet_connection"
-            cells.add(notConnected)
-            home_cells_rv?.adapter = HomeAdapter(ArrayList(cells))
-            loadingPanel?.visibility = View.GONE
-            home_refresh_layout?.isRefreshing = false
-            Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
-            */
-            return
-        }
-        */
-
         // get session id from shared preferences
         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
         val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
         val accountID = sp.getString(getString(R.string.accountID), "")
         val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
+        if (!isOnline(context)) {
+            var toolbar = Toolbar(context)
+            val toolBarParams = LinearLayout.LayoutParams(
+                    Toolbar.LayoutParams.MATCH_PARENT,
+                    70
+            )
+            toolbar.setLayoutParams(toolBarParams)
+            toolbar.setBackgroundColor(Color.RED)
+            toolbar.setVisibility(View.VISIBLE)
+            val internetText = TextView(context)
+            internetText.setText("Not connected")
+            internetText.setTextColor(Color.WHITE)
+            internetText.textSize = 15.0f
+            toolbar.addView(internetText)
+            home_fragment_layout.addView(toolbar)
+            home_cells_rv?.setPadding(0, toolbar.height, 0 ,0)
+            Log.d("SNEAK", "added message")
+        }
 
         // get API data
         val labs = MainActivity.labsInstance
@@ -108,19 +104,22 @@ class HomeFragment : Fragment()  {
                 loadingPanel?.visibility = View.GONE
                 home_refresh_layout?.isRefreshing = false
 
-
             }
         }, { throwable ->
             mActivity.runOnUiThread {
-
                 Log.e("Home", "Could not load Home page")
                 throwable.printStackTrace()
                 Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
                 loadingPanel?.visibility = View.GONE
                 home_refresh_layout?.isRefreshing = false
-                view?.let { displaySnack(it, "Not Connected to Wi-Fi") }
+                //(view as ViewGroup).showErrorSneaker(message = "Not Connected to Wi-Fi", doOnRetry = { getHomePage() })
+                //internetConnectionHome?.visibility = View.VISIBLE
+                Log.d("SNEAK", "added message")
+
             }
+
         })
+
     }
 
     private val broadcastReceiver = object: BroadcastReceiver() {
@@ -145,33 +144,8 @@ class HomeFragment : Fragment()  {
         }
     }
 
-    //checks if internet is connected
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun isOnline(context: Context?): Boolean {
-        val connectivityManager =
-                context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        if (connectivityManager != null) {
-            val capabilities =
-                    connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-            if (capabilities != null) {
-                if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
-                    return true
-                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
-                    return true
-                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
-                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
-                    return true
-                }
-            }
-        }
-        return false
-    }
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun displaySnack(view: View, text: String) {
-        (view as ViewGroup).showErrorSneaker(message = text, doOnRetry = { getHomePage() })
-    }
 }
+
+
 

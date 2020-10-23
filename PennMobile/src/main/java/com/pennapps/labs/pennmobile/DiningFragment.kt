@@ -14,12 +14,14 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.preference.PreferenceManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.DiningAdapter
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.Venue
+import kotlinx.android.synthetic.main.custom_sneaker_view.*
 import kotlinx.android.synthetic.main.fragment_dining.*
 import kotlinx.android.synthetic.main.fragment_dining.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
