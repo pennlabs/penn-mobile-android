@@ -45,7 +45,6 @@ class HomeFragment : Fragment()  {
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Home")
         bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
         FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
-        //internetConnectionHome?.visibility = View.GONE
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -73,23 +72,16 @@ class HomeFragment : Fragment()  {
         val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
         val accountID = sp.getString(getString(R.string.accountID), "")
         val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
+
+        //displays banner if not connected
         if (!isOnline(context)) {
-            var toolbar = Toolbar(context)
-            val toolBarParams = LinearLayout.LayoutParams(
-                    Toolbar.LayoutParams.MATCH_PARENT,
-                    70
-            )
-            toolbar.setLayoutParams(toolBarParams)
-            toolbar.setBackgroundColor(Color.RED)
-            toolbar.setVisibility(View.VISIBLE)
-            val internetText = TextView(context)
-            internetText.setText("Not connected")
-            internetText.setTextColor(Color.WHITE)
-            internetText.textSize = 15.0f
-            toolbar.addView(internetText)
-            home_fragment_layout.addView(toolbar)
-            home_cells_rv?.setPadding(0, toolbar.height, 0 ,0)
-            Log.d("SNEAK", "added message")
+            internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.noConnectionBackground))
+            internetConnection_message?.setText("Not Connected to Internet")
+            home_cells_rv?.setPadding(0, 90, 0, 0)
+            internetConnectionHome?.visibility = View.VISIBLE
+        } else {
+            internetConnectionHome?.visibility = View.GONE
+            home_cells_rv?.setPadding(0, 0, 0, 0)
         }
 
         // get API data
@@ -112,10 +104,6 @@ class HomeFragment : Fragment()  {
                 Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
                 loadingPanel?.visibility = View.GONE
                 home_refresh_layout?.isRefreshing = false
-                //(view as ViewGroup).showErrorSneaker(message = "Not Connected to Wi-Fi", doOnRetry = { getHomePage() })
-                //internetConnectionHome?.visibility = View.VISIBLE
-                Log.d("SNEAK", "added message")
-
             }
 
         })

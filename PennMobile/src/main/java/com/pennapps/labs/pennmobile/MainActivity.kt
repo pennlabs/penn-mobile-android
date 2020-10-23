@@ -36,9 +36,6 @@ import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Serializer.*
 import com.pennapps.labs.pennmobile.classes.*
-import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
-import eightbitlab.com.blurview.RenderScriptBlur
-import kotlinx.android.synthetic.main.custom_sneaker_view.view.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import retrofit.RestAdapter
 import retrofit.android.AndroidLog
@@ -268,28 +265,6 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
-}
-
-/** Shows an error sneaker given a view group with an optional retry function */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-fun ViewGroup.showErrorSneaker(message: String, doOnRetry: (() -> Unit)?) {
-    val sneaker = Sneaker.with(this).autoHide(false)
-    val view = LayoutInflater.from(this.context)
-            .inflate(R.layout.custom_sneaker_view, sneaker.getView(), false)
-
-    view.blurView.setupWith(this)
-            .setFrameClearDrawable(ColorDrawable(Color.parseColor("#00FFFFFF")))
-            .setBlurAlgorithm(RenderScriptBlur(this.context))
-            .setBlurRadius(10f)
-            .setHasFixedTransformationMatrix(true)
-            .setOverlayColor(resources.getColor(R.color.sneakerBlurColorOverlay))
-
-    val retryBtn = view.findViewById<TextView>(R.id.retryButton)
-    doOnRetry ?: run { retryBtn.visibility = View.GONE }
-    retryBtn.setOnClickListener { doOnRetry?.invoke() }
-
-    view.findViewById<TextView>(R.id.errorMessage).text = message
-    sneaker.sneakCustom(view).setCornerRadius(12, 16).setMessage(message)
 }
 
 //checks if internet is connected

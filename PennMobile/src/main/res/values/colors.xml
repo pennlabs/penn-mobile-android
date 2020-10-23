@@ -57,5 +57,6 @@
 
     <color name="pennmobile_blue">#1D79CE</color>
     <color name="sneakerBlurColorOverlay">#eb7e17</color>
+    <color name="noConnectionBackground">#D9534F</color>
 
 </resources>
