@@ -7,9 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-
         <androidx.cardview.widget.CardView
-            android:id="@+id/item_dining_image_cardview"
+            android:id="@+id/dining_balance_cardview"
             android:layout_width="140dp"
             android:layout_height="89dp"
             android:layout_marginStart="16dp"

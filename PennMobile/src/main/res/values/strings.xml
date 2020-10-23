@@ -39,6 +39,8 @@
     <string name="dining_hall_open">Open</string>
 
     <!-- Dining -->
+    <string name="dining_balance">Dining Balance</string>
+    <string name="dining_halls">Dining Halls</string>
     <string name="dining_hall_closed">Closed</string>
     <string name="dining_hall_breakfast">Breakfast</string>
     <string name="dining_hall_brunch">Brunch</string>
@@ -53,9 +55,12 @@
     <string name="sort_by_residential">Order by Residential Hall</string>
     <string name="sort_by_open">Order by Open Status</string>
     <string name="dining_closed">Closed today</string>
-    <string name="course">Average Course</string>
+    <string name="dining_dollars">Dining Dollars</string>
+    <string name="dining_swipes">Dining Swipes</string>
+    <string name="guest_swipes">Guest Swipes</string>
 
     <!-- Courses -->
+    <string name="course">Average Course</string>
     <string name="instructor">Average Instructor</string>
     <string name="difficulty">Average Difficulty</string>
     <string name="professor_missing">No professor listed</string>
