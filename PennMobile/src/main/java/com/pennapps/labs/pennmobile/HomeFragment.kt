@@ -80,7 +80,7 @@ class HomeFragment : Fragment()  {
 
         //displays banner if not connected
         if (!isOnline(context)) {
-            internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.noConnectionBackground))
+            internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
             internetConnection_message?.setText("Not Connected to Internet")
             home_cells_rv?.setPadding(0, 90, 0, 0)
             internetConnectionHome?.visibility = View.VISIBLE
