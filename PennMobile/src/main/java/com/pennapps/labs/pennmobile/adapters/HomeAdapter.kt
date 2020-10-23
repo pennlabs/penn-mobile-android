@@ -113,7 +113,6 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         }
     }
 
-
     private fun bindHomeReservationsCell(holder: ViewHolder, cell: HomeCell) {
         val reservations = cell.reservations ?: ArrayList()
         holder.itemView.home_card_title.text = "Upcoming Reservations"

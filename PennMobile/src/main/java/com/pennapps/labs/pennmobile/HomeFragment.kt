@@ -27,6 +27,11 @@ import com.pennapps.labs.pennmobile.classes.HomeCell
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
+import android.provider.Settings.Secure
+import androidx.core.content.ContextCompat.getSystemService
+import android.telephony.TelephonyManager
+import android.graphics.PorterDuff
+import android.content.res.Configuration
 
 
 class HomeFragment : Fragment()  {
@@ -131,7 +136,6 @@ class HomeFragment : Fragment()  {
             mActivity.setSelectedTab(MainActivity.HOME)
         }
     }
-
 
 }
 
