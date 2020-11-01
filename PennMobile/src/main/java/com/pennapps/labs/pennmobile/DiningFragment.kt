@@ -148,7 +148,7 @@ class DiningFragment : Fragment() {
                         dining_halls_recycler_view?.adapter = adapter
                         loadingPanel?.visibility = View.GONE
                         if (diningHalls.size > 0) {
-                            //no_results?.visibility = View.GONE
+                            no_results?.visibility = View.GONE
                         }
                         dining_swiperefresh?.isRefreshing = false
                     }
@@ -158,7 +158,7 @@ class DiningFragment : Fragment() {
                         internetConnectionDining?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
                         internetConnection_message_dining?.setText("Not Connected to Internet")
                         internetConnectionDining?.visibility = View.VISIBLE
-                        //no_results?.visibility = View.VISIBLE
+                        no_results?.visibility = View.VISIBLE
                         dining_swiperefresh?.isRefreshing = false
                     }
                 })

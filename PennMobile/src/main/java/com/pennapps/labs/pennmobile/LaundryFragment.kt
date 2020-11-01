@@ -136,12 +136,10 @@ class LaundryFragment : Fragment() {
 
         //displays banner if not connected
         if (!isOnline(context)) {
-            Log.d("BANNER","laundry offline")
             internetConnectionLaundry?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
             internetConnection_message_laundry?.setText("Not Connected to Internet")
             internetConnectionLaundry?.visibility = View.VISIBLE
         } else {
-            Log.d("BANNER","laundry online")
             internetConnectionLaundry?.visibility = View.GONE
         }
 
