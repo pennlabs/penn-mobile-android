@@ -108,6 +108,9 @@ class HomeFragment : Fragment()  {
                 throwable.printStackTrace()
                 Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
                 loadingPanel?.visibility = View.GONE
+                internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+                internetConnection_message?.setText("Not Connected to Internet")
+                internetConnectionHome?.visibility = View.VISIBLE
                 home_refresh_layout?.isRefreshing = false
             }
 

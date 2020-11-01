@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.*
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentTransaction
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.LaundryRoomAdapter
@@ -60,6 +61,7 @@ class LaundryFragment : Fragment() {
         FirebaseAnalytics.getInstance(mContext).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_laundry, container, false)
 
@@ -107,6 +109,7 @@ class LaundryFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onResume() {
         super.onResume()
         mActivity.removeTabs()
@@ -128,7 +131,19 @@ class LaundryFragment : Fragment() {
         updateRooms()
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun updateRooms() {
+
+        //displays banner if not connected
+        if (!isOnline(context)) {
+            Log.d("BANNER","laundry offline")
+            internetConnectionLaundry?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            internetConnection_message_laundry?.setText("Not Connected to Internet")
+            internetConnectionLaundry?.visibility = View.VISIBLE
+        } else {
+            Log.d("BANNER","laundry online")
+            internetConnectionLaundry?.visibility = View.GONE
+        }
 
         laundryRooms = ArrayList()
         roomsData = ArrayList()
