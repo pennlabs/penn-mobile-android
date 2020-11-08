@@ -6,8 +6,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
-    <!--<include layout="@layout/no_results" />-->
-
     <include layout="@layout/loading_panel" />
 
     <androidx.appcompat.widget.Toolbar
@@ -33,6 +31,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <include layout="@layout/no_results" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/laundry_help_text"
