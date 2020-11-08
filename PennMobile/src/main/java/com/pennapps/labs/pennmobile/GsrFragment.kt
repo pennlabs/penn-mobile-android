@@ -23,6 +23,7 @@ import com.pennapps.labs.pennmobile.classes.GSRRoom
 import com.pennapps.labs.pennmobile.classes.GSRSlot
 import kotlinx.android.synthetic.main.fragment_gsr.*
 import kotlinx.android.synthetic.main.fragment_gsr.view.*
+import kotlinx.android.synthetic.main.fragment_news.*
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import java.util.*
@@ -174,6 +175,7 @@ class GsrFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onResume() {
         super.onResume()
         val mActivity : MainActivity? = activity as MainActivity
@@ -187,7 +189,9 @@ class GsrFragment : Fragment() {
 
     // Performs GSR search
     // Called when page loads and whenever user changes start/end time, date, or building
+    @RequiresApi(Build.VERSION_CODES.M)
     fun searchForGSR(calledByRefreshLayout: Boolean) {
+
         val location = mapGSR(gsrLocationDropDown.selectedItem.toString())
         if (location == -1) {
             showNoResults()
@@ -315,7 +319,9 @@ class GsrFragment : Fragment() {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun populateDropDownGSR() {
+
         mLabs.location()
                 ?.subscribe({ locations ->
                     activity?.let {activity ->

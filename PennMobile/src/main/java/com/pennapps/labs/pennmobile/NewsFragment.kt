@@ -108,6 +108,7 @@ class NewsFragment : ListFragment() {
         return resolveInfos.isNotEmpty()
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val connection = NewsCustomTabsServiceConnection()
