@@ -41,12 +41,10 @@ class GsrTabbedFragment : Fragment() {
 
         //displays banner if not connected
         if (!isOnline(context)) {
-            Log.d("BANNER","displaying banner")
             internetConnectionGSR?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
             internetConnection_message_gsr?.setText("Not Connected to Internet")
             internetConnectionGSR?.visibility = View.VISIBLE
         } else {
-            Log.d("BANNER","removing banner")
             internetConnectionGSR?.visibility = View.GONE
         }
 
