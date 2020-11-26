@@ -95,7 +95,7 @@ class DiningInfoFragment : Fragment() {
             layparamtimes.addRule(RelativeLayout.ALIGN_BOTTOM, vertical.last().id)
             layparamtimes.setMargins(0, 10, 0, 0)
             val mealInt = TextView(mActivity)
-            val hoursString = meal.getFormattedHour(meal.open) + " - " + meal.getFormattedHour(meal.close)
+            val hoursString = meal.open?.let { meal.getFormattedHour(it) } + " - " + meal.close?.let { meal.getFormattedHour(it) }
             mealInt.text = hoursString
             mealInt.id = vertical.last().id + 1
             menuParent.addView(mealInt, layparamtimes)

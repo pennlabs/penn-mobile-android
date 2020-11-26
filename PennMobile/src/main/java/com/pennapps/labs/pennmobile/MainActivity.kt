@@ -221,7 +221,7 @@ class MainActivity : AppCompatActivity() {
             get() {
                 if (mLabs == null) {
                     val gsonBuilder = GsonBuilder()
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Person?>?>() {}.type, DataSerializer<Any?>())
+                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Contact?>?>() {}.type, DataSerializer<Any?>())
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Venue?>?>() {}.type, VenueSerializer())
                     gsonBuilder.registerTypeAdapter(DiningHall::class.java, MenuSerializer())
                     // gets room

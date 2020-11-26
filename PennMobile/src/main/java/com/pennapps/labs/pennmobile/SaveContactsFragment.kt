@@ -14,13 +14,13 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.ListFragment
 import com.pennapps.labs.pennmobile.adapters.PhoneSaveAdapter
-import com.pennapps.labs.pennmobile.classes.Person
+import com.pennapps.labs.pennmobile.classes.Contact
 import java.util.*
 
 class SaveContactsFragment : ListFragment() {
     private lateinit var mActivity: MainActivity
-    private var contactsList: MutableList<Person> = ArrayList()
-    private var selected: MutableList<Person> = ArrayList()
+    private var contactsList: MutableList<Contact> = ArrayList()
+    private var selected: MutableList<Contact> = ArrayList()
     private var currentNumbers: MutableSet<String> = HashSet()
     private var currentNames: MutableSet<String> = HashSet()
 
@@ -132,15 +132,15 @@ class SaveContactsFragment : ListFragment() {
     private fun loadData() {
         contactsList = ArrayList()
         selected = ArrayList()
-        contactsList.add(Person("Penn Police General", "(215) 898-7297"))
-        contactsList.add(Person("Penn Police Emergencies/MERT", "(215) 573-3333"))
-        contactsList.add(Person("Penn Walk", "215-898-9255", "215-898-WALK"))
-        contactsList.add(Person("Penn Ride", "215-898-7433", "215-898-RIDE"))
-        contactsList.add(Person("Help Line", "215-898-4357", "215-898-HELP"))
-        contactsList.add(Person("CAPS", "(215) 898-7021"))
-        contactsList.add(Person("Special Services", "(215) 898-6600"))
-        contactsList.add(Person("Women's Center", "(215) 898-8611"))
-        contactsList.add(Person("Student Health Services", "(215) 746-3535"))
+        contactsList.add(Contact("Penn Police General", "(215) 898-7297"))
+        contactsList.add(Contact("Penn Police Emergencies/MERT", "(215) 573-3333"))
+        contactsList.add(Contact("Penn Walk", "215-898-9255", "215-898-WALK"))
+        contactsList.add(Contact("Penn Ride", "215-898-7433", "215-898-RIDE"))
+        contactsList.add(Contact("Help Line", "215-898-4357", "215-898-HELP"))
+        contactsList.add(Contact("CAPS", "(215) 898-7021"))
+        contactsList.add(Contact("Special Services", "(215) 898-6600"))
+        contactsList.add(Contact("Women's Center", "(215) 898-8611"))
+        contactsList.add(Contact("Student Health Services", "(215) 746-3535"))
     }
 
     private fun loadCurrent() {
