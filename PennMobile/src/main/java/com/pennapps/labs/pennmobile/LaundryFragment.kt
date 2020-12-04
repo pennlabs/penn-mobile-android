@@ -148,6 +148,7 @@ class LaundryFragment : Fragment() {
         roomsDataResult = ArrayList()
         laundryRoomsResult = ArrayList()
 
+
         // add data
         for (i in 0 until numRooms) {
             if (sp!!.getBoolean(Integer.toString(i), false)) {
@@ -204,6 +205,7 @@ class LaundryFragment : Fragment() {
                             loadingPanel?.visibility = View.GONE
                             laundry_help_text?.visibility = View.INVISIBLE
                             laundry_machine_refresh?.isRefreshing = false
+
                         }
                     }
                 }, {
