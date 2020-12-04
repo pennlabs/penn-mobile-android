@@ -105,10 +105,13 @@ class NewsFragment : ListFragment() {
         val serviceIntent = Intent(SERVICE_ACTION)
         serviceIntent.setPackage("com.android.chrome")
         val resolveInfos = context.packageManager.queryIntentServices(serviceIntent, 0)
-        return resolveInfos.isNotEmpty()
+        if (resolveInfos != null ) {
+            return resolveInfos.isNotEmpty()
+        } else {
+            return false
+        }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val connection = NewsCustomTabsServiceConnection()
@@ -149,7 +152,6 @@ class NewsFragment : ListFragment() {
         return inflater.inflate(R.layout.fragment_news, container, false)
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun addNews() {
 
         //displays banner if not connected
