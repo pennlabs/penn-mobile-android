@@ -175,9 +175,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (grantResults.isEmpty() || grantResults[0] == PackageManager.PERMISSION_DENIED) {
-            when (requestCode) {
-                SaveContactsFragment.permission_read -> showErrorToast(R.string.ask_contacts_fail)
-                else -> showErrorToast(R.string.ask_location_fail)
+            if (requestCode == SaveContactsFragment.permission_read) {
+                showErrorToast(R.string.ask_contacts_fail)
             }
             return
         }
@@ -222,9 +221,7 @@ class MainActivity : AppCompatActivity() {
             get() {
                 if (mLabs == null) {
                     val gsonBuilder = GsonBuilder()
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Course?>?>() {}.type, CourseSerializer())
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Building?>?>() {}.type, BuildingSerializer())
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Person?>?>() {}.type, DataSerializer<Any?>())
+                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Contact?>?>() {}.type, DataSerializer<Any?>())
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Venue?>?>() {}.type, VenueSerializer())
                     gsonBuilder.registerTypeAdapter(DiningHall::class.java, MenuSerializer())
                     // gets room

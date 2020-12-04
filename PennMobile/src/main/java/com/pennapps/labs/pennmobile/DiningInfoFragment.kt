@@ -9,34 +9,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.VenueInterval
 import kotlinx.android.synthetic.main.fragment_dining_info.view.*
 import org.joda.time.format.DateTimeFormat
-import rx.android.schedulers.AndroidSchedulers
 
 /**
  * Created by Lily on 11/13/2015.
- * Fragment for Dining information (hours, map)
+ * Fragment for Dining information (hours)
  */
-class DiningInfoFragment : Fragment(), OnMapReadyCallback {
+class DiningInfoFragment : Fragment() {
 
     private lateinit var menuParent: RelativeLayout
-    private lateinit var mapFrame: View
     private var mDiningHall: DiningHall? = null
     private lateinit var mActivity: MainActivity
     private lateinit var mLabs: Labs
-    private var map: GoogleMap? = null
-    private lateinit var mapFragment: SupportMapFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +38,6 @@ class DiningInfoFragment : Fragment(), OnMapReadyCallback {
         val v = inflater.inflate(R.layout.fragment_dining_info, container, false)
         v.setBackgroundColor(Color.WHITE)
         menuParent = v.dining_hours
-        mapFrame = v.dining_map_frame
         fillInfo()
         return v
     }
@@ -57,37 +45,9 @@ class DiningInfoFragment : Fragment(), OnMapReadyCallback {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true)
-        val fm = childFragmentManager
-        mapFragment = SupportMapFragment.newInstance()
-        fm.beginTransaction().add(R.id.dining_map_container, mapFragment).commit()
-        fm.executePendingTransactions()
     }
 
-    private fun drawMap() {
-        val buildingCode = mDiningHall?.name
-        if (buildingCode != "") {
-            mLabs.buildings(buildingCode)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ buildings ->
-                        if (buildings.isNotEmpty()) {
-                            drawMarker(buildings[0].latLng)
-                        }
-                    }) { }
-        }
-    }
-
-    private fun drawMarker(diningHallLatLng: LatLng?) {
-        if (map != null && diningHallLatLng != null) {
-            mapFrame.visibility = View.VISIBLE
-            map?.moveCamera(CameraUpdateFactory.newLatLngZoom(diningHallLatLng, 17f))
-            val marker = map?.addMarker(MarkerOptions()
-                    .position(diningHallLatLng)
-                    .title(mDiningHall?.name))
-            marker?.showInfoWindow()
-        }
-    }
-
-    fun fillInfo() {
+    private fun fillInfo() {
         if (mDiningHall?.venue != null) {
             val days = mDiningHall?.venue?.allHours()  ?: ArrayList()
             var vertical = ArrayList<TextView>()
@@ -135,7 +95,7 @@ class DiningInfoFragment : Fragment(), OnMapReadyCallback {
             layparamtimes.addRule(RelativeLayout.ALIGN_BOTTOM, vertical.last().id)
             layparamtimes.setMargins(0, 10, 0, 0)
             val mealInt = TextView(mActivity)
-            val hoursString = meal.getFormattedHour(meal.open) + " - " + meal.getFormattedHour(meal.close)
+            val hoursString = meal.open?.let { meal.getFormattedHour(it) } + " - " + meal.close?.let { meal.getFormattedHour(it) }
             mealInt.text = hoursString
             mealInt.id = vertical.last().id + 1
             menuParent.addView(mealInt, layparamtimes)
@@ -151,26 +111,8 @@ class DiningInfoFragment : Fragment(), OnMapReadyCallback {
             return activeNetworkInfo != null && activeNetworkInfo.isConnected
         }
 
-    override fun onResume() {
-        super.onResume()
-        if (map == null) {
-            mapFragment.getMapAsync(this)
-        }
-    }
-
     override fun onDestroyView() {
         setHasOptionsMenu(false)
         super.onDestroyView()
-    }
-
-    override fun onMapReady(googleMap: GoogleMap) {
-        map = googleMap
-        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(39.95198, -75.19368), 17f))
-        map?.uiSettings?.isZoomControlsEnabled = false
-        if (isNetworkAvailable) {
-            drawMap()
-        } else {
-            Toast.makeText(activity, resources.getString(R.string.no_data_msg), Toast.LENGTH_LONG).show()
-        }
     }
 }
