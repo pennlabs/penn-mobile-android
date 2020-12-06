@@ -19,7 +19,12 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import com.google.firebase.analytics.FirebaseAnalytics
+import kotlinx.android.synthetic.main.fragment_fitness.*
+import kotlinx.android.synthetic.main.fragment_fitness.internetConnectionFitness
+import kotlinx.android.synthetic.main.fragment_fitness.internetConnection_message_fitness
+import kotlinx.android.synthetic.main.fragment_news.*
 import java.util.ArrayList
 
 
@@ -100,7 +105,11 @@ class NewsFragment : ListFragment() {
         val serviceIntent = Intent(SERVICE_ACTION)
         serviceIntent.setPackage("com.android.chrome")
         val resolveInfos = context.packageManager.queryIntentServices(serviceIntent, 0)
-        return resolveInfos.isNotEmpty()
+        if (resolveInfos != null ) {
+            return resolveInfos.isNotEmpty()
+        } else {
+            return false
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -144,6 +153,16 @@ class NewsFragment : ListFragment() {
     }
 
     private fun addNews() {
+
+        //displays banner if not connected
+        if (!isOnline(context)) {
+            internetConnectionNews?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            internetConnection_message_news?.setText("Not Connected to Internet")
+            internetConnectionNews?.visibility = View.VISIBLE
+        } else {
+            internetConnectionNews?.visibility = View.GONE
+        }
+
         val dpDescription = "The Daily Pennsylvanian is the independent student newspaper of the University of Pennsylvania."
         val thirtyFourDescription = "34th Street Magazine is the DP's arts and entertainment weekly magazine."
         val utbDescription = "Under The Button is Penn's 24/7 news and entertainment blog, known for its signature humor, gossip and snarky features."

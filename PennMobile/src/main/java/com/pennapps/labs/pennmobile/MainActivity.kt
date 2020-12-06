@@ -1,12 +1,16 @@
 package com.pennapps.labs.pennmobile
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
@@ -46,6 +50,13 @@ class MainActivity : AppCompatActivity() {
         setTheme(R.style.AppTheme)
         if (Build.VERSION.SDK_INT > 28) {
             setTheme(R.style.DarkModeApi29)
+        }
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
+            val alert = AlertDialog.Builder(this)
+            alert.setTitle("Android version")
+            alert.setMessage("You are running an older version of Android. Features may be limited")
+            alert.setPositiveButton("OK", null)
+            alert.show()
         }
         super.onCreate(savedInstanceState)
         if (applicationContext.resources.configuration.uiMode and
@@ -252,4 +263,36 @@ class MainActivity : AppCompatActivity() {
                 return mLabs!!
             }
     }
+
+}
+
+//checks if internet is connected
+fun isOnline(context: Context?): Boolean {
+    val connectivityManager =
+            context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    if (connectivityManager != null) {
+        val capabilities =
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                        connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+                    } else {
+                        return true
+                    }
+                } else {
+                    return true
+                }
+        if (capabilities != null) {
+            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                return true
+            }
+        }
+    }
+    return false
 }

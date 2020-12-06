@@ -4,30 +4,34 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
+import android.widget.Toolbar
+import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.HomeAdapter
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.classes.HomeCell
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import android.provider.Settings.Secure
-import androidx.preference.PreferenceManager
 import androidx.core.content.ContextCompat.getSystemService
 import android.telephony.TelephonyManager
-import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
+import android.graphics.PorterDuff
+import android.content.res.Configuration
 
 
 class HomeFragment : Fragment()  {
@@ -48,8 +52,10 @@ class HomeFragment : Fragment()  {
         FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
         view.home_cells_rv.layoutManager = LinearLayoutManager(context,
@@ -63,6 +69,7 @@ class HomeFragment : Fragment()  {
         return view
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun getHomePage() {
 
         // get session id from shared preferences
@@ -70,6 +77,17 @@ class HomeFragment : Fragment()  {
         val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
         val accountID = sp.getString(getString(R.string.accountID), "")
         val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
+
+        //displays banner if not connected
+        if (!isOnline(context)) {
+            internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            internetConnection_message?.setText("Not Connected to Internet")
+            home_cells_rv?.setPadding(0, 90, 0, 0)
+            internetConnectionHome?.visibility = View.VISIBLE
+        } else {
+            internetConnectionHome?.visibility = View.GONE
+            home_cells_rv?.setPadding(0, 0, 0, 0)
+        }
 
         // get API data
         val labs = MainActivity.labsInstance
@@ -82,6 +100,7 @@ class HomeFragment : Fragment()  {
                 home_cells_rv?.adapter = HomeAdapter(ArrayList(cells))
                 loadingPanel?.visibility = View.GONE
                 home_refresh_layout?.isRefreshing = false
+
             }
         }, { throwable ->
             mActivity.runOnUiThread {
@@ -89,12 +108,18 @@ class HomeFragment : Fragment()  {
                 throwable.printStackTrace()
                 Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
                 loadingPanel?.visibility = View.GONE
+                internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+                internetConnection_message?.setText("Not Connected to Internet")
+                internetConnectionHome?.visibility = View.VISIBLE
                 home_refresh_layout?.isRefreshing = false
             }
+
         })
+
     }
 
     private val broadcastReceiver = object: BroadcastReceiver() {
+        @RequiresApi(Build.VERSION_CODES.M)
         override fun onReceive(context: Context?, intent: Intent?) {
             getHomePage()
         }
@@ -114,4 +139,8 @@ class HomeFragment : Fragment()  {
             mActivity.setSelectedTab(MainActivity.HOME)
         }
     }
+
 }
+
+
+

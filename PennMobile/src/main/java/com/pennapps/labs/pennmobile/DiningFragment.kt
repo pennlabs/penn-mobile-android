@@ -14,6 +14,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.preference.PreferenceManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.DiningAdapter
@@ -21,7 +22,10 @@ import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.Venue
 import kotlinx.android.synthetic.main.fragment_dining.*
+import kotlinx.android.synthetic.main.fragment_dining.internetConnectionDining
+import kotlinx.android.synthetic.main.fragment_dining.internetConnection_message_dining
 import kotlinx.android.synthetic.main.fragment_dining.view.*
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.no_results.*
 import rx.Observable
@@ -52,11 +56,12 @@ class DiningFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_dining, container, false)
-        v.dining_swiperefresh?.setOnRefreshListener { getDiningHalls() }
         v.dining_swiperefresh?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
         v.dining_halls_recycler_view?.layoutManager = LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false)
+        v.dining_swiperefresh.setOnRefreshListener { getDiningHalls() }
         getDiningHalls()
         return v
     }
@@ -81,6 +86,7 @@ class DiningFragment : Fragment() {
         menu.setGroupVisible(R.id.action_sort_by, diningInfoFragment == null || !diningInfoFragment.isVisible)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun setSortByMethod(method: String) {
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
         val editor = sp.edit()
@@ -89,6 +95,7 @@ class DiningFragment : Fragment() {
         getDiningHalls()
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle presses on the action bar items
         when (item.itemId) {
@@ -115,7 +122,18 @@ class DiningFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun getDiningHalls() {
+
+        //displays banner if not connected
+        if (!isOnline(context)) {
+            internetConnectionDining?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            internetConnection_message_dining?.setText("Not Connected to Internet")
+            internetConnectionDining?.visibility = View.VISIBLE
+        } else {
+            internetConnectionDining?.visibility = View.GONE
+        }
+
         // Map each item in the list of venues to a Venue Observable, then map each Venue to a DiningHall Observable
         mLabs.venues()
                 .flatMap { venues -> Observable.from(venues) }
@@ -137,6 +155,9 @@ class DiningFragment : Fragment() {
                 }, {
                     mActivity.runOnUiThread {
                         loadingPanel?.visibility = View.GONE
+                        internetConnectionDining?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+                        internetConnection_message_dining?.setText("Not Connected to Internet")
+                        internetConnectionDining?.visibility = View.VISIBLE
                         no_results?.visibility = View.VISIBLE
                         dining_swiperefresh?.isRefreshing = false
                     }
