@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.pennapps.labs.pennmobile.*
 import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.classes.CalendarEvent
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.HomeCell
 import com.squareup.picasso.Picasso
@@ -194,12 +195,22 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
     private fun bindCalendarCell(holder: ViewHolder, cell: HomeCell) {
         val events = cell.events ?: ArrayList()
 
+        var i = events.size - 1
+        val eventList: ArrayList<CalendarEvent> = ArrayList()
+        while (i >= 0) {
+            if (!events[i].name.isNullOrEmpty()) {
+                eventList.add(events[i])
+            }
+            i--;
+        }
+
         holder.itemView.home_card_title.text = "Upcoming Events"
         holder.itemView.home_card_subtitle.text = "UNIVERSITY NOTIFICATIONS"
 
         holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
                 LinearLayoutManager.VERTICAL, false)
-        holder.itemView.home_card_rv.adapter = UniversityEventAdapter(ArrayList(events))
+
+        holder.itemView.home_card_rv.adapter = UniversityEventAdapter(eventList)
     }
 
     private fun bindCoursesCell(holder: ViewHolder, cell: HomeCell) {
