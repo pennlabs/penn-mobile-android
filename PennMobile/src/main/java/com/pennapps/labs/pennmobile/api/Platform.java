@@ -14,7 +14,6 @@ import retrofit.http.POST;
 public interface Platform {
 
     String platformBaseUrl = "https://platform.pennlabs.org";
-    String codeVerifier = RandomStringUtils.randomAlphanumeric(64);
 
     @FormUrlEncoded
     @POST("/accounts/token/")
