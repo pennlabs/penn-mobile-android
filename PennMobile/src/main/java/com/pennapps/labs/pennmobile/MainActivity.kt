@@ -211,7 +211,9 @@ class MainActivity : AppCompatActivity() {
 
         private var mLabs: Labs? = null
         private var mPlatform: Platform? = null
-        val platformInstance: Platform?
+
+        @JvmStatic
+        val platformInstance: Platform
             get() {
                 if (mPlatform == null) {
                     val gsonBuilder = GsonBuilder()
@@ -224,7 +226,7 @@ class MainActivity : AppCompatActivity() {
                             .build()
                     mPlatform = restAdapter.create(Platform::class.java)
                 }
-                return mPlatform
+                return mPlatform!!
             }
 
         @JvmStatic
@@ -282,15 +284,19 @@ fun isOnline(context: Context?): Boolean {
                     return true
                 }
         if (capabilities != null) {
-            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
-                return true
-            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
-                return true
-            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
-                Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
-                return true
+            when {
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                    return true
+                }
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                    return true
+                }
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                    return true
+                }
             }
         }
     }
