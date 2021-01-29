@@ -180,7 +180,7 @@ class LaundryFragment : Fragment() {
         mLabs.room(i)?.subscribe({ room ->
                     room.id = i
                     addRoomToList(room)
-
+                    //hi
                     if (laundryRoomsResult.size == count) {
 
                         // sort laundry rooms data by hall name
