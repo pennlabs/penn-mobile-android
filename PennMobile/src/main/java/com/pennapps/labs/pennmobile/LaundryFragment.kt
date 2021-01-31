@@ -1,20 +1,20 @@
 package com.pennapps.labs.pennmobile
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.*
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.LaundryRoomAdapter
 import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.classes.LaundryUsage
 import kotlinx.android.synthetic.main.fragment_laundry.*
@@ -22,6 +22,8 @@ import kotlinx.android.synthetic.main.fragment_laundry.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.loading_panel.view.*
 import kotlinx.android.synthetic.main.no_results.*
+import rx.Observable
+import rx.internal.operators.OperatorToObservableList
 import java.util.*
 
 class LaundryFragment : Fragment() {
@@ -44,7 +46,11 @@ class LaundryFragment : Fragment() {
     private var mAdapter: LaundryRoomAdapter? = null
 
     private var count: Int = 0
-    private var numRooms: Int = 0
+    //private var numRooms: Int = 0
+
+    private var toReturn = ArrayList<Int>()
+
+    private lateinit var deviceID: String;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +59,7 @@ class LaundryFragment : Fragment() {
         mActivity = activity as MainActivity
         mContext = mActivity
         setHasOptionsMenu(true)
+        deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
 
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "3")
@@ -66,14 +73,20 @@ class LaundryFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_laundry, container, false)
 
         // get num rooms to display
+        /*
         sp = PreferenceManager.getDefaultSharedPreferences(mContext)
         numRooms = sp?.getInt(mContext.getString(R.string.num_rooms_pref), 100) ?: 0
+
         count = 0
         for (i in 0 until numRooms) {
             if (sp!!.getBoolean(Integer.toString(i), false)) {
+                Log.d("GMED", i.toString());
                 count += 1
             }
         }
+        */
+        count = getLaundryPref().size
+
 
         view.favorite_laundry_list?.layoutManager = LinearLayoutManager(mContext)
         view.laundry_machine_refresh?.setOnRefreshListener { updateRooms() }
@@ -114,15 +127,18 @@ class LaundryFragment : Fragment() {
         super.onResume()
         mActivity.removeTabs()
 
-        numRooms = sp?.getInt(mContext.getString(R.string.num_rooms_pref), 100) ?: 0
+        //numRooms = sp?.getInt(mContext.getString(R.string.num_rooms_pref), 100) ?: 0
 
         // get num rooms to display
-        count = 0
+        count = getLaundryPref().size
+        /*
         for (i in 0 until numRooms) {
             if (sp?.getBoolean(i.toString(), false) == true) {
                 count += 1
             }
         }
+        */
+
         mActivity.setTitle(R.string.laundry)
         if (Build.VERSION.SDK_INT > 17){
             mActivity.setSelectedTab(MainActivity.LAUNDRY)
@@ -148,13 +164,19 @@ class LaundryFragment : Fragment() {
         roomsDataResult = ArrayList()
         laundryRoomsResult = ArrayList()
 
-
+        /*
         // add data
         for (i in 0 until numRooms) {
             if (sp!!.getBoolean(Integer.toString(i), false)) {
                 addAvailability(i)
                 addRoom(i)
             }
+        }
+        */
+        var roomIDs = getLaundryPref()
+        for (i in roomIDs) {
+            addAvailability(i)
+            addRoom(i)
         }
 
         // no rooms chosen
@@ -178,66 +200,90 @@ class LaundryFragment : Fragment() {
 
     private fun addRoom(i: Int) {
         mLabs.room(i)?.subscribe({ room ->
-                    room.id = i
-                    addRoomToList(room)
-                    //hi
-                    if (laundryRoomsResult.size == count) {
+            room.id = i
+            addRoomToList(room)
 
-                        // sort laundry rooms data by hall name
-                        Collections.sort(roomsDataResult) { usage1, usage2 -> usage2.id - usage1.id }
+            //test
+            if (laundryRoomsResult.size == count) {
 
-                        // sort laundry rooms by name
-                        Collections.sort(laundryRoomsResult) { room1, room2 -> room2.id - room1.id }
+                // sort laundry rooms data by hall name
+                Collections.sort(roomsDataResult) { usage1, usage2 -> usage2.id - usage1.id }
 
-                        var loading = false
-                        // make sure results are finished loading
-                        while (roomsDataResult.size != count) {
-                            loading = true
-                        }
+                // sort laundry rooms by name
+                Collections.sort(laundryRoomsResult) { room1, room2 -> room2.id - room1.id }
 
-                        // update UI
-                        mActivity.runOnUiThread {
-                            roomsData = roomsDataResult
-                            laundryRooms = laundryRoomsResult
-                            mAdapter = LaundryRoomAdapter(mContext, laundryRooms, roomsData, false)
-                            favorite_laundry_list?.adapter = mAdapter
+                var loading = false
+                // make sure results are finished loading
+                while (roomsDataResult.size != count) {
+                    loading = true
+                }
 
-                            loadingPanel?.visibility = View.GONE
-                            laundry_help_text?.visibility = View.INVISIBLE
-                            laundry_machine_refresh?.isRefreshing = false
+                // update UI
+                mActivity.runOnUiThread {
+                    roomsData = roomsDataResult
+                    laundryRooms = laundryRoomsResult
+                    mAdapter = LaundryRoomAdapter(mContext, laundryRooms, roomsData, false)
+                    favorite_laundry_list?.adapter = mAdapter
 
-                        }
-                    }
-                }, {
-                    mActivity.runOnUiThread {
-                        loadingPanel?.visibility = View.GONE
-                        no_results?.visibility = View.VISIBLE
-                        laundry_help_text?.visibility = View.GONE
-                        laundry_machine_refresh?.isRefreshing = false
-                        Log.e("Laundry", "Error getting laundry data: " + it.stackTrace)
-                    }
-                })
+                    loadingPanel?.visibility = View.GONE
+                    laundry_help_text?.visibility = View.INVISIBLE
+                    laundry_machine_refresh?.isRefreshing = false
+
+                }
+            }
+        }, {
+            mActivity.runOnUiThread {
+                loadingPanel?.visibility = View.GONE
+                no_results?.visibility = View.VISIBLE
+                laundry_help_text?.visibility = View.GONE
+                laundry_machine_refresh?.isRefreshing = false
+                Log.e("Laundry", "Error getting laundry data: " + it.stackTrace)
+            }
+        })
     }
 
     private fun addAvailability(i: Int) {
         mLabs.usage(i)?.subscribe({ usage ->
-                    usage.id = i
-                    addUsageToList(usage)
-                }, {
-                    // in case usage data not available - set chart to 0
-                    val newUsage = LaundryUsage()
-                    newUsage.setWasherData()
-                    newUsage.setDryerData()
-                    newUsage.id = i
-                    roomsDataResult.add(newUsage)
+            usage.id = i
+            addUsageToList(usage)
+        }, {
+            // in case usage data not available - set chart to 0
+            val newUsage = LaundryUsage()
+            newUsage.setWasherData()
+            newUsage.setDryerData()
+            newUsage.id = i
+            roomsDataResult.add(newUsage)
 
-                    mActivity.runOnUiThread {
-                        loadingPanel?.visibility = View.GONE
-                        no_results?.visibility = View.VISIBLE
-                        laundry_help_text?.visibility = View.GONE
-                        laundry_machine_refresh?.isRefreshing = false
-                    }
-                })
+            mActivity.runOnUiThread {
+                loadingPanel?.visibility = View.GONE
+                no_results?.visibility = View.VISIBLE
+                laundry_help_text?.visibility = View.GONE
+                laundry_machine_refresh?.isRefreshing = false
+            }
+        })
+    }
+
+    private fun getLaundryPref(): ArrayList<Int> {
+        var fromLabs = mLabs.getLaundryPref(deviceID)
+
+        //var toReturn: ArrayList<Int> = ArrayList();
+        fromLabs?.forEach({
+            for (i in it) {
+                toReturn.add(i)
+            }
+        })
+
+        /*
+        for (i in it) {
+            toReturn.add(i)
+        }
+        */
+
+        for (j in toReturn) {
+            Log.d("YOLO2", j.toString());
+        }
+        Log.d("YOLO", toReturn.toString());
+        return toReturn
     }
 
 }

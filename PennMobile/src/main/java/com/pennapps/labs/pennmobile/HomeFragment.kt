@@ -116,6 +116,7 @@ class HomeFragment : Fragment()  {
 
         })
 
+
     }
 
     private val broadcastReceiver = object: BroadcastReceiver() {

@@ -283,6 +283,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
                 favoriteLaundryRooms.add(i);
             }
         }
+        Log.d("GME","Sending laundry data");
 
         //preferences must be in the form of 1,2,3 (exclude brackets)
         String api_prepared_string = favoriteLaundryRooms.toString();
