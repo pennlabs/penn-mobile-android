@@ -11,7 +11,7 @@
         android:id="@+id/appbar_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
+        android:background="@color/white"
         android:elevation="0dp"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:elevation="0dp"
@@ -20,39 +20,7 @@
         <FrameLayout
             android:id="@+id/appbar_container"
             android:layout_width="match_parent"
-            android:layout_height="80dp">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/profile"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_gravity="center_vertical|end"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="36dp"
-                android:layout_marginRight="36dp">
-
-                <ImageView
-                    android:id="@+id/profile_background"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_appbar_profile_background" />
-
-                <TextView
-                    android:id="@+id/initials"
-                    style="@style/profile_initials"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="DL"
-                    app:layout_constraintBottom_toBottomOf="@+id/profile_background"
-                    app:layout_constraintEnd_toEndOf="@+id/profile_background"
-                    app:layout_constraintStart_toStartOf="@+id/profile_background"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_height="@dimen/app_bar_height">
 
             <TextView
                 android:id="@+id/date_view"
@@ -62,30 +30,47 @@
                 android:layout_gravity="start|top"
                 android:layout_marginStart="24dp"
                 android:layout_marginLeft="24dp"
-                android:layout_marginTop="20dp"
-                android:text="SUNDAY, JAN 2019" />
+                android:layout_marginTop="24dp" />
 
             <TextView
                 android:id="@+id/title_view"
                 style="@style/title_fragment"
-                android:layout_width="200dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|start"
+                android:layout_gravity="start|bottom"
                 android:layout_marginStart="24dp"
                 android:layout_marginLeft="24dp"
                 android:layout_marginBottom="4dp"
                 android:maxLines="1"
-                android:paddingEnd="24dp"
-                android:paddingRight="24dp"
-                android:text="Activity"
-                app:autoSizeTextType="uniform" />
+                />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/profile"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="36dp"
+                android:layout_marginRight="36dp">
+
+                <ImageView
+                    android:id="@+id/laundry_preferences"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:padding="8dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_settings" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <ImageView
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:visibility="visible"
                 app:srcCompat="@drawable/ic_app_bar_divider" />
 
         </FrameLayout>

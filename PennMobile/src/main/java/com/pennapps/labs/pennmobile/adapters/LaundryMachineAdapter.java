@@ -5,17 +5,17 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.pennapps.labs.pennmobile.LaundryBroadcastReceiver;
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.classes.MachineDetail;
@@ -100,7 +100,7 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
             if (mMachineType.equals(mContext.getString(R.string.washer))) {
                 holder.machineView.setImageResource(R.drawable.ic_washer_available);
             } else {
-                holder.machineView.setImageResource(R.drawable.ic_dryer_available);
+                holder.machineView.setImageResource(R.drawable.ic_trial);
             }
             holder.timeTextView.setText(R.string.open);
             holder.alarmSwitch.setVisibility(View.GONE);
@@ -112,11 +112,11 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
                 holder.machineView.setImageResource(R.drawable.washer_in_use);
                 holder.timeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.washer_blue));
             } else {
-                holder.machineView.setImageResource(R.drawable.dryer_in_use);
+                holder.machineView.setImageResource(R.drawable.ic_dryer_in_use);
                 holder.timeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.dryer_red));
             }
             holder.timeTextView.setText(Integer.toString(timeRemaining));
-            holder.alarmSwitch.setVisibility(View.VISIBLE);
+            holder.alarmSwitch.setVisibility(View.GONE);
             int time = detail.getTimeRemaining();
             int id = detail.getId();
             setSwitchState(time, holder.alarmSwitch, id);

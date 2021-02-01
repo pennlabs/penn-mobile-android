@@ -11,6 +11,7 @@ import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import kotlinx.android.synthetic.main.fragment_menu.view.*
+import kotlinx.android.synthetic.main.include_main.*
 import org.apache.commons.lang3.StringUtils
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -91,6 +92,7 @@ class MenuFragment : Fragment() {
         super.onCreate(savedInstanceState)
         mDiningHall = arguments?.getParcelable("DiningHall")
         mActivity = activity as MainActivity
+        mActivity.toolbar.visibility = View.VISIBLE
         setHasOptionsMenu(true)
     }
 
@@ -138,5 +140,6 @@ class MenuFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         mActivity.removeTabs()
+        mActivity.toolbar.visibility = View.GONE
     }
 }

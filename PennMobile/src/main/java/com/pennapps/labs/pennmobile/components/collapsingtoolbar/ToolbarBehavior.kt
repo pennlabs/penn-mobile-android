@@ -22,7 +22,7 @@ class ToolbarBehavior : CoordinatorLayout.Behavior<AppBarLayout>() {
     private lateinit var toolbar: View
     private lateinit var divider: View
     private lateinit var date: View
-    private lateinit var profile: View
+    private var profile: View? = null
     private lateinit var title: View
     private lateinit var bottomBar: View
     private lateinit var container: View
@@ -93,7 +93,7 @@ class ToolbarBehavior : CoordinatorLayout.Behavior<AppBarLayout>() {
                 var translate: Float = (toolbarOriginalHeight - toolbar.layoutParams.height) / (toolbarOriginalHeight - toolbarCollapsedHeight)
                 translate *= toolbarOriginalHeight
                 date.translationY = -translate
-                profile.translationY = -translate
+                profile?.translationY = -translate
 
                 //--- title
                 val scale = toolbar.layoutParams.height / toolbarOriginalHeight
@@ -129,7 +129,7 @@ class ToolbarBehavior : CoordinatorLayout.Behavior<AppBarLayout>() {
                 var translate: Float = (toolbarOriginalHeight - toolbar.layoutParams.height) / (toolbarOriginalHeight - toolbarCollapsedHeight)
                 translate *= toolbarOriginalHeight
                 date.translationY = -translate
-                profile.translationY = -translate
+                profile?.translationY = -translate
 
                 //--- title
                 val scale = toolbar.layoutParams.height / toolbarOriginalHeight

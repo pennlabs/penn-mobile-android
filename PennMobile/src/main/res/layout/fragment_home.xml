@@ -22,16 +22,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/app_bar_height">
 
-
-            <!--            <LinearLayout-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="match_parent"-->
-            <!--                android:layout_marginStart="24dp"-->
-            <!--                android:layout_marginLeft="24dp"-->
-            <!--                android:layout_marginTop="20dp"-->
-            <!--                android:layout_marginBottom="4dp"-->
-            <!--                android:layout_gravity="center_vertical|start">-->
-
             <TextView
                 android:id="@+id/date_view"
                 style="@style/title_date"
@@ -55,10 +45,6 @@
                 android:maxLines="1"
                 android:text="Activity"
                 />
-
-
-            <!--            </LinearLayout>-->
-
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/profile"
@@ -97,7 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:visibility="visible"
+                android:visibility="invisible"
                 app:srcCompat="@drawable/ic_app_bar_divider" />
 
         </FrameLayout>

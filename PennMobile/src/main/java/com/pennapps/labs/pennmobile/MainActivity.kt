@@ -18,7 +18,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -29,13 +29,13 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.pennapps.labs.pennmobile.components.expandedbottomnavbar.ExpandableBottomTabBar
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Serializer.*
 import com.pennapps.labs.pennmobile.classes.*
 import com.pennapps.labs.pennmobile.components.floatingbottombar.ExpandableBottomBarMenuItem
 import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
+import com.pennapps.labs.pennmobile.more.MoreFragment
 import com.pennapps.labs.pennmobile.utils.Utils
 import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.android.synthetic.main.custom_sneaker_view.view.*
@@ -46,8 +46,8 @@ import retrofit.converter.GsonConverter
 
 class MainActivity : AppCompatActivity() {
 
-    private var tabBarView: ExpandableBottomTabBar? = null
-    private var toolbar: Toolbar? = null
+    //private var tabBarView: ExpandableBottomTabBar? = null
+    //private var toolbar: Toolbar? = null
     private var tabShowed = false
     private lateinit var fragmentManager: FragmentManager
     private lateinit var mSharedPrefs: SharedPreferences
@@ -65,9 +65,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         Utils.getCurrentSystemTime()
 
-        tabBarView = findViewById(R.id.bottom_navigation)
-        toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        //tabBarView = findViewById(R.id.bottom_navigation)
+       // toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(appbar.findViewById(R.id.toolbar))
         fragmentManager = supportFragmentManager
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.setHomeButtonEnabled(false)
@@ -104,6 +104,13 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    override fun onResume() {
+        super.onResume()
+        val layoutParams = this.content_frame.layoutParams as CoordinatorLayout.LayoutParams
+        layoutParams.setMargins(0,0,0,Utils.dpToPixel(this,24f))
+        this.content_frame.layoutParams = layoutParams
+    }
+
     private fun onExpandableBottomNavigationItemSelected() {
         expandable_bottom_bar.onItemSelectedListener = { v, item ->
             var fragment: Fragment? = null
@@ -114,33 +121,34 @@ class MainActivity : AppCompatActivity() {
                 "Dining" -> fragment = DiningFragment()
                 "GSR" -> fragment = GsrTabbedFragment()
                 "Laundry" -> fragment = LaundryFragment()
-                "More" -> fragment = AboutFragment()
+                "More" -> fragment = MoreFragment()
             }
             fragmentTransact(fragment)
         }
-        tabBarView?.setOnTabClickedListener { _, tabPos ->
-            var fragment: Fragment? = null
-            when (tabPos) {
-                HOME -> if (fragmentManager.backStackEntryCount > 0) {
-                    fragment = HomeFragment()
-                }
-                GSR -> fragment = GsrTabbedFragment()
-                DINING -> fragment = DiningFragment()
-                LAUNDRY -> fragment = LaundryFragment()
-                FITNESS -> fragment = FitnessFragment()
-                NEWS -> fragment = NewsFragment()
-                SUPPORT -> fragment = SupportFragment()
-                SETTINGS -> fragment = SettingsFragment()
-                ABOUT -> fragment = AboutFragment()
-            }
-            fragmentTransact(fragment)
-        }
+//        tabBarView?.setOnTabClickedListener { _, tabPos ->
+//            var fragment: Fragment? = null
+//            when (tabPos) {
+//                HOME -> if (fragmentManager.backStackEntryCount > 0) {
+//                    fragment = HomeFragment()
+//                }
+//                GSR -> fragment = GsrTabbedFragment()
+//                DINING -> fragment = DiningFragment()
+//                LAUNDRY -> fragment = LaundryFragment()
+//                FITNESS -> fragment = FitnessFragment()
+//                NEWS -> fragment = NewsFragment()
+//                SUPPORT -> fragment = SupportFragment()
+//                SETTINGS -> fragment = SettingsFragment()
+//                ABOUT -> fragment = AboutFragment()
+//            }
+//            fragmentTransact(fragment)
+//        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     fun setSelectedTab(index: Int) {
-        tabBarView?.resetFocusOnAllTabs()
-        tabBarView?.selectedTab = index
+        //expandable_bottom_bar.select(index)
+//        tabBarView?.resetFocusOnAllTabs()
+//        tabBarView?.selectedTab = index
     }
 
     fun closeKeyboard() {
@@ -158,8 +166,9 @@ class MainActivity : AppCompatActivity() {
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()
         onExpandableBottomNavigationItemSelected()
-        toolbar?.visibility = View.VISIBLE
-        tabBarView?.visibility = View.INVISIBLE
+        //toolbar?.visibility = View.VISIBLE
+        expandable_bottom_bar.visibility = View.VISIBLE
+        //tabBarView?.visibility = View.INVISIBLE
     }
 
     fun startLoginFragment() {
@@ -168,8 +177,9 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.content_frame, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()
-        toolbar?.visibility = View.GONE
-        tabBarView?.visibility = View.GONE
+        //toolbar?.visibility = View.GONE
+        expandable_bottom_bar.visibility = View.GONE
+        //tabBarView?.visibility = View.GONE
     }
 
     fun showErrorToast(errorMessage: Int) {
@@ -180,7 +190,7 @@ class MainActivity : AppCompatActivity() {
         if (tabShowed) {
             return
         }
-        val appBar = findViewById<View>(R.id.appbar_home) as AppBarLayout
+        val appBar = findViewById<View>(R.id.appbar) as AppBarLayout
         val tabLayout = layoutInflater.inflate(R.layout.tab_layout, null) as TabLayout
         tabLayout.post { tabLayout.setupWithViewPager(pager) }
         if (!scrollable) {
@@ -193,7 +203,7 @@ class MainActivity : AppCompatActivity() {
 
     fun removeTabs() {
         tabShowed = false
-        val appBar = findViewById<View>(R.id.appbar_home) as AppBarLayout
+        val appBar = findViewById<View>(R.id.appbar) as AppBarLayout
 
         if (appBar.childCount >= 2) {
             appBar.removeViewAt(1)
@@ -237,9 +247,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Deprecated, each fragment has it's own app bar now
     override fun setTitle(title: CharSequence) {
-        //title_view.text = title
+        appbar.findViewById<View>(R.id.toolbar)
+                .findViewById<TextView>(R.id.toolbar_title).text = title
     }
 
     companion object {

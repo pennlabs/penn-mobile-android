@@ -10,14 +10,21 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.*
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentTransaction
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.LaundryRoomAdapter
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.classes.LaundryUsage
+import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
+import com.pennapps.labs.pennmobile.utils.Utils
+import kotlinx.android.synthetic.main.fragment_gsr_tabs.view.*
 import kotlinx.android.synthetic.main.fragment_laundry.*
 import kotlinx.android.synthetic.main.fragment_laundry.view.*
+import kotlinx.android.synthetic.main.fragment_laundry.view.appbar_home
+import kotlinx.android.synthetic.main.fragment_laundry.view.date_view
+import kotlinx.android.synthetic.main.fragment_laundry.view.title_view
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.loading_panel.view.*
 import kotlinx.android.synthetic.main.no_results.*
@@ -63,12 +70,14 @@ class LaundryFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_laundry, container, false)
 
+        initAppBar(view)
+
         // get num rooms to display
         sp = PreferenceManager.getDefaultSharedPreferences(mContext)
         numRooms = sp?.getInt(mContext.getString(R.string.num_rooms_pref), 100) ?: 0
         count = 0
         for (i in 0 until numRooms) {
-            if (sp!!.getBoolean(Integer.toString(i), false)) {
+            if (sp!!.getBoolean(i.toString(), false)) {
                 count += 1
             }
         }
@@ -86,6 +95,22 @@ class LaundryFragment : Fragment() {
         }
 
         return view
+    }
+
+    private fun initAppBar(view: View) {
+        if (Build.VERSION.SDK_INT > 16) {
+            (view.appbar_home.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
+        }
+        view.title_view.text = getString(R.string.laundry)
+        view.date_view.text = Utils.getCurrentSystemTime()
+        view.laundry_preferences.setOnClickListener {
+            val fragmentManager = mActivity.supportFragmentManager
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, LaundrySettingsFragment())
+                    .addToBackStack("Laundry Settings Fragment")
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .commit()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -170,10 +195,10 @@ class LaundryFragment : Fragment() {
                     if (laundryRoomsResult.size == count) {
 
                         // sort laundry rooms data by hall name
-                        Collections.sort(roomsDataResult) { usage1, usage2 -> usage2.id - usage1.id }
+                        roomsDataResult.sortWith(Comparator { usage1, usage2 -> usage2.id - usage1.id })
 
                         // sort laundry rooms by name
-                        Collections.sort(laundryRoomsResult) { room1, room2 -> room2.id - room1.id }
+                        laundryRoomsResult.sortWith(Comparator { room1, room2 -> room2.id - room1.id })
 
                         var loading = false
                         // make sure results are finished loading

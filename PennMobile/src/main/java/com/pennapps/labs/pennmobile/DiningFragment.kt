@@ -15,11 +15,10 @@ import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.Venue
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
+import com.pennapps.labs.pennmobile.utils.Utils
 import kotlinx.android.synthetic.main.fragment_dining.*
-import kotlinx.android.synthetic.main.fragment_dining.title_view
 import kotlinx.android.synthetic.main.fragment_dining.view.*
 import kotlinx.android.synthetic.main.fragment_dining.view.appbar_home
-import kotlinx.android.synthetic.main.fragment_dining.view.profile
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.no_results.*
 import rx.Observable
@@ -35,6 +34,7 @@ class DiningFragment : Fragment() {
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()
         setHasOptionsMenu(true)
+
 
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "1")
@@ -155,13 +155,10 @@ class DiningFragment : Fragment() {
     }
 
     private fun initAppBar(view: View) {
-        // Appbar behavior init
         if (Build.VERSION.SDK_INT > 16) {
             (view.appbar_home.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
         }
-        view.profile.setOnClickListener { _ ->
-            displaySnack(view, "Meow")
-        }
+        view.date_view.text = Utils.getCurrentSystemTime()
     }
 
     private fun setTitle(title: CharSequence) {

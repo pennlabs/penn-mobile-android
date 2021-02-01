@@ -43,6 +43,7 @@ class UniversityEventAdapter(private var events: ArrayList<CalendarEvent>) :
         holder.itemView.event_day.text = dayOfMonth
         holder.itemView.event_month.text = month
         holder.itemView.event_name_tv.text = name
+        holder.itemView.event_name_tv.isSelected = true
         if (from == to) {
             holder.itemView.event_day_of_week.text = start
         } else {

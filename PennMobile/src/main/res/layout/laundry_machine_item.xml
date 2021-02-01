@@ -1,26 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginLeft="8dp"
-    android:layout_marginTop="10dp"
-    android:layout_marginBottom="10dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
     android:orientation="vertical"
-    tools:ignore="RtlHardcoded"
-    >
+    tools:ignore="RtlHardcoded">
 
     <RelativeLayout
         android:layout_width="@dimen/laundry_machine_view"
-        android:layout_height="@dimen/laundry_machine_view"
-        >
+        android:layout_height="@dimen/laundry_machine_view">
 
         <ImageView
             android:id="@+id/laundry_machine_image_view"
             android:layout_width="@dimen/laundry_machine_view"
-            android:layout_height="@dimen/laundry_machine_view"
-            />
+            android:layout_height="@dimen/laundry_machine_view" />
 
         <TextView
             android:id="@+id/min_left_time"
@@ -28,8 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_gravity="center_horizontal"
-            android:textSize="20sp"
-            />
+            android:textSize="20sp" />
 
     </RelativeLayout>
 
@@ -37,7 +32,6 @@
         android:id="@+id/laundry_alarm_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        />
+        android:layout_gravity="center_horizontal" />
 
 </LinearLayout>

@@ -1,10 +1,6 @@
 package com.pennapps.labs.pennmobile
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.content.SharedPreferences
+import android.content.*
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -24,18 +20,12 @@ import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.classes.HomeCell
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.utils.Utils
-import kotlinx.android.synthetic.main.fragment_home.home_cells_rv
-import kotlinx.android.synthetic.main.fragment_home.home_refresh_layout
-import kotlinx.android.synthetic.main.fragment_home.initials
-import kotlinx.android.synthetic.main.fragment_home.profile_background
-import kotlinx.android.synthetic.main.fragment_home.title_view
-import kotlinx.android.synthetic.main.fragment_home.view.appbar_home
-import kotlinx.android.synthetic.main.fragment_home.view.date_view
-import kotlinx.android.synthetic.main.fragment_home.view.home_cells_rv
-import kotlinx.android.synthetic.main.fragment_home.view.home_refresh_layout
-import kotlinx.android.synthetic.main.fragment_home.view.profile
-import kotlinx.android.synthetic.main.loading_panel.loadingPanel
-import java.util.Locale
+import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_home.view.*
+import kotlinx.android.synthetic.main.loading_panel.*
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.arrayListOf
 
 
 class HomeFragment : Fragment() {
@@ -177,6 +167,8 @@ class HomeFragment : Fragment() {
      */
     @Suppress("DEPRECATION")
     private fun displaySnack(view: View, text: String) {
-        (view as ViewGroup).showErrorSneaker(message = text, doOnRetry = { getHomePage() })
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            (view as ViewGroup).showErrorSneaker(message = text, doOnRetry = { getHomePage() })
+        }
     }
 }
