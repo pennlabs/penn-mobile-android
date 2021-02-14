@@ -29,6 +29,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.pennapps.labs.pennmobile.ExpandedBottomNavBar.ExpandableBottomTabBar
+import com.pennapps.labs.pennmobile.api.CampusExpress
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Serializer.*
@@ -211,6 +212,7 @@ class MainActivity : AppCompatActivity() {
 
         private var mLabs: Labs? = null
         private var mPlatform: Platform? = null
+        private var mCampusExpress: CampusExpress? = null
 
         @JvmStatic
         val platformInstance: Platform
@@ -263,6 +265,23 @@ class MainActivity : AppCompatActivity() {
                     mLabs = restAdapter.create(Labs::class.java)
                 }
                 return mLabs!!
+            }
+
+        @JvmStatic
+        val campusExpressInstance: CampusExpress
+            get() {
+                if (mCampusExpress == null) {
+                    val gsonBuilder = GsonBuilder()
+                    val gson = gsonBuilder.create()
+                    val restAdapter = RestAdapter.Builder()
+                            .setConverter(GsonConverter(gson))
+                            .setLogLevel(RestAdapter.LogLevel.FULL)
+                            .setLog(AndroidLog("Campus Express"))
+                            .setEndpoint(CampusExpress.campusExpressBaseUrl)
+                            .build()
+                    mCampusExpress = restAdapter.create(CampusExpress::class.java)
+                }
+                return mCampusExpress!!
             }
     }
 

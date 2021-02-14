@@ -58,4 +58,8 @@
     <color name="pennmobile_blue">#1D79CE</color>
     <color name="darkRedBackground">#D9534F</color>
 
+    <color name="balance_green">#6DB786</color>
+    <color name="balance_blue">#5D9ACA</color>
+    <color name="balance_purple">#946DAF</color>
+
 </resources>

@@ -42,11 +42,6 @@
             <include layout="@layout/no_results" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/dining_swiperefresh"
             android:layout_width="match_parent"
@@ -70,11 +65,12 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/dining_balance_rv"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="89dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
+                android:layout_marginTop="12dp"
                 android:orientation="horizontal"
-                tools:list_item="@layout/dining_list_item" />
+                tools:list_item="@layout/dining_balance_item" />
 
             <TextView
                 android:id="@+id/dining_halls_title"
@@ -99,7 +95,6 @@
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        </LinearLayout>
     </FrameLayout>
 
 </LinearLayout>

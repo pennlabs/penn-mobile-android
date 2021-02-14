@@ -2,31 +2,20 @@ package com.pennapps.labs.pennmobile
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.DiningAdapter
 import com.pennapps.labs.pennmobile.adapters.DiningBalanceAdapter
 import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.classes.DiningBalance
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.Venue
 import kotlinx.android.synthetic.main.fragment_dining.*
-import kotlinx.android.synthetic.main.fragment_dining.internetConnectionDining
-import kotlinx.android.synthetic.main.fragment_dining.internetConnection_message_dining
 import kotlinx.android.synthetic.main.fragment_dining.view.*
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.no_results.*
 import rx.Observable
@@ -61,8 +50,12 @@ class DiningFragment : Fragment() {
         v.dining_swiperefresh?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
 
         v.dining_balance_rv?.layoutManager = LinearLayoutManager(mActivity, LinearLayoutManager.HORIZONTAL, false)
-        val adapter = DiningBalanceAdapter(arrayListOf(0.0, 0.0, 0.0))
-        v.dining_balance_rv?.adapter = adapter
+        // Mock data
+        val balance = DiningBalance()
+        balance.diningDollars = "$10.0"
+        balance.regularVisits = 50
+        balance.guestVisits = 5
+        v.dining_balance_rv?.adapter = DiningBalanceAdapter(balance)
 
         v.dining_halls_recycler_view?.layoutManager = LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false)
         v.dining_swiperefresh.setOnRefreshListener { getDiningHalls() }
@@ -74,8 +67,7 @@ class DiningFragment : Fragment() {
         inflater.inflate(R.menu.dining_sort, menu)
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
         // sort the dining halls in the user-specified order
-        val order = sp.getString("dining_sortBy", "RESIDENTIAL")
-        when (order) {
+        when (sp.getString("dining_sortBy", "RESIDENTIAL")) {
             "RESIDENTIAL" -> {
                 menu.findItem(R.id.action_sort_residential).isChecked = true
             }

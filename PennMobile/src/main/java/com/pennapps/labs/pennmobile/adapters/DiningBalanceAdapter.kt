@@ -1,16 +1,16 @@
 package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.classes.DiningBalance
 import kotlinx.android.synthetic.main.dining_balance_item.view.*
-import kotlinx.android.synthetic.main.team_member.view.*
-import kotlin.math.roundToInt
 
-class DiningBalanceAdapter(private var values: ArrayList<Double>)
+class DiningBalanceAdapter(private var balance: DiningBalance)
     : RecyclerView.Adapter<DiningBalanceAdapter.DiningBalanceViewHolder>() {
 
     private lateinit var mContext: Context
@@ -26,21 +26,21 @@ class DiningBalanceAdapter(private var values: ArrayList<Double>)
     }
 
     override fun onBindViewHolder(holder: DiningBalanceViewHolder, position: Int) {
-        // Only show dollar sign for dining dollars
-        if (position == 0) {
-            holder.view.dining_balance_value_tv?.text = "$${values[position]}"
-        } else {
-            holder.view.dining_balance_value_tv?.text = values[position].roundToInt().toString()
+        // Set value
+        holder.view.dining_balance_value_tv?.text = when (position) {
+            0 -> balance.diningDollars
+            1 -> balance.regularVisits.toString()
+            2 -> balance.guestVisits.toString()
+            else -> null
         }
 
         // Set title
-        val title = when (position) {
-            0 -> R.string.dining_dollars
-            1 -> R.string.dining_swipes
-            2 -> R.string.guest_swipes
+        holder.view.dining_balance_item_title?.text = when (position) {
+            0 -> mContext.getString(R.string.dining_dollars)
+            1 -> mContext.getString(R.string.dining_swipes)
+            2 -> mContext.getString(R.string.guest_swipes)
             else -> null
         }
-        if (title != null) holder.view.dining_balance_item_title?.text = title.toString()
 
         // Set image icon
         val imageId = when (position) {
@@ -49,7 +49,15 @@ class DiningBalanceAdapter(private var values: ArrayList<Double>)
             2 -> R.drawable.dining_balance_friends
             else -> null
         }
-        if (imageId != null) holder.view.dining_balance_item_iv?.setImageResource(imageId)
+
+        // Set background color
+        val color = when (position) {
+            0 -> ContextCompat.getColor(mContext, R.color.balance_green)
+            1 -> ContextCompat.getColor(mContext, R.color.balance_blue)
+            2 -> ContextCompat.getColor(mContext, R.color.balance_purple)
+            else -> ContextCompat.getColor(mContext, R.color.balance_green)
+        }
+        holder.view.dining_balance_cardview?.setCardBackgroundColor(color)
     }
 
     inner class DiningBalanceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
