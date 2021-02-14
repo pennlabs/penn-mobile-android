@@ -36,6 +36,7 @@ class AboutAdapter(private var members: ArrayList<String>)
             "Awad Irfan" -> R.drawable.awad
             "Liz Powell" -> R.drawable.liz
             "Anna Jiang" -> R.drawable.anna_jiang
+            "Rohan Chhaya" -> R.drawable.rohan
             else -> null
         }
         if (android.os.Build.VERSION.SDK_INT >=  android.os.Build.VERSION_CODES.M){
