@@ -6,13 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.classes.Person
+import com.pennapps.labs.pennmobile.classes.Contact
 import kotlinx.android.synthetic.main.phone_save_list_item.view.*
 
-class PhoneSaveAdapter(context: Context, contacts: List<Person?>, s: MutableList<Person>, size: Int) : ArrayAdapter<Person?>(context, R.layout.phone_save_list_item, contacts) {
+class PhoneSaveAdapter(context: Context, contacts: List<Contact?>, s: MutableList<Contact>, size: Int) : ArrayAdapter<Contact?>(context, R.layout.phone_save_list_item, contacts) {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-    private val selections: MutableList<Person> = s
+    private val selections: MutableList<Contact> = s
     private val state: BooleanArray = BooleanArray(size)
 
     override fun getView(pos: Int, view: View?, parent: ViewGroup): View {
@@ -31,7 +31,7 @@ class PhoneSaveAdapter(context: Context, contacts: List<Person?>, s: MutableList
         checkbox?.setOnCheckedChangeListener { buttonView, isChecked ->
             if (!state[pos]) {
                 checkbox.isChecked = true
-                selections.add(Person(nameTv?.text.toString(), supportPhoneTv.text.toString()))
+                selections.add(Contact(nameTv?.text.toString(), supportPhoneTv.text.toString()))
                 state[pos] = true
             } else {
                 view.phone_save_checkbox?.isChecked = false

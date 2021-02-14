@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile.api;
 
-import com.pennapps.labs.pennmobile.classes.Building;
-import com.pennapps.labs.pennmobile.classes.Course;
+import com.pennapps.labs.pennmobile.classes.Account;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.FlingEvent;
 import com.pennapps.labs.pennmobile.classes.GSR;
@@ -13,9 +12,6 @@ import com.pennapps.labs.pennmobile.classes.HomeCell;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
-import com.pennapps.labs.pennmobile.classes.Person;
-import com.pennapps.labs.pennmobile.classes.Review;
-import com.pennapps.labs.pennmobile.classes.Account;
 import com.pennapps.labs.pennmobile.classes.SaveAccountResponse;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
@@ -40,32 +36,12 @@ import rx.Observable;
  */
 public interface Labs {
 
-    @GET("/registrar/search/person/{person_id}")
-    Observable<Account> user(
-            @Path("person_id") String person_id);
-
-    @GET("/registrar/search")
-    Observable<List<Course>> courses(
-            @Query("q") String name);
-
-    @GET("/directory/search")
-    Observable<List<Person>> people(
-            @Query("name") String name);
-
-    @GET("/buildings/search")
-    Observable<List<Building>> buildings(
-            @Query("q") String name);
-
     @GET("/dining/venues")
     Observable<List<Venue>> venues();
 
     @GET("/dining/daily_menu/{id}")
     Observable<DiningHall> daily_menu(
             @Path("id") int id);
-
-    @GET("/pcr/{id}")
-    Observable<Review> course_review(
-            @Path("id") String id);
 
     @GET("/laundry/halls/ids")
     Observable<List<LaundryRoomSimple>> laundryRooms();

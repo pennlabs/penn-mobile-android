@@ -8,10 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.classes.Person
+import com.pennapps.labs.pennmobile.classes.Contact
 import kotlinx.android.synthetic.main.support_list_item.view.*
 
-class SupportAdapter(context: Context, contacts: List<Person?>) : ArrayAdapter<Person?>(context, R.layout.support_list_item, contacts) {
+class SupportAdapter(context: Context, contacts: List<Contact?>) : ArrayAdapter<Contact?>(context, R.layout.support_list_item, contacts) {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
@@ -23,10 +23,10 @@ class SupportAdapter(context: Context, contacts: List<Person?>) : ArrayAdapter<P
 
         view.support_name?.text = currentPerson?.name
 
-        if (currentPerson?.phone_words == "") {
+        if (currentPerson?.phoneWords == "") {
             view.support_phone?.text = currentPerson.phone
         } else {
-            view.support_phone?.text = currentPerson?.phone_words + " (" + currentPerson?.phone + ")"
+            view.support_phone?.text = currentPerson?.phoneWords + " (" + currentPerson?.phone + ")"
         }
         if (currentPerson?.isURL == true) {
             view.support_phone_icon?.visibility = View.GONE

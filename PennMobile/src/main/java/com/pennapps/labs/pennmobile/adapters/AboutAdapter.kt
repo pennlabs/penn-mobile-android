@@ -38,7 +38,10 @@ class AboutAdapter(private var members: ArrayList<String>)
             "Anna Jiang" -> R.drawable.anna_jiang
             else -> null
         }
-        if (imageId != null) holder.view.person_iv?.setImageResource(imageId)
+        if (android.os.Build.VERSION.SDK_INT >=  android.os.Build.VERSION_CODES.M){
+            if (imageId != null) holder.view.person_iv?.setImageResource(imageId)
+        }
+
     }
 
     inner class TeamViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

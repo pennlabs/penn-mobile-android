@@ -34,10 +34,10 @@ class UniversityEventAdapter(private var events: ArrayList<CalendarEvent>)
         val end = to.toString("EEE, MMM d")
 
         holder.itemView.event_name_tv.text = name
-        if (start.equals(end)) {
+        if (start == end) {
             holder.itemView.event_date_tv.text = start
         } else {
-            holder.itemView.event_date_tv.text = start + " - " + end
+            holder.itemView.event_date_tv.text = "$start - $end"
         }
 
     }

@@ -7,13 +7,10 @@ Penn's mobile app for Android, created in a partnership between Penn Labs and th
 
 ## Features
 
-* Course search from registrar
-* Directory search for faculty
 * List dining halls with open/close label
 * View dining menus for residential dining halls
+* Book Group Study Rooms and manage your bookings
 * Read Penn News from multiple sources (mobile websites)
-* View transit routes, static
-* Navigate using Penn Transit system
 * View college house laundry machine availability
 * Call campus help support resources
 

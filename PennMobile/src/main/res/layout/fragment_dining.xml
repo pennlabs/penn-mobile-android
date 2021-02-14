@@ -1,18 +1,47 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/no_results" />
+    <!--<include layout="@layout/no_results" />-->
 
     <include layout="@layout/loading_panel" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/internetConnectionDining"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/internetConnection_message_dining"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+    </androidx.appcompat.widget.Toolbar>
+
 
     <FrameLayout
         tools:visibility="visible"
         android:id="@+id/dining_fragment"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <include layout="@layout/no_results" />
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

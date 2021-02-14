@@ -2,10 +2,10 @@ package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.DiningHall
