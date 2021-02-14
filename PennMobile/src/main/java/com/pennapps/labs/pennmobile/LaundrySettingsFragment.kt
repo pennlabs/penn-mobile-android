@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.RelativeLayout
@@ -26,6 +27,8 @@ class LaundrySettingsFragment : Fragment() {
     private lateinit var mActivity: MainActivity
     private lateinit var mLabs: Labs
     private lateinit var mContext: Context
+    private lateinit var LaundryRooms: List<LaundryRoomSimple>
+
     internal var mHelpLayout: RelativeLayout? = null
 
     private var sp: SharedPreferences? = null
@@ -73,6 +76,7 @@ class LaundrySettingsFragment : Fragment() {
         mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         getHalls()
+        //checkSp()
         return view
     }
 
@@ -81,6 +85,7 @@ class LaundrySettingsFragment : Fragment() {
                 .subscribe({ rooms ->
                     mActivity.runOnUiThread {
                         numRooms = rooms.size
+                        LaundryRooms = rooms
                         // save number of rooms
                         val editor = sp?.edit()
                         editor?.putInt(getString(R.string.num_rooms_pref), numRooms)
@@ -118,7 +123,7 @@ class LaundrySettingsFragment : Fragment() {
                             hallList.add(hallName)
                             hashMap[hallName] = roomList
                         }
-
+                        Log.d("YOLO5", hallList.toString())
                         val mAdapter = LaundrySettingsAdapter(mContext, hashMap, hallList)
                         laundry_building_expandable_list?.setAdapter(mAdapter)
 
@@ -153,4 +158,5 @@ class LaundrySettingsFragment : Fragment() {
         super.onDestroyView()
         mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
     }
+
 }

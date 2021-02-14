@@ -85,8 +85,10 @@ class LaundryFragment : Fragment() {
             }
         }
         */
-        count = getLaundryPref().size
 
+        //SEND PREFERENCES DATA HERE
+        updateLaundryPref()
+        count = toReturn.size
 
         view.favorite_laundry_list?.layoutManager = LinearLayoutManager(mContext)
         view.laundry_machine_refresh?.setOnRefreshListener { updateRooms() }
@@ -130,7 +132,8 @@ class LaundryFragment : Fragment() {
         //numRooms = sp?.getInt(mContext.getString(R.string.num_rooms_pref), 100) ?: 0
 
         // get num rooms to display
-        count = getLaundryPref().size
+        updateLaundryPref()
+        count = toReturn.size
         /*
         for (i in 0 until numRooms) {
             if (sp?.getBoolean(i.toString(), false) == true) {
@@ -173,8 +176,8 @@ class LaundryFragment : Fragment() {
             }
         }
         */
-        var roomIDs = getLaundryPref()
-        for (i in roomIDs) {
+        updateLaundryPref()
+        for (i in toReturn) {
             addAvailability(i)
             addRoom(i)
         }
@@ -263,27 +266,23 @@ class LaundryFragment : Fragment() {
         })
     }
 
-    private fun getLaundryPref(): ArrayList<Int> {
+    private fun updateLaundryPref() {
         var fromLabs = mLabs.getLaundryPref(deviceID)
-
-        //var toReturn: ArrayList<Int> = ArrayList();
-        fromLabs?.forEach({
-            for (i in it) {
-                toReturn.add(i)
-            }
-        })
-
-        /*
-        for (i in it) {
-            toReturn.add(i)
-        }
-        */
-
         for (j in toReturn) {
-            Log.d("YOLO2", j.toString());
+            Log.d("YOLOfromLabs", j.toString());
         }
-        Log.d("YOLO", toReturn.toString());
-        return toReturn
+        fromLabs.forEach {
+            for (i in it) {
+                if (!toReturn.contains(i)) {
+                    toReturn.add(i)
+                }
+            }
+        }
+        for (j in toReturn) {
+            Log.d("YOLOtovariable", j.toString());
+        }
+        Log.d("YOLO2", "update Laundry Pref was called")
     }
 
 }
+
