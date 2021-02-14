@@ -5,7 +5,7 @@ import android.provider.Settings
 import android.util.Log
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.classes.AccessTokenResponse
+import com.pennapps.labs.pennmobile.classes.AccessToken
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
@@ -47,9 +47,9 @@ class OAuth2NetworkManager(mActivity: MainActivity) {
 
         mPlatform?.refreshAccessToken(refreshToken,
                 "refresh_token", clientID,
-                object : Callback<AccessTokenResponse> {
+                object : Callback<AccessToken> {
 
-                    override fun success(t: AccessTokenResponse?, response: Response?) {
+                    override fun success(t: AccessToken?, response: Response?) {
                         if (response?.status == 200) {
                             val editor = sp.edit()
                             editor.putString(mActivity.getString(R.string.access_token), t?.accessToken)

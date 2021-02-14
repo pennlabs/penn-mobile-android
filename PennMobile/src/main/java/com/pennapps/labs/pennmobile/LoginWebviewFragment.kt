@@ -19,7 +19,7 @@ import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Platform.platformBaseUrl
-import com.pennapps.labs.pennmobile.classes.AccessTokenResponse
+import com.pennapps.labs.pennmobile.classes.AccessToken
 import com.pennapps.labs.pennmobile.classes.Account
 import com.pennapps.labs.pennmobile.classes.GetUserResponse
 import com.pennapps.labs.pennmobile.classes.SaveAccountResponse
@@ -31,11 +31,11 @@ import retrofit.client.Response
 import java.nio.charset.Charset
 import java.security.KeyStore
 import java.security.MessageDigest
+import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
-import java.util.Base64
 
 class LoginWebviewFragment : Fragment() {
 
@@ -195,9 +195,9 @@ class LoginWebviewFragment : Fragment() {
     private fun initiateAuthentication(authCode: String) {
         mPlatform?.getAccessToken(authCode,
                 "authorization_code", clientID, redirectUri, codeVerifier,
-                object : Callback<AccessTokenResponse> {
+                object : Callback<AccessToken> {
 
-                    override fun success(t: AccessTokenResponse?, response: Response?) {
+                    override fun success(t: AccessToken?, response: Response?) {
                         if (response?.status == 200) {
                             val accessToken = t?.accessToken
                             val editor = sp.edit()

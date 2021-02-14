@@ -1,9 +1,7 @@
 package com.pennapps.labs.pennmobile.api;
 
-import com.pennapps.labs.pennmobile.classes.AccessTokenResponse;
+import com.pennapps.labs.pennmobile.classes.AccessToken;
 import com.pennapps.labs.pennmobile.classes.GetUserResponse;
-
-import org.apache.commons.lang3.RandomStringUtils;
 
 import retrofit.Callback;
 import retrofit.http.Field;
@@ -23,7 +21,7 @@ public interface Platform {
             @Field("client_id") String clientID,
             @Field("redirect_uri") String redirectURI,
             @Field("code_verifier") String codeVerifier,
-            Callback<AccessTokenResponse> callback);
+            Callback<AccessToken> callback);
 
     @FormUrlEncoded
     @POST("/accounts/token/")
@@ -31,7 +29,7 @@ public interface Platform {
             @Field("refresh_token") String refreshToken,
             @Field("grant_type") String grantType,
             @Field("client_id") String clientID,
-            Callback<AccessTokenResponse> callback);
+            Callback<AccessToken> callback);
 
     @FormUrlEncoded
     @POST("/accounts/introspect/")
