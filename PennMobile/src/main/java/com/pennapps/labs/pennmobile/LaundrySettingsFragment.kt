@@ -10,17 +10,19 @@ import android.widget.Button
 import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.LaundrySettingsAdapter
 import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple
 import kotlinx.android.synthetic.main.fragment_laundry_settings.*
 import kotlinx.android.synthetic.main.fragment_laundry_settings.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.no_results.*
-import java.util.ArrayList
-import java.util.HashMap
+import retrofit.ResponseCallback
+import retrofit.RetrofitError
+import retrofit.client.Response
+import java.util.*
 
 class LaundrySettingsFragment : Fragment() {
 
@@ -36,12 +38,15 @@ class LaundrySettingsFragment : Fragment() {
 
     private var numRooms: Int = 0
 
+    private lateinit var deviceID: String;
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mLabs = MainActivity.labsInstance
         mActivity = activity as MainActivity
         mContext = mActivity
         mActivity.closeKeyboard()
+        deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
         setHasOptionsMenu(true)
 
         val bundle = Bundle()
@@ -77,6 +82,7 @@ class LaundrySettingsFragment : Fragment() {
 
         getHalls()
         //checkSp()
+        sendPreferencesData()
         return view
     }
 
@@ -157,6 +163,29 @@ class LaundrySettingsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+    }
+
+    private fun sendPreferencesData() {
+        val favoriteLaundryRooms: MutableList<Int> = ArrayList()
+        for (i in 0 until sp!!.getInt(mContext.getString(R.string.num_rooms_pref), 100)) {
+            if (sp!!.getBoolean(Integer.toString(i), false)) {
+                favoriteLaundryRooms.add(i)
+            }
+        }
+        Log.d("GME", "Sending laundry data in SettingsFragment")
+
+        //preferences must be in the form of 1,2,3 (exclude brackets)
+        var api_prepared_string = favoriteLaundryRooms.toString()
+        api_prepared_string = api_prepared_string.substring(1, api_prepared_string.length - 1)
+        mLabs.sendLaundryPref(deviceID, api_prepared_string, object : ResponseCallback() {
+            override fun success(response: Response) {
+                Log.i("Laundry", "Saved laundry preferences")
+            }
+
+            override fun failure(error: RetrofitError) {
+                Log.e("Laundry", "Error saving laundry preferences: $error")
+            }
+        })
     }
 
 }

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
 import android.view.*
 import androidx.annotation.RequiresApi
@@ -22,8 +21,9 @@ import kotlinx.android.synthetic.main.fragment_laundry.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.loading_panel.view.*
 import kotlinx.android.synthetic.main.no_results.*
-import rx.Observable
-import rx.internal.operators.OperatorToObservableList
+import retrofit.ResponseCallback
+import retrofit.RetrofitError
+import retrofit.client.Response
 import java.util.*
 
 class LaundryFragment : Fragment() {
@@ -85,8 +85,7 @@ class LaundryFragment : Fragment() {
             }
         }
         */
-
-        //SEND PREFERENCES DATA HERE
+        Log.d("GME", "calling updateLaundryPref in onCreateView")
         updateLaundryPref()
         count = toReturn.size
 
@@ -131,6 +130,8 @@ class LaundryFragment : Fragment() {
 
         //numRooms = sp?.getInt(mContext.getString(R.string.num_rooms_pref), 100) ?: 0
 
+
+        Log.d("GME", "calling updateLaundryPref in onResume")
         // get num rooms to display
         updateLaundryPref()
         count = toReturn.size
@@ -176,6 +177,7 @@ class LaundryFragment : Fragment() {
             }
         }
         */
+        Log.d("GME", "calling updateLaundryPref in updateRooms")
         updateLaundryPref()
         for (i in toReturn) {
             addAvailability(i)
@@ -268,9 +270,6 @@ class LaundryFragment : Fragment() {
 
     private fun updateLaundryPref() {
         var fromLabs = mLabs.getLaundryPref(deviceID)
-        for (j in toReturn) {
-            Log.d("YOLOfromLabs", j.toString());
-        }
         fromLabs.forEach {
             for (i in it) {
                 if (!toReturn.contains(i)) {
@@ -279,9 +278,8 @@ class LaundryFragment : Fragment() {
             }
         }
         for (j in toReturn) {
-            Log.d("YOLOtovariable", j.toString());
+            Log.d("GME", "returning " + j.toString());
         }
-        Log.d("YOLO2", "update Laundry Pref was called")
     }
 
 }
