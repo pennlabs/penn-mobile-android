@@ -68,6 +68,11 @@ class AboutFragment : Fragment() {
             startActivity(i)
         }
 
+        v.feedback_btn?.setOnClickListener {
+            val link = Intent(Intent.ACTION_VIEW, Uri.parse("https://airtable.com/shr1oylDR3qzCpTXq"))
+            startActivity(link)
+        }
+
         v.licenses_btn?.setOnClickListener {
             if (android.os.Build.VERSION.SDK_INT >=  android.os.Build.VERSION_CODES.M) {
                 val view = LayoutInflater.from(mActivity).inflate(R.layout.dialog_licenses, null) as WebView
