@@ -30,6 +30,16 @@
         <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
 
+    <style name="Widget.AppTheme.Launcher.ListView" parent="android:Widget.ListView">
+        <item name="android:overScrollMode">never</item>
+        <item name="android:scrollbars">none</item>
+    </style>
+
+    <style name="Widget.AppTheme.Launcher.ScrollingView" parent="android:Widget.ScrollView">
+        <item name="android:overScrollMode">never</item>
+        <item name="android:scrollbars">none</item>
+    </style>
+
     <style name="ReferenceTheme" parent="@style/PreferenceThemeOverlay">
         <item name="colorAccent">@color/color_primary</item>
     </style>

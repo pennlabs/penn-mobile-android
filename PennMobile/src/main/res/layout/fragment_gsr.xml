@@ -160,6 +160,7 @@
             android:id="@+id/gsr_rooms_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:scrollbars="none"
             tools:list_item="@layout/gsr_building" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

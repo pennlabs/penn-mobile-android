@@ -109,8 +109,8 @@ public class LaundryMachineAdapter extends RecyclerView.Adapter<LaundryMachineAd
         // time remaining
         else {
             if (mMachineType.equals(mContext.getString(R.string.washer))) {
-                holder.machineView.setImageResource(R.drawable.washer_in_use);
-                holder.timeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.washer_blue));
+                holder.machineView.setImageResource(R.drawable.ic_washer_in_use);
+                holder.timeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.secondary_text_color));
             } else {
                 holder.machineView.setImageResource(R.drawable.ic_dryer_in_use);
                 holder.timeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.dryer_red));

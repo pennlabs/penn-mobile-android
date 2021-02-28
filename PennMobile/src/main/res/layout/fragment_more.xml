@@ -31,7 +31,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="24dp"
-                android:text="SUNDAY, JAN 2019" />
+                android:text="" />
 
             <TextView
                 android:id="@+id/title_view"
@@ -91,9 +91,11 @@
     <fragment
         android:id="@+id/com.pennapps.labs.pennmobile.more.MorePreferences"
         android:name="com.pennapps.labs.pennmobile.more.PreferenceFragment"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -106,7 +106,8 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/favorite_laundry_list"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:scrollbars="none" />
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.ListView
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.pennapps.labs.pennmobile.R
@@ -20,6 +21,9 @@ class PreferenceFragment : PreferenceFragmentCompat() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+        listView.isVerticalScrollBarEnabled = false
 
 
         val pennLabsPref: Preference? = findPreference("pref_labs_link")
