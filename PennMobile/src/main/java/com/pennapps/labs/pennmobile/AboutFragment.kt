@@ -58,7 +58,8 @@ class AboutFragment : Fragment() {
 
         v.our_team_rv?.layoutManager = GridLayoutManager(context, 3)
         val members = arrayListOf("Marta García Ferreiro", "Davies Lumumba",
-                "Sahit Penmatcha", "Varun Ramakrishnan", "Anna Wang", "Sophia Ye")
+                "Sahit Penmatcha", "Varun Ramakrishnan", "Anna Wang", "Sophia Ye", "Awad Irfan",
+                "Vishesh Patel", "Liz Powell", "Anna Jiang", "Rohan Chhaya")
         v.our_team_rv?.adapter = AboutAdapter(members)
         ViewCompat.setNestedScrollingEnabled(v.our_team_rv, false)
 
@@ -67,14 +68,21 @@ class AboutFragment : Fragment() {
             startActivity(i)
         }
 
+        v.feedback_btn?.setOnClickListener {
+            val link = Intent(Intent.ACTION_VIEW, Uri.parse("https://airtable.com/shr1oylDR3qzCpTXq"))
+            startActivity(link)
+        }
+
         v.licenses_btn?.setOnClickListener {
-            val view = LayoutInflater.from(mActivity).inflate(R.layout.dialog_licenses, null) as WebView
-            view.loadUrl("file:///android_asset/open_source_licenses.html")
-            AlertDialog.Builder(mActivity, R.style.Theme_AppCompat_Light_Dialog_Alert)
-                    .setTitle(getString(R.string.action_licenses))
-                    .setView(view)
-                    .setPositiveButton(android.R.string.ok, null)
-                    .show()
+            if (android.os.Build.VERSION.SDK_INT >=  android.os.Build.VERSION_CODES.M) {
+                val view = LayoutInflater.from(mActivity).inflate(R.layout.dialog_licenses, null) as WebView
+                view.loadUrl("file:///android_asset/open_source_licenses.html")
+                AlertDialog.Builder(mActivity, R.style.Theme_AppCompat_Light_Dialog_Alert)
+                        .setTitle(getString(R.string.action_licenses))
+                        .setView(view)
+                        .setPositiveButton(android.R.string.ok, null)
+                        .show()
+            }
         }
 
         return v

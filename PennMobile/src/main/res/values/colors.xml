@@ -61,5 +61,6 @@
     <color name="newsCardBlurColorOverlay">#66000000</color>
     <color name="sneakerBlurColorOverlay">#D913284B</color>
 
+    <color name="darkRedBackground">#D9534F</color>
 
 </resources>

@@ -1,6 +1,11 @@
 package com.pennapps.labs.pennmobile
 
 import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -8,8 +13,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import android.widget.Toolbar
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager
@@ -26,6 +39,11 @@ import kotlinx.android.synthetic.main.loading_panel.*
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.arrayListOf
+import android.provider.Settings.Secure
+import androidx.core.content.ContextCompat.getSystemService
+import android.telephony.TelephonyManager
+import android.graphics.PorterDuff
+import android.content.res.Configuration
 
 
 class HomeFragment : Fragment() {
@@ -50,6 +68,7 @@ class HomeFragment : Fragment() {
         FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -70,6 +89,7 @@ class HomeFragment : Fragment() {
         return view
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun getHomePage() {
 
         // get session id from shared preferences
@@ -77,6 +97,17 @@ class HomeFragment : Fragment() {
         val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
         val accountID = sp.getString(getString(R.string.accountID), "")
         val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
+
+        //displays banner if not connected
+        if (!isOnline(context)) {
+            internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            internetConnection_message?.setText("Not Connected to Internet")
+            home_cells_rv?.setPadding(0, 90, 0, 0)
+            internetConnectionHome?.visibility = View.VISIBLE
+        } else {
+            internetConnectionHome?.visibility = View.GONE
+            home_cells_rv?.setPadding(0, 0, 0, 0)
+        }
 
         // get API data
         val labs = MainActivity.labsInstance
@@ -90,6 +121,7 @@ class HomeFragment : Fragment() {
                 loadingPanel?.visibility = View.GONE
                 home_refresh_layout?.isRefreshing = false
                 view?.let { displaySnack(it, "Just Updated") }
+
             }
         }, { throwable ->
             mActivity.runOnUiThread {
@@ -97,12 +129,18 @@ class HomeFragment : Fragment() {
                 throwable.printStackTrace()
                 Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
                 loadingPanel?.visibility = View.GONE
+                internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+                internetConnection_message?.setText("Not Connected to Internet")
+                internetConnectionHome?.visibility = View.VISIBLE
                 home_refresh_layout?.isRefreshing = false
             }
+
         })
+
     }
 
     private val broadcastReceiver = object : BroadcastReceiver() {
+        @RequiresApi(Build.VERSION_CODES.M)
         override fun onReceive(context: Context?, intent: Intent?) {
             getHomePage()
         }
@@ -171,4 +209,5 @@ class HomeFragment : Fragment() {
             (view as ViewGroup).showErrorSneaker(message = text, doOnRetry = { getHomePage() })
         }
     }
+
 }

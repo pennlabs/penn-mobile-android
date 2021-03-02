@@ -38,7 +38,7 @@
         app:layout_constraintStart_toEndOf="@+id/item_gym_image_cardview"
         app:layout_constraintTop_toBottomOf="@+id/gym_name_view"
         tools:background="@drawable/label_green"
-        tools:text="OPEN" />
+        tools:text="Open" />
 
     <TextView
         android:id="@+id/gym_name_view"
@@ -67,53 +67,5 @@
         app:layout_constraintStart_toEndOf="@+id/item_gym_image_cardview"
         tools:text="Open"
         tools:visibility="visible" />
-
-<!--    <ImageView-->
-<!--        android:id="@+id/gym_image_view"-->
-<!--        android:layout_width="175dp"-->
-<!--        android:layout_height="match_parent"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        android:scaleType="centerCrop"-->
-<!--        android:src="@drawable/gym_fox"/> &lt;!&ndash; placeholder image &ndash;&gt;-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/gym_status_view"-->
-<!--        style="@style/DiningStatusLabel"-->
-<!--        android:layout_centerVertical="true"-->
-<!--        android:layout_marginStart="15dp"-->
-<!--        android:layout_marginLeft="15dp"-->
-<!--        android:layout_marginTop="15dp"-->
-<!--        android:background="@drawable/label_green"-->
-<!--        android:text="Open"-->
-<!--        app:layout_constraintStart_toEndOf="@id/gym_image_view"-->
-<!--        app:layout_constraintTop_toTopOf="parent" /> &lt;!&ndash; placeholder text &ndash;&gt;-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/gym_name_view"-->
-<!--        style="@style/HallName"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_marginStart="15dp"-->
-<!--        android:layout_marginLeft="15dp"-->
-<!--        android:layout_marginTop="10dp"-->
-<!--        android:text="Pottruck"-->
-<!--        app:layout_constraintStart_toEndOf="@id/gym_image_view"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/gym_status_view" /> &lt;!&ndash; placeholder text &ndash;&gt;-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/gym_hours_view"-->
-<!--        style="@style/Menu"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_marginStart="15dp"-->
-<!--        android:layout_marginLeft="15dp"-->
-<!--        android:layout_marginBottom="10dp"-->
-<!--        android:fontFamily="sans-serif-light"-->
-<!--        android:text="Closes at 9:00PM"-->
-<!--        android:visibility="visible"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintStart_toEndOf="@id/gym_image_view"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/gym_name_view" />-->
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

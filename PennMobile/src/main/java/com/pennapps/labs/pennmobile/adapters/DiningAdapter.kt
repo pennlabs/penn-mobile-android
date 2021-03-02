@@ -2,30 +2,26 @@ package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
 import android.os.Bundle
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.FragmentTransaction
-import androidx.core.content.ContextCompat
-import androidx.preference.PreferenceManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentTransaction
+import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.MenuFragment
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.squareup.picasso.Picasso
-
-import java.util.Collections
-import java.util.Comparator
-
 import kotlinx.android.synthetic.main.dining_list_item.view.*
 import rx.android.schedulers.AndroidSchedulers
+import java.util.*
 
 class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Adapter<DiningAdapter.DiningViewHolder>() {
     private lateinit var mLabs: Labs
@@ -58,8 +54,8 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
 
             if (diningHall.isOpen) {
                 holder.hallStatus?.background = ContextCompat.getDrawable(context, R.drawable.label_green)
-                if (diningHall.openMeal() != "all") {
-                    holder.hallStatus?.setText(getOpenStatusLabel(diningHall.openMeal()))
+                if (diningHall.openMeal() != "all" && diningHall.openMeal() != null) {
+                    holder.hallStatus?.setText(getOpenStatusLabel(diningHall.openMeal() ?: ""))
                 }
                 holder.hallHours?.text = diningHall.openTimes().toLowerCase()
             } else {
@@ -139,7 +135,7 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
                     } else if (diningHall2.isResidential && !diningHall.isResidential) {
                         1
                     } else {
-                        diningHall.name.compareTo(diningHall2.name)
+                        diningHall.name?.compareTo(diningHall2.name ?: "") ?: 0
                     }
                 }
                 "RESIDENTIAL" -> return if (diningHall.isResidential && !diningHall2.isResidential) {
@@ -149,7 +145,7 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
                 } else {
                     0
                 }
-                else -> return diningHall.name.compareTo(diningHall2.name)
+                else -> return diningHall.name?.compareTo(diningHall2.name ?: "") ?: 0
             }
         }
     }

@@ -5,26 +5,23 @@
     <string name="app_name">Penn Mobile</string>
     <string name="main_title">Penn Mobile</string>
     <string name="action_settings">Settings</string>
-    <string name="drawer_open">Open drawer</string>
-    <string name="drawer_close">Close drawer</string>
     <string name="search_title">Search</string>
     <string name="registrar">Courses</string>
     <string name="dining">Dining</string>
-    <string name="transit">Transit</string>
-    <string name="directory">Directory</string>
     <string name="gsr">GSR Booking</string>
     <string name="news">News</string>
     <string name="laundry">Laundry</string>
-    <string name="nso">NSO</string>
     <string name="support">Campus Help</string>
     <string name="about">About</string>
     <string name="fitness">Fitness</string>
     <string name="labs_icon">Penn Labs</string>
-    <string name="course_desc_title">Description</string>
-    <string name="add_contact">Add contact</string>
     <string name="no_results">No results found</string>
     <string name="action_licenses">Open Source Licenses</string>
+
+    <!-- Contacts -->
+    <string name="add_contact">Add contact</string>
     <string name="save_contacts">Select Contacts to Save</string>
+    <string name="ask_contacts_fail">Access to your contacts is required to use this feature.</string>
 
     <!--Home Screen -->
     <string name="home">Home</string>
@@ -33,16 +30,8 @@
     <string name="accessibility_description">Screen menu</string>
     <string name="accessibility_item_description">%1$s menu item</string>
 
-    <!-- Search -->
-    <string name="registrar_search">Search for courses</string>
-    <string name="transit_search">Search for destinations</string>
-    <string name="directory_search">Search for people</string>
-    <string name="building_search">Search for buildings</string>
-    <string name="building_instructions">Search for Penn buildings</string>
-    <string name="registrar_search_count">register_count</string>
-    <string name="dining_hall_open">Open</string>
-
     <!-- Dining -->
+    <string name="dining_hall_open">Open</string>
     <string name="dining_hall_closed">Closed</string>
     <string name="dining_hall_breakfast">Breakfast</string>
     <string name="dining_hall_brunch">Brunch</string>
@@ -57,46 +46,10 @@
     <string name="sort_by_residential">Order by Residential Hall</string>
     <string name="sort_by_open">Order by Open Status</string>
     <string name="dining_closed">Closed today</string>
-    <string name="course">Average Course</string>
-
-    <!-- Courses -->
-    <string name="instructor">Average Instructor</string>
-    <string name="difficulty">Average Difficulty</string>
-    <string name="professor_missing">No professor listed</string>
-    <string name="course_bundle_arg">CourseFragment</string>
-    <string name="google_maps_api_key"></string>
-
-    <!-- Map -->
-    <string name="image_description">Photo</string>
-    <string name="map">Map</string>
-    <string name="map_searches">map_search</string>
-    <string name="map_search_count">map_search_count</string>
-    <string name="google_api_origin">origin</string>
-    <string name="google_api_dest">destination</string>
-    <string name="no_permission_map">Permission not granted for using Google Map</string>
-    <string name="ask_location_fail">Access of your location is required to use this feature.</string>
-    <string name="ask_contacts_fail">Access to your contacts is required to use this feature.</string>
-    <string name="no_map_beardman">Map is not provided by the phone.</string>
-    <string name="no_map_description">We were unable to\nload your map.</string>
-    <string name="no_map_count_key">no_map_count_key</string>
-    <string name="no_data_msg">Cannot display Map: wifi/data not enabled</string>
-    <string name="starting_location_hint">Current location</string>
-    <string name="routes_list">Routes</string>
-
-    <!-- Transit search -->
-    <string name="routes_ok">OK</string>
-    <string name="location_not_found">Location not found, please try again</string>
-    <string name="no_path_found">No path found</string>
-    <string name="no_origin_found">No origin found</string>
-    <string name="no_destination_found">No destination found</string>
-    <string name="no_bus_route">No bus route found</string>
-    <string name="google_map_fail">Google map fails to find a path</string>
-    <string name="bus_west">PennBUS West</string>
-    <string name="bus_east">PennBUS East</string>
-    <string name="laundry_washer">Washers</string>
-    <string name="laundry_dryer">Dryers</string>
 
     <!-- LaundryRoom -->
+    <string name="laundry_washer">Washers</string>
+    <string name="laundry_dryer">Dryers</string>
     <string name="laundry_summary">Summary</string>
     <string name="laundry_available">Available</string>
     <string name="laundry_availablein">left</string>
@@ -143,17 +96,19 @@
     <string name="open_browser">Open in Browser</string>
     <string name="news_sharing">Share link</string>
 
-    <!-- News -->
+    <!-- About -->
     <string name="licenses">LICENSES</string>
     <string name="hi_we_are_labs">
     Hi, we\'re Penn Labs: a team of student software engineers, product designers, and business developers.
     </string>
-
-    <!-- About -->
     <string name="labs_mission">
-    Penn Labs empowers others to make connections: connections to resources, connections to people, and connections to the greater Penn community.\n\nOur ultimate goal is improving the Penn community. We aim to do so not only by creating high quality products, but also by giving back to the community with educational resources and technical support.
-    </string>
+    Penn Labs empowers others to make connections: connections to resources, connections to people,
+        and connections to the greater Penn community.\n\nOur ultimate goal is improving the Penn community.
+        We aim to do so not only by creating high quality products, but also by giving back to the community
+        with educational resources and technical support.</string>
     <string name="learn_more">LEARN MORE</string>
+    <string name="feedback">FEEDBACK</string>
+    <string name="feedback_txt">Click below to give us feedback!</string>
     <string name="request_feature">REQUEST A FEATURE</string>
     <string name="our_team">Our Team</string>
     <string name="penn_labs_copyright">\u00A9 2019 Penn Labs</string>
@@ -170,31 +125,7 @@
     <string name="pref_vegan">Show only vegan items</string>
     <string name="pref_vegan_summ">Display only vegan food items in the dining menus</string>
     <string name="home_screen_pref">home_screen_pref</string>
-    <string name="directory_show">Show favorites</string>
 
-    <string name="directory_all">Show all</string>
-
-    <!-- Search favorites -->
-    <string name="directory_delim">|#|</string>
-    <string name="directory_search_count">dir_count</string>
-    <string name="search_all">ALL</string>
-    <string name="search_favorite">FAVORITES</string>
-    <string name="search_list">listing</string>
-    <string name="search_dir_star">search_dir_star</string>
-    <string name="search_reg_star">search_reg_star</string>
-    <string name="search_no_fav">No favorites found.</string>
-    <string name="directory_instructions">Search for Penn faculty</string>
-    <string name="registrar_instructions">Search for courses</string>
-    <string name="nso_search_count">nso_count</string>
-    <string name="add_event">Add event to calendar</string>
-    <string name="search_nso_star">search_nso_star</string>
-
-    <!-- NSO -->
-    <string name="nso_instructions">Search for instructions</string>
-    <string name="search_range">Select GSR Search Range and click "Search"</string>
-    <string name="search_start_time">Start Time</string>
-    <string name="search_end_time">End Time</string>
-    <string name="calendar_button">Something went wrong</string>
 
     <!-- GSR -->
     <string name="search_GSRs">Search GSRs</string>
@@ -223,11 +154,9 @@
     <string name="pennkey_login">LOG IN WITH PENNKEY</string>
     <string name="guest_login">CONTINUE AS GUEST</string>
 
-
+    <!-- Login -->
     <string name="login_sessionID">loginSessionID</string>
     <string name="access_token">accessToken</string>
-
-    <!-- Login -->
     <string name="refresh_token">refreshToken</string>
     <string name="expires_in">expiresIn</string>
     <string name="penn_user">pennUser</string>
@@ -251,35 +180,5 @@
     <string name="floating_bottom_bar_laundry">Laundry</string>
     <string name="floating_bottom_bar_more">More</string>
     <string name="initials">Initials</string>
-
-
-    <string-array name="previous_course_array">
-        <item>course1</item>
-        <item>course2</item>
-        <item>course3</item>
-        <item>course4</item>
-        <item>course5</item>
-    </string-array>
-    <string-array name="previous_map_array">
-        <item>map1</item>
-        <item>map2</item>
-        <item>map3</item>
-        <item>map4</item>
-        <item>map5</item>
-    </string-array>
-    <string-array name="previous_directory_array">
-        <item>dir1</item>
-        <item>dir2</item>
-        <item>dir3</item>
-        <item>dir4</item>
-        <item>dir5</item>
-    </string-array>
-    <string-array name="previous_nso_array">
-        <item>nso1</item>
-        <item>nso2</item>
-        <item>nso3</item>
-        <item>nso4</item>
-        <item>nso5</item>
-    </string-array>
 
 </resources>

@@ -6,6 +6,7 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.annotation.RequiresApi
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.GsrBuildingAdapter
 import com.pennapps.labs.pennmobile.api.Labs
@@ -25,6 +27,7 @@ import com.pennapps.labs.pennmobile.utils.Utils
 import kotlinx.android.synthetic.main.fragment_dining.view.*
 import kotlinx.android.synthetic.main.fragment_gsr.*
 import kotlinx.android.synthetic.main.fragment_gsr.view.*
+import kotlinx.android.synthetic.main.fragment_news.*
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import java.util.*
@@ -82,6 +85,7 @@ class GsrFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_gsr, container, false)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         selectDateButton = view.gsr_select_date
         selectTimeButton = view.gsr_select_time
@@ -92,6 +96,7 @@ class GsrFragment : Fragment() {
 
         durationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m", "120m"))
         huntsmanDurationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m"))
+
 
         // populate the list of gsrs
         populateDropDownGSR()
@@ -174,6 +179,7 @@ class GsrFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onResume() {
         super.onResume()
         val mActivity : MainActivity? = activity as MainActivity
@@ -187,7 +193,9 @@ class GsrFragment : Fragment() {
 
     // Performs GSR search
     // Called when page loads and whenever user changes start/end time, date, or building
+    @RequiresApi(Build.VERSION_CODES.M)
     fun searchForGSR(calledByRefreshLayout: Boolean) {
+
         val location = mapGSR(gsrLocationDropDown.selectedItem.toString())
         if (location == -1) {
             showNoResults()
@@ -314,7 +322,10 @@ class GsrFragment : Fragment() {
         }
     }
 
+
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun populateDropDownGSR() {
+
         mLabs.location()
                 ?.subscribe({ locations ->
                     activity?.let {activity ->

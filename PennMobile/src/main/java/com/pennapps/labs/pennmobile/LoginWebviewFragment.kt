@@ -3,37 +3,39 @@ package com.pennapps.labs.pennmobile
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.webkit.*
-import android.widget.Button
-import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceManager
-import com.pennapps.labs.pennmobile.api.Labs
-import java.util.*
-import android.webkit.ValueCallback
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
 import android.view.View.INVISIBLE
+import android.view.ViewGroup
+import android.webkit.*
+import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
+import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.api.Platform
-import javax.crypto.Cipher
-import javax.crypto.KeyGenerator
-import javax.crypto.SecretKey
-
-import com.pennapps.labs.pennmobile.api.Platform.*
-import com.pennapps.labs.pennmobile.classes.*
+import com.pennapps.labs.pennmobile.api.Platform.platformBaseUrl
+import com.pennapps.labs.pennmobile.classes.AccessTokenResponse
+import com.pennapps.labs.pennmobile.classes.Account
+import com.pennapps.labs.pennmobile.classes.GetUserResponse
+import com.pennapps.labs.pennmobile.classes.SaveAccountResponse
 import kotlinx.android.synthetic.main.fragment_login_webview.view.*
+import org.apache.commons.lang3.RandomStringUtils
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
-import java.math.BigInteger
 import java.nio.charset.Charset
 import java.security.KeyStore
 import java.security.MessageDigest
+import javax.crypto.Cipher
+import javax.crypto.KeyGenerator
+import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
+import java.util.Base64
 
 class LoginWebviewFragment : Fragment() {
 
@@ -46,6 +48,7 @@ class LoginWebviewFragment : Fragment() {
     private lateinit var mActivity: MainActivity
     lateinit var sp: SharedPreferences
     lateinit var codeChallenge: String
+    lateinit var codeVerifier: String
     lateinit var platformAuthUrl: String
     lateinit var clientID: String
     lateinit var redirectUri: String
@@ -67,6 +70,7 @@ class LoginWebviewFragment : Fragment() {
 
         clientID = getString(R.string.clientID)
         redirectUri = getString(R.string.redirectUri)
+        codeVerifier = RandomStringUtils.randomAlphanumeric(64)
         codeChallenge = getCodeChallenge(codeVerifier)
         platformAuthUrl = platformBaseUrl + "/accounts/authorize/?response_type=code&client_id=" +
                 clientID + "&redirect_uri=" + redirectUri + "&code_challenge_method=S256" +
@@ -80,10 +84,10 @@ class LoginWebviewFragment : Fragment() {
         cancelButton = view.findViewById(R.id.cancel_button)
 
         webView.loadUrl(platformAuthUrl)
-        val webSettings = webView.getSettings()
+        val webSettings = webView.settings
         webSettings.setJavaScriptEnabled(true)
-        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
-        webView.setWebViewClient(MyWebViewClient())
+        webSettings.javaScriptCanOpenWindowsAutomatically = true;
+        webView.webViewClient = MyWebViewClient()
 
         cancelButton.setOnClickListener {
             mActivity.startLoginFragment()
@@ -159,9 +163,9 @@ class LoginWebviewFragment : Fragment() {
     inner class MyWebViewClient : WebViewClient() {
 
         override fun onReceivedHttpError(view: WebView?, request: WebResourceRequest?, errorResponse: WebResourceResponse?) {
+            super.onReceivedHttpError(view, request, errorResponse)
             view?.visibility = INVISIBLE
             headerLayout.visibility = INVISIBLE
-            super.onReceivedHttpError(view, request, errorResponse)
         }
 
         override fun shouldOverrideUrlLoading(view: WebView?, url: String): Boolean {
@@ -207,6 +211,8 @@ class LoginWebviewFragment : Fragment() {
 
                     override fun failure(error: RetrofitError) {
                         Log.e("Accounts", "Error fetching access token $error")
+                        Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
+                        mActivity.startLoginFragment()
                     }
                 })
     }
@@ -237,6 +243,8 @@ class LoginWebviewFragment : Fragment() {
 
                     override fun failure(error: RetrofitError) {
                         Log.e("Accounts", "Error getting user $error")
+                        Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
+                        mActivity.startLoginFragment()
                     }
                 })
     }
@@ -254,16 +262,31 @@ class LoginWebviewFragment : Fragment() {
 
             override fun failure(error: RetrofitError) {
                 Log.e("Accounts", "Error saving account $error")
+                Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
+                mActivity.startLoginFragment()
             }
         })
     }
 
     private fun getCodeChallenge(codeVerifier: String): String {
 
-        val digest = MessageDigest.getInstance("SHA-256")
-        digest.reset()
-        val byteArr = digest.digest(codeVerifier.toByteArray())
-        val codeChallenge = BigInteger(1, byteArr).toString(16)
+        // Hash the code verifier
+        val md = MessageDigest.getInstance("SHA-256")
+        val byteArr = md.digest(codeVerifier.toByteArray())
+
+        // Base-64 encode
+        var codeChallenge = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Base64.getEncoder().encodeToString(byteArr)
+        } else {
+            String(
+                    android.util.Base64.encode(byteArr, android.util.Base64.DEFAULT),
+                    Charsets.UTF_8)
+        }
+
+        // Replace characters to make it web safe
+        codeChallenge = codeChallenge.replace("=", "")
+        codeChallenge = codeChallenge.replace("+", "-")
+        codeChallenge = codeChallenge.replace("/", "_")
 
         return codeChallenge
     }

@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.tabs.TabLayout
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
@@ -13,6 +14,8 @@ import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.utils.Utils
 import kotlinx.android.synthetic.main.fragment_dining.*
 import kotlinx.android.synthetic.main.fragment_dining.view.*
+import androidx.annotation.RequiresApi
+import kotlinx.android.synthetic.main.fragment_gsr_tabs.*
 import kotlinx.android.synthetic.main.fragment_gsr_tabs.view.*
 import kotlinx.android.synthetic.main.fragment_gsr_tabs.view.appbar_home
 import kotlinx.android.synthetic.main.fragment_gsr_tabs.view.date_view
@@ -23,6 +26,7 @@ class GsrTabbedFragment : Fragment() {
     lateinit var viewPager: ViewPager
     lateinit var tabLayout: TabLayout
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -36,6 +40,21 @@ class GsrTabbedFragment : Fragment() {
         tabLayout.setupWithViewPager(viewPager)
 
         return view
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        //displays banner if not connected
+        if (!isOnline(context)) {
+            internetConnectionGSR?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            internetConnection_message_gsr?.setText("Not Connected to Internet")
+            internetConnectionGSR?.visibility = View.VISIBLE
+        } else {
+            internetConnectionGSR?.visibility = View.GONE
+        }
+
     }
 
     private fun initAppBar(view: View) {

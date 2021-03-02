@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile
 
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -13,8 +12,6 @@ import com.pennapps.labs.pennmobile.classes.DiningHall
 import kotlinx.android.synthetic.main.fragment_menu.view.*
 import kotlinx.android.synthetic.main.include_main.*
 import org.apache.commons.lang3.StringUtils
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class MenuFragment : Fragment() {
 
@@ -43,8 +40,8 @@ class MenuFragment : Fragment() {
                     val foodItems = StringBuilder() // for design purposes
                     for (i in station.items.indices) {
                         val txt = station.items[i].title
-                        foodItems.append(txt[0].toUpperCase())
-                        foodItems.append(txt.substring(1, txt.length))
+                        foodItems.append(txt?.get(0)?.toUpperCase())
+                        foodItems.append(txt?.substring(1, txt.length))
                         if (i < station.items.size - 1) {
                             foodItems.append("\n")
                         }

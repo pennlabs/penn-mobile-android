@@ -61,7 +61,7 @@
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <include layout="@layout/no_results" />
+        <!--<include layout="@layout/no_results" />-->
 
         <include layout="@layout/loading_panel" />
 

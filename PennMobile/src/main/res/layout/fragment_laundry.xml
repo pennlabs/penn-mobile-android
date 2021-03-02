@@ -5,6 +5,7 @@
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:showIn="@layout/activity_main">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -82,16 +83,40 @@
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <include layout="@layout/no_results" />
+    <include layout="@layout/loading_panel" />
 
-        <include layout="@layout/loading_panel" />
+        <androidx.appcompat.widget.Toolbar
+        android:id="@+id/internetConnectionLaundry"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        tools:ignore="MissingConstraints">
 
-        <FrameLayout
+        <TextView
+            android:id="@+id/internetConnection_message_laundry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="visible">
 
-            <TextView
+            <LinearLayout
+            android:id="@+id/no_results_message"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <include layout="@layout/no_results" />
+        </LinearLayout>
+
+        <TextView
                 android:id="@+id/laundry_help_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -6,7 +6,7 @@ import android.view.*
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.ListFragment
 import com.pennapps.labs.pennmobile.adapters.SupportAdapter
-import com.pennapps.labs.pennmobile.classes.Person
+import com.pennapps.labs.pennmobile.classes.Contact
 import java.util.*
 
 class SupportFragment : ListFragment() {
@@ -22,17 +22,17 @@ class SupportFragment : ListFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         val mListView = listView
-        val contactsList: ArrayList<Person> = ArrayList()
-        contactsList.add(Person("Penn Police General", "(215) 898-7297"))
-        contactsList.add(Person("Penn Police Emergencies/MERT", "(215) 573-3333"))
-        contactsList.add(Person("Penn Walk", "215-898-9255", "215-898-WALK"))
-        contactsList.add(Person("Penn Ride", "215-898-7433", "215-898-RIDE"))
-        contactsList.add(Person("Help Line", "215-898-4357", "215-898-HELP"))
-        contactsList.add(Person("CAPS", "(215) 898-7021"))
-        contactsList.add(Person("Special Services", "(215) 898-6600"))
-        contactsList.add(Person("Women's Center", "(215) 898-8611"))
-        contactsList.add(Person("Student Health Services", "(215) 746-3535"))
-        contactsList.add(Person("Penn Violence Protection", "https://secure.www.upenn.edu/vpul/pvp/gethelp"))
+        val contactsList: ArrayList<Contact> = ArrayList()
+        contactsList.add(Contact("Penn Police General", "(215) 898-7297"))
+        contactsList.add(Contact("Penn Police Emergencies/MERT", "(215) 573-3333"))
+        contactsList.add(Contact("Penn Walk", "215-898-9255", "215-898-WALK"))
+        contactsList.add(Contact("Penn Ride", "215-898-7433", "215-898-RIDE"))
+        contactsList.add(Contact("Help Line", "215-898-4357", "215-898-HELP"))
+        contactsList.add(Contact("CAPS", "(215) 898-7021"))
+        contactsList.add(Contact("Special Services", "(215) 898-6600"))
+        contactsList.add(Contact("Women's Center", "(215) 898-8611"))
+        contactsList.add(Contact("Student Health Services", "(215) 746-3535"))
+        contactsList.add(Contact("Penn Violence Protection", "https://secure.www.upenn.edu/vpul/pvp/gethelp"))
 
         val supportAdapter = SupportAdapter(mActivity.applicationContext, contactsList)
         mListView.adapter = supportAdapter

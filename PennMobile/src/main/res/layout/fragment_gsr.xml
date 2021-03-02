@@ -123,7 +123,7 @@
         android:padding="32dp"
         android:text="@string/no_gsr_rooms"
         android:visibility="gone"
-        android:textColor="@color/text_color"
+        style="@style/NoResults"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/gsr_selection" />

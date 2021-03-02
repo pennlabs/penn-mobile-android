@@ -18,10 +18,7 @@ class UniversityEventAdapter(private var events: ArrayList<CalendarEvent>) :
     private lateinit var mContext: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UniversityEventViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(
-            R.layout.university_event,
-            parent,
-            false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.university_event, parent, false)
         mContext = parent.context
         return UniversityEventViewHolder(view)
     }

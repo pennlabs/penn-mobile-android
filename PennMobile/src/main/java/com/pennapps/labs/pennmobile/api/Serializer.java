@@ -8,9 +8,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
-import com.pennapps.labs.pennmobile.classes.Building;
+import com.pennapps.labs.pennmobile.classes.Account;
 import com.pennapps.labs.pennmobile.classes.CalendarEvent;
-import com.pennapps.labs.pennmobile.classes.Course;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.FlingEvent;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
@@ -21,7 +20,6 @@ import com.pennapps.labs.pennmobile.classes.HomeCellInfo;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
-import com.pennapps.labs.pennmobile.classes.Account;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
 import java.lang.reflect.Type;
@@ -40,26 +38,6 @@ public class Serializer {
                 throws JsonParseException {
             JsonElement content = je.getAsJsonObject();
             return new Gson().fromJson(content, Account.class);
-        }
-    }
-
-    public static class CourseSerializer implements JsonDeserializer<List<Course>> {
-        @Override
-        public List<Course> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-                throws JsonParseException {
-            JsonElement content = je.getAsJsonObject().get("courses");
-            return new Gson().fromJson(content, new TypeToken<List<Course>>() {
-            }.getType());
-        }
-    }
-
-    public static class BuildingSerializer implements JsonDeserializer<List<Building>> {
-        @Override
-        public List<Building> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-                throws JsonParseException {
-            JsonElement content = je.getAsJsonObject().get("result_data");
-            return new Gson().fromJson(content, new TypeToken<List<Building>>() {
-            }.getType());
         }
     }
 
@@ -186,7 +164,8 @@ public class Serializer {
                     }.getType());
                     newCell.setEvents(events);
                 } else if (cellType.equals("news") | cellType.equals("dining")
-                        | cellType.equals("laundry") | cellType.equals("courses")) {
+                        | cellType.equals("laundry") | cellType.equals("courses") | cellType.equals("post")
+                        | cellType.equals("feature")) {
                     HomeCellInfo infoObj = new Gson().fromJson(info, new TypeToken<HomeCellInfo>() {
                     }.getType());
                     newCell.setInfo(infoObj);

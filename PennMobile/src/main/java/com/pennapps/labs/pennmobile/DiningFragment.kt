@@ -6,6 +6,17 @@ import android.view.*
 import android.widget.LinearLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -17,8 +28,11 @@ import com.pennapps.labs.pennmobile.classes.Venue
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.utils.Utils
 import kotlinx.android.synthetic.main.fragment_dining.*
+import kotlinx.android.synthetic.main.fragment_dining.internetConnectionDining
+import kotlinx.android.synthetic.main.fragment_dining.internetConnection_message_dining
 import kotlinx.android.synthetic.main.fragment_dining.view.*
 import kotlinx.android.synthetic.main.fragment_dining.view.appbar_home
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.no_results.*
 import rx.Observable
@@ -35,7 +49,6 @@ class DiningFragment : Fragment() {
         mActivity.closeKeyboard()
         setHasOptionsMenu(true)
 
-
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "1")
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Dining")
@@ -48,6 +61,7 @@ class DiningFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_dining, container, false)
         view.dining_swiperefresh?.setOnRefreshListener { getDiningHalls() }
@@ -67,7 +81,8 @@ class DiningFragment : Fragment() {
         inflater.inflate(R.menu.dining_sort, menu)
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
         // sort the dining halls in the user-specified order
-        when (sp.getString("dining_sortBy", "RESIDENTIAL")) {
+        val order = sp.getString("dining_sortBy", "RESIDENTIAL")
+        when (order) {
             "RESIDENTIAL" -> {
                 menu.findItem(R.id.action_sort_residential).isChecked = true
             }
@@ -82,6 +97,7 @@ class DiningFragment : Fragment() {
         menu.setGroupVisible(R.id.action_sort_by, diningInfoFragment == null || !diningInfoFragment.isVisible)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun setSortByMethod(method: String) {
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
         val editor = sp.edit()
@@ -90,6 +106,7 @@ class DiningFragment : Fragment() {
         getDiningHalls()
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle presses on the action bar items
         when (item.itemId) {
@@ -116,7 +133,18 @@ class DiningFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun getDiningHalls() {
+
+        //displays banner if not connected
+        if (!isOnline(context)) {
+            internetConnectionDining?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            internetConnection_message_dining?.setText("Not Connected to Internet")
+            internetConnectionDining?.visibility = View.VISIBLE
+        } else {
+            internetConnectionDining?.visibility = View.GONE
+        }
+
         // Map each item in the list of venues to a Venue Observable, then map each Venue to a DiningHall Observable
         mLabs.venues()
                 .flatMap { venues -> Observable.from(venues) }
@@ -139,6 +167,9 @@ class DiningFragment : Fragment() {
                 }, {
                     mActivity.runOnUiThread {
                         loadingPanel?.visibility = View.GONE
+                        internetConnectionDining?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+                        internetConnection_message_dining?.setText("Not Connected to Internet")
+                        internetConnectionDining?.visibility = View.VISIBLE
                         no_results?.visibility = View.VISIBLE
                         dining_swiperefresh?.isRefreshing = false
                     }

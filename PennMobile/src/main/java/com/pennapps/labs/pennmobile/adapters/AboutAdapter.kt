@@ -32,9 +32,17 @@ class AboutAdapter(private var members: ArrayList<String>)
             "Davies Lumumba" -> R.drawable.davies
             "Sophia Ye" -> R.drawable.sophia
             "Sahit Penmatcha" -> R.drawable.sahit
+            "Vishesh Patel" -> R.drawable.vishesh
+            "Awad Irfan" -> R.drawable.awad
+            "Liz Powell" -> R.drawable.liz
+            "Anna Jiang" -> R.drawable.anna_jiang
+            "Rohan Chhaya" -> R.drawable.rohan
             else -> null
         }
-        if (imageId != null) holder.view.person_iv?.setImageResource(imageId)
+        if (android.os.Build.VERSION.SDK_INT >=  android.os.Build.VERSION_CODES.M){
+            if (imageId != null) holder.view.person_iv?.setImageResource(imageId)
+        }
+
     }
 
     inner class TeamViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

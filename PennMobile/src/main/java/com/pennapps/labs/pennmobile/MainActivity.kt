@@ -1,16 +1,20 @@
 package com.pennapps.labs.pennmobile
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
 import android.view.LayoutInflater
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -56,6 +60,13 @@ class MainActivity : AppCompatActivity() {
         setTheme(R.style.AppTheme)
         if (Build.VERSION.SDK_INT > 28) {
             setTheme(R.style.DarkModeApi29)
+        }
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
+            val alert = AlertDialog.Builder(this)
+            alert.setTitle("Android version")
+            alert.setMessage("You are running an older version of Android. Features may be limited")
+            alert.setPositiveButton("OK", null)
+            alert.show()
         }
         super.onCreate(savedInstanceState)
         if (applicationContext.resources.configuration.uiMode and
@@ -125,23 +136,6 @@ class MainActivity : AppCompatActivity() {
             }
             fragmentTransact(fragment)
         }
-//        tabBarView?.setOnTabClickedListener { _, tabPos ->
-//            var fragment: Fragment? = null
-//            when (tabPos) {
-//                HOME -> if (fragmentManager.backStackEntryCount > 0) {
-//                    fragment = HomeFragment()
-//                }
-//                GSR -> fragment = GsrTabbedFragment()
-//                DINING -> fragment = DiningFragment()
-//                LAUNDRY -> fragment = LaundryFragment()
-//                FITNESS -> fragment = FitnessFragment()
-//                NEWS -> fragment = NewsFragment()
-//                SUPPORT -> fragment = SupportFragment()
-//                SETTINGS -> fragment = SettingsFragment()
-//                ABOUT -> fragment = AboutFragment()
-//            }
-//            fragmentTransact(fragment)
-//        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -266,7 +260,9 @@ class MainActivity : AppCompatActivity() {
 
         private var mLabs: Labs? = null
         private var mPlatform: Platform? = null
-        val platformInstance: Platform?
+
+        @JvmStatic
+        val platformInstance: Platform
             get() {
                 if (mPlatform == null) {
                     val gsonBuilder = GsonBuilder()
@@ -279,7 +275,7 @@ class MainActivity : AppCompatActivity() {
                             .build()
                     mPlatform = restAdapter.create(Platform::class.java)
                 }
-                return mPlatform
+                return mPlatform!!
             }
 
         @JvmStatic
@@ -287,9 +283,7 @@ class MainActivity : AppCompatActivity() {
             get() {
                 if (mLabs == null) {
                     val gsonBuilder = GsonBuilder()
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Course?>?>() {}.type, CourseSerializer())
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Building?>?>() {}.type, BuildingSerializer())
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Person?>?>() {}.type, DataSerializer<Any?>())
+                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Contact?>?>() {}.type, DataSerializer<Any?>())
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Venue?>?>() {}.type, VenueSerializer())
                     gsonBuilder.registerTypeAdapter(DiningHall::class.java, MenuSerializer())
                     // gets room
@@ -320,6 +314,42 @@ class MainActivity : AppCompatActivity() {
                 return mLabs!!
             }
     }
+
+}
+
+//checks if internet is connected
+fun isOnline(context: Context?): Boolean {
+    val connectivityManager =
+            context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    if (connectivityManager != null) {
+        val capabilities =
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                        connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+                    } else {
+                        return true
+                    }
+                } else {
+                    return true
+                }
+        if (capabilities != null) {
+            when {
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                    return true
+                }
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                    return true
+                }
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                    return true
+                }
+            }
+        }
+    }
+    return false
 }
 
 /** Shows an error sneaker given a view group with an optional retry function */

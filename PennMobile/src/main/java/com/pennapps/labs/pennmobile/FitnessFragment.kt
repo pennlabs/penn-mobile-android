@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -9,12 +10,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.FitnessAdapter
 import kotlinx.android.synthetic.main.fragment_fitness.*
 import kotlinx.android.synthetic.main.fragment_fitness.view.*
 import kotlinx.android.synthetic.main.fragment_fitness.view.gym_list
 import kotlinx.android.synthetic.main.fragment_fitness.view.gym_refresh_layout
+import kotlinx.android.synthetic.main.fragment_laundry.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.no_results.*
 
@@ -50,13 +53,25 @@ class FitnessFragment : Fragment() {
         return view
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.gym_refresh_layout?.setOnRefreshListener { getGymData() }
         // get api data
         getGymData()
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun getGymData() {
+
+        //displays banner if not connected
+        if (!isOnline(context)) {
+            internetConnectionFitness?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            internetConnection_message_fitness?.setText("Not Connected to Internet")
+            internetConnectionFitness?.visibility = View.VISIBLE
+        } else {
+            internetConnectionFitness?.visibility = View.GONE
+        }
+
         // get API data
         val labs = MainActivity.labsInstance
         labs.gymData.subscribe({ gyms ->
@@ -66,6 +81,8 @@ class FitnessFragment : Fragment() {
                 loadingPanel?.visibility = View.GONE
                 if (gyms.size > 0) {
                     no_results?.visibility = View.GONE
+                } else {
+                    no_results?.visibility = View.VISIBLE
                 }
                 // stop refreshing
                 gym_refresh_layout?.isRefreshing = false
