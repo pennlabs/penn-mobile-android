@@ -3,20 +3,11 @@ package com.pennapps.labs.pennmobile
 import android.os.Build
 import android.os.Bundle
 import android.view.*
+import android.view.View
 import android.widget.LinearLayout
+import androidx.annotation.RequiresApi
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -28,10 +19,8 @@ import com.pennapps.labs.pennmobile.classes.Venue
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.utils.Utils
 import kotlinx.android.synthetic.main.fragment_dining.*
-import kotlinx.android.synthetic.main.fragment_dining.internetConnectionDining
-import kotlinx.android.synthetic.main.fragment_dining.internetConnection_message_dining
+import kotlinx.android.synthetic.main.fragment_dining.title_view
 import kotlinx.android.synthetic.main.fragment_dining.view.*
-import kotlinx.android.synthetic.main.fragment_dining.view.appbar_home
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.no_results.*
@@ -139,7 +128,7 @@ class DiningFragment : Fragment() {
         //displays banner if not connected
         if (!isOnline(context)) {
             internetConnectionDining?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-            internetConnection_message_dining?.setText("Not Connected to Internet")
+            internetConnection_message_dining?.text = getString(R.string.internet_error)
             internetConnectionDining?.visibility = View.VISIBLE
         } else {
             internetConnectionDining?.visibility = View.GONE
@@ -168,7 +157,7 @@ class DiningFragment : Fragment() {
                     mActivity.runOnUiThread {
                         loadingPanel?.visibility = View.GONE
                         internetConnectionDining?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-                        internetConnection_message_dining?.setText("Not Connected to Internet")
+                        internetConnection_message_dining?.text = getString(R.string.internet_error)
                         internetConnectionDining?.visibility = View.VISIBLE
                         no_results?.visibility = View.VISIBLE
                         dining_swiperefresh?.isRefreshing = false

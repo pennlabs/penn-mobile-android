@@ -180,5 +180,7 @@
     <string name="floating_bottom_bar_laundry">Laundry</string>
     <string name="floating_bottom_bar_more">More</string>
     <string name="initials">Initials</string>
+    <string name="internet_error">Not Connected to the Internet</string>
+    <string name="penn_mobile">Penn Mobile</string>
 
 </resources>

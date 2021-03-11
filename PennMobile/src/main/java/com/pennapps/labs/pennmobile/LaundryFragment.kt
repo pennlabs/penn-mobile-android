@@ -21,6 +21,7 @@ import com.pennapps.labs.pennmobile.classes.LaundryUsage
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.utils.Utils
 import kotlinx.android.synthetic.main.fragment_gsr_tabs.view.*
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_laundry.*
 import kotlinx.android.synthetic.main.fragment_laundry.view.*
 import kotlinx.android.synthetic.main.fragment_laundry.view.appbar_home
@@ -162,7 +163,7 @@ class LaundryFragment : Fragment() {
         //displays banner if not connected
         if (!isOnline(context)) {
             internetConnectionLaundry?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-            internetConnection_message_laundry?.setText("Not Connected to Internet")
+            internetConnection_message_laundry?.text = getString(R.string.internet_error)
             internetConnectionLaundry?.visibility = View.VISIBLE
         } else {
             internetConnectionLaundry?.visibility = View.GONE
@@ -176,7 +177,7 @@ class LaundryFragment : Fragment() {
 
         // add data
         for (i in 0 until numRooms) {
-            if (sp!!.getBoolean(Integer.toString(i), false)) {
+            if (sp!!.getBoolean(i.toString(), false)) {
                 addAvailability(i)
                 addRoom(i)
             }

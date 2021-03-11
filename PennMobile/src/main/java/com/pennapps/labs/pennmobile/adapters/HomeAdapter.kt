@@ -8,10 +8,6 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import androidx.browser.customtabs.*
-import androidx.core.content.ContextCompat.startActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
@@ -37,8 +33,8 @@ import com.pennapps.labs.pennmobile.classes.HomeCell
 import com.pennapps.labs.pennmobile.components.sneaker.Utils.convertToDp
 import com.squareup.picasso.Picasso
 import eightbitlab.com.blurview.RenderScriptBlur
-import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.home_base_card.view.*
+import kotlinx.android.synthetic.main.home_news_card.view.*
 import kotlinx.android.synthetic.main.home_post_card.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -79,7 +75,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
 
         return when (viewType) {
             NEWS -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_post_card, parent, false))
+                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_news_card, parent, false))
             }
             POST -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_post_card, parent, false))
@@ -182,8 +178,14 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
     private fun bindNewsCell(holder: ViewHolder, cell: HomeCell) {
         val info = cell.info
         holder.itemView.home_news_title.text = info?.title
-        holder.itemView.home_news_subtitle.text = info?.source
-        holder.itemView.home_news_timestamp.text = info?.timestamp
+        holder.itemView.home_news_subtitle.text = info?.subtitle
+        holder.itemView.home_news_timestamp.text = info?.timestamp?.trim()
+
+        Picasso.get()
+                .load(info?.imageUrl)
+                .fit()
+                .centerCrop()
+                .into(holder.itemView.home_news_iv)
 
         /** Adds dynamically generated accent color from the fetched image to the news card */
         var accentColor: Int =  getColor(mContext, R.color.black)
@@ -360,7 +362,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             CustomTabsClient.bindCustomTabsService(mContext,
                     NewsFragment.CUSTOM_TAB_PACKAGE_NAME, connection)
 
-            if (isChromeCustomTabsSupported(mContext)) {
+            if (mContext.isChromeCustomTabsSupported()) {
                 share?.putExtra(Intent.EXTRA_TEXT, url)
                 builder?.addMenuItem("Share", PendingIntent.getActivity(mContext, 0,
                         share, PendingIntent.FLAG_CANCEL_CURRENT))

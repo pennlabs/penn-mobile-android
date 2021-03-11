@@ -1,11 +1,6 @@
 package com.pennapps.labs.pennmobile
 
 import android.content.*
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -13,16 +8,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.fragment.app.Fragment
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.preference.PreferenceManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import android.widget.Toolbar
 import androidx.annotation.RequiresApi
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager
@@ -38,12 +26,6 @@ import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.arrayListOf
-import android.provider.Settings.Secure
-import androidx.core.content.ContextCompat.getSystemService
-import android.telephony.TelephonyManager
-import android.graphics.PorterDuff
-import android.content.res.Configuration
 
 
 class HomeFragment : Fragment() {
@@ -101,7 +83,7 @@ class HomeFragment : Fragment() {
         //displays banner if not connected
         if (!isOnline(context)) {
             internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-            internetConnection_message?.setText("Not Connected to Internet")
+            internetConnection_message?.text = getString(R.string.internet_error)
             home_cells_rv?.setPadding(0, 90, 0, 0)
             internetConnectionHome?.visibility = View.VISIBLE
         } else {
@@ -130,7 +112,7 @@ class HomeFragment : Fragment() {
                 Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
                 loadingPanel?.visibility = View.GONE
                 internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-                internetConnection_message?.setText("Not Connected to Internet")
+                internetConnection_message?.text = getString(R.string.internet_error)
                 internetConnectionHome?.visibility = View.VISIBLE
                 home_refresh_layout?.isRefreshing = false
             }
@@ -206,7 +188,7 @@ class HomeFragment : Fragment() {
     @Suppress("DEPRECATION")
     private fun displaySnack(view: View, text: String) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            (view as ViewGroup).showErrorSneaker(message = text, doOnRetry = { getHomePage() })
+            (view as ViewGroup).showErrorSneaker(message = text, doOnRetry = { })
         }
     }
 

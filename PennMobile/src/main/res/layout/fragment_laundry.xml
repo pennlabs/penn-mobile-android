@@ -95,12 +95,7 @@
 
         <TextView
             android:id="@+id/internetConnection_message_laundry"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="@color/white"
-            android:textSize="15dp"
-            android:textStyle="bold" />
+            style="@style/internet_error_message" />
 
     </androidx.appcompat.widget.Toolbar>
 

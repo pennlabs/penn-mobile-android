@@ -55,11 +55,27 @@
         </FrameLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/internetConnectionDining"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            tools:ignore="MissingConstraints">
+
+            <TextView
+                android:id="@+id/internetConnection_message_dining"
+                style="@style/internet_error_message" />
+
+        </androidx.appcompat.widget.Toolbar>
 
         <!--<include layout="@layout/no_results" />-->
 

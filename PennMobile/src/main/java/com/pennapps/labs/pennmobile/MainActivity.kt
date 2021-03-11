@@ -222,20 +222,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (grantResults.isEmpty() || grantResults[0] == PackageManager.PERMISSION_DENIED) {
-            when (requestCode) {
-                SaveContactsFragment.permission_read -> showErrorToast(R.string.ask_contacts_fail)
-                else -> {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                        (applicationContext as Activity).window.decorView
-                                .findViewById<ViewGroup>(R.id.include)
-                                .showErrorSneaker(getString(R.string.ask_location_fail), null)
-                    } else {
-                        runOnUiThread {
-                            Toast.makeText(applicationContext, R.string.ask_location_fail,
-                                    Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
+            if (requestCode == SaveContactsFragment.permission_read) {
+                showErrorToast(R.string.ask_contacts_fail)
             }
             return
         }

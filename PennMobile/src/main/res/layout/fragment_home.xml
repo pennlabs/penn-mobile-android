@@ -3,12 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinator"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/home_fragment_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
  >
-
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar_home"
         android:layout_width="match_parent"
@@ -91,29 +88,6 @@
         </FrameLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/internetConnectionHome"
-        android:layout_width="match_parent"
-        android:layout_height="24dp"
-        app:layout_scrollFlags="scroll|enterAlways"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        tools:ignore="MissingConstraints">
-
-        <TextView
-            android:id="@+id/internetConnection_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="@color/white"
-            android:textSize="15dp"
-            android:textStyle="bold" />
-
-    </androidx.appcompat.widget.Toolbar>
-
-
-
-
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/home_refresh_layout"
         android:layout_width="match_parent"
@@ -127,6 +101,23 @@
             android:layout_height="wrap_content"
             android:scrollbars="none">
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/internetConnectionHome"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+                <TextView
+                    android:id="@+id/internetConnection_message"
+                    style="@style/internet_error_message" />
+
+            </androidx.appcompat.widget.Toolbar>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/home_cells_rv"
                 android:layout_width="match_parent"
@@ -134,16 +125,15 @@
                 android:scrollbars="none"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            </RelativeLayout>
+
         </androidx.core.widget.NestedScrollView>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <include layout="@layout/loading_panel" />
 
-
-
     <!-- Coordinator Layout used to position the SnackBar -->
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/snack_bar_location"
         android:layout_width="match_parent"
@@ -152,4 +142,5 @@
         android:background="@android:color/transparent"
         android:rotation="180"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"></androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
