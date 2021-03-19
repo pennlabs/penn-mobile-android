@@ -175,9 +175,8 @@ class HomeFragment : Fragment() {
             (view.appbar_home.layoutParams
                 as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
         }
-        view.profile.setOnClickListener { _ ->
+        view.profile.setOnClickListener {
             //TODO: Account Settings
-            displaySnack(view, "Meow")
         }
 
     }
@@ -187,7 +186,7 @@ class HomeFragment : Fragment() {
      */
     @Suppress("DEPRECATION")
     private fun displaySnack(view: View, text: String) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             (view as ViewGroup).showErrorSneaker(message = text, doOnRetry = { })
         }
     }

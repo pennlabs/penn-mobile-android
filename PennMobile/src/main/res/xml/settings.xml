@@ -33,13 +33,15 @@
 
         <Preference
             android:id="@+id/pref_contact_feature"
+            android:hapticFeedbackEnabled="true"
             app:icon="@drawable/ic_contacts_setting"
             app:iconSpaceReserved="false"
-            app:key="pref_contact_feature"
+            app:key="pref_contacts_feature"
             app:title="Penn Contacts" />
 
         <Preference
             android:id="@+id/pref_about_feature"
+            android:hapticFeedbackEnabled="true"
             app:icon="@drawable/ic_about_setting"
             app:iconSpaceReserved="false"
             app:key="pref_about_feature"

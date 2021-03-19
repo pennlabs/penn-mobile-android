@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
@@ -20,11 +21,19 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.preference.PreferenceManager
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
+import com.pennapps.labs.pennmobile.utils.Utils
+import kotlinx.android.synthetic.main.fragment_about.view.*
 import kotlinx.android.synthetic.main.fragment_fitness.*
 import kotlinx.android.synthetic.main.fragment_fitness.internetConnectionFitness
 import kotlinx.android.synthetic.main.fragment_fitness.internetConnection_message_fitness
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_news.*
+import kotlinx.android.synthetic.main.fragment_news.initials
+import kotlinx.android.synthetic.main.fragment_news.profile_background
 import java.util.ArrayList
 
 
@@ -41,6 +50,7 @@ class NewsFragment : ListFragment() {
     private var session: CustomTabsSession? = null
     private var builder: CustomTabsIntent.Builder? = null
     private var isCustomTabsSupported: Boolean = false
+    private lateinit var sharedPreferences: SharedPreferences
 
     internal inner class CustomListAdapter(@get:JvmName("getContext_") private val context: Context,
                                            newsNames: Array<String?>,
@@ -146,10 +156,14 @@ class NewsFragment : ListFragment() {
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "News")
         bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
         FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity)
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_news, container, false)
+        val view = inflater.inflate(R.layout.fragment_news, container, false)
+        initAppBar(view)
+        return view
     }
 
     private fun addNews() {
@@ -157,7 +171,7 @@ class NewsFragment : ListFragment() {
         //displays banner if not connected
         if (!isOnline(context)) {
             internetConnectionNews?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-            internetConnection_message_news?.setText("Not Connected to Internet")
+            internetConnection_message_news?.text = resources.getString(R.string.internet_error)
             internetConnectionNews?.visibility = View.VISIBLE
         } else {
             internetConnectionNews?.visibility = View.GONE
@@ -217,6 +231,21 @@ class NewsFragment : ListFragment() {
         val mActivity : MainActivity? = activity as MainActivity
         mActivity?.removeTabs()
         mActivity?.setTitle(R.string.news)
+        val initials = sharedPreferences.getString(getString(R.string.initials), null)
+        if (initials != null && initials.isNotEmpty()) {
+            this.initials.text = initials
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                this.profile_background.setImageDrawable(
+                        resources.getDrawable
+                        (R.drawable.ic_guest_avatar, context?.theme))
+            } else {
+                @Suppress("DEPRECATION")
+                this.profile_background.setImageDrawable(
+                        resources.getDrawable
+                        (R.drawable.ic_guest_avatar))
+            }
+        }
         if (Build.VERSION.SDK_INT > 17){
             mActivity?.setSelectedTab(MainActivity.NEWS)
         }
@@ -226,5 +255,17 @@ class NewsFragment : ListFragment() {
         val mActivity : MainActivity? = activity as MainActivity
         mActivity?.removeTabs()
         super.onDestroyView()
+    }
+
+    private fun initAppBar(view: View) {
+        view.date_view.text = Utils.getCurrentSystemTime()
+        // Appbar behavior init
+        if (Build.VERSION.SDK_INT > 16) {
+            (view.appbar_home.layoutParams
+                    as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
+        }
+        view.profile.setOnClickListener {
+            //TODO: Account Settings
+        }
     }
 }

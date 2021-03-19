@@ -141,6 +141,6 @@
         android:layout_below="@id/appbar_home"
         android:background="@android:color/transparent"
         android:rotation="180"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"></androidx.coordinatorlayout.widget.CoordinatorLayout>
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

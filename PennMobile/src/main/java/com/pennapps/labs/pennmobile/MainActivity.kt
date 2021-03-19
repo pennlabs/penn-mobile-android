@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT > 28) {
             setTheme(R.style.DarkModeApi29)
         }
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             val alert = AlertDialog.Builder(this)
             alert.setTitle("Android version")
             alert.setMessage("You are running an older version of Android. Features may be limited")
@@ -123,7 +123,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onExpandableBottomNavigationItemSelected() {
-        expandable_bottom_bar.onItemSelectedListener = { v, item ->
+        expandable_bottom_bar.onItemSelectedListener = { _, item ->
             var fragment: Fragment? = null
             when (item.text as String) {
                 "Home" -> if (fragmentManager.backStackEntryCount > 0) {
@@ -311,8 +311,8 @@ fun isOnline(context: Context?): Boolean {
             context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     if (connectivityManager != null) {
         val capabilities =
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
                     } else {
                         return true
