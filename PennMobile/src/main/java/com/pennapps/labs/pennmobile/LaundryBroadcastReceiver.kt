@@ -27,6 +27,7 @@ class LaundryBroadcastReceiver : BroadcastReceiver() {
         notificationID = id + 1
         val builder = StringBuilder()
         builder.append("A ").append(machineType).append(" in ").append(roomName).append(" is available!")
+
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         // build notification

@@ -61,6 +61,7 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
         holder.itemView.gsr_reservation_location_tv.text = roomName
         holder.itemView.gsr_reservation_date_tv.text = day + "\n" + fromHour + "-" + toHour
 
+
         holder.itemView.gsr_reservation_cancel_btn.setOnClickListener {
             // create dialog to confirm that you want to cancel reservation
             val builder = AlertDialog.Builder(mContext)
