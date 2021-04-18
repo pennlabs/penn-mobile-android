@@ -32,6 +32,7 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.telephony.TelephonyManager
 import android.graphics.PorterDuff
 import android.content.res.Configuration
+import org.joda.time.LocalDateTime
 
 
 class HomeFragment : Fragment()  {
@@ -115,7 +116,6 @@ class HomeFragment : Fragment()  {
             }
 
         })
-
     }
 
     private val broadcastReceiver = object: BroadcastReceiver() {

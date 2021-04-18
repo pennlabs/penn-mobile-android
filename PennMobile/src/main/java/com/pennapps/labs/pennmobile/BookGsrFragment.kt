@@ -1,6 +1,12 @@
 package com.pennapps.labs.pennmobile
 
+import android.app.Activity
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -11,9 +17,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.preference.PreferenceManager
+import com.pennapps.labs.pennmobile.adapters.GSRBroadcastReceiver
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult
 import kotlinx.android.synthetic.main.gsr_details_book.view.*
+import org.joda.time.LocalDate
+import org.joda.time.LocalDateTime
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
@@ -29,6 +38,7 @@ class BookGsrFragment : Fragment() {
     private lateinit var submit: Button
 
     private lateinit var mLabs: Labs
+    private lateinit var mActivity: Activity
 
     // gsr details
     private lateinit var gsrID: String
@@ -46,7 +56,7 @@ class BookGsrFragment : Fragment() {
             endTime = arguments.getString("endTime") ?: ""
         }
         mLabs = MainActivity.labsInstance
-        val mActivity : MainActivity? = activity as MainActivity
+        mActivity = activity as MainActivity
         mActivity?.setTitle(R.string.gsr)
     }
 
@@ -84,12 +94,41 @@ class BookGsrFragment : Fragment() {
                 Toast.makeText(activity, "Please enter a valid Penn email", Toast.LENGTH_LONG).show()
             } else {
                 bookGSR(Integer.parseInt(gsrID), Integer.parseInt(gsrLocationCode), startTime, endTime)
+
             }
         }
         return v
     }
 
     private fun bookGSR(gsrId: Int, gsrLocationCode: Int, startTime: String?, endTime: String?) {
+
+        //setting notification 10 mins before startTime
+        Log.d("GSR", startTime)
+        val from = LocalDateTime.parse(startTime)
+        val fromHour24Hours = from.toString("HH:mm")
+        val reservationDate = from.dayOfYear().get()
+        val localDateTime = LocalDateTime()
+        val currentDay : Int = localDateTime.dayOfYear().get()
+        val currentHour = localDateTime.hourOfDay().get()
+        val currentMinute = localDateTime.minuteOfHour().get()
+        val currentHoursMinutesPassed = currentHour * 60 + currentMinute
+        val reservationHoursMinutesPassed =
+                (fromHour24Hours.substringBefore(":").toInt() * 60) +
+                        (fromHour24Hours.substringAfter(":").toInt())
+
+        if (currentHoursMinutesPassed > reservationHoursMinutesPassed) {
+            val timeDifferenceMin = (24*60) - (currentHoursMinutesPassed - reservationHoursMinutesPassed)
+            val dayDifferenceMin = (reservationDate - currentDay - 1) * 24 * 60
+            val totalMinutes = timeDifferenceMin + dayDifferenceMin - 10
+            alarmManagerSetUp(totalMinutes, 0)
+        } else {
+            val timeDifferenceMin = (reservationHoursMinutesPassed - currentHoursMinutesPassed)
+            val dayDifferenceMin = (reservationDate - currentDay) * 24 * 60
+            val totalMinutes = timeDifferenceMin + dayDifferenceMin - 10
+            alarmManagerSetUp(totalMinutes, 0)
+        }
+
+
 
         var sessionID = ""
         activity?.let { activity ->
@@ -165,6 +204,73 @@ class BookGsrFragment : Fragment() {
             fragment.arguments = args
             return fragment
         }
+    }
+
+    //set notification with specific time
+    private fun alarmManagerSetUp(time : Int, id : Int){
+//        val id: Int = (mRoomName + mMachineType).hashCode() + machineId
+        val theContext = mActivity.applicationContext
+
+        val intent = Intent(theContext, GSRBroadcastReceiver::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//        intent.putExtra(mContext.resources.getString(R.string.laundry_room_name), mRoomName)
+//        intent.putExtra(mContext.resources.getString(R.string.laundry_machine_type), mMachineType)
+//        intent.putExtra(mContext.resources.getString(R.string.laundry_machine_id), id)
+
+
+        // switch is off if no alarm
+
+        // switch is off if no alarm
+//        if (alarmIntent == null) {
+//            mSwitch.setChecked(false)
+//        } else {
+//            mSwitch.setChecked(true)
+//        }
+        val alarmManager = theContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmIntent = PendingIntent.getBroadcast(theContext, id, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        alarmManager[AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + time * 60000] = alarmIntent
+
+
+//        mSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+//           // val alarmManager = mContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+//
+//            // checked button
+//            if (isChecked) {
+//                //val alarmIntent = PendingIntent.getBroadcast(mContext, id, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+//                // for testing 10 second notification
+//                //alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 10000, alarmIntent);
+//
+//                // snackbar
+//                val stringBuilder = StringBuilder()
+//                stringBuilder.append("Alarm set for $time minutes")
+//                val snackbar = Snackbar.make(buttonView, stringBuilder, Snackbar.LENGTH_SHORT)
+//                val subView = snackbar.view
+//                val snackTextView = subView.findViewById<View>(R.id.snackbar_text) as TextView
+//                snackTextView.setTextColor(ContextCompat.getColor(mContext, R.color.white))
+//                snackbar.show()
+//            } else {
+//                // cancel alarm if exists
+//                val alarmIntent = PendingIntent.getBroadcast(mContext, id, intent, PendingIntent.FLAG_NO_CREATE)
+//                if (alarmIntent != null) {
+//                    alarmManager.cancel(alarmIntent)
+//                    alarmIntent.cancel()
+//                }
+//                if (buttonView.context == null) {
+//                    return@OnCheckedChangeListener
+//                }
+//
+//                // snackbar
+//                val stringBuilder = StringBuilder()
+//                stringBuilder.append("Alarm off")
+//                if (buttonView != null) {
+//                    val snackbar = Snackbar.make(buttonView, stringBuilder, Snackbar.LENGTH_SHORT)
+//                    val subView = snackbar.view
+//                    val snackTextView = subView.findViewById<TextView>(R.id.snackbar_text)
+//                    snackTextView.setTextColor(ContextCompat.getColor(mContext, R.color.white))
+//                    snackbar.show()
+//                }
+//            }
+//        })
     }
 
 }

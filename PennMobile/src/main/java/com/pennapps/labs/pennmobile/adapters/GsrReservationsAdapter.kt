@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.SystemClock
 import android.preference.PreferenceManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,49 +55,6 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
         val toHour = to.toString("h:mm a")
         val localDateTime = LocalDateTime()
 
-        val fromHour24Hours = "18:30"
-                //from.toString("HH:mm")
-        val reservationDate : Int = 103
-                //from.dayOfYear().get()
-
-
-
-        val currentDay : Int = localDateTime.dayOfYear().get()
-        val currentHour = localDateTime.hourOfDay().get()
-        val currentMinute = localDateTime.minuteOfHour().get()
-
-        val currentHoursMinutesPassed = currentHour * 60 + currentMinute
-        val reservationHoursMinutesPassed =
-                (fromHour24Hours.substringBefore(":").toInt() * 60) +
-                        (fromHour24Hours.substringAfter(":").toInt())
-
-        if (currentHoursMinutesPassed > reservationHoursMinutesPassed) {
-            val timeDifferenceMin = (24*60) - (currentHoursMinutesPassed - reservationHoursMinutesPassed)
-            val dayDifferenceMin = (reservationDate - currentDay - 1) * 24 * 60
-            val totalMinutes = timeDifferenceMin + dayDifferenceMin - 10
-            alarmManagerSetUp(totalMinutes, 0)
-        } else {
-            val timeDifferenceMin = (reservationHoursMinutesPassed - currentHoursMinutesPassed)
-            val dayDifferenceMin = (reservationDate - currentDay) * 24 * 60
-            val totalMinutes = timeDifferenceMin + dayDifferenceMin - 10
-            alarmManagerSetUp(totalMinutes, 0)
-        }
-        //
-
-        /*
-        if (currentHour > fromHour){
-        //in0between days + part of a new day
-            (24 hours * diffence in days) + (currentHour - fromHour * 60 min)
-            - (10 minutes for alarm)
-        else {
-        //last-in between day has not happened, so (inbetween days - 1) + part of last between day
-            (24 hours * (diffence in days - 1)) + (fromHour - currentHour * 60 min)
-
-        we can round to days and hours when informing them of the alarm. the actual alarm length
-        needs to include minute differences
-         */
-
-        //alarmManagerSetUp(0, 0)
         // huntsman reservation responses don't have an image url so we set it here
         val imageUrl = reservation.info?.get("thumbnail") ?: "https://s3.us-east-2.amazonaws.com/labs.api/dining/MBA+Cafe.jpg"
         Picasso.get().load(imageUrl).fit().centerCrop().into(holder.itemView.gsr_reservation_iv)
@@ -143,70 +101,7 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
         }
     }
 
-    private fun alarmManagerSetUp(time : Int, id : Int){
-//        val id: Int = (mRoomName + mMachineType).hashCode() + machineId
 
-        val intent = Intent(mContext, GSRBroadcastReceiver::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//        intent.putExtra(mContext.resources.getString(R.string.laundry_room_name), mRoomName)
-//        intent.putExtra(mContext.resources.getString(R.string.laundry_machine_type), mMachineType)
-//        intent.putExtra(mContext.resources.getString(R.string.laundry_machine_id), id)
-
-
-        // switch is off if no alarm
-
-        // switch is off if no alarm
-//        if (alarmIntent == null) {
-//            mSwitch.setChecked(false)
-//        } else {
-//            mSwitch.setChecked(true)
-//        }
-        val alarmManager = mContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val alarmIntent = PendingIntent.getBroadcast(mContext, id, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        alarmManager[AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + time * 60000] = alarmIntent
-
-
-//        mSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
-//           // val alarmManager = mContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-//
-//            // checked button
-//            if (isChecked) {
-//                //val alarmIntent = PendingIntent.getBroadcast(mContext, id, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-//                // for testing 10 second notification
-//                //alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 10000, alarmIntent);
-//
-//                // snackbar
-//                val stringBuilder = StringBuilder()
-//                stringBuilder.append("Alarm set for $time minutes")
-//                val snackbar = Snackbar.make(buttonView, stringBuilder, Snackbar.LENGTH_SHORT)
-//                val subView = snackbar.view
-//                val snackTextView = subView.findViewById<View>(R.id.snackbar_text) as TextView
-//                snackTextView.setTextColor(ContextCompat.getColor(mContext, R.color.white))
-//                snackbar.show()
-//            } else {
-//                // cancel alarm if exists
-//                val alarmIntent = PendingIntent.getBroadcast(mContext, id, intent, PendingIntent.FLAG_NO_CREATE)
-//                if (alarmIntent != null) {
-//                    alarmManager.cancel(alarmIntent)
-//                    alarmIntent.cancel()
-//                }
-//                if (buttonView.context == null) {
-//                    return@OnCheckedChangeListener
-//                }
-//
-//                // snackbar
-//                val stringBuilder = StringBuilder()
-//                stringBuilder.append("Alarm off")
-//                if (buttonView != null) {
-//                    val snackbar = Snackbar.make(buttonView, stringBuilder, Snackbar.LENGTH_SHORT)
-//                    val subView = snackbar.view
-//                    val snackTextView = subView.findViewById<TextView>(R.id.snackbar_text)
-//                    snackTextView.setTextColor(ContextCompat.getColor(mContext, R.color.white))
-//                    snackbar.show()
-//                }
-//            }
-//        })
-    }
 
     override fun getItemCount(): Int {
         return reservations.size
