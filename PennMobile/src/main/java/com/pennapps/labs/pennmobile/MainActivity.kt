@@ -26,6 +26,7 @@ import androidx.preference.PreferenceManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.pennapps.labs.pennmobile.ExpandedBottomNavBar.ExpandableBottomTabBar

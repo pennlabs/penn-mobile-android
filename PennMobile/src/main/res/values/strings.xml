@@ -171,4 +171,10 @@
     <string name="login_failed">"Login failed"</string>
     <string name="guest_mode">"Guest"</string>
 
+
+
+    <!-- Notification -->
+    <string name="msg_token_fmt">"Message"</string>
+
+
 </resources>
