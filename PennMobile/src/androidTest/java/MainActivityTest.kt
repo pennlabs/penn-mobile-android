@@ -1,3 +1,5 @@
+package com.pennapps.labs.pennmobile
+
 import androidx.test.rule.ActivityTestRule
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import org.junit.Rule
@@ -18,13 +20,13 @@ class MainActivityTest : TestCase() {
         }.run {
             step("Test setup") {
                 MainScreen {
-                    button.hasTag("0")
+                    toolbarTitle.hasText("Penn Mobile")
                 }
             }
             step("Test for change on click") {
                 MainScreen {
-                    button.click()
-                    textResult.hasText("Hello World")
+                    // button.click()
+                    toolbarTitle.hasText("Penn Mobile")
                 }
             }
         }
