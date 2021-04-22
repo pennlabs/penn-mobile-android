@@ -8,16 +8,13 @@ class PennMobileTest {
 
     @Before
     fun setup() {
+        print("Setting up Unit tests")
     }
 
     @Test
     fun testSimple() {
+        print("Testing...")
         assertTrue(true)
-    }
-
-    @Test
-    fun testShouldFail() {
-        assertTrue(false)
     }
 
 }
