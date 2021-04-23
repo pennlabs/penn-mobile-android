@@ -103,8 +103,8 @@ class BookGsrFragment : Fragment() {
     private fun bookGSR(gsrId: Int, gsrLocationCode: Int, startTime: String?, endTime: String?) {
 
         //setting notification 10 mins before startTime
-        Log.d("GSR", startTime)
-        val from = LocalDateTime.parse(startTime)
+        Log.d("UPENN", startTime)
+        val from = LocalDateTime.parse(startTime?.substring(0, 19))
         val fromHour24Hours = from.toString("HH:mm")
         val reservationDate = from.dayOfYear().get()
         val localDateTime = LocalDateTime()
@@ -116,15 +116,18 @@ class BookGsrFragment : Fragment() {
                 (fromHour24Hours.substringBefore(":").toInt() * 60) +
                         (fromHour24Hours.substringAfter(":").toInt())
 
+        val setBefore = 9
         if (currentHoursMinutesPassed > reservationHoursMinutesPassed) {
             val timeDifferenceMin = (24*60) - (currentHoursMinutesPassed - reservationHoursMinutesPassed)
             val dayDifferenceMin = (reservationDate - currentDay - 1) * 24 * 60
-            val totalMinutes = timeDifferenceMin + dayDifferenceMin - 10
+            val totalMinutes = timeDifferenceMin + dayDifferenceMin + setBefore
+            Log.d("UPENN", totalMinutes.toString())
             alarmManagerSetUp(totalMinutes, 0)
         } else {
             val timeDifferenceMin = (reservationHoursMinutesPassed - currentHoursMinutesPassed)
             val dayDifferenceMin = (reservationDate - currentDay) * 24 * 60
-            val totalMinutes = timeDifferenceMin + dayDifferenceMin - 10
+            val totalMinutes = timeDifferenceMin + dayDifferenceMin + setBefore
+            Log.d("UPENN", totalMinutes.toString())
             alarmManagerSetUp(totalMinutes, 0)
         }
 
@@ -228,8 +231,8 @@ class BookGsrFragment : Fragment() {
 //        }
         val alarmManager = theContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val alarmIntent = PendingIntent.getBroadcast(theContext, id, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        alarmManager[AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + time * 60000] = alarmIntent
-
+        //alarmManager[AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + time * 60000] = alarmIntent
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + time * 60000, alarmIntent);
 
 //        mSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
 //           // val alarmManager = mContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
