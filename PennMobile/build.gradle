@@ -18,6 +18,7 @@ apply plugin: 'com.google.gms.google-services'  // Google Services plugin
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'jacoco' // Code Coverage
 
+
 repositories {
     mavenCentral()
     google()
@@ -136,43 +137,3 @@ task jacocoTestReport(type: JacocoReport) {
   ])
 }
 
-// Task declaration
-task jacocoTestCoverageVerification(type: JacocoCoverageVerification) {
-    // Run only after the test reports are generated
-    dependsOn = ['jacocoTestReport']
-    enabled = true
-    sourceDirectories.from = files([mainSrc])
-    classDirectories.from = files([debugTree])
-    executionData.from = fileTree(dir: project.buildDir, includes: [
-            'jacoco/testDebugUnitTest.exec',
-            'outputs/code_coverage/debugAndroidTest/connected/*.ec'
-    ])
-
-    violationRules {
-        failOnViolation = true 
-        // 1
-        rule {
-            enabled = true
-            element = 'PACKAGE'
-            includes = ['com.raywenderlich.android.simplecalculator.operators']
-            limit {
-                counter = 'CLASS'
-                value = 'MISSEDCOUNT'
-                maximum = 0
-            }
-        }
-        // 2
-        rule {
-            element = 'PACKAGE'
-            includes = ['com.raywenderlich.android.simplecalculator']
-            limit {
-                value = 'COVEREDRATIO'
-                counter = 'INSTRUCTION'
-                minimum = 0.005
-            }
-        }
-
-    }
-}
-// Make the check gradle task depend on the above task so that failure of above task will fail the check task
-check.dependsOn jacocoTestCoverageVerification
