@@ -22,11 +22,11 @@ class PennMobileTest {
         assertTrue(true)
     }
 
-    @Test
-    fun testGymHours() {
-        val gymHours = GymHours(true, null, null)
-        val interval = gymHours.interval
-        assertEquals(interval, Interval(0, 0))
-    }
+    // @Test
+    // fun testGymHours() {
+    //     val gymHours = GymHours(true, null, null)
+    //     val interval = gymHours.interval
+    //     assertEquals(interval, Interval(0, 0))
+    // }
 
 }

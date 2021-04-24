@@ -80,6 +80,6 @@ jobs:
         with:
           java-version: 1.8
       
-      # Run JaCoCo, testing for 0.5% Code Coverage 
+      # Run JaCoCo, generate Test Report
       - name: Check Code Coverage
-        run: ./gradlew clean jacocoTestCoverageVerification
+        run: ./gradlew jacocoTestReport
