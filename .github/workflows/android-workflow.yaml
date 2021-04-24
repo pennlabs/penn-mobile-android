@@ -79,9 +79,16 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Running unit tests first
-        run: ./gradlew testDebugUnitTest
-      
-      # Run JaCoCo, generate Test Report
-      - name: Check Code Coverage
-        run: ./gradlew jacocoTestReport
+      - name: Running unit
+
+        # Run instrumentation tests
+      - name: JaCoCo Test Report
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          arch: x86
+          profile: Nexus 6
+          avd-name: test
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: ./gradlew jacocoTestReport
