@@ -1,12 +1,12 @@
-package com.pennapps.labs.pennmobile
+// package com.pennapps.labs.pennmobile
 
-import androidx.test.rule.ActivityTestRule
-import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
-import org.junit.Rule
-import org.junit.Test
+// import androidx.test.rule.ActivityTestRule
+// import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
+// import org.junit.Rule
+// import org.junit.Test
 
-// Instrumentation tests, written using Kaspresso https://github.com/KasperskyLab/Kaspresso
-class MainActivityTest : TestCase() {
+// // Instrumentation tests, written using Kaspresso https://github.com/KasperskyLab/Kaspresso
+// class MainActivityTest : TestCase() {
 
     // @get:Rule
     // val activityTestRule = ActivityTestRule(MainActivity::class.java, true, false)
@@ -31,4 +31,4 @@ class MainActivityTest : TestCase() {
     //         }
     //     }
     // }
-}
+// }
