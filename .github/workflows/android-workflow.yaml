@@ -79,7 +79,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Running unit
       
       # # Run JaCoCo, generate Test Report
       # - name: Check Code Coverage
