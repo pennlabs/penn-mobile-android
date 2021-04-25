@@ -95,3 +95,10 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: ./gradlew jacocoTestReport --stacktrace
+      
+      # # Upload build reports to GitHub Actions
+      # - name: Upload Reports
+      #   uses: actions/upload-artifact@v1
+      #   with:
+      #     name: reports
+      #     path: PennMobile/build/reports
