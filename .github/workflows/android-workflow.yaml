@@ -57,10 +57,22 @@ jobs:
         with:
           java-version: 1.8
 
+      # Get the secrets from GitHub and add them to local.properties so they're
+      # included in the APK
+      - name: Access PLATFORM_CLIENT_ID
+        env:
+          PLATFORM_CLIENT_ID: ${{ secrets.PLATFORM_CLIENT_ID }}
+        run: echo PLATFORM_CLIENT_ID=\"PLATFORM_CLIENT_ID\" > ./local.properties
+
+      - name: Access PLATFORM_REDIRECT_URI
+        env:
+          PLATFORM_REDIRECT_URI: ${{ secrets.PLATFORM_REDIRECT_URI }}
+        run: echo PLATFORM_REDIRECT_URI=\"PLATFORM_REDIRECT_URI\" > ./local.properties
+
       - name: Generate apk
         run: ./gradlew assembleDebug
       
-      # Upload APK to GitHub Actions
+      # Upload APK to GitHub
       - name: Upload APK
         uses: actions/upload-artifact@v1
         with:

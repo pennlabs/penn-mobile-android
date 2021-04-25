@@ -37,6 +37,8 @@ android {
         targetSdkVersion 29
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
+        buildConfigField ("String", "PLATFORM_CLIENT_ID", getPlatformClientID())
+        buildConfigField ("String", "PLATFORM_REDIRECT_URI", getPlatformRedirectUri())
     }
     packagingOptions {
         pickFirst 'META-INF/LICENSE.txt'
@@ -89,4 +91,18 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0' // Glide for gif loading
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.6.0'
+}
+
+String getPlatformClientID() {
+    def propFile = rootProject.file("./local.properties")
+    def properties = new Properties()
+    properties.load(new FileInputStream(propFile))
+    return properties['PLATFORM_CLIENT_ID']
+}
+
+String getPlatformRedirectUri() {
+    def propFile = rootProject.file("./local.properties")
+    def properties = new Properties()
+    properties.load(new FileInputStream(propFile))
+    return properties['PLATFORM_REDIRECT_URI']
 }
