@@ -8,6 +8,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:4.0.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jacoco:org.jacoco.core:0.8.5"
     }
 }
 apply plugin: 'com.android.application'
@@ -31,7 +32,6 @@ android {
         debug {
             matchingFallbacks = ['qa', 'release']
             testCoverageEnabled true
-
         }
         release {}
     }
@@ -97,7 +97,6 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.6.0'
 }
 
-<<<<<<< HEAD
 String getPlatformClientID() {
     def propFile = rootProject.file("./local.properties")
     def properties = new Properties()
@@ -111,7 +110,6 @@ String getPlatformRedirectUri() {
     properties.load(new FileInputStream(propFile))
     return properties['PLATFORM_REDIRECT_URI']
 }
-=======
 
 // Code Coverage: https://www.raywenderlich.com/10562143-continuous-integration-for-android#toc-anchor-014
 
@@ -153,5 +151,3 @@ task jacocoTestReport(type: JacocoReport) {
       'outputs/code_coverage/debugAndroidTest/connected/*.ec'
   ])
 }
-
->>>>>>> 245f9ebac8a16ab665725bab14e15526a6dfd47f
