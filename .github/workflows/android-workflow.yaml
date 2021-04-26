@@ -18,6 +18,18 @@ jobs:
         with:
           java-version: 1.8
 
+      # Get the secrets from GitHub and add them to local.properties so they're
+      # included in the APK
+      - name: Access PLATFORM_CLIENT_ID
+        env:
+          PLATFORM_CLIENT_ID: ${{ secrets.PLATFORM_CLIENT_ID }}
+        run: echo PLATFORM_CLIENT_ID=\"PLATFORM_CLIENT_ID\" > ./local.properties
+
+      - name: Access PLATFORM_REDIRECT_URI
+        env:
+          PLATFORM_REDIRECT_URI: ${{ secrets.PLATFORM_REDIRECT_URI }}
+        run: echo PLATFORM_REDIRECT_URI=\"PLATFORM_REDIRECT_URI\" > ./local.properties
+
       # Run unit tests
       - name: Run Unit Tests
         run: ./gradlew testDebugUnitTest
@@ -57,18 +69,6 @@ jobs:
         with:
           java-version: 1.8
 
-      # Get the secrets from GitHub and add them to local.properties so they're
-      # included in the APK
-      - name: Access PLATFORM_CLIENT_ID
-        env:
-          PLATFORM_CLIENT_ID: ${{ secrets.PLATFORM_CLIENT_ID }}
-        run: echo PLATFORM_CLIENT_ID=\"PLATFORM_CLIENT_ID\" > ./local.properties
-
-      - name: Access PLATFORM_REDIRECT_URI
-        env:
-          PLATFORM_REDIRECT_URI: ${{ secrets.PLATFORM_REDIRECT_URI }}
-        run: echo PLATFORM_REDIRECT_URI=\"PLATFORM_REDIRECT_URI\" > ./local.properties
-
       - name: Generate apk
         run: ./gradlew assembleDebug
       
@@ -82,17 +82,8 @@ jobs:
   code-cov:
     name: JaCoCo Code Coverage 
     runs-on: macos-latest
-    steps: 
-      # Checks out a copy of your repository on the ubuntu-latest machine
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      # Set up Java JDK
-      - name: Setup JDK 1.8
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-      
+    needs: build-and-test
+    steps:
       # Run JaCoCo, generate Test Report
       - name: Check Code Coverage
         run: ./gradlew jacocoTestReport --stacktrace
