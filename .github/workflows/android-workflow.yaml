@@ -93,6 +93,6 @@ jobs:
         with:
           java-version: 1.8
       
-       # Run JaCoCo, generate Test Report
-       - name: Check Code Coverage
-         run: ./gradlew jacocoTestReport --stacktrace
+      # Run JaCoCo, generate Test Report
+      - name: Check Code Coverage
+        run: ./gradlew jacocoTestReport --stacktrace

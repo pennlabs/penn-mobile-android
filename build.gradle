@@ -13,6 +13,5 @@ buildscript {
         classpath 'com.google.gms:google-services:4.3.3'  // Google Services plugin
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.0.0-beta01'// Crashlytics Gradle plugin.
         classpath "org.jacoco:org.jacoco.core:0.8.5"
-
     }
 }
