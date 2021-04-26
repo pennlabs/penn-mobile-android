@@ -23,12 +23,12 @@ jobs:
       - name: Access PLATFORM_CLIENT_ID
         env:
           PLATFORM_CLIENT_ID: ${{ secrets.PLATFORM_CLIENT_ID }}
-        run: echo PLATFORM_CLIENT_ID=\"$PLATFORM_CLIENT_ID\" > ./local.properties
+        run: echo PLATFORM_CLIENT_ID=\"$PLATFORM_CLIENT_ID\" >> ./local.properties
 
       - name: Access PLATFORM_REDIRECT_URI
         env:
           PLATFORM_REDIRECT_URI: ${{ secrets.PLATFORM_REDIRECT_URI }}
-        run: echo PLATFORM_REDIRECT_URI=\"$PLATFORM_REDIRECT_URI\" > ./local.properties
+        run: echo PLATFORM_REDIRECT_URI=\"$PLATFORM_REDIRECT_URI\" >> ./local.properties
 
       # Run unit tests
       - name: Run Unit Tests
