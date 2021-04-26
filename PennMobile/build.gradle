@@ -101,6 +101,9 @@ String getPlatformClientID() {
     def propFile = rootProject.file("./local.properties")
     def properties = new Properties()
     properties.load(new FileInputStream(propFile))
+    System.out.println(properties.toString())
+    System.out.println(properties.toMapString())
+    System.out.println(properties['PLATFORM_CLIENT_ID'])
     return properties['PLATFORM_CLIENT_ID']
 }
 
@@ -108,6 +111,7 @@ String getPlatformRedirectUri() {
     def propFile = rootProject.file("./local.properties")
     def properties = new Properties()
     properties.load(new FileInputStream(propFile))
+    System.out.println(properties['PLATFORM_REDIRECT_URI'])
     return properties['PLATFORM_REDIRECT_URI']
 }
 
