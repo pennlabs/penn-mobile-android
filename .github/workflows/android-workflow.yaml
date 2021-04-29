@@ -72,16 +72,24 @@ jobs:
         env:
           PLATFORM_REDIRECT_URI: ${{ secrets.PLATFORM_REDIRECT_URI }}
         run: echo PLATFORM_REDIRECT_URI=\"$PLATFORM_REDIRECT_URI\" >> ./local.properties
-
-      - name: Generate apk
-        run: ./gradlew assembleDebug
       
-      # Upload APK to GitHub
-      - name: Upload APK
-        uses: actions/upload-artifact@v1
+      # Generate Signed APK
+      - name: Sign app APK
+        uses: r0adkll/sign-android-release@v1
+        # ID used to access action output
+        id: sign_app
         with:
-          name: build-output
-          path: PennMobile/build/outputs/apk/debug/PennMobile-debug.apk
+          releaseDirectory: app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+      
+      # Upload signed APK
+      - uses: actions/upload-artifact@v2
+        with:
+          name: signed-apk
+          path: ${{steps.sign_app.outputs.signedReleaseFile}}
 
   code-cov:
     name: JaCoCo Code Coverage 
