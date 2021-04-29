@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile.api
 import android.preference.PreferenceManager
 import android.provider.Settings
 import android.util.Log
+import com.pennapps.labs.pennmobile.BuildConfig
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.AccessTokenResponse
@@ -11,10 +12,9 @@ import retrofit.RetrofitError
 import retrofit.client.Response
 import java.util.*
 
-class OAuth2NetworkManager(mActivity: MainActivity) {
+class OAuth2NetworkManager(private var mActivity: MainActivity) {
 
     private var mPlatform = MainActivity.platformInstance
-    private var mActivity = mActivity
     private val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
     val editor = sp?.edit()
 
@@ -43,9 +43,9 @@ class OAuth2NetworkManager(mActivity: MainActivity) {
 
     private fun refreshAccessToken() {
         val refreshToken = sp.getString(mActivity.getString(R.string.refresh_token), "")
-        val clientID = sp.getString(mActivity.getString(R.string.clientID), "")
+        val clientID = BuildConfig.PLATFORM_CLIENT_ID
 
-        mPlatform?.refreshAccessToken(refreshToken,
+        mPlatform.refreshAccessToken(refreshToken,
                 "refresh_token", clientID,
                 object : Callback<AccessTokenResponse> {
 
