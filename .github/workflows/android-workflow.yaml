@@ -35,16 +35,16 @@ jobs:
         run: ./gradlew testDebugUnitTest
 
       # Run instrumentation tests
-#      - name: Run instrumentation tests
-#        uses: reactivecircus/android-emulator-runner@v2
-#        with:
-#          api-level: 29
-#          arch: x86
-#          profile: Nexus 6
-#          avd-name: test
-#          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
-#          disable-animations: true
-#          script: ./gradlew connectedCheck
+      - name: Run instrumentation tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          arch: x86
+          profile: Nexus 6
+          avd-name: test
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: ./gradlew connectedCheck
   
   # If tests pass, generate and upload APK
   generate-apk:

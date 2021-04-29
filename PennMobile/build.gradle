@@ -37,7 +37,7 @@ android {
     }
     compileSdkVersion 29
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 18
         targetSdkVersion 29
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
@@ -95,6 +95,10 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0' // Glide for gif loading
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.6.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'com.kaspersky.android-components:kaspresso:1.1.0'
 }
 
 String getPlatformClientID() {
