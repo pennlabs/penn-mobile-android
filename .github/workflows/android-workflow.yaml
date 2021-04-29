@@ -93,11 +93,6 @@ jobs:
           name: release.apk
           path: ${{steps.sign_app.outputs.signedReleaseFile}}
 
-      # - uses: actions/upload-artifact@master
-      #   with:
-      #     name: mapping.txt
-      #     path: PennMobile/build/outputs/mapping/release/mapping.txt
-
   code-cov:
     name: JaCoCo Code Coverage 
     # Set the type of machine to run on, macOS is better for running Android emulators
@@ -158,15 +153,11 @@ jobs:
       - uses: actions/download-artifact@master
         with:
           name: release.apk
-      # - uses: actions/download-artifact@master
-      #   with:
-      #     name: mapping.txt
       - name: Publish to Play Store internal test track
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: com.pennapps.labs.pennmobile
-          releaseFile: PennMobile-release-unsigned-signed.apk
+          releaseFiles: PennMobile/build/outputs/apk/release/*.apk
           track: internal
           userFraction: 0.50
-          # mappingFile: mapping.txt
