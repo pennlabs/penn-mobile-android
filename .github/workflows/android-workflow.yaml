@@ -74,6 +74,9 @@ jobs:
         run: echo PLATFORM_REDIRECT_URI=\"$PLATFORM_REDIRECT_URI\" >> ./local.properties
       
       # Generate Signed APK
+      - name: Generate Release APK
+        run: ./gradlew assembleRelease
+
       - name: Sign app APK
         uses: r0adkll/sign-android-release@v1
         # ID used to access action output
@@ -88,8 +91,13 @@ jobs:
       # Upload signed APK
       - uses: actions/upload-artifact@v2
         with:
-          name: signed-apk
+          name: release.apk
           path: ${{steps.sign_app.outputs.signedReleaseFile}}
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: mapping.txt
+          path: app/build/outputs/mapping/release/mapping.txt
 
   code-cov:
     name: JaCoCo Code Coverage 
@@ -125,3 +133,41 @@ jobs:
         with:
           name: reports
           path: PennMobile/build/reports
+  
+  # Upload to Firebase App Distribution
+  deploy-firebase:
+    needs: generate-apk
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@master
+        with:
+          name: release.apk
+      - name: Upload APK to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          token: ${{secrets.FIREBASE_TOKEN}}
+          groups: tester
+          file: app-release-unsigned-signed.apk
+
+  # deploy-play-store:
+  #   needs: deploy-firebase
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/download-artifact@master
+  #       with:
+  #         name: release.apk
+
+  #     - uses: actions/download-artifact@master
+  #       with:
+  #         name: mapping.txt
+          
+  #     - name: Publish to Play Store internal test track
+  #       uses: r0adkll/upload-google-play@v1
+  #       with:
+  #         serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+  #         packageName: com.raywenderlich.android.rwquotes
+  #         releaseFile: app-release-unsigned-signed.apk
+  #         track: internal
+  #         userFraction: 0.50
+  #         mappingFile: mapping.txt
