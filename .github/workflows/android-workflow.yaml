@@ -158,6 +158,6 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: com.pennapps.labs.pennmobile
-          releaseFiles: PennMobile/build/outputs/apk/release/*.apk
+          releaseFiles: PennMobile-release-unsigned-signed.apk
           track: internal
           userFraction: 0.50
