@@ -9,7 +9,7 @@ import org.junit.Test
 import org.joda.time.Interval
 
 // Unit tests
-class PennMobileTest {
+class GymHoursTest {
 
     @Before
     fun setup() {
