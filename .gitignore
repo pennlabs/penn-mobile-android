@@ -50,7 +50,7 @@ captures/
 .externalNativeBuild
 
 # Google Services (e.g. APIs or Firebase)
-google-services.json
+# google-services.json
 
 # Freeline
 freeline.py
@@ -71,6 +71,4 @@ fastlane/readme.md
 # Crashlytics and API keys
 src/main/assets/crashlytics-build.properties
 src/main/res/values/com_crashlytics_export_strings.xml
-src/main/res/values/api-keys.xml
-src/main/res/values/secrets.xml
 crashlytics.properties
