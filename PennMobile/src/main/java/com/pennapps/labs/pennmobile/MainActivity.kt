@@ -31,6 +31,7 @@ import com.google.gson.reflect.TypeToken
 import com.pennapps.labs.pennmobile.ExpandedBottomNavBar.ExpandableBottomTabBar
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.api.Platform
+import com.pennapps.labs.pennmobile.api.PlatformPolls
 import com.pennapps.labs.pennmobile.api.Serializer.*
 import com.pennapps.labs.pennmobile.classes.*
 import retrofit.RestAdapter
@@ -211,6 +212,7 @@ class MainActivity : AppCompatActivity() {
 
         private var mLabs: Labs? = null
         private var mPlatform: Platform? = null
+        private var mPlatformPolls: PlatformPolls? = null
 
         @JvmStatic
         val platformInstance: Platform
@@ -227,6 +229,29 @@ class MainActivity : AppCompatActivity() {
                     mPlatform = restAdapter.create(Platform::class.java)
                 }
                 return mPlatform!!
+            }
+
+        @JvmStatic
+        val PlatformPollsInstance: PlatformPolls
+            get() {
+                if (mPlatformPolls == null) {
+                    val gsonBuilder = GsonBuilder()
+                    val gson = gsonBuilder.create()
+                    /*
+                    RestAdapter.Builder()
+                            .setConverter(GsonConverter(gson))
+                            .setEndpoint("https://api.pennlabs.org")
+                            .build()
+                     */
+                    val restAdapter = RestAdapter.Builder()
+                            .setConverter(GsonConverter(gson))
+                            .setLogLevel(RestAdapter.LogLevel.FULL)
+                            .setLog(AndroidLog("PlatformPolls"))
+                            .setEndpoint(PlatformPolls.platformBaseUrl)
+                            .build()
+                    mPlatformPolls = restAdapter.create(PlatformPolls::class.java)
+                }
+                return mPlatformPolls!!
             }
 
         @JvmStatic
