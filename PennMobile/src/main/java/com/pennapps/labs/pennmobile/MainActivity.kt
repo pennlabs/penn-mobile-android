@@ -237,12 +237,7 @@ class MainActivity : AppCompatActivity() {
                 if (mPlatformPolls == null) {
                     val gsonBuilder = GsonBuilder()
                     val gson = gsonBuilder.create()
-                    /*
-                    RestAdapter.Builder()
-                            .setConverter(GsonConverter(gson))
-                            .setEndpoint("https://api.pennlabs.org")
-                            .build()
-                     */
+
                     val restAdapter = RestAdapter.Builder()
                             .setConverter(GsonConverter(gson))
                             .setLogLevel(RestAdapter.LogLevel.FULL)
