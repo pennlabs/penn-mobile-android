@@ -2,8 +2,12 @@ package com.pennapps.labs.pennmobile.api;
 
 import com.pennapps.labs.pennmobile.classes.AccessTokenResponse;
 import com.pennapps.labs.pennmobile.classes.GetUserResponse;
+import com.pennapps.labs.pennmobile.classes.Poll;
+import com.pennapps.labs.pennmobile.classes.Venue;
 
 import org.apache.commons.lang3.RandomStringUtils;
+
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.http.DELETE;
@@ -14,6 +18,7 @@ import retrofit.http.Header;
 import retrofit.http.PATCH;
 import retrofit.http.POST;
 import retrofit.http.Path;
+import rx.Observable;
 
 public interface PlatformPolls {
 
@@ -31,22 +36,15 @@ public interface PlatformPolls {
 
     @FormUrlEncoded
     @GET("/polls/browse/")
-    void browsePolls(
-            /*@Field("refresh_token") String refreshToken,
-            @Field("grant_type") String grantType,
-            @Field("client_id") String clientID,
-            Callback<AccessTokenResponse> callback*/);
+    Observable<List<Poll>> validPollsList();
 
     @FormUrlEncoded
     @GET("/polls/review/")
-    void reviewPolls(
-            /*@Header("Authorization") String authorizationHeader,
-            @Field("token") String token,
-            Callback<GetUserResponse> callback*/);
+    Observable<List<Poll>> reviewPollsList();
 
     @FormUrlEncoded
     @PATCH("/polls/{id}")
-    void updatePollField(
+    void updatePollField( //potentially return callback
             @Path("id") int id
     );
 
@@ -58,7 +56,9 @@ public interface PlatformPolls {
 
     @FormUrlEncoded
     @POST("/options")
-    void createPollOption();
+    void createPollOption(
+            @Field("id") int id
+    );
 
     @FormUrlEncoded
     @PATCH("/options/{id}")
@@ -90,15 +90,15 @@ public interface PlatformPolls {
 
     @FormUrlEncoded
     @GET("/poll-history")
-    void getPollHistory();
+    Observable<List<Poll>> pollsHistory();
 
     @FormUrlEncoded
     @GET("/populations")
-    void getPopulationTypes();
+    Observable<List<String>> pollsPopulations();
 
     @FormUrlEncoded
     @GET("/vote-statistics/{id}")
-    void getVoteStats(
+    Observable<List<String>> getVoteStats(
             @Path("id") int id
     );
 }
