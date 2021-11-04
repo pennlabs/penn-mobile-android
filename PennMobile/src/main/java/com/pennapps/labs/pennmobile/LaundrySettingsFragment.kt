@@ -149,7 +149,6 @@ class LaundrySettingsFragment : Fragment() {
         if (Build.VERSION.SDK_INT > 17){
             mActivity.setSelectedTab(MainActivity.LAUNDRY)
         }
-        loadingPanel?.visibility = View.VISIBLE
     }
 
     override fun onDestroyView() {

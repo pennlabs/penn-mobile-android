@@ -19,9 +19,8 @@ import com.pennapps.labs.pennmobile.classes.Venue
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.utils.Utils
 import kotlinx.android.synthetic.main.fragment_dining.*
-import kotlinx.android.synthetic.main.fragment_dining.title_view
 import kotlinx.android.synthetic.main.fragment_dining.view.*
-import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.include_main.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.no_results.*
 import rx.Observable
@@ -70,8 +69,7 @@ class DiningFragment : Fragment() {
         inflater.inflate(R.menu.dining_sort, menu)
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
         // sort the dining halls in the user-specified order
-        val order = sp.getString("dining_sortBy", "RESIDENTIAL")
-        when (order) {
+        when (sp.getString("dining_sortBy", "RESIDENTIAL")) {
             "RESIDENTIAL" -> {
                 menu.findItem(R.id.action_sort_residential).isChecked = true
             }
@@ -168,6 +166,7 @@ class DiningFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         mActivity.removeTabs()
+        //mActivity.toolbar.visibility = View.GONE
         mActivity.setTitle(R.string.dining)
         if (Build.VERSION.SDK_INT > 17) {
             mActivity.setSelectedTab(MainActivity.DINING)
@@ -184,7 +183,6 @@ class DiningFragment : Fragment() {
     private fun setTitle(title: CharSequence) {
         title_view.text = title
     }
-
 
     /**
      * Shows SnackBar message right below the app bar

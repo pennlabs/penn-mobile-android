@@ -91,6 +91,7 @@ class MenuFragment : Fragment() {
         mActivity = activity as MainActivity
         mActivity.toolbar.visibility = View.VISIBLE
         setHasOptionsMenu(true)
+        mActivity.hideBottomBar()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -137,6 +138,5 @@ class MenuFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         mActivity.removeTabs()
-        mActivity.toolbar.visibility = View.GONE
     }
 }

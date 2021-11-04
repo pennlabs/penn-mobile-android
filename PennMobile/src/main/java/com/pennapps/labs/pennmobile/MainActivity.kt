@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
@@ -13,8 +12,8 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
-import android.view.LayoutInflater
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -23,6 +22,8 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.graphics.ColorUtils
+import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -86,6 +87,27 @@ class MainActivity : AppCompatActivity() {
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
+        expandable_bottom_bar.addItems(
+                ExpandableBottomBarMenuItem.Builder(this)
+                        .addItem(HOME, R.drawable.ic_home_grey)
+                        .textRes(R.string.floating_bottom_bar_home)
+                        .colorRes(R.color.floating_bottom_bar_selected).create()
+                        .addItem(DINING, R.drawable.ic_dining_grey)
+                        .textRes(R.string.floating_bottom_bar_dining)
+                        .colorRes(R.color.floating_bottom_bar_selected).create()
+                        .addItem(GSR, R.drawable.ic_gsr_grey)
+                        .textRes(R.string.floating_bottom_bar_gsr_booking)
+                        .colorRes(R.color.floating_bottom_bar_selected).create()
+                        .addItem(LAUNDRY, R.drawable.ic_laundry_grey)
+                        .textRes(R.string.floating_bottom_bar_laundry)
+                        .colorRes(R.color.floating_bottom_bar_selected).create()
+                        .addItem(MORE, R.drawable.ic_more_grey)
+                        .textRes(R.string.floating_bottom_bar_more)
+                        .colorRes(R.color.floating_bottom_bar_selected).create()
+                        .build()
+        )
+        onExpandableBottomNavigationItemSelected()
+
         // Show HomeFragment if logged in, otherwise show LoginFragment
         val pennKey = mSharedPrefs.getString(getString(R.string.pennkey), null)
         val guestMode = mSharedPrefs.getBoolean(getString(R.string.guest_mode), false)
@@ -94,32 +116,11 @@ class MainActivity : AppCompatActivity() {
         } else {
             startHomeFragment()
         }
-        expandable_bottom_bar.addItems(
-                ExpandableBottomBarMenuItem.Builder(this)
-                        .addItem(R.id.icon_home, R.drawable.ic_home_grey)
-                        .textRes(R.string.floating_bottom_bar_home)
-                        .colorRes(R.color.floating_bottom_bar_selected).create()
-                        .addItem(R.id.icon_extra, R.drawable.ic_dining_grey)
-                        .textRes(R.string.floating_bottom_bar_dining)
-                        .colorRes(R.color.floating_bottom_bar_selected).create()
-                        .addItem(R.id.icon_likes, R.drawable.ic_gsr_grey)
-                        .textRes(R.string.floating_bottom_bar_gsr_booking)
-                        .colorRes(R.color.floating_bottom_bar_selected).create()
-                        .addItem(R.id.icon_bookmarks, R.drawable.ic_laundry_grey)
-                        .textRes(R.string.floating_bottom_bar_laundry)
-                        .colorRes(R.color.floating_bottom_bar_selected).create()
-                        .addItem(R.id.icon_settings, R.drawable.ic_more_grey)
-                        .textRes(R.string.floating_bottom_bar_more)
-                        .colorRes(R.color.floating_bottom_bar_selected).create()
-                        .build()
-        )
     }
 
     override fun onResume() {
         super.onResume()
-        val layoutParams = this.content_frame.layoutParams as CoordinatorLayout.LayoutParams
-        layoutParams.setMargins(0,0,0,Utils.dpToPixel(this,24f))
-        this.content_frame.layoutParams = layoutParams
+        showBottomBar()
     }
 
     private fun onExpandableBottomNavigationItemSelected() {
@@ -139,10 +140,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    fun setSelectedTab(index: Int) {
-        //expandable_bottom_bar.select(index)
-//        tabBarView?.resetFocusOnAllTabs()
-//        tabBarView?.selectedTab = index
+    fun setSelectedTab(id: Int) {
+        expandable_bottom_bar.select(id)
     }
 
     fun closeKeyboard() {
@@ -159,21 +158,18 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.content_frame, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()
-        onExpandableBottomNavigationItemSelected()
-        //toolbar?.visibility = View.VISIBLE
+        expandable_bottom_bar.select(HOME)
         expandable_bottom_bar.visibility = View.VISIBLE
-        //tabBarView?.visibility = View.INVISIBLE
     }
 
     fun startLoginFragment() {
         val fragment: Fragment = LoginFragment()
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()
-        //toolbar?.visibility = View.GONE
         expandable_bottom_bar.visibility = View.GONE
-        //tabBarView?.visibility = View.GONE
     }
 
     fun showErrorToast(errorMessage: Int) {
@@ -221,6 +217,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isEmpty() || grantResults[0] == PackageManager.PERMISSION_DENIED) {
             if (requestCode == SaveContactsFragment.permission_read) {
                 showErrorToast(R.string.ask_contacts_fail)
@@ -234,17 +231,31 @@ class MainActivity : AppCompatActivity() {
                 .findViewById<TextView>(R.id.toolbar_title).text = title
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        showBottomBar()
+    }
+
+    fun hideBottomBar() {
+        expandable_bottom_bar.visibility = View.GONE
+        val layoutParams = this.content_frame.layoutParams as CoordinatorLayout.LayoutParams
+        layoutParams.setMargins(0, 0, 0, 0)
+        this.content_frame.layoutParams = layoutParams
+    }
+
+    private fun showBottomBar() {
+        expandable_bottom_bar.visibility = View.VISIBLE
+        val layoutParams = this.content_frame.layoutParams as CoordinatorLayout.LayoutParams
+        layoutParams.setMargins(0, 0, 0, Utils.dpToPixel(this, 16f))
+        this.content_frame.layoutParams = layoutParams
+    }
+
     companion object {
-        // 4 corresponds to the More button
-        const val HOME = 0
-        const val GSR = 1
-        const val DINING = 2
-        const val LAUNDRY = 3
-        const val FITNESS = 5
-        const val NEWS = 6
-        const val SUPPORT = 7
-        const val SETTINGS = 8
-        const val ABOUT = 9
+        const val HOME = 1
+        const val GSR = 2
+        const val DINING = 3
+        const val LAUNDRY = 4
+        const val MORE = 5
 
         private var mLabs: Labs? = null
         private var mPlatform: Platform? = null
@@ -342,22 +353,28 @@ fun isOnline(context: Context?): Boolean {
 
 /** Shows an error sneaker given a view group with an optional retry function */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-fun ViewGroup.showErrorSneaker(message: String, doOnRetry: (() -> Unit)?) {
+fun ViewGroup.showSneakerToast(message: String, doOnRetry: (() -> Unit)?, sneakerColor: Int) {
     val sneaker = Sneaker.with(this)
     val view = LayoutInflater.from(this.context)
             .inflate(R.layout.custom_sneaker_view, sneaker.getView(), false)
 
     view.blurView.setupWith(this)
-            .setFrameClearDrawable(ColorDrawable(Color.parseColor("#00FFFFFF")))
+            .setFrameClearDrawable(ColorDrawable(Color.TRANSPARENT))
             .setBlurAlgorithm(RenderScriptBlur(this.context))
             .setBlurRadius(10f)
             .setHasFixedTransformationMatrix(true)
-            .setOverlayColor(resources.getColor(R.color.sneakerBlurColorOverlay))
+            .setOverlayColor(resources.getColor(sneakerColor))
 
     val retryBtn = view.findViewById<TextView>(R.id.retryButton)
     doOnRetry ?: run { retryBtn.visibility = View.GONE }
     retryBtn.setOnClickListener { doOnRetry?.invoke() }
 
-    view.findViewById<TextView>(R.id.errorMessage).text = message
+    val messageView = view.findViewById<TextView>(R.id.errorMessage)
+    if (ColorUtils.calculateLuminance(resources.getColor(sneakerColor)) > 0.4) {
+        messageView.setTextColor(Color.BLACK)
+        view.findViewById<TextView>(R.id.retryButton).setTextColor(Color.BLACK)
+    }
+    messageView.text = message
+
     sneaker.sneakCustom(view).setCornerRadius(12, 16).setMessage(message)
 }

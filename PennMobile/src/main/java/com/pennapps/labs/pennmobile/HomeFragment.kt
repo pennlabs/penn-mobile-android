@@ -23,6 +23,7 @@ import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.utils.Utils
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
+import kotlinx.android.synthetic.main.include_main.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -102,8 +103,6 @@ class HomeFragment : Fragment() {
                 home_cells_rv?.adapter = HomeAdapter(ArrayList(cells))
                 loadingPanel?.visibility = View.GONE
                 home_refresh_layout?.isRefreshing = false
-                view?.let { displaySnack(it, "Just Updated") }
-
             }
         }, { throwable ->
             mActivity.runOnUiThread {
@@ -132,6 +131,7 @@ class HomeFragment : Fragment() {
         super.onResume()
         mActivity.removeTabs()
         this.setTitle(getString(R.string.home))
+        mActivity.toolbar.visibility = View.GONE
         val initials = sharedPreferences.getString(getString(R.string.initials), null)
         if (initials != null && initials.isNotEmpty()) {
             this.initials.text = initials
@@ -169,8 +169,6 @@ class HomeFragment : Fragment() {
         } ?: run {
             view.date_view.text = Utils.getCurrentSystemTime()
         }
-
-        // Appbar behavior init
         if (Build.VERSION.SDK_INT > 16) {
             (view.appbar_home.layoutParams
                 as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
@@ -178,7 +176,6 @@ class HomeFragment : Fragment() {
         view.profile.setOnClickListener {
             //TODO: Account Settings
         }
-
     }
 
     /**
@@ -187,7 +184,7 @@ class HomeFragment : Fragment() {
     @Suppress("DEPRECATION")
     private fun displaySnack(view: View, text: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            (view as ViewGroup).showErrorSneaker(message = text, doOnRetry = { })
+            (view as ViewGroup).showSneakerToast(message = text, doOnRetry = { }, sneakerColor = R.color.sneakerBlurColorOverlay)
         }
     }
 

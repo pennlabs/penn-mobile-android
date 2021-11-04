@@ -182,5 +182,12 @@
     <string name="initials">Initials</string>
     <string name="internet_error">Not Connected to the Internet</string>
     <string name="penn_mobile">Penn Mobile</string>
+    <string name="contacts">Contacts</string>
+    <string name="save_selection">Click to save selection</string>
+    <string name="laundry_alarm_off">Alarm Cancelled.</string>
+    <plurals name="laundry_alarm_on">
+        <item quantity="one">Alarm set for %1$d minute.</item>
+        <item quantity="other">Alarm set for %1$d minutes.</item>
+    </plurals>
 
 </resources>

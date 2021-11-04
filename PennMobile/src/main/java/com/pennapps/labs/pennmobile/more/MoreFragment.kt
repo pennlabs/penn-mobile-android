@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
@@ -14,6 +15,7 @@ import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.utils.Utils
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
+import kotlinx.android.synthetic.main.include_main.*
 
 class MoreFragment : Fragment() {
 
@@ -48,16 +50,10 @@ class MoreFragment : Fragment() {
         if (initials != null && initials.isNotEmpty()) {
             this.initials.text = initials
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                this.profile_background.setImageDrawable(
-                        resources.getDrawable
-                        (R.drawable.ic_guest_avatar, context?.theme))
-            } else {
-                @Suppress("DEPRECATION")
-                this.profile_background.setImageDrawable(
-                        resources.getDrawable
-                        (R.drawable.ic_guest_avatar))
-            }
+            this.profile_background.setImageDrawable(
+                    ResourcesCompat.getDrawable(resources,
+                            R.drawable.ic_guest_avatar, context?.theme)
+            )
         }
         super.onResume()
     }

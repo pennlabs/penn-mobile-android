@@ -2,10 +2,12 @@ package com.pennapps.labs.pennmobile.adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -72,6 +74,12 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
             holder.title.setVisibility(View.GONE);
             holder.lineChart.setVisibility(View.GONE);
             holder.layout.setBackgroundResource(0);
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.layout.getLayoutParams();
+            layoutParams.setMargins(0, 0, 0, 0);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                layoutParams.setMarginStart(0);
+            }
+            holder.layout.setLayoutParams(layoutParams);
             CardView container = (CardView) holder.dryerRecyclerView.getParent();
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) container.getLayoutParams();
             params.setMargins(0,0,0,0);

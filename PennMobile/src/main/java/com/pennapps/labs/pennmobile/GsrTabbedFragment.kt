@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.fragment_gsr_tabs.*
 import kotlinx.android.synthetic.main.fragment_gsr_tabs.view.*
 import kotlinx.android.synthetic.main.fragment_gsr_tabs.view.appbar_home
 import kotlinx.android.synthetic.main.fragment_gsr_tabs.view.date_view
+import kotlinx.android.synthetic.main.include_main.*
 import kotlinx.android.synthetic.main.fragment_dining.view.title_view as title_view1
 
 class GsrTabbedFragment : Fragment() {
@@ -55,6 +56,11 @@ class GsrTabbedFragment : Fragment() {
             internetConnectionGSR?.visibility = View.GONE
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        activity?.toolbar?.visibility = View.GONE
     }
 
     private fun initAppBar(view: View) {

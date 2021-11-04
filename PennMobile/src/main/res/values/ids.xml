@@ -6,4 +6,5 @@
     <item name="icon_bookmarks" type="id" />
     <item name="icon_settings" type="id" />
     <item name="mainLayout" type="id"/>
+    <item name="bottomBarLayout" type="id"/>
 </resources>

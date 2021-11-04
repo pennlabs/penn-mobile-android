@@ -1,38 +1,29 @@
 package com.pennapps.labs.pennmobile
 
 import android.content.Intent
+import android.content.SharedPreferences
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
-import com.pennapps.labs.pennmobile.adapters.AboutAdapter
-
-import kotlinx.android.synthetic.main.fragment_about.view.*
+import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.RequestListener
-import kotlinx.android.synthetic.main.fragment_about.view.logo_gif_iv
-import android.content.SharedPreferences
-import android.graphics.drawable.AnimatedVectorDrawable
-import android.os.Handler
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.preference.PreferenceManager
-import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
-import com.pennapps.labs.pennmobile.utils.Utils
-import kotlinx.android.synthetic.main.fragment_about.view.appbar_home
-import kotlinx.android.synthetic.main.fragment_about.view.date_view
-import kotlinx.android.synthetic.main.fragment_about.view.profile
+import com.pennapps.labs.pennmobile.adapters.AboutAdapter
+import kotlinx.android.synthetic.main.fragment_about.view.*
 import kotlinx.android.synthetic.main.fragment_home.*
-import java.util.*
+import kotlinx.android.synthetic.main.include_main.*
 
 class AboutFragment : Fragment() {
 
@@ -93,50 +84,20 @@ class AboutFragment : Fragment() {
             }
         }
 
-        initAppBar(view)
+        mActivity.toolbar.visibility = View.VISIBLE
+        mActivity.hideBottomBar()
+        mActivity.setTitle(R.string.contacts)
 
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initAppBar(view)
-    }
-
     override fun onResume() {
         super.onResume()
-        val mActivity : MainActivity? = activity as MainActivity
-        mActivity?.removeTabs()
-        mActivity?.setTitle(R.string.about)
-        val initials = sharedPreferences.getString(getString(R.string.initials), null)
-        if (initials != null && initials.isNotEmpty()) {
-            this.initials.text = initials
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                this.profile_background.setImageDrawable(
-                        resources.getDrawable
-                        (R.drawable.ic_guest_avatar, context?.theme))
-            } else {
-                @Suppress("DEPRECATION")
-                this.profile_background.setImageDrawable(
-                        resources.getDrawable
-                        (R.drawable.ic_guest_avatar))
-            }
-        }
+        val mActivity : MainActivity = activity as MainActivity
+        mActivity.removeTabs()
+        mActivity.setTitle(R.string.about)
         if (Build.VERSION.SDK_INT > 17) {
-            mActivity?.setSelectedTab(MainActivity.ABOUT)
-        }
-    }
-
-    private fun initAppBar(view: View) {
-        view.date_view.text = Utils.getCurrentSystemTime()
-        // Appbar behavior init
-        if (Build.VERSION.SDK_INT > 16) {
-            (view.appbar_home.layoutParams
-                    as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
-        }
-        view.profile.setOnClickListener {
-            //TODO: Account Settings
+            mActivity.setSelectedTab(MainActivity.MORE)
         }
     }
 

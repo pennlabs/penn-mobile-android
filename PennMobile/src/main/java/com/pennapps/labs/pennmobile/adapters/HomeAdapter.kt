@@ -291,6 +291,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             }
             i--;
         }
+        eventList.reverse()
 
         holder.itemView.home_card_title.text = "Upcoming Events"
         holder.itemView.home_card_subtitle.text = "UNIVERSITY NOTIFICATIONS"
@@ -314,7 +315,11 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
 
         val params : ConstraintLayout.LayoutParams =
                 holder.itemView.home_card_rv.layoutParams as ConstraintLayout.LayoutParams
-        params.setMargins(0, 0, 0, params.bottomMargin)
+        params.setMargins(0, 0, 0, 0)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            params.marginStart = 0
+        }
+
         holder.itemView.home_card_rv.layoutParams = params
 
         mLabs.room(roomID).subscribe({ room ->

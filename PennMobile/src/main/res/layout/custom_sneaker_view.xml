@@ -13,9 +13,9 @@
         android:layout_marginLeft="14dp"
         android:layout_marginTop="12dp"
         android:layout_marginRight="14dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="3dp"
         app:cardBackgroundColor="#00000000"
-        app:cardCornerRadius="12dp">
+        app:cardCornerRadius="16dp">
 
         <eightbitlab.com.blurview.BlurView
             android:id="@+id/blurView"
@@ -26,7 +26,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="@dimen/nav_bar_height"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -35,11 +35,11 @@
                     android:id="@+id/imageView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_gravity="end|center_vertical"
                     android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginRight="6dp"
                     app:srcCompat="@drawable/ic_caution" />
 
                 <TextView

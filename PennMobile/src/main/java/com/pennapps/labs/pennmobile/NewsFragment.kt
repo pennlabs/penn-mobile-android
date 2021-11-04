@@ -162,7 +162,6 @@ class NewsFragment : ListFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_news, container, false)
-        initAppBar(view)
         return view
     }
 
@@ -247,7 +246,7 @@ class NewsFragment : ListFragment() {
             }
         }
         if (Build.VERSION.SDK_INT > 17){
-            mActivity?.setSelectedTab(MainActivity.NEWS)
+            mActivity?.setSelectedTab(MainActivity.MORE)
         }
     }
 
@@ -255,17 +254,5 @@ class NewsFragment : ListFragment() {
         val mActivity : MainActivity? = activity as MainActivity
         mActivity?.removeTabs()
         super.onDestroyView()
-    }
-
-    private fun initAppBar(view: View) {
-        view.date_view.text = Utils.getCurrentSystemTime()
-        // Appbar behavior init
-        if (Build.VERSION.SDK_INT > 16) {
-            (view.appbar_home.layoutParams
-                    as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
-        }
-        view.profile.setOnClickListener {
-            //TODO: Account Settings
-        }
     }
 }
