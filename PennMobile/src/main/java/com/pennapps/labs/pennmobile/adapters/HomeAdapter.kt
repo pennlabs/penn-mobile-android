@@ -194,7 +194,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
 
             // Create palette from bitmap
             fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
-            val vibrantSwatch: Palette.Swatch? = createPaletteSync(bitmap).darkMutedSwatch
+            val vibrantSwatch: Palette.Swatch? = createPaletteSync(bitmap).darkVibrantSwatch
             vibrantSwatch?.rgb?.let { accentColor = it }
 
             mActivity.runOnUiThread {

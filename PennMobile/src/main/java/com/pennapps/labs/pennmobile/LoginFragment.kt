@@ -72,4 +72,9 @@ class LoginFragment : Fragment() {
         return v
     }
 
+    override fun onResume() {
+        super.onResume()
+        mActivity.hideBottomBar()
+    }
+
 }
