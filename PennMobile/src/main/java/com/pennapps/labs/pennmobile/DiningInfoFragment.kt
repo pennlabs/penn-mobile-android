@@ -2,7 +2,9 @@ package com.pennapps.labs.pennmobile
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -61,10 +63,15 @@ class DiningInfoFragment : Fragment() {
         val textView = TextView(mActivity)
         val intervalFormatter = DateTimeFormat.forPattern("yyyy-MM-dd")
         val dateTime = intervalFormatter.parseDateTime(day.date)
-        val dateString = dateTime.dayOfWeek().asText + ", " + dateTime.monthOfYear().asString + "/" + dateTime.dayOfMonth().asShortText
+        val dateString = dateTime.dayOfWeek().asText + ", " + dateTime.monthOfYear().asShortText + " " + dateTime.dayOfMonth().asText
+
         textView.text = dateString
         textView.setTextAppearance(mActivity, R.style.DiningInfoDate)
         textView.setPadding(0, 40, 0, 0)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            textView.typeface = resources.getFont(R.font.gilroy_light)
+        }
+        textView.setTextColor(resources.getColor(R.color.color_primary_dark))
 
         if (vertical.isEmpty()) {
             textView.id = 0

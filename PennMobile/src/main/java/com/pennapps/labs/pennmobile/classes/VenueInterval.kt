@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.classes
 
+import android.util.Log
 import com.google.gson.annotations.SerializedName
 import org.joda.time.DateTime
 import org.joda.time.IllegalInstantException
@@ -70,17 +71,24 @@ class VenueInterval {
         }
 
         fun getFormattedHour(hours: String): String {
-            var newHours = hours.substring(0, 5)
-            val hour = hours.substring(0, 2).toInt()
-            if (hour > 12) {
-                newHours = "" + (hour - 12) + hours.substring(2, 5)
+            try {
+                var newHours = hours.substring(0, 5)
+                val hour = hours.substring(0, 2).toInt()
+                if (hour > 12) {
+                    newHours = "" + (hour - 12) + hours.substring(2, 5)
+                }
+                newHours += if (hour >= 12) {
+                    "pm"
+                } else {
+                    "am"
+                }
+                return newHours
+
+            } catch (exception: Exception) {
+                Log.d("Time Formatting Error", exception.message ?: "")
+                return hours
             }
-            newHours += if (hour >= 12) {
-                "pm"
-            } else {
-                "am"
-            }
-            return newHours
+
         }
 
         companion object {
