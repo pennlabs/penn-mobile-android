@@ -68,8 +68,10 @@ class LoginWebviewFragment : Fragment() {
         mActivity = activity as MainActivity
         sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
 
-        clientID = getString(R.string.clientID)
-        redirectUri = getString(R.string.redirectUri)
+        // These values are added to the BuildConfig at runtime, to allow GitHub Actions
+        // to build the app without pushing the secrets to GitHub
+        clientID = BuildConfig.PLATFORM_CLIENT_ID
+        redirectUri = BuildConfig.PLATFORM_REDIRECT_URI
         codeVerifier = RandomStringUtils.randomAlphanumeric(64)
         codeChallenge = getCodeChallenge(codeVerifier)
         platformAuthUrl = platformBaseUrl + "/accounts/authorize/?response_type=code&client_id=" +

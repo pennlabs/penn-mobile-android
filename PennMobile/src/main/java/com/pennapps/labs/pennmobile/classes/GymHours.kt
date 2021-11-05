@@ -9,14 +9,20 @@ import org.joda.time.format.DateTimeFormatter
 
 class GymHours {
 
-
     @SerializedName("all_day")
-    private val allDay: Boolean = false
+    private var allDay: Boolean = false
 
     @Expose
-    private val start: String? = null
+    private var start: String? = null
     @Expose
-    private val end: String? = null
+    private var end: String? = null
+
+    // Secondary constructor used for testing
+    constructor(_allDay: Boolean, _start: String?, _end: String?) {
+        allDay = _allDay
+        start = _start
+        end = _end
+    }
 
     val interval: Interval
         get() {
