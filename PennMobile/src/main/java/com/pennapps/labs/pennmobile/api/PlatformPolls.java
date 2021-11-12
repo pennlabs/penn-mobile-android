@@ -94,11 +94,11 @@ public interface PlatformPolls {
 
     @FormUrlEncoded
     @GET("/populations")
-    Observable<List<String>> pollsPopulations();
+    Observable<List<Poll>> pollsPopulations();
 
     @FormUrlEncoded
     @GET("/vote-statistics/{id}")
-    Observable<List<String>> getVoteStats(
+    Observable<String> getVoteStats(
             @Path("id") int id
     );
 }
