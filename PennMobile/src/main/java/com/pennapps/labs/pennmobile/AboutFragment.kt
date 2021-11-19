@@ -61,7 +61,7 @@ class AboutFragment : Fragment() {
         view.our_team_rv?.layoutManager = GridLayoutManager(context, 3)
         val members = arrayListOf("Marta García Ferreiro", "Davies Lumumba",
                 "Sahit Penmatcha", "Varun Ramakrishnan", "Anna Wang", "Sophia Ye", "Awad Irfan",
-                "Vishesh Patel", "Liz Powell", "Anna Jiang", "Rohan Chhaya", "Julius Snipes")
+                "Vishesh Patel", "Liz Powell", "Anna Jiang", "Rohan Chhaya", "Julius Snipes", "Belinda Xi")
         view.our_team_rv?.adapter = AboutAdapter(members)
         ViewCompat.setNestedScrollingEnabled(view.our_team_rv, false)
 
