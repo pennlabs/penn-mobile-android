@@ -1,105 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="#00000000">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    <androidx.cardview.widget.CardView
+        android:id="@+id/dialog_card"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="#00FFFFFF"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <eightbitlab.com.blurview.BlurView
+            android:id="@+id/blurView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:paddingBottom="30dp"
-            android:layout_weight="1"
-            android:layout_marginTop="10dp"
-            android:layout_marginHorizontal="10dp">
+            android:layout_height="wrap_content"
+            android:outlineProvider="bounds"
+            tools:targetApi="lollipop">
 
-            <Button
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:layout_weight="3"
-                android:text="X"
-                android:id="@+id/cancel_button"
-                android:gravity="left"
-                android:textSize="15sp"
-                android:textColor="@color/washer_blue"
-                android:background="@drawable/dialog_button"/>
+                android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:text="Contact Info"
-                android:gravity="center"
-                android:textStyle="bold"
-                android:textSize="20sp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:paddingBottom="30dp">
 
-            </TextView>
+                    <Button
+                        android:id="@+id/cancel_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="3"
+                        android:background="@drawable/dialog_button"
+                        android:gravity="left"
+                        android:text="X"
+                        android:textColor="@color/washer_blue"
+                        android:textSize="15sp" />
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Save"
-                android:id="@+id/save_button"
-                android:textSize="15sp"
-                android:textColor="@color/washer_blue"
-                android:layout_marginLeft="10dp"
-                android:gravity="right"
-                android:layout_weight="3"
-                android:background="@drawable/dialog_button"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:text="Contact Info"
+                        android:textSize="20sp"
+                        android:textStyle="bold">
 
-        </LinearLayout>
+                    </TextView>
 
-        <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:orientation="horizontal"
-          android:paddingBottom="30dp"
-          android:layout_weight="1"
-          android:layout_marginHorizontal="10dp">
+                    <Button
+                        android:id="@+id/save_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="3"
+                        android:background="@drawable/dialog_button"
+                        android:gravity="right"
+                        android:text="Save"
+                        android:textColor="@color/washer_blue"
+                        android:textSize="15sp" />
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="first"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/edittext"
-                android:id="@+id/first_name"/>
+                </LinearLayout>
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="last"
-                android:background="@drawable/edittext"
-                android:id="@+id/last_name"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:paddingBottom="30dp">
 
-        </LinearLayout>
+                    <EditText
+                        android:id="@+id/first_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext"
+                        android:text="first" />
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="pennid@seas.upenn.edu"
-            android:layout_marginBottom="30dp"
-            android:layout_marginHorizontal="10dp"
-            android:background="@drawable/edittext"
-            android:id="@+id/email"/>
+                    <EditText
+                        android:id="@+id/last_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext"
+                        android:text="last" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="This information is used when booking GSRs and when displaying your name on the homepage."
-            android:textColor="@color/gray"
-            android:textSize="15sp"
-            android:layout_marginHorizontal="10dp"/>
+                </LinearLayout>
 
-    </LinearLayout>
+                <EditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginBottom="30dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/edittext"
+                    android:text="pennid@seas.upenn.edu" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_weight="1"
+                    android:text="This information is used when booking GSRs and when displaying your name on the homepage."
+                    android:textColor="@color/gray"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+        </eightbitlab.com.blurview.BlurView>
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,6 +13,8 @@ import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import kotlinx.android.synthetic.main.fragment_dining_preferences.*
 import kotlinx.android.synthetic.main.fragment_dining_preferences.view.*
+import kotlinx.android.synthetic.main.include_main.*
+import kotlinx.android.synthetic.main.fragment_dining_preferences.view.*
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
@@ -29,6 +31,7 @@ class DiningSettingsFragment : Fragment() {
         setHasOptionsMenu(true)
         mActivity = activity as MainActivity
         mActivity.title = "Select Favorites"
+        mActivity.toolbar.visibility = View.VISIBLE
         mLabs = MainActivity.labsInstance
     }
 
@@ -81,7 +84,7 @@ class DiningSettingsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        mActivity.toolbar.visibility = View.GONE
     }
 
     private fun saveDiningPreferences() {

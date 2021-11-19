@@ -2,12 +2,14 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="laundry_machine_view">70dp</dimen>
-    <dimen name="dryer_machine_view">78dp</dimen>
-    <dimen name="laundry_font_small">14sp</dimen>
+    <dimen name="laundry_machine_view">46dp</dimen>
+    <dimen name="dryer_machine_view">45dp</dimen>
+    <dimen name="laundry_font_small">12sp</dimen>
     <dimen name="cardview_height">150dp</dimen>
     <dimen name="gym_imageview_height">100dp</dimen>
     <dimen name="gym_imageview_width">150dp</dimen>
     <dimen name="card_imageview_padding">5dp</dimen>
     <dimen name="bottom_nav_icon_size">24dp</dimen>
+    <dimen name="nav_bar_height">65dp</dimen>
+    <dimen name="app_bar_height">80dp</dimen>
 </resources>

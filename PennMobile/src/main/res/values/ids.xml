@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="icon_home" type="id" />
+    <item name="icon_extra" type="id" />
+    <item name="icon_likes" type="id" />
+    <item name="icon_bookmarks" type="id" />
+    <item name="icon_settings" type="id" />
+    <item name="mainLayout" type="id"/>
+    <item name="bottomBarLayout" type="id"/>
+</resources>

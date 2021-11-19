@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.ListFragment
 import com.pennapps.labs.pennmobile.adapters.SupportAdapter
 import com.pennapps.labs.pennmobile.classes.Contact
+import kotlinx.android.synthetic.main.include_main.*
 import java.util.*
 
 class SupportFragment : ListFragment() {
@@ -43,6 +44,9 @@ class SupportFragment : ListFragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_support, container, false)
         setHasOptionsMenu(true)
+        mActivity.toolbar.visibility = View.VISIBLE
+        mActivity.toolbar.setNavigationIcon(R.drawable.ic_back_navigation)
+        mActivity.toolbar.setNavigationOnClickListener { mActivity.onBackPressed() }
         return view
     }
 
@@ -70,8 +74,9 @@ class SupportFragment : ListFragment() {
         super.onResume()
         mActivity.removeTabs()
         mActivity.setTitle(R.string.support)
+        mActivity.hideBottomBar()
         if (Build.VERSION.SDK_INT > 17) {
-            mActivity.setSelectedTab(MainActivity.SUPPORT)
+            mActivity.setSelectedTab(MainActivity.MORE)
         }
     }
 }

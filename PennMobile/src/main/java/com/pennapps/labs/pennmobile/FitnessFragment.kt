@@ -103,7 +103,7 @@ class FitnessFragment : Fragment() {
         mActivity.removeTabs()
         mActivity.setTitle(R.string.fitness)
         if (Build.VERSION.SDK_INT > 17){
-            mActivity.setSelectedTab(MainActivity.FITNESS)
+            mActivity.setSelectedTab(MainActivity.MORE)
         }
     }
 }
