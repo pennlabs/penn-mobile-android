@@ -2,7 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/support_contacts_add"
-        android:icon="@drawable/ic_contacts_download_blue"
+        android:icon="@drawable/ic_save_contacts"
         app:showAsAction="always"
-        android:title="@string/search_title"/>
+        android:title="@string/save_selection"/>
 </menu>

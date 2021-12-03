@@ -10,6 +10,7 @@ import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import kotlinx.android.synthetic.main.fragment_menu.view.*
+import kotlinx.android.synthetic.main.include_main.*
 import org.apache.commons.lang3.StringUtils
 
 class MenuFragment : Fragment() {
@@ -88,7 +89,9 @@ class MenuFragment : Fragment() {
         super.onCreate(savedInstanceState)
         mDiningHall = arguments?.getParcelable("DiningHall")
         mActivity = activity as MainActivity
+        mActivity.toolbar.visibility = View.VISIBLE
         setHasOptionsMenu(true)
+        mActivity.hideBottomBar()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

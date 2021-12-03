@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:id="@+id/action_sort_by"
+    <group
+        android:id="@+id/action_sort_by"
         android:checkableBehavior="single">
         <item
             android:id="@+id/action_sort_name"
-            android:title="@string/sort_by_name"/>
+            android:title="@string/sort_by_name" />
         <item
             android:id="@+id/action_sort_residential"
             android:title="@string/sort_by_residential" />

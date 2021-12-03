@@ -1,19 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraint"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="12dp"
-    android:paddingRight="4dp"
-    android:orientation="vertical">
+    android:layout_marginLeft="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:orientation="vertical"
+    tools:ignore="RtlHardcoded" >
 
     <RelativeLayout
+        android:id="@+id/relativeLayout"
         android:layout_width="@dimen/laundry_machine_view"
-        android:layout_height="@dimen/laundry_machine_view">
+        android:layout_height="@dimen/laundry_machine_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Switch
+            android:id="@+id/laundry_alarm_switch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/laundry_machine_image_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/laundry_machine_image_view"
-            android:layout_width="@dimen/laundry_machine_view"
-            android:layout_height="@dimen/laundry_machine_view" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="2dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="2dp" />
 
         <TextView
             android:id="@+id/min_left_time"
@@ -21,14 +45,24 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_gravity="center_horizontal"
-            android:textSize="20sp" />
+            android:fontFamily="@font/gilroy_bold"
+            android:paddingLeft="3dp"
+            android:paddingTop="2dp"
+            android:textSize="15sp"
+            tools:ignore="RtlSymmetry" />
 
     </RelativeLayout>
 
-    <Switch
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/bell_notification_icon"
+        android:layout_width="17dp"
+        android:layout_height="17dp"
         android:layout_gravity="center_horizontal"
-        android:id="@+id/laundry_alarm_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="bell_animation.json"
+        app:lottie_loop="false" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

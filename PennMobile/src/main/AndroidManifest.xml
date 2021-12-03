@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.pennapps.labs.pennmobile"
     android:versionCode="57"
     android:versionName="1.4.2">
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <application
         android:name="androidx.multidex.MultiDexApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:theme="@style/AppTheme.Launcher"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:targetApi="m">
         <activity
             android:name=".MainActivity"
             android:label=""
@@ -28,8 +31,12 @@
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="18a765536e6539a73a15dd36c369ed29cfb91aa1" />
+      <meta-data
+          android:name="preloaded_fonts"
+          android:resource="@array/preloaded_fonts"
+          />
 
-        <receiver
+      <receiver
             android:name=".LaundryBroadcastReceiver"
             android:enabled="true"
             android:exported="true" /> <!-- receiver for laundry -->

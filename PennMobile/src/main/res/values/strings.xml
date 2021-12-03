@@ -26,6 +26,10 @@
     <!--Home Screen -->
     <string name="home">Home</string>
 
+    <!--Floating Bottom Bar -->
+    <string name="accessibility_description">Screen menu</string>
+    <string name="accessibility_item_description">%1$s menu item</string>
+
     <!-- Dining -->
     <string name="dining_hall_open">Open</string>
     <string name="dining_hall_closed">Closed</string>
@@ -107,7 +111,7 @@
     <string name="feedback_txt">Click below to give us feedback!</string>
     <string name="request_feature">REQUEST A FEATURE</string>
     <string name="our_team">Our Team</string>
-    <string name="penn_labs_copyright">\u00A9 2019 Penn Labs</string>
+    <string name="penn_labs_copyright">\u00A9 2021 Penn Labs</string>
     <string name="pref_courses_title">Courses</string>
     <string name="pref_recitations">Show recitations</string>
 
@@ -170,6 +174,21 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="guest_mode">"Guest"</string>
+    <string name="floating_bottom_bar_home">Home</string>
+    <string name="floating_bottom_bar_dining">Dining</string>
+    <string name="floating_bottom_bar_gsr_booking">GSR</string>
+    <string name="floating_bottom_bar_laundry">Laundry</string>
+    <string name="floating_bottom_bar_more">More</string>
+    <string name="initials">Initials</string>
+    <string name="internet_error">Not Connected to the Internet</string>
+    <string name="penn_mobile">Penn Mobile</string>
+    <string name="contacts">Contacts</string>
+    <string name="save_selection">Click to save selection</string>
+    <string name="laundry_alarm_off">Alarm Cancelled.</string>
+    <plurals name="laundry_alarm_on">
+        <item quantity="one">Alarm set for %1$d minute.</item>
+        <item quantity="other">Alarm set for %1$d minutes.</item>
+    </plurals>
 
 
 

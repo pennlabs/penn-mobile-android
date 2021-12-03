@@ -1,0 +1,296 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.pennapps.labs.pennmobile"
+4    android:versionCode="55"
+5    android:versionName="1.4.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="16"
+8-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml
+9        android:targetSdkVersion="29" />
+9-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml
+10
+11    <uses-permission android:name="android.permission.WAKE_LOCK" />
+11-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:8:5-68
+11-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:8:22-65
+12
+13    <uses-feature
+13-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:47:5-49:35
+14        android:glEsVersion="0x00020000"
+14-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:48:9-41
+15        android:required="true" />
+15-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:49:9-32
+16
+17    <uses-permission android:name="android.permission.INTERNET" />
+17-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:50:5-67
+17-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:50:22-64
+18    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- for Penn Transit API -->
+18-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:51:5-79
+18-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:51:22-76
+19    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+19-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:52:5-81
+19-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:52:22-78
+20    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" /> <!-- vibration for laundry alert -->
+20-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:53:5-98
+20-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:53:22-95
+21    <uses-permission android:name="com.pennapps.labs.pennmobile.permission.MAPS_RECEIVE" /> <!-- adding new contacts -->
+21-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:54:5-92
+21-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:54:22-89
+22    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+22-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:55:5-79
+22-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:55:22-76
+23    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+23-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:56:5-81
+23-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:56:22-78
+24    <uses-permission android:name="android.permission.VIBRATE" />
+24-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:57:5-66
+24-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:57:22-63
+25    <uses-permission android:name="android.permission.READ_CONTACTS" />
+25-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:58:5-72
+25-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:58:22-69
+26    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+26-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:60:5-73
+26-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:60:22-70
+27
+28    <!-- Required by older versions of Google Play services to create IID tokens -->
+29    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+29-->[com.google.firebase:firebase-iid:20.1.5] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/3833375dfa190e3e67038d9d4db197ac/jetified-firebase-iid-20.1.5/AndroidManifest.xml:26:5-82
+29-->[com.google.firebase:firebase-iid:20.1.5] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/3833375dfa190e3e67038d9d4db197ac/jetified-firebase-iid-20.1.5/AndroidManifest.xml:26:22-79
+30    <uses-permission android:name="com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE" />
+30-->[com.google.android.gms:play-services-measurement:17.4.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/f6914edfb148636a83562fb39d21df82/jetified-play-services-measurement-17.4.1/AndroidManifest.xml:26:5-110
+30-->[com.google.android.gms:play-services-measurement:17.4.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/f6914edfb148636a83562fb39d21df82/jetified-play-services-measurement-17.4.1/AndroidManifest.xml:26:22-107
+31
+32    <application
+32-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:9:5-46:19
+33        android:name="androidx.multidex.MultiDexApplication"
+33-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:10:9-61
+34        android:allowBackup="true"
+34-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:11:9-35
+35        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+35-->[androidx.core:core:1.1.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/b08dbf65f0dfeb1d61f73b6736384432/core-1.1.0/AndroidManifest.xml:24:18-86
+36        android:debuggable="true"
+37        android:hardwareAccelerated="true"
+37-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:12:9-43
+38        android:icon="@mipmap/ic_launcher"
+38-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:13:9-43
+39        android:testOnly="true"
+40        android:theme="@style/AppTheme.Launcher"
+40-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:14:9-49
+41        android:usesCleartextTraffic="true" >
+41-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:15:9-44
+42        <activity
+42-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:17:9-27:20
+43            android:name="com.pennapps.labs.pennmobile.MainActivity"
+43-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:18:13-41
+44            android:label=""
+44-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:19:13-29
+45            android:screenOrientation="portrait"
+45-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:20:13-49
+46            android:windowSoftInputMode="adjustPan" >
+46-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:21:13-52
+47            <intent-filter>
+47-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:22:13-26:29
+48                <action android:name="android.intent.action.MAIN" />
+48-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:23:17-69
+48-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:23:25-66
+49
+50                <category android:name="android.intent.category.LAUNCHER" />
+50-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:24:17-77
+50-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:24:27-74
+51
+52                <action android:name="android.intent.action.VIEW" />
+52-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:25:17-69
+52-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:25:25-66
+53            </intent-filter>
+54        </activity>
+55
+56        <meta-data
+56-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:28:9-30:69
+57            android:name="com.google.android.gms.version"
+57-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:29:13-58
+58            android:value="@integer/google_play_services_version" />
+58-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:30:13-66
+59        <meta-data
+59-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:31:9-33:72
+60            android:name="com.crashlytics.ApiKey"
+60-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:32:13-50
+61            android:value="18a765536e6539a73a15dd36c369ed29cfb91aa1" />
+61-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:33:13-69
+62        <meta-data
+62-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:34:7-37:13
+63            android:name="preloaded_fonts"
+63-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:35:11-41
+64            android:resource="@array/preloaded_fonts" />
+64-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:36:11-52
+65
+66        <receiver
+66-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:39:7-42:39
+67            android:name="com.pennapps.labs.pennmobile.LaundryBroadcastReceiver"
+67-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:40:13-53
+68            android:enabled="true"
+68-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:41:13-35
+69            android:exported="true" /> <!-- receiver for laundry -->
+69-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:42:13-36
+70        <uses-library
+70-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:43:9-45:40
+71            android:name="com.google.android.maps"
+71-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:44:13-51
+72            android:required="false" />
+72-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:45:13-37
+73
+74        <service
+74-->[com.google.firebase:firebase-crashlytics:17.0.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/c6086cf6fa559b13577008ff32d2d11c/jetified-firebase-crashlytics-17.0.0/AndroidManifest.xml:13:9-19:19
+75            android:name="com.google.firebase.components.ComponentDiscoveryService"
+75-->[com.google.firebase:firebase-crashlytics:17.0.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/c6086cf6fa559b13577008ff32d2d11c/jetified-firebase-crashlytics-17.0.0/AndroidManifest.xml:14:13-84
+76            android:directBootAware="true"
+76-->[com.google.firebase:firebase-common:19.3.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/92d082ed6c3e3f9d648991522fd56625/jetified-firebase-common-19.3.0/AndroidManifest.xml:34:13-43
+77            android:exported="false" >
+77-->[com.google.firebase:firebase-crashlytics:17.0.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/c6086cf6fa559b13577008ff32d2d11c/jetified-firebase-crashlytics-17.0.0/AndroidManifest.xml:15:13-37
+78            <meta-data
+78-->[com.google.firebase:firebase-crashlytics:17.0.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/c6086cf6fa559b13577008ff32d2d11c/jetified-firebase-crashlytics-17.0.0/AndroidManifest.xml:16:13-18:85
+79                android:name="com.google.firebase.components:com.google.firebase.crashlytics.CrashlyticsRegistrar"
+79-->[com.google.firebase:firebase-crashlytics:17.0.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/c6086cf6fa559b13577008ff32d2d11c/jetified-firebase-crashlytics-17.0.0/AndroidManifest.xml:17:17-115
+80                android:value="com.google.firebase.components.ComponentRegistrar" />
+80-->[com.google.firebase:firebase-crashlytics:17.0.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/c6086cf6fa559b13577008ff32d2d11c/jetified-firebase-crashlytics-17.0.0/AndroidManifest.xml:18:17-82
+81            <meta-data
+81-->[com.google.android.gms:play-services-measurement-api:17.4.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/464227226ae74c84845c273e6454ed04/jetified-play-services-measurement-api-17.4.1/AndroidManifest.xml:30:13-32:85
+82                android:name="com.google.firebase.components:com.google.firebase.analytics.connector.internal.AnalyticsConnectorRegistrar"
+82-->[com.google.android.gms:play-services-measurement-api:17.4.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/464227226ae74c84845c273e6454ed04/jetified-play-services-measurement-api-17.4.1/AndroidManifest.xml:31:17-139
+83                android:value="com.google.firebase.components.ComponentRegistrar" />
+83-->[com.google.android.gms:play-services-measurement-api:17.4.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/464227226ae74c84845c273e6454ed04/jetified-play-services-measurement-api-17.4.1/AndroidManifest.xml:32:17-82
+84            <meta-data
+84-->[com.google.firebase:firebase-iid:20.1.5] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/3833375dfa190e3e67038d9d4db197ac/jetified-firebase-iid-20.1.5/AndroidManifest.xml:32:13-34:85
+85                android:name="com.google.firebase.components:com.google.firebase.iid.Registrar"
+85-->[com.google.firebase:firebase-iid:20.1.5] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/3833375dfa190e3e67038d9d4db197ac/jetified-firebase-iid-20.1.5/AndroidManifest.xml:33:17-96
+86                android:value="com.google.firebase.components.ComponentRegistrar" />
+86-->[com.google.firebase:firebase-iid:20.1.5] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/3833375dfa190e3e67038d9d4db197ac/jetified-firebase-iid-20.1.5/AndroidManifest.xml:34:17-82
+87            <meta-data
+87-->[com.google.firebase:firebase-installations:16.2.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/5443241849e8be8d213c002cead5f445/jetified-firebase-installations-16.2.1/AndroidManifest.xml:17:13-19:85
+88                android:name="com.google.firebase.components:com.google.firebase.installations.FirebaseInstallationsRegistrar"
+88-->[com.google.firebase:firebase-installations:16.2.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/5443241849e8be8d213c002cead5f445/jetified-firebase-installations-16.2.1/AndroidManifest.xml:18:17-127
+89                android:value="com.google.firebase.components.ComponentRegistrar" />
+89-->[com.google.firebase:firebase-installations:16.2.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/5443241849e8be8d213c002cead5f445/jetified-firebase-installations-16.2.1/AndroidManifest.xml:19:17-82
+90        </service>
+91
+92        <provider
+92-->[com.squareup.picasso:picasso:2.71828] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/0cb672691cf31b6bb67cbaa23833e09a/jetified-picasso-2.71828/AndroidManifest.xml:8:9-11:40
+93            android:name="com.squareup.picasso.PicassoProvider"
+93-->[com.squareup.picasso:picasso:2.71828] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/0cb672691cf31b6bb67cbaa23833e09a/jetified-picasso-2.71828/AndroidManifest.xml:9:13-64
+94            android:authorities="com.pennapps.labs.pennmobile.com.squareup.picasso"
+94-->[com.squareup.picasso:picasso:2.71828] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/0cb672691cf31b6bb67cbaa23833e09a/jetified-picasso-2.71828/AndroidManifest.xml:10:13-72
+95            android:exported="false" /> <!-- Needs to be explicitly declared on P+ -->
+95-->[com.squareup.picasso:picasso:2.71828] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/0cb672691cf31b6bb67cbaa23833e09a/jetified-picasso-2.71828/AndroidManifest.xml:11:13-37
+96        <uses-library
+96-->[com.google.android.gms:play-services-maps:17.0.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/8c73e4e82b1d5018c4018b1949253c17/jetified-play-services-maps-17.0.0/AndroidManifest.xml:33:9-35:40
+97            android:name="org.apache.http.legacy"
+97-->[com.google.android.gms:play-services-maps:17.0.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/8c73e4e82b1d5018c4018b1949253c17/jetified-play-services-maps-17.0.0/AndroidManifest.xml:34:13-50
+98            android:required="false" />
+98-->[com.google.android.gms:play-services-maps:17.0.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/8c73e4e82b1d5018c4018b1949253c17/jetified-play-services-maps-17.0.0/AndroidManifest.xml:35:13-37
+99
+100        <service
+100-->[com.google.android.datatransport:transport-backend-cct:2.2.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/3ea8ce7c89ebfb3b71e7deae23529b31/jetified-transport-backend-cct-2.2.1/AndroidManifest.xml:29:9-35:19
+101            android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery"
+101-->[com.google.android.datatransport:transport-backend-cct:2.2.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/3ea8ce7c89ebfb3b71e7deae23529b31/jetified-transport-backend-cct-2.2.1/AndroidManifest.xml:30:13-103
+102            android:exported="false" >
+102-->[com.google.android.datatransport:transport-backend-cct:2.2.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/3ea8ce7c89ebfb3b71e7deae23529b31/jetified-transport-backend-cct-2.2.1/AndroidManifest.xml:31:13-37
+103            <meta-data
+103-->[com.google.android.datatransport:transport-backend-cct:2.2.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/3ea8ce7c89ebfb3b71e7deae23529b31/jetified-transport-backend-cct-2.2.1/AndroidManifest.xml:32:13-34:39
+104                android:name="backend:com.google.android.datatransport.cct.CctBackendFactory"
+104-->[com.google.android.datatransport:transport-backend-cct:2.2.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/3ea8ce7c89ebfb3b71e7deae23529b31/jetified-transport-backend-cct-2.2.1/AndroidManifest.xml:33:17-94
+105                android:value="cct" />
+105-->[com.google.android.datatransport:transport-backend-cct:2.2.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/3ea8ce7c89ebfb3b71e7deae23529b31/jetified-transport-backend-cct-2.2.1/AndroidManifest.xml:34:17-36
+106        </service>
+107        <service
+107-->[com.google.android.datatransport:transport-runtime:2.2.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/85773ba3e2e066cfef6a88bdb0c46736/jetified-transport-runtime-2.2.1/AndroidManifest.xml:26:9-30:19
+108            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService"
+108-->[com.google.android.datatransport:transport-runtime:2.2.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/85773ba3e2e066cfef6a88bdb0c46736/jetified-transport-runtime-2.2.1/AndroidManifest.xml:27:13-117
+109            android:exported="false"
+109-->[com.google.android.datatransport:transport-runtime:2.2.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/85773ba3e2e066cfef6a88bdb0c46736/jetified-transport-runtime-2.2.1/AndroidManifest.xml:28:13-37
+110            android:permission="android.permission.BIND_JOB_SERVICE" >
+110-->[com.google.android.datatransport:transport-runtime:2.2.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/85773ba3e2e066cfef6a88bdb0c46736/jetified-transport-runtime-2.2.1/AndroidManifest.xml:29:13-69
+111        </service>
+112
+113        <receiver
+113-->[com.google.android.datatransport:transport-runtime:2.2.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/85773ba3e2e066cfef6a88bdb0c46736/jetified-transport-runtime-2.2.1/AndroidManifest.xml:32:9-34:40
+114            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver"
+114-->[com.google.android.datatransport:transport-runtime:2.2.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/85773ba3e2e066cfef6a88bdb0c46736/jetified-transport-runtime-2.2.1/AndroidManifest.xml:33:13-132
+115            android:exported="false" />
+115-->[com.google.android.datatransport:transport-runtime:2.2.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/85773ba3e2e066cfef6a88bdb0c46736/jetified-transport-runtime-2.2.1/AndroidManifest.xml:34:13-37
+116        <receiver
+116-->[com.google.firebase:firebase-iid:20.1.5] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/3833375dfa190e3e67038d9d4db197ac/jetified-firebase-iid-20.1.5/AndroidManifest.xml:37:9-44:20
+117            android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver"
+117-->[com.google.firebase:firebase-iid:20.1.5] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/3833375dfa190e3e67038d9d4db197ac/jetified-firebase-iid-20.1.5/AndroidManifest.xml:38:13-78
+118            android:exported="true"
+118-->[com.google.firebase:firebase-iid:20.1.5] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/3833375dfa190e3e67038d9d4db197ac/jetified-firebase-iid-20.1.5/AndroidManifest.xml:39:13-36
+119            android:permission="com.google.android.c2dm.permission.SEND" >
+119-->[com.google.firebase:firebase-iid:20.1.5] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/3833375dfa190e3e67038d9d4db197ac/jetified-firebase-iid-20.1.5/AndroidManifest.xml:40:13-73
+120            <intent-filter>
+120-->[com.google.firebase:firebase-iid:20.1.5] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/3833375dfa190e3e67038d9d4db197ac/jetified-firebase-iid-20.1.5/AndroidManifest.xml:41:13-43:29
+121                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+121-->[com.google.firebase:firebase-iid:20.1.5] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/3833375dfa190e3e67038d9d4db197ac/jetified-firebase-iid-20.1.5/AndroidManifest.xml:42:17-81
+121-->[com.google.firebase:firebase-iid:20.1.5] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/3833375dfa190e3e67038d9d4db197ac/jetified-firebase-iid-20.1.5/AndroidManifest.xml:42:25-78
+122            </intent-filter>
+123        </receiver>
+124
+125        <provider
+125-->[com.google.firebase:firebase-common:19.3.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/92d082ed6c3e3f9d648991522fd56625/jetified-firebase-common-19.3.0/AndroidManifest.xml:26:9-30:39
+126            android:name="com.google.firebase.provider.FirebaseInitProvider"
+126-->[com.google.firebase:firebase-common:19.3.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/92d082ed6c3e3f9d648991522fd56625/jetified-firebase-common-19.3.0/AndroidManifest.xml:27:13-77
+127            android:authorities="com.pennapps.labs.pennmobile.firebaseinitprovider"
+127-->[com.google.firebase:firebase-common:19.3.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/92d082ed6c3e3f9d648991522fd56625/jetified-firebase-common-19.3.0/AndroidManifest.xml:28:13-72
+128            android:exported="false"
+128-->[com.google.firebase:firebase-common:19.3.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/92d082ed6c3e3f9d648991522fd56625/jetified-firebase-common-19.3.0/AndroidManifest.xml:29:13-37
+129            android:initOrder="100" />
+129-->[com.google.firebase:firebase-common:19.3.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/92d082ed6c3e3f9d648991522fd56625/jetified-firebase-common-19.3.0/AndroidManifest.xml:30:13-36
+130
+131        <activity
+131-->[com.google.android.gms:play-services-base:17.0.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/a5bdaaa3ffaadd27ae409893635fe0ea/jetified-play-services-base-17.0.0/AndroidManifest.xml:23:9-26:75
+132            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+132-->[com.google.android.gms:play-services-base:17.0.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/a5bdaaa3ffaadd27ae409893635fe0ea/jetified-play-services-base-17.0.0/AndroidManifest.xml:24:13-79
+133            android:exported="false"
+133-->[com.google.android.gms:play-services-base:17.0.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/a5bdaaa3ffaadd27ae409893635fe0ea/jetified-play-services-base-17.0.0/AndroidManifest.xml:25:13-37
+134            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+134-->[com.google.android.gms:play-services-base:17.0.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/a5bdaaa3ffaadd27ae409893635fe0ea/jetified-play-services-base-17.0.0/AndroidManifest.xml:26:13-72
+135
+136        <receiver
+136-->[com.google.android.gms:play-services-measurement:17.4.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/f6914edfb148636a83562fb39d21df82/jetified-play-services-measurement-17.4.1/AndroidManifest.xml:29:9-33:20
+137            android:name="com.google.android.gms.measurement.AppMeasurementReceiver"
+137-->[com.google.android.gms:play-services-measurement:17.4.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/f6914edfb148636a83562fb39d21df82/jetified-play-services-measurement-17.4.1/AndroidManifest.xml:30:13-85
+138            android:enabled="true"
+138-->[com.google.android.gms:play-services-measurement:17.4.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/f6914edfb148636a83562fb39d21df82/jetified-play-services-measurement-17.4.1/AndroidManifest.xml:31:13-35
+139            android:exported="false" >
+139-->[com.google.android.gms:play-services-measurement:17.4.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/f6914edfb148636a83562fb39d21df82/jetified-play-services-measurement-17.4.1/AndroidManifest.xml:32:13-37
+140        </receiver>
+141
+142        <service
+142-->[com.google.android.gms:play-services-measurement:17.4.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/f6914edfb148636a83562fb39d21df82/jetified-play-services-measurement-17.4.1/AndroidManifest.xml:35:9-38:40
+143            android:name="com.google.android.gms.measurement.AppMeasurementService"
+143-->[com.google.android.gms:play-services-measurement:17.4.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/f6914edfb148636a83562fb39d21df82/jetified-play-services-measurement-17.4.1/AndroidManifest.xml:36:13-84
+144            android:enabled="true"
+144-->[com.google.android.gms:play-services-measurement:17.4.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/f6914edfb148636a83562fb39d21df82/jetified-play-services-measurement-17.4.1/AndroidManifest.xml:37:13-35
+145            android:exported="false" />
+145-->[com.google.android.gms:play-services-measurement:17.4.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/f6914edfb148636a83562fb39d21df82/jetified-play-services-measurement-17.4.1/AndroidManifest.xml:38:13-37
+146        <service
+146-->[com.google.android.gms:play-services-measurement:17.4.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/f6914edfb148636a83562fb39d21df82/jetified-play-services-measurement-17.4.1/AndroidManifest.xml:39:9-43:72
+147            android:name="com.google.android.gms.measurement.AppMeasurementJobService"
+147-->[com.google.android.gms:play-services-measurement:17.4.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/f6914edfb148636a83562fb39d21df82/jetified-play-services-measurement-17.4.1/AndroidManifest.xml:40:13-87
+148            android:enabled="true"
+148-->[com.google.android.gms:play-services-measurement:17.4.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/f6914edfb148636a83562fb39d21df82/jetified-play-services-measurement-17.4.1/AndroidManifest.xml:41:13-35
+149            android:exported="false"
+149-->[com.google.android.gms:play-services-measurement:17.4.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/f6914edfb148636a83562fb39d21df82/jetified-play-services-measurement-17.4.1/AndroidManifest.xml:42:13-37
+150            android:permission="android.permission.BIND_JOB_SERVICE" />
+150-->[com.google.android.gms:play-services-measurement:17.4.1] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/f6914edfb148636a83562fb39d21df82/jetified-play-services-measurement-17.4.1/AndroidManifest.xml:43:13-69
+151
+152        <provider
+152-->[androidx.lifecycle:lifecycle-process:2.2.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/52d8a534466cff5ff7a63050060fffbb/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:25:9-29:43
+153            android:name="androidx.lifecycle.ProcessLifecycleOwnerInitializer"
+153-->[androidx.lifecycle:lifecycle-process:2.2.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/52d8a534466cff5ff7a63050060fffbb/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:26:13-79
+154            android:authorities="com.pennapps.labs.pennmobile.lifecycle-process"
+154-->[androidx.lifecycle:lifecycle-process:2.2.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/52d8a534466cff5ff7a63050060fffbb/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:27:13-69
+155            android:exported="false"
+155-->[androidx.lifecycle:lifecycle-process:2.2.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/52d8a534466cff5ff7a63050060fffbb/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:28:13-37
+156            android:multiprocess="true" />
+156-->[androidx.lifecycle:lifecycle-process:2.2.0] /Users/lumumba/.gradle/caches/transforms-2/files-2.1/52d8a534466cff5ff7a63050060fffbb/jetified-lifecycle-process-2.2.0/AndroidManifest.xml:29:13-40
+157    </application>
+158
+159</manifest>
