@@ -306,7 +306,7 @@ class MainActivity : AppCompatActivity() {
                     val gson = gsonBuilder.create()
                     val restAdapter = RestAdapter.Builder()
                             .setConverter(GsonConverter(gson))
-                            .setEndpoint("https://studentlife.pennlabs.org/")
+                            .setEndpoint("https://api.pennlabs.org/")
                             .build()
                     mLabs = restAdapter.create(Labs::class.java)
                 }
