@@ -15,7 +15,7 @@ import java.util.*
 class VenueInterval {
     var date: String? = null
 
-    @SerializedName("meal")
+    //@SerializedName("meal")
     var meals: List<MealInterval> = arrayListOf()
 
     /**

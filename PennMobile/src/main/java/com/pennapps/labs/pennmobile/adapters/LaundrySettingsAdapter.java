@@ -16,6 +16,7 @@ import com.pennapps.labs.pennmobile.MainActivity;
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager;
+import com.pennapps.labs.pennmobile.api.StudentLife;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
     private String s;
     private List<Switch> switches = new ArrayList<>();
     private int maxNumRooms = 3;
-    private Labs labs;
+    private StudentLife labs;
     private String deviceID;
 
     public LaundrySettingsAdapter(Context context, HashMap<String, List<LaundryRoomSimple>> laundryRooms, List<String> laundryHalls) {
@@ -52,7 +53,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
         MainActivity mainActivity = (MainActivity) mContext;
         deviceID = (new OAuth2NetworkManager(mainActivity)).getDeviceId();
 
-        labs = MainActivity.getLabsInstance();
+        labs = MainActivity.getStudentLifeInstance();
 
         // first time
         if (sp.getInt(s, -1) == -1) {
@@ -264,7 +265,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
     }
 
     private void getPreferencesData() {
-        labs = MainActivity.getLabsInstance();
+        labs = MainActivity.getStudentLifeInstance();
         labs.getLaundryPref(deviceID).subscribe(new Action1<List<Integer>>() {
             @Override
             public void call(List<Integer> integers) {

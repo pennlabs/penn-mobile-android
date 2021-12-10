@@ -26,11 +26,11 @@ class GSRRoom {
     var lid: Int? = null
 
 
-    @SerializedName("name")
+    @SerializedName("room_name")
     @Expose
     var name: String? = null
 
-    @SerializedName("room_id")
+    @SerializedName("id")
     @Expose
     var room_id: Int? = null
 
@@ -39,7 +39,7 @@ class GSRRoom {
     var thumbnail: String? = null
 
 
-    @SerializedName("times")
+    @SerializedName("availability")
     @Expose
     var slots: Array<GSRSlot>? = null
 }

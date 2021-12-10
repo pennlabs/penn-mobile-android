@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pennapps.labs.pennmobile.adapters.DiningSettingsAdapter
-import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import kotlinx.android.synthetic.main.fragment_dining_preferences.*
@@ -21,7 +21,7 @@ import java.util.*
 
 class DiningSettingsFragment : Fragment() {
     private lateinit var mActivity: MainActivity
-    private lateinit var mLabs: Labs
+    private lateinit var mStudentLife: StudentLife
     private lateinit var halls: List<DiningHall>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +29,7 @@ class DiningSettingsFragment : Fragment() {
         setHasOptionsMenu(true)
         mActivity = activity as MainActivity
         mActivity.title = "Select Favorites"
-        mLabs = MainActivity.labsInstance
+        mStudentLife = MainActivity.studentLifeInstance
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -61,7 +61,7 @@ class DiningSettingsFragment : Fragment() {
 
     private fun getDiningHalls() {
         // Map each item in the list of venues to a Venue Observable, then map each Venue to a DiningHall Observable
-        mLabs.venues()
+        mStudentLife.venues()
                 .flatMap { venues -> Observable.from(venues) }
                 .flatMap { venue ->
                     val hall = DiningFragment.createHall(venue)
@@ -84,6 +84,7 @@ class DiningSettingsFragment : Fragment() {
         mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
     }
 
+
     private fun saveDiningPreferences() {
         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
         val favoriteDiningHalls = ArrayList<Int>()
@@ -98,7 +99,7 @@ class DiningSettingsFragment : Fragment() {
         var apiPreparedString = favoriteDiningHalls.toString()
         apiPreparedString = apiPreparedString.substring(1, apiPreparedString.length - 1)
 
-        mLabs.sendDiningPref(OAuth2NetworkManager(mActivity).getDeviceId(), apiPreparedString,
+        mStudentLife.sendDiningPref(OAuth2NetworkManager(mActivity).getDeviceId(), apiPreparedString,
                 object : ResponseCallback() {
             override fun success(response: Response) {
                 mActivity.onBackPressed()

@@ -4,17 +4,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
-import android.widget.Toolbar
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -27,11 +23,6 @@ import com.pennapps.labs.pennmobile.classes.HomeCell
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
-import android.provider.Settings.Secure
-import androidx.core.content.ContextCompat.getSystemService
-import android.telephony.TelephonyManager
-import android.graphics.PorterDuff
-import android.content.res.Configuration
 
 
 class HomeFragment : Fragment()  {
@@ -90,14 +81,18 @@ class HomeFragment : Fragment()  {
         }
 
         // get API data
-        val labs = MainActivity.labsInstance
-        labs.getHomePage(deviceID, accountID, sessionID).subscribe({ cells ->
+        val homepageCells = mutableListOf<HomeCell>()
+        val pennLabs = MainActivity.labsInstance
+
+        pennLabs.getHomePage(deviceID, accountID, sessionID).subscribe({ cells ->
             mActivity.runOnUiThread {
                 val gsrBookingCell = HomeCell()
                 gsrBookingCell.type = "gsr_booking"
                 gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "VP Weigle")
                 cells?.add(cells.size - 1, gsrBookingCell)
-                home_cells_rv?.adapter = HomeAdapter(ArrayList(cells))
+                homepageCells.addAll(homepageCells.size, cells)
+                home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                //(home_cells_rv?.adapter as HomeAdapter).notifyDataSetChanged()
                 loadingPanel?.visibility = View.GONE
                 home_refresh_layout?.isRefreshing = false
 
@@ -113,7 +108,6 @@ class HomeFragment : Fragment()  {
                 internetConnectionHome?.visibility = View.VISIBLE
                 home_refresh_layout?.isRefreshing = false
             }
-
         })
 
     }
@@ -135,7 +129,7 @@ class HomeFragment : Fragment()  {
         } else {
             mActivity.setTitle(R.string.main_title)
         }
-        if (Build.VERSION.SDK_INT > 17){
+        if (Build.VERSION.SDK_INT > 17) {
             mActivity.setSelectedTab(MainActivity.HOME)
         }
     }

@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
@@ -14,7 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentTransaction
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.LaundryRoomAdapter
-import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.classes.LaundryUsage
 import kotlinx.android.synthetic.main.fragment_laundry.*
@@ -28,7 +27,7 @@ class LaundryFragment : Fragment() {
 
     private lateinit var mActivity: MainActivity
 
-    private lateinit var mLabs: Labs
+    private lateinit var mStudentLife: StudentLife
     private lateinit var mContext: Context
 
     private var sp: SharedPreferences? = null
@@ -49,7 +48,7 @@ class LaundryFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mLabs = MainActivity.labsInstance
+        mStudentLife = MainActivity.studentLifeInstance
         mActivity = activity as MainActivity
         mContext = mActivity
         setHasOptionsMenu(true)
@@ -177,7 +176,7 @@ class LaundryFragment : Fragment() {
     }
 
     private fun addRoom(i: Int) {
-        mLabs.room(i)?.subscribe({ room ->
+        mStudentLife.room(i)?.subscribe({ room ->
                     room.id = i
                     addRoomToList(room)
 
@@ -201,7 +200,7 @@ class LaundryFragment : Fragment() {
                             laundryRooms = laundryRoomsResult
                             mAdapter = LaundryRoomAdapter(mContext, laundryRooms, roomsData, false)
                             favorite_laundry_list?.adapter = mAdapter
-
+                            no_results?.visibility = View.GONE
                             loadingPanel?.visibility = View.GONE
                             laundry_help_text?.visibility = View.INVISIBLE
                             laundry_machine_refresh?.isRefreshing = false
@@ -220,7 +219,7 @@ class LaundryFragment : Fragment() {
     }
 
     private fun addAvailability(i: Int) {
-        mLabs.usage(i)?.subscribe({ usage ->
+        mStudentLife.usage(i)?.subscribe({ usage ->
                     usage.id = i
                     addUsageToList(usage)
                 }, {

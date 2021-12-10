@@ -16,7 +16,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
-import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Platform.platformBaseUrl
 import com.pennapps.labs.pennmobile.classes.AccessTokenResponse
@@ -43,7 +43,7 @@ class LoginWebviewFragment : Fragment() {
     lateinit var headerLayout: LinearLayout
     lateinit var cancelButton: Button
     lateinit var user: Account
-    private lateinit var mLabs: Labs
+    private lateinit var mStudentLife: StudentLife
     private var mPlatform: Platform? = null
     private lateinit var mActivity: MainActivity
     lateinit var sp: SharedPreferences
@@ -60,7 +60,7 @@ class LoginWebviewFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mLabs = MainActivity.labsInstance
+        mStudentLife = MainActivity.studentLifeInstance
         mPlatform = MainActivity.platformInstance
         arguments?.let {
             user = arguments?.getSerializable("user") as Account
@@ -245,7 +245,7 @@ class LoginWebviewFragment : Fragment() {
     }
 
     private fun saveAccount(account: Account) {
-        mLabs.saveAccount(account, object : Callback<SaveAccountResponse> {
+        mStudentLife.saveAccount(account, object : Callback<SaveAccountResponse> {
 
             override fun success(t: SaveAccountResponse?, response: Response?) {
                 val editor = sp.edit()

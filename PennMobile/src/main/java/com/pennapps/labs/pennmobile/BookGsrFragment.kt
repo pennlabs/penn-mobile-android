@@ -11,7 +11,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.preference.PreferenceManager
-import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult
 import kotlinx.android.synthetic.main.gsr_details_book.view.*
 import retrofit.Callback
@@ -28,13 +28,16 @@ class BookGsrFragment : Fragment() {
     // submit button
     private lateinit var submit: Button
 
-    private lateinit var mLabs: Labs
+    private lateinit var mStudentLife: StudentLife
 
     // gsr details
     private lateinit var gsrID: String
     private lateinit var gsrLocationCode: String
     private lateinit var startTime: String
     private lateinit var endTime: String
+    private var gid: Int = 0
+    private var roomId: Int = 0
+    private lateinit var roomName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,8 +47,11 @@ class BookGsrFragment : Fragment() {
             gsrLocationCode = arguments.getString("gsrLocationCode") ?: ""
             startTime = arguments.getString("startTime") ?: ""
             endTime = arguments.getString("endTime") ?: ""
+            gid = arguments.getInt("gid")
+            roomId = arguments.getInt("id")
+            roomName = arguments.getString("roomName") ?: ""
         }
-        mLabs = MainActivity.labsInstance
+        mStudentLife = MainActivity.studentLifeInstance
         val mActivity : MainActivity? = activity as MainActivity
         mActivity?.setTitle(R.string.gsr)
     }
@@ -83,33 +89,30 @@ class BookGsrFragment : Fragment() {
             } else if (!emailEt.text.toString().matches("""[\w]+@(seas\.|sas\.|wharton\.|nursing\.)?upenn\.edu""".toRegex())) {
                 Toast.makeText(activity, "Please enter a valid Penn email", Toast.LENGTH_LONG).show()
             } else {
-                bookGSR(Integer.parseInt(gsrID), Integer.parseInt(gsrLocationCode), startTime, endTime)
+                bookGSR(Integer.parseInt(gsrID), Integer.parseInt(gsrLocationCode), startTime, endTime, gid, roomId, roomName)
             }
         }
         return v
     }
 
-    private fun bookGSR(gsrId: Int, gsrLocationCode: Int, startTime: String?, endTime: String?) {
+    private fun bookGSR(gsrId: Int, gsrLocationCode: Int, startTime: String?, endTime: String?, gid: Int, roomId: Int, roomName: String) {
 
         var sessionID = ""
+        var bearerToken = ""
         activity?.let { activity ->
             val sp = PreferenceManager.getDefaultSharedPreferences(activity)
             sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "") ?: ""
+            bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
         }
 
-        mLabs.bookGSR(
+        mStudentLife.bookGSR(
                 //Passing the values
-                sessionID,
-                gsrLocationCode,
-                gsrId,
+                bearerToken,
                 startTime,
                 endTime,
-                firstNameEt.text.toString(),
-                lastNameEt.text.toString(),
-                emailEt.text.toString(),
-                "Penn Mobile GSR",
-                "2158986533",
-                "2-3",
+                gid,
+                roomId,
+                roomName,
 
                 //Creating an anonymous callback
                 object : Callback<GSRBookingResult> {
@@ -141,6 +144,7 @@ class BookGsrFragment : Fragment() {
 
                     override fun failure(error: RetrofitError) {
                         //If any error occurred displaying the error as toast
+                        Log.e("BookGSRFragment", "Error booking gsr", error)
                         Toast.makeText(activity, "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
                         val fragmentManager = (context as MainActivity).supportFragmentManager
                         fragmentManager.beginTransaction()
@@ -155,13 +159,16 @@ class BookGsrFragment : Fragment() {
 
     companion object {
 
-        fun newInstance(gsrID: String, gsrLocationCode: String, startTime: String, endTime: String): BookGsrFragment {
+        fun newInstance(gsrID: String, gsrLocationCode: String, startTime: String, endTime: String, gid: Int, roomId: Int, roomName: String): BookGsrFragment {
             val fragment = BookGsrFragment()
             val args = Bundle()
             args.putString("gsrID", gsrID)
             args.putString("gsrLocationCode", gsrLocationCode)
             args.putString("startTime", startTime)
             args.putString("endTime", endTime)
+            args.putInt("gid", gid)
+            args.putInt("id", roomId)
+            args.putString("roomName", roomName)
             fragment.arguments = args
             return fragment
         }

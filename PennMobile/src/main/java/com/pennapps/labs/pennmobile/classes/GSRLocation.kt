@@ -17,7 +17,13 @@ class GSRLocation {
     @Expose
     @JvmField var id: Int = 0
 
-    @SerializedName("service")
+    @SerializedName("gid")
     @Expose
-    var service: String? = null
+    @JvmField var gid: Int = 0
+
+    @SerializedName("kind")
+    @Expose
+    @JvmField var kind: String? = null
+
+
 }

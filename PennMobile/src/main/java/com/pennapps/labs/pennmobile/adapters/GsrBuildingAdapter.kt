@@ -32,14 +32,19 @@ class GsrBuildingAdapter(internal var context: Context, internal var gsrs: Array
                 val timeRanges = ArrayList<String>()
                 val startTimes = ArrayList<DateTime>()
                 val ids = ArrayList<String>()
+                val gids = ArrayList<Int>()
+                val roomNames = ArrayList<String>()
 
                 for (j in 0 until gsrs[position].availableGSRSlots.size) {
                     val gsrslot = gsrs[position].availableGSRSlots[j]
                     timeRanges.add(gsrslot.timeRange)
                     startTimes.add(gsrslot.startTime)
                     ids.add(gsrslot.elementId)
+                    gids.add(gsrslot.gid)
+                    roomNames.add(gsrslot.roomName)
                 }
-                gsrRoomsRecyclerView.adapter = GsrRoomAdapter(timeRanges, ids, gsrLocationCode, context, startTimes, duration)
+                // Add GSR as parameter
+                gsrRoomsRecyclerView.adapter = GsrRoomAdapter(timeRanges, ids, gsrLocationCode, context, startTimes, duration, gids, roomNames)
                 holder.gsrBuildingName?.text = gsrs[position].gsrName
             }
         }

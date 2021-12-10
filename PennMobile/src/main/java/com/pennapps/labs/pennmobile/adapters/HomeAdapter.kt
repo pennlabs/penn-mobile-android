@@ -12,7 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.pennapps.labs.pennmobile.*
-import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.CalendarEvent
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.HomeCell
@@ -27,7 +27,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
 
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
-    private lateinit var mLabs: Labs
+    private lateinit var mStudentLife: StudentLife
 
     private var mCustomTabsClient: CustomTabsClient? = null
     private var customTabsIntent: CustomTabsIntent? = null
@@ -50,7 +50,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         mContext = parent.context
-        mLabs = MainActivity.labsInstance
+        mStudentLife = MainActivity.studentLifeInstance
         mActivity = mContext as MainActivity
 
         return when (viewType) {
@@ -132,7 +132,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
             mActivity.fragmentTransact(DiningSettingsFragment())
         }
 
-        mLabs.venues()
+        mStudentLife.venues()
                 .flatMap { venues -> Observable.from(venues) }
                 .flatMap { venue ->
                     val hall = DiningFragment.createHall(venue)
@@ -224,7 +224,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
                 LinearLayoutManager.VERTICAL, false)
 
-        mLabs.room(roomID).subscribe({ room ->
+        mStudentLife.room(roomID).subscribe({ room ->
             mActivity.runOnUiThread {
                 holder.itemView.home_card_title.text = room.name
                 val rooms = arrayListOf(room)
