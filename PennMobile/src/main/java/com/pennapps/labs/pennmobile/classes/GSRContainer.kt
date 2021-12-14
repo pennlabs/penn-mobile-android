@@ -8,13 +8,14 @@ import java.util.ArrayList
  */
 
 class GSRContainer(val gsrName: String, constructorTimeRange: String, constructorStartTime: DateTime,
-                   constructorElementId: String, val gid: Int, val roomId: Int) {
+                   constructorElementId: String, val gid: Int, val roomId: Int, val start: String, val end: String) {
     //used to keep track availability of the given room
     val availableGSRSlots = ArrayList<GSRContainerSlot>()
 
     init {
 
-        val newGSRSlot = GSRContainerSlot(constructorTimeRange, constructorStartTime, constructorElementId, gid, roomId, gsrName)
+        val newGSRSlot = GSRContainerSlot(constructorTimeRange, constructorStartTime, constructorElementId, gid, roomId, gsrName,
+        start, end)
 
         availableGSRSlots.add(newGSRSlot)
 
@@ -24,7 +25,8 @@ class GSRContainer(val gsrName: String, constructorTimeRange: String, constructo
                    constructorElementId: String) {
 
         //created new GSR time slot object
-        val newGSRSlot = GSRContainerSlot(constructorTimeRange, constructorStartTime, constructorElementId, gid, roomId, gsrName)
+        val newGSRSlot = GSRContainerSlot(constructorTimeRange, constructorStartTime, constructorElementId, gid, roomId, gsrName,
+        start, end)
 
         availableGSRSlots.add(newGSRSlot)
     }
