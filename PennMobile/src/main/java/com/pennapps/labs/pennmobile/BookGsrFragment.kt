@@ -118,7 +118,7 @@ class BookGsrFragment : Fragment() {
                 object : Callback<GSRBookingResult> {
                     override fun success(result: GSRBookingResult, response: Response) {
                         //Displaying the output as a toast and go back to GSR fragment
-                        if (result.getResults() == true) {
+                        if (result.getDetail().equals("success")) {
                             Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
 
                             // Save user info in shared preferences

@@ -316,11 +316,12 @@ class GsrFragment : Fragment() {
             if (startTime.plusMinutes(duration).isEqual(endTime)) {
                 val stringStartTime = startTime.toString(timeFormatter)
                 val stringEndTime = endTime.toString(timeFormatter)
-
+                val start = startingSlot.startTime ?: ""
+                val end = startingSlot.endTime ?: ""
                 val gsrName = gsrRoom.name ?: ""
                 val gsrRoomId = gsrRoom.room_id ?: 0
                 insertGSRSlot(gsrName, "$stringStartTime-$stringEndTime",
-                        startTime, gsrRoomId.toString(), gid, gsrRoomId)
+                        startTime, gsrRoomId.toString(), gid, gsrRoomId, start, end)
             }
         }
     }
@@ -477,7 +478,8 @@ class GsrFragment : Fragment() {
     fun mapGID(name: String): Int = gsrGIDHashMap[name] ?: 0
 
     //function that takes all available GSR sessions and populates mGSRs
-    fun insertGSRSlot(gsrName: String, GSRTimeRange: String, GSRStartTime: DateTime, GSRElementId: String, gid: Int, roomId: Int) {
+    fun insertGSRSlot(gsrName: String, GSRTimeRange: String, GSRStartTime: DateTime, GSRElementId: String, gid: Int, roomId: Int,
+    start: String, end: String) {
 
         var encountered = false
 
@@ -491,7 +493,7 @@ class GsrFragment : Fragment() {
         }
         //can't find existing GSR. Create new object
         if (!encountered) {
-            val newGSRObject = GSRContainer(gsrName, GSRTimeRange, GSRStartTime, GSRElementId, gid, roomId)
+            val newGSRObject = GSRContainer(gsrName, GSRTimeRange, GSRStartTime, GSRElementId, gid, roomId, start, end)
             mGSRS.add(newGSRObject)
         }
     }
