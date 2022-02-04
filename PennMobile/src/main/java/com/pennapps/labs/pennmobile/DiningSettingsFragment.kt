@@ -32,6 +32,7 @@ class DiningSettingsFragment : Fragment() {
         mActivity = activity as MainActivity
         mActivity.title = "Select Favorites"
         mStudentLife = MainActivity.studentLifeInstance
+        mStudentLife = MainActivity.studentLifeInstance
         mActivity.toolbar.visibility = View.VISIBLE
     }
 
