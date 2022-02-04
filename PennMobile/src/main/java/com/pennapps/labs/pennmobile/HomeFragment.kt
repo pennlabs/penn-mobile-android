@@ -1,6 +1,10 @@
 package com.pennapps.labs.pennmobile
 
 import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -93,14 +97,18 @@ class HomeFragment : Fragment() {
         }
 
         // get API data
-        val labs = MainActivity.labsInstance
-        labs.getHomePage(deviceID, accountID, sessionID).subscribe({ cells ->
+        val homepageCells = mutableListOf<HomeCell>()
+        val pennLabs = MainActivity.labsInstance
+
+        pennLabs.getHomePage(deviceID, accountID, sessionID).subscribe({ cells ->
             mActivity.runOnUiThread {
                 val gsrBookingCell = HomeCell()
                 gsrBookingCell.type = "gsr_booking"
                 gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "VP Weigle")
                 cells?.add(cells.size - 1, gsrBookingCell)
-                home_cells_rv?.adapter = HomeAdapter(ArrayList(cells))
+                homepageCells.addAll(homepageCells.size, cells)
+                home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                //(home_cells_rv?.adapter as HomeAdapter).notifyDataSetChanged()
                 loadingPanel?.visibility = View.GONE
                 home_refresh_layout?.isRefreshing = false
             }
@@ -115,7 +123,6 @@ class HomeFragment : Fragment() {
                 internetConnectionHome?.visibility = View.VISIBLE
                 home_refresh_layout?.isRefreshing = false
             }
-
         })
 
     }
