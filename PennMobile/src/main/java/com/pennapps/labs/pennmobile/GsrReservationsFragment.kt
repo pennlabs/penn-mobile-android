@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.GsrReservationsAdapter
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import kotlinx.android.synthetic.main.fragment_gsr_reservations.*
 import kotlinx.android.synthetic.main.fragment_gsr_reservations.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
@@ -58,6 +59,7 @@ class GsrReservationsFragment : Fragment() {
         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
         val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
         val email = sp.getString(getString(R.string.email_address), "")
+        OAuth2NetworkManager(mActivity).getAccessToken()
         val token = "Bearer " + sp.getString(getString(R.string.access_token), "")
 
         val labs = MainActivity.studentLifeInstance

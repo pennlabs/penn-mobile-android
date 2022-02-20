@@ -31,11 +31,11 @@ import retrofit.client.Response
 import java.nio.charset.Charset
 import java.security.KeyStore
 import java.security.MessageDigest
+import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
-import java.util.Base64
 
 class LoginWebviewFragment : Fragment() {
 
@@ -206,6 +206,11 @@ class LoginWebviewFragment : Fragment() {
                             editor.putString(getString(R.string.access_token), accessToken)
                             editor.putString(getString(R.string.refresh_token), t?.refreshToken)
                             editor.putString(getString(R.string.expires_in), t?.expiresIn)
+                            val calendar = Calendar.getInstance()
+                            calendar.time = Date()
+                            val expiresInInt = t?.expiresIn!!.toInt()
+                            val date = Date(System.currentTimeMillis().plus(expiresInInt)) //or simply new Date();
+                            editor.putLong(getString(R.string.token_generated), date.time)
                             editor.apply()
                             getUser(accessToken)
                         }

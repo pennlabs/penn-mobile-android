@@ -159,6 +159,7 @@
     <string name="access_token">accessToken</string>
     <string name="refresh_token">refreshToken</string>
     <string name="expires_in">expiresIn</string>
+    <string name="token_generated">tokenGenerated</string>
     <string name="penn_user">pennUser</string>
     <string name="penn_password">pennPassword</string>
     <string name="title_activity_login">Sign in</string>

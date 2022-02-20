@@ -36,6 +36,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Serializer.*
 import com.pennapps.labs.pennmobile.classes.*
@@ -154,6 +155,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun startHomeFragment() {
+        OAuth2NetworkManager(this).getAccessToken()
         val fragment: Fragment = HomeFragment()
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)
