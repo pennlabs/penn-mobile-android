@@ -77,4 +77,9 @@ class LoginFragment : Fragment() {
         mActivity.hideBottomBar()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mActivity.showBottomBar()
+    }
+
 }
