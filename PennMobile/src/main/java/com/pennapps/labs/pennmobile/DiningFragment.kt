@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.View
 import android.widget.LinearLayout
@@ -152,6 +153,7 @@ class DiningFragment : Fragment() {
                         view?.let { displaySnack(it, "Just Updated") }
                     }
                 }, {
+                    Log.e("DiningFragment", "Error getting dining halls", it);
                     mActivity.runOnUiThread {
                         loadingPanel?.visibility = View.GONE
                         internetConnectionDining?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))

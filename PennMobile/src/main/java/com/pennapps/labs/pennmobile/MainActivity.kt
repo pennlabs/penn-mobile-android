@@ -130,7 +130,7 @@ class MainActivity : AppCompatActivity() {
                 "Home" -> if (fragmentManager.backStackEntryCount > 0) {
                     fragment = HomeFragment()
                 }
-                "Dining" -> fragment = DiningFragment()
+                "Dining" -> fragment = DiningHolderFragment()
                 "GSR" -> fragment = GsrTabbedFragment()
                 "Laundry" -> fragment = LaundryFragment()
                 "More" -> fragment = MoreFragment()
