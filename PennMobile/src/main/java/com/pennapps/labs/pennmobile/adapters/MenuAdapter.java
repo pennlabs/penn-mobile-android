@@ -18,10 +18,10 @@ import java.util.List;
  * Created by Lily on 2/8/2016.
  */
 public class MenuAdapter extends BaseExpandableListAdapter {
-    private Context context;
-    private List<String> headers;
+    private final Context context;
+    private final List<String> headers;
     // child data in format of header title, child title
-    private HashMap<String, List<String>> children;
+    private final HashMap<String, List<String>> children;
 
     public MenuAdapter(Context context, List<String> headers,
                        HashMap<String, List<String>> children) {
@@ -74,13 +74,13 @@ public class MenuAdapter extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.menu_station, null);
         }
         convertView.setPadding(-10, 0, 0, 0);
-        TextView listHeader = (TextView) convertView
+        TextView listHeader = convertView
                 .findViewById(R.id.station_name);
         listHeader.setTypeface(null, Typeface.BOLD);
         listHeader.setText(headerTitle);
 
-        ImageView expandArrow = (ImageView) convertView.findViewById(R.id.station_expand);
-        ImageView collapseArrow = (ImageView) convertView.findViewById(R.id.station_collapse);
+        ImageView expandArrow = convertView.findViewById(R.id.station_expand);
+        ImageView collapseArrow = convertView.findViewById(R.id.station_collapse);
 
         if (isExpanded){
             collapseArrow.setVisibility(View.VISIBLE);
@@ -106,7 +106,7 @@ public class MenuAdapter extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.menu_food_item, null);
         }
 
-        TextView txtListChild = (TextView) convertView
+        TextView txtListChild = convertView
                 .findViewById(R.id.menu_food_description);
 
         txtListChild.setText(childText);

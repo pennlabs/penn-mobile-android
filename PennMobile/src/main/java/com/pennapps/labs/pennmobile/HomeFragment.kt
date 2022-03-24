@@ -150,6 +150,7 @@ class HomeFragment : Fragment() {
         if (Build.VERSION.SDK_INT > 17) {
             mActivity.setSelectedTab(MainActivity.HOME)
         }
+        mActivity.showBottomBar()
     }
 
     private fun setTitle(title: CharSequence) {

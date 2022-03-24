@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile.more
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +14,6 @@ import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.utils.Utils
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
-import kotlinx.android.synthetic.main.include_main.*
 
 class MoreFragment : Fragment() {
 
@@ -37,10 +35,8 @@ class MoreFragment : Fragment() {
     private fun initAppBar(view: View) {
         view.date_view.text = Utils.getCurrentSystemTime()
         // Appbar behavior init
-        if (Build.VERSION.SDK_INT > 16) {
-            (view.appbar_home.layoutParams
-                    as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
-        }
+        (view.appbar_home.layoutParams
+                as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
 
     }
 

@@ -50,9 +50,6 @@ import retrofit.android.AndroidLog
 import retrofit.converter.GsonConverter
 
 class MainActivity : AppCompatActivity() {
-
-    //private var tabBarView: ExpandableBottomTabBar? = null
-    //private var toolbar: Toolbar? = null
     private var tabShowed = false
     private lateinit var fragmentManager: FragmentManager
     private lateinit var mSharedPrefs: SharedPreferences
@@ -108,6 +105,7 @@ class MainActivity : AppCompatActivity() {
         )
         onExpandableBottomNavigationItemSelected()
         showBottomBar()
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         // Show HomeFragment if logged in, otherwise show LoginFragment
         val pennKey = mSharedPrefs.getString(getString(R.string.pennkey), null)

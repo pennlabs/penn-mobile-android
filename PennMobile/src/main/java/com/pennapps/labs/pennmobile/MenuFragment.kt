@@ -60,7 +60,7 @@ class MenuFragment : Fragment() {
                 val args = Bundle()
                 args.putParcelable("DiningHall", mDiningHall)
                 args.putString(getString(R.string.menu_arg_name), name)
-                myFragment.setArguments(args)
+                myFragment.arguments = args
             } else {
                 myFragment = MenuTab()
                 val args = Bundle()
@@ -70,7 +70,7 @@ class MenuFragment : Fragment() {
                 for (station in stations.keys) {
                     args.putStringArrayList(station, stations[station])
                 }
-                myFragment.setArguments(args)
+                myFragment.arguments = args
             }
             return myFragment
         }
@@ -133,6 +133,7 @@ class MenuFragment : Fragment() {
         if (mActivity.supportActionBar != null) {
             mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }
+        mActivity.supportActionBar?.hide()
     }
 
     override fun onDestroy() {

@@ -15,7 +15,7 @@ import java.io.OutputStream;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     String DB_PATH;
-    private static String DB_NAME = "accountdb";
+    private static final String DB_NAME = "accountdb";
     private SQLiteDatabase myDatabase;
     private final Context myContext;
 
@@ -48,7 +48,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (checkDB != null) {
             checkDB.close();
         }
-        return checkDB != null ? true : false;
+        return checkDB != null;
     }
 
     private void copyDataBase() throws IOException {

@@ -33,15 +33,15 @@ import rx.functions.Action1;
  */
 
 public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
-    private List<String> laundryHalls;
-    private HashMap<String, List<LaundryRoomSimple>> laundryRooms;
-    private Context mContext;
-    private SharedPreferences sp;
-    private String s;
-    private List<Switch> switches = new ArrayList<>();
-    private int maxNumRooms = 3;
+    private final List<String> laundryHalls;
+    private final HashMap<String, List<LaundryRoomSimple>> laundryRooms;
+    private final Context mContext;
+    private final SharedPreferences sp;
+    private final String s;
+    private final List<Switch> switches = new ArrayList<>();
+    private final int maxNumRooms = 3;
     private Labs labs;
-    private String deviceID;
+    private final String deviceID;
 
     public LaundrySettingsAdapter(Context context, HashMap<String, List<LaundryRoomSimple>> laundryRooms, List<String> laundryHalls) {
         this.mContext = context;
@@ -108,11 +108,11 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
             view = inflater.inflate(R.layout.laundry_settings_parent_item, null);
         }
 
-        TextView textView = (TextView) view.findViewById(R.id.laundry_building_name);
+        TextView textView = view.findViewById(R.id.laundry_building_name);
         textView.setText(laundryHallName);
-        ImageView imageView = (ImageView) view.findViewById(R.id.laundry_building_dropdown);
+        ImageView imageView = view.findViewById(R.id.laundry_building_dropdown);
 
-        final Switch buildingSwitch = (Switch) view.findViewById(R.id.laundry_building_favorite_switch);
+        final Switch buildingSwitch = view.findViewById(R.id.laundry_building_favorite_switch);
 
         // if there is only one laundry room in the building, don't have dropdown
         if (laundryRooms.get(laundryHallName).size() == 1) {
@@ -131,11 +131,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
 
             // max number of rooms
             if (sp.getInt(s, -1) >= maxNumRooms) {
-                if (!buildingSwitch.isChecked()) {
-                    buildingSwitch.setEnabled(false);
-                } else {
-                    buildingSwitch.setEnabled(true);
-                }
+                buildingSwitch.setEnabled(buildingSwitch.isChecked());
             }
 
             buildingSwitch.setOnClickListener(new View.OnClickListener() {
@@ -185,12 +181,12 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
             view = inflater.inflate(R.layout.laundry_settings_child_item, null);
         }
 
-        TextView textView = (TextView) view.findViewById(R.id.laundry_room_name);
+        TextView textView = view.findViewById(R.id.laundry_room_name);
         String name = laundryRoom.name;
         textView.setText(name);
 
 
-        final Switch favoriteSwitch = (Switch) view.findViewById(R.id.laundry_favorite_switch);
+        final Switch favoriteSwitch = view.findViewById(R.id.laundry_favorite_switch);
 
         // set the Switch to the correct on or off
         favoriteSwitch.setChecked(sp.getBoolean(Integer.toString(laundryRoom.id), false));
@@ -202,11 +198,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
 
         // max number of rooms
         if (sp.getInt(s, -1) >= maxNumRooms) {
-            if (!favoriteSwitch.isChecked()) {
-                favoriteSwitch.setEnabled(false);
-            } else {
-                favoriteSwitch.setEnabled(true);
-            }
+            favoriteSwitch.setEnabled(favoriteSwitch.isChecked());
         }
 
         favoriteSwitch.setOnClickListener(new View.OnClickListener() {

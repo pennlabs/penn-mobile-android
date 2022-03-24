@@ -66,7 +66,7 @@ class FitnessFragment : Fragment() {
         //displays banner if not connected
         if (!isOnline(context)) {
             internetConnectionFitness?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-            internetConnection_message_fitness?.setText("Not Connected to Internet")
+            internetConnection_message_fitness?.text = "Not Connected to Internet"
             internetConnectionFitness?.visibility = View.VISIBLE
         } else {
             internetConnectionFitness?.visibility = View.GONE

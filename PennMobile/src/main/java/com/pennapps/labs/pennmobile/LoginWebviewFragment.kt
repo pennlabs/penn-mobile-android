@@ -87,8 +87,8 @@ class LoginWebviewFragment : Fragment() {
 
         webView.loadUrl(platformAuthUrl)
         val webSettings = webView.settings
-        webSettings.setJavaScriptEnabled(true)
-        webSettings.javaScriptCanOpenWindowsAutomatically = true;
+        webSettings.javaScriptEnabled = true
+        webSettings.javaScriptCanOpenWindowsAutomatically = true
         webView.webViewClient = MyWebViewClient()
 
         cancelButton.setOnClickListener {
@@ -100,7 +100,7 @@ class LoginWebviewFragment : Fragment() {
     private fun encryptPassword(password: String) {
         if (Build.VERSION.SDK_INT >= 26) {
             var secretKey = createSecretKey() as SecretKey
-            var cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
+            var cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7)
             cipher.init(Cipher.ENCRYPT_MODE, secretKey)
 
             var encryptionIv = cipher.iv

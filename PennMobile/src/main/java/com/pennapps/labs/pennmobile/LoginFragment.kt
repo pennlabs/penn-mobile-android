@@ -76,10 +76,4 @@ class LoginFragment : Fragment() {
         super.onResume()
         mActivity.hideBottomBar()
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mActivity.showBottomBar()
-    }
-
 }
