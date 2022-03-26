@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.fragment_gsr_tabs.view.*
 import kotlinx.android.synthetic.main.fragment_gsr_tabs.view.appbar_home
 import kotlinx.android.synthetic.main.fragment_gsr_tabs.view.date_view
 import kotlinx.android.synthetic.main.include_main.*
-import kotlinx.android.synthetic.main.fragment_dining.view.title_view as title_view1
+import kotlinx.android.synthetic.main.fragment_dining_holder.view.title_view as title_view1
 
 class GsrTabbedFragment : Fragment() {
 

@@ -5,6 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import kotlinx.android.synthetic.main.fragment_dining.*
+import kotlinx.android.synthetic.main.fragment_dining.view.*
+import kotlinx.android.synthetic.main.fragment_dining.view.dining_swiperefresh
+import kotlinx.android.synthetic.main.fragment_dining_insights.*
+import kotlinx.android.synthetic.main.fragment_dining_insights.view.*
 
 
 /**
@@ -20,8 +25,15 @@ class DiningInsightsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_dining_insights, container, false)
+        view.dining_insights_refresh?.setOnRefreshListener { getInsights() }
+        view.dining_insights_refresh?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dining_insights, container, false)
+        return view
+    }
+
+    private fun getInsights() {
+        dining_insights_refresh?.isRefreshing = false
     }
     
 }

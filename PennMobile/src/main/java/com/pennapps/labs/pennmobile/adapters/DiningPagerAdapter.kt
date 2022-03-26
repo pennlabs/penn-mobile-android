@@ -10,7 +10,11 @@ import java.util.*
 
 class DiningPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle?) : FragmentStateAdapter(fragmentManager, lifecycle!!) {
     override fun createFragment(position: Int): Fragment {
-        return BASE_FRAGMENTS[position]
+        if (position == 0) {
+            return DiningFragment()
+        } else {
+            return DiningInsightsFragment()
+        }
     }
 
     override fun getItemCount(): Int {
@@ -18,20 +22,17 @@ class DiningPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle?
     }
 
     override fun getItemId(position: Int): Long {
-        if (position == HOME_POSITION
-                && createFragment(position) == BASE_FRAGMENTS[position]) {
+        if (position == HOME_POSITION) {
             return HOME_POSITION.toLong()
-        } else if (position == INSIGHTS_POSITION
-                && createFragment(position) == BASE_FRAGMENTS[position]) {
+        } else if (position == INSIGHTS_POSITION) {
             return INSIGHTS_POSITION.toLong()
         }
         return createFragment(position).hashCode().toLong()
     }
 
     companion object {
-        private val BASE_FRAGMENTS = Arrays.asList(DiningFragment(), DiningInsightsFragment())
         private const val HOME_POSITION = 0
         private const val INSIGHTS_POSITION = 1
-        val COUNT = BASE_FRAGMENTS.size
+        val COUNT = 2
     }
 }

@@ -5,7 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DiningInsightsFragment">
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/dining_insights_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
     <TextView
         android:id="@+id/dining_balance"
         android:layout_width="0dp"
@@ -207,5 +224,7 @@
         app:layout_constraintEnd_toEndOf="@+id/guest_swipes_box"
         app:layout_constraintTop_toTopOf="@+id/guest_swipes_box" />
 
-
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
