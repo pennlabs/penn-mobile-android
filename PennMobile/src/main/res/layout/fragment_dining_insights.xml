@@ -23,12 +23,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="none">
-    <TextView
+
+        <TextView
         android:id="@+id/dining_balance"
         android:layout_width="0dp"
         android:layout_height="20dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
@@ -38,19 +39,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <View
-        android:id="@+id/dining_dollars_box"
-        android:layout_width="100dp"
-        android:layout_height="60dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="24dp"
-        android:background="@drawable/dining_insights_rectangle"
-        android:elevation="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dining_balance" />
+        <View
+            android:id="@+id/dining_dollars_box"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/dining_insights_rectangle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dining_balance" />
 
     <TextView
         android:id="@+id/dining_dollars"
@@ -58,7 +59,6 @@
         android:layout_height="20dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:elevation="10dp"
         android:gravity="top"
         android:text="@string/dining_dollars"
         android:textAppearance="@style/dining_insights_body"
@@ -70,7 +70,6 @@
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_alignParentTop="true"
-        android:elevation="10dp"
         android:gravity="top"
         android:text="$12.22"
         android:textAppearance="@style/dining_dollars_amount"
@@ -87,7 +86,6 @@
         android:layout_marginTop="42dp"
         android:layout_marginEnd="4dp"
         android:background="@drawable/dining_insights_circle"
-        android:elevation="10dp"
         app:layout_constraintEnd_toEndOf="@+id/dining_dollars_box"
         app:layout_constraintTop_toTopOf="@+id/dining_dollars_box" />
 
@@ -95,7 +93,6 @@
         android:id="@+id/money"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:elevation="10dp"
         android:text="@string/money"
         android:textSize="10sp"
         android:textColor="#FFFFFF"
@@ -108,13 +105,13 @@
         android:id="@+id/swipes_box"
         android:layout_width="100dp"
         android:layout_height="60dp"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
         android:background="@drawable/dining_insights_rectangle"
-        android:elevation="10dp"
         app:layout_constraintStart_toEndOf="@+id/dining_dollars_box"
         app:layout_constraintTop_toBottomOf="@+id/dining_balance" />
 
@@ -124,7 +121,6 @@
         android:layout_height="20dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:elevation="10dp"
         android:gravity="top"
         android:text="@string/dining_swipes"
         android:textAppearance="@style/dining_insights_body"
@@ -136,7 +132,6 @@
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_alignParentTop="true"
-        android:elevation="10dp"
         android:gravity="top"
         android:text="30"
         android:textAppearance="@style/dining_dollars_amount"
@@ -154,7 +149,6 @@
         android:layout_marginEnd="4dp"
         android:background="@drawable/dining_insights_rectangle"
         android:backgroundTint="#99BCF7"
-        android:elevation="10dp"
         app:layout_constraintEnd_toEndOf="@+id/swipes_box"
         app:layout_constraintTop_toTopOf="@+id/swipes_box" />
 
@@ -165,7 +159,6 @@
         android:layout_marginTop="3dp"
         android:background="@drawable/dining_insights_rectangle"
         android:backgroundTint="#FFFFFF"
-        android:elevation="10dp"
         app:layout_constraintEnd_toEndOf="@+id/card_image"
         app:layout_constraintStart_toStartOf="@+id/card_image"
         app:layout_constraintTop_toTopOf="@+id/card_image" />
@@ -174,13 +167,13 @@
         android:id="@+id/guest_swipes_box"
         android:layout_width="100dp"
         android:layout_height="60dp"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="16dp"
         android:background="@drawable/dining_insights_rectangle"
-        android:elevation="10dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintStart_toEndOf="@+id/swipes_box"
         app:layout_constraintTop_toBottomOf="@+id/dining_balance" />
 
@@ -190,7 +183,6 @@
         android:layout_height="20dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:elevation="10dp"
         android:gravity="top"
         android:text="@string/dining_guest_swipes"
         android:textAppearance="@style/dining_insights_body"
@@ -202,7 +194,6 @@
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_alignParentTop="true"
-        android:elevation="10dp"
         android:gravity="top"
         android:text="5"
         android:textAppearance="@style/dining_dollars_amount"
@@ -220,9 +211,21 @@
         android:layout_marginEnd="4dp"
         android:background="@drawable/ic_baseline_people_alt_24"
         android:backgroundTint="#FED994"
-        android:elevation="10dp"
         app:layout_constraintEnd_toEndOf="@+id/guest_swipes_box"
         app:layout_constraintTop_toTopOf="@+id/guest_swipes_box" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/insightsrv"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dining_dollars_box"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>

@@ -51,6 +51,8 @@
     <string name="dining_swipes">Swipes</string>
     <string name="dining_guest_swipes">Guest Swipes</string>
     <string name="money">$</string>
+    <string name="average_dining_dollars_spent">Average Dining Dollars Spent</string>
+    <string name="past_week">this past week</string>
 
     <!-- LaundryRoom -->
     <string name="laundry_washer">Washers</string>
