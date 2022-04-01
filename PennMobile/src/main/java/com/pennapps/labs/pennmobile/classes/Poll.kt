@@ -44,4 +44,10 @@ class Poll{
     @SerializedName("target_populations")
     @Expose
     private val target_populations : JSONObject? = null
+
+    override fun toString(): String {
+        return id.toString()
+    }
+
+
 }

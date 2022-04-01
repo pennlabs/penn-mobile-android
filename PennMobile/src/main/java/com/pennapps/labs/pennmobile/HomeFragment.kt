@@ -32,12 +32,18 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.telephony.TelephonyManager
 import android.graphics.PorterDuff
 import android.content.res.Configuration
+import androidx.appcompat.app.AppCompatActivity
+import com.pennapps.labs.pennmobile.api.StudentLifePolls
+import kotlinx.android.synthetic.main.fragment_dining.*
 import org.joda.time.LocalDateTime
+import rx.Observable
 
 
 class HomeFragment : Fragment()  {
 
     private lateinit var mActivity: MainActivity
+    //
+    private lateinit var mStudentLifePolls: StudentLifePolls
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +57,97 @@ class HomeFragment : Fragment()  {
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Home")
         bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
         FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
+
+        /////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////
+        //Observable commands needed
+        /*Log.d("Tag6", "hello")
+        val pollList = MainActivity.mStudentLifePolls?.validPollsList()
+            ?.flatMap { validPollsList -> Observable.from(validPollsList) }
+            ?.flatMap { validPollsList ->
+                //val hall = DiningFragment.createHall(validPollsList)
+                Log.d("TAG7", "Inside method")
+                Log.d("TAG8", validPollsList.toString())
+                Observable.just(validPollsList)
+
+            }
+            ?.toList()
+            ?.subscribe { validPollsList ->
+                Log.d("TAG9", validPollsList.toString())
+            }
+        Log.d("TAG10", pollList.toString())
+
+        val popList = MainActivity.mStudentLifePolls?.pollsPopulations()
+            ?.flatMap { validPopList -> Observable.from(validPopList) }
+            ?.flatMap { validPopList ->
+                //val hall = DiningFragment.createHall(validPollsList)
+                Log.d("TAGa7", "Inside method")
+                Log.d("TAGa8", validPopList.toString())
+                Observable.just(validPopList)
+
+            }
+            ?.toList()
+            ?.subscribe { validPollsList ->
+                Log.d("TAGa9", validPollsList.toString())
+            }
+
+        Log.d("TAGa10", popList.toString())
+
+        */
+
+        //////////////////////////////////////////////////////////////////////
+
+        ////////////////////////////////////////////////////////////////////////
+
+        mStudentLifePolls = MainActivity.StudentLifePollsInstance
+        var bearerToken = ""
+        activity?.let { activity ->
+            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+            //sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "") ?: ""
+            bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
+        }
+
+        if (!isOnline(context)) {
+            internetConnectionDining?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            internetConnection_message_dining?.setText("Not Connected to Internet")
+            internetConnectionDining?.visibility = View.VISIBLE
+        } else {
+            internetConnectionDining?.visibility = View.GONE
+        }
+        Log.d("TAG", "onCreate: $bearerToken")
+        //Observable commands needed
+        val pollList = mStudentLifePolls.validPollsList(bearerToken)
+            .flatMap { validPollsList -> Observable.from(validPollsList) }
+            .flatMap { validPoll ->
+                //val hall = DiningFragment.createHall(validPollsList)
+                Log.d("TAG onner", validPoll.toString())
+                Observable.just(validPoll)
+
+            }
+            .toList()
+            .subscribe({ value -> Log.d("TAG", "oonNext: $value")},
+                {error -> Log.d("TAG", "oonError: ${error}")},
+                { Log.d("TAG", "doonezo ")})
+        Log.d("TAG outer", pollList.toString())
+
+        val popList = mStudentLifePolls.pollsPopulations(
+            bearerToken
+        )
+            .flatMap { pollsPopulations -> Observable.from(pollsPopulations) }
+            .flatMap { pollPopulation ->
+                //val hall = DiningFragment.createHall(validPollsList)
+                //Log.d("TAG inner2", pollPopulation.toString())
+                Observable.just(pollPopulation)
+
+            }
+            .toList()
+            .subscribe({ value -> Log.d("TAG", "onNext: $value")},
+                {error -> Log.d("TAG", "onError: ${error}")},
+                { Log.d("TAG", "donezo ")})
+
+
+        Log.d("TAG outer2", popList.toString())
+        ////////////////////////////////////
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -67,6 +164,9 @@ class HomeFragment : Fragment()  {
 
         getHomePage()
 
+
+        //////////////////////////////////////////////////////////////////////
+        //initAppBar(view)
         return view
     }
 

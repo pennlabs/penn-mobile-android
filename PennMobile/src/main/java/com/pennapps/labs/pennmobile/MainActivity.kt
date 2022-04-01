@@ -29,14 +29,22 @@ import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.pennapps.labs.pennmobile.ExpandedBottomNavBar.ExpandableBottomTabBar
+import com.pennapps.labs.pennmobile.adapters.DiningAdapter
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.api.Platform
-import com.pennapps.labs.pennmobile.api.PlatformPolls
+import com.pennapps.labs.pennmobile.api.StudentLifePolls
 import com.pennapps.labs.pennmobile.api.Serializer.*
 import com.pennapps.labs.pennmobile.classes.*
+import kotlinx.android.synthetic.main.fragment_dining.*
+import kotlinx.android.synthetic.main.loading_panel.*
+import kotlinx.android.synthetic.main.no_results.*
 import retrofit.RestAdapter
 import retrofit.android.AndroidLog
 import retrofit.converter.GsonConverter
+import rx.Observable
+import rx.Observer
+//import io.reactivex.rxjava3.core.Observable
+//import rxjava3.kotlin.subscribeBy
 
 class MainActivity : AppCompatActivity() {
 
@@ -46,6 +54,7 @@ class MainActivity : AppCompatActivity() {
     private var tabShowed = false
     private lateinit var fragmentManager: FragmentManager
     private lateinit var mSharedPrefs: SharedPreferences
+    private lateinit var mStudentLifePolls: StudentLifePolls
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -84,6 +93,10 @@ class MainActivity : AppCompatActivity() {
         } else {
             startHomeFragment()
         }
+        //////////////////////////
+
+
+
     }
 
     private fun onExpandableBottomNavigationItemSelected() {
@@ -212,7 +225,7 @@ class MainActivity : AppCompatActivity() {
 
         private var mLabs: Labs? = null
         private var mPlatform: Platform? = null
-        private var mPlatformPolls: PlatformPolls? = null
+        var mStudentLifePolls: StudentLifePolls? = null
 
         @JvmStatic
         val platformInstance: Platform
@@ -232,21 +245,53 @@ class MainActivity : AppCompatActivity() {
             }
 
         @JvmStatic
-        val PlatformPollsInstance: PlatformPolls
+        val StudentLifePollsInstance: StudentLifePolls
             get() {
-                if (mPlatformPolls == null) {
+                if (mStudentLifePolls == null) {
                     val gsonBuilder = GsonBuilder()
+                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Poll?>?>() {}.type, PollsSerializer())
+                    gsonBuilder.registerTypeAdapter(object:  TypeToken<MutableList<PollPop?>?>() {}.type, PollPopsSerializer())
+                    Log.d("Polls Tag", "Registered!")
+                    // gets room
+                    /*gsonBuilder.registerTypeAdapter(object : TypeToken<LaundryRoom?>() {}.type, LaundryRoomSerializer())
+                    // gets laundry room list
+                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<LaundryRoomSimple?>?>() {}.type, LaundryRoomListSerializer())
+                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<GSRLocation?>?>() {}.type, GsrLocationSerializer())
+                    // gets laundry usage
+                    gsonBuilder.registerTypeAdapter(object : TypeToken<LaundryUsage?>() {}.type, LaundryUsageSerializer())
+                    // gets laundry preferences (used only for testing)
+                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Int?>?>() {}.type, LaundryPrefSerializer())
+                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<FlingEvent?>?>() {}.type, FlingEventSerializer())
+                    // gets fitness
+                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Gym?>?>() {}.type, GymSerializer())
+                    // gets gsr reservations
+                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<GSRReservation?>?>() {}.type, GsrReservationSerializer())
+                    // gets homepage
+                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<HomeCell?>?>() {}.type, HomePageSerializer())
+                    // gets user
+                    gsonBuilder.registerTypeAdapter(Account::class.java, UserSerializer())*/
+                    val gson = gsonBuilder.create()
+                    val restAdapter = RestAdapter.Builder()
+                        .setConverter(GsonConverter(gson))
+                        .setEndpoint("https://studentlife.pennlabs.org/portal/")
+                        .build()
+                    mStudentLifePolls = restAdapter.create(StudentLifePolls::class.java)
+                    /*val gsonBuilder = GsonBuilder()
                     val gson = gsonBuilder.create()
 
                     val restAdapter = RestAdapter.Builder()
                             .setConverter(GsonConverter(gson))
                             .setLogLevel(RestAdapter.LogLevel.FULL)
                             .setLog(AndroidLog("PlatformPolls"))
-                            .setEndpoint(PlatformPolls.platformBaseUrl)
+                            .setEndpoint(StudentLifePolls.platformBaseUrl)
                             .build()
-                    mPlatformPolls = restAdapter.create(PlatformPolls::class.java)
+                    mStudentLifePolls = restAdapter.create(StudentLifePolls::class.java)
+                */
                 }
-                return mPlatformPolls!!
+
+
+                Log.d("Polls tAG", "I am about to return ")
+                return mStudentLifePolls!!
             }
 
         @JvmStatic

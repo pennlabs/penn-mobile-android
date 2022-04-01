@@ -1,5 +1,7 @@
 package com.pennapps.labs.pennmobile.api;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
@@ -20,10 +22,13 @@ import com.pennapps.labs.pennmobile.classes.HomeCellInfo;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
+import com.pennapps.labs.pennmobile.classes.Poll;
+import com.pennapps.labs.pennmobile.classes.PollPop;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -198,4 +203,31 @@ public class Serializer {
             return new Gson().fromJson(content, new TypeToken<List<GSRReservation>>() {}.getType());
         }
     }
+
+    //poll
+    public static class PollsSerializer implements JsonDeserializer<List<Poll>> {
+
+        @Override
+        public List<Poll> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+                throws JsonParseException {
+            Log.d("TAG is it", String.valueOf(je.isJsonArray())); //true
+            JsonElement content = je.getAsJsonArray();
+            return new Gson().fromJson(content, new TypeToken<List<Poll>>() {}.getType());
+        }
+    }
+
+    //pollpop
+    public static class PollPopsSerializer implements JsonDeserializer<List<PollPop>> {
+
+        @Override
+        public List<PollPop> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+                throws JsonParseException {
+            //Log.d("TAG is it", String.valueOf(je.isJsonArray())); //true
+            //Log.d("TAG is it2", String.valueOf(je.isJsonObject())); //false
+            JsonArray content = je.getAsJsonArray();
+
+            return new Gson().fromJson(content, new TypeToken<List<PollPop>>() {}.getType());
+        }
+    }
+
 }

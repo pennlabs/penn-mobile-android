@@ -1,8 +1,11 @@
 package com.pennapps.labs.pennmobile.api;
 
+import android.util.Log;
+
 import com.pennapps.labs.pennmobile.classes.AccessTokenResponse;
 import com.pennapps.labs.pennmobile.classes.GetUserResponse;
 import com.pennapps.labs.pennmobile.classes.Poll;
+import com.pennapps.labs.pennmobile.classes.PollPop;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -20,7 +23,7 @@ import retrofit.http.POST;
 import retrofit.http.Path;
 import rx.Observable;
 
-public interface PlatformPolls {
+public interface StudentLifePolls {
 
     String platformBaseUrl = "https://studentlife.pennlabs.org/portal/";
 
@@ -34,11 +37,12 @@ public interface PlatformPolls {
             @Field("code_verifier") String codeVerifier,
             Callback<AccessTokenResponse> callback*/);
 
-    @FormUrlEncoded
-    @GET("/polls/browse/")
-    Observable<List<Poll>> validPollsList();
 
-    @FormUrlEncoded
+    @GET("/polls/browse/")
+    Observable<List<Poll>> validPollsList(
+            @Header("Authorization") String bearerToken
+    );
+
     @GET("/polls/review/")
     Observable<List<Poll>> reviewPollsList();
 
@@ -88,13 +92,15 @@ public interface PlatformPolls {
             @Path("id") int id
     );
 
-    @FormUrlEncoded
+
     @GET("/poll-history")
     Observable<List<Poll>> pollsHistory();
 
-    @FormUrlEncoded
+
     @GET("/populations")
-    Observable<List<Poll>> pollsPopulations();
+    Observable<List<PollPop>> pollsPopulations(
+            @Header("Authorization") String bearerToken
+    );
 
     @FormUrlEncoded
     @GET("/vote-statistics/{id}")
