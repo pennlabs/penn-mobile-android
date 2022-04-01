@@ -59,7 +59,8 @@ class PollsFragment : Fragment() {
     }
 
     private fun voteForPoll(){
-        mStudentLifePolls.createPollVote()
+        mStudentLifePolls.createPollVote(bearerToken, null
+        )
 
     }
 

@@ -34,8 +34,12 @@ import android.graphics.PorterDuff
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import com.pennapps.labs.pennmobile.api.StudentLifePolls
+import com.pennapps.labs.pennmobile.classes.GSRBookingResult
 import kotlinx.android.synthetic.main.fragment_dining.*
 import org.joda.time.LocalDateTime
+import retrofit.Callback
+import retrofit.RetrofitError
+import retrofit.client.Response
 import rx.Observable
 
 
@@ -148,6 +152,34 @@ class HomeFragment : Fragment()  {
 
         Log.d("TAG outer2", popList.toString())
         ////////////////////////////////////
+        //Post: Add it to the MainAct thing,
+        mStudentLifePolls.createPollVote(bearerToken,
+            object : Callback<PollVoteResult> {
+                override fun success(t: PollVoteResult?, response: Response?) {
+                    if (t != null) {
+                        if (t.getResults() == true){
+                            Log.d("TAg p", "success: I was a winner")
+                        }
+                        else{
+                            Log.d("TAG p", "success: NVM ")
+                        }
+                    } else {
+                        Log.d("TAG p", "success: nullo")
+                    }
+                }
+
+                override fun failure(error: RetrofitError?) {
+                    if (error != null) {
+                        //hits here
+                        Log.d("TAG p", "failure: $error")
+                    } else {
+                        Log.d("TAG p", "failure: wha")
+                    }
+                }
+
+            }
+
+        )
     }
 
     @RequiresApi(Build.VERSION_CODES.M)

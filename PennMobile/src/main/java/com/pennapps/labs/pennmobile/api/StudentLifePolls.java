@@ -2,7 +2,9 @@ package com.pennapps.labs.pennmobile.api;
 
 import android.util.Log;
 
+import com.pennapps.labs.pennmobile.PollVoteResult;
 import com.pennapps.labs.pennmobile.classes.AccessTokenResponse;
+import com.pennapps.labs.pennmobile.classes.GSRBookingResult;
 import com.pennapps.labs.pennmobile.classes.GetUserResponse;
 import com.pennapps.labs.pennmobile.classes.Poll;
 import com.pennapps.labs.pennmobile.classes.PollPop;
@@ -38,7 +40,7 @@ public interface StudentLifePolls {
             Callback<AccessTokenResponse> callback*/);
 
 
-    @GET("/polls/browse/")
+    @GET("/posts/browse/")
     Observable<List<Poll>> validPollsList(
             @Header("Authorization") String bearerToken
     );
@@ -78,7 +80,10 @@ public interface StudentLifePolls {
 
     @FormUrlEncoded
     @POST("/votes")
-    void createPollVote();
+    void createPollVote(
+            @Header("Authorization") String bearerToken,
+            Callback<PollVoteResult> callback
+    );
 
     @FormUrlEncoded
     @PATCH("/votes/{id}")
