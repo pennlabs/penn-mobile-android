@@ -2,24 +2,30 @@ package com.pennapps.labs.pennmobile.api;
 
 import android.util.Log;
 
-import com.pennapps.labs.pennmobile.PollVoteResult;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.pennapps.labs.pennmobile.PollResult;
 import com.pennapps.labs.pennmobile.classes.AccessTokenResponse;
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult;
 import com.pennapps.labs.pennmobile.classes.GetUserResponse;
 import com.pennapps.labs.pennmobile.classes.Poll;
 import com.pennapps.labs.pennmobile.classes.PollPop;
+import com.pennapps.labs.pennmobile.classes.Post;
 import com.pennapps.labs.pennmobile.classes.Venue;
+import retrofit.client.Response;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.List;
 
 import retrofit.Callback;
+import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.Header;
+import retrofit.http.Headers;
 import retrofit.http.PATCH;
 import retrofit.http.POST;
 import retrofit.http.Path;
@@ -41,9 +47,20 @@ public interface StudentLifePolls {
 
 
     @GET("/posts/browse/")
-    Observable<List<Poll>> validPollsList(
-            @Header("Authorization") String bearerToken
+    void validPostsList(
+            @Header("Authorization") String bearerToken,
+            Callback<JsonArray> callback
     );
+
+    @Headers({"Content-Type: application/json"})
+    @FormUrlEncoded
+    @POST("/polls/browse/")
+    void validPollsList(
+            @Header("Authorization") String bearerToken,
+            @Field("id_hash") String id_hash,
+            Callback<PollResult> callback
+    );
+
 
     @GET("/polls/review/")
     Observable<List<Poll>> reviewPollsList();
@@ -82,7 +99,7 @@ public interface StudentLifePolls {
     @POST("/votes")
     void createPollVote(
             @Header("Authorization") String bearerToken,
-            Callback<PollVoteResult> callback
+            Callback<PollResult> callback
     );
 
     @FormUrlEncoded

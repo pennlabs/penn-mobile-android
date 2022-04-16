@@ -227,6 +227,7 @@ class MainActivity : AppCompatActivity() {
         private var mPlatform: Platform? = null
         var mStudentLifePolls: StudentLifePolls? = null
 
+
         @JvmStatic
         val platformInstance: Platform
             get() {
@@ -251,7 +252,9 @@ class MainActivity : AppCompatActivity() {
                     val gsonBuilder = GsonBuilder()
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Poll?>?>() {}.type, PollsSerializer())
                     gsonBuilder.registerTypeAdapter(object:  TypeToken<MutableList<PollPop?>?>() {}.type, PollPopsSerializer())
-                    Log.d("Polls Tag", "Registered!")
+                    gsonBuilder.registerTypeAdapter(object:  TypeToken<MutableList<PollResult?>?>() {}.type, PollResultsSerializer())
+                    gsonBuilder.registerTypeAdapter(object:  TypeToken<MutableList<Post?>?>() {}.type, PostsSerializer())
+
                     // gets room
                     /*gsonBuilder.registerTypeAdapter(object : TypeToken<LaundryRoom?>() {}.type, LaundryRoomSerializer())
                     // gets laundry room list
@@ -273,7 +276,7 @@ class MainActivity : AppCompatActivity() {
                     val gson = gsonBuilder.create()
                     val restAdapter = RestAdapter.Builder()
                         .setConverter(GsonConverter(gson))
-                        .setEndpoint("https://studentlife.pennlabs.org/portal/")
+                        .setEndpoint("https://pennmobile.org/api/portal/")
                         .build()
                     mStudentLifePolls = restAdapter.create(StudentLifePolls::class.java)
                     /*val gsonBuilder = GsonBuilder()

@@ -38,11 +38,11 @@ class PollsFragment : Fragment() {
 
     }
 
-    public fun getPolls(bearerToken : String){
+    /*public fun getPolls(bearerToken : String){
         //Offline message
 
         //Observable commands needed
-        val pollList = mStudentLifePolls.validPollsList(bearerToken)
+        val pollList = mStudentLifePolls.validPostsList(bearerToken)
             .flatMap { validPollsList -> Observable.from(validPollsList) }
             .flatMap { validPoll ->
                 //val hall = DiningFragment.createHall(validPollsList)
@@ -56,7 +56,7 @@ class PollsFragment : Fragment() {
                 { Log.d("TAG", "doonezo ")})
         Log.d("TAG outer", pollList.toString())
 
-    }
+    }*/
 
     private fun voteForPoll(){
         mStudentLifePolls.createPollVote(bearerToken, null

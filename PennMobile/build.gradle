@@ -34,11 +34,11 @@ android {
         }
         release {}
     }
-    compileSdkVersion 29
-    buildToolsVersion '29.0.0'
+    compileSdkVersion 30
+    buildToolsVersion '30.0.0'
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 29
+        targetSdkVersion 30
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         buildConfigField ("String", "PLATFORM_REDIRECT_URI", getPlatformRedirectUri())
@@ -107,6 +107,7 @@ dependencies {
     //implementation 'com.google.firebase-analytics:17.2.1
     implementation 'com.google.firebase:firebase-analytics:17.4.1'
     //implementation 'com.google.firebase:firebase-crashlytics:17.0.0'
+    implementation "androidx.constraintlayout:constraintlayout:2.1.0"
 }
 
 String getPlatformClientID() {

@@ -33,8 +33,12 @@ import android.telephony.TelephonyManager
 import android.graphics.PorterDuff
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import com.pennapps.labs.pennmobile.api.StudentLifePolls
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult
+import com.pennapps.labs.pennmobile.classes.Poll
+import com.pennapps.labs.pennmobile.classes.Post
 import kotlinx.android.synthetic.main.fragment_dining.*
 import org.joda.time.LocalDateTime
 import retrofit.Callback
@@ -120,19 +124,47 @@ class HomeFragment : Fragment()  {
         }
         Log.d("TAG", "onCreate: $bearerToken")
         //Observable commands needed
-        val pollList = mStudentLifePolls.validPollsList(bearerToken)
-            .flatMap { validPollsList -> Observable.from(validPollsList) }
-            .flatMap { validPoll ->
+        val postList = mStudentLifePolls.validPostsList(bearerToken,
+            object : Callback<JsonArray?> {
+                override fun success(t: JsonArray?, response: Response?) {
+                    if (t != null) {
+                        Log.d("TAGaa", "success: $t")
+                        val size : Int = t.size()
+                        for (i in 0 until size){
+                            val str = t.get(i).asJsonObject.get("target_populations")
+                            Log.d("taggy", str.toString())
+
+                        }
+
+                    } else {
+                        Log.d("TAG p", "success: nullo")
+                    }
+                }
+
+                override fun failure(error: RetrofitError?) {
+                    if (error != null) {
+                        //hits here
+                        Log.d("TAG p", "failure: $error")
+                    } else {
+                        Log.d("TAG p", "failure: wha")
+                    }
+                }
+
+            })/*
+            .flatMap { validPostsList -> Observable.from(validPostsList) }
+            .flatMap { validPost ->
                 //val hall = DiningFragment.createHall(validPollsList)
-                Log.d("TAG onner", validPoll.toString())
-                Observable.just(validPoll)
+                Log.d("TAGa onner", validPost.toString())
+                Observable.just(validPost)
 
             }
             .toList()
-            .subscribe({ value -> Log.d("TAG", "oonNext: $value")},
-                {error -> Log.d("TAG", "oonError: ${error}")},
-                { Log.d("TAG", "doonezo ")})
-        Log.d("TAG outer", pollList.toString())
+            .subscribe({ value -> Log.d("TAGa", "oonNext: $value")},
+                {error -> Log.e("TAGa", "oonError: ${error}", error)},
+                { Log.d("TAGa", "doonezo ")})*/
+        Log.d("TAG outer", postList.toString())
+
+
 
         val popList = mStudentLifePolls.pollsPopulations(
             bearerToken
@@ -153,9 +185,9 @@ class HomeFragment : Fragment()  {
         Log.d("TAG outer2", popList.toString())
         ////////////////////////////////////
         //Post: Add it to the MainAct thing,
-        mStudentLifePolls.createPollVote(bearerToken,
-            object : Callback<PollVoteResult> {
-                override fun success(t: PollVoteResult?, response: Response?) {
+        /*mStudentLifePolls.createPollVote(bearerToken,
+            object : Callback<PollResult> {
+                override fun success(t: PollResult?, response: Response?) {
                     if (t != null) {
                         if (t.getResults() == true){
                             Log.d("TAg p", "success: I was a winner")
@@ -179,7 +211,48 @@ class HomeFragment : Fragment()  {
 
             }
 
-        )
+        )*/
+        Log.d("TAGGER", "onCreate: before pollslist")
+        val poll : Poll? = null
+        mStudentLifePolls.validPollsList(bearerToken, "12345",
+            object : Callback<PollResult> {
+                override fun success(t: PollResult?, response: Response?) {
+                    if (t != null) {
+                        Log.d("Polls tag", "success: I did sum")
+                        Log.d("Polls tag", "success: $response")
+//                        if (t.getResults() == true){
+//                            Log.d("Polls tag", "success: I was a winner")
+//                        }
+//                        else{
+//                            Log.d("Poll tag", "success: NVM ")
+//                        }
+                    } else {
+                        Log.d("Poll tag", "success: nullo")
+                    }
+                }
+
+                override fun failure(error: RetrofitError?) {
+                    if (error != null) {
+                        //hits here
+                        Log.d("Poll TAG p", "failure: $error")
+                    } else {
+                        Log.d("Poll TAG p", "failure: wha")
+                    }
+                }
+
+            }
+
+        )/*.flatMap { validPollsList -> Observable.from(validPollsList) }
+            .flatMap { validPoll ->
+                //val hall = DiningFragment.createHall(validPollsList)
+                Log.d("TAG inner2", validPoll.toString())
+                Observable.just(validPoll)
+
+            }
+            .toList()
+            .subscribe({ value -> Log.d("TAG", "onNext: $value")},
+                {error -> Log.e("TAG", "oooonError: ${error}", error)}, //400 error
+                { Log.d("TAG", "donezo ")})*/
     }
 
     @RequiresApi(Build.VERSION_CODES.M)

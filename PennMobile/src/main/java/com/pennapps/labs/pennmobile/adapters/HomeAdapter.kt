@@ -246,8 +246,9 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
     }
 
     private fun bindPostCell(holder: ViewHolder, cell: HomeCell) {
+        Log.d("TAG BINDER", "I am binding haw")
         val info = cell.info
-        holder.itemView.home_post_title.text = info?.title
+        holder.itemView.home_post_title.text = "CERTIFIED HOOD CLASSIC"
         holder.itemView.home_post_subtitle.text = info?.subtitle
         holder.itemView.home_post_source.text = info?.source
         holder.itemView.home_post_timestamp.text = info?.timeLabel

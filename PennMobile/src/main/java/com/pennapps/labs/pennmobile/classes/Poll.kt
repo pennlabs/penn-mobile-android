@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile.classes
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import org.json.JSONArray
 import org.json.JSONObject
 
 class Poll{
@@ -39,7 +40,7 @@ class Poll{
 
     @SerializedName("options")
     @Expose
-    private val options : JSONObject? = null
+    private val options : JSONArray? = null
 
     @SerializedName("target_populations")
     @Expose
@@ -47,6 +48,10 @@ class Poll{
 
     override fun toString(): String {
         return id.toString()
+    }
+
+    fun getResults(): Any {
+        return true
     }
 
 
