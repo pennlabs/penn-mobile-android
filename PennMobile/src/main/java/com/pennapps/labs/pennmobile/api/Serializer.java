@@ -151,7 +151,7 @@ public class Serializer {
         @Override
         public List<LaundryRoomSimple> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
                 throws JsonParseException {
-            JsonElement content = je.getAsJsonObject().get("halls");
+            JsonElement content = je.getAsJsonArray();
             return new Gson().fromJson(content, new TypeToken<List<LaundryRoomSimple>>() {
             }.getType());
         }

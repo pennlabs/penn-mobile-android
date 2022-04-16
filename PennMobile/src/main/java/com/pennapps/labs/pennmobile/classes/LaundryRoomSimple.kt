@@ -9,10 +9,10 @@ import com.google.gson.annotations.SerializedName
 
 class LaundryRoomSimple {
 
-    @SerializedName("hall_name")
+    @SerializedName("name")
     @Expose
     @JvmField var name: String? = null
-    @SerializedName("id")
+    @SerializedName("hall_id")
     @Expose
     @JvmField var id: Int? = null
     @SerializedName("location")
