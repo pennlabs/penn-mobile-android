@@ -9,6 +9,11 @@ import com.google.gson.annotations.SerializedName
 
 class HomeCellInfo {
 
+
+    // Article
+    @SerializedName("article")
+    @Expose
+    val article: Article? = null
     // News / Feature / Post
     @SerializedName("image_url")
     @Expose

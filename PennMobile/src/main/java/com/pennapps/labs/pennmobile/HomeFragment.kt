@@ -84,6 +84,7 @@ class HomeFragment : Fragment() {
         val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
         val accountID = sp.getString(getString(R.string.accountID), "")
         val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
+        val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
         OAuth2NetworkManager(mActivity).getAccessToken()
 
         //displays banner if not connected
@@ -99,13 +100,13 @@ class HomeFragment : Fragment() {
 
         // get API data
         val homepageCells = mutableListOf<HomeCell>()
-        val pennLabs = MainActivity.labsInstance
+        val studentLife = MainActivity.studentLifeInstance
 
-        pennLabs.getHomePage(deviceID, accountID, sessionID).subscribe({ cells ->
+        studentLife.getHomePage(bearerToken).subscribe({ cells ->
             mActivity.runOnUiThread {
                 val gsrBookingCell = HomeCell()
                 gsrBookingCell.type = "gsr_booking"
-                gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "VP Weigle")
+                gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "Weigle")
                 cells?.add(cells.size - 1, gsrBookingCell)
                 homepageCells.addAll(homepageCells.size, cells)
                 home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
@@ -115,7 +116,7 @@ class HomeFragment : Fragment() {
             }
         }, { throwable ->
             mActivity.runOnUiThread {
-                Log.e("Home", "Could not load Home page")
+                Log.e("Home", "Could not load Home page", throwable)
                 throwable.printStackTrace()
                 Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
                 loadingPanel?.visibility = View.GONE

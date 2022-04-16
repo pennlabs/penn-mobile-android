@@ -21,7 +21,4 @@ public interface Labs {
             @Header("X-Account-ID") String accountID,
             @Query("sessionid") String sessionID);
 
-    @GET("/dining/venues")
-    Observable<List<Venue>> venues();
-
 }

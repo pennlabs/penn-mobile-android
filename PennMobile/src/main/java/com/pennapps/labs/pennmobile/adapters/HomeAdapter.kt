@@ -176,13 +176,13 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
     }
 
     private fun bindNewsCell(holder: ViewHolder, cell: HomeCell) {
-        val info = cell.info
-        holder.itemView.home_news_title.text = info?.title
-        holder.itemView.home_news_subtitle.text = info?.subtitle
-        holder.itemView.home_news_timestamp.text = info?.timestamp?.trim()
+        val article = cell.info?.article
+        holder.itemView.home_news_title.text = article?.title
+        holder.itemView.home_news_subtitle.text = article?.subtitle
+        holder.itemView.home_news_timestamp.text = article?.timestamp?.trim()
 
         Picasso.get()
-                .load(info?.imageUrl)
+                .load(article?.imageUrl)
                 .fit()
                 .centerCrop()
                 .into(holder.itemView.home_news_iv)
@@ -190,7 +190,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         /** Adds dynamically generated accent color from the fetched image to the news card */
         var accentColor: Int =  getColor(mContext, R.color.black)
         GlobalScope.launch(Dispatchers.Default) {
-            val bitmap = Picasso.get().load(info?.imageUrl).get()
+            val bitmap = Picasso.get().load(article?.imageUrl).get()
 
             // Create palette from bitmap
             fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
@@ -250,7 +250,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
 
         holder.itemView.button.setOnClickListener {
 
-            val url = info?.articleUrl
+            val url = article?.articleUrl
 
             val connection = NewsCustomTabsServiceConnection()
             builder = CustomTabsIntent.Builder()

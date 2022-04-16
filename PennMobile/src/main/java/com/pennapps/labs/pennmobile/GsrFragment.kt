@@ -348,9 +348,18 @@ class GsrFragment : Fragment() {
                                 val locationName = locations[i]?.name ?: ""
                                 when (locations[i].id) {
                                     1086 -> {
-                                        gsrHashMap["Van Pelt"] = 1086
                                         if (locations[i].name.equals("VP Ground Floor")) {
-                                            gsrGIDHashMap["Van Pelt"] = locations[i].gid
+                                            gsrHashMap["VP Ground Floor"] = 1086
+                                            gsrGIDHashMap["VP Ground Floor"] = locations[i].gid
+                                        } else if (locations[i].name.equals("Weigle")) {
+                                            gsrHashMap["Weigle"] = 1086
+                                            gsrGIDHashMap["Weigle"] = locations[i].gid
+                                        } else if (locations[i].name.equals("VP 3rd Floor")) {
+                                            gsrHashMap["VP 3rd Floor"] = 1086
+                                            gsrGIDHashMap["VP 3rd Floor"] = locations[i].gid
+                                        } else if (locations[i].name.equals("VP 4th Floor")) {
+                                            gsrHashMap["VP 4th Floor"] = 1086
+                                            gsrGIDHashMap["VP 4th Floor"] = locations[i].gid
                                         }
                                     }
                                     2587 -> {
@@ -416,7 +425,8 @@ class GsrFragment : Fragment() {
                     activity?.let { activity ->
                         activity.runOnUiThread {
                             //hard coded in case runs into error
-                            gsrHashMap["Van Pelt"] = 1086
+                            gsrHashMap["VP Ground Floor"] = 1086
+                            gsrHashMap["Weigle"] = 1086
                             gsrHashMap["Lippincott"] = 2587
                             gsrHashMap["Edu Commons"] = 2495
                             gsrHashMap["Biomedical"] = 2683

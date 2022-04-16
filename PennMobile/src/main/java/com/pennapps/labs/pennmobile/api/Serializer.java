@@ -1,6 +1,8 @@
 package com.pennapps.labs.pennmobile.api;
 
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
@@ -235,7 +237,8 @@ public class Serializer {
                     }.getType());
                     newCell.setReservations(reservations);
                 } else if (cellType.equals("calendar")) {
-                    ArrayList<CalendarEvent> events = new Gson().fromJson(info, new TypeToken<List<CalendarEvent>>() {
+                    JsonElement calendar = info.getAsJsonObject().get("calendar");
+                    ArrayList<CalendarEvent> events = new Gson().fromJson(calendar, new TypeToken<List<CalendarEvent>>() {
                     }.getType());
                     newCell.setEvents(events);
                 } else if (cellType.equals("news") | cellType.equals("dining")

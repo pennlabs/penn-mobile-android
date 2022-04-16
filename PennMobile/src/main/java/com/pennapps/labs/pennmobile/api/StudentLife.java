@@ -32,8 +32,8 @@ import retrofit.http.Query;
 import rx.Observable;
 
 /**
- * Created by Adel on 12/13/14.
- * Retrofit interface to the Penn Labs API
+ * Created by Julius.
+ * Retrofit interface to the Penn Mobile API
  */
 public interface StudentLife {
 
