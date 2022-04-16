@@ -13,7 +13,7 @@ class HomeCellInfo {
     // Article
     @SerializedName("article")
     @Expose
-    val article: Article? = null
+    var article: Article? = null
     // News / Feature / Post
     @SerializedName("image_url")
     @Expose

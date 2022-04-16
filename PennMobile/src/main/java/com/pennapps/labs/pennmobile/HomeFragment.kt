@@ -23,6 +23,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.HomeAdapter
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.classes.HomeCell
+import com.pennapps.labs.pennmobile.classes.HomeCellInfo
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.utils.Utils
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -101,31 +102,78 @@ class HomeFragment : Fragment() {
         // get API data
         val homepageCells = mutableListOf<HomeCell>()
         val studentLife = MainActivity.studentLifeInstance
-
-        studentLife.getHomePage(bearerToken).subscribe({ cells ->
-            mActivity.runOnUiThread {
-                val gsrBookingCell = HomeCell()
-                gsrBookingCell.type = "gsr_booking"
-                gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "Weigle")
-                cells?.add(cells.size - 1, gsrBookingCell)
-                homepageCells.addAll(homepageCells.size, cells)
-                home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
-                //(home_cells_rv?.adapter as HomeAdapter).notifyDataSetChanged()
-                loadingPanel?.visibility = View.GONE
-                home_refresh_layout?.isRefreshing = false
-            }
-        }, { throwable ->
-            mActivity.runOnUiThread {
-                Log.e("Home", "Could not load Home page", throwable)
-                throwable.printStackTrace()
-                Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
-                loadingPanel?.visibility = View.GONE
-                internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-                internetConnection_message?.text = getString(R.string.internet_error)
-                internetConnectionHome?.visibility = View.VISIBLE
-                home_refresh_layout?.isRefreshing = false
-            }
-        })
+        if (bearerToken != "Bearer ") {
+            studentLife.getHomePage(bearerToken).subscribe({ cells ->
+                mActivity.runOnUiThread {
+                    val gsrBookingCell = HomeCell()
+                    gsrBookingCell.type = "gsr_booking"
+                    gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "Weigle")
+                    cells?.add(cells.size - 1, gsrBookingCell)
+                    homepageCells.addAll(homepageCells.size, cells)
+                    home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                    //(home_cells_rv?.adapter as HomeAdapter).notifyDataSetChanged()
+                    loadingPanel?.visibility = View.GONE
+                    home_refresh_layout?.isRefreshing = false
+                }
+            }, { throwable ->
+                mActivity.runOnUiThread {
+                    Log.e("Home", "Could not load Home page", throwable)
+                    throwable.printStackTrace()
+                    Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
+                    loadingPanel?.visibility = View.GONE
+                    internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+                    internetConnection_message?.text = getString(R.string.internet_error)
+                    internetConnectionHome?.visibility = View.VISIBLE
+                    home_refresh_layout?.isRefreshing = false
+                }
+            })
+    } else {
+            studentLife.getNews().subscribe({ article ->
+                mActivity.runOnUiThread {
+                    val newsCell = HomeCell()
+                    newsCell.info = HomeCellInfo()
+                    newsCell.info?.article = article
+                    newsCell.type = "news"
+                    homepageCells.add(homepageCells.size, newsCell)
+                    home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                    loadingPanel?.visibility = View.GONE
+                    home_refresh_layout?.isRefreshing = false
+                }
+            }, { throwable ->
+                mActivity.runOnUiThread {
+                    Log.e("Home", "Could not load Home page", throwable)
+                    throwable.printStackTrace()
+                    Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
+                    loadingPanel?.visibility = View.GONE
+                    internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+                    internetConnection_message?.text = getString(R.string.internet_error)
+                    internetConnectionHome?.visibility = View.VISIBLE
+                    home_refresh_layout?.isRefreshing = false
+                }
+            })
+            studentLife.getCalendar().subscribe({ events ->
+                mActivity.runOnUiThread {
+                    val calendar = HomeCell()
+                    calendar.type = "calendar"
+                    calendar.events = events
+                    homepageCells.add(homepageCells.size, calendar)
+                    home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                    loadingPanel?.visibility = View.GONE
+                    home_refresh_layout?.isRefreshing = false
+                }
+            }, { throwable ->
+                mActivity.runOnUiThread {
+                    Log.e("Home", "Could not load Home page", throwable)
+                    throwable.printStackTrace()
+                    Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
+                    loadingPanel?.visibility = View.GONE
+                    internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+                    internetConnection_message?.text = getString(R.string.internet_error)
+                    internetConnectionHome?.visibility = View.VISIBLE
+                    home_refresh_layout?.isRefreshing = false
+                }
+            })
+    }
 
     }
 

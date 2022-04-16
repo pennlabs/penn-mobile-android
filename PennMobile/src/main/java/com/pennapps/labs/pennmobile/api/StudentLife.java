@@ -1,6 +1,8 @@
 package com.pennapps.labs.pennmobile.api;
 
 import com.pennapps.labs.pennmobile.classes.Account;
+import com.pennapps.labs.pennmobile.classes.Article;
+import com.pennapps.labs.pennmobile.classes.CalendarEvent;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.FlingEvent;
 import com.pennapps.labs.pennmobile.classes.GSR;
@@ -80,13 +82,17 @@ public interface StudentLife {
     Observable<List<FlingEvent>> getFlingEvents();
 
     @GET("/penndata/news")
-    Observable<HomeCellInfo> getNews();
+    Observable<Article> getNews();
+
+    @GET("/penndata/calendar")
+    Observable<List<CalendarEvent>> getCalendar();
 
     // home page
     @GET("/penndata/homepage")
     Observable<List<HomeCell>> getHomePage(
             @Header("Authorization") String bearerToken
     );
+
 
     @GET("/fitness/schedule")
     Observable<List<Gym>> getGymData();
