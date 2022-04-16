@@ -129,13 +129,9 @@ public class Serializer {
                     }
                 }
             } catch (Exception e) {
-                Log.e("Serializer", "Error parsing dining hall", e);
+
             }
             return new Gson().fromJson(content, DiningHall.class);
-            /* content.getAsJsonObject().add("tblDayPart",
-                    content.getAsJsonObject().get("tblMenu").getAsJsonObject().get("tblDayPart").getAsJsonArray());
-            content.getAsJsonObject().remove("tblMenu");
-            return new Gson().fromJson(content, DiningHall.class); */
         }
     }
 
