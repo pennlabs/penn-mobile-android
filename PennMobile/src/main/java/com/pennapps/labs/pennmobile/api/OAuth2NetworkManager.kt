@@ -33,8 +33,7 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
             if (seconds != null) {
                 calendar.add(Calendar.SECOND, -seconds)
             }
-
-            if (calendar.time >= expiresAt) { // if it has expired, refresh access token
+            if (calendar.time.after(expiresAt)) { // if it has expired, refresh access token
                 refreshAccessToken()
             }
         }

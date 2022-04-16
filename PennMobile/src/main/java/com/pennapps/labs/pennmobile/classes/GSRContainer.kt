@@ -22,7 +22,7 @@ class GSRContainer(val gsrName: String, constructorTimeRange: String, constructo
     }
 
     fun addGSRSlot(constructorTimeRange: String, constructorStartTime: DateTime,
-                   constructorElementId: String) {
+                   constructorElementId: String, start: String, end: String) {
 
         //created new GSR time slot object
         val newGSRSlot = GSRContainerSlot(constructorTimeRange, constructorStartTime, constructorElementId, gid, roomId, gsrName,

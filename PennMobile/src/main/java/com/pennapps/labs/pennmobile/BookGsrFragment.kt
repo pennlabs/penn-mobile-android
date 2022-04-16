@@ -104,8 +104,15 @@ class BookGsrFragment : Fragment() {
             val sp = PreferenceManager.getDefaultSharedPreferences(activity)
             sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "") ?: ""
             bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
-        }
+            Log.i("BookGSRFragment", "$bearerToken");
 
+        }
+        Log.i("BookGSRFragment", "Bearer $bearerToken")
+        Log.i("BookGSRFragment", "Start $startTime")
+        Log.i("BookGSRFragment", "End $endTime")
+        Log.i("BookGSRFragment", "GID $gid")
+        Log.i("BookGSRFragment", "ID $roomId")
+        Log.i("BookGSRFragment", "Room Name $roomName")
         mStudentLife.bookGSR(
                 //Passing the values
                 bearerToken,

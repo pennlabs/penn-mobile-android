@@ -487,7 +487,7 @@ class GsrFragment : Fragment() {
             val currentGSR = mGSRS[i]
             //if there is GSR, add the available session to the GSR Object
             if (currentGSR.gsrName == gsrName) {
-                currentGSR.addGSRSlot(GSRTimeRange, GSRStartTime, GSRElementId)
+                currentGSR.addGSRSlot(GSRTimeRange, GSRStartTime, GSRElementId, start, end)
                 encountered = true
             }
         }
