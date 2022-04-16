@@ -217,7 +217,7 @@ class LoginWebviewFragment : Fragment() {
                     }
 
                     override fun failure(error: RetrofitError) {
-                        Log.e("Accounts", "Error fetching access token $error")
+                        Log.e("Accounts", "Error fetching access token $error", error)
                         Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
                         mActivity.startLoginFragment()
                     }
@@ -243,9 +243,9 @@ class LoginWebviewFragment : Fragment() {
                         editor.putString(getString(R.string.email_address), user?.email)
                         editor.putString(getString(R.string.pennkey), user?.username)
                         editor.apply()
-
-                        saveAccount(Account(user?.firstName, user?.lastName,
-                                user?.username, user?.pennid, user?.email, user?.affiliation))
+                        mActivity.startHomeFragment()
+                        // saveAccount(Account(user?.firstName, user?.lastName,
+                        //        user?.username, user?.pennid, user?.email, user?.affiliation), user?.username.toString(), accessToken)
                     }
 
                     override fun failure(error: RetrofitError) {
@@ -256,8 +256,8 @@ class LoginWebviewFragment : Fragment() {
                 })
     }
 
-    private fun saveAccount(account: Account) {
-        mStudentLife.saveAccount(account, object : Callback<SaveAccountResponse> {
+    private fun saveAccount(account: Account, pennkey: String, accessToken: String?) {
+        mStudentLife.saveAccount("Bearer $accessToken", pennkey, account, object : Callback<SaveAccountResponse> {
 
             override fun success(t: SaveAccountResponse?, response: Response?) {
                 val editor = sp.edit()
@@ -268,7 +268,7 @@ class LoginWebviewFragment : Fragment() {
             }
 
             override fun failure(error: RetrofitError) {
-                Log.e("Accounts", "Error saving account $error")
+                Log.e("Accounts", "Error saving account $error", error)
                 Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
                 mActivity.startLoginFragment()
             }

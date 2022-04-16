@@ -40,7 +40,7 @@ public interface StudentLife {
     @GET("/dining/venues")
     Observable<List<Venue>> venues();
 
-    @GET("/dining/daily_menu/{id}")
+    @GET("/dining/weekly_menu/{id}")
     Observable<DiningHall> daily_menu(
             @Path("id") int id);
 
@@ -107,8 +107,10 @@ public interface StudentLife {
 
     // accounts
     @Headers({"Content-Type: application/json"})
-    @POST("/account/register")
+    @POST("/users/{pennkey}/activate/")
     void saveAccount(
+            @Header("Authorization") String bearerToken,
+            @Path("pennkey") String pennkey,
             @Body Account account,
             Callback<SaveAccountResponse> callback);
 

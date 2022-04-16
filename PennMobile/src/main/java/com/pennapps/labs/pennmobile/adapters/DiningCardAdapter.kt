@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.FragmentTransaction
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -63,6 +64,7 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
                     .subscribe({ newDiningHall ->
                         currentHall.sortMeals(newDiningHall.menus)
                     }, {
+                        Log.e("DiningCard", "Error loading menus", it)
                         Toast.makeText(mContext, "Error loading menus", Toast.LENGTH_SHORT).show()
                     })
         }

@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile.api;
 
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -26,7 +25,10 @@ import com.pennapps.labs.pennmobile.classes.Venue;
 import com.pennapps.labs.pennmobile.classes.VenueInterval;
 
 import java.lang.reflect.Type;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -111,10 +113,29 @@ public class Serializer {
         public DiningHall deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
                 throws JsonParseException {
             JsonElement content = je.getAsJsonObject().get("Document");
-            content.getAsJsonObject().add("tblDayPart",
+            JsonArray menus = content.getAsJsonObject().get("tblMenu").getAsJsonArray();
+            Format f = new SimpleDateFormat("MM/dd/yyyy");
+            String today = f.format(new Date());
+            if (today.startsWith("0")) {
+                today = today.substring(1);
+            }
+            try {
+                for (int i = 0; i < menus.size(); i++) {
+                    JsonObject menu = menus.get(i).getAsJsonObject();
+                    String date = menu.get("menudate").getAsString();
+                    if (date.equals(today)) {
+                        content.getAsJsonObject().add("tblDayPart", menu.get("tblDayPart").getAsJsonArray());
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("Serializer", "Error parsing dining hall", e);
+            }
+            return new Gson().fromJson(content, DiningHall.class);
+            /* content.getAsJsonObject().add("tblDayPart",
                     content.getAsJsonObject().get("tblMenu").getAsJsonObject().get("tblDayPart").getAsJsonArray());
             content.getAsJsonObject().remove("tblMenu");
-            return new Gson().fromJson(content, DiningHall.class);
+            return new Gson().fromJson(content, DiningHall.class); */
         }
     }
 

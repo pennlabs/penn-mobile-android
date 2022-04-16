@@ -37,8 +37,6 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
             if (calendar.time >= expiresAt) { // if it has expired, refresh access token
                 refreshAccessToken()
             }
-        } else {
-            mActivity.startLoginFragment()
         }
     }
 
