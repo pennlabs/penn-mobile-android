@@ -65,7 +65,7 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
 
                     override fun failure(error: RetrofitError) {
                         Log.e("Accounts", "Error refreshing access token $error")
-                        mActivity.startLoginFragment()
+                        // mActivity.startLoginFragment()
                     }
                 })
     }

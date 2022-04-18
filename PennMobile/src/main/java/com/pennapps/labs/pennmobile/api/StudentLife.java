@@ -4,6 +4,7 @@ import com.pennapps.labs.pennmobile.classes.Account;
 import com.pennapps.labs.pennmobile.classes.Article;
 import com.pennapps.labs.pennmobile.classes.CalendarEvent;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
+import com.pennapps.labs.pennmobile.classes.DiningPreferences;
 import com.pennapps.labs.pennmobile.classes.FlingEvent;
 import com.pennapps.labs.pennmobile.classes.GSR;
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult;
@@ -45,6 +46,11 @@ public interface StudentLife {
     @GET("/dining/weekly_menu/{id}")
     Observable<DiningHall> daily_menu(
             @Path("id") int id);
+
+    @GET("/dining/preferences")
+    Observable<DiningPreferences> getDiningPreferences(
+            @Header("Authorization") String bearerToken
+    );
 
     @GET("/laundry/halls/ids")
     Observable<List<LaundryRoomSimple>> laundryRooms();
@@ -122,19 +128,19 @@ public interface StudentLife {
 
     @GET("/laundry/preferences")
     Observable<List<Integer>> getLaundryPref(
-            @Header("X-Device-ID") String deviceID);
+            @Header("Authorization") String bearerToken);
 
     @FormUrlEncoded
     @POST("/laundry/preferences")
     void sendLaundryPref(
-            @Header("X-Device-ID") String deviceID,
+            @Header("Authorization") String bearerToken,
             @Field("rooms") String rooms,
             Callback<Response> callback);
 
     @FormUrlEncoded
     @POST("/dining/preferences")
     void sendDiningPref(
-            @Header("X-Device-ID") String deviceID,
+            @Header("Authorization") String bearerToken,
             @Field("venues") String venues,
             Callback<Response> callback);
 }

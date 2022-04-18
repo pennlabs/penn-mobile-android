@@ -39,12 +39,12 @@ class HomeCellInfo {
     // Dining
     @SerializedName("venues")
     @Expose
-    val venues: List<Int>? = null
+    var venues: List<Int>? = null
 
     // Laundry
     @SerializedName("room_id")
     @Expose
-    val roomId: Int? = 0
+    var roomId: Int? = 0
 
     // Courses
     @SerializedName("courses")

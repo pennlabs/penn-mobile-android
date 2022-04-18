@@ -201,6 +201,9 @@ public class Serializer {
         public List<Integer> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
             throws JsonParseException {
             JsonElement content = je.getAsJsonObject().get("rooms");
+            if (content == null) {
+                content = je.getAsJsonObject().get("preferences");
+            }
             return new Gson().fromJson(content, new TypeToken<List<Integer>>() {
             }.getType());
         }

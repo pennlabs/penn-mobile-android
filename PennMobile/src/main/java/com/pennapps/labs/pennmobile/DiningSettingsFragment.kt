@@ -101,8 +101,8 @@ class DiningSettingsFragment : Fragment() {
         //preferences must be in the form of 1,2,3 (exclude brackets)
         var apiPreparedString = favoriteDiningHalls.toString()
         apiPreparedString = apiPreparedString.substring(1, apiPreparedString.length - 1)
-
-        mStudentLife.sendDiningPref(OAuth2NetworkManager(mActivity).getDeviceId(), apiPreparedString,
+        val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
+        mStudentLife.sendDiningPref(bearerToken, apiPreparedString,
                 object : ResponseCallback() {
             override fun success(response: Response) {
                 mActivity.onBackPressed()

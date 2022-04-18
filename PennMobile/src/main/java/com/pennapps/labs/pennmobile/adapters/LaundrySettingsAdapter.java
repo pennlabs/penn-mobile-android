@@ -43,6 +43,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
     private int maxNumRooms = 3;
     private StudentLife labs;
     private String deviceID;
+    private String bearerToken;
 
     public LaundrySettingsAdapter(Context context, HashMap<String, List<LaundryRoomSimple>> laundryRooms, List<String> laundryHalls) {
         this.mContext = context;
@@ -52,6 +53,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
         s = mContext.getString(R.string.num_rooms_selected_pref);
         MainActivity mainActivity = (MainActivity) mContext;
         deviceID = (new OAuth2NetworkManager(mainActivity)).getDeviceId();
+        bearerToken = "Bearer " + sp.getString(mainActivity.getString(R.string.access_token), "").toString();
 
         labs = MainActivity.getStudentLifeInstance();
 
@@ -266,7 +268,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
 
     private void getPreferencesData() {
         labs = MainActivity.getStudentLifeInstance();
-        labs.getLaundryPref(deviceID).subscribe(new Action1<List<Integer>>() {
+        labs.getLaundryPref(bearerToken).subscribe(new Action1<List<Integer>>() {
             @Override
             public void call(List<Integer> integers) {
             }
@@ -289,7 +291,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
         String api_prepared_string = favoriteLaundryRooms.toString();
         api_prepared_string = api_prepared_string.substring(1, api_prepared_string.length() - 1);
 
-        labs.sendLaundryPref(deviceID, api_prepared_string, new ResponseCallback() {
+        labs.sendLaundryPref(bearerToken, api_prepared_string, new ResponseCallback() {
             @Override
             public void success(Response response) {
                 Log.i("Laundry", "Saved laundry preferences");
@@ -297,7 +299,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
 
             @Override
             public void failure(RetrofitError error) {
-                Log.e("Laundry", "Error saving laundry preferences: " + error);
+                Log.e("Laundry", "Error saving laundry preferences: " + error, error);
             }
         });
     }
