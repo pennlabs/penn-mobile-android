@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.MainActivity;
 import com.pennapps.labs.pennmobile.R;
-import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager;
 import com.pennapps.labs.pennmobile.api.StudentLife;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;

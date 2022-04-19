@@ -35,7 +35,6 @@ import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Serializer.*
@@ -262,7 +261,6 @@ class MainActivity : AppCompatActivity() {
 
         private var mStudentLife: StudentLife? = null
         private var mPlatform: Platform? = null
-        private var mLabs: Labs? = null
 
         @JvmStatic
         val platformInstance: Platform
@@ -279,42 +277,6 @@ class MainActivity : AppCompatActivity() {
                     mPlatform = restAdapter.create(Platform::class.java)
                 }
                 return mPlatform!!
-            }
-
-        @JvmStatic
-        val labsInstance: Labs
-            get() {
-                if (mLabs == null) {
-                    val gsonBuilder = GsonBuilder()
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Contact?>?>() {}.type, DataSerializer<Any?>())
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Venue?>?>() {}.type, VenueSerializer())
-                    gsonBuilder.registerTypeAdapter(DiningHall::class.java, MenuSerializer())
-                    // gets room
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<LaundryRoom?>() {}.type, LaundryRoomSerializer())
-                    // gets laundry room list
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<LaundryRoomSimple?>?>() {}.type, LaundryRoomListSerializer())
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<GSRLocation?>?>() {}.type, GsrLocationSerializer())
-                    // gets laundry usage
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<LaundryUsage?>() {}.type, LaundryUsageSerializer())
-                    // gets laundry preferences (used only for testing)
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Int?>?>() {}.type, LaundryPrefSerializer())
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<FlingEvent?>?>() {}.type, FlingEventSerializer())
-                    // gets fitness
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Gym?>?>() {}.type, GymSerializer())
-                    // gets gsr reservations
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<GSRReservation?>?>() {}.type, GsrReservationSerializer())
-                    // gets homepage
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<HomeCell?>?>() {}.type, HomePageSerializer())
-                    // gets user
-                    gsonBuilder.registerTypeAdapter(Account::class.java, UserSerializer())
-                    val gson = gsonBuilder.create()
-                    val restAdapter = RestAdapter.Builder()
-                            .setConverter(GsonConverter(gson))
-                            .setEndpoint(Labs.pennLabsBaseUrl)
-                            .build()
-                    mLabs = restAdapter.create(Labs::class.java)
-                }
-                return mLabs!!
             }
 
         @JvmStatic
