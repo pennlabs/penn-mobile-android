@@ -289,7 +289,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             if (!events[i].name.isNullOrEmpty()) {
                 eventList.add(events[i])
             }
-            i--;
+            i--
         }
         eventList.reverse()
 
