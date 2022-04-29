@@ -201,7 +201,7 @@ class LoginWebviewFragment : Fragment() {
 
                     override fun success(t: AccessTokenResponse?, response: Response?) {
                         if (response?.status == 200) {
-                            Log.d("TAGGO", t?.accessToken)
+                            t?.accessToken?.let { Log.d("TAGGO", it) }
                             val accessToken = t?.accessToken
                             val editor = sp.edit()
                             editor.putString(getString(R.string.access_token), accessToken)

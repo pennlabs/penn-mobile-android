@@ -103,7 +103,9 @@ class BookGsrFragment : Fragment() {
     private fun bookGSR(gsrId: Int, gsrLocationCode: Int, startTime: String?, endTime: String?) {
 
         //setting notification 10 mins before startTime
-        Log.d("GSR", startTime)
+        if (startTime != null) {
+            Log.d("GSR", startTime)
+        }
         val from = LocalDateTime.parse(startTime)
         val fromHour24Hours = from.toString("HH:mm")
         val reservationDate = from.dayOfYear().get()

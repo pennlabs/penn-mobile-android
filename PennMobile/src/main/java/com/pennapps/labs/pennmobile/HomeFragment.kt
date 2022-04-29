@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.HomeAdapter
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
-import com.pennapps.labs.pennmobile.classes.HomeCell
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
@@ -36,9 +35,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.pennapps.labs.pennmobile.api.StudentLifePolls
-import com.pennapps.labs.pennmobile.classes.GSRBookingResult
-import com.pennapps.labs.pennmobile.classes.Poll
-import com.pennapps.labs.pennmobile.classes.Post
+import com.pennapps.labs.pennmobile.classes.*
 import kotlinx.android.synthetic.main.fragment_dining.*
 import org.joda.time.LocalDateTime
 import retrofit.Callback
@@ -220,12 +217,6 @@ class HomeFragment : Fragment()  {
                     if (t != null) {
                         Log.d("Polls tag", "success: I did sum")
                         Log.d("Polls tag", "success: $response")
-//                        if (t.getResults() == true){
-//                            Log.d("Polls tag", "success: I was a winner")
-//                        }
-//                        else{
-//                            Log.d("Poll tag", "success: NVM ")
-//                        }
                     } else {
                         Log.d("Poll tag", "success: nullo")
                     }
@@ -303,6 +294,12 @@ class HomeFragment : Fragment()  {
                 gsrBookingCell.type = "gsr_booking"
                 gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "VP Weigle")
                 cells?.add(cells.size - 1, gsrBookingCell)
+
+                //val postsCell = HomeCell()
+                //val postsInfoCell = HomeCellInfo()
+                //postsCell.type = "post"
+                //postsCell.info = postsInfoCell
+                //cells?.add(cells.size - 1, postsCell)
                 home_cells_rv?.adapter = HomeAdapter(ArrayList(cells))
                 loadingPanel?.visibility = View.GONE
                 home_refresh_layout?.isRefreshing = false

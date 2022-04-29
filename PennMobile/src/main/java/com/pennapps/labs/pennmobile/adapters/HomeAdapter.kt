@@ -157,6 +157,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
 
     private fun bindNewsCell(holder: ViewHolder, cell: HomeCell) {
         val info = cell.info
+        //do all da tings here
         holder.itemView.home_post_title.text = info?.title
         holder.itemView.home_post_subtitle.text = info?.subtitle
         holder.itemView.home_post_source.text = info?.source
