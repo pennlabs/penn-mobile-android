@@ -12,7 +12,7 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.VenueInterval
 import kotlinx.android.synthetic.main.fragment_dining_info.view.*
@@ -27,13 +27,13 @@ class DiningInfoFragment : Fragment() {
     private lateinit var menuParent: RelativeLayout
     private var mDiningHall: DiningHall? = null
     private lateinit var mActivity: MainActivity
-    private lateinit var mLabs: Labs
+    private lateinit var mStudentLife: StudentLife
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mDiningHall = arguments?.getParcelable("DiningHall")
         mActivity = activity as MainActivity
-        mLabs = MainActivity.labsInstance
+        mStudentLife = MainActivity.studentLifeInstance
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

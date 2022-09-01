@@ -34,7 +34,8 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.api.StudentLife
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Serializer.*
 import com.pennapps.labs.pennmobile.classes.*
@@ -152,6 +153,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun startHomeFragment() {
+        OAuth2NetworkManager(this).getAccessToken()
         val fragment: Fragment = HomeFragment()
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)
@@ -256,7 +258,7 @@ class MainActivity : AppCompatActivity() {
         const val LAUNDRY = 4
         const val MORE = 5
 
-        private var mLabs: Labs? = null
+        private var mStudentLife: StudentLife? = null
         private var mPlatform: Platform? = null
 
         @JvmStatic
@@ -277,9 +279,9 @@ class MainActivity : AppCompatActivity() {
             }
 
         @JvmStatic
-        val labsInstance: Labs
+        val studentLifeInstance: StudentLife
             get() {
-                if (mLabs == null) {
+                if (mStudentLife == null) {
                     val gsonBuilder = GsonBuilder()
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Contact?>?>() {}.type, DataSerializer<Any?>())
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Venue?>?>() {}.type, VenueSerializer())
@@ -305,11 +307,11 @@ class MainActivity : AppCompatActivity() {
                     val gson = gsonBuilder.create()
                     val restAdapter = RestAdapter.Builder()
                             .setConverter(GsonConverter(gson))
-                            .setEndpoint("https://api.pennlabs.org")
+                            .setEndpoint("https://pennmobile.org/api")
                             .build()
-                    mLabs = restAdapter.create(Labs::class.java)
+                    mStudentLife = restAdapter.create(StudentLife::class.java)
                 }
-                return mLabs!!
+                return mStudentLife!!
             }
     }
 

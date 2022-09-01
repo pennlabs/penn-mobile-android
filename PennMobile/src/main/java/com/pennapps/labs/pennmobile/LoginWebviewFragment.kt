@@ -16,7 +16,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
-import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Platform.platformBaseUrl
 import com.pennapps.labs.pennmobile.classes.AccessTokenResponse
@@ -31,11 +31,11 @@ import retrofit.client.Response
 import java.nio.charset.Charset
 import java.security.KeyStore
 import java.security.MessageDigest
+import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
-import java.util.Base64
 
 class LoginWebviewFragment : Fragment() {
 
@@ -43,7 +43,7 @@ class LoginWebviewFragment : Fragment() {
     lateinit var headerLayout: LinearLayout
     lateinit var cancelButton: Button
     lateinit var user: Account
-    private lateinit var mLabs: Labs
+    private lateinit var mStudentLife: StudentLife
     private var mPlatform: Platform? = null
     private lateinit var mActivity: MainActivity
     lateinit var sp: SharedPreferences
@@ -60,7 +60,7 @@ class LoginWebviewFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mLabs = MainActivity.labsInstance
+        mStudentLife = MainActivity.studentLifeInstance
         mPlatform = MainActivity.platformInstance
         arguments?.let {
             user = arguments?.getSerializable("user") as Account
@@ -206,13 +206,18 @@ class LoginWebviewFragment : Fragment() {
                             editor.putString(getString(R.string.access_token), accessToken)
                             editor.putString(getString(R.string.refresh_token), t?.refreshToken)
                             editor.putString(getString(R.string.expires_in), t?.expiresIn)
+                            val calendar = Calendar.getInstance()
+                            calendar.time = Date()
+                            val expiresInInt = t?.expiresIn!!.toInt()
+                            val date = Date(System.currentTimeMillis().plus(expiresInInt)) //or simply new Date();
+                            editor.putLong(getString(R.string.token_generated), date.time)
                             editor.apply()
                             getUser(accessToken)
                         }
                     }
 
                     override fun failure(error: RetrofitError) {
-                        Log.e("Accounts", "Error fetching access token $error")
+                        Log.e("Accounts", "Error fetching access token $error", error)
                         Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
                         mActivity.startLoginFragment()
                     }
@@ -238,9 +243,9 @@ class LoginWebviewFragment : Fragment() {
                         editor.putString(getString(R.string.email_address), user?.email)
                         editor.putString(getString(R.string.pennkey), user?.username)
                         editor.apply()
-
-                        saveAccount(Account(user?.firstName, user?.lastName,
-                                user?.username, user?.pennid, user?.email, user?.affiliation))
+                        mActivity.startHomeFragment()
+                        // saveAccount(Account(user?.firstName, user?.lastName,
+                        //        user?.username, user?.pennid, user?.email, user?.affiliation), user?.username.toString(), accessToken)
                     }
 
                     override fun failure(error: RetrofitError) {
@@ -251,8 +256,8 @@ class LoginWebviewFragment : Fragment() {
                 })
     }
 
-    private fun saveAccount(account: Account) {
-        mLabs.saveAccount(account, object : Callback<SaveAccountResponse> {
+    private fun saveAccount(account: Account, pennkey: String, accessToken: String?) {
+        mStudentLife.saveAccount("Bearer $accessToken", pennkey, account, object : Callback<SaveAccountResponse> {
 
             override fun success(t: SaveAccountResponse?, response: Response?) {
                 val editor = sp.edit()
@@ -263,7 +268,7 @@ class LoginWebviewFragment : Fragment() {
             }
 
             override fun failure(error: RetrofitError) {
-                Log.e("Accounts", "Error saving account $error")
+                Log.e("Accounts", "Error saving account $error", error)
                 Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
                 mActivity.startLoginFragment()
             }

@@ -22,6 +22,7 @@ open class DiningHall : Parcelable {
     var image: Int
         private set
 
+
     @SerializedName("tblDayPart")
     var menus: List<Menu> = ArrayList()
 

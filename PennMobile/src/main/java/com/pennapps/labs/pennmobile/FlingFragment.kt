@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile
 
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import androidx.browser.customtabs.CustomTabsIntent.Builder
 import androidx.fragment.app.Fragment
@@ -56,7 +55,7 @@ class FlingFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_fling, container, false)
-        val labs = MainActivity.labsInstance
+        val labs = MainActivity.studentLifeInstance
         labs.flingEvents.subscribe({ flingEvents ->
             activity?.runOnUiThread {
                 fling_fragment_recyclerview?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)

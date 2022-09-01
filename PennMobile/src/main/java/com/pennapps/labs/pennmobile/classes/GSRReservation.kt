@@ -9,22 +9,27 @@ import org.joda.time.format.DateTimeFormatter
 class GSRReservation {
     @SerializedName("booking_id")
     @Expose
+    @JvmField
     var booking_id: String? = null
 
     @SerializedName("name")
     @Expose
+    @JvmField
     var name: String? = null
 
     @SerializedName("fromDate")
     @Expose
+    @JvmField
     var fromDate: String? = null
 
     @SerializedName("toDate")
     @Expose
+    @JvmField
     var toDate: String? = null
 
     @SerializedName("gid")
     @Expose
+    @JvmField
     var gid: String? = null
 
     @SerializedName("lid")
@@ -33,5 +38,6 @@ class GSRReservation {
 
     @SerializedName("info")
     @Expose
+    @JvmField
     var info: Map<String, String>? = null
 }

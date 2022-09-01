@@ -2,9 +2,7 @@ package com.pennapps.labs.pennmobile
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -14,10 +12,8 @@ import androidx.annotation.RequiresApi
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.FitnessAdapter
 import kotlinx.android.synthetic.main.fragment_fitness.*
-import kotlinx.android.synthetic.main.fragment_fitness.view.*
 import kotlinx.android.synthetic.main.fragment_fitness.view.gym_list
 import kotlinx.android.synthetic.main.fragment_fitness.view.gym_refresh_layout
-import kotlinx.android.synthetic.main.fragment_laundry.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.no_results.*
 
@@ -73,7 +69,7 @@ class FitnessFragment : Fragment() {
         }
 
         // get API data
-        val labs = MainActivity.labsInstance
+        val labs = MainActivity.studentLifeInstance
         labs.gymData.subscribe({ gyms ->
             mActivity.runOnUiThread {
                 gym_list?.adapter = FitnessAdapter(gyms)

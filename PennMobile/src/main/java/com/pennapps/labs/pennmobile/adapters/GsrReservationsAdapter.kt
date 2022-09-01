@@ -4,7 +4,6 @@ import android.content.Context
 import android.preference.PreferenceManager
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,21 +13,15 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.GSRReservation
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.gsr_reservation.view.*
-import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
-import kotlin.Result.Companion.success
-import android.R.attr.radius
 import android.content.Intent
-import android.content.res.Resources
-import android.provider.Settings
+import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.widget.Toast.LENGTH_SHORT
-import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
-import kotlinx.android.synthetic.main.fragment_gsr_reservations.*
 
 
 class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>)
@@ -72,8 +65,9 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                 val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
                 val sessionID = if (reservation.info == null) sp.getString(mContext.getString(R.string.huntsmanGSR_SessionID), "") else null
 
-                val labs = MainActivity.labsInstance
-                labs.cancelReservation(null, bookingID, sessionID, object : ResponseCallback() {
+                val labs = MainActivity.studentLifeInstance
+                val bearerToken = "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ");
+                labs.cancelReservation(bearerToken, null, bookingID, sessionID, object : ResponseCallback() {
                     override fun success(response: Response) {
                         if (reservations.size > position) {
                             reservations.removeAt(position)
@@ -88,6 +82,7 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                     }
 
                     override fun failure(error: RetrofitError) {
+                        Log.e("GsrReservationsAdapter", "Error canceling gsr reservation", error)
                         Toast.makeText(mContext, "Error deleting your GSR reservation.", LENGTH_SHORT).show()
                     }
                 })

@@ -2,25 +2,31 @@ package com.pennapps.labs.pennmobile
 
 import android.os.Build
 import android.os.Bundle
-import android.view.*
+import android.util.Log
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.DiningAdapter
-import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.Venue
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.utils.Utils
 import kotlinx.android.synthetic.main.fragment_dining.*
+import kotlinx.android.synthetic.main.fragment_dining.internetConnectionDining
+import kotlinx.android.synthetic.main.fragment_dining.internetConnection_message_dining
 import kotlinx.android.synthetic.main.fragment_dining.view.*
-import kotlinx.android.synthetic.main.include_main.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.no_results.*
 import rx.Observable
@@ -28,11 +34,11 @@ import rx.Observable
 class DiningFragment : Fragment() {
 
     private lateinit var mActivity: MainActivity
-    private lateinit var mLabs: Labs
+    private lateinit var mStudentLife: StudentLife
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mLabs = MainActivity.labsInstance
+        mStudentLife = MainActivity.studentLifeInstance
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()
         setHasOptionsMenu(true)
@@ -51,13 +57,13 @@ class DiningFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_dining, container, false)
-        view.dining_swiperefresh?.setOnRefreshListener { getDiningHalls() }
-        view.dining_swiperefresh?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
-        view.dining_halls_recycler_view?.layoutManager = LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false)
+        val v = inflater.inflate(R.layout.fragment_dining, container, false)
+        v.dining_swiperefresh?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
+        v.dining_halls_recycler_view?.layoutManager = LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false)
+        v.dining_swiperefresh.setOnRefreshListener { getDiningHalls() }
         getDiningHalls()
-        initAppBar(view)
-        return view
+        initAppBar(v)
+        return v
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,7 +75,8 @@ class DiningFragment : Fragment() {
         inflater.inflate(R.menu.dining_sort, menu)
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
         // sort the dining halls in the user-specified order
-        when (sp.getString("dining_sortBy", "RESIDENTIAL")) {
+        val order = sp.getString("dining_sortBy", "RESIDENTIAL")
+        when (order) {
             "RESIDENTIAL" -> {
                 menu.findItem(R.id.action_sort_residential).isChecked = true
             }
@@ -126,14 +133,14 @@ class DiningFragment : Fragment() {
         //displays banner if not connected
         if (!isOnline(context)) {
             internetConnectionDining?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-            internetConnection_message_dining?.text = getString(R.string.internet_error)
+            internetConnection_message_dining?.setText("Not Connected to Internet")
             internetConnectionDining?.visibility = View.VISIBLE
         } else {
             internetConnectionDining?.visibility = View.GONE
         }
-
+        
         // Map each item in the list of venues to a Venue Observable, then map each Venue to a DiningHall Observable
-        mLabs.venues()
+        mStudentLife.venues()
                 .flatMap { venues -> Observable.from(venues) }
                 .flatMap { venue ->
                     val hall = createHall(venue)
@@ -149,13 +156,16 @@ class DiningFragment : Fragment() {
                             no_results?.visibility = View.GONE
                         }
                         dining_swiperefresh?.isRefreshing = false
-                        view?.let { displaySnack(it, "Just Updated") }
+                        view?.let {displaySnack(it, "Just Updated")}
                     }
                 }, {
                     mActivity.runOnUiThread {
+                        Log.e("Dining", "Could not load Dining page", it)
                         loadingPanel?.visibility = View.GONE
-                        internetConnectionDining?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-                        internetConnection_message_dining?.text = getString(R.string.internet_error)
+                        internetConnectionDining?.setBackgroundColor(resources.getColor(R.color.logo_dark_blue))
+                        //R.color.darkRedBackground))
+                        internetConnection_message_dining?.setText("Pardon our dust, new features coming soon!")
+                        //getString(R.string.internet_error))
                         internetConnectionDining?.visibility = View.VISIBLE
                         no_results?.visibility = View.VISIBLE
                         dining_swiperefresh?.isRefreshing = false
@@ -166,7 +176,6 @@ class DiningFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         mActivity.removeTabs()
-        //mActivity.toolbar.visibility = View.GONE
         mActivity.setTitle(R.string.dining)
         if (Build.VERSION.SDK_INT > 17) {
             mActivity.setSelectedTab(MainActivity.DINING)
