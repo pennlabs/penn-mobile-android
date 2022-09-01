@@ -138,7 +138,7 @@ class DiningFragment : Fragment() {
         } else {
             internetConnectionDining?.visibility = View.GONE
         }
-
+        
         // Map each item in the list of venues to a Venue Observable, then map each Venue to a DiningHall Observable
         mStudentLife.venues()
                 .flatMap { venues -> Observable.from(venues) }
@@ -162,8 +162,10 @@ class DiningFragment : Fragment() {
                     mActivity.runOnUiThread {
                         Log.e("Dining", "Could not load Dining page", it)
                         loadingPanel?.visibility = View.GONE
-                        internetConnectionDining?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-                        internetConnection_message_dining?.setText(getString(R.string.internet_error))
+                        internetConnectionDining?.setBackgroundColor(resources.getColor(R.color.logo_dark_blue))
+                        //R.color.darkRedBackground))
+                        internetConnection_message_dining?.setText("Pardon our dust, new features coming soon!")
+                        //getString(R.string.internet_error))
                         internetConnectionDining?.visibility = View.VISIBLE
                         no_results?.visibility = View.VISIBLE
                         dining_swiperefresh?.isRefreshing = false
