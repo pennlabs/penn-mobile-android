@@ -86,9 +86,9 @@ class HomeFragment : Fragment() {
         val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
         val accountID = sp.getString(getString(R.string.accountID), "")
         val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
+        OAuth2NetworkManager(mActivity).getAccessToken()
         val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
         Log.i("HomeFragment", bearerToken)
-        OAuth2NetworkManager(mActivity).getAccessToken()
 
         //displays banner if not connected
         if (!isOnline(context)) {
