@@ -128,7 +128,7 @@ class BookGsrFragment : Fragment() {
                         //Displaying the output as a toast and go back to GSR fragment
                         if (result.getDetail().equals("success")) {
                             Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
-
+                            Log.d("TAG", "success: Taggo" ) //set up notif here
                             // Save user info in shared preferences
                             val sp = PreferenceManager.getDefaultSharedPreferences(activity)
                             val editor = sp.edit()
