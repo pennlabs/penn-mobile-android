@@ -149,4 +149,5 @@ jobs:
           packageName: com.pennapps.labs.pennmobile
           releaseFiles: PennMobile-release-unsigned-signed.apk
           track: internal
+          status: completed
           userFraction: 0.50
