@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.pennapps.labs.pennmobile"
     android:versionCode="60"
-    android:versionName="2.0.1">
+    android:versionName="2.0.0">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <application
