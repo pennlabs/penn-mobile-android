@@ -150,4 +150,4 @@ jobs:
           releaseFiles: PennMobile-release-unsigned-signed.apk
           track: internal
           status: completed
-          userFraction: 0.50
+          # userFraction: 0.50
