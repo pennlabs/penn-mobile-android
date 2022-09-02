@@ -64,16 +64,16 @@ public class Serializer {
         Venue venue = new Venue();
         venue.setId(jsonVenue.get("id").getAsInt());
         venue.setName(jsonVenue.get("name").getAsString());
-        venue.setVenueType(jsonVenue.get("venueType").getAsString());
+        // venue.setVenueType(jsonVenue.get("venueType").getAsString());
         List<VenueInterval> venueIntervals = new ArrayList<>();
-        JsonArray jsonVenueIntervals = jsonVenue.get("dateHours").getAsJsonArray();
+        JsonArray jsonVenueIntervals = jsonVenue.get("days").getAsJsonArray();
         for (int i = 0; i < jsonVenueIntervals.size(); i++) {
             VenueInterval venueInterval = new VenueInterval();
             List<VenueInterval.MealInterval> mealIntervals = new ArrayList<VenueInterval.MealInterval>();
             JsonObject jsonVenueInterval = jsonVenueIntervals.get(i).getAsJsonObject();
-            JsonElement jsonMealIntervalsElement = jsonVenueInterval.get("meal");
-            JsonArray jsonMealIntervals = null;
+            JsonElement jsonMealIntervalsElement = jsonVenueInterval.get("dayparts");
             venueInterval.setDate(jsonVenueInterval.get("date").getAsString());
+            JsonArray jsonMealIntervals = null;
             try {
                 jsonMealIntervals = jsonMealIntervalsElement.getAsJsonArray();
             } catch (Exception e) {
@@ -83,9 +83,9 @@ public class Serializer {
             for (int j = 0; j < jsonMealIntervals.size(); j++) {
                 VenueInterval.MealInterval mealInterval = new VenueInterval.MealInterval();
                 JsonObject jsonMeal = jsonMealIntervals.get(j).getAsJsonObject();
-                mealInterval.setClose(jsonMeal.get("close").getAsString());
-                mealInterval.setType(jsonMeal.get("type").getAsString());
-                mealInterval.setOpen(jsonMeal.get("open").getAsString());
+                mealInterval.setClose(jsonMeal.get("endtime").getAsString().substring(11));
+                mealInterval.setType(jsonMeal.get("label").getAsString());
+                mealInterval.setOpen(jsonMeal.get("starttime").getAsString().substring(11));
                 mealIntervals.add(mealInterval);
             }
             venueInterval.setMeals(mealIntervals);
@@ -99,9 +99,7 @@ public class Serializer {
         public List<Venue> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
                 throws JsonParseException {
             List<Venue> res = new LinkedList<>();
-            JsonArray venueArray = je
-                    .getAsJsonObject().get("document")
-                    .getAsJsonObject().get("venue").getAsJsonArray();
+            JsonArray venueArray = je.getAsJsonArray();
             for (int i = 0; i < venueArray.size(); i++) {
                 JsonObject venue = venueArray.get(i).getAsJsonObject();
                 res.add(parseVenue(venue));
