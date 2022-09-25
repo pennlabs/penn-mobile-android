@@ -7,4 +7,6 @@ open class DiningInsightCell {
     @SerializedName("type")
     @Expose
     var type: String? = null
+
+    var diningBalances : DiningBalances? = null
 }

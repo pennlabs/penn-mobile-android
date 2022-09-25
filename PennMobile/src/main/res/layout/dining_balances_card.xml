@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/dining_balance"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:gravity="top"
+        android:text="@string/dining_balance"
+        android:textAppearance="@style/dining_insights_header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/dining_dollars_box"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/dining_insights_rectangle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dining_balance" />
+
+    <TextView
+        android:id="@+id/dining_dollars"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:gravity="top"
+        android:text="@string/dining_dollars"
+        android:textAppearance="@style/dining_insights_body"
+        app:layout_constraintStart_toStartOf="@+id/dining_dollars_box"
+        app:layout_constraintTop_toBottomOf="@+id/dining_balance" />
+
+    <TextView
+        android:id="@+id/dining_dollars_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_alignParentTop="true"
+        android:gravity="top"
+        android:text="$0.00"
+        android:textAppearance="@style/dining_dollars_amount"
+        android:textColor="#BADFB8"
+        app:layout_constraintEnd_toEndOf="@+id/dining_dollars_box"
+        app:layout_constraintStart_toEndOf="@+id/dining_dollars_box"
+        app:layout_constraintStart_toStartOf="@+id/dining_dollars_box"
+        app:layout_constraintTop_toBottomOf="@+id/dining_dollars" />
+
+    <View
+        android:id="@+id/money_circle"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_marginTop="42dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/dining_insights_circle"
+        app:layout_constraintEnd_toEndOf="@+id/dining_dollars_box"
+        app:layout_constraintTop_toTopOf="@+id/dining_dollars_box" />
+
+    <TextView
+        android:id="@+id/money"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/money"
+        android:textSize="10sp"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/money_circle"
+        app:layout_constraintEnd_toEndOf="@+id/money_circle"
+        app:layout_constraintStart_toStartOf="@+id/money_circle"
+        app:layout_constraintTop_toTopOf="@+id/money_circle" />
+
+    <View
+        android:id="@+id/swipes_box"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/dining_insights_rectangle"
+        app:layout_constraintStart_toEndOf="@+id/dining_dollars_box"
+        app:layout_constraintTop_toBottomOf="@+id/dining_balance" />
+
+    <TextView
+        android:id="@+id/swipes"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:gravity="top"
+        android:text="@string/dining_swipes"
+        android:textAppearance="@style/dining_insights_body"
+        app:layout_constraintStart_toStartOf="@+id/swipes_box"
+        app:layout_constraintTop_toBottomOf="@+id/dining_balance" />
+
+    <TextView
+        android:id="@+id/swipes_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_alignParentTop="true"
+        android:gravity="top"
+        android:text="0"
+        android:textAppearance="@style/dining_dollars_amount"
+        android:textColor="#99BCF7"
+        app:layout_constraintEnd_toEndOf="@+id/swipes_box"
+        app:layout_constraintStart_toEndOf="@+id/swipes_box"
+        app:layout_constraintStart_toStartOf="@+id/swipes_box"
+        app:layout_constraintTop_toBottomOf="@+id/swipes" />
+
+    <View
+        android:id="@+id/card_image"
+        android:layout_width="16dp"
+        android:layout_height="11dp"
+        android:layout_marginTop="42dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/dining_insights_rectangle"
+        android:backgroundTint="#99BCF7"
+        app:layout_constraintEnd_toEndOf="@+id/swipes_box"
+        app:layout_constraintTop_toTopOf="@+id/swipes_box" />
+
+    <View
+        android:id="@+id/card_slice"
+        android:layout_width="18dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="3dp"
+        android:background="@drawable/dining_insights_rectangle"
+        android:backgroundTint="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="@+id/card_image"
+        app:layout_constraintStart_toStartOf="@+id/card_image"
+        app:layout_constraintTop_toTopOf="@+id/card_image" />
+
+    <View
+        android:id="@+id/guest_swipes_box"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/dining_insights_rectangle"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toEndOf="@+id/swipes_box"
+        app:layout_constraintTop_toBottomOf="@+id/dining_balance" />
+
+    <TextView
+        android:id="@+id/guest_swipes"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:gravity="top"
+        android:text="@string/dining_guest_swipes"
+        android:textAppearance="@style/dining_insights_body"
+        app:layout_constraintStart_toStartOf="@+id/guest_swipes_box"
+        app:layout_constraintTop_toBottomOf="@+id/dining_balance" />
+
+    <TextView
+        android:id="@+id/guest_swipes_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_alignParentTop="true"
+        android:gravity="top"
+        android:text="0"
+        android:textAppearance="@style/dining_dollars_amount"
+        android:textColor="#FED994"
+        app:layout_constraintEnd_toEndOf="@+id/guest_swipes_box"
+        app:layout_constraintStart_toEndOf="@+id/guest_swipes_box"
+        app:layout_constraintStart_toStartOf="@+id/guest_swipes_box"
+        app:layout_constraintTop_toBottomOf="@+id/guest_swipes" />
+
+    <View
+        android:id="@+id/guest_image"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="42dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/ic_baseline_people_alt_24"
+        android:backgroundTint="#FED994"
+        app:layout_constraintEnd_toEndOf="@+id/guest_swipes_box"
+        app:layout_constraintTop_toTopOf="@+id/guest_swipes_box" />
+</androidx.constraintlayout.widget.ConstraintLayout>

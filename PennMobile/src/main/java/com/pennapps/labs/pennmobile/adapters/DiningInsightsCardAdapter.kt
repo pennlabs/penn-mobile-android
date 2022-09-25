@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.browser.customtabs.CustomTabsServiceConnection
@@ -27,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.*
 import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.CalendarEvent
+import com.pennapps.labs.pennmobile.classes.DiningBalances
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.DiningInsightCell
 import com.pennapps.labs.pennmobile.components.sneaker.Utils
@@ -50,6 +52,7 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
     companion object {
         // Types of Home Cells
         private const val NOT_SUPPORTED = -1
+        private const val DINING_BALANCE = 0
         private const val DINING_DOLLARS_SPENT = 1
     }
 
@@ -59,6 +62,9 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
         mActivity = mContext as MainActivity
 
         return when (viewType) {
+            DINING_BALANCE -> {
+                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.dining_balances_card, parent, false))
+            }
             DINING_DOLLARS_SPENT -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.dining_spent_card, parent, false))
             }
@@ -74,6 +80,7 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val cell = cells[position]
         when (cell.type) {
+            "dining_balance" -> bindDiningBalanceCells(holder, cell)
             "dining_dollars_spent" -> bindDollarsSpentReservationsCell(holder, cell)
             else -> Log.i("HomeAdapter", "Unsupported type of data at position $position")
         }
@@ -90,6 +97,7 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
     override fun getItemViewType(position: Int): Int {
         val cell = cells[position]
         return when (cell.type) {
+            "dining_balance" -> DINING_BALANCE
             "dining_dollars_spent" -> DINING_DOLLARS_SPENT
             else -> NOT_SUPPORTED
         }
@@ -98,6 +106,20 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
     private fun bindDollarsSpentReservationsCell(holder: ViewHolder, cell: DiningInsightCell) {
         // Populate dining dollars spent card
 
+    }
+
+    private fun bindDiningBalanceCells(holder: ViewHolder, cell: DiningInsightCell) {
+        val v = holder.view
+        val diningBalances = cell.diningBalances
+        val diningDollars = "$" + (diningBalances?.diningDollars ?: "0.00")
+        val swipes = diningBalances?.regularVisits ?: 0
+        val guestSwipes = diningBalances?.guestVisits ?: 0
+        val tvDiningDollarsAmount = (v.findViewById<View>(R.id.dining_dollars_amount) as TextView)
+        tvDiningDollarsAmount.text = diningDollars
+        val tvRegularSwipesAmount = (v.findViewById<View>(R.id.swipes_amount) as TextView)
+        tvRegularSwipesAmount.text = swipes.toString()
+        val tvGuestSwipesAmount = (v.findViewById<View>(R.id.guest_swipes_amount) as TextView)
+        tvGuestSwipesAmount.text = guestSwipes.toString()
     }
 
 }
