@@ -10,8 +10,8 @@ import androidx.core.app.NotificationManagerCompat
 
 class GSRBroadcastReceiver : BroadcastReceiver() {
     //notifications
-    private val textTitle = "test title"
-    private val textContent = "test content"
+    private val textTitle = "PennMobile: GSR"
+    private val textContent = "Your GSR Reservation is in 10 minutes!"
     private val notificationId = 0
 
     override fun onReceive(context: Context, intent: Intent) {

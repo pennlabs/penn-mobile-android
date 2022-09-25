@@ -147,21 +147,19 @@ class BookGsrFragment : Fragment() {
 
                             val gsrIntent = Intent(context, GSRBroadcastReceiver::class.java)
                             val pendingIntent = PendingIntent.getBroadcast(context, 0, gsrIntent, 0)
-                            Log.d("TAGGO", "success: intents built")
                             val alarmManager : AlarmManager = context?.let { getSystemService(it, AlarmManager::class.java) } as AlarmManager
-                            var alarmTime = System.currentTimeMillis() + 10000
-                            Log.d("TAGGO", "onReceive: alarm built")
 
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                 val localDateTime = LocalDateTime.parse(startTime?.substring(0, (startTime.length -6)))
                                 Log.d("TAGGO", "timeo: $localDateTime")
                                 val zoned = localDateTime.atZone(ZoneId.of(startTime?.substring(startTime.length -6)))
-                                alarmTime = zoned.toInstant().toEpochMilli() - 600000
+                                val alarmTime = zoned.toInstant().toEpochMilli() - 600000
                                 Log.d("TAGGO", "time: $alarmTime")
                                 val diff = (alarmTime - System.currentTimeMillis()) / 60000 //in minutes
                                 Log.d("TAGGO", "time left: $diff")
+                                alarmManager.set(AlarmManager.RTC, alarmTime, pendingIntent)
                             }
-                            alarmManager.set(AlarmManager.RTC, alarmTime, pendingIntent)
+
                             Log.d("TAGGO", "alarm has been establishado")
                             // Save user info in shared preferences
                             val sp = PreferenceManager.getDefaultSharedPreferences(activity)
