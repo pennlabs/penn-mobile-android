@@ -1,17 +1,23 @@
 package com.pennapps.labs.pennmobile
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.preference.PreferenceManager
-import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult
 import kotlinx.android.synthetic.main.gsr_details_book.view.*
@@ -40,6 +46,9 @@ class BookGsrFragment : Fragment() {
     private var roomId: Int = 0
     private lateinit var roomName: String
 
+    //notifications
+    val CHANNEL_ID = "1"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -55,6 +64,9 @@ class BookGsrFragment : Fragment() {
         mStudentLife = MainActivity.studentLifeInstance
         val mActivity : MainActivity? = activity as MainActivity
         mActivity?.setTitle(R.string.gsr)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationChannel()
+        }
     }
 
     override fun onResume() {
@@ -128,7 +140,25 @@ class BookGsrFragment : Fragment() {
                         //Displaying the output as a toast and go back to GSR fragment
                         if (result.getDetail().equals("success")) {
                             Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
-                            Log.d("TAG", "success: Taggo" ) //set up notif here
+                            val textTitle = "GSR Booking"
+                            val textContent = "Your GSR will be ready in 10 minutes"
+                            val notificationId = id
+                            Log.d("TAGGO", "success: pre builder" )
+                            var builder = context?.let {
+                                NotificationCompat.Builder(it, CHANNEL_ID)
+                                    .setSmallIcon(R.drawable.pennmobile_logo)
+                                    .setContentTitle(textTitle)
+                                    .setContentText(textContent)
+                                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                            }
+                            Log.d("TAGGO", "success: Post builder" )
+                            with(NotificationManagerCompat.from(requireContext())) {
+                                // notificationId is a unique int for each notification that you must define
+                                if (builder != null) {
+                                    notify(notificationId, builder.build())
+                                }
+                            }
+                            Log.d("TAGGO", "success: notif made" ) //set up notif here
                             // Save user info in shared preferences
                             val sp = PreferenceManager.getDefaultSharedPreferences(activity)
                             val editor = sp.edit()
@@ -163,6 +193,24 @@ class BookGsrFragment : Fragment() {
                     }
                 }
         )
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = getString(R.string.channel_name)
+            val descriptionText = getString(R.string.channel_description)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system
+            val notificationManager = requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            notificationManager.createNotificationChannel(channel)
+        }
     }
 
     companion object {
