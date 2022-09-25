@@ -1,9 +1,5 @@
 package com.pennapps.labs.pennmobile
 
-import android.app.Activity.RESULT_OK
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -11,7 +7,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,17 +14,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.adapters.DiningInsightsCardAdapter
 import com.pennapps.labs.pennmobile.api.CampusExpress
 import com.pennapps.labs.pennmobile.api.CampusExpressNetworkManager
-import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.classes.DiningBalances
 import com.pennapps.labs.pennmobile.classes.DiningInsightCell
 import com.pennapps.labs.pennmobile.classes.DollarsSpentCell
 import kotlinx.android.synthetic.main.fragment_dining.*
 import kotlinx.android.synthetic.main.fragment_dining.view.*
-import kotlinx.android.synthetic.main.fragment_dining.view.dining_swiperefresh
 import kotlinx.android.synthetic.main.fragment_dining_insights.*
 import kotlinx.android.synthetic.main.fragment_dining_insights.view.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
-import net.openid.appauth.*
 import java.util.*
 import kotlin.collections.ArrayList
 
