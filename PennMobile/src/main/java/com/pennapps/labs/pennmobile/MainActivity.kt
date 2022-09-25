@@ -34,8 +34,9 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.pennapps.labs.pennmobile.api.StudentLife
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.CampusExpress
-import com.pennapps.labs.pennmobile.api.Labs
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Serializer.*
 import com.pennapps.labs.pennmobile.classes.*
@@ -51,9 +52,6 @@ import retrofit.android.AndroidLog
 import retrofit.converter.GsonConverter
 
 class MainActivity : AppCompatActivity() {
-
-    //private var tabBarView: ExpandableBottomTabBar? = null
-    //private var toolbar: Toolbar? = null
     private var tabShowed = false
     private lateinit var fragmentManager: FragmentManager
     private lateinit var mSharedPrefs: SharedPreferences
@@ -108,6 +106,8 @@ class MainActivity : AppCompatActivity() {
                         .build()
         )
         onExpandableBottomNavigationItemSelected()
+        showBottomBar()
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         // Show HomeFragment if logged in, otherwise show LoginFragment
         val pennKey = mSharedPrefs.getString(getString(R.string.pennkey), null)
@@ -154,6 +154,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun startHomeFragment() {
+        OAuth2NetworkManager(this).getAccessToken()
         val fragment: Fragment = HomeFragment()
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)
@@ -244,7 +245,7 @@ class MainActivity : AppCompatActivity() {
         this.content_frame.layoutParams = layoutParams
     }
 
-    private fun showBottomBar() {
+    fun showBottomBar() {
         expandable_bottom_bar.visibility = View.VISIBLE
         val layoutParams = this.content_frame.layoutParams as CoordinatorLayout.LayoutParams
         layoutParams.setMargins(0, 0, 0, Utils.dpToPixel(this, 16f))
@@ -258,7 +259,7 @@ class MainActivity : AppCompatActivity() {
         const val LAUNDRY = 4
         const val MORE = 5
 
-        private var mLabs: Labs? = null
+        private var mStudentLife: StudentLife? = null
         private var mPlatform: Platform? = null
         private var mCampusExpress: CampusExpress? = null
 
@@ -297,9 +298,9 @@ class MainActivity : AppCompatActivity() {
             }
 
         @JvmStatic
-        val labsInstance: Labs
+        val studentLifeInstance: StudentLife
             get() {
-                if (mLabs == null) {
+                if (mStudentLife == null) {
                     val gsonBuilder = GsonBuilder()
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Contact?>?>() {}.type, DataSerializer<Any?>())
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Venue?>?>() {}.type, VenueSerializer())
@@ -325,11 +326,11 @@ class MainActivity : AppCompatActivity() {
                     val gson = gsonBuilder.create()
                     val restAdapter = RestAdapter.Builder()
                             .setConverter(GsonConverter(gson))
-                            .setEndpoint("https://api.pennlabs.org")
+                            .setEndpoint("https://pennmobile.org/api")
                             .build()
-                    mLabs = restAdapter.create(Labs::class.java)
+                    mStudentLife = restAdapter.create(StudentLife::class.java)
                 }
-                return mLabs!!
+                return mStudentLife!!
             }
     }
 

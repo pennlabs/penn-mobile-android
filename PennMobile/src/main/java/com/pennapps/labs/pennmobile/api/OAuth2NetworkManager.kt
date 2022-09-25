@@ -28,16 +28,14 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
         if (expiresIn != "") {
             val seconds = expiresIn?.toInt()
             val calendar = Calendar.getInstance()
+            val expiresAt = Date(sp.getLong(mActivity.getString(R.string.token_generated), 0))
             calendar.time = Date()
             if (seconds != null) {
-                calendar.add(Calendar.SECOND, seconds)
+                calendar.add(Calendar.SECOND, -seconds)
             }
-
-            if (calendar.time <= Date()) { // if it has expired, refresh access token
+            if (calendar.time.after(expiresAt)) { // if it has expired, refresh access token
                 refreshAccessToken()
             }
-        } else {
-            mActivity.startLoginFragment()
         }
     }
 
@@ -55,13 +53,19 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
                             editor.putString(mActivity.getString(R.string.access_token), t?.accessToken)
                             editor.putString(mActivity.getString(R.string.refresh_token), t?.refreshToken)
                             editor.putString(mActivity.getString(R.string.expires_in), t?.expiresIn)
+                            val calendar = Calendar.getInstance()
+                            calendar.time = Date()
+                            val expiresIn = t?.expiresIn
+                            val expiresInInt = expiresIn!!.toInt()
+                            val date = Date(System.currentTimeMillis().plus(expiresInInt)) //or simply new Date();
+                            editor.putLong(mActivity.getString(R.string.token_generated), date.time)
                             editor.apply()
                         }
                     }
 
                     override fun failure(error: RetrofitError) {
                         Log.e("Accounts", "Error refreshing access token $error")
-                        mActivity.startLoginFragment()
+                        // mActivity.startLoginFragment()
                     }
                 })
     }

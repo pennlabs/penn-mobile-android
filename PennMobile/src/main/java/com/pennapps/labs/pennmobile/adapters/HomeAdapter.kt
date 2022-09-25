@@ -26,7 +26,7 @@ import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.*
-import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.CalendarEvent
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.HomeCell
@@ -47,7 +47,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
 
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
-    private lateinit var mLabs: Labs
+    private lateinit var mStudentLife: StudentLife
 
     private var mCustomTabsClient: CustomTabsClient? = null
     private var customTabsIntent: CustomTabsIntent? = null
@@ -70,7 +70,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         mContext = parent.context
-        mLabs = MainActivity.labsInstance
+        mStudentLife = MainActivity.studentLifeInstance
         mActivity = mContext as MainActivity
 
         return when (viewType) {
@@ -152,7 +152,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             mActivity.fragmentTransact(DiningSettingsFragment())
         }
 
-        mLabs.venues()
+        mStudentLife.venues()
                 .flatMap { venues -> Observable.from(venues) }
                 .flatMap { venue ->
                     val hall = DiningFragment.createHall(venue)
@@ -176,13 +176,13 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
     }
 
     private fun bindNewsCell(holder: ViewHolder, cell: HomeCell) {
-        val info = cell.info
-        holder.itemView.home_news_title.text = info?.title
-        holder.itemView.home_news_subtitle.text = info?.subtitle
-        holder.itemView.home_news_timestamp.text = info?.timestamp?.trim()
+        val article = cell.info?.article
+        holder.itemView.home_news_title.text = article?.title
+        holder.itemView.home_news_subtitle.text = article?.subtitle
+        holder.itemView.home_news_timestamp.text = article?.timestamp?.trim()
 
         Picasso.get()
-                .load(info?.imageUrl)
+                .load(article?.imageUrl)
                 .fit()
                 .centerCrop()
                 .into(holder.itemView.home_news_iv)
@@ -190,7 +190,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         /** Adds dynamically generated accent color from the fetched image to the news card */
         var accentColor: Int =  getColor(mContext, R.color.black)
         GlobalScope.launch(Dispatchers.Default) {
-            val bitmap = Picasso.get().load(info?.imageUrl).get()
+            val bitmap = Picasso.get().load(article?.imageUrl).get()
 
             // Create palette from bitmap
             fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
@@ -250,7 +250,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
 
         holder.itemView.button.setOnClickListener {
 
-            val url = info?.articleUrl
+            val url = article?.articleUrl
 
             val connection = NewsCustomTabsServiceConnection()
             builder = CustomTabsIntent.Builder()
@@ -289,7 +289,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             if (!events[i].name.isNullOrEmpty()) {
                 eventList.add(events[i])
             }
-            i--;
+            i--
         }
         eventList.reverse()
 
@@ -322,7 +322,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
 
         holder.itemView.home_card_rv.layoutParams = params
 
-        mLabs.room(roomID).subscribe({ room ->
+        mStudentLife.room(roomID).subscribe({ room ->
             mActivity.runOnUiThread {
                 holder.itemView.home_card_title.text = room.name
                 val rooms = arrayListOf(room)

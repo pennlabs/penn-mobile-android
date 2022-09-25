@@ -12,13 +12,13 @@ class GSRSlot {
 
     @SerializedName("available")
     @Expose
-    var isAvailable: Boolean = false
+    var isAvailable: Boolean = true
 
-    @SerializedName("start")
+    @SerializedName("start_time")
     @Expose
     var startTime: String? = null
 
-    @SerializedName("end")
+    @SerializedName("end_time")
     @Expose
     var endTime: String? = null
 }

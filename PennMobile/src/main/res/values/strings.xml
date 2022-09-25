@@ -120,6 +120,7 @@
     <string name="feedback_txt">Click below to give us feedback!</string>
     <string name="request_feature">REQUEST A FEATURE</string>
     <string name="our_team">Our Team</string>
+    <string name="alumni">Alumni</string>
     <string name="penn_labs_copyright">\u00A9 2021 Penn Labs</string>
     <string name="pref_courses_title">Courses</string>
     <string name="pref_recitations">Show recitations</string>
@@ -168,6 +169,7 @@
     <string name="access_token">accessToken</string>
     <string name="refresh_token">refreshToken</string>
     <string name="expires_in">expiresIn</string>
+    <string name="token_generated">tokenGenerated</string>
     <string name="penn_user">pennUser</string>
     <string name="penn_password">pennPassword</string>
     <string name="title_activity_login">Sign in</string>

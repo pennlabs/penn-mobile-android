@@ -111,7 +111,7 @@ class LaundryMachineAdapter(var context: Context, var mMachineDetails: List<Mach
         intent.putExtra(context.resources.getString(R.string.laundry_room_name), mRoomName)
         intent.putExtra(context.resources.getString(R.string.laundry_machine_type), mMachineType)
         intent.putExtra(context.resources.getString(R.string.laundry_machine_id), id)
-        val alarmIntent: PendingIntent? = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_NO_CREATE)
+        val alarmIntent: PendingIntent? = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE)
 
         // switch is off if no alarm
         if (alarmIntent != null) {
@@ -128,24 +128,19 @@ class LaundryMachineAdapter(var context: Context, var mMachineDetails: List<Mach
                 holder.notificationBell.visibility = View.VISIBLE
                 holder.notificationBell.playAnimation()
 
-                val alarmIntent1 = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                val alarmIntent1 = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                 // for testing 10 second notification
                 //alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 10000, alarmIntent);
                 alarmManager[AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + time * 60000] = alarmIntent1
 
                 val message = context.resources.getQuantityString(R.plurals.laundry_alarm_on, time, time)
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    (((context as Activity).window?.decorView as ViewGroup).showSneakerToast(
-                            message, null,
-                            R.color.sneakerBlurColorOverlay))
-                } else {
-                    Toast.makeText(context, message,
-                            Toast.LENGTH_SHORT).show()
-                }
+                (((context as Activity).window?.decorView as ViewGroup).showSneakerToast(
+                        message, null,
+                        R.color.sneakerBlurColorOverlay))
             } else {
                 holder.notificationBell.visibility = View.INVISIBLE
                 // cancel alarm if exists
-                val alarmIntent1 = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_NO_CREATE)
+                val alarmIntent1 = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE)
                 if (alarmIntent1 != null) {
                     alarmManager.cancel(alarmIntent1)
                     alarmIntent1.cancel()
@@ -155,14 +150,9 @@ class LaundryMachineAdapter(var context: Context, var mMachineDetails: List<Mach
                 }
 
                 val message = context.resources.getString(R.string.laundry_alarm_off)
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    (((context as Activity).window?.decorView as ViewGroup).showSneakerToast(
-                            message, null,
-                            R.color.sneakerBlurColorOverlay))
-                } else {
-                    Toast.makeText(context, message,
-                            Toast.LENGTH_SHORT).show()
-                }
+                (((context as Activity).window?.decorView as ViewGroup).showSneakerToast(
+                        message, null,
+                        R.color.sneakerBlurColorOverlay))
             }
         }
     }

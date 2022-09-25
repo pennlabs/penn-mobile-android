@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -28,24 +29,25 @@ class UniversityEventAdapter(private var events: ArrayList<CalendarEvent>) :
         val event = events[position]
 
         val name = event.name
+        Log.i("EventAdapter", "Name $name Date $event.date")
+        // val formatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd")
+        // val from = formatter.parseDateTime(event.start)
+        // val to = formatter.parseDateTime(event.end)
+        // val dayOfMonth = from.toString("d")
+        // val month = from.toString("MMM")
+        // val start = from.toString("EEEE")
+        // val end = to.toString("EEEE")
 
-        val formatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd")
-        val from = formatter.parseDateTime(event.start)
-        val to = formatter.parseDateTime(event.end)
-        val dayOfMonth = from.toString("d")
-        val month = from.toString("MMM")
-        val start = from.toString("EEEE")
-        val end = to.toString("EEEE")
-
-        holder.itemView.event_day.text = dayOfMonth
-        holder.itemView.event_month.text = month
+        // holder.itemView.event_day.text = dayOfMonth
+        // holder.itemView.event_month.text = month
+        holder.itemView.event_month.text = event.date
         holder.itemView.event_name_tv.text = name
         holder.itemView.event_name_tv.isSelected = true
-        if (from == to) {
+        /* if (from == to) {
             holder.itemView.event_day_of_week.text = start
         } else {
             holder.itemView.event_day_of_week.text = "$start - $end"
-        }
+        }*/
 
     }
 

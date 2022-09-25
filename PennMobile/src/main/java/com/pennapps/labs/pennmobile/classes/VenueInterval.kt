@@ -16,7 +16,7 @@ import java.util.*
 class VenueInterval {
     var date: String? = null
 
-    @SerializedName("meal")
+    //@SerializedName("meal")
     var meals: List<MealInterval> = arrayListOf()
 
     /**
@@ -46,12 +46,19 @@ class VenueInterval {
          * @return Time interval in which meal is open represented as a Joda Interval
          */
         fun getInterval(date: String?): Interval {
-            val openTime = "$date $open"
+            var openTime = "$date $open"
             var closeTime = "$date $close"
             // Avoid midnight hour confusion as API returns both 00:00 and 24:00
             // Switch it to more comprehensible 23:59 / 11:59PM
             if (close == "00:00:00" || close == "24:00:00") {
                 closeTime = "$date 23:59:59"
+            }
+            Log.i("VenueInterval", "$openTime")
+            if (open == "" && close == "") {
+                open ="00:00:00"
+                close ="00:00:00"
+                openTime = "$date $open"
+                closeTime = "$date $close"
             }
             val openInstant = DateTime.parse(openTime, dateFormat)
             var closeInstant: DateTime

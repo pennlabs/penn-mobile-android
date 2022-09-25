@@ -76,5 +76,4 @@ class LoginFragment : Fragment() {
         super.onResume()
         mActivity.hideBottomBar()
     }
-
 }

@@ -50,7 +50,7 @@ public class CustomAlertDialogue extends DialogFragment {
     private ArrayList<String> inputList;
     private TextView positiveText;
     private ArrayList<String> tagList;
-    private static CustomAlertDialogue instance = new CustomAlertDialogue();
+    private static final CustomAlertDialogue instance = new CustomAlertDialogue();
 
     public static CustomAlertDialogue getInstance() {
         return instance;
@@ -134,11 +134,7 @@ public class CustomAlertDialogue extends DialogFragment {
         window.setAttributes(wlp);
 
         if (builder != null) {
-            if (!builder.getCancelable()) {
-                setCancelable(false);
-            } else {
-                setCancelable(true);
-            }
+            setCancelable(builder.getCancelable());
         }
 
         return dialog;
@@ -1085,8 +1081,8 @@ public class CustomAlertDialogue extends DialogFragment {
 
     public class CustomActionsheetAdapter extends BaseAdapter {
 
-        private List<String> mDatas;
-        private List<String> mDestructive;
+        private final List<String> mDatas;
+        private final List<String> mDestructive;
 
         public CustomActionsheetAdapter(List<String> datas, List<String> destructive){
             this.mDatas = datas;
@@ -1132,8 +1128,8 @@ public class CustomAlertDialogue extends DialogFragment {
 
         class Holder {
 
-            private View buttonDivider;
-            private TextView buttonText;
+            private final View buttonDivider;
+            private final TextView buttonText;
 
             public Holder(View view){
                 buttonText = view.findViewById(stream.customalert.R.id.alerttext);

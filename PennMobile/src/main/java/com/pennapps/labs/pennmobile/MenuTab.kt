@@ -36,7 +36,7 @@ class MenuTab : Fragment() {
         val elv : ExpandableListView = v.station_list
         elv.setFooterDividersEnabled(true)
         elv.addFooterView(View(elv.context))
-        elv.setAdapter(MenuAdapter(activity, stations, stationInfo))
+        elv.setAdapter(activity?.let { MenuAdapter(it, stations, stationInfo) })
         v.setBackgroundColor(Color.WHITE)
         return v
     }

@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.MenuFragment
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.dining_list_item.view.*
@@ -24,14 +24,14 @@ import rx.android.schedulers.AndroidSchedulers
 import java.util.*
 
 class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Adapter<DiningAdapter.DiningViewHolder>() {
-    private lateinit var mLabs: Labs
+    private lateinit var mStudentLife: StudentLife
     private lateinit var loaded: BooleanArray
     private lateinit var sortBy: String
     private lateinit var context: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiningViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.dining_list_item, parent, false)
-        mLabs = MainActivity.labsInstance
+        mStudentLife = MainActivity.studentLifeInstance
         loaded = BooleanArray(diningHalls.size)
         context = parent.context
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
@@ -72,7 +72,7 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
             // Load the menu for each dining hall
             if (diningHall.isResidential && !loaded[position]) {
                 holder.progressBar?.visibility = View.VISIBLE
-                mLabs.daily_menu(diningHall.id)
+                mStudentLife.daily_menu(diningHall.id)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ newDiningHall ->
                             diningHall.sortMeals(newDiningHall.menus)

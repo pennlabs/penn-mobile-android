@@ -449,7 +449,7 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
             sneakerView.startAnimation(AnimationUtils.loadAnimation(context, R.anim.popup_show))
             if (mAutoHide) {
                 val handler = Handler()
-                handler.removeCallbacks(null)
+                handler.removeCallbacks { }
                 handler.postDelayed({
                     removeView(sneakerView)
                     mDismissListener?.onDismiss()
@@ -477,7 +477,7 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
             sneakerView.startAnimation(AnimationUtils.loadAnimation(context, R.anim.popup_show))
             if (mAutoHide) {
                 val handler = Handler()
-                handler.removeCallbacks(null)
+                handler.removeCallbacks { }
                 handler.postDelayed({
                     removeView(sneakerView)
                     mDismissListener?.onDismiss()

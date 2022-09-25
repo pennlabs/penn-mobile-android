@@ -38,7 +38,7 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
     private static final String SELECTED_TAB = "Selected Tab";
     private static final String TAG = "TabBarView";
     public static final String ANDROID_NS = "http://schemas.android.com/apk/res/android";
-    private int MAX_TABS_PER_ROW = 5;
+    private final int MAX_TABS_PER_ROW = 5;
     private int mMoreTabPosition = MAX_TABS_PER_ROW - 1;
     private Context mContext;
     private LinearLayout mRootContainer;
@@ -53,13 +53,13 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
     private int mMaxFixedItemWidth;
     private int mMaxTabPerRow = MAX_TABS_PER_ROW;
     private final List<TabInformation> mTabInfoList = new ArrayList<>();
-    private List<View> mTabViewList = new ArrayList<>();
+    private final List<View> mTabViewList = new ArrayList<>();
 
     // XML Attributes
     private int mTabXmlResource;
     private float mTextSize = 16;
-    private int mPadding = 20;
-    private int mAnimationDuration = 300;
+    private final int mPadding = 20;
+    private final int mAnimationDuration = 300;
     private int mSelectedTab = 0;
     private int mTabContainerCount = 1;
     private int mBgColor;
@@ -498,6 +498,6 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
     }
 
     public interface OnTabClickedListener {
-        public void onTabClicked(View view, int tabPos);
+        void onTabClicked(View view, int tabPos);
     }
 }
