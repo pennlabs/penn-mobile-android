@@ -62,7 +62,7 @@ class DiningFragment : Fragment() {
         v.dining_halls_recycler_view?.layoutManager = LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false)
         v.dining_swiperefresh.setOnRefreshListener { getDiningHalls() }
         getDiningHalls()
-        initAppBar(v)
+        // initAppBar(v)
         return v
     }
 

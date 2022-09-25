@@ -19,11 +19,8 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.api.CampusExpress
-import com.pennapps.labs.pennmobile.api.Labs
-import com.pennapps.labs.pennmobile.classes.AccessTokenResponse
 import com.pennapps.labs.pennmobile.classes.Account
 import com.pennapps.labs.pennmobile.classes.CampusExpressAccessTokenResponse
-import com.pennapps.labs.pennmobile.classes.DiningInsightCell
 import kotlinx.android.synthetic.main.fragment_login_webview.view.*
 import org.apache.commons.lang3.RandomStringUtils
 import retrofit.Callback
@@ -47,7 +44,6 @@ class CampusExpressLoginFragment : Fragment() {
     lateinit var headerLayout: LinearLayout
     lateinit var cancelButton: Button
     lateinit var user: Account
-    private lateinit var mLabs: Labs
     private var mCampusExpress: CampusExpress? = null
     private lateinit var mActivity: MainActivity
     lateinit var sp: SharedPreferences
@@ -65,7 +61,6 @@ class CampusExpressLoginFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mLabs = MainActivity.labsInstance
         mCampusExpress = MainActivity.campusExpressInstance
         mActivity = activity as MainActivity
         sp = PreferenceManager.getDefaultSharedPreferences(mActivity)

@@ -23,28 +23,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.BROWSABLE" />
                 <action android:name="android.intent.action.VIEW" />
-                <data
-                    android:scheme="https"
-                    android:host="pennlabs.org"
-                    />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="net.openid.appauth.RedirectUriReceiverActivity"
-            android:exported="true"
-            tools:node="replace" >
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="pennlabs.org"
-                    />
             </intent-filter>
         </activity>
         <meta-data
@@ -53,12 +32,12 @@
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="18a765536e6539a73a15dd36c369ed29cfb91aa1" />
-      <meta-data
-          android:name="preloaded_fonts"
-          android:resource="@array/preloaded_fonts"
-          />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts"
+            />
 
-      <receiver
+        <receiver
             android:name=".LaundryBroadcastReceiver"
             android:enabled="true"
             android:exported="true" /> <!-- receiver for laundry -->

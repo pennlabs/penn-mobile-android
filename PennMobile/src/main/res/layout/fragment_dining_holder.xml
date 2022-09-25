@@ -108,10 +108,11 @@
                     android:textStyle="bold"
                     android:visibility="gone" />
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
+                    <LinearLayout
                         android:id="@+id/constraint"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:orientation="vertical"
                         tools:showIn="@layout/activity_main">
 
                         <com.google.android.material.tabs.TabLayout
@@ -130,11 +131,8 @@
                         <androidx.viewpager2.widget.ViewPager2
                             android:id="@+id/pager"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginTop="32dp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="@id/tabLayout" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                            android:layout_height="match_parent" />
+                    </LinearLayout>
 
             </LinearLayout>
         </FrameLayout>
