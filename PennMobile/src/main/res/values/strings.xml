@@ -169,6 +169,7 @@
     <!-- Notifications -->
     <string name="channel_name">"GSR Notifications"</string>
     <string name="channel_description">"GSR Notifications"</string>
+    <string name="channel_id">"PennMobile Channel"</string>
     <!-- Accounts -->
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>

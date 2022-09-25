@@ -41,6 +41,10 @@
             android:name=".LaundryBroadcastReceiver"
             android:enabled="true"
             android:exported="true" /> <!-- receiver for laundry -->
+        <receiver
+        android:name=".GSRBroadcastReceiver"
+        android:enabled="true"
+        android:exported="true" /> <!-- receiver for GSR -->
         <uses-library
             android:name="com.google.android.maps"
             android:required="false" />

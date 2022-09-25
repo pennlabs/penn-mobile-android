@@ -1,8 +1,12 @@
 package com.pennapps.labs.pennmobile
 
+import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Context.ALARM_SERVICE
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +19,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.preference.PreferenceManager
@@ -24,6 +29,8 @@ import kotlinx.android.synthetic.main.gsr_details_book.view.*
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 
 class BookGsrFragment : Fragment() {
@@ -45,9 +52,6 @@ class BookGsrFragment : Fragment() {
     private var gid: Int = 0
     private var roomId: Int = 0
     private lateinit var roomName: String
-
-    //notifications
-    val CHANNEL_ID = "1"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -140,25 +144,25 @@ class BookGsrFragment : Fragment() {
                         //Displaying the output as a toast and go back to GSR fragment
                         if (result.getDetail().equals("success")) {
                             Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
-                            val textTitle = "GSR Booking"
-                            val textContent = "Your GSR will be ready in 10 minutes"
-                            val notificationId = id
-                            Log.d("TAGGO", "success: pre builder" )
-                            var builder = context?.let {
-                                NotificationCompat.Builder(it, CHANNEL_ID)
-                                    .setSmallIcon(R.drawable.pennmobile_logo)
-                                    .setContentTitle(textTitle)
-                                    .setContentText(textContent)
-                                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+                            val gsrIntent = Intent(context, GSRBroadcastReceiver::class.java)
+                            val pendingIntent = PendingIntent.getBroadcast(context, 0, gsrIntent, 0)
+                            Log.d("TAGGO", "success: intents built")
+                            val alarmManager : AlarmManager = context?.let { getSystemService(it, AlarmManager::class.java) } as AlarmManager
+                            var alarmTime = System.currentTimeMillis() + 10000
+                            Log.d("TAGGO", "onReceive: alarm built")
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                val localDateTime = LocalDateTime.parse(startTime?.substring(0, (startTime.length -6)))
+                                Log.d("TAGGO", "timeo: $localDateTime")
+                                val zoned = localDateTime.atZone(ZoneId.of(startTime?.substring(startTime.length -6)))
+                                alarmTime = zoned.toInstant().toEpochMilli() - 600000
+                                Log.d("TAGGO", "time: $alarmTime")
+                                val diff = (alarmTime - System.currentTimeMillis()) / 60000 //in minutes
+                                Log.d("TAGGO", "time left: $diff")
                             }
-                            Log.d("TAGGO", "success: Post builder" )
-                            with(NotificationManagerCompat.from(requireContext())) {
-                                // notificationId is a unique int for each notification that you must define
-                                if (builder != null) {
-                                    notify(notificationId, builder.build())
-                                }
-                            }
-                            Log.d("TAGGO", "success: notif made" ) //set up notif here
+                            alarmManager.set(AlarmManager.RTC, alarmTime, pendingIntent)
+                            Log.d("TAGGO", "alarm has been establishado")
                             // Save user info in shared preferences
                             val sp = PreferenceManager.getDefaultSharedPreferences(activity)
                             val editor = sp.edit()
@@ -203,7 +207,7 @@ class BookGsrFragment : Fragment() {
             val name = getString(R.string.channel_name)
             val descriptionText = getString(R.string.channel_description)
             val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+            val channel = NotificationChannel(R.string.channel_id.toString(), name, importance).apply {
                 description = descriptionText
             }
             // Register the channel with the system
