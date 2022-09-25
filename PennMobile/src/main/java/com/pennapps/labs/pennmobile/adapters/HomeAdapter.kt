@@ -149,7 +149,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         holder.itemView.home_card_subtitle.text = "DINING HALLS"
         holder.itemView.dining_prefs_btn.visibility = View.VISIBLE
         holder.itemView.dining_prefs_btn.setOnClickListener {
-            mActivity.fragmentTransact(DiningSettingsFragment())
+            mActivity.fragmentTransact(DiningSettingsFragment(), false)
         }
 
         mStudentLife.venues()
@@ -393,7 +393,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
 
         // For now, we only use Feature cards for Spring Fling so we show the Fling Fragment
         holder.itemView.home_post_card.setOnClickListener {
-            mActivity.fragmentTransact(FlingFragment())
+            mActivity.fragmentTransact(FlingFragment(), false)
         }
     }
         // Chrome custom tabs to launch news site
