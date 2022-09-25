@@ -14,6 +14,7 @@ import retrofit.http.POST;
 public interface Platform {
 
     String platformBaseUrl = "https://platform.pennlabs.org";
+    String campusExpressBaseUrl = "https://prod.campusexpress.upenn.edu/api/v1";
 
     @FormUrlEncoded
     @POST("/accounts/token/")

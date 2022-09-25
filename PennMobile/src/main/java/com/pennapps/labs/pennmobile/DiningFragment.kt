@@ -68,7 +68,6 @@ class DiningFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setTitle("Dining")
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -159,14 +158,13 @@ class DiningFragment : Fragment() {
                         view?.let {displaySnack(it, "Just Updated")}
                     }
                 }, {
+                    Log.e("DiningFragment", "Error getting dining halls", it);
                     mActivity.runOnUiThread {
                         Log.e("Dining", "Could not load Dining page", it)
                         loadingPanel?.visibility = View.GONE
-                        internetConnectionDining?.setBackgroundColor(resources.getColor(R.color.logo_dark_blue))
-                        //R.color.darkRedBackground))
-                        internetConnection_message_dining?.setText("Pardon our dust, new features coming soon!")
-                        //getString(R.string.internet_error))
-                        internetConnectionDining?.visibility = View.VISIBLE
+                        //internetConnectionDining?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+                        //internetConnection_message_dining?.text = getString(R.string.internet_error)
+                        //internetConnectionDining?.visibility = View.VISIBLE
                         no_results?.visibility = View.VISIBLE
                         dining_swiperefresh?.isRefreshing = false
                     }
@@ -182,16 +180,6 @@ class DiningFragment : Fragment() {
         }
     }
 
-    private fun initAppBar(view: View) {
-        if (Build.VERSION.SDK_INT > 16) {
-            (view.appbar_home.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
-        }
-        view.date_view.text = Utils.getCurrentSystemTime()
-    }
-
-    private fun setTitle(title: CharSequence) {
-        title_view.text = title
-    }
 
     /**
      * Shows SnackBar message right below the app bar
