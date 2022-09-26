@@ -146,6 +146,8 @@ class BookGsrFragment : Fragment() {
                             Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
 
                             val gsrIntent = Intent(context, GSRBroadcastReceiver::class.java)
+                            gsrIntent.putExtra("roomName", roomName)
+                            Log.d("TAGGO", gsrIntent.extras.toString())
                             val pendingIntent = PendingIntent.getBroadcast(context, 0, gsrIntent, 0)
                             val alarmManager : AlarmManager = context?.let { getSystemService(it, AlarmManager::class.java) } as AlarmManager
 
