@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
-import android.util.Log
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
