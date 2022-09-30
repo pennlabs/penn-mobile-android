@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/dining_dollars_spent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/average_dining_dollars_spent"
+        android:textAppearance="@style/dining_insights_header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/dining_dollars_spent_card"
+        android:layout_width="332dp"
+        android:layout_height="142dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/dining_insights_rectangle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dining_dollars_spent" />
+
+    <View
+        android:id="@+id/dollars_spent_m"
+        android:layout_width="18dp"
+        android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/dining_insights_rectangle"
+        android:backgroundTint="#B5D285"
+        app:layout_constraintBottom_toBottomOf="@+id/dining_dollars_spent_card"
+        app:layout_constraintStart_toStartOf="@+id/dining_dollars_spent_card" />
+
+    <TextView
+        android:id="@+id/m1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="M"
+        android:textAppearance="@style/day_of_week"
+        app:layout_constraintEnd_toEndOf="@+id/dollars_spent_m"
+        app:layout_constraintStart_toStartOf="@+id/dollars_spent_m"
+        app:layout_constraintTop_toBottomOf="@+id/dollars_spent_m" />
+    <View
+        android:id="@+id/dollars_spent_tu"
+        android:layout_width="18dp"
+        android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/dining_insights_rectangle"
+        android:backgroundTint="#B5D285"
+        app:layout_constraintBottom_toBottomOf="@+id/dining_dollars_spent_card"
+        app:layout_constraintStart_toStartOf="@+id/dollars_spent_m" />
+
+    <TextView
+        android:id="@+id/tu1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="T"
+        android:textAppearance="@style/day_of_week"
+        app:layout_constraintEnd_toEndOf="@+id/dollars_spent_tu"
+        app:layout_constraintStart_toStartOf="@+id/dollars_spent_tu"
+        app:layout_constraintTop_toBottomOf="@+id/dollars_spent_tu" />
+    <View
+        android:id="@+id/dollars_spent_w"
+        android:layout_width="18dp"
+        android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/dining_insights_rectangle"
+        android:backgroundTint="#B5D285"
+        app:layout_constraintBottom_toBottomOf="@+id/dining_dollars_spent_card"
+        app:layout_constraintStart_toStartOf="@+id/dollars_spent_tu" />
+
+    <TextView
+        android:id="@+id/w1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="W"
+        android:textAppearance="@style/day_of_week"
+        app:layout_constraintEnd_toEndOf="@+id/dollars_spent_w"
+        app:layout_constraintStart_toStartOf="@+id/dollars_spent_w"
+        app:layout_constraintTop_toBottomOf="@+id/dollars_spent_w" />
+    <View
+        android:id="@+id/dollars_spent_th"
+        android:layout_width="18dp"
+        android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/dining_insights_rectangle"
+        android:backgroundTint="#B5D285"
+        app:layout_constraintBottom_toBottomOf="@+id/dining_dollars_spent_card"
+        app:layout_constraintStart_toStartOf="@+id/dollars_spent_w" />
+
+    <TextView
+        android:id="@+id/th1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="T"
+        android:textAppearance="@style/day_of_week"
+        app:layout_constraintEnd_toEndOf="@+id/dollars_spent_th"
+        app:layout_constraintStart_toStartOf="@+id/dollars_spent_th"
+        app:layout_constraintTop_toBottomOf="@+id/dollars_spent_th" />
+    <View
+        android:id="@+id/dollars_spent_f"
+        android:layout_width="18dp"
+        android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/dining_insights_rectangle"
+        android:backgroundTint="#B5D285"
+        app:layout_constraintBottom_toBottomOf="@+id/dining_dollars_spent_card"
+        app:layout_constraintStart_toStartOf="@+id/dollars_spent_th" />
+
+    <TextView
+        android:id="@+id/f1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="M"
+        android:textAppearance="@style/day_of_week"
+        app:layout_constraintEnd_toEndOf="@+id/dollars_spent_f"
+        app:layout_constraintStart_toStartOf="@+id/dollars_spent_f"
+        app:layout_constraintTop_toBottomOf="@+id/dollars_spent_f" />
+    <View
+        android:id="@+id/dollars_spent_sa"
+        android:layout_width="18dp"
+        android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/dining_insights_rectangle"
+        android:backgroundTint="#B5D285"
+        app:layout_constraintBottom_toBottomOf="@+id/dining_dollars_spent_card"
+        app:layout_constraintStart_toStartOf="@+id/dollars_spent_f" />
+
+    <TextView
+        android:id="@+id/sa1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="S"
+        android:textAppearance="@style/day_of_week"
+        app:layout_constraintEnd_toEndOf="@+id/dollars_spent_sa"
+        app:layout_constraintStart_toStartOf="@+id/dollars_spent_sa"
+        app:layout_constraintTop_toBottomOf="@+id/dollars_spent_sa" />
+
+    <View
+        android:id="@+id/dollars_spent_su"
+        android:layout_width="18dp"
+        android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/dining_insights_rectangle"
+        android:backgroundTint="#B5D285"
+        app:layout_constraintBottom_toBottomOf="@+id/dining_dollars_spent_card"
+        app:layout_constraintStart_toStartOf="@+id/dollars_spent_sa" />
+
+    <TextView
+        android:id="@+id/su1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="S"
+        android:textAppearance="@style/day_of_week"
+        app:layout_constraintEnd_toEndOf="@+id/dollars_spent_su"
+        app:layout_constraintStart_toStartOf="@+id/dollars_spent_su"
+        app:layout_constraintTop_toBottomOf="@+id/dollars_spent_su" />
+
+    <TextView
+        android:id="@+id/average_spent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="48dp"
+        android:text="$6.31"
+        android:textAppearance="@style/average_spent"
+        app:layout_constraintBottom_toBottomOf="@+id/dining_dollars_spent_card"
+        app:layout_constraintStart_toEndOf="@+id/dollars_spent_su" />
+
+    <TextView
+        android:id="@+id/day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="48dp"
+        android:text="/day"
+        android:textAppearance="@style/day_of_week"
+        app:layout_constraintBottom_toBottomOf="@+id/dining_dollars_spent_card"
+        app:layout_constraintStart_toEndOf="@+id/average_spent" />
+
+    <TextView
+        android:id="@+id/pastweek"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/past_week"
+        android:textAppearance="@style/day_of_week"
+        app:layout_constraintStart_toStartOf="@+id/average_spent"
+        app:layout_constraintTop_toBottomOf="@+id/average_spent" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="180dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginBottom="64dp"
+        android:background="@drawable/dining_insights_rectangle"
+        android:backgroundTint="#000000"
+        app:layout_constraintBottom_toBottomOf="@+id/dining_dollars_spent_card"
+        app:layout_constraintStart_toStartOf="@+id/dining_dollars_spent_card" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

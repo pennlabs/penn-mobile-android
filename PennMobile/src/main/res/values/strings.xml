@@ -46,6 +46,15 @@
     <string name="sort_by_residential">Order by Residential Hall</string>
     <string name="sort_by_open">Order by Open Status</string>
     <string name="dining_closed">Closed today</string>
+    <string name="dining_balance">Dining Balance</string>
+    <string name="dining_dollars">Dining Balance</string>
+    <string name="dining_swipes">Swipes</string>
+    <string name="dining_guest_swipes">Guest Swipes</string>
+    <string name="money">$</string>
+    <string name="average_dining_dollars_spent">Average Dining Dollars Spent</string>
+    <string name="past_week">this past week</string>
+    <string name="campus_express_token">Campus Express Token</string>
+    <string name="campus_token_expires_in">Campus Express Token Expires In</string>
 
     <!-- LaundryRoom -->
     <string name="laundry_washer">Washers</string>
