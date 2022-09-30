@@ -318,7 +318,7 @@ class GsrFragment : Fragment() {
                 val stringStartTime = startTime.toString(timeFormatter)
                 val stringEndTime = endTime.toString(timeFormatter)
                 val start = startingSlot.startTime ?: ""
-                //note that end uses ending slot to account for 30+ min bookings
+                //note that end uses ending slot to account for 30+ min booking times
                 val end = endingSlot.endTime ?: ""
                 val gsrName = gsrRoom.name ?: ""
                 val gsrRoomId = gsrRoom.room_id ?: 0
