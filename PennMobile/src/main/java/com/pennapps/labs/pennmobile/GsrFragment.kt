@@ -293,6 +293,7 @@ class GsrFragment : Fragment() {
                 val endString = currSlot.endTime
 
                 if (startString != null && endString != null) {
+
                     val endTime = gsrSlotFormatter.parseDateTime(endString)
                     if (endTime.isAfter(selectedDateTime)) {
                         availableSlotsAfterSelectedTime.add(currSlot)
@@ -317,7 +318,8 @@ class GsrFragment : Fragment() {
                 val stringStartTime = startTime.toString(timeFormatter)
                 val stringEndTime = endTime.toString(timeFormatter)
                 val start = startingSlot.startTime ?: ""
-                val end = startingSlot.endTime ?: ""
+                //note that end uses ending slot to account for 30+ min bookings
+                val end = endingSlot.endTime ?: ""
                 val gsrName = gsrRoom.name ?: ""
                 val gsrRoomId = gsrRoom.room_id ?: 0
                 insertGSRSlot(gsrName, "$stringStartTime-$stringEndTime",
