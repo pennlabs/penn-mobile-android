@@ -136,7 +136,7 @@ class MainActivity : AppCompatActivity() {
                 "Laundry" -> fragment = LaundryFragment()
                 "More" -> fragment = MoreFragment()
             }
-            fragmentTransact(fragment)
+            fragmentTransact(fragment, true)
         }
     }
 
@@ -202,10 +202,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun fragmentTransact(fragment: Fragment?) {
+    fun fragmentTransact(fragment: Fragment?, popBackStack: Boolean) {
         if (fragment != null) {
             runOnUiThread {
                 try {
+                    //TODO ALI COMMENT
+                    if (popBackStack) {
+                        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    }
                     fragmentManager.beginTransaction()
                             .replace(R.id.content_frame, fragment)
                             .addToBackStack(null)
