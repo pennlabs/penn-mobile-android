@@ -103,6 +103,11 @@ class HomeFragment : Fragment() {
 
         // get API data
         val homepageCells = mutableListOf<HomeCell>()
+        for(i in 0..4) {
+            val homeCell = HomeCell()
+            homepageCells.add(homeCell)
+        }
+
         val studentLife = MainActivity.studentLifeInstance
         if (bearerToken != "Bearer ") {
             studentLife.getDiningPreferences(bearerToken).subscribe({ preferences ->
@@ -124,7 +129,7 @@ class HomeFragment : Fragment() {
                     }
                     diningCellInfo.venues = venues
                     diningCell.info = diningCellInfo
-                    homepageCells.add(0, diningCell)
+                    homepageCells[1] = diningCell
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
                     internetConnectionHome?.visibility = View.GONE
@@ -151,6 +156,7 @@ class HomeFragment : Fragment() {
                     homepageCells.add((homepageCells.size * .25).toInt(), newsCell)
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
+                    internetConnectionHome?.visibility = View.GONE
                     home_refresh_layout?.isRefreshing = false
                 }
             }, { throwable ->
@@ -257,6 +263,7 @@ class HomeFragment : Fragment() {
                     homepageCells.add(homepageCells.size, gsrBookingCell)
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
+                    internetConnectionHome?.visibility = View.GONE
                     home_refresh_layout?.isRefreshing = false
                 }
             }, { throwable ->
@@ -280,6 +287,7 @@ class HomeFragment : Fragment() {
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
                     home_refresh_layout?.isRefreshing = false
+                    internetConnectionHome?.visibility = View.GONE
                 }
             }, { throwable ->
                 mActivity.runOnUiThread {
