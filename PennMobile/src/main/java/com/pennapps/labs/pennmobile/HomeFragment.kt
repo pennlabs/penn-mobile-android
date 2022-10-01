@@ -102,14 +102,14 @@ class HomeFragment : Fragment() {
         }
 
         // get API data
-        val homepageCells = mutableListOf<HomeCell>()
-        for(i in 0..4) {
-            val homeCell = HomeCell()
-            homepageCells.add(homeCell)
-        }
-
+        val homepageCells = ArrayList<HomeCell>()
+        home_cells_rv?.adapter = HomeAdapter(homepageCells)
         val studentLife = MainActivity.studentLifeInstance
         if (bearerToken != "Bearer ") {
+            for(i in 0..4) {
+                val homeCell = HomeCell()
+                homepageCells.add(homeCell)
+            }
             studentLife.getDiningPreferences(bearerToken).subscribe({ preferences ->
                 mActivity.runOnUiThread {
                     val list = preferences.preferences
@@ -137,14 +137,16 @@ class HomeFragment : Fragment() {
                 }
             }, { throwable ->
                 mActivity.runOnUiThread {
-                    Log.e("Home", "Could not load Home page", throwable)
-                    throwable.printStackTrace()
-                    Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
-                    loadingPanel?.visibility = View.GONE
-                    internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-                    internetConnection_message?.text = getString(R.string.internet_error)
-                    internetConnectionHome?.visibility = View.VISIBLE
-                    home_refresh_layout?.isRefreshing = false
+                    if (homepageCells[1].type == null) {
+                        Log.e("Home", "Could not load Home page", throwable)
+                        throwable.printStackTrace()
+                        Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
+                        loadingPanel?.visibility = View.GONE
+                        internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+                        internetConnection_message?.text = getString(R.string.internet_error)
+                        internetConnectionHome?.visibility = View.VISIBLE
+                        home_refresh_layout?.isRefreshing = false
+                }
                 }
             })
             studentLife.getNews().subscribe({ article ->
@@ -153,7 +155,7 @@ class HomeFragment : Fragment() {
                     newsCell.info = HomeCellInfo()
                     newsCell.info?.article = article
                     newsCell.type = "news"
-                    homepageCells.add((homepageCells.size * .25).toInt(), newsCell)
+                    homepageCells[0] = newsCell
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
                     internetConnectionHome?.visibility = View.GONE
@@ -161,14 +163,16 @@ class HomeFragment : Fragment() {
                 }
             }, { throwable ->
                 mActivity.runOnUiThread {
-                    Log.e("Home", "Could not load news", throwable)
-                    throwable.printStackTrace()
-                    Toast.makeText(mActivity, "Could not load news", Toast.LENGTH_LONG).show()
-                    loadingPanel?.visibility = View.GONE
-                    internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-                    internetConnection_message?.text = getString(R.string.internet_error)
-                    internetConnectionHome?.visibility = View.VISIBLE
-                    home_refresh_layout?.isRefreshing = false
+                    if(homepageCells[0].type == null) {
+                        Log.e("Home", "Could not load news", throwable)
+                        throwable.printStackTrace()
+                        Toast.makeText(mActivity, "Could not load news", Toast.LENGTH_LONG).show()
+                        loadingPanel?.visibility = View.GONE
+                        internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+                        internetConnection_message?.text = getString(R.string.internet_error)
+                        internetConnectionHome?.visibility = View.VISIBLE
+                        home_refresh_layout?.isRefreshing = false
+                    }
                 }
             })
             studentLife.getCalendar().subscribe({ events ->
@@ -176,30 +180,32 @@ class HomeFragment : Fragment() {
                     val calendar = HomeCell()
                     calendar.type = "calendar"
                     calendar.events = events
-                    homepageCells.add((homepageCells.size * .50).toInt(), calendar)
+                    homepageCells[3] = calendar
                     val gsrBookingCell = HomeCell()
                     gsrBookingCell.type = "gsr_booking"
                     gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "Weigle")
-                    homepageCells.add((homepageCells.size * .75).toInt(), gsrBookingCell)
+                    homepageCells[4] = gsrBookingCell
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
                     home_refresh_layout?.isRefreshing = false
                 }
             }, { throwable ->
                 mActivity.runOnUiThread {
-                    Log.e("Home", "Could not load calendar", throwable)
-                    throwable.printStackTrace()
-                    Toast.makeText(mActivity, "Could not load calendar", Toast.LENGTH_LONG).show()
-                    loadingPanel?.visibility = View.GONE
-                    internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-                    internetConnection_message?.text = getString(R.string.internet_error)
-                    internetConnectionHome?.visibility = View.VISIBLE
-                    home_refresh_layout?.isRefreshing = false
+                    if(homepageCells[3].type == null || homepageCells[4].type == null) {
+                        Log.e("Home", "Could not load calendar", throwable)
+                        throwable.printStackTrace()
+                        Toast.makeText(mActivity, "Could not load calendar", Toast.LENGTH_LONG)
+                            .show()
+                        loadingPanel?.visibility = View.GONE
+                        internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+                        internetConnection_message?.text = getString(R.string.internet_error)
+                        internetConnectionHome?.visibility = View.VISIBLE
+                        home_refresh_layout?.isRefreshing = false
+                    }
                 }
             })
             studentLife.getLaundryPref(bearerToken).subscribe({ preferences ->
                 mActivity.runOnUiThread {
-                    val venues = mutableListOf<Int>()
                     val laundryCell = HomeCell()
                     laundryCell.type = "laundry"
                     val laundryCellInfo = HomeCellInfo()
@@ -207,7 +213,7 @@ class HomeFragment : Fragment() {
                         laundryCellInfo.roomId = preferences[0]
                     }
                     laundryCell.info = laundryCellInfo
-                    homepageCells.add(homepageCells.size, laundryCell)
+                    homepageCells[2] = laundryCell
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
                     internetConnectionHome?.visibility = View.GONE
@@ -215,52 +221,35 @@ class HomeFragment : Fragment() {
                 }
             }, { throwable ->
                 mActivity.runOnUiThread {
-                    Log.e("Home", "Could not load laundry", throwable)
-                    throwable.printStackTrace()
-                    Toast.makeText(mActivity, "Could not load home laundry", Toast.LENGTH_LONG).show()
-                    loadingPanel?.visibility = View.GONE
-                    internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-                    internetConnection_message?.text = getString(R.string.internet_error)
-                    internetConnectionHome?.visibility = View.VISIBLE
-                    home_refresh_layout?.isRefreshing = false
+                    if(homepageCells[2].type == null) {
+                        Log.e("Home", "Could not load laundry", throwable)
+                        throwable.printStackTrace()
+                        Toast.makeText(mActivity, "Could not load home laundry", Toast.LENGTH_LONG)
+                            .show()
+                        loadingPanel?.visibility = View.GONE
+                        internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+                        internetConnection_message?.text = getString(R.string.internet_error)
+                        internetConnectionHome?.visibility = View.VISIBLE
+                        home_refresh_layout?.isRefreshing = false
+                    }
                 }
             })
-            /*studentLife.getHomePage(bearerToken).subscribe({ cells ->
-                mActivity.runOnUiThread {
-                    val gsrBookingCell = HomeCell()
-                    gsrBookingCell.type = "gsr_booking"
-                    gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "Weigle")
-                    cells?.add(cells.size - 1, gsrBookingCell)
-                    homepageCells.addAll(homepageCells.size, cells)
-                    home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
-                    //(home_cells_rv?.adapter as HomeAdapter).notifyDataSetChanged()
-                    loadingPanel?.visibility = View.GONE
-                    home_refresh_layout?.isRefreshing = false
-                }
-            }, { throwable ->
-                mActivity.runOnUiThread {
-                    Log.e("Home", "Could not load Home page", throwable)
-                    throwable.printStackTrace()
-                    Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
-                    loadingPanel?.visibility = View.GONE
-                    internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-                    internetConnection_message?.text = getString(R.string.internet_error)
-                    internetConnectionHome?.visibility = View.VISIBLE
-                    home_refresh_layout?.isRefreshing = false
-                }
-            }) */
     } else {
+            for(i in 0..2) {
+                val homeCell = HomeCell()
+                homepageCells.add(homeCell)
+            }
             studentLife.getNews().subscribe({ article ->
                 mActivity.runOnUiThread {
                     val newsCell = HomeCell()
                     newsCell.info = HomeCellInfo()
                     newsCell.info?.article = article
                     newsCell.type = "news"
-                    homepageCells.add(homepageCells.size, newsCell)
+                    homepageCells[0] = newsCell
                     val gsrBookingCell = HomeCell()
                     gsrBookingCell.type = "gsr_booking"
                     gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "Weigle")
-                    homepageCells.add(homepageCells.size, gsrBookingCell)
+                    homepageCells[2] = gsrBookingCell
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
                     internetConnectionHome?.visibility = View.GONE
@@ -268,14 +257,17 @@ class HomeFragment : Fragment() {
                 }
             }, { throwable ->
                 mActivity.runOnUiThread {
-                    Log.e("Home", "Could not load Home page", throwable)
-                    throwable.printStackTrace()
-                    Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
-                    loadingPanel?.visibility = View.GONE
-                    internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-                    internetConnection_message?.text = getString(R.string.internet_error)
-                    internetConnectionHome?.visibility = View.VISIBLE
-                    home_refresh_layout?.isRefreshing = false
+                    if(homepageCells[0].type == null || homepageCells[2].type == null) {
+                        Log.e("Home", "Could not load Home page", throwable)
+                        throwable.printStackTrace()
+                        Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG)
+                            .show()
+                        loadingPanel?.visibility = View.GONE
+                        internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+                        internetConnection_message?.text = getString(R.string.internet_error)
+                        internetConnectionHome?.visibility = View.VISIBLE
+                        home_refresh_layout?.isRefreshing = false
+                    }
                 }
             })
             studentLife.getCalendar().subscribe({ events ->
@@ -283,7 +275,7 @@ class HomeFragment : Fragment() {
                     val calendar = HomeCell()
                     calendar.type = "calendar"
                     calendar.events = events
-                    homepageCells.add(homepageCells.size, calendar)
+                    homepageCells[1] = calendar
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
                     home_refresh_layout?.isRefreshing = false
@@ -291,14 +283,17 @@ class HomeFragment : Fragment() {
                 }
             }, { throwable ->
                 mActivity.runOnUiThread {
-                    Log.e("Home", "Could not load Home page", throwable)
-                    throwable.printStackTrace()
-                    Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
-                    loadingPanel?.visibility = View.GONE
-                    internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-                    internetConnection_message?.text = getString(R.string.internet_error)
-                    internetConnectionHome?.visibility = View.VISIBLE
-                    home_refresh_layout?.isRefreshing = false
+                    if(homepageCells[1].type == null) {
+                        Log.e("Home", "Could not load Home page", throwable)
+                        throwable.printStackTrace()
+                        Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG)
+                            .show()
+                        loadingPanel?.visibility = View.GONE
+                        internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+                        internetConnection_message?.text = getString(R.string.internet_error)
+                        internetConnectionHome?.visibility = View.VISIBLE
+                        home_refresh_layout?.isRefreshing = false
+                    }
                 }
             })
     }
