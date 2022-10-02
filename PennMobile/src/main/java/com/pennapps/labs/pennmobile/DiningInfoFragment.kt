@@ -2,7 +2,6 @@ package com.pennapps.labs.pennmobile
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Typeface
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
@@ -54,9 +53,15 @@ class DiningInfoFragment : Fragment() {
             val days = mDiningHall?.venue?.allHours()  ?: ArrayList()
             var vertical = ArrayList<TextView>()
             for (day in days) {
-                vertical = addDiningHour(day, vertical)
+                if (hasMeals(day)) {
+                    vertical = addDiningHour(day, vertical)
+                }
             }
         }
+    }
+
+    private fun hasMeals(day: VenueInterval): Boolean {
+        return day.meals.isNotEmpty();
     }
 
     private fun addDiningHour(day: VenueInterval, vertical: ArrayList<TextView>): ArrayList<TextView> {
