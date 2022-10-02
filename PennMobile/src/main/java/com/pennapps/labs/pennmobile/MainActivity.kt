@@ -19,6 +19,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -118,7 +120,22 @@ class MainActivity : AppCompatActivity() {
         } else {
             startHomeFragment()
         }
+
+
+        //handle back button behavior
+        onBackPressedDispatcher.addCallback(object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                Log.i("Back", "Back Pressed")
+                if (fragmentManager.findFragmentByTag("Home") != null && fragmentManager.findFragmentByTag("Home")!!.isVisible) {
+
+                } else {
+                    manageFragmentTransaction("Home", HomeFragment())
+                }
+            }
+        })
     }
+
+
 
     override fun onResume() {
         super.onResume()
