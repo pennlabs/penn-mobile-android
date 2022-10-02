@@ -260,7 +260,7 @@ class MainActivity : AppCompatActivity() {
 
         private var mStudentLife: StudentLife? = null
         private var mPlatform: Platform? = null
-
+        //Add notifications
         @JvmStatic
         val platformInstance: Platform
             get() {

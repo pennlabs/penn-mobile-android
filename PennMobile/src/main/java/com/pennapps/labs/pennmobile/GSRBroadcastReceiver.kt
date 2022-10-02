@@ -14,6 +14,7 @@ import androidx.core.app.NotificationManagerCompat
 class GSRBroadcastReceiver : BroadcastReceiver() {
     //notifications
     private val textTitle = "PennMobile: GSR Reminder"
+    private val smallText = "Your study room reservation is soon!"
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onReceive(context: Context, intent: Intent) {
@@ -21,8 +22,11 @@ class GSRBroadcastReceiver : BroadcastReceiver() {
         val name = intent.getStringExtra("roomName")
         val notificationId = intent.getIntExtra("gsrId", 0)
         val time = intent.getStringExtra("gsrTime")
-        val cutTime = time?.substring(11, 15)
-        if (Integer.parseInt(cutTime?.substring(0,2)) > 12){
+        var cutTime = time?.substring(11, 16)
+        val hours = Integer.parseInt(cutTime?.substring(0,2))
+        if (hours > 12){
+            val time = hours - 12
+            cutTime = time.toString() + cutTime?.substring(2)
             //Convert to 12 hr time
         }
         val textContent = "Your reservation for $name at $cutTime is soon!"
@@ -33,9 +37,11 @@ class GSRBroadcastReceiver : BroadcastReceiver() {
             NotificationCompat.Builder(it, R.string.channel_id.toString())
                 .setSmallIcon(R.drawable.pennmobile_logo_24x24)
                 .setContentTitle(textTitle)
-                .setContentText(textContent)
+                .setContentText(smallText)
+                .setStyle(NotificationCompat.BigTextStyle()
+                    .bigText(textContent))
                 .setContentIntent(pendingClickIntent) //click into app
-                .setTimeoutAfter(10000) //only visible for 10 minutes
+                .setTimeoutAfter(10 * 60 * 1000) //only visible for 10 minutes
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         }
         Log.d("TAGGO", "onReceive: builder made")

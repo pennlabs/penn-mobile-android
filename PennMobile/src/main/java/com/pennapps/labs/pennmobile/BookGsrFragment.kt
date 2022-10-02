@@ -146,24 +146,27 @@ class BookGsrFragment : Fragment() {
                             Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
 
                             val gsrIntent = Intent(context, GSRBroadcastReceiver::class.java)
+                            Log.d("TAGGOpre", gsrIntent.extras.toString())
                             gsrIntent.putExtra("roomName", roomName)
+                            Log.d("TAGGOname", gsrIntent.extras.toString())
                             gsrIntent.putExtra("gsrId", gid)
+                            Log.d("TAGGOid", gsrIntent.extras.toString())
                             gsrIntent.putExtra("gsrTime", startTime)
-                            Log.d("TAGGO", gsrIntent.extras.toString())
+                            Log.d("TAGGOtime", gsrIntent.extras.toString())
 
 
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                val pendingIntent = PendingIntent.getBroadcast(context, 0, gsrIntent, PendingIntent.FLAG_MUTABLE)
+                                val pendingIntent = PendingIntent.getBroadcast(context, gsrId, gsrIntent, PendingIntent.FLAG_MUTABLE)
                                 //Save a map of booking ID and pending intent and whenever we cancel
                                 val alarmManager : AlarmManager = context?.let { getSystemService(it, AlarmManager::class.java) } as AlarmManager
                                 val localDateTime = LocalDateTime.parse(startTime?.substring(0, (startTime.length -6)))
                                 Log.d("TAGGO", "timeo: $localDateTime")
                                 val zoned = localDateTime.atZone(ZoneId.of(startTime?.substring(startTime.length -6)))
-                                val alarmTime = zoned.toInstant().toEpochMilli() - 600000
+                                val alarmTime = zoned.toInstant().toEpochMilli() - 2400000
                                 Log.d("TAGGO", "time: $alarmTime")
                                 val diff = (alarmTime - System.currentTimeMillis()) / 60000.toDouble() //in minutes
                                 Log.d("TAGGO", "time left: $diff")
-                                if (diff >= 10) { //in cases where GSR is booked within 10 min, no notif
+                                if (diff >= -10) { //in cases where GSR is booked within 10 min, no notif
                                     alarmManager.set(AlarmManager.RTC, alarmTime, pendingIntent)
                                 }
                             }
