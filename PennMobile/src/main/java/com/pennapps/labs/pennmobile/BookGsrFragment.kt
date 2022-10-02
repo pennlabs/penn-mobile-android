@@ -158,7 +158,6 @@ class BookGsrFragment : Fragment() {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                 val pendingIntent = PendingIntent.getBroadcast(context, gsrId, gsrIntent, PendingIntent.FLAG_MUTABLE)
                                 //Save a map of booking ID and pending intent and whenever we cancel
-                                val alarmManager : AlarmManager = context?.let { getSystemService(it, AlarmManager::class.java) } as AlarmManager
                                 val localDateTime = LocalDateTime.parse(startTime?.substring(0, (startTime.length -6)))
                                 Log.d("TAGGO", "timeo: $localDateTime")
                                 val zoned = localDateTime.atZone(ZoneId.of(startTime?.substring(startTime.length -6)))
@@ -166,8 +165,12 @@ class BookGsrFragment : Fragment() {
                                 Log.d("TAGGO", "time: $alarmTime")
                                 val diff = (alarmTime - System.currentTimeMillis()) / 60000.toDouble() //in minutes
                                 Log.d("TAGGO", "time left: $diff")
-                                if (diff >= -10) { //in cases where GSR is booked within 10 min, no notif
-                                    alarmManager.set(AlarmManager.RTC, alarmTime, pendingIntent)
+                                if (diff >= 10) { //in cases where GSR is booked within 10 min, no notif
+                                    MainActivity.GSRAlarmManager?.set(AlarmManager.RTC, alarmTime, pendingIntent)
+                                    val key = roomName + startTime?.substring(0, startTime?.length - 6)
+                                    Log.d("GSR taggo", "key at init: $key")
+                                    MainActivity.GSRIntents[key] = pendingIntent
+                                    Log.d("GSR Booking taggo", "success: " + MainActivity.GSRIntents.size.toString())
                                 }
                             }
 

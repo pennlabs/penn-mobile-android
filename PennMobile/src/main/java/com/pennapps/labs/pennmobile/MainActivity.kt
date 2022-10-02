@@ -1,6 +1,8 @@
 package com.pennapps.labs.pennmobile
 
+import android.app.AlarmManager
 import android.app.AlertDialog
+import android.app.PendingIntent
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -22,6 +24,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
@@ -116,6 +119,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             startHomeFragment()
         }
+        MainActivity.setAlarmManager(applicationContext)
     }
 
     override fun onResume() {
@@ -260,7 +264,18 @@ class MainActivity : AppCompatActivity() {
 
         private var mStudentLife: StudentLife? = null
         private var mPlatform: Platform? = null
-        //Add notifications
+        //GSR Notifications
+        internal var GSRIntents: HashMap<String, PendingIntent> = hashMapOf()
+        internal var GSRAlarmManager: AlarmManager? = null
+
+        fun setAlarmManager(context: Context) {
+            GSRAlarmManager = context.let {
+                ContextCompat.getSystemService(
+                    it,
+                    AlarmManager::class.java
+                )
+            }
+        }
         @JvmStatic
         val platformInstance: Platform
             get() {

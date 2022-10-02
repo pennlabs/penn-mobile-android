@@ -69,6 +69,18 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                 val bearerToken = "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ");
                 labs.cancelReservation(bearerToken, null, bookingID, sessionID, object : ResponseCallback() {
                     override fun success(response: Response) {
+                        val checkRoom = roomName?.substring(5)
+                        val checkTime = from.toString().substring(0, from.toString().length - 10)
+                        Log.d("GSR Booking taggo", "booking: $bookingID")
+                        Log.d("GSR Booking taggo", "sesh: $sessionID")
+                        Log.d("GSR Booking taggo", "room: $checkRoom")
+                        Log.d("GSR Booking taggo", "from time: $checkTime")
+                        val key = checkRoom + checkTime
+                        Log.d("GSR Booking Taggo", "key at deletion: $key")
+                        val pendingIntent = MainActivity.GSRIntents.get(key)
+                        MainActivity.GSRAlarmManager?.cancel(pendingIntent)
+                        MainActivity.GSRIntents.remove(key)
+                        Log.d("GSR Booking taggo", "success: " + MainActivity.GSRIntents.size.toString())
                         if (reservations.size > position) {
                             reservations.removeAt(position)
                         }
