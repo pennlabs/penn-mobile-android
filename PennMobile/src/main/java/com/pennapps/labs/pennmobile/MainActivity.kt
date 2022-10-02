@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity() {
     private var tabShowed = false
     private lateinit var fragmentManager: FragmentManager
     private lateinit var mSharedPrefs: SharedPreferences
+    private val fragmentTags = listOf("Home", "Dining", "GSR", "Laundry", "More")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -126,7 +127,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun onExpandableBottomNavigationItemSelected() {
         expandable_bottom_bar.onItemSelectedListener = { _, item ->
-            var fragment: Fragment? = null
+            var fragment: Fragment = HomeFragment()
             when (item.text as String) {
                 "Home" -> if (fragmentManager.backStackEntryCount > 0) {
                     fragment = HomeFragment()
@@ -136,7 +137,31 @@ class MainActivity : AppCompatActivity() {
                 "Laundry" -> fragment = LaundryFragment()
                 "More" -> fragment = MoreFragment()
             }
-            fragmentTransact(fragment, true)
+            manageFragmentTransaction(item.text, fragment)
+            //val ft = fragmentManager.beginTransaction()
+            //ft.replace(R.id.content_frame, fragment)
+            //ft.commit()
+            //fragmentTransact(fragment, true)
+        }
+    }
+
+    private fun manageFragmentTransaction(fragmentTag: String, fragment: Fragment) {
+        if (fragmentManager.findFragmentByTag(fragmentTag) != null) {
+            //if the fragment exists, show it.
+            fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag(fragmentTag)!!).commit()
+        } else {
+            //if the fragment does not exist, add it to fragment manager.
+            fragmentManager.beginTransaction().add(R.id.content_frame, fragment, fragmentTag).commit()
+        }
+        for(tag in fragmentTags) {
+            if(tag == fragmentTag) {
+                continue
+            }
+            if (fragmentManager.findFragmentByTag(tag) != null) {
+                //if the other fragment is visible, hide it.
+                fragmentManager.beginTransaction()
+                    .hide(fragmentManager.findFragmentByTag(tag)!!).commit()
+            }
         }
     }
 
@@ -157,7 +182,7 @@ class MainActivity : AppCompatActivity() {
         OAuth2NetworkManager(this).getAccessToken()
         val fragment: Fragment = HomeFragment()
         fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, fragment)
+                .replace(R.id.content_frame, fragment, "Home")
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()
         expandable_bottom_bar.select(HOME)
