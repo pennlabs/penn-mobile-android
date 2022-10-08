@@ -162,7 +162,7 @@ class BookGsrFragment : Fragment() {
                                 val localDateTime = LocalDateTime.parse(startTime?.substring(0, (startTime.length -6)))
                                 Log.d("TAGGO", "timeo: $localDateTime")
                                 val zoned = localDateTime.atZone(ZoneId.of(startTime?.substring(startTime.length -6)))
-                                val alarmTime = zoned.toInstant().toEpochMilli() - 120000
+                                val alarmTime = zoned.toInstant().toEpochMilli() - 600000
                                 Log.d("TAGGO", "time: $alarmTime")
                                 val diff = (alarmTime - System.currentTimeMillis()) / 60000.toDouble() //in minutes
                                 Log.d("TAGGO", "time left: $diff")
