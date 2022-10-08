@@ -39,6 +39,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
+import com.pennapps.labs.pennmobile.api.CampusExpress
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Serializer.*
 import com.pennapps.labs.pennmobile.classes.*
@@ -134,12 +135,12 @@ class MainActivity : AppCompatActivity() {
                 "Home" -> if (fragmentManager.backStackEntryCount > 0) {
                     fragment = HomeFragment()
                 }
-                "Dining" -> fragment = DiningFragment()
+                "Dining" -> fragment = DiningHolderFragment()
                 "GSR" -> fragment = GsrTabbedFragment()
                 "Laundry" -> fragment = LaundryFragment()
                 "More" -> fragment = MoreFragment()
             }
-            fragmentTransact(fragment)
+            fragmentTransact(fragment, true)
         }
     }
 
@@ -205,10 +206,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun fragmentTransact(fragment: Fragment?) {
+    fun fragmentTransact(fragment: Fragment?, popBackStack: Boolean) {
         if (fragment != null) {
             runOnUiThread {
                 try {
+                    //TODO ALI COMMENT
+                    if (popBackStack) {
+                        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    }
                     fragmentManager.beginTransaction()
                             .replace(R.id.content_frame, fragment)
                             .addToBackStack(null)
@@ -264,6 +269,8 @@ class MainActivity : AppCompatActivity() {
 
         private var mStudentLife: StudentLife? = null
         private var mPlatform: Platform? = null
+        private var mCampusExpress: CampusExpress? = null
+
         //GSR Notifications
         internal var GSRIntents: HashMap<String, PendingIntent> = hashMapOf()
         internal var GSRAlarmManager: AlarmManager? = null
@@ -277,10 +284,27 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         }
-
         fun setNotificationId(id: Int) {
             notificationId = id
         }
+
+        @JvmStatic
+        val campusExpressInstance: CampusExpress
+            get() {
+                if (mCampusExpress == null) {
+                    val gsonBuilder = GsonBuilder()
+                    val gson = gsonBuilder.create()
+                    val restAdapter = RestAdapter.Builder()
+                        .setConverter(GsonConverter(gson))
+                        .setLogLevel(RestAdapter.LogLevel.FULL)
+                        .setLog(AndroidLog("Campus Express"))
+                        .setEndpoint(Platform.campusExpressBaseUrl)
+                        .build()
+                    mCampusExpress = restAdapter.create(CampusExpress::class.java)
+                }
+                return mCampusExpress!!
+            }
+
         @JvmStatic
         val platformInstance: Platform
             get() {

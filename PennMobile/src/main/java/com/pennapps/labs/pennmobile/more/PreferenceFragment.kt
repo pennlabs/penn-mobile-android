@@ -93,19 +93,19 @@ class PreferenceFragment : PreferenceFragmentCompat() {
 
         val newsFeaturePref: Preference? = findPreference("pref_news_feature")
         newsFeaturePref?.setOnPreferenceClickListener {
-            mActivity.fragmentTransact(NewsFragment())
+            mActivity.fragmentTransact(NewsFragment(), false)
             return@setOnPreferenceClickListener true
         }
 
         val contactsFeaturePref: Preference? = findPreference("pref_contacts_feature")
         contactsFeaturePref?.setOnPreferenceClickListener {
-            mActivity.fragmentTransact(SupportFragment())
+            mActivity.fragmentTransact(SupportFragment(), false)
             return@setOnPreferenceClickListener true
         }
 
         val aboutFeaturePref: Preference? = findPreference("pref_about_feature")
         aboutFeaturePref?.setOnPreferenceClickListener {
-            mActivity.fragmentTransact(AboutFragment())
+            mActivity.fragmentTransact(AboutFragment(), false)
             return@setOnPreferenceClickListener true
         }
 

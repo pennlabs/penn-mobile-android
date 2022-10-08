@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import com.pennapps.labs.pennmobile.GsrTabbedFragment
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.CalendarEvent
@@ -41,7 +42,7 @@ class HomeGsrBuildingAdapter(private var buildings: ArrayList<String>)
             holder.itemView.home_gsr_building_iv.setImageResource(R.drawable.weigle)
         }
         holder.itemView.setOnClickListener {
-            fragmentTransact(GsrTabbedFragment())
+            fragmentTransact(GsrTabbedFragment(), false)
         }
 
     }
@@ -54,12 +55,15 @@ class HomeGsrBuildingAdapter(private var buildings: ArrayList<String>)
         val view = itemView
     }
 
-    private fun fragmentTransact(fragment: Fragment?) {
+    private fun fragmentTransact(fragment: Fragment?, popBackStack: Boolean) {
         if (fragment != null) {
             if (mContext is FragmentActivity) {
                 try {
                     val activity = mContext as FragmentActivity
                     val fragmentManager = activity.supportFragmentManager
+                    if (popBackStack) {
+                        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    }
                     fragmentManager.beginTransaction()
                             .replace(R.id.content_frame, fragment)
                             .addToBackStack("Main Activity")

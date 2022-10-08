@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.pennapps.labs.pennmobile.*
-import com.pennapps.labs.pennmobile.classes.GSRRoom
 import org.joda.time.DateTime
 
 class GsrRoomAdapter(internal var timeRanges: ArrayList<String>, internal var ids: ArrayList<String>,
@@ -52,7 +51,6 @@ class GsrRoomAdapter(internal var timeRanges: ArrayList<String>, internal var id
         }
         return gsrRoomHolder
     }
-
 
     override fun onBindViewHolder(holder: GsrRoomHolder, position: Int) {
         if (position < itemCount) {
