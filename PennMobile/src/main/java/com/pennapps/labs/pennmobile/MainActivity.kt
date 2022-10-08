@@ -267,6 +267,7 @@ class MainActivity : AppCompatActivity() {
         //GSR Notifications
         internal var GSRIntents: HashMap<String, PendingIntent> = hashMapOf()
         internal var GSRAlarmManager: AlarmManager? = null
+        internal var notificationId : Int = 0
 
         fun setAlarmManager(context: Context) {
             GSRAlarmManager = context.let {
@@ -275,6 +276,10 @@ class MainActivity : AppCompatActivity() {
                     AlarmManager::class.java
                 )
             }
+        }
+
+        fun setNotificationId(id: Int) {
+            notificationId = id
         }
         @JvmStatic
         val platformInstance: Platform

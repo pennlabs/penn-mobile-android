@@ -20,7 +20,7 @@ class GSRBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         Log.d("TAGGO", "onReceive: Broadcast received")
         val name = intent.getStringExtra("roomName")
-        val notificationId = intent.getIntExtra("gsrId", 0)
+        val notificationID = intent.getIntExtra("notificationID", 0)
         val time = intent.getStringExtra("gsrTime")
         var cutTime = time?.substring(11, 16)
         val hours = cutTime?.substring(0,2)?.let { Integer.parseInt(it) }
@@ -47,7 +47,15 @@ class GSRBroadcastReceiver : BroadcastReceiver() {
         Log.d("TAGGO", "onReceive: builder made")
         with(NotificationManagerCompat.from(context)) {
             // notificationId is a unique int for each notification that you must define
-            notify(notificationId, builder.build())
+            Log.d("Taggo token", "ID NUMBA $notificationID")
+            notify(notificationID, builder.build())
+        }
+        val key = name + time?.substring(0, time?.length - 6)
+        if (MainActivity.GSRIntents.containsKey(key) ){
+            val pendingIntent = MainActivity.GSRIntents.get(key)
+            MainActivity.GSRAlarmManager?.cancel(pendingIntent)
+            MainActivity.GSRIntents.remove(key)
+            Log.d("GSR Booking taggo haw", "success: " + MainActivity.GSRIntents.keys.toString())
         }
         Log.d("TAGGO", "onReceive: notif displayed")
     }
