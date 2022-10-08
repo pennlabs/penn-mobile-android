@@ -23,11 +23,11 @@ class GSRBroadcastReceiver : BroadcastReceiver() {
         val notificationId = intent.getIntExtra("gsrId", 0)
         val time = intent.getStringExtra("gsrTime")
         var cutTime = time?.substring(11, 16)
-        val hours = Integer.parseInt(cutTime?.substring(0,2))
-        if (hours > 12){
-            val time = hours - 12
-            cutTime = time.toString() + cutTime?.substring(2)
-            //Convert to 12 hr time
+        val hours = cutTime?.substring(0,2)?.let { Integer.parseInt(it) }
+        if (hours != null && hours > 12) {
+                val time = hours - 12
+                cutTime = time.toString() + cutTime?.substring(2)
+                //Convert to 12 hr time
         }
         val textContent = "Your reservation for $name at $cutTime is soon!"
         Log.d("TAGGO", "onReceive: $name")

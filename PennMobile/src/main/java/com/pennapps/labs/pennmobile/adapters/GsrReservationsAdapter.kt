@@ -77,10 +77,13 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                         Log.d("GSR Booking taggo", "from time: $checkTime")
                         val key = checkRoom + checkTime
                         Log.d("GSR Booking Taggo", "key at deletion: $key")
-                        val pendingIntent = MainActivity.GSRIntents.get(key)
-                        MainActivity.GSRAlarmManager?.cancel(pendingIntent)
-                        MainActivity.GSRIntents.remove(key)
-                        Log.d("GSR Booking taggo", "success: " + MainActivity.GSRIntents.size.toString())
+                        if (MainActivity.GSRIntents.containsKey(key) ){
+                            val pendingIntent = MainActivity.GSRIntents.get(key)
+                            MainActivity.GSRAlarmManager?.cancel(pendingIntent)
+                            MainActivity.GSRIntents.remove(key)
+                            Log.d("GSR Booking taggo", "success: " + MainActivity.GSRIntents.size.toString())
+                        }
+
                         if (reservations.size > position) {
                             reservations.removeAt(position)
                         }
