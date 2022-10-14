@@ -162,10 +162,6 @@ class DiningFragment : Fragment() {
                     mActivity.runOnUiThread {
                         Log.e("Dining", "Could not load Dining page", it)
                         loadingPanel?.visibility = View.GONE
-                        //internetConnectionDining?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-                        //internetConnection_message_dining?.text = getString(R.string.internet_error)
-                        //internetConnectionDining?.visibility = View.VISIBLE
-                        no_results?.visibility = View.VISIBLE
                         dining_swiperefresh?.isRefreshing = false
                     }
                 })
