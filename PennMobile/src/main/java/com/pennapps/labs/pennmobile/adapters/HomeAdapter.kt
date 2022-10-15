@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.browser.customtabs.CustomTabsServiceConnection
@@ -26,6 +27,7 @@ import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.*
+import com.pennapps.labs.pennmobile.DiningFragment.Companion.getMenus
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.CalendarEvent
 import com.pennapps.labs.pennmobile.classes.DiningHall
@@ -144,6 +146,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         holder.itemView.home_card_rv.adapter = GsrReservationsAdapter(ArrayList(reservations))
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun bindDiningCell(holder: ViewHolder, cell: HomeCell) {
         holder.itemView.home_card_title.text = "Favorites"
         holder.itemView.home_card_subtitle.text = "DINING HALLS"
@@ -168,6 +171,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
                             favorites.add(it)
                         }
                     }
+                    getMenus(favorites)
                     holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
                         LinearLayoutManager.VERTICAL, false)
                     holder.itemView.home_card_rv.adapter = DiningCardAdapter(favorites)
