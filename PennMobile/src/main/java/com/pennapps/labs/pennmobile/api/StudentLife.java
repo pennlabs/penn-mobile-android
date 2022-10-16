@@ -43,6 +43,10 @@ public interface StudentLife {
     @GET("/dining/venues")
     Observable<List<Venue>> venues();
 
+    @GET("/dining/menus/{day}")
+    Observable<List<DiningHall.Menu>> getMenus(
+            @Path("day") String day);
+
     @GET("/dining/weekly_menu/{id}")
     Observable<DiningHall> daily_menu(
             @Path("id") int id);
