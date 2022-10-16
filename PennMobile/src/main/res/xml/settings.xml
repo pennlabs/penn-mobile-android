@@ -77,10 +77,10 @@
             app:key="pref_canvas_link"
             app:title="Canvas" />
         <Preference
-            android:id="@+id/pref_penn_in_touch_link"
+            android:id="@+id/pref_path_at_penn_link"
             app:iconSpaceReserved="false"
-            app:key="pref_penn_in_touch_link"
-            app:title="PennInTouch" />
+            app:key="pref_path_at_penn_link"
+            app:title="Path@Penn" />
         <Preference
             android:id="@+id/pref_penn_portal_link"
             app:iconSpaceReserved="false"
