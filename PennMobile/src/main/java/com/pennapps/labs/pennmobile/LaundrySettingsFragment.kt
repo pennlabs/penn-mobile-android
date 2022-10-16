@@ -41,6 +41,7 @@ class LaundrySettingsFragment : Fragment() {
         mActivity.closeKeyboard()
         setHasOptionsMenu(true)
         mActivity.toolbar.visibility = View.VISIBLE
+        mActivity.expandable_bottom_bar.visibility = View.GONE
 
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "12")
@@ -98,7 +99,7 @@ class LaundrySettingsFragment : Fragment() {
                             var roomList: MutableList<LaundryRoomSimple> = ArrayList()
 
                             // if hall name already exists, get the list of rooms and add to that
-                            val hallName = rooms[i].location ?: ""
+                            var hallName = rooms[i].location ?: ""
 
                             if (hallList.contains(hallName)) {
                                 roomList = hashMap[hallName] as MutableList<LaundryRoomSimple>
@@ -113,6 +114,11 @@ class LaundrySettingsFragment : Fragment() {
                                 if (i >= rooms.size) {
                                     break
                                 }
+                            }
+
+                            // name formatting for consistency
+                            if (hallName == "Lauder College House") {
+                                hallName = "Lauder"
                             }
 
                             // add the hall name to the list
