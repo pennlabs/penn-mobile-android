@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:showIn="@layout/activity_main">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/linearLayout"
+    <FrameLayout
+        android:id="@+id/content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
@@ -26,51 +26,41 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/white"
+                android:visibility="gone"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
                 <TextView
+                    android:id="@+id/toolbar_title"
+                    style="@style/home_cell_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Penn Mobile"
-                    android:textSize="20dp"
-                    android:textStyle="bold"
-                    android:textColor="@color/color_toolbar_text"
                     android:layout_gravity="center"
-                    android:id="@+id/toolbar_title" />
+                    android:text="@string/penn_mobile"
+                    android:textStyle="bold" />
 
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
+    </FrameLayout>
 
-        <FrameLayout
-            android:id="@+id/content_frame"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appbar" />
-
-        <com.pennapps.labs.pennmobile.ExpandedBottomNavBar.ExpandableBottomTabBar
-            android:id="@+id/bottom_navigation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@android:color/white"
-            android:gravity="bottom"
-            android:textColor="#b5b6b6"
-            android:textSize="12sp"
-            app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:max_tab_count="5"
-            app:more_icon_resource="@drawable/ic_bottom_nav_more_grey"
-            app:selected_tab_text_color="@color/color_bottom_nav_selected"
-            app:tab_resource="@menu/bottom_tabs"
-            tools:ignore="SmallSp" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <com.pennapps.labs.pennmobile.components.floatingbottombar.ExpandableBottomBar
+        android:id="@+id/expandable_bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/nav_bar_height"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        app:exb_backgroundColor="#FFFFFF"
+        app:exb_backgroundCornerRadius="16dp"
+        app:exb_itemBackgroundCornerRadius="0dp"
+        app:exb_itemBackgroundOpacity="0.2"
+        app:exb_itemInactiveColor="#adadad"
+        app:exb_item_horizontal_margin="0dp"
+        app:exb_item_horizontal_padding="0dp"
+        app:exb_item_vertical_margin="0dp"
+        app:exb_item_vertical_padding="0dp"
+        app:layout_behavior=".components.floatingbottombar.behavior.ExpandableBottomBarScrollableBehavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

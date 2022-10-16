@@ -1,20 +1,26 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.pennapps.labs.pennmobile.SupportFragment">
 
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <FrameLayout
+        android:id="@+id/save_contacts_fragment"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:visibility="visible"
-        android:id="@+id/save_contacts_fragment">
+        android:visibility="visible">
 
         <ListView
-            tools:listitem="@layout/support_list_item"
             android:id="@android:id/list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            tools:listitem="@layout/support_list_item" />
 
     </FrameLayout>
 
-</FrameLayout>
+</LinearLayout>

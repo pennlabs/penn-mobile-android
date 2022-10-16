@@ -4,13 +4,10 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class CalendarEvent {
-    @SerializedName("name")
+    @SerializedName("event")
     @Expose
     var name: String? = null
-    @SerializedName("end")
+    @SerializedName("date")
     @Expose
-    var end: String? = null
-    @SerializedName("start")
-    @Expose
-    var start: String? = null
+    var date: String? = null
 }

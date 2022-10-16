@@ -4,21 +4,18 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.res.Configuration
-import android.content.res.Resources
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.GsrReservationsAdapter
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import kotlinx.android.synthetic.main.fragment_gsr_reservations.*
 import kotlinx.android.synthetic.main.fragment_gsr_reservations.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
@@ -62,9 +59,11 @@ class GsrReservationsFragment : Fragment() {
         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
         val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
         val email = sp.getString(getString(R.string.email_address), "")
+        OAuth2NetworkManager(mActivity).getAccessToken()
+        val token = "Bearer " + sp.getString(getString(R.string.access_token), "")
 
-        val labs = MainActivity.labsInstance
-        labs.getGsrReservations(email, sessionID).subscribe({ reservations ->
+        val labs = MainActivity.studentLifeInstance
+        labs.getGsrReservations(token).subscribe({ reservations ->
             mActivity.runOnUiThread {
                 gsr_reservations_rv?.adapter = GsrReservationsAdapter(ArrayList(reservations))
                 loadingPanel?.visibility = View.GONE
@@ -78,6 +77,7 @@ class GsrReservationsFragment : Fragment() {
             }
         }, { throwable ->
             mActivity.runOnUiThread {
+                Log.e("GsrReservationsFragment", "Error getting reservations", throwable);
                 throwable.printStackTrace()
                 loadingPanel?.visibility = View.GONE
                 gsr_no_reservations?.visibility = View.VISIBLE

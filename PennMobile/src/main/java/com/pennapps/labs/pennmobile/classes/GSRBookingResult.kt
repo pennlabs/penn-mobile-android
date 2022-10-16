@@ -7,9 +7,18 @@ class GSRBookingResult {
     @SerializedName("results")
     @Expose
     private val results: Boolean? = null
+
+    @SerializedName("detail")
+    @Expose
+    private val detail: String? = null
+
     @SerializedName("error")
     @Expose
     private val error: String? = null
+
+    fun getDetail(): String? {
+        return detail
+    }
 
     fun getResults(): Boolean? {
         return results

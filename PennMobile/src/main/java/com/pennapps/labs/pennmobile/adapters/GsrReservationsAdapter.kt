@@ -3,32 +3,29 @@ package com.pennapps.labs.pennmobile.adapters
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.os.SystemClock
 import android.preference.PreferenceManager
-import android.util.Log
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
-import androidx.appcompat.app.AlertDialog
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.recyclerview.widget.RecyclerView
-import com.pennapps.labs.pennmobile.LaundryBroadcastReceiver
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.GSRReservation
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.gsr_reservation.view.*
-import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import org.joda.time.LocalDateTime
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
-
+import android.content.Intent
+import android.util.Log
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 
 class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>)
@@ -74,8 +71,9 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                 val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
                 val sessionID = if (reservation.info == null) sp.getString(mContext.getString(R.string.huntsmanGSR_SessionID), "") else null
 
-                val labs = MainActivity.labsInstance
-                labs.cancelReservation(null, bookingID, sessionID, object : ResponseCallback() {
+                val labs = MainActivity.studentLifeInstance
+                val bearerToken = "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ");
+                labs.cancelReservation(bearerToken, null, bookingID, sessionID, object : ResponseCallback() {
                     override fun success(response: Response) {
                         if (reservations.size > position) {
                             reservations.removeAt(position)
@@ -90,6 +88,7 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                     }
 
                     override fun failure(error: RetrofitError) {
+                        Log.e("GsrReservationsAdapter", "Error canceling gsr reservation", error)
                         Toast.makeText(mContext, "Error deleting your GSR reservation.", LENGTH_SHORT).show()
                     }
                 })

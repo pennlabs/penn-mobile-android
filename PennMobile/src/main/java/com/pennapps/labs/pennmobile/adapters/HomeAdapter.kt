@@ -1,33 +1,53 @@
 package com.pennapps.labs.pennmobile.adapters
 
 import android.app.PendingIntent
-import android.content.*
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import androidx.browser.customtabs.*
-import androidx.core.content.ContextCompat.startActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.browser.customtabs.CustomTabsClient
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.browser.customtabs.CustomTabsServiceConnection
+import androidx.browser.customtabs.CustomTabsSession
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat.getColor
+import androidx.core.content.ContextCompat.startActivity
+import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.palette.graphics.Palette
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.*
-import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.CalendarEvent
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.HomeCell
+import com.pennapps.labs.pennmobile.components.sneaker.Utils.convertToDp
 import com.squareup.picasso.Picasso
+import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.android.synthetic.main.home_base_card.view.*
+import kotlinx.android.synthetic.main.home_news_card.view.*
 import kotlinx.android.synthetic.main.home_post_card.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import rx.Observable
 
 
-class HomeAdapter(private var cells: ArrayList<HomeCell>)
-    : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
+class HomeAdapter(private var cells: ArrayList<HomeCell>) :
+    RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
 
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
-    private lateinit var mLabs: Labs
+    private lateinit var mStudentLife: StudentLife
 
     private var mCustomTabsClient: CustomTabsClient? = null
     private var customTabsIntent: CustomTabsIntent? = null
@@ -50,12 +70,12 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         mContext = parent.context
-        mLabs = MainActivity.labsInstance
+        mStudentLife = MainActivity.studentLifeInstance
         mActivity = mContext as MainActivity
 
         return when (viewType) {
             NEWS -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_post_card, parent, false))
+                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_news_card, parent, false))
             }
             POST -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_post_card, parent, false))
@@ -120,7 +140,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         holder.itemView.home_card_subtitle.text = "GSR RESERVATIONS"
 
         holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
-                LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager.VERTICAL, false)
         holder.itemView.home_card_rv.adapter = GsrReservationsAdapter(ArrayList(reservations))
     }
 
@@ -129,60 +149,127 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         holder.itemView.home_card_subtitle.text = "DINING HALLS"
         holder.itemView.dining_prefs_btn.visibility = View.VISIBLE
         holder.itemView.dining_prefs_btn.setOnClickListener {
-            mActivity.fragmentTransact(DiningSettingsFragment())
+            mActivity.fragmentTransact(DiningSettingsFragment(), false)
         }
 
-        mLabs.venues()
-                .flatMap { venues -> Observable.from(venues) }
-                .flatMap { venue ->
-                    val hall = DiningFragment.createHall(venue)
-                    Observable.just(hall)
-                }
-                .toList()
-                .subscribe { diningHalls ->
-                    mActivity.runOnUiThread {
-                        val favorites: ArrayList<DiningHall> = arrayListOf()
-                        val favoritesIdList: List<Int>? = cell.info?.venues
-                        diningHalls.forEach {
-                            if (favoritesIdList?.contains(it.id) == true) {
-                                favorites.add(it)
-                            }
+        mStudentLife.venues()
+            .flatMap { venues -> Observable.from(venues) }
+            .flatMap { venue ->
+                val hall = DiningFragment.createHall(venue)
+                Observable.just(hall)
+            }
+            .toList()
+            .subscribe { diningHalls ->
+                mActivity.runOnUiThread {
+                    val favorites: ArrayList<DiningHall> = arrayListOf()
+                    val favoritesIdList: List<Int>? = cell.info?.venues
+                    diningHalls.forEach {
+                        if (favoritesIdList?.contains(it.id) == true) {
+                            favorites.add(it)
                         }
-                        holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
-                                LinearLayoutManager.VERTICAL, false)
-                        holder.itemView.home_card_rv.adapter = DiningCardAdapter(favorites)
                     }
+                    holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
+                        LinearLayoutManager.VERTICAL, false)
+                    holder.itemView.home_card_rv.adapter = DiningCardAdapter(favorites)
                 }
+            }
     }
 
     private fun bindNewsCell(holder: ViewHolder, cell: HomeCell) {
-        val info = cell.info
-        //do all da tings here
-        holder.itemView.home_post_title.text = info?.title
-        holder.itemView.home_post_subtitle.text = info?.subtitle
-        holder.itemView.home_post_source.text = info?.source
-        holder.itemView.home_post_timestamp.text = info?.timestamp
+        val article = cell.info?.article
+        holder.itemView.home_news_title.text = article?.title
+        holder.itemView.home_news_subtitle.text = article?.subtitle
+        holder.itemView.home_news_timestamp.text = article?.timestamp?.trim()
 
-        Picasso.get().load(info?.imageUrl).fit().centerCrop().into(holder.itemView.home_post_iv)
+        Picasso.get()
+            .load(article?.imageUrl)
+            .fit()
+            .centerCrop()
+            .into(holder.itemView.home_news_iv)
 
-        holder.itemView.home_post_card.setOnClickListener {
+        /** Adds dynamically generated accent color from the fetched image to the news card */
+        var accentColor: Int =  getColor(mContext, R.color.black)
+        GlobalScope.launch(Dispatchers.Default) {
+            val bitmap = Picasso.get().load(article?.imageUrl).get()
 
-            val url = info?.articleUrl
+            // Create palette from bitmap
+            fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
+            val vibrantSwatch: Palette.Swatch? = createPaletteSync(bitmap).darkVibrantSwatch
+            vibrantSwatch?.rgb?.let { accentColor = it }
+
+            mActivity.runOnUiThread {
+                // Change all the components to match the accent color palette
+                vibrantSwatch?.titleTextColor?.let {
+                    DrawableCompat.setTint(DrawableCompat.wrap(holder.itemView.news_card_logo.drawable),
+                        ColorUtils.setAlphaComponent(it, 150))
+                    DrawableCompat.setTint(DrawableCompat.wrap(holder.itemView.news_info_icon.drawable), it)
+                    DrawableCompat.setTint(DrawableCompat.wrap(holder.itemView.dot_divider.drawable), it)
+                    holder.itemView.button.setTextColor(ColorUtils.setAlphaComponent(it, 150))
+                    DrawableCompat.setTint(DrawableCompat.wrap(holder.itemView.button.background), it)
+                    holder.itemView.home_news_title.setTextColor(ColorUtils.setAlphaComponent(it, 150))
+                    holder.itemView.home_news_subtitle.setTextColor(it)
+                    holder.itemView.home_news_timestamp.setTextColor(it)
+                }
+                holder.itemView.news_card_container.background = BitmapDrawable(
+                    holder.view.resources,
+                    bitmap)
+                holder.itemView.blurView
+                    .setOverlayColor(ColorUtils.setAlphaComponent(accentColor, 150))
+            }
+        }
+
+        /** Logic for the more info button on the news card */
+        holder.itemView.news_info_icon.setOnClickListener {
+            when (holder.itemView.home_news_subtitle.visibility) {
+                View.GONE -> {
+                    holder.itemView.home_news_subtitle.visibility = View.VISIBLE
+                    holder.itemView.home_news_title.setPadding(0, 0, 0, 0)
+                    holder.itemView.blurView
+                        .setOverlayColor(ColorUtils.setAlphaComponent(accentColor, 250))
+                }
+                View.VISIBLE -> {
+                    holder.itemView.home_news_subtitle.visibility = View.GONE
+                    holder.itemView.home_news_title.setPadding(0, 0, 0, convertToDp(mContext, 8f))
+                    holder.itemView.blurView
+                        .setOverlayColor(ColorUtils.setAlphaComponent(accentColor, 150))
+                }
+            }
+        }
+
+        /** Sets up blur view on news card */
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            holder.itemView.blurView.setupWith(holder.itemView.news_card_container)
+                .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))
+                .setBlurAlgorithm(RenderScriptBlur(mContext))
+                .setBlurRadius(25f)
+                .setHasFixedTransformationMatrix(true)
+        } else {
+            holder.itemView.blurView.setBackgroundColor(ColorUtils
+                .setAlphaComponent(getColor(mContext, R.color.black), 225))
+        }
+
+        holder.itemView.button.setOnClickListener {
+
+            val url = article?.articleUrl
 
             val connection = NewsCustomTabsServiceConnection()
             builder = CustomTabsIntent.Builder()
             share = Intent(Intent.ACTION_SEND)
             share?.type = "text/plain"
             builder?.setToolbarColor(0x3E50B4)
-            builder?.setStartAnimations(mContext,
-                    R.anim.abc_popup_enter,
-                    R.anim.abc_popup_exit)
-            CustomTabsClient.bindCustomTabsService(mContext,
-                    NewsFragment.CUSTOM_TAB_PACKAGE_NAME, connection)
+            builder?.setStartAnimations(
+                mContext,
+                R.anim.abc_popup_enter,
+                R.anim.abc_popup_exit)
+            CustomTabsClient.bindCustomTabsService(
+                mContext,
+                NewsFragment.CUSTOM_TAB_PACKAGE_NAME, connection)
 
-            if (isChromeCustomTabsSupported(mContext)) {
+            if (mContext.isChromeCustomTabsSupported()) {
                 share?.putExtra(Intent.EXTRA_TEXT, url)
-                builder?.addMenuItem("Share", PendingIntent.getActivity(mContext, 0,
+                builder?.addMenuItem(
+                    "Share", PendingIntent.getActivity(
+                        mContext, 0,
                         share, PendingIntent.FLAG_CANCEL_CURRENT))
                 customTabsIntent = builder?.build()
                 customTabsIntent?.launchUrl(mActivity, Uri.parse(url))
@@ -202,14 +289,15 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
             if (!events[i].name.isNullOrEmpty()) {
                 eventList.add(events[i])
             }
-            i--;
+            i--
         }
+        eventList.reverse()
 
         holder.itemView.home_card_title.text = "Upcoming Events"
         holder.itemView.home_card_subtitle.text = "UNIVERSITY NOTIFICATIONS"
 
         holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
-                LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager.VERTICAL, false)
 
         holder.itemView.home_card_rv.adapter = UniversityEventAdapter(eventList)
     }
@@ -223,16 +311,25 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         val roomID = cell.info?.roomId ?: 0
         holder.itemView.home_card_subtitle.text = "LAUNDRY"
         holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
-                LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager.VERTICAL, false)
 
-        mLabs.room(roomID).subscribe({ room ->
+        val params : ConstraintLayout.LayoutParams =
+            holder.itemView.home_card_rv.layoutParams as ConstraintLayout.LayoutParams
+        params.setMargins(0, 0, 0, 0)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            params.marginStart = 0
+        }
+
+        holder.itemView.home_card_rv.layoutParams = params
+
+        mStudentLife.room(roomID).subscribe({ room ->
             mActivity.runOnUiThread {
                 holder.itemView.home_card_title.text = room.name
                 val rooms = arrayListOf(room)
                 holder.itemView.home_card_rv.adapter = LaundryRoomAdapter(mContext, rooms, null, true)
             }
 
-        }, { throwable -> mActivity.runOnUiThread { throwable.printStackTrace() } } )
+        }, { throwable -> mActivity.runOnUiThread { throwable.printStackTrace() } })
     }
 
     private fun bindGsrBookingCell(holder: ViewHolder, cell: HomeCell) {
@@ -242,7 +339,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         holder.itemView.home_card_subtitle.text = "GROUP STUDY ROOMS"
 
         holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
-                LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager.VERTICAL, false)
         holder.itemView.home_card_rv.adapter = HomeGsrBuildingAdapter(ArrayList(buildings))
     }
 
@@ -266,15 +363,15 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
             share?.type = "text/plain"
             builder?.setToolbarColor(0x3E50B4)
             builder?.setStartAnimations(mContext,
-                    R.anim.abc_popup_enter,
-                    R.anim.abc_popup_exit)
+                R.anim.abc_popup_enter,
+                R.anim.abc_popup_exit)
             CustomTabsClient.bindCustomTabsService(mContext,
-                    NewsFragment.CUSTOM_TAB_PACKAGE_NAME, connection)
+                NewsFragment.CUSTOM_TAB_PACKAGE_NAME, connection)
 
-            if (isChromeCustomTabsSupported(mContext)) {
+            if (mContext.isChromeCustomTabsSupported()) {
                 share?.putExtra(Intent.EXTRA_TEXT, url)
                 builder?.addMenuItem("Share", PendingIntent.getActivity(mContext, 0,
-                        share, PendingIntent.FLAG_CANCEL_CURRENT))
+                    share, PendingIntent.FLAG_CANCEL_CURRENT))
                 customTabsIntent = builder?.build()
                 customTabsIntent?.launchUrl(mActivity, Uri.parse(url))
             } else {
@@ -297,10 +394,10 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
 
         // For now, we only use Feature cards for Spring Fling so we show the Fling Fragment
         holder.itemView.home_post_card.setOnClickListener {
-            mActivity.fragmentTransact(FlingFragment())
+            mActivity.fragmentTransact(FlingFragment(), false)
         }
     }
-        // Chrome custom tabs to launch news site
+    // Chrome custom tabs to launch news site
 
     internal inner class NewsCustomTabsServiceConnection : CustomTabsServiceConnection() {
 
@@ -317,10 +414,11 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>)
         }
     }
 
-    private fun isChromeCustomTabsSupported(context: Context): Boolean {
+    /** Checks if the chrome tab is supported on the current device. */
+    private fun Context.isChromeCustomTabsSupported(): Boolean {
         val serviceIntent = Intent("android.support.customtabs.action.CustomTabsService")
         serviceIntent.setPackage("com.android.chrome")
-        val resolveInfos = context.packageManager.queryIntentServices(serviceIntent, 0)
+        val resolveInfos = this.packageManager.queryIntentServices(serviceIntent, 0)
         return resolveInfos.isNotEmpty()
     }
 

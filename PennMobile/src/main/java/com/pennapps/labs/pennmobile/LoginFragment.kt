@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.preference.PreferenceManager
 import com.bumptech.glide.Glide
@@ -34,7 +33,7 @@ class LoginFragment : Fragment() {
         val fragmentManager = mActivity.supportFragmentManager
         var gif = R.drawable.login_background
         if (Build.VERSION.SDK_INT > 28 && (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) {
-            gif = R.drawable.login_background_dark
+            //gif = R.drawable.login_background_dark
         }
 
         Glide.with(this).asGif().load(gif).listener(object : RequestListener<GifDrawable> {
@@ -73,4 +72,8 @@ class LoginFragment : Fragment() {
         return v
     }
 
+    override fun onResume() {
+        super.onResume()
+        mActivity.hideBottomBar()
+    }
 }

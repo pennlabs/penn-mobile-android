@@ -5,19 +5,25 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.graphics.ColorUtils
+import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -28,16 +34,21 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.pennapps.labs.pennmobile.ExpandedBottomNavBar.ExpandableBottomTabBar
-import com.pennapps.labs.pennmobile.adapters.DiningAdapter
-import com.pennapps.labs.pennmobile.api.Labs
+
+import com.pennapps.labs.pennmobile.api.StudentLife
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
+import com.pennapps.labs.pennmobile.api.CampusExpress
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.StudentLifePolls
 import com.pennapps.labs.pennmobile.api.Serializer.*
 import com.pennapps.labs.pennmobile.classes.*
-import kotlinx.android.synthetic.main.fragment_dining.*
-import kotlinx.android.synthetic.main.loading_panel.*
-import kotlinx.android.synthetic.main.no_results.*
+import com.pennapps.labs.pennmobile.components.floatingbottombar.ExpandableBottomBarMenuItem
+import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
+import com.pennapps.labs.pennmobile.more.MoreFragment
+import com.pennapps.labs.pennmobile.utils.Utils
+import eightbitlab.com.blurview.RenderScriptBlur
+import kotlinx.android.synthetic.main.custom_sneaker_view.view.*
+import kotlinx.android.synthetic.main.include_main.*
 import retrofit.RestAdapter
 import retrofit.android.AndroidLog
 import retrofit.converter.GsonConverter
@@ -47,21 +58,16 @@ import rx.Observer
 //import rxjava3.kotlin.subscribeBy
 
 class MainActivity : AppCompatActivity() {
-
-    private var tabBarView: ExpandableBottomTabBar? = null
-    private var toolbar: Toolbar? = null
-    private var toolbarTitle: TextView? = null
     private var tabShowed = false
     private lateinit var fragmentManager: FragmentManager
     private lateinit var mSharedPrefs: SharedPreferences
-    private lateinit var mStudentLifePolls: StudentLifePolls
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         if (Build.VERSION.SDK_INT > 28) {
             setTheme(R.style.DarkModeApi29)
         }
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             val alert = AlertDialog.Builder(this)
             alert.setTitle("Android version")
             alert.setMessage("You are running an older version of Android. Features may be limited")
@@ -70,14 +76,15 @@ class MainActivity : AppCompatActivity() {
         }
         super.onCreate(savedInstanceState)
         if (applicationContext.resources.configuration.uiMode and
-                Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
+            Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
             setTheme(R.style.DarkBackground)
         }
         setContentView(R.layout.activity_main)
-        tabBarView = findViewById(R.id.bottom_navigation)
-        toolbar = findViewById(R.id.toolbar)
-        toolbarTitle = findViewById(R.id.toolbar_title)
-        setSupportActionBar(toolbar)
+        Utils.getCurrentSystemTime()
+
+        //tabBarView = findViewById(R.id.bottom_navigation)
+        // toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(appbar.findViewById(R.id.toolbar))
         fragmentManager = supportFragmentManager
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.setHomeButtonEnabled(false)
@@ -85,44 +92,63 @@ class MainActivity : AppCompatActivity() {
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
+        expandable_bottom_bar.addItems(
+            ExpandableBottomBarMenuItem.Builder(this)
+                .addItem(HOME, R.drawable.ic_home_grey)
+                .textRes(R.string.floating_bottom_bar_home)
+                .colorRes(R.color.floating_bottom_bar_selected).create()
+                .addItem(DINING, R.drawable.ic_dining_grey)
+                .textRes(R.string.floating_bottom_bar_dining)
+                .colorRes(R.color.floating_bottom_bar_selected).create()
+                .addItem(GSR, R.drawable.ic_gsr_grey)
+                .textRes(R.string.floating_bottom_bar_gsr_booking)
+                .colorRes(R.color.floating_bottom_bar_selected).create()
+                .addItem(LAUNDRY, R.drawable.ic_laundry_grey)
+                .textRes(R.string.floating_bottom_bar_laundry)
+                .colorRes(R.color.floating_bottom_bar_selected).create()
+                .addItem(MORE, R.drawable.ic_more_grey)
+                .textRes(R.string.floating_bottom_bar_more)
+                .colorRes(R.color.floating_bottom_bar_selected).create()
+                .build()
+        )
+        onExpandableBottomNavigationItemSelected()
+        showBottomBar()
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
         // Show HomeFragment if logged in, otherwise show LoginFragment
-        val pennkey = mSharedPrefs.getString(getString(R.string.pennkey), null)
+        val pennKey = mSharedPrefs.getString(getString(R.string.pennkey), null)
         val guestMode = mSharedPrefs.getBoolean(getString(R.string.guest_mode), false)
-        if (pennkey == null && !guestMode) {
+        if (pennKey == null && !guestMode) {
             startLoginFragment()
         } else {
             startHomeFragment()
         }
-        //////////////////////////
+    }
 
-
-
+    override fun onResume() {
+        super.onResume()
+        showBottomBar()
     }
 
     private fun onExpandableBottomNavigationItemSelected() {
-        tabBarView?.setOnTabClickedListener { view, tabPos ->
+        expandable_bottom_bar.onItemSelectedListener = { _, item ->
             var fragment: Fragment? = null
-            when (tabPos) {
-                HOME -> if (fragmentManager.backStackEntryCount > 0) {
+            when (item.text as String) {
+                "Home" -> if (fragmentManager.backStackEntryCount > 0) {
                     fragment = HomeFragment()
                 }
-                GSR -> fragment = GsrTabbedFragment()
-                DINING -> fragment = DiningFragment()
-                LAUNDRY -> fragment = LaundryFragment()
-                FITNESS -> fragment = FitnessFragment()
-                NEWS -> fragment = NewsFragment()
-                SUPPORT -> fragment = SupportFragment()
-                SETTINGS -> fragment = SettingsFragment()
-                ABOUT -> fragment = AboutFragment()
+                "Dining" -> fragment = DiningHolderFragment()
+                "GSR" -> fragment = GsrTabbedFragment()
+                "Laundry" -> fragment = LaundryFragment()
+                "More" -> fragment = MoreFragment()
             }
-            fragmentTransact(fragment)
+            fragmentTransact(fragment, true)
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    fun setSelectedTab(index: Int) {
-        tabBarView?.resetFocusOnAllTabs()
-        tabBarView?.selectedTab = index
+    fun setSelectedTab(id: Int) {
+        expandable_bottom_bar.select(id)
     }
 
     fun closeKeyboard() {
@@ -134,24 +160,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun startHomeFragment() {
+        OAuth2NetworkManager(this).getAccessToken()
         val fragment: Fragment = HomeFragment()
         fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, fragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit()
-        onExpandableBottomNavigationItemSelected()
-        toolbar?.visibility = View.VISIBLE
-        tabBarView?.visibility = View.VISIBLE
+            .replace(R.id.content_frame, fragment)
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .commit()
+        expandable_bottom_bar.select(HOME)
+        expandable_bottom_bar.visibility = View.VISIBLE
     }
 
     fun startLoginFragment() {
         val fragment: Fragment = LoginFragment()
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, fragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit()
-        toolbar?.visibility = View.GONE
-        tabBarView?.visibility = View.GONE
+            .replace(R.id.content_frame, fragment)
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .commit()
+        expandable_bottom_bar.visibility = View.GONE
     }
 
     fun showErrorToast(errorMessage: Int) {
@@ -182,15 +208,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun fragmentTransact(fragment: Fragment?) {
+    fun fragmentTransact(fragment: Fragment?, popBackStack: Boolean) {
         if (fragment != null) {
             runOnUiThread {
                 try {
+                    //TODO ALI COMMENT
+                    if (popBackStack) {
+                        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    }
                     fragmentManager.beginTransaction()
-                            .replace(R.id.content_frame, fragment)
-                            .addToBackStack(null)
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .commit()
+                        .replace(R.id.content_frame, fragment)
+                        .addToBackStack(null)
+                        .setTransition(FragmentTransaction.TRANSIT_NONE)
+                        .commit()
                 } catch (e: IllegalStateException) {
                     //ignore because the onSaveInstanceState etc states are called when activity is going to background etc
                 }
@@ -199,6 +229,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isEmpty() || grantResults[0] == PackageManager.PERMISSION_DENIED) {
             if (requestCode == SaveContactsFragment.permission_read) {
                 showErrorToast(R.string.ask_contacts_fail)
@@ -208,25 +239,57 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun setTitle(title: CharSequence) {
-        toolbarTitle?.text = title
+        appbar.findViewById<View>(R.id.toolbar)
+            .findViewById<TextView>(R.id.toolbar_title).text = title
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        showBottomBar()
+    }
+
+    fun hideBottomBar() {
+        expandable_bottom_bar.visibility = View.GONE
+        val layoutParams = this.content_frame.layoutParams as CoordinatorLayout.LayoutParams
+        layoutParams.setMargins(0, 0, 0, 0)
+        this.content_frame.layoutParams = layoutParams
+    }
+
+    fun showBottomBar() {
+        expandable_bottom_bar.visibility = View.VISIBLE
+        val layoutParams = this.content_frame.layoutParams as CoordinatorLayout.LayoutParams
+        layoutParams.setMargins(0, 0, 0, Utils.dpToPixel(this, 16f))
+        this.content_frame.layoutParams = layoutParams
     }
 
     companion object {
-        // 4 corresponds to the More button
-        const val HOME = 0
-        const val GSR = 1
-        const val DINING = 2
-        const val LAUNDRY = 3
-        const val FITNESS = 5
-        const val NEWS = 6
-        const val SUPPORT = 7
-        const val SETTINGS = 8
-        const val ABOUT = 9
+        const val HOME = 1
+        const val GSR = 2
+        const val DINING = 3
+        const val LAUNDRY = 4
+        const val MORE = 5
 
-        private var mLabs: Labs? = null
+        private var mStudentLife: StudentLife? = null
+        private var mStudentLifePolls: StudentLifePolls? = null
         private var mPlatform: Platform? = null
-        var mStudentLifePolls: StudentLifePolls? = null
+        private var mCampusExpress: CampusExpress? = null
 
+        @JvmStatic
+        val campusExpressInstance: CampusExpress
+            get() {
+                if (mCampusExpress == null) {
+                    val gsonBuilder = GsonBuilder()
+                    val gson = gsonBuilder.create()
+                    val restAdapter = RestAdapter.Builder()
+                        .setConverter(GsonConverter(gson))
+                        .setLogLevel(RestAdapter.LogLevel.FULL)
+                        .setLog(AndroidLog("Campus Express"))
+                        .setEndpoint(Platform.campusExpressBaseUrl)
+                        .build()
+                    mCampusExpress = restAdapter.create(CampusExpress::class.java)
+                }
+                return mCampusExpress!!
+            }
 
         @JvmStatic
         val platformInstance: Platform
@@ -235,11 +298,11 @@ class MainActivity : AppCompatActivity() {
                     val gsonBuilder = GsonBuilder()
                     val gson = gsonBuilder.create()
                     val restAdapter = RestAdapter.Builder()
-                            .setConverter(GsonConverter(gson))
-                            .setLogLevel(RestAdapter.LogLevel.FULL)
-                            .setLog(AndroidLog("Platform"))
-                            .setEndpoint(Platform.platformBaseUrl)
-                            .build()
+                        .setConverter(GsonConverter(gson))
+                        .setLogLevel(RestAdapter.LogLevel.FULL)
+                        .setLog(AndroidLog("Platform"))
+                        .setEndpoint(Platform.platformBaseUrl)
+                        .build()
                     mPlatform = restAdapter.create(Platform::class.java)
                 }
                 return mPlatform!!
@@ -254,42 +317,12 @@ class MainActivity : AppCompatActivity() {
                     gsonBuilder.registerTypeAdapter(object:  TypeToken<MutableList<PollPop?>?>() {}.type, PollPopsSerializer())
                     gsonBuilder.registerTypeAdapter(object:  TypeToken<MutableList<PollResult?>?>() {}.type, PollResultsSerializer())
                     gsonBuilder.registerTypeAdapter(object:  TypeToken<MutableList<Post?>?>() {}.type, PostsSerializer())
-
-                    // gets room
-                    /*gsonBuilder.registerTypeAdapter(object : TypeToken<LaundryRoom?>() {}.type, LaundryRoomSerializer())
-                    // gets laundry room list
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<LaundryRoomSimple?>?>() {}.type, LaundryRoomListSerializer())
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<GSRLocation?>?>() {}.type, GsrLocationSerializer())
-                    // gets laundry usage
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<LaundryUsage?>() {}.type, LaundryUsageSerializer())
-                    // gets laundry preferences (used only for testing)
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Int?>?>() {}.type, LaundryPrefSerializer())
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<FlingEvent?>?>() {}.type, FlingEventSerializer())
-                    // gets fitness
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Gym?>?>() {}.type, GymSerializer())
-                    // gets gsr reservations
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<GSRReservation?>?>() {}.type, GsrReservationSerializer())
-                    // gets homepage
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<HomeCell?>?>() {}.type, HomePageSerializer())
-                    // gets user
-                    gsonBuilder.registerTypeAdapter(Account::class.java, UserSerializer())*/
                     val gson = gsonBuilder.create()
                     val restAdapter = RestAdapter.Builder()
                         .setConverter(GsonConverter(gson))
                         .setEndpoint("https://pennmobile.org/api/portal/")
                         .build()
                     mStudentLifePolls = restAdapter.create(StudentLifePolls::class.java)
-                    /*val gsonBuilder = GsonBuilder()
-                    val gson = gsonBuilder.create()
-
-                    val restAdapter = RestAdapter.Builder()
-                            .setConverter(GsonConverter(gson))
-                            .setLogLevel(RestAdapter.LogLevel.FULL)
-                            .setLog(AndroidLog("PlatformPolls"))
-                            .setEndpoint(StudentLifePolls.platformBaseUrl)
-                            .build()
-                    mStudentLifePolls = restAdapter.create(StudentLifePolls::class.java)
-                */
                 }
 
 
@@ -298,9 +331,9 @@ class MainActivity : AppCompatActivity() {
             }
 
         @JvmStatic
-        val labsInstance: Labs
+        val studentLifeInstance: StudentLife
             get() {
-                if (mLabs == null) {
+                if (mStudentLife == null) {
                     val gsonBuilder = GsonBuilder()
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Contact?>?>() {}.type, DataSerializer<Any?>())
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Venue?>?>() {}.type, VenueSerializer())
@@ -325,12 +358,12 @@ class MainActivity : AppCompatActivity() {
                     gsonBuilder.registerTypeAdapter(Account::class.java, UserSerializer())
                     val gson = gsonBuilder.create()
                     val restAdapter = RestAdapter.Builder()
-                            .setConverter(GsonConverter(gson))
-                            .setEndpoint("https://api.pennlabs.org")
-                            .build()
-                    mLabs = restAdapter.create(Labs::class.java)
+                        .setConverter(GsonConverter(gson))
+                        .setEndpoint("https://pennmobile.org/api")
+                        .build()
+                    mStudentLife = restAdapter.create(StudentLife::class.java)
                 }
-                return mLabs!!
+                return mStudentLife!!
             }
     }
 
@@ -339,18 +372,18 @@ class MainActivity : AppCompatActivity() {
 //checks if internet is connected
 fun isOnline(context: Context?): Boolean {
     val connectivityManager =
-            context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     if (connectivityManager != null) {
         val capabilities =
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                        connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-                    } else {
-                        return true
-                    }
+            if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
                 } else {
                     return true
                 }
+            } else {
+                return true
+            }
         if (capabilities != null) {
             when {
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
@@ -369,4 +402,32 @@ fun isOnline(context: Context?): Boolean {
         }
     }
     return false
+}
+
+/** Shows an error sneaker given a view group with an optional retry function */
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+fun ViewGroup.showSneakerToast(message: String, doOnRetry: (() -> Unit)?, sneakerColor: Int) {
+    val sneaker = Sneaker.with(this)
+    val view = LayoutInflater.from(this.context)
+        .inflate(R.layout.custom_sneaker_view, sneaker.getView(), false)
+
+    view.blurView.setupWith(this)
+        .setFrameClearDrawable(ColorDrawable(Color.TRANSPARENT))
+        .setBlurAlgorithm(RenderScriptBlur(this.context))
+        .setBlurRadius(10f)
+        .setHasFixedTransformationMatrix(true)
+        .setOverlayColor(resources.getColor(sneakerColor))
+
+    val retryBtn = view.findViewById<TextView>(R.id.retryButton)
+    doOnRetry ?: run { retryBtn.visibility = View.GONE }
+    retryBtn.setOnClickListener { doOnRetry?.invoke() }
+
+    val messageView = view.findViewById<TextView>(R.id.errorMessage)
+    if (ColorUtils.calculateLuminance(resources.getColor(sneakerColor)) > 0.4) {
+        messageView.setTextColor(Color.BLACK)
+        view.findViewById<TextView>(R.id.retryButton).setTextColor(Color.BLACK)
+    }
+    messageView.text = message
+
+    sneaker.sneakCustom(view).setCornerRadius(12, 16).setMessage(message)
 }

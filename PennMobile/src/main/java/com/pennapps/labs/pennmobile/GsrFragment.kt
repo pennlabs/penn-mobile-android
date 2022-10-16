@@ -2,8 +2,6 @@ package com.pennapps.labs.pennmobile
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -14,16 +12,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.annotation.RequiresApi
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.GsrBuildingAdapter
-import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRContainer
 import com.pennapps.labs.pennmobile.classes.GSRRoom
 import com.pennapps.labs.pennmobile.classes.GSRSlot
+import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
+import com.pennapps.labs.pennmobile.utils.Utils
+import kotlinx.android.synthetic.main.fragment_dining.view.*
 import kotlinx.android.synthetic.main.fragment_gsr.*
 import kotlinx.android.synthetic.main.fragment_gsr.view.*
-import kotlinx.android.synthetic.main.fragment_news.*
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import java.util.*
@@ -41,10 +42,13 @@ class GsrFragment : Fragment() {
     lateinit var noResultsPanel: LinearLayout
 
     // api manager
-    private lateinit var mLabs: Labs
+    private lateinit var mStudentLife: StudentLife
 
     //list that holds all GSR rooms
     private val gsrHashMap = HashMap<String, Int>()
+
+    //list that holds all GSR rooms and their gids
+    private val gsrGIDHashMap = HashMap<String, Int>()
 
     // all the gsrs
     private var mGSRS = ArrayList<GSRContainer>()
@@ -63,7 +67,7 @@ class GsrFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mLabs = MainActivity.labsInstance
+        mStudentLife = MainActivity.studentLifeInstance
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()
 
@@ -191,8 +195,9 @@ class GsrFragment : Fragment() {
     // Called when page loads and whenever user changes start/end time, date, or building
     @RequiresApi(Build.VERSION_CODES.M)
     fun searchForGSR(calledByRefreshLayout: Boolean) {
-
-        val location = mapGSR(gsrLocationDropDown.selectedItem.toString())
+        var gsrLocation = gsrLocationDropDown.selectedItem.toString()
+        val location = mapGSR(gsrLocation)
+        val gid = mapGID(gsrLocation)
         if (location == -1) {
             showNoResults()
         } else {
@@ -204,18 +209,18 @@ class GsrFragment : Fragment() {
             noResultsPanel.visibility = View.GONE
             gsr_no_rooms?.visibility = View.GONE
             //get the hours
-            getTimes(location)
+            getTimes(location, gid)
         }
     }
 
     // Performs GET request and fetches the rooms and availability
-    private fun getTimes(location: Int) {
+    private fun getTimes(location: Int, gId: Int) {
         val adjustedDateString = selectedDateTime.toString(adjustedDateFormat)
         selectDateButton.isClickable = false
         selectTimeButton.isClickable = false
         gsrLocationDropDown.isEnabled = false
         durationDropDown.isEnabled = false
-        mLabs.gsrRoom(location, adjustedDateString)
+        mStudentLife.gsrRoom(location, gId, adjustedDateString)
                 ?.subscribe({ gsr ->
                     activity?.let {activity ->
                         activity.runOnUiThread {
@@ -235,7 +240,7 @@ class GsrFragment : Fragment() {
                                         timeSlotLengthZero = false
                                     }
                                     if (gsrTimeSlots != null) {
-                                        filterInsertTimeSlots(gsrRoom, gsrTimeSlots)
+                                        filterInsertTimeSlots(gsrRoom, gsrTimeSlots, gId)
                                     }
                                 }
                             }
@@ -261,7 +266,9 @@ class GsrFragment : Fragment() {
                             durationDropDown.isEnabled = true
                         }
                     }
-                }, { activity?.let {
+                }, {
+                    Log.e("GsrFragment", "Error getting gsr times", it)
+                    activity?.let {
                     activity ->
                     activity.runOnUiThread {
                         showNoResults()
@@ -274,7 +281,7 @@ class GsrFragment : Fragment() {
                 )
     }
 
-    private fun filterInsertTimeSlots(gsrRoom: GSRRoom, timeSlots: Array<GSRSlot>) {
+    private fun filterInsertTimeSlots(gsrRoom: GSRRoom, timeSlots: Array<GSRSlot>, gid: Int) {
         val availableSlotsAfterSelectedTime = ArrayList<GSRSlot>()
 
         // Filter time slots so only available slots occurring after selected time are used
@@ -286,6 +293,7 @@ class GsrFragment : Fragment() {
                 val endString = currSlot.endTime
 
                 if (startString != null && endString != null) {
+
                     val endTime = gsrSlotFormatter.parseDateTime(endString)
                     if (endTime.isAfter(selectedDateTime)) {
                         availableSlotsAfterSelectedTime.add(currSlot)
@@ -309,11 +317,13 @@ class GsrFragment : Fragment() {
             if (startTime.plusMinutes(duration).isEqual(endTime)) {
                 val stringStartTime = startTime.toString(timeFormatter)
                 val stringEndTime = endTime.toString(timeFormatter)
-
+                val start = startingSlot.startTime ?: ""
+                //note that end uses ending slot to account for 30+ min booking times
+                val end = endingSlot.endTime ?: ""
                 val gsrName = gsrRoom.name ?: ""
                 val gsrRoomId = gsrRoom.room_id ?: 0
                 insertGSRSlot(gsrName, "$stringStartTime-$stringEndTime",
-                        startTime, gsrRoomId.toString())
+                        startTime, gsrRoomId.toString(), gid, gsrRoomId, start, end)
             }
         }
     }
@@ -322,7 +332,7 @@ class GsrFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun populateDropDownGSR() {
 
-        mLabs.location()
+        mStudentLife.location()
                 ?.subscribe({ locations ->
                     activity?.let {activity ->
                         activity.runOnUiThread {
@@ -339,18 +349,65 @@ class GsrFragment : Fragment() {
                             while (i < numLocations) {
                                 val locationName = locations[i]?.name ?: ""
                                 when (locations[i].id) {
-                                    1086 -> gsrHashMap["Van Pelt"] = 1086
-                                    2587 -> gsrHashMap["Lippincott"] = 2587
-                                    2495 -> gsrHashMap["Edu Commons"] = 2495
-                                    2683 -> gsrHashMap["Biomedical"] = 2683
-                                    2637 -> gsrHashMap["Fisher"] = 2637
-                                    1090 -> gsrHashMap["Levin Building"] = 1090
-                                    2634 -> gsrHashMap["Museum Library"] = 2634
-                                    2636 -> gsrHashMap["VP Seminar"] = 2636
-                                    2611 -> gsrHashMap["VP Special Use"] = 2611
-                                    1 -> gsrHashMap["Huntsman Hall"] = 1
-                                    4370 -> gsrHashMap["PCPSE Building"] = 4370
-                                    else -> gsrHashMap[locationName] = locations[i].id
+                                    1086 -> {
+                                        if (locations[i].name.equals("VP Ground Floor")) {
+                                            gsrHashMap["VP Ground Floor"] = 1086
+                                            gsrGIDHashMap["VP Ground Floor"] = locations[i].gid
+                                        } else if (locations[i].name.equals("Weigle")) {
+                                            gsrHashMap["Weigle"] = 1086
+                                            gsrGIDHashMap["Weigle"] = locations[i].gid
+                                        } else if (locations[i].name.equals("VP 3rd Floor")) {
+                                            gsrHashMap["VP 3rd Floor"] = 1086
+                                            gsrGIDHashMap["VP 3rd Floor"] = locations[i].gid
+                                        } else if (locations[i].name.equals("VP 4th Floor")) {
+                                            gsrHashMap["VP 4th Floor"] = 1086
+                                            gsrGIDHashMap["VP 4th Floor"] = locations[i].gid
+                                        }
+                                    }
+                                    2587 -> {
+                                        gsrHashMap["Lippincott"] = 2587
+                                        gsrGIDHashMap["Lippincott"] = locations[i].gid
+                                    }
+                                    2495 -> {
+                                        gsrHashMap["Edu Commons"] = 2495
+                                        gsrGIDHashMap["Edu Commons"] = locations[i].gid
+                                    }
+                                    2683 -> {
+                                        gsrHashMap["Biomedical"] = 2683
+                                        gsrGIDHashMap["Biomedical"] = locations[i].gid
+                                    }
+                                    2637 -> {
+                                        gsrHashMap["Fisher"] = 2637
+                                        gsrGIDHashMap["Fisher"] = locations[i].gid
+                                    }
+                                    1090 -> {
+                                        gsrHashMap["Levin Building"] = 1090
+                                        gsrGIDHashMap["Levin Building"] = locations[i].gid
+                                    }
+                                    2634 -> {
+                                        gsrHashMap["Museum Library"] = 2634
+                                        gsrGIDHashMap["Museum Library"] = locations[i].gid
+                                    }
+                                    2636 -> {
+                                        gsrHashMap["VP Seminar"] = 2636
+                                        gsrGIDHashMap["VP Seminar"] = locations[i].gid
+                                    }
+                                    2611 -> {
+                                        gsrHashMap["VP Special Use"] = 2611
+                                        gsrGIDHashMap["VP Special Use"] = locations[i].gid
+                                    }
+                                    1 -> {
+                                        gsrHashMap["Huntsman Hall"] = 1
+                                        gsrGIDHashMap["Huntsman Hall"] = locations[i].gid
+                                    }
+                                    4370 -> {
+                                        gsrHashMap["PCPSE Building"] = 4370
+                                        gsrGIDHashMap["PCPSE Building"] = locations[i].gid
+                                    }
+                                    else -> {
+                                        gsrHashMap[locationName] = locations[i].id
+                                        gsrGIDHashMap[locationName] = locations[i].gid
+                                    }
                                 }
                                 i++
                             }
@@ -366,10 +423,12 @@ class GsrFragment : Fragment() {
                         }
                     }
                 }, {
-                    activity?.let {activity ->
+                    Log.e("Gsr Fragment", "Error getting gsr locations", it)
+                    activity?.let { activity ->
                         activity.runOnUiThread {
                             //hard coded in case runs into error
-                            gsrHashMap["Van Pelt"] = 1086
+                            gsrHashMap["VP Ground Floor"] = 1086
+                            gsrHashMap["Weigle"] = 1086
                             gsrHashMap["Lippincott"] = 2587
                             gsrHashMap["Edu Commons"] = 2495
                             gsrHashMap["Biomedical"] = 2683
@@ -379,7 +438,8 @@ class GsrFragment : Fragment() {
                             gsrHashMap["VP Seminar"] = 2636
                             gsrHashMap["VP Special Use"] = 2611
                             gsrHashMap["Huntsman Hall"] = 1
-
+                            gsrHashMap["PCPSE Building"] = 4370
+                            gsrGIDHashMap["PCPSE Building"] = 7426
                             val gsrs = gsrHashMap.keys.toList().toTypedArray()
                             val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
                             gsrLocationDropDown.adapter = adapter
@@ -426,8 +486,12 @@ class GsrFragment : Fragment() {
     //takes the name of the gsr and returns an int for the corresponding code
     fun mapGSR(name: String): Int = gsrHashMap[name] ?: 0
 
+    //takes the name of the gsr and returns an int for the corresponding gid
+    fun mapGID(name: String): Int = gsrGIDHashMap[name] ?: 0
+
     //function that takes all available GSR sessions and populates mGSRs
-    fun insertGSRSlot(gsrName: String, GSRTimeRange: String, GSRStartTime: DateTime, GSRElementId: String) {
+    fun insertGSRSlot(gsrName: String, GSRTimeRange: String, GSRStartTime: DateTime, GSRElementId: String, gid: Int, roomId: Int,
+    start: String, end: String) {
 
         var encountered = false
 
@@ -435,13 +499,13 @@ class GsrFragment : Fragment() {
             val currentGSR = mGSRS[i]
             //if there is GSR, add the available session to the GSR Object
             if (currentGSR.gsrName == gsrName) {
-                currentGSR.addGSRSlot(GSRTimeRange, GSRStartTime, GSRElementId)
+                currentGSR.addGSRSlot(GSRTimeRange, GSRStartTime, GSRElementId, start, end)
                 encountered = true
             }
         }
         //can't find existing GSR. Create new object
         if (!encountered) {
-            val newGSRObject = GSRContainer(gsrName, GSRTimeRange, GSRStartTime, GSRElementId)
+            val newGSRObject = GSRContainer(gsrName, GSRTimeRange, GSRStartTime, GSRElementId, gid, roomId, start, end)
             mGSRS.add(newGSRObject)
         }
     }

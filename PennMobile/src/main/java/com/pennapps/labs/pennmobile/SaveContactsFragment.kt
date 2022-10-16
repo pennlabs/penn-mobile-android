@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.ListFragment
 import com.pennapps.labs.pennmobile.adapters.PhoneSaveAdapter
 import com.pennapps.labs.pennmobile.classes.Contact
+import kotlinx.android.synthetic.main.include_main.*
 import java.util.*
 
 class SaveContactsFragment : ListFragment() {
@@ -45,6 +46,9 @@ class SaveContactsFragment : ListFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, save: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_save_contacts, container, false)
         setHasOptionsMenu(true)
+        mActivity = activity as MainActivity
+        mActivity.toolbar.visibility = View.VISIBLE
+        mActivity.toolbar.setNavigationIcon(R.drawable.ic_back_navigation)
         return view
     }
 
@@ -109,13 +113,7 @@ class SaveContactsFragment : ListFragment() {
             }
         }
         Toast.makeText(mActivity, selected.size.toString() + " contact" + (if (selected.size > 1 || selected.size == 0) "s" else "") + " saved", Toast.LENGTH_SHORT).show()
-        val frag = SupportFragment()
-        val fragmentManager = mActivity.supportFragmentManager
-        fragmentManager.beginTransaction()
-                .replace((requireView().parent as ViewGroup).id, frag, "SUPPORT_FRAGMENT")
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .addToBackStack(null)
-                .commitAllowingStateLoss()
+        mActivity.onBackPressed()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {

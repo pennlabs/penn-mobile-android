@@ -69,18 +69,18 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
         logInOutButton = findPreference("pref_account_login_logout")
-        val pennkey = sp.getString(getString(R.string.pennkey), null)
-        if (pennkey != null) {
+        val pennKey = sp.getString(getString(R.string.pennkey), null)
+        if (pennKey != null) {
             logInOutButton?.title = "Log out"
         } else {
             logInOutButton?.title = "Log in"
         }
         logInOutButton?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            if (pennkey != null) {
+            if (pennKey != null) {
                 val dialog = AlertDialog.Builder(context).create()
                 dialog.setTitle("Log out")
                 dialog.setMessage("Are you sure you want to log out?")
-                dialog.setButton("Logout") { dialog, which ->
+                dialog.setButton("Logout") { dialog, _ ->
                     CookieManager.getInstance().removeAllCookie()
                     editor.remove(getString(R.string.penn_password))
                     editor.remove(getString(R.string.penn_user))
@@ -91,11 +91,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     editor.remove(getString(R.string.accountID))
                     editor.remove(getString(R.string.access_token))
                     editor.remove(getString(R.string.guest_mode))
+                    editor.remove(getString(R.string.campus_express_token))
+                    editor.remove(getString(R.string.campus_token_expires_in))
                     editor.apply()
                     dialog.cancel()
                     mActivity.startLoginFragment()
                 }
-                dialog.setButton2("Cancel") { dialog, which -> dialog.cancel() }
+                dialog.setButton2("Cancel") { dialog, _ -> dialog.cancel() }
                 dialog.show()
             } else {
                 mActivity.startLoginFragment()
@@ -109,7 +111,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         mActivity.removeTabs()
         mActivity.setTitle(R.string.action_settings)
         if (Build.VERSION.SDK_INT > 17) {
-            mActivity.setSelectedTab(MainActivity.SETTINGS)
+            mActivity.setSelectedTab(MainActivity.MORE)
         }
     }
 }

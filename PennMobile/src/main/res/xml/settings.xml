@@ -1,0 +1,93 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:scrollbars="none">
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="Account">
+        <Preference
+            android:id="@+id/pref_account_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:key="pref_account_edit"
+            android:summary="Modify your name and email"
+            android:title="Edit your profile"
+            app:iconSpaceReserved="false" />
+        <Preference
+            android:id="@+id/pref_account_login_logout"
+            android:key="pref_account_login_logout"
+            android:title="Log In"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="Features">
+
+        <Preference
+            android:id="@+id/pref_news_feature"
+            app:icon="@drawable/ic_news_setting"
+            app:iconSpaceReserved="false"
+            app:key="pref_news_feature"
+            app:title="News" />
+
+        <Preference
+            android:id="@+id/pref_contact_feature"
+            android:hapticFeedbackEnabled="true"
+            app:icon="@drawable/ic_contacts_setting"
+            app:iconSpaceReserved="false"
+            app:key="pref_contacts_feature"
+            app:title="Penn Contacts" />
+
+        <Preference
+            android:id="@+id/pref_about_feature"
+            android:hapticFeedbackEnabled="true"
+            app:icon="@drawable/ic_about_setting"
+            app:iconSpaceReserved="false"
+            app:key="pref_about_feature"
+            app:title="About" />
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="Links">
+
+
+        <Preference
+            android:id="@+id/pref_labs_link"
+            app:iconSpaceReserved="false"
+            app:key="pref_labs_link"
+            app:title="Penn Labs" />
+
+        <Preference
+            android:id="@+id/pref_penn_link"
+            app:iconSpaceReserved="false"
+            app:key="pref_penn_link"
+            app:title="Penn Homepage" />
+        <Preference
+            android:id="@+id/pref_campus_express_link"
+            app:iconSpaceReserved="false"
+            app:key="pref_campus_express_link"
+            app:title="Campus express" />
+        <Preference
+            android:id="@+id/pref_canvas_link"
+            app:iconSpaceReserved="false"
+            app:key="pref_canvas_link"
+            app:title="Canvas" />
+        <Preference
+            android:id="@+id/pref_path_at_penn_link"
+            app:iconSpaceReserved="false"
+            app:key="pref_path_at_penn_link"
+            app:title="Path@Penn" />
+        <Preference
+            android:id="@+id/pref_penn_portal_link"
+            app:iconSpaceReserved="false"
+            app:key="pref_penn_portal_link"
+            app:title="Penn Portal" />
+
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

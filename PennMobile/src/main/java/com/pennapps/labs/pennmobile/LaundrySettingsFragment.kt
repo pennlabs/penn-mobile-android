@@ -9,13 +9,13 @@ import android.widget.Button
 import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.LaundrySettingsAdapter
-import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple
 import kotlinx.android.synthetic.main.fragment_laundry_settings.*
 import kotlinx.android.synthetic.main.fragment_laundry_settings.view.*
+import kotlinx.android.synthetic.main.include_main.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.no_results.*
 import java.util.ArrayList
@@ -24,7 +24,7 @@ import java.util.HashMap
 class LaundrySettingsFragment : Fragment() {
 
     private lateinit var mActivity: MainActivity
-    private lateinit var mLabs: Labs
+    private lateinit var mStudentLife: StudentLife
     private lateinit var mContext: Context
     internal var mHelpLayout: RelativeLayout? = null
 
@@ -35,11 +35,12 @@ class LaundrySettingsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mLabs = MainActivity.labsInstance
+        mStudentLife = MainActivity.studentLifeInstance
         mActivity = activity as MainActivity
         mContext = mActivity
         mActivity.closeKeyboard()
         setHasOptionsMenu(true)
+        mActivity.toolbar.visibility = View.VISIBLE
 
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "12")
@@ -77,7 +78,7 @@ class LaundrySettingsFragment : Fragment() {
     }
 
     private fun getHalls() {
-        mLabs.laundryRooms()
+        mStudentLife.laundryRooms()
                 .subscribe({ rooms ->
                     mActivity.runOnUiThread {
                         numRooms = rooms.size
@@ -135,6 +136,7 @@ class LaundrySettingsFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        mActivity.toolbar.visibility = View.GONE
         mActivity.onBackPressed()
         return true
     }
@@ -146,11 +148,11 @@ class LaundrySettingsFragment : Fragment() {
         if (Build.VERSION.SDK_INT > 17){
             mActivity.setSelectedTab(MainActivity.LAUNDRY)
         }
-        loadingPanel?.visibility = View.VISIBLE
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
+        mActivity.toolbar.visibility = View.GONE
         mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        super.onDestroyView()
     }
 }

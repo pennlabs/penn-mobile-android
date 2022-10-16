@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile
 import android.content.Context
 import android.graphics.Color
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +11,7 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.VenueInterval
 import kotlinx.android.synthetic.main.fragment_dining_info.view.*
@@ -25,13 +26,13 @@ class DiningInfoFragment : Fragment() {
     private lateinit var menuParent: RelativeLayout
     private var mDiningHall: DiningHall? = null
     private lateinit var mActivity: MainActivity
-    private lateinit var mLabs: Labs
+    private lateinit var mStudentLife: StudentLife
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mDiningHall = arguments?.getParcelable("DiningHall")
         mActivity = activity as MainActivity
-        mLabs = MainActivity.labsInstance
+        mStudentLife = MainActivity.studentLifeInstance
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -52,19 +53,30 @@ class DiningInfoFragment : Fragment() {
             val days = mDiningHall?.venue?.allHours()  ?: ArrayList()
             var vertical = ArrayList<TextView>()
             for (day in days) {
-                vertical = addDiningHour(day, vertical)
+                if (hasMeals(day)) {
+                    vertical = addDiningHour(day, vertical)
+                }
             }
         }
+    }
+
+    private fun hasMeals(day: VenueInterval): Boolean {
+        return day.meals.isNotEmpty();
     }
 
     private fun addDiningHour(day: VenueInterval, vertical: ArrayList<TextView>): ArrayList<TextView> {
         val textView = TextView(mActivity)
         val intervalFormatter = DateTimeFormat.forPattern("yyyy-MM-dd")
         val dateTime = intervalFormatter.parseDateTime(day.date)
-        val dateString = dateTime.dayOfWeek().asText + ", " + dateTime.monthOfYear().asString + "/" + dateTime.dayOfMonth().asShortText
+        val dateString = dateTime.dayOfWeek().asText + ", " + dateTime.monthOfYear().asShortText + " " + dateTime.dayOfMonth().asText
+
         textView.text = dateString
         textView.setTextAppearance(mActivity, R.style.DiningInfoDate)
         textView.setPadding(0, 40, 0, 0)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            textView.typeface = resources.getFont(R.font.gilroy_light)
+        }
+        textView.setTextColor(resources.getColor(R.color.color_primary_dark))
 
         if (vertical.isEmpty()) {
             textView.id = 0

@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import com.pennapps.labs.pennmobile.MainActivity;
 import com.pennapps.labs.pennmobile.R;
-import com.pennapps.labs.pennmobile.api.Labs;
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager;
+import com.pennapps.labs.pennmobile.api.StudentLife;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 
 import java.util.ArrayList;
@@ -40,8 +40,9 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
     private String s;
     private List<Switch> switches = new ArrayList<>();
     private int maxNumRooms = 3;
-    private Labs labs;
-    private String deviceID;
+    private StudentLife labs;
+    private String bearerToken;
+
 
     public LaundrySettingsAdapter(Context context, HashMap<String, List<LaundryRoomSimple>> laundryRooms, List<String> laundryHalls) {
         this.mContext = context;
@@ -50,9 +51,9 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
         sp = PreferenceManager.getDefaultSharedPreferences(mContext);
         s = mContext.getString(R.string.num_rooms_selected_pref);
         MainActivity mainActivity = (MainActivity) mContext;
-        deviceID = (new OAuth2NetworkManager(mainActivity)).getDeviceId();
+        bearerToken = "Bearer " + sp.getString(mainActivity.getString(R.string.access_token), "").toString();
 
-        labs = MainActivity.getLabsInstance();
+        labs = MainActivity.Companion.getStudentLifeInstance();
 
         // first time
         if (sp.getInt(s, -1) == -1) {
@@ -108,11 +109,11 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
             view = inflater.inflate(R.layout.laundry_settings_parent_item, null);
         }
 
-        TextView textView = (TextView) view.findViewById(R.id.laundry_building_name);
+        TextView textView = view.findViewById(R.id.laundry_building_name);
         textView.setText(laundryHallName);
-        ImageView imageView = (ImageView) view.findViewById(R.id.laundry_building_dropdown);
+        ImageView imageView = view.findViewById(R.id.laundry_building_dropdown);
 
-        final Switch buildingSwitch = (Switch) view.findViewById(R.id.laundry_building_favorite_switch);
+        final Switch buildingSwitch = view.findViewById(R.id.laundry_building_favorite_switch);
 
         // if there is only one laundry room in the building, don't have dropdown
         if (laundryRooms.get(laundryHallName).size() == 1) {
@@ -131,11 +132,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
 
             // max number of rooms
             if (sp.getInt(s, -1) >= maxNumRooms) {
-                if (!buildingSwitch.isChecked()) {
-                    buildingSwitch.setEnabled(false);
-                } else {
-                    buildingSwitch.setEnabled(true);
-                }
+                buildingSwitch.setEnabled(buildingSwitch.isChecked());
             }
 
             buildingSwitch.setOnClickListener(new View.OnClickListener() {
@@ -185,12 +182,12 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
             view = inflater.inflate(R.layout.laundry_settings_child_item, null);
         }
 
-        TextView textView = (TextView) view.findViewById(R.id.laundry_room_name);
+        TextView textView = view.findViewById(R.id.laundry_room_name);
         String name = laundryRoom.name;
         textView.setText(name);
 
 
-        final Switch favoriteSwitch = (Switch) view.findViewById(R.id.laundry_favorite_switch);
+        final Switch favoriteSwitch = view.findViewById(R.id.laundry_favorite_switch);
 
         // set the Switch to the correct on or off
         favoriteSwitch.setChecked(sp.getBoolean(Integer.toString(laundryRoom.id), false));
@@ -202,11 +199,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
 
         // max number of rooms
         if (sp.getInt(s, -1) >= maxNumRooms) {
-            if (!favoriteSwitch.isChecked()) {
-                favoriteSwitch.setEnabled(false);
-            } else {
-                favoriteSwitch.setEnabled(true);
-            }
+            favoriteSwitch.setEnabled(favoriteSwitch.isChecked());
         }
 
         favoriteSwitch.setOnClickListener(new View.OnClickListener() {
@@ -264,8 +257,8 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
     }
 
     private void getPreferencesData() {
-        labs = MainActivity.getLabsInstance();
-        labs.getLaundryPref(deviceID).subscribe(new Action1<List<Integer>>() {
+        labs = MainActivity.getStudentLifeInstance();
+        labs.getLaundryPref(bearerToken).subscribe(new Action1<List<Integer>>() {
             @Override
             public void call(List<Integer> integers) {
             }
@@ -288,7 +281,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
         String api_prepared_string = favoriteLaundryRooms.toString();
         api_prepared_string = api_prepared_string.substring(1, api_prepared_string.length() - 1);
 
-        labs.sendLaundryPref(deviceID, api_prepared_string, new ResponseCallback() {
+        labs.sendLaundryPref(bearerToken, api_prepared_string, new ResponseCallback() {
             @Override
             public void success(Response response) {
                 Log.i("Laundry", "Saved laundry preferences");
@@ -296,7 +289,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
 
             @Override
             public void failure(RetrofitError error) {
-                Log.e("Laundry", "Error saving laundry preferences: " + error);
+                Log.e("Laundry", "Error saving laundry preferences: " + error, error);
             }
         });
     }

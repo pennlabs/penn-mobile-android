@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.FragmentTransaction
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -15,12 +16,11 @@ import android.widget.Toast
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.MenuFragment
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.dining_list_item.view.*
 import rx.android.schedulers.AndroidSchedulers
-import rx.functions.Action1
 
 
 class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<DiningCardAdapter.ViewHolder>() {
@@ -33,7 +33,7 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
 
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
-    private lateinit var mLabs: Labs
+    private lateinit var mStudentLife: StudentLife
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var currentHall = favoriteHalls[position]
@@ -59,11 +59,12 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
 
         // Load the menu for each dining hall
         if (currentHall.isResidential) {
-            mLabs.daily_menu(currentHall.id)
+            mStudentLife.daily_menu(currentHall.id)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ newDiningHall ->
                         currentHall.sortMeals(newDiningHall.menus)
                     }, {
+                        Log.e("DiningCard", "Error loading menus", it)
                         Toast.makeText(mContext, "Error loading menus", Toast.LENGTH_SHORT).show()
                     })
         }
@@ -91,7 +92,7 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         mContext = parent.context
         mActivity = mContext as MainActivity
-        mLabs = MainActivity.labsInstance
+        mStudentLife = MainActivity.studentLifeInstance
 
         val view = LayoutInflater.from(parent.context).inflate(R.layout.dining_list_item, parent, false)
         view?.dining_progress?.visibility = GONE

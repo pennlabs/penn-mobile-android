@@ -8,7 +8,13 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:textColorSecondary">@color/color_toolbar_text</item>
-        <item name="android:fontFamily">@font/segoe_ui</item>
+        <item name="android:fontFamily">@font/sf_pro_display_regular</item>
+        <item name="android:windowBackground">@color/windowBackground</item>
+        <item name="android:colorEdgeEffect"
+              tools:targetApi="lollipop">@color/overScrollColor</item>
+        <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">true</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent</item>
     </style>
 
     <style name="DarkModeApi29" tools:targetApi="29">
@@ -21,7 +27,17 @@
     </style>
 
     <style name="AppTheme.Launcher">
-        <item name="android:windowBackground">@drawable/splash_page</item>
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+
+    <style name="Widget.AppTheme.Launcher.ListView" parent="android:Widget.ListView">
+        <item name="android:overScrollMode">never</item>
+        <item name="android:scrollbars">none</item>
+    </style>
+
+    <style name="Widget.AppTheme.Launcher.ScrollingView" parent="android:Widget.ScrollView">
+        <item name="android:overScrollMode">never</item>
+        <item name="android:scrollbars">none</item>
     </style>
 
     <style name="ReferenceTheme" parent="@style/PreferenceThemeOverlay">
@@ -105,7 +121,7 @@
     <style name="HallName">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">#13284B</item>
     </style>
 
     <style name="DiningStatusLabel">
@@ -122,9 +138,47 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:paddingTop">40dp</item>
+        <item name="android:paddingTop">38dp</item>
         <item name="android:textSize">17sp</item>
         <item name="android:layout_alignParentBottom">true</item>
+    </style>
+
+    <style name="tab_text" parent="@android:style/TextAppearance.Widget.TabWidget">
+        <item name="android:fontFamily">@font/gilroy_extra_bold</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="dining_insights_header">
+        <item name="android:textColor">#101E3B</item>
+        <item name="fontFamily">@font/gilroy_extra_bold</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="day_of_week">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#000000</item>
+        <item name="fontFamily">@font/gilroy_light</item>
+    </style>
+
+    <style name="average_spent">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">#000000</item>
+        <item name="fontFamily">@font/gilroy_bold</item>
+    </style>
+
+
+    <style name="dining_insights_body">
+        <item name="android:textColor">#000000</item>
+        <item name="fontFamily">@font/gilroy_light</item>
+        <item name="android:textSize">11sp</item>
+    </style>
+
+    <style name="dining_dollars_amount">
+        <item name="android:textColor">#BADFB8</item>
+        <item name="fontFamily">@font/gilroy_extra_bold</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="PCRBox">
@@ -170,4 +224,69 @@
         <attr name="more_icon_resource" format="integer"/>
     </declare-styleable>
 
+    <style name="fontBottomBar">
+        <item name="android:fontFamily">@font/sf_pro_display_medium</item>
+        <item name="android:textColor">@color/floating_bottom_bar_selected</item>
+    </style>
+    <style name="ExpandableBottomBar">
+        <item name="exb_backgroundColor">#FFF</item>
+        <item name="exb_backgroundCornerRadius">0dp</item>
+        <item name="exb_itemInactiveColor">#000</item>
+        <item name="exb_itemBackgroundCornerRadius">30dp</item>
+        <item name="exb_itemBackgroundOpacity">0.2</item>
+        <item name="exb_transitionDuration">100</item>
+        <item name="exb_item_vertical_margin">24dp</item>
+        <item name="exb_item_horizontal_margin">5dp</item>
+        <item name="exb_item_vertical_padding">10dp</item>
+        <item name="exb_item_horizontal_padding">15dp</item>
+    </style>
+
+    <style name="title_fragment">
+        <item name="android:textColor">#ff13284b</item>
+        <item name="fontFamily">@font/gilroy_extra_bold</item>
+        <item name="android:textSize">28sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="title_date">
+        <item name="android:textColor">#adadad</item>
+        <item name="fontFamily">@font/sf_pro_display_bold</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="profile_initials">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="fontFamily">@font/sf_pro_rounded_bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <style name="AppTheme.AppBarOverlay.Light" parent="ThemeOverlay.AppCompat.Light"/>
+
+    <color name="windowBackground">#FFFFFF</color>
+    <color name="overScrollColor">#9BAACC</color>
+
+    <style name="home_cell_subtitle">
+        <item name="android:textColor">#ADADAD</item>
+        <item name="fontFamily">@font/sf_pro_display_regular</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="home_cell_title">
+        <item name="android:textColor">#ff13284b</item>
+        <item name="fontFamily">@font/gilroy_extra_bold</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="internet_error_message">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/sf_pro_display_regular</item>
+        <item name="android:textSize">14sp</item>
+    </style>
 </resources>

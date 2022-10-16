@@ -13,7 +13,7 @@ import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
-import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult
 import kotlinx.android.synthetic.main.fragment_huntsman_gsrlogin.*
 import retrofit.Callback
@@ -27,19 +27,23 @@ class HuntsmanGSRLogin : Fragment() {
     private lateinit var gsrLocationCode: String
     private lateinit var startTime: String
     private lateinit var endTime: String
+    private lateinit var roomName: String
+    private var gid: Int = 0
 
-    private lateinit var mLabs: Labs
+    private lateinit var mStudentLife: StudentLife
     private lateinit var mActivity: MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mLabs = MainActivity.labsInstance
+        mStudentLife = MainActivity.studentLifeInstance
         mActivity = activity as MainActivity
         arguments?.let {arguments ->
             gsrID = arguments.getString("gsrID") ?: ""
             gsrLocationCode = arguments.getString("gsrLocationCode") ?: ""
             startTime = arguments.getString("startTime") ?: ""
             endTime = arguments.getString("endTime") ?: ""
+            gid = arguments.getInt("gid")
+            roomName = arguments.getString("roomName") ?: ""
         }
     }
 
@@ -52,11 +56,12 @@ class HuntsmanGSRLogin : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
         val sessionid = sp.getString(getString(R.string.huntsmanGSR_SessionID), "") ?: ""
+        val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "")
         // load Huntsman website if no sessionid
         if (sessionid == "") {
             loadWebpage()
         } else {
-            bookHuntsmanGSR(sessionid)
+            bookHuntsmanGSR(bearerToken, sessionid)
         }
     }
 
@@ -80,6 +85,7 @@ class HuntsmanGSRLogin : Fragment() {
                     // save sessionid in shared preferences
                     val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
                     val editor = sp.edit()
+                    val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "")
                     editor.putString(getString(R.string.huntsmanGSR_SessionID), sessionid)
                     editor.apply()
                     if (startTime.substring(9,13) == "2330") {
@@ -87,7 +93,7 @@ class HuntsmanGSRLogin : Fragment() {
                         var newEndTime = endTime.substring(0,7) + newDay + endTime.substring(8,endTime.length)
                         endTime = newEndTime
                     }
-                    bookHuntsmanGSR(sessionid)
+                    bookHuntsmanGSR(bearerToken, sessionid)
                 }
             }
         }
@@ -95,20 +101,15 @@ class HuntsmanGSRLogin : Fragment() {
     }
 
     // performs POST request and redirects user to GSR booking fragment
-    private fun bookHuntsmanGSR(sessionID : String) {
-        mLabs.bookGSR(
+    private fun bookHuntsmanGSR(bearerToken : String, sessionID : String) {
+        mStudentLife.bookGSR(
                 //Passing the values
-                sessionID,
-                Integer.parseInt(gsrLocationCode),
-                Integer.parseInt(gsrID),
+                bearerToken,
                 startTime,
                 endTime,
-                "firstname",
-                "lastname",
-                "email",
-                "Penn Mobile GSR",
-                "2158986533",
-                "2-3",
+                gid,
+                Integer.parseInt(gsrID),
+                roomName,
 
                 //Creating an anonymous callback
                 object : Callback<GSRBookingResult> {
@@ -156,13 +157,15 @@ class HuntsmanGSRLogin : Fragment() {
 
     companion object {
 
-        fun newInstance(gsrID: String, gsrLocationCode: String, startTime: String, endTime: String): HuntsmanGSRLogin {
+        fun newInstance(gsrID: String, gsrLocationCode: String, startTime: String, endTime: String, gid: Int, roomName: String): HuntsmanGSRLogin {
             val fragment = HuntsmanGSRLogin()
             val args = Bundle()
             args.putString("gsrID", gsrID)
             args.putString("gsrLocationCode", gsrLocationCode)
             args.putString("startTime", startTime)
             args.putString("endTime", endTime)
+            args.putInt("gid", gid)
+            args.putString("roomName", roomName)
             fragment.arguments = args
             return fragment
         }

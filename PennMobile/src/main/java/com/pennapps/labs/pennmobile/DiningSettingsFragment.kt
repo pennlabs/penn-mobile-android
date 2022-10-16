@@ -8,10 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pennapps.labs.pennmobile.adapters.DiningSettingsAdapter
-import com.pennapps.labs.pennmobile.api.Labs
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import kotlinx.android.synthetic.main.fragment_dining_preferences.*
+import kotlinx.android.synthetic.main.fragment_dining_preferences.view.*
+import kotlinx.android.synthetic.main.include_main.*
 import kotlinx.android.synthetic.main.fragment_dining_preferences.view.*
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
@@ -21,7 +23,7 @@ import java.util.*
 
 class DiningSettingsFragment : Fragment() {
     private lateinit var mActivity: MainActivity
-    private lateinit var mLabs: Labs
+    private lateinit var mStudentLife: StudentLife
     private lateinit var halls: List<DiningHall>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +31,9 @@ class DiningSettingsFragment : Fragment() {
         setHasOptionsMenu(true)
         mActivity = activity as MainActivity
         mActivity.title = "Select Favorites"
-        mLabs = MainActivity.labsInstance
+        mStudentLife = MainActivity.studentLifeInstance
+        mStudentLife = MainActivity.studentLifeInstance
+        mActivity.toolbar.visibility = View.VISIBLE
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -61,7 +65,7 @@ class DiningSettingsFragment : Fragment() {
 
     private fun getDiningHalls() {
         // Map each item in the list of venues to a Venue Observable, then map each Venue to a DiningHall Observable
-        mLabs.venues()
+        mStudentLife.venues()
                 .flatMap { venues -> Observable.from(venues) }
                 .flatMap { venue ->
                     val hall = DiningFragment.createHall(venue)
@@ -81,7 +85,7 @@ class DiningSettingsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        mActivity.toolbar.visibility = View.GONE
     }
 
     private fun saveDiningPreferences() {
@@ -97,8 +101,8 @@ class DiningSettingsFragment : Fragment() {
         //preferences must be in the form of 1,2,3 (exclude brackets)
         var apiPreparedString = favoriteDiningHalls.toString()
         apiPreparedString = apiPreparedString.substring(1, apiPreparedString.length - 1)
-
-        mLabs.sendDiningPref(OAuth2NetworkManager(mActivity).getDeviceId(), apiPreparedString,
+        val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
+        mStudentLife.sendDiningPref(bearerToken, apiPreparedString,
                 object : ResponseCallback() {
             override fun success(response: Response) {
                 mActivity.onBackPressed()
