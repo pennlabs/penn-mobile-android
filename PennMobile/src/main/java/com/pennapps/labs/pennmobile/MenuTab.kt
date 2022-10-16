@@ -3,11 +3,9 @@ package com.pennapps.labs.pennmobile
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ExpandableListView
-import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import com.pennapps.labs.pennmobile.adapters.MenuAdapter
 import kotlinx.android.synthetic.main.fragment_menu_tab.view.*
