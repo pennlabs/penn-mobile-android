@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile.api
 
-import com.pennapps.labs.pennmobile.classes.AccessTokenResponse
 import com.pennapps.labs.pennmobile.classes.CampusExpressAccessTokenResponse
 import com.pennapps.labs.pennmobile.classes.DiningBalances
 import com.pennapps.labs.pennmobile.classes.GetUserResponse

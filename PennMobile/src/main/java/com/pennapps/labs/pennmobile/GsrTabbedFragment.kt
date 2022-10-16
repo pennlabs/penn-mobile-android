@@ -2,7 +2,6 @@ package com.pennapps.labs.pennmobile
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import com.google.android.material.tabs.TabLayout
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
@@ -12,15 +11,12 @@ import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.utils.Utils
-import kotlinx.android.synthetic.main.fragment_dining.*
-import kotlinx.android.synthetic.main.fragment_dining.view.*
 import androidx.annotation.RequiresApi
 import kotlinx.android.synthetic.main.fragment_gsr_tabs.*
 import kotlinx.android.synthetic.main.fragment_gsr_tabs.view.*
 import kotlinx.android.synthetic.main.fragment_gsr_tabs.view.appbar_home
 import kotlinx.android.synthetic.main.fragment_gsr_tabs.view.date_view
 import kotlinx.android.synthetic.main.include_main.*
-import kotlinx.android.synthetic.main.fragment_dining_holder.view.title_view as title_view1
 
 class GsrTabbedFragment : Fragment() {
 
