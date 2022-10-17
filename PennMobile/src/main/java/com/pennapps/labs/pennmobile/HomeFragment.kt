@@ -235,14 +235,14 @@ class HomeFragment : Fragment() {
                     var postCell = HomeCell()
                     postCell.info = HomeCellInfo()
                     /*PROBLEMS
-                    1. Had to change all the below to var in HomeCellInfo.kt
+                    1. Had to change all the below to var in HomeCellInfo.kt (rel to 4)
                     2. Background is not cool like the DP posts
                     3. Timestamp manipulation to show mm/dd - mm/dd
                     4. Need to refactor code so it looks like the other cells
                     */postCell.info?.title = post[0].title
                     postCell.info?.subtitle = post[0].subtitle
                     postCell.info?.imageUrl = post[0].image_url
-                    postCell.info?.postUrl = post[0].post_url //broken
+                    postCell.info?.postUrl = post[0].post_url
 
                     postCell.type = "post"
                     homepageCells.set(1, postCell)
@@ -255,11 +255,7 @@ class HomeFragment : Fragment() {
                 mActivity.runOnUiThread {
                     Log.e("Home", "Could not load posts", throwable)
                     throwable.printStackTrace()
-                    Toast.makeText(mActivity, "Could not load home posts", Toast.LENGTH_LONG).show()
                     loadingPanel?.visibility = View.GONE
-                    internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-                    internetConnection_message?.text = getString(R.string.internet_error)
-                    internetConnectionHome?.visibility = View.VISIBLE
                     home_refresh_layout?.isRefreshing = false
                 }
 

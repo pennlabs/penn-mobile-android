@@ -356,6 +356,8 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
 
         Picasso.get().load(info?.imageUrl).fit().centerCrop().into(holder.itemView.home_post_iv)
 
+
+
         holder.itemView.home_post_card.setOnClickListener {
 
             val url = info?.postUrl
