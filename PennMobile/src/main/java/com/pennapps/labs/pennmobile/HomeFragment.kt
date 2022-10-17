@@ -229,6 +229,15 @@ class HomeFragment : Fragment() {
                 }
             })
 
+            studentLife.validPostsList(bearerToken).subscribe ({ posts ->
+                Log.d("HOME TAG", "getHomePage: $posts") //[]
+
+            }, {throwable ->
+                Log.e("Home", "Could not load posts", throwable)
+                throwable.printStackTrace()
+
+            })
+
             /*studentLife.getHomePage(bearerToken).subscribe({ cells ->
                 mActivity.runOnUiThread {
                     val gsrBookingCell = HomeCell()
