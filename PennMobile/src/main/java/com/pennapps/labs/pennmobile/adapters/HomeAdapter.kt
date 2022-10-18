@@ -42,6 +42,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import rx.Observable
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class HomeAdapter(private var cells: ArrayList<HomeCell>) :
@@ -349,18 +351,24 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
 
     private fun bindPostCell(holder: ViewHolder, cell: HomeCell) {
         val info = cell.info
-        holder.itemView.home_post_title.text = info?.title
-        holder.itemView.home_post_subtitle.text = info?.subtitle
-        holder.itemView.home_post_source.text = info?.source
-        holder.itemView.home_post_timestamp.text = info?.timeLabel
+        val post = cell.info?.post
+        Log.d("Poster bind", "bindPostCell: $info")
+        holder.itemView.home_post_title.text = post?.title
+        holder.itemView.home_post_subtitle.text = post?.subtitle
+        holder.itemView.home_post_source.text = post?.clubCode?.capitalize()
+        val time = post?.startDate?.substring(5, 7) + " / " +
+                post?.startDate?.substring(8, 10) + " - " +
+                post?.expireDate?.substring(5, 7) + " / " +
+                post?.expireDate?.substring(8, 10)
 
-        Picasso.get().load(info?.imageUrl).fit().centerCrop().into(holder.itemView.home_post_iv)
+        holder.itemView.home_post_timestamp.text = time
+        Picasso.get().load(post?.imageUrl).fit().centerCrop().into(holder.itemView.home_post_iv)
 
 
 
         holder.itemView.home_post_card.setOnClickListener {
 
-            val url = info?.postUrl
+            val url = post?.postUrl
 
             val connection = NewsCustomTabsServiceConnection()
             builder = CustomTabsIntent.Builder()

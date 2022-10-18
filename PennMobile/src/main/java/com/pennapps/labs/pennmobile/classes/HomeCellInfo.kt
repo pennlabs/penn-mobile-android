@@ -68,14 +68,17 @@ class HomeCellInfo {
     //  (1) A time label cannot exist without a source label
     //  (2) An image cannot be accompanied with only a source label
     //  (3) A subtitle cannot exist without a title
-
     @SerializedName("time_label")
-    var timeLabel: String? = null
+    var post: Post? = null
+    @SerializedName("time_label")
+    val timeLabel: String? = null
     @SerializedName("post_url")
-    var postUrl: String? = null
+    val postUrl: String? = null
     @SerializedName("post_id")
-    var postId: Int? = null
+    val postId: Int? = null
     @SerializedName("test")
-    var isTest: Boolean? = null
+    val isTest: Boolean? = null
+
+
 
 }

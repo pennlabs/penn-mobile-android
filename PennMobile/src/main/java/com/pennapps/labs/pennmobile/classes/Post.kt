@@ -14,7 +14,7 @@ class Post {
 
     @SerializedName("club_code")
     @Expose
-    internal val club_code : String? = ""
+    internal val clubCode : String? = ""
 
     @SerializedName("title")
     @Expose
@@ -26,23 +26,23 @@ class Post {
 
     @SerializedName("post_url")
     @Expose
-    internal val post_url : String? = ""
+    internal val postUrl : String? = ""
 
     @SerializedName("image_url")
     @Expose
-    internal val image_url : String? = ""
+    internal val imageUrl : String? = ""
 
     @SerializedName("created_date")
     @Expose
-    internal val created_date : String? = ""
+    internal val createdDate : String? = ""
 
     @SerializedName("start_date")
     @Expose
-    internal val start_date : String? = ""
+    internal val startDate : String? = ""
 
     @SerializedName("expire_date")
     @Expose
-    internal val expire_date : String? = ""
+    internal val expireDate : String? = ""
 
 
     @SerializedName("club_comment")
@@ -63,7 +63,7 @@ class Post {
 
     override fun toString(): String {
         return id.toString() + ", " +
-                club_code + ""
+                clubCode + ""
     }
 
     fun getResults(): Any {

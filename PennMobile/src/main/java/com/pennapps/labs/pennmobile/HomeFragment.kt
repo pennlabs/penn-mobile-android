@@ -231,25 +231,22 @@ class HomeFragment : Fragment() {
 
             studentLife.validPostsList(bearerToken).subscribe ({ post ->
                 Log.d("HOME TAG", "getHomePage: $post") //[]
+                //if (post.size >= 1) {
                 mActivity.runOnUiThread {
                     var postCell = HomeCell()
                     postCell.info = HomeCellInfo()
                     /*PROBLEMS
-                    1. Had to change all the below to var in HomeCellInfo.kt (rel to 4)
-                    2. Background is not cool like the DP posts
-                    3. Timestamp manipulation to show mm/dd - mm/dd
-                    4. Need to refactor code so it looks like the other cells
-                    */postCell.info?.title = post[0].title
-                    postCell.info?.subtitle = post[0].subtitle
-                    postCell.info?.imageUrl = post[0].image_url
-                    postCell.info?.postUrl = post[0].post_url
 
+                2. Background is not cool like the DP post
+*/
                     postCell.type = "post"
+                    postCell.info?.post = post[0]
                     homepageCells.set(1, postCell)
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
                     home_refresh_layout?.isRefreshing = false
-                }
+                    }
+                //}
 
             }, {throwable ->
                 mActivity.runOnUiThread {
