@@ -5,6 +5,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -43,7 +44,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import rx.Observable
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class HomeAdapter(private var cells: ArrayList<HomeCell>) :
@@ -355,7 +355,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         Log.d("Poster bind", "bindPostCell: $info")
         holder.itemView.home_post_title.text = post?.title
         holder.itemView.home_post_subtitle.text = post?.subtitle
-        holder.itemView.home_post_source.text = post?.clubCode?.capitalize()
+        holder.itemView.home_post_source.text = "Penn Labs" //post?.clubCode?.capitalize()
         val time = post?.startDate?.substring(5, 7) + " / " +
                 post?.startDate?.substring(8, 10) + " - " +
                 post?.expireDate?.substring(5, 7) + " / " +
@@ -364,6 +364,30 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         holder.itemView.home_post_timestamp.text = time
         Picasso.get().load(post?.imageUrl).fit().centerCrop().into(holder.itemView.home_post_iv)
 
+
+        /** Adds dynamically generated accent color from the fetched image to the news card*/
+        Log.d("TAGGITO", "bindPostCell: accentcolor")
+        GlobalScope.launch(Dispatchers.Default) {
+            val bitmap = Picasso.get().load(post?.imageUrl).get()
+            // Create palette from bitmap
+            fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
+            val vibrantSwatch: Palette.Swatch? = createPaletteSync(bitmap).lightVibrantSwatch
+            mActivity.runOnUiThread {
+                // Change all the components to match the accent color palette
+                Log.d("TAGGITO4", "bindPostCell: on main thread")
+                vibrantSwatch?.titleTextColor?.let {
+
+                    holder.itemView.home_post_title.setTextColor(it)
+                    holder.itemView.home_post_subtitle.setTextColor(it)
+                    holder.itemView.home_post_timestamp.setTextColor(it)
+                    holder.itemView.home_post_source.setTextColor(it)
+                }
+                vibrantSwatch?.rgb?.let {
+                    holder.itemView.home_post_card.background.setTint(it)
+                }
+
+            }
+        }
 
 
         holder.itemView.home_post_card.setOnClickListener {
@@ -434,5 +458,30 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         val resolveInfos = this.packageManager.queryIntentServices(serviceIntent, 0)
         return resolveInfos.isNotEmpty()
     }
+
+    /*private fun averageColor(bitmap : Bitmap): Color {
+        var redBucket: Long = 0
+        var greenBucket: Long = 0
+        var blueBucket: Long = 0
+        var pixelCount: Long = 0
+
+        for (y in 0 until bitmap.height) {
+            for (x in 0 until bitmap.width) {
+                val c: Color = bitmap.getPixel(x, y)
+                pixelCount++
+                redBucket += Color.red(c)
+                greenBucket += Color.green(c)
+                blueBucket += Color.blue(c)
+                // does alpha matter?
+            }
+        }
+
+        val averageColor: Color = Color(
+            redBucket as Float / pixelCount,
+            greenBucket as Float / pixelCount,
+            blueBucket as Float / pixelCount
+        )
+
+    }*/
 
 }
