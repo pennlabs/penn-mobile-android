@@ -231,22 +231,18 @@ class HomeFragment : Fragment() {
 
             studentLife.validPostsList(bearerToken).subscribe ({ post ->
                 Log.d("HOME TAG", "getHomePage: $post") //[]
-                //if (post.size >= 1) {
-                mActivity.runOnUiThread {
-                    var postCell = HomeCell()
-                    postCell.info = HomeCellInfo()
-                    /*PROBLEMS
-
-                2. Background is not cool like the DP post
-*/
-                    postCell.type = "post"
-                    postCell.info?.post = post[0]
-                    homepageCells.set(1, postCell)
-                    home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
-                    loadingPanel?.visibility = View.GONE
-                    home_refresh_layout?.isRefreshing = false
+                if (post.size >= 1) { //there exists a post
+                    mActivity.runOnUiThread {
+                        var postCell = HomeCell()
+                        postCell.info = HomeCellInfo()
+                        postCell.type = "post"
+                        postCell.info?.post = post[0]
+                        homepageCells.set(1, postCell)
+                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                        loadingPanel?.visibility = View.GONE
+                        home_refresh_layout?.isRefreshing = false
                     }
-                //}
+                }
 
             }, {throwable ->
                 mActivity.runOnUiThread {
