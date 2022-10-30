@@ -130,7 +130,8 @@ class MainActivity : AppCompatActivity() {
                 "Home" -> if (fragmentManager.backStackEntryCount > 0) {
                     fragment = HomeFragment()
                 }
-                "Dining" -> fragment = DiningHolderFragment()
+//                "Dining" -> fragment = DiningHolderFragment()
+                "Dining" -> fragment = PennCourseAlertHolderFragment()
                 "GSR" -> fragment = GsrTabbedFragment()
                 "Laundry" -> fragment = LaundryFragment()
                 "More" -> fragment = MoreFragment()
@@ -154,6 +155,7 @@ class MainActivity : AppCompatActivity() {
 
     fun startHomeFragment() {
         OAuth2NetworkManager(this).getAccessToken()
+
         val fragment: Fragment = HomeFragment()
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)

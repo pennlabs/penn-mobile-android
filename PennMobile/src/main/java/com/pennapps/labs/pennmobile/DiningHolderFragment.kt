@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.fragment_dining.view.*
 import kotlinx.android.synthetic.main.fragment_dining_holder.*
 import kotlinx.android.synthetic.main.fragment_dining_holder.view.*
 
+
 class DiningHolderFragment : Fragment() {
 
     lateinit var pagerAdapter: DiningPagerAdapter
@@ -90,4 +91,6 @@ class DiningHolderFragment : Fragment() {
     private fun setTitle(title: CharSequence) {
         title_view.text = title
     }
+
+
 }
