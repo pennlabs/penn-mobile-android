@@ -202,5 +202,10 @@
     </plurals>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="pca_description">Get alerted when a course opens up!</string>
+    <string name="pca_title">Penn Course Alert</string>
+    <string name="pca_course">Course</string>
+    <string name="pca_phone_number">Phone Number</string>
+    <string name="pca_submit_button">Alert Me!</string>
 
 </resources>
