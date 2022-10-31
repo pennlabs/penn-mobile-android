@@ -32,11 +32,12 @@ interface CampusExpress {
     fun getCurrentDiningBalances(
         @Header("x-authorization") bearerToken: String?) : Observable<DiningBalances>
 
-    @FormUrlEncoded
-    @POST("/accounts/introspect/")
-    fun getUser(
-        @Header("Authorization") authorizationHeader: String?,
-        @Field("token") token: String?,
-        callback: Callback<GetUserResponse?>?
-    )
+    @GET("/dining/pastBalances")
+    fun getPastDiningBalances(
+        @Header("x-authorization") bearerToken: String?,
+        @Query("start_date") startDate: String?,
+        @Query("end_date") endDate: String?
+    ) : Observable<DiningBalancesList>
+
+
 }
