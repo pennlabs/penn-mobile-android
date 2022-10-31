@@ -2,13 +2,10 @@ package com.pennapps.labs.pennmobile.api
 
 import com.pennapps.labs.pennmobile.classes.CampusExpressAccessTokenResponse
 import com.pennapps.labs.pennmobile.classes.DiningBalances
-import com.pennapps.labs.pennmobile.classes.GetUserResponse
+import com.pennapps.labs.pennmobile.classes.DiningBalancesList
 import retrofit.Callback
-import retrofit.http.Field
-import retrofit.http.FormUrlEncoded
 import retrofit.http.Header
 import retrofit.http.GET
-import retrofit.http.POST
 import retrofit.http.Query
 import rx.Observable
 
