@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/dining_balance"
+        android:id="@+id/predictions_title"
         android:layout_width="0dp"
         android:layout_height="20dp"
         android:layout_alignParentStart="true"
@@ -15,12 +15,12 @@
         android:layout_marginTop="16dp"
         android:gravity="top"
         android:text="@string/dining_balance"
-        android:textAppearance="@style/dining_insights_header"
+        style="@style/dining_insights_header"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
-        android:id="@+id/dining_dollars_box"
+        android:id="@+id/dining_predictions_box"
         android:layout_width="100dp"
         android:layout_height="60dp"
         android:layout_alignParentStart="true"
@@ -31,7 +31,7 @@
         android:layout_marginTop="4dp"
         android:background="@drawable/dining_insights_rectangle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dining_balance" />
+        app:layout_constraintTop_toBottomOf="@+id/predictions_title" />
 
     <TextView
         android:id="@+id/dining_dollars"
@@ -42,8 +42,8 @@
         android:gravity="top"
         android:text="@string/dining_dollars"
         android:textAppearance="@style/dining_insights_body"
-        app:layout_constraintStart_toStartOf="@+id/dining_dollars_box"
-        app:layout_constraintTop_toBottomOf="@+id/dining_balance" />
+        app:layout_constraintStart_toStartOf="@+id/dining_predictions_box"
+        app:layout_constraintTop_toBottomOf="@+id/predictions_title" />
 
     <TextView
         android:id="@+id/dining_dollars_amount"
@@ -54,9 +54,9 @@
         android:text="$0.00"
         android:textAppearance="@style/dining_dollars_amount"
         android:textColor="#BADFB8"
-        app:layout_constraintEnd_toEndOf="@+id/dining_dollars_box"
-        app:layout_constraintStart_toEndOf="@+id/dining_dollars_box"
-        app:layout_constraintStart_toStartOf="@+id/dining_dollars_box"
+        app:layout_constraintEnd_toEndOf="@+id/dining_predictions_box"
+        app:layout_constraintStart_toEndOf="@+id/dining_predictions_box"
+        app:layout_constraintStart_toStartOf="@+id/dining_predictions_box"
         app:layout_constraintTop_toBottomOf="@+id/dining_dollars" />
 
     <View
@@ -66,8 +66,8 @@
         android:layout_marginTop="42dp"
         android:layout_marginEnd="4dp"
         android:background="@drawable/dining_insights_circle"
-        app:layout_constraintEnd_toEndOf="@+id/dining_dollars_box"
-        app:layout_constraintTop_toTopOf="@+id/dining_dollars_box" />
+        app:layout_constraintEnd_toEndOf="@+id/dining_predictions_box"
+        app:layout_constraintTop_toTopOf="@+id/dining_predictions_box" />
 
     <TextView
         android:id="@+id/money"
@@ -92,8 +92,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
         android:background="@drawable/dining_insights_rectangle"
-        app:layout_constraintStart_toEndOf="@+id/dining_dollars_box"
-        app:layout_constraintTop_toBottomOf="@+id/dining_balance" />
+        app:layout_constraintStart_toEndOf="@+id/dining_predictions_box"
+        app:layout_constraintTop_toBottomOf="@+id/predictions_title" />
 
     <TextView
         android:id="@+id/swipes"
@@ -105,7 +105,7 @@
         android:text="@string/dining_swipes"
         android:textAppearance="@style/dining_insights_body"
         app:layout_constraintStart_toStartOf="@+id/swipes_box"
-        app:layout_constraintTop_toBottomOf="@+id/dining_balance" />
+        app:layout_constraintTop_toBottomOf="@+id/predictions_title" />
 
     <TextView
         android:id="@+id/swipes_amount"
@@ -155,7 +155,7 @@
         android:background="@drawable/dining_insights_rectangle"
         android:layout_marginTop="4dp"
         app:layout_constraintStart_toEndOf="@+id/swipes_box"
-        app:layout_constraintTop_toBottomOf="@+id/dining_balance" />
+        app:layout_constraintTop_toBottomOf="@+id/predictions_title" />
 
     <TextView
         android:id="@+id/guest_swipes"
@@ -167,7 +167,7 @@
         android:text="@string/dining_guest_swipes"
         android:textAppearance="@style/dining_insights_body"
         app:layout_constraintStart_toStartOf="@+id/guest_swipes_box"
-        app:layout_constraintTop_toBottomOf="@+id/dining_balance" />
+        app:layout_constraintTop_toBottomOf="@+id/predictions_title" />
 
     <TextView
         android:id="@+id/guest_swipes_amount"
