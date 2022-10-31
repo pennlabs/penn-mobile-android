@@ -22,7 +22,6 @@ import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.RequestListener
 import com.pennapps.labs.pennmobile.adapters.AboutAdapter
 import kotlinx.android.synthetic.main.fragment_about.view.*
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.include_main.*
 
 class AboutFragment : Fragment() {
@@ -60,8 +59,8 @@ class AboutFragment : Fragment() {
 
         view.our_team_rv?.layoutManager = GridLayoutManager(context, 3)
         view.alumni_rv?.layoutManager = GridLayoutManager(context, 3)
-        val members = arrayListOf("Rohan Chhaya", "Anna Jiang", "Julius Snipes",
-            "Zhiyan Lu", "Belinda Xi","Vishesh Patel", "Ali Krema", "Jenny Li", "Sruthi Kurada")
+        val members = arrayListOf("Rohan Chhaya", "Anna Jiang", "Julius Snipes", "Zhiyan Lu",
+            "Belinda Xi", "Vishesh Patel", "Ali Krema", "Jenny Li", "Sruthi Kurada", "Charis Gao")
         val alumni = arrayListOf("Marta García Ferreiro", "Varun Ramakrishnan", "Sahit Penmatcha",
             "Anna Wang", "Sophia Ye", "Awad Irfan", "Liz Powell", "Davies Lumumba")
         view.our_team_rv?.adapter = AboutAdapter(members)

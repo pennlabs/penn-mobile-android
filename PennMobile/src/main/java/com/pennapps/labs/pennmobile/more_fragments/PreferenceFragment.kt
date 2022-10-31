@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile.more
+package com.pennapps.labs.pennmobile.more_fragments
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -15,8 +15,6 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.*
 import com.pennapps.labs.pennmobile.components.dialog.CustomAlertDialogue
-import kotlinx.android.synthetic.main.fragment_more.*
-import kotlinx.android.synthetic.main.home_news_card.view.*
 import kotlinx.android.synthetic.main.include_main.*
 import java.util.*
 
@@ -133,9 +131,9 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             return@setOnPreferenceClickListener true
         }
 
-        val pennInTouchPref: Preference? = findPreference("pref_penn_in_touch_link")
-        pennInTouchPref?.setOnPreferenceClickListener {
-            openLink(PennInTouch)
+        val pathAtPennPref: Preference? = findPreference("pref_path_at_penn_link")
+        pathAtPennPref?.setOnPreferenceClickListener {
+            openLink(PathAtPenn)
             return@setOnPreferenceClickListener true
         }
 
@@ -226,7 +224,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
         private const val PennHomepage = "https://www.upenn.edu"
         private const val CampusExpress = "https://prod.campusexpress.upenn.edu"
         private const val Canvas = "https://canvas.upenn.edu"
-        private const val PennInTouch = "https://pennintouch.apps.upenn.edu"
+        private const val PathAtPenn = "https://path.at.upenn.edu/"
         private const val PennPortal = "https://portal.apps.upenn.edu/penn_portal"
     }
 }

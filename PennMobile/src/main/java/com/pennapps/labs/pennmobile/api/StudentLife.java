@@ -12,7 +12,6 @@ import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.GSRReservation;
 import com.pennapps.labs.pennmobile.classes.Gym;
 import com.pennapps.labs.pennmobile.classes.HomeCell;
-import com.pennapps.labs.pennmobile.classes.HomeCellInfo;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
@@ -42,6 +41,10 @@ public interface StudentLife {
 
     @GET("/dining/venues")
     Observable<List<Venue>> venues();
+
+    @GET("/dining/menus/{day}")
+    Observable<List<DiningHall.Menu>> getMenus(
+            @Path("day") String day);
 
     @GET("/dining/weekly_menu/{id}")
     Observable<DiningHall> daily_menu(

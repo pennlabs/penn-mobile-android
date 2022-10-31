@@ -24,7 +24,7 @@ open class DiningHall : Parcelable {
 
 
     @SerializedName("tblDayPart")
-    var menus: List<Menu> = ArrayList()
+    var menus: MutableList<Menu> = ArrayList()
 
     constructor(id: Int, name: String?, residential: Boolean, hours: HashMap<String, Interval>, venue: Venue?, image: Int) {
         this.id = id
@@ -43,13 +43,13 @@ open class DiningHall : Parcelable {
         menus = ArrayList()
         // Use application class loader instead of framework class loader because Menu is a custom class
         `in`.readMap(openHours as Map<*, *>, javaClass.classLoader)
-        `in`.readList(menus, javaClass.classLoader)
+        (menus as List<*>?)?.let { `in`.readList(it, javaClass.classLoader) }
         id = `in`.readInt()
         name = `in`.readString()
         image = `in`.readInt()
     }
 
-    fun sortMeals(menus: List<Menu>) {
+    fun sortMeals(menus: MutableList<Menu>) {
         this.menus = menus
         val mealOrder = listOf("Breakfast", "Brunch", "Lunch", "Dinner", "Express")
         val comparator = Comparator { lhs: Menu, rhs: Menu -> mealOrder.indexOf(lhs.name) - mealOrder.indexOf(rhs.name) }
@@ -63,7 +63,7 @@ open class DiningHall : Parcelable {
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeBooleanArray(booleanArrayOf(isResidential))
         dest.writeMap(openHours as Map<*, *>?)
-        dest.writeList(menus)
+        dest.writeList(menus as List<*>?)
         dest.writeInt(id)
         dest.writeString(name)
         dest.writeInt(image)
@@ -160,11 +160,15 @@ open class DiningHall : Parcelable {
      * Class for a single menu, ie. Lunch, Dinner
      */
     open class Menu protected constructor(`in`: Parcel) : Parcelable {
-        @SerializedName("txtDayPartDescription")
+        @SerializedName("service")
         var name: String = `in`.readString() ?: ""
 
-        @SerializedName("tblStation")
+        @SerializedName("stations")
         var stations: List<DiningStation> = ArrayList()
+
+        @SerializedName("venue")
+        var venue: DiningVenue? = null
+
         override fun describeContents(): Int {
             return 0
         }
@@ -187,15 +191,20 @@ open class DiningHall : Parcelable {
 
     }
 
+    class DiningVenue {
+        @SerializedName("venue_id")
+        var venue_id: Int = -1
+    }
+
     /**
      * Created by Adel on 12/18/14.
      * Class for a station at a dining hall
      */
     class DiningStation {
-        @SerializedName("txtStationDescription")
+        @SerializedName("name")
         var name: String = ""
 
-        @SerializedName("tblItem")
+        @SerializedName("items")
         var items: List<FoodItem> = ArrayList()
     }
 
@@ -204,10 +213,10 @@ open class DiningHall : Parcelable {
      * Class for Food items in Dining menus
      */
     class FoodItem {
-        @SerializedName("txtTitle")
+        @SerializedName("name")
         var title: String? = null
 
-        @SerializedName("txtDescription")
+        @SerializedName("description")
         var description: String? = null
     }
 
