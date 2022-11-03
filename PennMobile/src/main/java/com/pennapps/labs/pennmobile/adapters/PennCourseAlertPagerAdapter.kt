@@ -1,11 +1,9 @@
 package com.pennapps.labs.pennmobile.adapters
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.pennapps.labs.pennmobile.PennCourseAlertCreateAlert
-import com.pennapps.labs.pennmobile.PennCourseAlertManageAlerts
+import com.pennapps.labs.pennmobile.PennCourseAlertCreateAlertFragment
+import com.pennapps.labs.pennmobile.PennCourseAlertManageAlertsFragment
 
 class PennCourseAlertPagerAdapter(fragment: Fragment): FragmentStateAdapter(fragment) {
     override fun getItemCount(): Int {
@@ -14,9 +12,9 @@ class PennCourseAlertPagerAdapter(fragment: Fragment): FragmentStateAdapter(frag
 
     override fun createFragment(position: Int): Fragment {
         return if (position == CREATE_ALERT_POSITION) {
-            PennCourseAlertCreateAlert()
+            PennCourseAlertCreateAlertFragment()
         } else {
-            PennCourseAlertManageAlerts()
+            PennCourseAlertManageAlertsFragment()
         }
     }
 

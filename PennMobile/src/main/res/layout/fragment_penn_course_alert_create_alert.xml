@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="@string/pca_notify_when_closed">
+    android:layout_height="match_parent">
 
     <!-- TODO: Update blank fragment layout -->
     <!--    <TextView-->
@@ -26,7 +25,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/pcaTitle"
+        android:id="@+id/pca_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/pca_title"
@@ -37,7 +36,7 @@
         app:layout_constraintTop_toTopOf="@+id/imageView2" />
 
     <TextView
-        android:id="@+id/pcaDescription"
+        android:id="@+id/pca_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -46,34 +45,36 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
-    <EditText
-        android:id="@+id/editTextPcaCourse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <TextView
+        android:id="@+id/pca_course_spinner"
+        android:layout_width="215dp"
+        android:layout_height="33dp"
         android:layout_marginTop="20dp"
-        android:ems="10"
+        android:background="@android:drawable/editbox_background"
         android:hint="@string/pca_course"
-        android:inputType="textPersonName"
+        app:drawableEndCompat="@drawable/ic_baseline_arrow_drop_down_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pcaDescription" />
+        app:layout_constraintTop_toBottomOf="@+id/pca_description" />
 
     <EditText
-        android:id="@+id/editTextPcaEmail"
+        android:id="@+id/pca_email_edit_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:background="@android:drawable/editbox_background"
         android:ems="10"
         android:hint="@string/email_address"
         android:inputType="textEmailAddress"
+        android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPcaCourse" />
+        app:layout_constraintTop_toBottomOf="@+id/pca_course_spinner" />
 
     <EditText
-        android:id="@+id/editTextPhone"
+        android:id="@+id/pca_phone_edit_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -81,10 +82,11 @@
         android:hint="@string/pca_phone_number"
         android:inputType="phone"
         android:minHeight="48dp"
+        android:background="@android:drawable/editbox_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPcaEmail"
+        app:layout_constraintTop_toBottomOf="@+id/pca_email_edit_text"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <Button
@@ -96,22 +98,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pcaNotifyWhenClosed" />
+        app:layout_constraintTop_toBottomOf="@+id/pca_notify_text" />
 
     <TextView
-        android:id="@+id/pcaNotifyWhenClosed"
+        android:id="@+id/pca_notify_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="@string/pca_notify_when_closed"
-        app:layout_constraintStart_toStartOf="@+id/editTextPhone"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPhone" />
+        app:layout_constraintStart_toStartOf="@+id/pca_phone_edit_text"
+        app:layout_constraintTop_toBottomOf="@+id/pca_phone_edit_text" />
 
     <CheckBox
-        android:id="@+id/pcaNotifyWhenClosedCheckbox"
+        android:id="@+id/pca_notify_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="226dp"
-        tools:layout_editor_absoluteY="486dp" />
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="4dp"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        app:layout_constraintStart_toEndOf="@+id/pca_notify_text"
+        app:layout_constraintTop_toBottomOf="@+id/pca_phone_edit_text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
