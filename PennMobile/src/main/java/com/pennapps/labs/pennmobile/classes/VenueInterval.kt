@@ -50,13 +50,13 @@ class VenueInterval {
             var closeTime = "$date $close"
             // Avoid midnight hour confusion as API returns both 00:00 and 24:00
             // Switch it to more comprehensible 23:59 / 11:59PM
-            if (close == "00:00:00" || close == "24:00:00") {
-                closeTime = "$date 23:59:59"
+            if (close == "00:00:00Z" || close == "24:00:00Z") {
+                closeTime = "$date 23:59:59Z"
             }
             Log.i("VenueInterval", "$openTime")
             if (open == "" && close == "") {
-                open ="00:00:00"
-                close ="00:00:00"
+                open ="00:00:00Z"
+                close ="00:00:00Z"
                 openTime = "$date $open"
                 closeTime = "$date $close"
             }
@@ -65,7 +65,7 @@ class VenueInterval {
             try {
                 closeInstant = DateTime.parse(closeTime, dateFormat)
             } catch (e: IllegalInstantException) {
-                closeTime = "$date 01:00:00"
+                closeTime = "$date 01:00:00Z"
                 closeInstant = DateTime.parse(closeTime, dateFormat)
             }
 
@@ -103,7 +103,7 @@ class VenueInterval {
              * Date format used by dining API.
              * Example: "2015-08-10 15:00:00"
              */
-            val dateFormat: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
+            val dateFormat: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ssZ")
         }
     }
 }
