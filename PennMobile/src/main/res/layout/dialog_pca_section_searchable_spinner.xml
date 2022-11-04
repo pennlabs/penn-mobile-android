@@ -14,7 +14,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Course"
+        android:text="Select Section"
         android:textSize="20sp"
         android:textStyle="bold"
         />
@@ -24,20 +24,19 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/pca_course_search_edit_text"
+        android:id="@+id/pca_section_search_edit_text"
         android:hint="Search..."
         android:padding="12dp"
         android:singleLine="true"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@android:drawable/editbox_background"
         />
 
     <!-- List view to insert list of items-->
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/pca_course_list_view"
+        android:id="@+id/pca_section_list_view"
         />
 
 </LinearLayout>

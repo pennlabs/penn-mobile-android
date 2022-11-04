@@ -50,7 +50,6 @@
         android:layout_width="215dp"
         android:layout_height="33dp"
         android:layout_marginTop="20dp"
-        android:background="@android:drawable/editbox_background"
         android:hint="@string/pca_course"
         app:drawableEndCompat="@drawable/ic_baseline_arrow_drop_down_24"
         app:layout_constraintEnd_toEndOf="parent"
@@ -58,12 +57,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pca_description" />
 
+    <TextView
+        android:id="@+id/pca_section_spinner"
+        android:layout_width="215dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="20dp"
+        android:hint="Section"
+        app:drawableEndCompat="@drawable/ic_baseline_arrow_drop_down_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pca_course_spinner" />
+
     <EditText
         android:id="@+id/pca_email_edit_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:background="@android:drawable/editbox_background"
         android:ems="10"
         android:hint="@string/email_address"
         android:inputType="textEmailAddress"
@@ -71,7 +81,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pca_course_spinner" />
+        app:layout_constraintTop_toBottomOf="@+id/pca_section_spinner" />
 
     <EditText
         android:id="@+id/pca_phone_edit_text"
@@ -82,7 +92,6 @@
         android:hint="@string/pca_phone_number"
         android:inputType="phone"
         android:minHeight="48dp"
-        android:background="@android:drawable/editbox_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -90,7 +99,7 @@
         tools:ignore="SpeakableTextPresentCheck" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/pca_alert_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"

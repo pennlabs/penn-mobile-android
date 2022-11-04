@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile.classes
 
 import com.google.gson.annotations.SerializedName
 
+//TODO: ALI - check all string <date-time> types
 data class PennCourseAlertRegistration(@SerializedName("cancelled_at")
                                        val cancelledAt: String = "",
                                        @SerializedName("notification_sent")
