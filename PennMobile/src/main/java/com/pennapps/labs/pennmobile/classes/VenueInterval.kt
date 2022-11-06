@@ -73,7 +73,13 @@ class VenueInterval {
             if (closeInstant.hourOfDay < 6) {
                 closeInstant = closeInstant.plusDays(1)
             }
-            return Interval(openInstant, closeInstant)
+            try {
+                return Interval(openInstant, closeInstant)
+            } catch (e: Exception) {
+                Log.e("VenueInterval", "Error creating interval", e)
+                closeInstant = closeInstant.plusHours(24)
+                return Interval(openInstant, closeInstant)
+            }
         }
 
         fun getFormattedHour(hours: String): String {

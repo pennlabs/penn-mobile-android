@@ -102,7 +102,8 @@ open class DiningHall : Parcelable {
     // Takes the ordered time intervals of the dining hall and formats them for displaying to the user
     // e.g. 8 - 11 | 12 - 3 | 6 - 9
     fun openTimes(): String {
-        val list = if (isResidential) orderedHours() else orderedMergedHours()
+        //val list = if (isResidential) orderedHours() else orderedMergedHours()
+        val list = orderedHours()
         val builder = StringBuilder()
         for (i in list.indices) {
             val openInterval = list[i]
