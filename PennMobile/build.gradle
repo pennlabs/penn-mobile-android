@@ -96,7 +96,6 @@ dependencies {
     // official release is several years old and is not thread-safe
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7"
     implementation 'com.eightbitlab:supportrenderscriptblur:1.0.2'
-    implementation 'com.eightbitlab:blurview:1.6.3'
     implementation 'androidx.palette:palette-ktx:1.0.0'
     implementation 'com.github.searchy2:CustomAlertViewDialogue:2.6.1'
     implementation 'com.airbnb.android:lottie:4.2.0'
