@@ -61,13 +61,13 @@ class DiningFragment : Fragment() {
         v.dining_swiperefresh?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
         v.dining_halls_recycler_view?.layoutManager = LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false)
         v.dining_swiperefresh.setOnRefreshListener { getDiningHalls() }
-        getDiningHalls()
         // initAppBar(v)
         return v
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getDiningHalls()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

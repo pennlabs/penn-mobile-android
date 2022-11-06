@@ -73,11 +73,14 @@ class HomeFragment : Fragment() {
         view.home_refresh_layout
             .setOnRefreshListener { getHomePage() }
 
-        getHomePage()
         initAppBar(view)
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        getHomePage()
+    }
     @RequiresApi(Build.VERSION_CODES.M)
     private fun getHomePage() {
 
@@ -96,6 +99,9 @@ class HomeFragment : Fragment() {
             internetConnection_message?.text = getString(R.string.internet_error)
             home_cells_rv?.setPadding(0, 90, 0, 0)
             internetConnectionHome?.visibility = View.VISIBLE
+            home_refresh_layout?.isRefreshing = false
+            loadingPanel?.visibility = View.GONE
+            return
         } else {
             internetConnectionHome?.visibility = View.GONE
             home_cells_rv?.setPadding(0, 0, 0, 0)
