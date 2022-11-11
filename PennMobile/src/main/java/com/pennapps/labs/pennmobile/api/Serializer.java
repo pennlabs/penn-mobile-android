@@ -295,7 +295,7 @@ public class Serializer {
         }
     }
 
-    //post
+    // for custom posts
     public static class PostsSerializer implements JsonDeserializer<List<Post>> {
 
         @Override

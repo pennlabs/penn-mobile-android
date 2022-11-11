@@ -466,29 +466,4 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         return resolveInfos.isNotEmpty()
     }
 
-    /*private fun averageColor(bitmap : Bitmap): Color {
-        var redBucket: Long = 0
-        var greenBucket: Long = 0
-        var blueBucket: Long = 0
-        var pixelCount: Long = 0
-
-        for (y in 0 until bitmap.height) {
-            for (x in 0 until bitmap.width) {
-                val c: Color = bitmap.getPixel(x, y)
-                pixelCount++
-                redBucket += Color.red(c)
-                greenBucket += Color.green(c)
-                blueBucket += Color.blue(c)
-                // does alpha matter?
-            }
-        }
-
-        val averageColor: Color = Color(
-            redBucket as Float / pixelCount,
-            greenBucket as Float / pixelCount,
-            blueBucket as Float / pixelCount
-        )
-
-    }*/
-
 }
