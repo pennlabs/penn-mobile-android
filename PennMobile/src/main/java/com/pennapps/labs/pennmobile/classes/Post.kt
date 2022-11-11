@@ -1,11 +1,11 @@
 package com.pennapps.labs.pennmobile.classes
 
-import com.google.gson.JsonArray
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import org.json.JSONArray
-import org.json.JSONObject
-
+/**
+ * Created by Rohan Chhaya.
+ * Data model for custom posts on homepage
+ */
 class Post {
 
     @SerializedName("id")

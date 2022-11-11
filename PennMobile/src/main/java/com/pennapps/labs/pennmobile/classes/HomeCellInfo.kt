@@ -17,19 +17,19 @@ class HomeCellInfo {
     // News / Feature / Post
     @SerializedName("image_url")
     @Expose
-    var imageUrl: String? = null
+    val imageUrl: String? = null
     @SerializedName("source")
     @Expose
-    var source: String? = null
+    val source: String? = null
     @SerializedName("title")
     @Expose
-    var title: String? = null
+    val title: String? = null
     @SerializedName("subtitle")
     @Expose
-    var subtitle: String? = null
+    val subtitle: String? = null
     @SerializedName("timestamp")
     @Expose
-    var timestamp: String? = null
+    val timestamp: String? = null
 
     // News
     @SerializedName("article_url")

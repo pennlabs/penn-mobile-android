@@ -5,8 +5,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Color
-import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -25,8 +23,6 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.core.graphics.drawable.toBitmap
-import androidx.core.graphics.drawable.toDrawable
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -353,7 +349,6 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
     }
 
     private fun bindPostCell(holder: ViewHolder, cell: HomeCell) {
-        //////////////////////////////////
         val info = cell.info
         val post = cell.info?.post
         Log.d("Poster bind", "bindPostCell: $info")
@@ -364,25 +359,20 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
                 post?.startDate?.substring(8, 10) + " - " +
                 post?.expireDate?.substring(5, 7) + " / " +
                 post?.expireDate?.substring(8, 10)
-        Log.d("Poster bind2", "bindPostCell: $info")
         holder.itemView.home_post_timestamp.text = time
         Picasso.get()
             .load(post?.imageUrl)
             .fit()
             .centerCrop()
             .into(holder.itemView.home_post_iv)
-        Log.d("Poster bind3", "bindPostCell: $info")
         /** Adds dynamically generated accent color from the fetched image to the news card */
         var accentColor: Int =  getColor(mContext, R.color.black)
-        Log.d("Poster bind4", "bindPostCell: $info")
         GlobalScope.launch(Dispatchers.Default) {
             val bitmap = Picasso.get().load(post?.imageUrl).get()
-            Log.d("Poster bind5", "bindPostCell: $info")
             // Create palette from bitmap
             fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
             val vibrantSwatch: Palette.Swatch? = createPaletteSync(bitmap).darkVibrantSwatch
             vibrantSwatch?.rgb?.let { accentColor = it }
-            Log.d("Poster bind6", "bindPostCell: $info")
             mActivity.runOnUiThread {
                 // Change all the components to match the accent color palette
                 vibrantSwatch?.titleTextColor?.let {
@@ -391,75 +381,22 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
                     holder.itemView.home_post_timestamp.setTextColor(it)
                     holder.itemView.home_post_source.setTextColor(it)
                 }
-                Log.d("Poster bind7", "bindPostCell: $info")
                 val bitmapDrawable = BitmapDrawable(
                     holder.view.resources,
                     bitmap)
 
-                val width = holder.itemView.home_post_card.measuredWidth
-                val height = holder.itemView.home_post_card.measuredHeight
-                Log.d("BOUNDO", "bindPostCell: $width , $height")
-                bitmapDrawable.bounds = Rect(0, 0, 200, 200)
                 holder.itemView.post_card_container.background = bitmapDrawable
                 holder.itemView.postBlurView
                     .setOverlayColor(ColorUtils.setAlphaComponent(accentColor, 150))
             }
         }
-        Log.d("Poster bind8", "bindPostCell: $info")
-        /** Sets up blur view on news card */
-        Log.d("Poster bind9", "bindPostCell: $info")
+        /** Sets up blur view on post card */
         holder.itemView.postBlurView.setupWith(holder.itemView.post_card_container)
             .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))
             .setBlurAlgorithm(RenderScriptBlur(mContext))
             .setBlurRadius(25f)
             .setHasFixedTransformationMatrix(true)
-        Log.d("Poster bind10", "bindPostCell: $info")
-
-
-
-        ///////////////////////////////////
-
-
-//        val info = cell.info
-//        val post = cell.info?.post
-//        Log.d("Poster bind", "bindPostCell: $info")
-//        holder.itemView.home_post_title.text = post?.title
-//        holder.itemView.home_post_subtitle.text = post?.subtitle
-//        holder.itemView.home_post_source.text = "Penn Labs" //post?.clubCode?.capitalize()
-//        val time = post?.startDate?.substring(5, 7) + " / " +
-//                post?.startDate?.substring(8, 10) + " - " +
-//                post?.expireDate?.substring(5, 7) + " / " +
-//                post?.expireDate?.substring(8, 10)
-//
-//        holder.itemView.home_post_timestamp.text = time
-//        Picasso.get().load(post?.imageUrl).fit().centerCrop().into(holder.itemView.home_post_iv)
-//
-//
-//        /** Adds dynamically generated accent color from the fetched image to the news card*/
-//        Log.d("TAGGITO", "bindPostCell: accentcolor")
-//        GlobalScope.launch(Dispatchers.Default) {
-//            val bitmap = Picasso.get().load(post?.imageUrl).get()
-//            // Create palette from bitmap
-//            fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
-//            val vibrantSwatch: Palette.Swatch? = createPaletteSync(bitmap).lightVibrantSwatch
-//            mActivity.runOnUiThread {
-//                // Change all the components to match the accent color palette
-//                Log.d("TAGGITO4", "bindPostCell: on main thread")
-//                vibrantSwatch?.titleTextColor?.let {
-//
-//                    holder.itemView.home_post_title.setTextColor(it)
-//                    holder.itemView.home_post_subtitle.setTextColor(it)
-//                    holder.itemView.home_post_timestamp.setTextColor(it)
-//                    holder.itemView.home_post_source.setTextColor(it)
-//                }
-//                vibrantSwatch?.rgb?.let {
-//                    holder.itemView.home_post_card.background.setTint(it)
-//                }
-//
-//            }
-//        }
-//
-//
+        /** Post clicking logic **/
         holder.itemView.home_post_card.setOnClickListener {
 
             val url = post?.postUrl

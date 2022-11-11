@@ -302,8 +302,7 @@ public class Serializer {
         public List<Post> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
                 throws JsonParseException {
 
-            Log.d("TAG is itoooo", String.valueOf(je.isJsonArray())); //true
-            //Log.d("Printer tag", "deserialize: " + je.getAsString()); //errors out
+            Log.d("TAG is itoooo", String.valueOf(je.isJsonArray()));
             JsonElement content = je.getAsJsonArray();
             return new Gson().fromJson(content, new TypeToken<List<Post>>() {}.getType());
         }
