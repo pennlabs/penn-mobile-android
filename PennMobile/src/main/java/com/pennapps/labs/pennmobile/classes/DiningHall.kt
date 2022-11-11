@@ -73,8 +73,7 @@ open class DiningHall : Parcelable {
     private fun orderedHours(): List<Interval?> {
         val list: List<Interval?> = ArrayList(openHours.values)
         val comparator = Comparator { x: Interval, y: Interval -> x.start.compareTo(y.start) }
-        list.sortedWith(comparator)
-        return list
+        return list.sortedWith(comparator)
     }
 
     // Returns list of time intervals sorted by interval starting time, and merges intervals such that none overlap
