@@ -395,11 +395,9 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             .setBlurAlgorithm(RenderScriptBlur(mContext))
             .setBlurRadius(25f)
             .setHasFixedTransformationMatrix(true)
-        /** Post clicking logic **/
+        /** Post clicking logic if there exists a URL **/
+        val url = post?.postUrl ?: return
         holder.itemView.home_post_card.setOnClickListener {
-
-            val url = post?.postUrl
-
             val connection = NewsCustomTabsServiceConnection()
             builder = CustomTabsIntent.Builder()
             share = Intent(Intent.ACTION_SEND)
