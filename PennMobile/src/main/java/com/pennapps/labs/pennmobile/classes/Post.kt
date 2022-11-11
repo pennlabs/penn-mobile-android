@@ -3,7 +3,7 @@ package com.pennapps.labs.pennmobile.classes
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 /**
- * Created by Rohan Chhaya.
+ * Created by Rohan Chhaya, Fall 2022.
  * Data model for custom posts on homepage
  */
 class Post {

@@ -42,7 +42,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import rx.Observable
-import java.util.*
 
 
 class HomeAdapter(private var cells: ArrayList<HomeCell>) :
