@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.fragment_dining.*
 import kotlinx.android.synthetic.main.fragment_dining.view.*
 import kotlinx.android.synthetic.main.fragment_dining_insights.*
 import kotlinx.android.synthetic.main.fragment_dining_insights.view.*
+import kotlinx.android.synthetic.main.fragment_gsr.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -79,6 +80,18 @@ class DiningInsightsFragment : Fragment() {
     }
 
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (!isOnline(context)) {
+            internetConnectionDiningInsights?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            internetConnection_message_dining_insights?.setText("Not Connected to Internet")
+            internetConnectionDiningInsights?.visibility = View.VISIBLE
+            dining_insights_refresh?.isRefreshing = false
+            return
+        } else {
+            internetConnectionDiningInsights?.visibility = View.GONE
+        }
+    }
 
     override fun onResume() {
         super.onResume()
@@ -104,6 +117,15 @@ class DiningInsightsFragment : Fragment() {
 
 
     private fun getInsights(accessToken: String?) {
+        if (!isOnline(context)) {
+            internetConnectionDiningInsights?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            internetConnection_message_dining_insights?.setText("Not Connected to Internet")
+            internetConnectionDiningInsights?.visibility = View.VISIBLE
+            dining_insights_refresh?.isRefreshing = false
+            return
+        } else {
+            internetConnectionDiningInsights?.visibility = View.GONE
+        }
         val bearerToken = "Bearer $accessToken"
         mCampusExpress.getCurrentDiningBalances(bearerToken).subscribe( { t: DiningBalances? ->
             activity?.runOnUiThread {

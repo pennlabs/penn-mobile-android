@@ -26,14 +26,28 @@
         android:scrollbars="none">
 
 
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/internetConnectionDiningInsights"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            tools:ignore="MissingConstraints">
+
+            <TextView
+                android:id="@+id/internetConnection_message_dining_insights"
+                style="@style/internet_error_message" />
+
+        </androidx.appcompat.widget.Toolbar>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/insightsrv"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
+            app:layout_constraintTop_toBottomOf="@id/internetConnectionDiningInsights"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
