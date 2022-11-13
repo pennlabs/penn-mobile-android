@@ -47,7 +47,7 @@ class DiningHolderFragment : Fragment() {
         pager.setUserInputEnabled(false)
         TabLayoutMediator(tabLayout, pager) { tab, position ->
             if (position == 0) {
-                tab.text = "Hours"
+                tab.text = "Dining Halls"
             } else {
                 tab.text = "Insights"
             }
