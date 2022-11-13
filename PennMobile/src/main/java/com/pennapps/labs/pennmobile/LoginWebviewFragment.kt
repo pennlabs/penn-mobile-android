@@ -210,7 +210,7 @@ class LoginWebviewFragment : Fragment() {
                             calendar.time = Date()
                             val expiresInInt = t?.expiresIn!!.toInt()
                             val date = Date(System.currentTimeMillis().plus(expiresInInt)) //or simply new Date();
-                            editor.putLong(getString(R.string.token_generated), date.time)
+                            editor.putLong(getString(R.string.token_expires_at), date.time)
                             editor.apply()
                             getUser(accessToken)
                         }

@@ -26,20 +26,18 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
     fun getAccessToken() {
         val expiresIn = sp.getString(mActivity.getString(R.string.expires_in), "")
         if (expiresIn != "") {
-            val seconds = expiresIn?.toInt()
             val calendar = Calendar.getInstance()
-            val expiresAt = Date(sp.getLong(mActivity.getString(R.string.token_generated), 0))
+            val expiresAt = Date(sp.getLong(mActivity.getString(R.string.token_expires_at), 0))
             calendar.time = Date()
-            if (seconds != null) {
-                calendar.add(Calendar.SECOND, -seconds)
-            }
             if (calendar.time.after(expiresAt)) { // if it has expired, refresh access token
                 refreshAccessToken()
             }
+        } else {
+            refreshAccessToken()
         }
     }
 
-    private fun refreshAccessToken() {
+    public fun refreshAccessToken() {
         val refreshToken = sp.getString(mActivity.getString(R.string.refresh_token), "")
         val clientID = BuildConfig.PLATFORM_CLIENT_ID
 
@@ -58,7 +56,7 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
                             val expiresIn = t?.expiresIn
                             val expiresInInt = expiresIn!!.toInt()
                             val date = Date(System.currentTimeMillis().plus(expiresInInt)) //or simply new Date();
-                            editor.putLong(mActivity.getString(R.string.token_generated), date.time)
+                            editor.putLong(mActivity.getString(R.string.token_expires_at), date.time)
                             editor.apply()
                         }
                     }
