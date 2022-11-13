@@ -1,64 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/AppTheme"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="15dp"
+    app:cardUseCompatPadding="true"
+    app:contentPaddingBottom="10dp"
+    app:contentPaddingLeft="10dp"
+    app:contentPaddingTop="10dp">
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/subscribed_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/subscribed_textview" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/notify_closed_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView5" />
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/subscribed_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/subscribed_textview" />
 
-    <TextView
-        android:id="@+id/subscribed_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:text="Subscribed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/course_id_textview" />
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/notify_closed_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/notifyWhenClosed" />
 
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        android:text="@string/pca_notify_when_closed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subscribed_textview" />
+        <TextView
+            android:id="@+id/subscribed_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:text="Subscribed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/course_id_textview" />
 
-    <TextView
-        android:id="@+id/course_id_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="CIS-1200-001" />
+        <TextView
+            android:id="@+id/notifyWhenClosed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:text="@string/pca_notify_when_closed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/subscribed_textview" />
 
-    <TextView
-        android:id="@+id/is_open_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="124dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Open" />
+        <TextView
+            android:id="@+id/course_id_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="CIS-1200-001" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/is_open_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Open" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

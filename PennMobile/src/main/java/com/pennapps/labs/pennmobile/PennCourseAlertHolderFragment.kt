@@ -1,26 +1,21 @@
 package com.pennapps.labs.pennmobile
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.pennapps.labs.pennmobile.adapters.DiningPagerAdapter
 import com.pennapps.labs.pennmobile.adapters.PennCourseAlertPagerAdapter
-import com.pennapps.labs.pennmobile.api.PennCourseAlertApi
-import com.pennapps.labs.pennmobile.classes.PCARegistrationBody
-import com.pennapps.labs.pennmobile.classes.PennCourseAlertRegistration
-import com.pennapps.labs.pennmobile.classes.PennCourseAlertUpdateBody
-import com.pennapps.labs.pennmobile.viewmodels.PennCourseAlertViewModel
-import kotlinx.android.synthetic.main.fragment_dining_holder.*
+import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
+import com.pennapps.labs.pennmobile.utils.Utils
 import kotlinx.android.synthetic.main.fragment_penn_course_alert_holder.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.android.synthetic.main.fragment_penn_course_alert_holder.view.*
+import kotlinx.android.synthetic.main.fragment_penn_course_alert_holder.view.date_view
+import kotlinx.android.synthetic.main.fragment_penn_course_alert_holder.view.title_view
 
 class PennCourseAlertHolderFragment : Fragment() {
     private lateinit var mActivity: MainActivity
@@ -32,7 +27,7 @@ class PennCourseAlertHolderFragment : Fragment() {
         super.onCreate(savedInstanceState)
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()
-
+""
     }
 
     override fun onCreateView(
@@ -40,7 +35,18 @@ class PennCourseAlertHolderFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_penn_course_alert_holder, container, false)
+        val view = inflater.inflate(R.layout.fragment_penn_course_alert_holder, container, false)
+        initAppBar(view)
+        return view
+    }
+
+    private fun initAppBar(view: View?) {
+//        val appbarHome = view?.findViewById<AppBarLayout>(R.id.pca_appbar_home) as CoordinatorLayout
+//        appbarHome.behavior = ToolbarBehavior()
+//        (view?.pca_appbar_home?.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
+
+        view?.title_view?.text = "Penn Course Alert"
+        view?.date_view?.text = Utils.getCurrentSystemTime()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,7 +54,7 @@ class PennCourseAlertHolderFragment : Fragment() {
         pagerAdapter = PennCourseAlertPagerAdapter(this)
         viewPager = view.findViewById(R.id.PCAPager)
         viewPager.adapter = pagerAdapter
-        tabLayout = view.findViewById(R.id.PCATabLayout)
+        tabLayout = view.findViewById(R.id.pca_tab_layout)
         TabLayoutMediator(tabLayout, PCAPager) { tab, position ->
             if (position == 0) {
                 tab.text = "Create Alert"

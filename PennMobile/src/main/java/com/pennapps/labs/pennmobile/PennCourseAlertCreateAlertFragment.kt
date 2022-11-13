@@ -15,6 +15,8 @@ import android.widget.AdapterView.OnItemClickListener
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.preference.PreferenceManager
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.Course
 import com.pennapps.labs.pennmobile.classes.Section
 import com.pennapps.labs.pennmobile.viewmodels.PennCourseAlertViewModel
@@ -27,6 +29,7 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
     private lateinit var sectionSpinner: TextView
     private lateinit var dialog: Dialog
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,6 +40,12 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+        val email = sp.getString(getString(R.string.email_address), "")
+
+        val emailEditText = view.findViewById<EditText>(R.id.pca_email_edit_text)
+        emailEditText.text = Editable.Factory.getInstance().newEditable(email)
 
         val alertButton = view.findViewById<Button>(R.id.pca_alert_button)
         alertButton.isClickable = false
