@@ -73,7 +73,13 @@ class VenueInterval {
             if (closeInstant.hourOfDay < 6) {
                 closeInstant = closeInstant.plusDays(1)
             }
-            return Interval(openInstant, closeInstant)
+            try {
+                return Interval(openInstant, closeInstant)
+            } catch (e: Exception) {
+                Log.e("VenueInterval", "Error creating interval", e)
+                closeInstant = closeInstant.plusHours(24)
+                return Interval(openInstant, closeInstant)
+            }
         }
 
         fun getFormattedHour(hours: String): String {
@@ -82,6 +88,32 @@ class VenueInterval {
                 val hour = hours.substring(0, 2).toInt()
                 if (hour > 12) {
                     newHours = "" + (hour - 12) + hours.substring(2, 5)
+                }
+                newHours += if (hour >= 12) {
+                    "pm"
+                } else {
+                    "am"
+                }
+                return newHours
+
+            } catch (exception: Exception) {
+                Log.d("Time Formatting Error", exception.message ?: "")
+                return hours
+            }
+
+        }
+
+        fun getFormattedHourZ(hours: String): String {
+            try {
+                var newHours = hours.substring(0, 5)
+                var hour = hours.substring(0, 2).toInt() - 5
+                if(hour < 0) {
+                    hour += 24
+                }
+                if (hour > 12) {
+                    newHours = "" + (hour - 12) + hours.substring(2, 5)
+                } else {
+                    newHours = "" + hour + hours.substring(2, 5)
                 }
                 newHours += if (hour >= 12) {
                     "pm"
