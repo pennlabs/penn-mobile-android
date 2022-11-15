@@ -350,7 +350,6 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
     private fun bindPostCell(holder: ViewHolder, cell: HomeCell) {
         val info = cell.info
         val post = cell.info?.post
-        Log.d("Poster bind", "bindPostCell: $info")
         holder.itemView.home_post_title.text = post?.title
         holder.itemView.home_post_subtitle.text = post?.subtitle
         holder.itemView.home_post_source.text = "Penn Labs" //post?.clubCode?.capitalize()

@@ -230,7 +230,6 @@ class HomeFragment : Fragment() {
             })
 
             studentLife.validPostsList(bearerToken).subscribe ({ post ->
-                Log.d("HOME TAG", "getHomePage: $post") //[]
                 if (post.size >= 1) { //there exists a post
                     mActivity.runOnUiThread {
                         var postCell = HomeCell()
