@@ -110,7 +110,7 @@ class HomeFragment : Fragment() {
         // get API data
         val homepageCells = mutableListOf<HomeCell>()
 
-        for (i in 1..5) {
+        for (i in 1..6) {
             homepageCells.add(HomeCell())
         }
 
@@ -123,7 +123,7 @@ class HomeFragment : Fragment() {
                     newsCell.info = HomeCellInfo()
                     newsCell.info?.article = article
                     newsCell.type = "news"
-                    homepageCells.set(1, newsCell)
+                    homepageCells.set(2, newsCell)
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
                     home_refresh_layout?.isRefreshing = false
@@ -156,7 +156,7 @@ class HomeFragment : Fragment() {
                     }
                     diningCellInfo.venues = venues
                     diningCell.info = diningCellInfo
-                    homepageCells.set(2, diningCell)
+                    homepageCells.set(3, diningCell)
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
                     internetConnectionHome?.visibility = View.GONE
@@ -204,7 +204,7 @@ class HomeFragment : Fragment() {
                         laundryCellInfo.roomId = preferences[0]
                     }
                     laundryCell.info = laundryCellInfo
-                    homepageCells.set(4, laundryCell)
+                    homepageCells.set(5, laundryCell)
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
                     internetConnectionHome?.visibility = View.GONE
@@ -217,6 +217,30 @@ class HomeFragment : Fragment() {
                     loadingPanel?.visibility = View.GONE
                     home_refresh_layout?.isRefreshing = false
                 }
+            })
+
+            studentLife.validPostsList(bearerToken).subscribe ({ post ->
+                if (post.size >= 1) { //there exists a post
+                    mActivity.runOnUiThread {
+                        var postCell = HomeCell()
+                        postCell.info = HomeCellInfo()
+                        postCell.type = "post"
+                        postCell.info?.post = post[0]
+                        homepageCells.set(1, postCell)
+                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                        loadingPanel?.visibility = View.GONE
+                        home_refresh_layout?.isRefreshing = false
+                    }
+                }
+
+            }, {throwable ->
+                mActivity.runOnUiThread {
+                    Log.e("Home", "Could not load posts", throwable)
+                    throwable.printStackTrace()
+                    loadingPanel?.visibility = View.GONE
+                    home_refresh_layout?.isRefreshing = false
+                }
+
             })
 
             /*studentLife.getHomePage(bearerToken).subscribe({ cells ->

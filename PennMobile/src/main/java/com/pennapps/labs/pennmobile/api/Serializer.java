@@ -23,6 +23,7 @@ import com.pennapps.labs.pennmobile.classes.HomeCellInfo;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
+import com.pennapps.labs.pennmobile.classes.Post;
 import com.pennapps.labs.pennmobile.classes.Venue;
 import com.pennapps.labs.pennmobile.classes.VenueInterval;
 
@@ -291,6 +292,17 @@ public class Serializer {
                 reservationList.add(reservation);
             }
             return reservationList;
+        }
+    }
+
+    // for custom posts
+    public static class PostsSerializer implements JsonDeserializer<List<Post>> {
+
+        @Override
+        public List<Post> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+                throws JsonParseException {
+            JsonElement content = je.getAsJsonArray();
+            return new Gson().fromJson(content, new TypeToken<List<Post>>() {}.getType());
         }
     }
 }

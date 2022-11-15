@@ -326,6 +326,8 @@ class MainActivity : AppCompatActivity() {
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<HomeCell?>?>() {}.type, HomePageSerializer())
                     // gets user
                     gsonBuilder.registerTypeAdapter(Account::class.java, UserSerializer())
+                    // gets posts
+                    gsonBuilder.registerTypeAdapter(object:  TypeToken<MutableList<Post?>?>() {}.type, PostsSerializer())
                     val gson = gsonBuilder.create()
                     val restAdapter = RestAdapter.Builder()
                             .setConverter(GsonConverter(gson))
