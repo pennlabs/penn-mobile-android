@@ -9,17 +9,15 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pennapps.labs.pennmobile.adapters.DiningSettingsAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import kotlinx.android.synthetic.main.fragment_dining_preferences.*
 import kotlinx.android.synthetic.main.fragment_dining_preferences.view.*
 import kotlinx.android.synthetic.main.include_main.*
-import kotlinx.android.synthetic.main.fragment_dining_preferences.view.*
+import org.json.JSONArray
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
 import rx.Observable
-import java.util.*
 
 class DiningSettingsFragment : Fragment() {
     private lateinit var mActivity: MainActivity
@@ -31,7 +29,6 @@ class DiningSettingsFragment : Fragment() {
         setHasOptionsMenu(true)
         mActivity = activity as MainActivity
         mActivity.title = "Select Favorites"
-        mStudentLife = MainActivity.studentLifeInstance
         mStudentLife = MainActivity.studentLifeInstance
         mActivity.toolbar.visibility = View.VISIBLE
     }
@@ -98,22 +95,24 @@ class DiningSettingsFragment : Fragment() {
             }
         }
 
-        //preferences must be in the form of 1,2,3 (exclude brackets)
         var apiPreparedString = favoriteDiningHalls.toString()
         apiPreparedString = apiPreparedString.substring(1, apiPreparedString.length - 1)
+        Log.i("Dining", apiPreparedString)
         val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
+        Log.i("Dining", bearerToken)
         mStudentLife.sendDiningPref(bearerToken, apiPreparedString,
                 object : ResponseCallback() {
             override fun success(response: Response) {
-                mActivity.onBackPressed()
+                Log.i("Dining", response.url)
+                Log.i("Dining", "Saved dining preferences")
+                mActivity.onBackPressed();
             }
 
             override fun failure(error: RetrofitError) {
+                Log.i("Dining", error.url)
                 Log.e("Dining", "Error saving dining preferences: $error")
                 Toast.makeText(mActivity, "Error saving dining preferences", Toast.LENGTH_SHORT).show()
             }
         })
     }
-
-
 }

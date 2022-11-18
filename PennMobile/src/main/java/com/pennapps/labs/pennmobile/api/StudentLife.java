@@ -12,7 +12,6 @@ import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.GSRReservation;
 import com.pennapps.labs.pennmobile.classes.Gym;
 import com.pennapps.labs.pennmobile.classes.HomeCell;
-import com.pennapps.labs.pennmobile.classes.HomeCellInfo;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
@@ -49,8 +48,14 @@ public interface StudentLife {
 
     @GET("/dining/preferences")
     Observable<DiningPreferences> getDiningPreferences(
-            @Header("Authorization") String bearerToken
-    );
+            @Header("Authorization") String bearerToken);
+
+    @FormUrlEncoded
+    @POST("/dining/preferences/")
+    void sendDiningPref(
+            @Header("Authorization") String bearerToken,
+            @Field("venues") String venues,
+            Callback<Response> callback);
 
     @GET("/laundry/halls/ids")
     Observable<List<LaundryRoomSimple>> laundryRooms();
@@ -131,16 +136,9 @@ public interface StudentLife {
             @Header("Authorization") String bearerToken);
 
     @FormUrlEncoded
-    @POST("/laundry/preferences")
+    @POST("/laundry/preferences/")
     void sendLaundryPref(
             @Header("Authorization") String bearerToken,
             @Field("rooms") String rooms,
-            Callback<Response> callback);
-
-    @FormUrlEncoded
-    @POST("/dining/preferences")
-    void sendDiningPref(
-            @Header("Authorization") String bearerToken,
-            @Field("venues") String venues,
             Callback<Response> callback);
 }

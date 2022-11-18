@@ -1,10 +1,7 @@
 package com.pennapps.labs.pennmobile
 
+import android.R.array
 import android.content.*
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -22,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.HomeAdapter
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
-import com.pennapps.labs.pennmobile.classes.DiningHallPreference
 import com.pennapps.labs.pennmobile.classes.HomeCell
 import com.pennapps.labs.pennmobile.classes.HomeCellInfo
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
@@ -31,8 +27,8 @@ import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.include_main.*
 import kotlinx.android.synthetic.main.loading_panel.*
+import org.json.JSONObject
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class HomeFragment : Fragment() {
@@ -142,19 +138,18 @@ class HomeFragment : Fragment() {
                     val diningCell = HomeCell()
                     diningCell.type = "dining"
                     val diningCellInfo = HomeCellInfo()
-                    if(list?.isEmpty() == true ) {
+                    if(list?.isEmpty() == false) {
+                        list.forEach {
+                            it.id?.let { it1 -> venues.add(it1) }
+                        }
+                    } else {
                         venues.add(593)
                         venues.add(1442)
                         venues.add(636)
-                    } else {
-                        list?.forEach({
-                            it?.id?.let { it1 -> venues.add(it1) }
-                        })
-
                     }
                     diningCellInfo.venues = venues
                     diningCell.info = diningCellInfo
-                    homepageCells.set(2, diningCell)
+                    homepageCells[2] = diningCell
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
                     internetConnectionHome?.visibility = View.GONE
@@ -162,9 +157,9 @@ class HomeFragment : Fragment() {
                 }
             }, { throwable ->
                 mActivity.runOnUiThread {
-                    Log.e("Home", "Could not load Home page", throwable)
+                    Log.e("Home", "Could not load dining preferences", throwable)
                     throwable.printStackTrace()
-                    Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
+                    Toast.makeText(mActivity, "Could not load dining preferences", Toast.LENGTH_LONG).show()
                     loadingPanel?.visibility = View.GONE
                     internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
                     internetConnection_message?.text = getString(R.string.internet_error)
@@ -202,7 +197,6 @@ class HomeFragment : Fragment() {
 
             studentLife.getLaundryPref(bearerToken).subscribe({ preferences ->
                 mActivity.runOnUiThread {
-                    val venues = mutableListOf<Int>()
                     val laundryCell = HomeCell()
                     laundryCell.type = "laundry"
                     val laundryCellInfo = HomeCellInfo()
@@ -210,7 +204,7 @@ class HomeFragment : Fragment() {
                         laundryCellInfo.roomId = preferences[0]
                     }
                     laundryCell.info = laundryCellInfo
-                    homepageCells.set(4, laundryCell)
+                    homepageCells[4] = laundryCell
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
                     internetConnectionHome?.visibility = View.GONE
