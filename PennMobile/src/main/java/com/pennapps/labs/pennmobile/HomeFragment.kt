@@ -164,7 +164,7 @@ class HomeFragment : Fragment() {
                 }
             }, { throwable ->
                 mActivity.runOnUiThread {
-                    Log.e("Home", "Could not load Home page", throwable)
+                    Log.e("Home", "Could not load Dining", throwable)
                     throwable.printStackTrace()
                     loadingPanel?.visibility = View.GONE
                     home_refresh_layout?.isRefreshing = false
@@ -180,7 +180,7 @@ class HomeFragment : Fragment() {
                     val gsrBookingCell = HomeCell()
                     gsrBookingCell.type = "gsr_booking"
                     gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "Weigle")
-                    homepageCells.set(3, gsrBookingCell)
+                    homepageCells.set(4, gsrBookingCell)
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
                     home_refresh_layout?.isRefreshing = false
