@@ -89,9 +89,9 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
         android:background="@drawable/dining_insights_rectangle"
+        app:layout_constraintEnd_toStartOf="@+id/guest_swipes_box"
         app:layout_constraintStart_toEndOf="@+id/dining_predictions_box"
         app:layout_constraintTop_toBottomOf="@+id/predictions_title" />
 
@@ -151,10 +151,10 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="16dp"
-        android:background="@drawable/dining_insights_rectangle"
+        android:layout_marginEnd="24dp"
         android:layout_marginTop="4dp"
-        app:layout_constraintStart_toEndOf="@+id/swipes_box"
+        android:background="@drawable/dining_insights_rectangle"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/predictions_title" />
 
     <TextView

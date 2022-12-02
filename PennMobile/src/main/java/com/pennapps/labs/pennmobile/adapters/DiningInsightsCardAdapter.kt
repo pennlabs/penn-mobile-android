@@ -177,7 +177,7 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
         yAxis.axisMinimum = 0f
         yAxis.setDrawZeroLine(false)
         yAxis.setDrawLimitLinesBehindData(false)
-        setDataForWeeksWise(amounts, predictionChart, holder, typeId)
+        setData(amounts, predictionChart, holder, typeId)
         predictionChart.setTouchEnabled(false)
         xAxis.removeAllLimitLines()
         xAxis.addLimitLine(endOfTermLine)
@@ -206,7 +206,7 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun setDataForWeeksWise(amounts: List<Float>, diningDollarsGraph: LineChart, holder: ViewHolder, typeId: Int) {
+    private fun setData(amounts: List<Float>, diningDollarsGraph: LineChart, holder: ViewHolder, typeId: Int) {
         val values: ArrayList<Entry> = ArrayList()
         amounts.forEachIndexed { index, amount ->
             values.add(Entry(index.toFloat(), amount))

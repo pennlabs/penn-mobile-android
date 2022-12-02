@@ -59,13 +59,13 @@
     <string name="campus_token_expires_in">Campus Express Token Expires In</string>
     <string name="extra_balance">Extra Balance</string>
     <string name="out_of_dining_dollars">Out of Dollars</string>
-    <string name="out_of_dining_dollars_message">You have no dining dollars left for this semester</string>
+    <string name="out_of_dining_dollars_message">You have no dining dollars left for this semester.</string>
     <string name="out_of_dining_dollars_prediction_message">Based on your current balance and past behavior, we project you\'ll run out on this date.</string>
-    <string name="extra_dining_dollars_message">Based on your past behavior, we project you\'ll end the semester with dining dollars to spare</string>
+    <string name="extra_dining_dollars_message">Based on your past behavior, we project you\'ll end the semester with dining dollars to spare.</string>
     <string name="out_of_dining_swipes">Out of Swipes</string>
-    <string name="out_of_dining_swipes_message">You have no swipes left for this semester</string>
+    <string name="out_of_dining_swipes_message">You have no swipes left for this semester.</string>
     <string name="out_of_dining_swipes_prediction_message">Based on your current balance and past behavior, we project you\'ll run out on this date.</string>
-    <string name="extra_dining_swipes_message">Based on your past behavior, we project you\'ll end the semester with swipes to spare</string>
+    <string name="extra_dining_swipes_message">Based on your past behavior, we project you\'ll end the semester with swipes to spare.</string>
 
     <!-- LaundryRoom -->
     <string name="laundry_washer">Washers</string>
