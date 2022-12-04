@@ -11,8 +11,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.pennapps.labs.pennmobile.adapters.RegistrationsAdapter
 import com.pennapps.labs.pennmobile.viewmodels.PennCourseAlertViewModel
+import kotlinx.android.synthetic.main.fragment_dining.view.*
 import kotlinx.android.synthetic.main.fragment_penn_course_alert_manage_alerts.view.*
 
 class PennCourseAlertManageAlertsFragment : Fragment() {
@@ -21,6 +23,7 @@ class PennCourseAlertManageAlertsFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RegistrationsAdapter
     private lateinit var deleteButton: ImageView
+    private lateinit var swipeRefresh: SwipeRefreshLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +48,7 @@ class PennCourseAlertManageAlertsFragment : Fragment() {
                 Log.i("PCA", "list size is ${list.size}")
                 adapter.submitList(null)
                 adapter.submitList(list)
+//                v.dining_swiperefresh.setOnRefreshListener { getDiningHalls() }
 
             }
         })
@@ -55,6 +59,9 @@ class PennCourseAlertManageAlertsFragment : Fragment() {
         deleteButton.setOnClickListener {
             viewModel.deleteRegistrations()
         }
+
+        swipeRefresh = view.findViewById(R.id.pca_manage_swiperefresh)
+        swipeRefresh.setOnRefreshListener { viewModel.retrieveRegistrations() }
 
     }
 

@@ -7,6 +7,7 @@ import android.opengl.Visibility
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -73,9 +74,14 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
             dialog = Dialog(requireContext())
             dialog.setContentView(R.layout.dialog_pca_course_searchable_spinner);
             // set custom height and width
-            dialog.window?.setLayout(650,800);
+            dialog.window?.setLayout(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
             // set transparent background
             dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+
+            dialog.window?.setGravity(Gravity.CENTER)
+
+            dialog.setCancelable(true)
+
             // show dialog
             dialog.show();
 
@@ -117,9 +123,14 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
             dialog = Dialog(requireContext())
             dialog.setContentView(R.layout.dialog_pca_section_searchable_spinner);
             // set custom height and width
-            dialog.window?.setLayout(650,800);
+            dialog.window?.setLayout(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
             // set transparent background
             dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+
+            dialog.window?.setGravity(Gravity.CENTER)
+
+            dialog.setCancelable(true)
+
             // show dialog
             dialog.show();
 

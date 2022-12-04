@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.PennCourseAlertRegistration
+import okhttp3.internal.format
 
 class RegistrationsAdapter: ListAdapter<PennCourseAlertRegistration, RegistrationsAdapter.ViewHolder>(RegistrationDiffCallBack()) {
 
@@ -32,6 +33,7 @@ class RegistrationsAdapter: ListAdapter<PennCourseAlertRegistration, Registratio
         var subscribedSwitch: SwitchCompat
         var notifyClosedSwitch: SwitchCompat
         var statusCircle: ImageView
+        var lastNotified: TextView
 
         init {
             courseIdText = registrationView.findViewById(R.id.course_id_textview)
@@ -39,6 +41,7 @@ class RegistrationsAdapter: ListAdapter<PennCourseAlertRegistration, Registratio
             subscribedSwitch = registrationView.findViewById(R.id.subscribed_switch)
             notifyClosedSwitch = registrationView.findViewById(R.id.notify_closed_switch)
             statusCircle = registrationView.findViewById(R.id.statusCircle)
+            lastNotified = registrationView.findViewById(R.id.lastNotifiedAt)
         }
 
         fun bindTo(registration: PennCourseAlertRegistration) {
@@ -51,6 +54,10 @@ class RegistrationsAdapter: ListAdapter<PennCourseAlertRegistration, Registratio
             }
             subscribedSwitch.isChecked = registration.autoResubscribe
             notifyClosedSwitch.isChecked = registration.closeNotification
+            if (!registration.lastNotificationSentAt.isNullOrEmpty()) {
+                lastNotified.text = formatDate(registration.lastNotificationSentAt)
+            }
+
             if (registration.sectionStatus == "O") {
                 statusCircle.setImageResource(R.drawable.dining_insights_circle)
             } else {
@@ -58,6 +65,12 @@ class RegistrationsAdapter: ListAdapter<PennCourseAlertRegistration, Registratio
             }
         }
 
+    }
+
+    private fun formatDate(date: String): String {
+        val formattedDate = "Last Notified "
+        return formattedDate.plus(date.slice(5..6)).plus("/").plus(date.slice(8..9)).plus("/").plus(date.slice(0..3))
+            .plus(" at ").plus(date.slice(11..15))
     }
 
     private class RegistrationDiffCallBack : DiffUtil.ItemCallback<PennCourseAlertRegistration>() {

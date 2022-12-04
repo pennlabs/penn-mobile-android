@@ -12,12 +12,12 @@
 
     <!-- Text view to show the text Select course-->
     <TextView
+        style="@style/pca_registration_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Select Course"
         android:textSize="20sp"
-        android:textStyle="bold"
-        />
+        android:textStyle="bold" />
 
     <!-- Edit text to allow user to type name
         of item he/she wants to search-->
