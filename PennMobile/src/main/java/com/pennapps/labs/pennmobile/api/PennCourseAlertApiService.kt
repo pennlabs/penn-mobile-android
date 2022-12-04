@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 private const val BASE_URL = "https://penncoursealert.com"
 
 //TODO: (ALI) change into fetching token from VM
-private const val testToken = "5coHcNyNw7bX0IVezstHAQA2sFKg1T"
+private const val testToken = "tpy93IFz947ariSCnunEnmGDWiywoQ"
 
 var okHttpClient: OkHttpClient = OkHttpClient.Builder()
     .connectTimeout(1, TimeUnit.MINUTES)

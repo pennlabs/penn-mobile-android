@@ -6,10 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.pennapps.labs.pennmobile.api.PennCourseAlertApi
-import com.pennapps.labs.pennmobile.classes.Course
-import com.pennapps.labs.pennmobile.classes.PCARegistrationBody
-import com.pennapps.labs.pennmobile.classes.PennCourseAlertRegistration
-import com.pennapps.labs.pennmobile.classes.Section
+import com.pennapps.labs.pennmobile.classes.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,6 +20,7 @@ class PennCourseAlertViewModel: ViewModel() {
     private val _userRegistrations = MutableLiveData<List<PennCourseAlertRegistration>>()
     val userRegistrations : LiveData<List<PennCourseAlertRegistration>> get() = _userRegistrations
     var isSectionSelected: Boolean
+    var deleteRegistrationErrorToast: Boolean = false
 
 
     init {
@@ -96,6 +94,7 @@ class PennCourseAlertViewModel: ViewModel() {
                 Log.i("PCA", "success")
                 if (!response.body().isNullOrEmpty()) {
                     _userRegistrations.value = response.body()!!
+                    _userRegistrations.value = _userRegistrations.value!!.sortedBy { it.section  }
                 }
             }
         })
@@ -121,6 +120,41 @@ class PennCourseAlertViewModel: ViewModel() {
                 override fun onFailure(call: Call<List<Section>>, t: Throwable) {
                     response = "Failure: " + t.message
                     Log.i("PCA", response)
+                }
+
+            })
+    }
+
+    fun deleteRegistrations() {
+        for (registration in _userRegistrations.value!!) {
+            val id = registration.id.toString()
+            deleteRegistration(id)
+        }
+        if (!deleteRegistrationErrorToast) {
+            _userRegistrations.value = mutableListOf()
+        }
+    }
+
+    private fun deleteRegistration(id: String) {
+        var _response = ""
+        Log.i("PCA_VM", "Id is: $id")
+        val updateBody = PennCourseAlertUpdateBody(cancelled = true, deleted = true,
+            autoResubscribe = false, closeNotifications = false, resubscribe = false
+        )
+        PennCourseAlertApi.retrofitService.updateRegistrationById(id, updateBody)
+            .enqueue(object: Callback<String> {
+                override fun onResponse(
+                    call: Call<String>,
+                    response: Response<String>
+                ) {
+                    _response = response.code().toString() ?: ""
+                    Log.i("PCA_VM", _response)
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    _response = "Failure: " + t.message
+                    Log.i("PCA_VM", _response)
+                    deleteRegistrationErrorToast = true
                 }
 
             })

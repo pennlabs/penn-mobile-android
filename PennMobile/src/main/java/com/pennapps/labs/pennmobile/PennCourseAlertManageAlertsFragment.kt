@@ -6,18 +6,21 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.adapters.RegistrationsAdapter
 import com.pennapps.labs.pennmobile.viewmodels.PennCourseAlertViewModel
+import kotlinx.android.synthetic.main.fragment_penn_course_alert_manage_alerts.view.*
 
 class PennCourseAlertManageAlertsFragment : Fragment() {
 
     private val viewModel: PennCourseAlertViewModel by activityViewModels()
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RegistrationsAdapter
+    private lateinit var deleteButton: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,6 +50,11 @@ class PennCourseAlertManageAlertsFragment : Fragment() {
         })
 
         viewModel.retrieveRegistrations()
+
+        deleteButton = view.findViewById(R.id.deleteRegistrations)
+        deleteButton.setOnClickListener {
+            viewModel.deleteRegistrations()
+        }
 
     }
 

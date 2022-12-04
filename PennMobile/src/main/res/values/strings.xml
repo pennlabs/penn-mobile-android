@@ -186,6 +186,7 @@
     <string name="login_failed">"Login failed"</string>
     <string name="guest_mode">"Guest"</string>
     <string name="floating_bottom_bar_home">Home</string>
+    <string name="floating_bottom_bar_pca">PCA</string>
     <string name="floating_bottom_bar_dining">Dining</string>
     <string name="floating_bottom_bar_gsr_booking">GSR</string>
     <string name="floating_bottom_bar_laundry">Laundry</string>

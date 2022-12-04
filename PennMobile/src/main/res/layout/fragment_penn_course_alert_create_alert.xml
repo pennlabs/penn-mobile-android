@@ -1,60 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/internetConnectionPCA"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/internetConnection_message_pca"
+            style="@style/internet_error_message" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+<!--    <include layout="@layout/loading_panel" />-->
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/pca_swiperefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
 
+    <!--    <TextView-->
+    <!--        android:id="@+id/pca_title"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:text="@string/pca_title"-->
+    <!--        tools:layout_editor_absoluteX="162dp"-->
+    <!--        tools:layout_editor_absoluteY="69dp" />-->
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/pca_description"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:text="@string/pca_description"-->
+    <!--        tools:layout_editor_absoluteX="98dp"-->
+    <!--        tools:layout_editor_absoluteY="115dp" />-->
+
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/pcaLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
-        android:layout_marginTop="52dp"
-        android:src="@drawable/pca_logo"
+        android:layout_marginTop="64dp"
+        android:src="@drawable/ic_pca_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/pca_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/pca_title"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.123"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toTopOf="@+id/imageView2"
-        app:layout_constraintVertical_bias="0.607" />
-
-    <TextView
-        android:id="@+id/pca_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/pca_description"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
-
-    <TextView
         android:id="@+id/pca_course_spinner"
-        android:layout_width="215dp"
-        android:layout_height="33dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="225dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="24dp"
+        android:gravity="center_vertical"
         android:hint="@string/pca_course"
         app:drawableEndCompat="@drawable/ic_baseline_arrow_drop_down_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pca_description" />
+        app:layout_constraintTop_toBottomOf="@+id/pcaLogo" />
 
     <TextView
         android:id="@+id/pca_section_spinner"
-        android:layout_width="215dp"
-        android:layout_height="33dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="225dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="12dp"
+        android:gravity="center_vertical"
         android:hint="Section"
         app:drawableEndCompat="@drawable/ic_baseline_arrow_drop_down_24"
         app:layout_constraintEnd_toEndOf="parent"
@@ -64,9 +89,9 @@
 
     <EditText
         android:id="@+id/pca_email_edit_text"
-        android:layout_width="wrap_content"
+        android:layout_width="225dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         android:ems="10"
         android:hint="@string/email_address"
         android:inputType="textEmailAddress"
@@ -78,9 +103,9 @@
 
     <EditText
         android:id="@+id/pca_phone_edit_text"
-        android:layout_width="wrap_content"
+        android:layout_width="225dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         android:ems="10"
         android:hint="@string/pca_phone_number"
         android:inputType="phone"
@@ -91,35 +116,49 @@
         app:layout_constraintTop_toBottomOf="@+id/pca_email_edit_text"
         tools:ignore="SpeakableTextPresentCheck" />
 
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="225dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pca_phone_edit_text">
+
+        <TextView
+            android:id="@+id/pca_notify_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pca_notify_when_closed"
+            tools:layout_editor_absoluteX="99dp"
+            tools:layout_editor_absoluteY="397dp" />
+
+        <CheckBox
+            android:id="@+id/pca_notify_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            tools:layout_editor_absoluteX="267dp"
+            tools:layout_editor_absoluteY="381dp" />
+    </LinearLayout>
+
     <Button
         android:id="@+id/pca_alert_button"
-        android:layout_width="211dp"
-        android:layout_height="43dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="225dp"
+        android:layout_height="50dp"
         android:text="@string/pca_submit_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pca_notify_text" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
-    <TextView
-        android:id="@+id/pca_notify_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/pca_notify_when_closed"
-        app:layout_constraintStart_toStartOf="@+id/pca_phone_edit_text"
-        app:layout_constraintTop_toBottomOf="@+id/pca_phone_edit_text" />
-
-    <CheckBox
-        android:id="@+id/pca_notify_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="4dp"
-        android:minWidth="48dp"
-        android:minHeight="48dp"
-        app:layout_constraintStart_toEndOf="@+id/pca_notify_text"
-        app:layout_constraintTop_toBottomOf="@+id/pca_phone_edit_text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</LinearLayout>

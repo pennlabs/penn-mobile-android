@@ -3,9 +3,11 @@ package com.pennapps.labs.pennmobile.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Switch
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -29,12 +31,14 @@ class RegistrationsAdapter: ListAdapter<PennCourseAlertRegistration, Registratio
         var isOpenText: TextView
         var subscribedSwitch: SwitchCompat
         var notifyClosedSwitch: SwitchCompat
+        var statusCircle: ImageView
 
         init {
             courseIdText = registrationView.findViewById(R.id.course_id_textview)
             isOpenText = registrationView.findViewById(R.id.is_open_textview)
             subscribedSwitch = registrationView.findViewById(R.id.subscribed_switch)
             notifyClosedSwitch = registrationView.findViewById(R.id.notify_closed_switch)
+            statusCircle = registrationView.findViewById(R.id.statusCircle)
         }
 
         fun bindTo(registration: PennCourseAlertRegistration) {
@@ -45,8 +49,13 @@ class RegistrationsAdapter: ListAdapter<PennCourseAlertRegistration, Registratio
                 "X" -> "Cancelled"
                 else -> "Unlisted"
             }
-            subscribedSwitch.isActivated = registration.autoResubscribe
-            notifyClosedSwitch.isActivated = registration.closeNotification
+            subscribedSwitch.isChecked = registration.autoResubscribe
+            notifyClosedSwitch.isChecked = registration.closeNotification
+            if (registration.sectionStatus == "O") {
+                statusCircle.setImageResource(R.drawable.dining_insights_circle)
+            } else {
+                statusCircle.setImageResource(R.drawable.pca_circle_red)
+            }
         }
 
     }

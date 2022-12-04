@@ -90,6 +90,9 @@ class MainActivity : AppCompatActivity() {
                         .addItem(HOME, R.drawable.ic_home_grey)
                         .textRes(R.string.floating_bottom_bar_home)
                         .colorRes(R.color.floating_bottom_bar_selected).create()
+                        .addItem(PCA, R.drawable.ic_bottom_nav_news_grey)
+                        .textRes(R.string.floating_bottom_bar_pca)
+                        .colorRes(R.color.floating_bottom_bar_selected).create()
                         .addItem(DINING, R.drawable.ic_dining_grey)
                         .textRes(R.string.floating_bottom_bar_dining)
                         .colorRes(R.color.floating_bottom_bar_selected).create()
@@ -130,8 +133,8 @@ class MainActivity : AppCompatActivity() {
                 "Home" -> if (fragmentManager.backStackEntryCount > 0) {
                     fragment = HomeFragment()
                 }
-//                "Dining" -> fragment = DiningHolderFragment()
-                "Dining" -> fragment = PennCourseAlertHolderFragment()
+                "Dining" -> fragment = DiningHolderFragment()
+                "PCA" -> fragment = PennCourseAlertHolderFragment()
                 "GSR" -> fragment = GsrTabbedFragment()
                 "Laundry" -> fragment = LaundryFragment()
                 "More" -> fragment = MoreFragment()
@@ -263,6 +266,7 @@ class MainActivity : AppCompatActivity() {
         const val DINING = 3
         const val LAUNDRY = 4
         const val MORE = 5
+        const val PCA = 6
 
         private var mStudentLife: StudentLife? = null
         private var mPlatform: Platform? = null
