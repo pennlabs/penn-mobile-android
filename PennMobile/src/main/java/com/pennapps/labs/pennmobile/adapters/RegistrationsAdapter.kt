@@ -52,8 +52,8 @@ class RegistrationsAdapter: ListAdapter<PennCourseAlertRegistration, Registratio
                 "X" -> "Cancelled"
                 else -> "Unlisted"
             }
-            subscribedSwitch.isChecked = registration.autoResubscribe
-            notifyClosedSwitch.isChecked = registration.closeNotification
+            subscribedSwitch.isChecked = !registration.cancelled
+            notifyClosedSwitch.isChecked = (registration.closeNotification && !registration.cancelled)
             if (!registration.lastNotificationSentAt.isNullOrEmpty()) {
                 lastNotified.text = formatDate(registration.lastNotificationSentAt)
             }

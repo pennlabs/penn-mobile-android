@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity() {
                         .addItem(HOME, R.drawable.ic_home_grey)
                         .textRes(R.string.floating_bottom_bar_home)
                         .colorRes(R.color.floating_bottom_bar_selected).create()
-                        .addItem(PCA, R.drawable.ic_bottom_nav_news_grey)
+                        .addItem(PCA, R.drawable.ic_pca_grey)
                         .textRes(R.string.floating_bottom_bar_pca)
                         .colorRes(R.color.floating_bottom_bar_selected).create()
                         .addItem(DINING, R.drawable.ic_dining_grey)

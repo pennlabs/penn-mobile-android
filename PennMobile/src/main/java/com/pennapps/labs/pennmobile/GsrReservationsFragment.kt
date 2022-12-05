@@ -77,7 +77,7 @@ class GsrReservationsFragment : Fragment() {
             }
         }, { throwable ->
             mActivity.runOnUiThread {
-                Log.e("GsrReservationsFragment", "Error getting reservations", throwable);
+                Log.e("GsrReservationsFragment", "Error getting reservations", throwable)
                 throwable.printStackTrace()
                 loadingPanel?.visibility = View.GONE
                 gsr_no_reservations?.visibility = View.VISIBLE

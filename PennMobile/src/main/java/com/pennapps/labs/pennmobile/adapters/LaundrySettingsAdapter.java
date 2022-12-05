@@ -32,15 +32,15 @@ import rx.functions.Action1;
  */
 
 public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
-    private List<String> laundryHalls;
-    private HashMap<String, List<LaundryRoomSimple>> laundryRooms;
-    private Context mContext;
-    private SharedPreferences sp;
-    private String s;
-    private List<Switch> switches = new ArrayList<>();
-    private int maxNumRooms = 3;
+    private final List<String> laundryHalls;
+    private final HashMap<String, List<LaundryRoomSimple>> laundryRooms;
+    private final Context mContext;
+    private final SharedPreferences sp;
+    private final String s;
+    private final List<Switch> switches = new ArrayList<>();
+    private final int maxNumRooms = 3;
     private StudentLife labs;
-    private String bearerToken;
+    private final String bearerToken;
 
 
     public LaundrySettingsAdapter(Context context, HashMap<String, List<LaundryRoomSimple>> laundryRooms, List<String> laundryHalls) {
@@ -50,7 +50,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
         sp = PreferenceManager.getDefaultSharedPreferences(mContext);
         s = mContext.getString(R.string.num_rooms_selected_pref);
         MainActivity mainActivity = (MainActivity) mContext;
-        bearerToken = "Bearer " + sp.getString(mainActivity.getString(R.string.access_token), "").toString();
+        bearerToken = "Bearer " + sp.getString(mainActivity.getString(R.string.access_token), "");
 
         labs = MainActivity.getStudentLifeInstance();
 

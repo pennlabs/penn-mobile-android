@@ -48,8 +48,7 @@ class PennCourseAlertManageAlertsFragment : Fragment() {
                 Log.i("PCA", "list size is ${list.size}")
                 adapter.submitList(null)
                 adapter.submitList(list)
-//                v.dining_swiperefresh.setOnRefreshListener { getDiningHalls() }
-
+                swipeRefresh.isRefreshing = false
             }
         })
 
@@ -61,7 +60,9 @@ class PennCourseAlertManageAlertsFragment : Fragment() {
         }
 
         swipeRefresh = view.findViewById(R.id.pca_manage_swiperefresh)
-        swipeRefresh.setOnRefreshListener { viewModel.retrieveRegistrations() }
+        swipeRefresh.setOnRefreshListener {
+            viewModel.retrieveRegistrations()
+        }
 
     }
 

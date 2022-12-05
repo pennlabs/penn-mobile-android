@@ -44,8 +44,8 @@ class DiningHolderFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         pagerAdapter = DiningPagerAdapter(childFragmentManager, lifecycle)
-        pager?.setAdapter(pagerAdapter)
-        pager.setUserInputEnabled(false)
+        pager?.adapter = pagerAdapter
+        pager.isUserInputEnabled = false
         TabLayoutMediator(tabLayout, pager) { tab, position ->
             if (position == 0) {
                 tab.text = "Dining"

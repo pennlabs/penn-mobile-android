@@ -111,7 +111,7 @@ class HomeFragment : Fragment() {
         val studentLife = MainActivity.studentLifeInstance
         if (bearerToken != "Bearer ") {
 
-            studentLife.getNews().subscribe({ article ->
+            studentLife.news.subscribe({ article ->
                 mActivity.runOnUiThread {
                     val newsCell = HomeCell()
                     newsCell.info = HomeCellInfo()
@@ -148,7 +148,7 @@ class HomeFragment : Fragment() {
                         venues.add(636)
                     } else {
                         list?.forEach({
-                            it?.id?.let { it1 -> venues.add(it1) }
+                            it.id?.let { it1 -> venues.add(it1) }
                         })
 
                     }
@@ -173,7 +173,7 @@ class HomeFragment : Fragment() {
                 }
             })
 
-            studentLife.getCalendar().subscribe({ events ->
+            studentLife.calendar.subscribe({ events ->
                 mActivity.runOnUiThread {
                     val calendar = HomeCell()
                     calendar.type = "calendar"
@@ -254,7 +254,7 @@ class HomeFragment : Fragment() {
                 }
             }) */
     } else {
-            studentLife.getCalendar().subscribe({ events ->
+            studentLife.calendar.subscribe({ events ->
                 mActivity.runOnUiThread {
                     val calendar = HomeCell()
                     calendar.type = "calendar"
@@ -277,7 +277,7 @@ class HomeFragment : Fragment() {
                 }
             })
 
-            studentLife.getNews().subscribe({ article ->
+            studentLife.news.subscribe({ article ->
                 mActivity.runOnUiThread {
                     val newsCell = HomeCell()
                     newsCell.info = HomeCellInfo()

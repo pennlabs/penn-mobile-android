@@ -53,6 +53,9 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
 
         val notifyClosedCheckbox = view.findViewById<CheckBox>(R.id.pca_notify_checkbox)
 
+        val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
+        viewModel.setBearerTokenValue(bearerToken)
+
         courseSpinner = view.pca_course_spinner
         val courseSpinnerAdapter: ArrayAdapter<Course> = ArrayAdapter(
             requireContext(),
@@ -72,18 +75,18 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
 
         courseSpinner.setOnClickListener{
             dialog = Dialog(requireContext())
-            dialog.setContentView(R.layout.dialog_pca_course_searchable_spinner);
+            dialog.setContentView(R.layout.dialog_pca_course_searchable_spinner)
             // set custom height and width
-            dialog.window?.setLayout(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+            dialog.window?.setLayout(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
             // set transparent background
-            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
             dialog.window?.setGravity(Gravity.CENTER)
 
             dialog.setCancelable(true)
 
             // show dialog
-            dialog.show();
+            dialog.show()
 
             val searchEditText = dialog.findViewById<EditText>(R.id.pca_course_search_edit_text)
             val courseListView = dialog.findViewById<ListView>(R.id.pca_course_list_view)
@@ -121,18 +124,18 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
 
         sectionSpinner.setOnClickListener{
             dialog = Dialog(requireContext())
-            dialog.setContentView(R.layout.dialog_pca_section_searchable_spinner);
+            dialog.setContentView(R.layout.dialog_pca_section_searchable_spinner)
             // set custom height and width
-            dialog.window?.setLayout(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+            dialog.window?.setLayout(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
             // set transparent background
-            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
             dialog.window?.setGravity(Gravity.CENTER)
 
             dialog.setCancelable(true)
 
             // show dialog
-            dialog.show();
+            dialog.show()
 
             val searchEditText = dialog.findViewById<EditText>(R.id.pca_section_search_edit_text)
             val sectionListView = dialog.findViewById<ListView>(R.id.pca_section_list_view)

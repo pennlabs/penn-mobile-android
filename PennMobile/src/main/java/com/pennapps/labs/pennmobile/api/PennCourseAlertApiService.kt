@@ -28,24 +28,20 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 interface PennCourseAlertApiService {
-    @Headers("Authorization: Bearer $testToken")
     @GET("/api/alert/registrations/")
-    fun getAllRegistrations():
+    fun getAllRegistrations(@Header("Authorization") token: String):
             Call<List<PennCourseAlertRegistration>>
 
-    @Headers("Authorization: Bearer $testToken")
     @POST("/api/alert/registrations/")
-    fun createRegistration(@Body registration: PCARegistrationBody):
+    fun createRegistration(@Body registration: PCARegistrationBody, @Header("Authorization") token: String):
             Call<String>
 
-    @Headers("Authorization: Bearer $testToken")
     @GET("/api/alert/registrations/{id}/")
-    fun getRegistrationById(@Path("id") id: String):
+    fun getRegistrationById(@Path("id") id: String, @Header("Authorization") token: String):
             Call<PennCourseAlertRegistration>
 
-    @Headers("Authorization: Bearer $testToken")
     @PUT("/api/alert/registrations/{id}/")
-    fun updateRegistrationById(@Path("id") id: String, @Body updateRegistrationBody: PennCourseAlertUpdateBody):
+    fun updateRegistrationById(@Path("id") id: String, @Body updateRegistrationBody: PennCourseAlertUpdateBody, @Header("Authorization") token: String):
             Call<String>
 
     @GET("/api/base/{semester}/courses/")
@@ -59,7 +55,6 @@ interface PennCourseAlertApiService {
     @GET("/api/base/{semester}/search/sections/")
     fun getSections(@Path("semester") semester: String, @Query("search") search: String):
             Call<List<Section>>
-
 
 }
 

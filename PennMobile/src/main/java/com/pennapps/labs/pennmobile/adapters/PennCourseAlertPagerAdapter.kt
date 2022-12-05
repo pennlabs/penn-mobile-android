@@ -7,7 +7,7 @@ import com.pennapps.labs.pennmobile.PennCourseAlertManageAlertsFragment
 
 class PennCourseAlertPagerAdapter(fragment: Fragment): FragmentStateAdapter(fragment) {
     override fun getItemCount(): Int {
-        return COUNT;
+        return COUNT
     }
 
     override fun createFragment(position: Int): Fragment {

@@ -79,11 +79,6 @@ class DiningInsightsFragment : Fragment() {
     }
 
 
-
-    override fun onResume() {
-        super.onResume()
-    }
-
     private fun refresh() {
         val accessToken = networkManager.getAccessToken()
         if (accessToken == "") {
