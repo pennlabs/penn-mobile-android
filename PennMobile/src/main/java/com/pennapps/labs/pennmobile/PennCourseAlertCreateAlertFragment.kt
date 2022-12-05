@@ -44,9 +44,13 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
 
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
         val email = sp.getString(getString(R.string.email_address), "")
+        val phoneNumber = sp.getString("Phone Number", "")
 
         val emailEditText = view.findViewById<EditText>(R.id.pca_email_edit_text)
         emailEditText.text = Editable.Factory.getInstance().newEditable(email)
+
+        val phoneNumberEditText = view.findViewById<EditText>(R.id.pca_phone_edit_text)
+        phoneNumberEditText.text = Editable.Factory.getInstance().newEditable(phoneNumber)
 
         val alertButton = view.findViewById<Button>(R.id.pca_alert_button)
         alertButton.isClickable = false
@@ -168,12 +172,22 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
         }
 
         alertButton.setOnClickListener {
-            if (viewModel.isSectionSelected) {
+            if (emailEditText.text.isEmpty()) {
+                Toast.makeText(context, "Please enter your email address for alert purposes", Toast.LENGTH_SHORT).show()
+            } else if (phoneNumberEditText.text.isNotEmpty() && !isValidNumber(phoneNumberEditText.text.toString())) {
+                Toast.makeText(context, "Please enter a valid US number (or leave the field empty)", Toast.LENGTH_SHORT).show()
+            } else if (viewModel.isSectionSelected) {
                 val notifyWhenClosed = notifyClosedCheckbox.isChecked
                 viewModel.createRegistration(viewModel.selectedSection.sectionId, false, notifyWhenClosed)
             }
         }
 
+    }
+
+    private fun isValidNumber(number: String): Boolean {
+        //TODO: check if the number is a valid US number
+        //TODO: check if
+        return true
     }
 
 

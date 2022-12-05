@@ -41,10 +41,6 @@ class PennCourseAlertHolderFragment : Fragment() {
     }
 
     private fun initAppBar(view: View?) {
-//        val appbarHome = view?.findViewById<AppBarLayout>(R.id.pca_appbar_home) as CoordinatorLayout
-//        appbarHome.behavior = ToolbarBehavior()
-//        (view?.pca_appbar_home?.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
-
         view?.title_view?.text = "Penn Course Alert"
         view?.date_view?.text = Utils.getCurrentSystemTime()
     }
@@ -63,67 +59,4 @@ class PennCourseAlertHolderFragment : Fragment() {
             }
         }.attach()
     }
-
-//    private fun testGetAllRegistrations() {
-//        var _response = ""
-//        PennCourseAlertApi.retrofitService.getAllRegistrations().enqueue( object: Callback<List<PennCourseAlertRegistration>> {
-//            override fun onFailure(call: Call<List<PennCourseAlertRegistration>>, t: Throwable) {
-//                _response = "Failure: " + t.message
-//                Log.i("PCA", "$_response")
-//            }
-//
-//            override fun onResponse(call: Call<List<PennCourseAlertRegistration>>, response: Response<List<PennCourseAlertRegistration>>) {
-////                val registrationList = response
-//                Log.i("PCA", "${response.body()?.first()?.closeNotification}")
-//            }
-//        })
-//    }
-
-//    private fun testCreateRegistration() {
-//        val registrationBody = PCARegistrationBody(1, "MATH-0030-101", false, false)
-//        var _response = ""
-//        PennCourseAlertApi.retrofitService.createRegistration(registrationBody).enqueue( object: Callback<String> {
-//            override fun onFailure(call: Call<String>, t: Throwable) {
-//                _response = "Failure: " + t.message
-//                Log.i("PCA", _response)
-//            }
-//
-//            override fun onResponse(call: Call<String>, response: Response<String>) {
-//                Log.i("PCA", response.code().toString())
-//                Log.i("PCA", response.body().toString())
-//
-//            }
-//        })
-//    }
-//
-//    private fun testGetRegistrationById() {
-//        var _response = ""
-//        PennCourseAlertApi.retrofitService.getRegistrationById("762236").enqueue( object: Callback<PennCourseAlertRegistration> {
-//            override fun onFailure(call: Call<PennCourseAlertRegistration>, t: Throwable) {
-//                _response = "Failure: " + t.message
-//                Log.i("PCA", "$_response")
-//            }
-//
-//            override fun onResponse(call: Call<PennCourseAlertRegistration>, response: Response<PennCourseAlertRegistration>) {
-////                val registrationList = response
-//                Log.i("PCA", "${response.body()?.id}")
-//            }
-//        })
-//    }
-//
-//    private fun testUpdateRegistration() {
-//        val registrationBody = PennCourseAlertUpdateBody(false, false, true, true, true)
-//        var _response = ""
-//        PennCourseAlertApi.retrofitService.updateRegistrationById("762236", registrationBody).enqueue( object: Callback<String> {
-//            override fun onFailure(call: Call<String>, t: Throwable) {
-//                _response = "Failure: " + t.message
-//                Log.i("PCA", _response)
-//            }
-//
-//            override fun onResponse(call: Call<String>, response: Response<String>) {
-//                Log.i("PCA", "${response.code()}")
-//            }
-//        })
-//    }
-    //CIS-1050-001
 }

@@ -11,9 +11,6 @@ import java.util.concurrent.TimeUnit
 
 private const val BASE_URL = "https://penncoursealert.com"
 
-//TODO: (ALI) change into fetching token from VM
-private const val testToken = "tpy93IFz947ariSCnunEnmGDWiywoQ"
-
 var okHttpClient: OkHttpClient = OkHttpClient.Builder()
     .connectTimeout(1, TimeUnit.MINUTES)
     .readTimeout(30, TimeUnit.SECONDS)
@@ -55,6 +52,10 @@ interface PennCourseAlertApiService {
     @GET("/api/base/{semester}/search/sections/")
     fun getSections(@Path("semester") semester: String, @Query("search") search: String):
             Call<List<Section>>
+
+    @PATCH("/accounts/me")
+    fun updateInfo(@Body profile: Account):
+            Call<String>
 
 }
 
