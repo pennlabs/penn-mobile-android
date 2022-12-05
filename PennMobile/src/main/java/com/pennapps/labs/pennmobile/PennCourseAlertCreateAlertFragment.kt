@@ -16,6 +16,7 @@ import android.widget.AdapterView.OnItemClickListener
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.Course
@@ -42,23 +43,33 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+
+        val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
+        viewModel.setBearerTokenValue(bearerToken)
+
+        viewModel.getUserInfo()
+
         val email = sp.getString(getString(R.string.email_address), "")
-        val phoneNumber = sp.getString("Phone Number", "")
+//        val phoneNumber = viewModel.userInfo.profile.phone
 
         val emailEditText = view.findViewById<EditText>(R.id.pca_email_edit_text)
         emailEditText.text = Editable.Factory.getInstance().newEditable(email)
 
         val phoneNumberEditText = view.findViewById<EditText>(R.id.pca_phone_edit_text)
-        phoneNumberEditText.text = Editable.Factory.getInstance().newEditable(phoneNumber)
+
+        viewModel.userInfo.observe(viewLifecycleOwner, Observer {
+            phoneNumberEditText.text = Editable.Factory.getInstance().newEditable(viewModel.userInfo.value?.profile?.phone)
+
+        })
 
         val alertButton = view.findViewById<Button>(R.id.pca_alert_button)
         alertButton.isClickable = false
 
         val notifyClosedCheckbox = view.findViewById<CheckBox>(R.id.pca_notify_checkbox)
 
-        val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
-        viewModel.setBearerTokenValue(bearerToken)
+
 
         courseSpinner = view.pca_course_spinner
         val courseSpinnerAdapter: ArrayAdapter<Course> = ArrayAdapter(

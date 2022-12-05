@@ -23,6 +23,8 @@ class PennCourseAlertViewModel: ViewModel() {
     var cancelRegistrationErrorToast: Boolean = false
     var bearerToken: String = ""
     var currentRegistration = PennCourseAlertRegistration(id = -1)
+    private val _userInfo = MutableLiveData<UserInfo>()
+    val userInfo : LiveData<UserInfo> get() = _userInfo
 
 
     init {
@@ -236,5 +238,27 @@ class PennCourseAlertViewModel: ViewModel() {
 
     fun setBearerTokenValue(token: String) {
         bearerToken = token
+    }
+
+    fun getUserInfo() {
+        var _response = ""
+        PennCourseAlertApi.retrofitService.retrieveUser(bearerToken)
+            .enqueue(object: Callback<UserInfo> {
+                override fun onResponse(
+                    call: Call<UserInfo>,
+                    response: Response<UserInfo>
+                ) {
+                    _response = response.code().toString() ?: ""
+                    Log.i("PCA_VM", _response)
+                    _userInfo.value = response.body()
+                }
+
+                override fun onFailure(call: Call<UserInfo>, t: Throwable) {
+                    _response = "Failure: " + t.message
+                    Log.i("PCA_VM", _response)
+
+                }
+
+            })
     }
 }

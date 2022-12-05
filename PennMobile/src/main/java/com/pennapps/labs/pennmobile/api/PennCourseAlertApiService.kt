@@ -54,9 +54,12 @@ interface PennCourseAlertApiService {
             Call<List<Section>>
 
     @PATCH("/accounts/me")
-    fun updateInfo(@Body profile: Account):
+    fun updateInfo(@Body profile: Account, @Header("Authorization") token: String):
             Call<String>
 
+    @GET("/accounts/me")
+    fun retrieveUser(@Header("Authorization") token: String):
+            Call<UserInfo>
 }
 
 object PennCourseAlertApi {
