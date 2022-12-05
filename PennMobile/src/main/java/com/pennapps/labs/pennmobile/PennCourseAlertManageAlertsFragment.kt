@@ -1,5 +1,9 @@
 package com.pennapps.labs.pennmobile
 
+import android.app.AlertDialog
+import android.app.Dialog
+import android.content.DialogInterface
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -7,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -56,7 +61,22 @@ class PennCourseAlertManageAlertsFragment : Fragment() {
 
         deleteButton = view.findViewById(R.id.deleteRegistrations)
         deleteButton.setOnClickListener {
-            viewModel.deleteRegistrations()
+            if (viewModel.userRegistrations.value?.isEmpty() == false) {
+                val builder = AlertDialog.Builder(activity)
+                builder.setTitle("Confirm Delete")
+                builder.setMessage("Are you sure you want to delete all of your registrations?")
+                builder.setPositiveButton("Yes") { dialog, _ ->
+                    viewModel.deleteRegistrations()
+                    dialog.cancel()
+                }
+                builder.setNegativeButton("No") { dialog, _ ->
+                    dialog.cancel()
+                }
+                val alert = builder.create()
+                alert.show()
+            } else {
+                Toast.makeText(context, "You do not have any registrations yet!", Toast.LENGTH_SHORT).show()
+            }
         }
 
         swipeRefresh = view.findViewById(R.id.pca_manage_swiperefresh)

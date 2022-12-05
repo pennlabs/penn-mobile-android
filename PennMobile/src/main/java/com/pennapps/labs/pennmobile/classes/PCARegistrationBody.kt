@@ -7,5 +7,4 @@ data class PCARegistrationBody (
     @SerializedName("auto_subscribe") val autoSubscribe: Boolean? = false,
     @SerializedName("close_notification") val closeNotification: Boolean? = false
     ) {
-    //TODO: (ALI) enforce constraints + required "section" using init block
 }

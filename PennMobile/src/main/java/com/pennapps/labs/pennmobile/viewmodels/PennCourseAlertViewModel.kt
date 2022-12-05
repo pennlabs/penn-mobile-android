@@ -121,6 +121,9 @@ class PennCourseAlertViewModel: ViewModel() {
     }
 
     fun deleteRegistrations() {
+        if (_userRegistrations.value.isNullOrEmpty()) {
+            return
+        }
         for (registration in _userRegistrations.value!!) {
             val id = registration.id.toString()
             deleteRegistration(id)
@@ -240,6 +243,28 @@ class PennCourseAlertViewModel: ViewModel() {
         bearerToken = token
     }
 
+    fun updateUserInfo(email: String, phone: String) {
+        var _response = ""
+        val profile = Profile(true, phone = phone, email = email)
+        PennCourseAlertApi.retrofitService.updateInfo(profile, bearerToken)
+            .enqueue(object: Callback<String> {
+                override fun onResponse(
+                    call: Call<String>,
+                    response: Response<String>
+                ) {
+                    _response = response.code().toString() ?: ""
+                    Log.i("PCA_VM", "User info updated successfully: $_response")
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    _response = "Failure: " + t.message
+                    Log.i("PCA_VM",  _response)
+
+                }
+
+            })
+    }
+
     fun getUserInfo() {
         var _response = ""
         PennCourseAlertApi.retrofitService.retrieveUser(bearerToken)
@@ -260,5 +285,9 @@ class PennCourseAlertViewModel: ViewModel() {
                 }
 
             })
+    }
+
+    fun clearSelectedSection() {
+        isSectionSelected = false
     }
 }

@@ -210,7 +210,6 @@ class MainActivity : AppCompatActivity() {
         if (fragment != null) {
             runOnUiThread {
                 try {
-                    //TODO ALI COMMENT
                     if (popBackStack) {
                         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                     }

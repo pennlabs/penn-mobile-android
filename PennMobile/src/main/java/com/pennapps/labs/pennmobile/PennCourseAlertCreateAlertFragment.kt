@@ -5,8 +5,10 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.opengl.Visibility
 import android.os.Bundle
+import android.telephony.PhoneNumberUtils
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +24,9 @@ import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.Course
 import com.pennapps.labs.pennmobile.classes.Section
 import com.pennapps.labs.pennmobile.viewmodels.PennCourseAlertViewModel
+import kotlinx.android.synthetic.main.account_settings_dialog.*
 import kotlinx.android.synthetic.main.fragment_penn_course_alert_create_alert.view.*
+import java.util.regex.Pattern
 
 
 class PennCourseAlertCreateAlertFragment : Fragment() {
@@ -30,6 +34,8 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
     private lateinit var courseSpinner: TextView
     private lateinit var sectionSpinner: TextView
     private lateinit var dialog: Dialog
+    private lateinit var mActivity: MainActivity
+
 
 
     override fun onCreateView(
@@ -42,6 +48,7 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mActivity = activity as MainActivity
 
 
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
@@ -51,25 +58,22 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
 
         viewModel.getUserInfo()
 
-        val email = sp.getString(getString(R.string.email_address), "")
-//        val phoneNumber = viewModel.userInfo.profile.phone
 
         val emailEditText = view.findViewById<EditText>(R.id.pca_email_edit_text)
-        emailEditText.text = Editable.Factory.getInstance().newEditable(email)
 
         val phoneNumberEditText = view.findViewById<EditText>(R.id.pca_phone_edit_text)
 
         viewModel.userInfo.observe(viewLifecycleOwner, Observer {
-            phoneNumberEditText.text = Editable.Factory.getInstance().newEditable(viewModel.userInfo.value?.profile?.phone)
-
+            val formattedPhoneNumber = viewModel.userInfo.value?.profile?.phone?.drop(2)
+            val email = viewModel.userInfo.value?.profile?.email
+            phoneNumberEditText.text = Editable.Factory.getInstance().newEditable(formattedPhoneNumber)
+            emailEditText.text = Editable.Factory.getInstance().newEditable(email)
         })
 
         val alertButton = view.findViewById<Button>(R.id.pca_alert_button)
         alertButton.isClickable = false
 
         val notifyClosedCheckbox = view.findViewById<CheckBox>(R.id.pca_notify_checkbox)
-
-
 
         courseSpinner = view.pca_course_spinner
         val courseSpinnerAdapter: ArrayAdapter<Course> = ArrayAdapter(
@@ -85,8 +89,6 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
             android.R.layout.simple_list_item_1,
             viewModel.sectionsList
         )
-
-
 
         courseSpinner.setOnClickListener{
             dialog = Dialog(requireContext())
@@ -128,7 +130,7 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
             })
             courseListView.onItemClickListener = OnItemClickListener { _, _, position, _ -> // when item selected from list
                 // set selected item on textView
-                courseSpinner.text = courseSpinnerAdapter.getItem(position).toString()
+                courseSpinner.text = courseSpinnerAdapter.getItem(position).toString().substringBefore(" -")
                 viewModel.getSections(courseSpinner.text.toString(), sectionSpinnerAdapter)
                 sectionSpinner.isVisible = true
                 // Dismiss dialog
@@ -173,7 +175,7 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
             })
             sectionListView.onItemClickListener = OnItemClickListener { _, _, position, _ -> // when item selected from list
                 // set selected item on textView
-                sectionSpinner.text = sectionSpinnerAdapter.getItem(position).toString()
+                sectionSpinner.text = sectionSpinnerAdapter.getItem(position).toString().substringBefore(" -")
                 viewModel.selectedSection = sectionSpinnerAdapter.getItem(position)!!
                 viewModel.isSectionSelected = true
                 alertButton.isClickable = true
@@ -188,17 +190,35 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
             } else if (phoneNumberEditText.text.isNotEmpty() && !isValidNumber(phoneNumberEditText.text.toString())) {
                 Toast.makeText(context, "Please enter a valid US number (or leave the field empty)", Toast.LENGTH_SHORT).show()
             } else if (viewModel.isSectionSelected) {
+                if (emailEditText.text.toString() != viewModel.userInfo.value?.profile?.email
+                    || phoneNumberEditText.text.toString() != viewModel.userInfo.value?.profile?.phone) {
+                    viewModel.updateUserInfo(emailEditText.text.toString(), phoneNumberEditText.text.toString())
+                }
                 val notifyWhenClosed = notifyClosedCheckbox.isChecked
                 viewModel.createRegistration(viewModel.selectedSection.sectionId, false, notifyWhenClosed)
+                courseSpinner.text = ""
+                sectionSpinner.text = ""
+                viewModel.clearSelectedSection()
             }
         }
 
     }
 
+//    override fun onResume() {
+//        super.onResume()
+//        Log.i("PCA_CF", "Resumed")
+//        mActivity.hideBottomBar()
+//        mActivity.showBottomBar()
+//    }
+
     private fun isValidNumber(number: String): Boolean {
-        //TODO: check if the number is a valid US number
-        //TODO: check if
-        return true
+        if (number.length < 10 || number.length > 13) {
+            return false
+        }
+        val reg = "^([0-9\\+]|\\(\\d{1,3}\\))[0-9\\-\\. ]{3,15}$"
+        var pattern: Pattern = Pattern.compile(reg)
+        val matcher = pattern.matcher(number)
+        return matcher.matches()
     }
 
 

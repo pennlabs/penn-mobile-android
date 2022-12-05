@@ -19,6 +19,12 @@ data class Section(@SerializedName("section_id")
                    @SerializedName("status")
                    val status: String = "") {
     override fun toString(): String {
-        return this.sectionId
+        val sectionStatus = when(this.status) {
+            "O" -> "Open"
+            "C" -> "Closed"
+            "X" -> "Cancelled"
+            else -> "Unlisted"
+        }
+        return this.sectionId + " - " + sectionStatus
     }
 }
