@@ -26,6 +26,7 @@ import com.pennapps.labs.pennmobile.classes.Section
 import com.pennapps.labs.pennmobile.viewmodels.PennCourseAlertViewModel
 import kotlinx.android.synthetic.main.account_settings_dialog.*
 import kotlinx.android.synthetic.main.fragment_penn_course_alert_create_alert.view.*
+import kotlinx.android.synthetic.main.include_main.*
 import java.util.regex.Pattern
 
 
@@ -185,30 +186,45 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
         }
 
         alertButton.setOnClickListener {
+//            alertButton.animate().translationYBy(10f).setDuration(100).start()
+//            alertButton.animate().translationY(0f)
+//            alertButton.animate().translationYBy(-10f).start()
+
             if (emailEditText.text.isEmpty()) {
                 Toast.makeText(context, "Please enter your email address for alert purposes", Toast.LENGTH_SHORT).show()
             } else if (phoneNumberEditText.text.isNotEmpty() && !isValidNumber(phoneNumberEditText.text.toString())) {
                 Toast.makeText(context, "Please enter a valid US number (or leave the field empty)", Toast.LENGTH_SHORT).show()
-            } else if (viewModel.isSectionSelected) {
-                if (emailEditText.text.toString() != viewModel.userInfo.value?.profile?.email
-                    || phoneNumberEditText.text.toString() != viewModel.userInfo.value?.profile?.phone) {
-                    viewModel.updateUserInfo(emailEditText.text.toString(), phoneNumberEditText.text.toString())
+            } else {
+                if (viewModel.isSectionSelected) {
+                    if (emailEditText.text.toString() != viewModel.userInfo.value?.profile?.email
+                        || phoneNumberEditText.text.toString() != viewModel.userInfo.value?.profile?.phone) {
+                        viewModel.updateUserInfo(emailEditText.text.toString(), phoneNumberEditText.text.toString())
+                    }
+                    val notifyWhenClosed = notifyClosedCheckbox.isChecked
+                    viewModel.createRegistration(viewModel.selectedSection.sectionId, false, notifyWhenClosed)
+                    courseSpinner.text = ""
+                    sectionSpinner.text = ""
+                    viewModel.clearSelectedSection()
+                } else {
+                    Toast.makeText(context, "Please select a course section", Toast.LENGTH_SHORT).show()
                 }
-                val notifyWhenClosed = notifyClosedCheckbox.isChecked
-                viewModel.createRegistration(viewModel.selectedSection.sectionId, false, notifyWhenClosed)
-                courseSpinner.text = ""
-                sectionSpinner.text = ""
-                viewModel.clearSelectedSection()
             }
         }
+
+        viewModel.registrationCreatedSuccessfullyToast.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                Toast.makeText(context, "Registration Created Successfully!", Toast.LENGTH_SHORT).show()
+                viewModel.onSuccessToastDone()
+            }
+        })
 
     }
 
 //    override fun onResume() {
 //        super.onResume()
 //        Log.i("PCA_CF", "Resumed")
-//        mActivity.hideBottomBar()
-//        mActivity.showBottomBar()
+////        mActivity.hideBottomBar()
+////        mActivity.showBottomBar()
 //    }
 
     private fun isValidNumber(number: String): Boolean {

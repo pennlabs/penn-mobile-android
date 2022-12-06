@@ -21,14 +21,16 @@ import com.pennapps.labs.pennmobile.adapters.RegistrationsAdapter
 import com.pennapps.labs.pennmobile.viewmodels.PennCourseAlertViewModel
 import kotlinx.android.synthetic.main.fragment_dining.view.*
 import kotlinx.android.synthetic.main.fragment_penn_course_alert_manage_alerts.view.*
+import kotlinx.android.synthetic.main.include_main.*
 
-class PennCourseAlertManageAlertsFragment : Fragment() {
+class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnItemClickListener {
 
     private val viewModel: PennCourseAlertViewModel by activityViewModels()
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RegistrationsAdapter
     private lateinit var deleteButton: ImageView
     private lateinit var swipeRefresh: SwipeRefreshLayout
+    private lateinit var mActivity: MainActivity
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,11 +42,13 @@ class PennCourseAlertManageAlertsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mActivity = activity as MainActivity
+
         recyclerView = view.findViewById(R.id.registrations_recyclerview)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.setHasFixedSize(true)
 
-        adapter = RegistrationsAdapter()
+        adapter = RegistrationsAdapter(this)
         recyclerView.adapter = adapter
 
         viewModel.userRegistrations.observe(viewLifecycleOwner, Observer {
@@ -82,9 +86,29 @@ class PennCourseAlertManageAlertsFragment : Fragment() {
         swipeRefresh = view.findViewById(R.id.pca_manage_swiperefresh)
         swipeRefresh.setOnRefreshListener {
             viewModel.retrieveRegistrations()
+            if (viewModel.userRegistrations.value.isNullOrEmpty()) {
+                swipeRefresh.isRefreshing = false
+            }
         }
 
     }
 
+    override fun onItemClick(position: Int) {
+        //TODO: implement to make switches work backend
+//        Toast.makeText(context, "Item number $position clicked", Toast.LENGTH_SHORT).show()
+//        when(adapter.currentList[position].closeNotification) {
+//            true -> Toast.makeText(context, "Item number $position clicked and has close notifs ON", Toast.LENGTH_SHORT).show()
+//            else -> Toast.makeText(context, "Item number $position clicked and has close notifs OFF", Toast.LENGTH_SHORT).show()
+//        }
+//        val id = adapter.currentList[position].id.toString()
+//        viewModel.getRegistrationById(id)
+    }
+
+//    override fun onResume() {
+//        super.onResume()
+//        Log.i("PCA_CF", "Resumed")
+////        mActivity.hideBottomBar()
+//        mActivity.expandable_bottom_bar.stopNestedScroll()
+//    }
 
 }

@@ -21,6 +21,9 @@ class PennCourseAlertViewModel: ViewModel() {
     var isSectionSelected: Boolean
     var deleteRegistrationErrorToast: Boolean = false
     var cancelRegistrationErrorToast: Boolean = false
+
+    private val _registrationCreatedSuccessfullyToast = MutableLiveData<Boolean>()
+    val registrationCreatedSuccessfullyToast: LiveData<Boolean> get() = _registrationCreatedSuccessfullyToast
     var bearerToken: String = ""
     var currentRegistration = PennCourseAlertRegistration(id = -1)
     private val _userInfo = MutableLiveData<UserInfo>()
@@ -43,6 +46,7 @@ class PennCourseAlertViewModel: ViewModel() {
                     Log.i("PCA-Create", "Successfully created registration")
                     Log.i("PCA-Create", "Response: ${response.body()}")
                     updateRegistrationsList()
+                    _registrationCreatedSuccessfullyToast.value = true
                 }
 
                 override fun onFailure(call: Call<String>, t: Throwable) {
@@ -213,7 +217,7 @@ class PennCourseAlertViewModel: ViewModel() {
             })
     }
 
-    private fun getRegistrationById(id: String) {
+    fun getRegistrationById(id: String) {
         var _response = ""
         PennCourseAlertApi.retrofitService.getRegistrationById(id, bearerToken)
             .enqueue(object: Callback<PennCourseAlertRegistration> {
@@ -289,5 +293,9 @@ class PennCourseAlertViewModel: ViewModel() {
 
     fun clearSelectedSection() {
         isSectionSelected = false
+    }
+
+    fun onSuccessToastDone() {
+        _registrationCreatedSuccessfullyToast.value = false
     }
 }

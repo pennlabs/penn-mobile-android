@@ -1,8 +1,10 @@
 package com.pennapps.labs.pennmobile.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ImageView
 import android.widget.Switch
 import android.widget.TextView
@@ -15,7 +17,7 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.PennCourseAlertRegistration
 import okhttp3.internal.format
 
-class RegistrationsAdapter: ListAdapter<PennCourseAlertRegistration, RegistrationsAdapter.ViewHolder>(RegistrationDiffCallBack()) {
+class RegistrationsAdapter(private val listener: OnItemClickListener): ListAdapter<PennCourseAlertRegistration, RegistrationsAdapter.ViewHolder>(RegistrationDiffCallBack()) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -27,7 +29,7 @@ class RegistrationsAdapter: ListAdapter<PennCourseAlertRegistration, Registratio
         holder.bindTo(getItem(position))
     }
 
-    inner class ViewHolder(registrationView: View): RecyclerView.ViewHolder(registrationView) {
+    inner class ViewHolder(registrationView: View): RecyclerView.ViewHolder(registrationView), View.OnClickListener {
         var courseIdText: TextView
         var isOpenText: TextView
         var subscribedSwitch: SwitchCompat
@@ -42,6 +44,13 @@ class RegistrationsAdapter: ListAdapter<PennCourseAlertRegistration, Registratio
             notifyClosedSwitch = registrationView.findViewById(R.id.notify_closed_switch)
             statusCircle = registrationView.findViewById(R.id.statusCircle)
             lastNotified = registrationView.findViewById(R.id.lastNotifiedAt)
+//            registrationView.setOnClickListener(this)
+
+//            notifyClosedSwitch.setOnClickListener {
+//                Log.i("adapter", "Switch clicked on course ${courseIdText.text}")
+//            }
+            notifyClosedSwitch.setOnClickListener(this)
+            subscribedSwitch.setOnClickListener(this)
         }
 
         fun bindTo(registration: PennCourseAlertRegistration) {
@@ -65,6 +74,18 @@ class RegistrationsAdapter: ListAdapter<PennCourseAlertRegistration, Registratio
             }
         }
 
+        override fun onClick(v: View?) {
+            val position = adapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                listener.onItemClick(position)
+            }
+        }
+
+    }
+
+
+    interface OnItemClickListener {
+        fun onItemClick(position: Int)
     }
 
     private fun formatDate(date: String): String {
