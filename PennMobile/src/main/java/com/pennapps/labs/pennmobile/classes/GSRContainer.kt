@@ -10,7 +10,7 @@ import java.util.ArrayList
 class GSRContainer(val gsrName: String, constructorTimeRange: String, constructorStartTime: DateTime,
                    constructorElementId: String, val gid: Int, val roomId: Int, val start: String, val end: String) {
     //used to keep track availability of the given room
-    val availableGSRSlots = ArrayList<GSRContainerSlot>()
+    var availableGSRSlots = ArrayList<GSRContainerSlot>()
 
     init {
 

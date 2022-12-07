@@ -21,7 +21,7 @@ class GsrPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
     override fun getPageTitle(position: Int): CharSequence {
         return when (position) {
-            0 -> "Book a Room"
+            0 -> "Book A Room"
             else -> {
                 return "My Reservations"
             }

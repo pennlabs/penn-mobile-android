@@ -20,6 +20,8 @@ class GsrBuildingAdapter(internal var context: Context, internal var gsrs: Array
         return GsrBuildingHolder(view)
     }
 
+    // TODO: what actually calls this building adapter, where is the gsrs arraylist from, so I can presort it before passed into the adapter
+
     override fun onBindViewHolder(holder: GsrBuildingHolder, position: Int) {
         if (position < itemCount) {
             val gsrRoomsRecyclerView = holder.recyclerView
@@ -37,6 +39,9 @@ class GsrBuildingAdapter(internal var context: Context, internal var gsrs: Array
                 val gids = ArrayList<Int>()
                 val roomNames = ArrayList<String>()
 
+                // gsrs[position] is a certain gsr room within the building
+                // availableGSRSlots are the timeslots within the location and they have all of these associated properties to them
+
                 for (j in 0 until gsrs[position].availableGSRSlots.size) {
                     val gsrslot = gsrs[position].availableGSRSlots[j]
                     timeRanges.add(gsrslot.timeRange)
@@ -47,6 +52,9 @@ class GsrBuildingAdapter(internal var context: Context, internal var gsrs: Array
                     gids.add(gsrslot.gid)
                     roomNames.add(gsrslot.roomName)
                 }
+
+                // within the availableGSRSlots we can sort them by their startTime
+
                 // Add GSR as parameter
                 gsrRoomsRecyclerView.adapter = GsrRoomAdapter(timeRanges, ids, gsrLocationCode, context, startTimes, duration, gids, roomNames, starts, ends)
                 holder.gsrBuildingName?.text = gsrs[position].gsrName

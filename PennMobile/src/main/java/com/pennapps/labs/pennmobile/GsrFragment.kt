@@ -5,30 +5,27 @@ import android.app.TimePickerDialog
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.GsrBuildingAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRContainer
+import com.pennapps.labs.pennmobile.classes.GSRContainerSlot
 import com.pennapps.labs.pennmobile.classes.GSRRoom
 import com.pennapps.labs.pennmobile.classes.GSRSlot
-import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
-import com.pennapps.labs.pennmobile.utils.Utils
 import kotlinx.android.synthetic.main.fragment_dining.view.*
 import kotlinx.android.synthetic.main.fragment_gsr.*
 import kotlinx.android.synthetic.main.fragment_gsr.view.*
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class GsrFragment : Fragment() {
@@ -195,10 +192,21 @@ class GsrFragment : Fragment() {
     // Called when page loads and whenever user changes start/end time, date, or building
     @RequiresApi(Build.VERSION_CODES.M)
     fun searchForGSR(calledByRefreshLayout: Boolean) {
-        var gsrLocation = gsrLocationDropDown.selectedItem.toString()
-        val location = mapGSR(gsrLocation)
-        val gid = mapGID(gsrLocation)
-        if (location == -1) {
+
+        val gsrLocation = gsrLocationDropDown.selectedItem.toString()
+
+        var location : Array<Int> = arrayOf()
+        var gid : Array<Int> = arrayOf()
+
+        if (gsrLocation == "All") {
+            location = gsrHashMap.values.toTypedArray()
+            gid = gsrGIDHashMap.values.toTypedArray()
+        } else {
+            location.plus(mapGSR(gsrLocation))
+            gid.plus(mapGID(gsrLocation))
+        }
+
+        if (location.isEmpty() || location.contains(-1)) {
             showNoResults()
         } else {
             // display loading screen if user did not use swipe refresh
@@ -214,71 +222,90 @@ class GsrFragment : Fragment() {
     }
 
     // Performs GET request and fetches the rooms and availability
-    private fun getTimes(location: Int, gId: Int) {
+    private fun getTimes(locations: Array<Int>, gIds: Array<Int>) {
+
         val adjustedDateString = selectedDateTime.toString(adjustedDateFormat)
         selectDateButton.isClickable = false
         selectTimeButton.isClickable = false
         gsrLocationDropDown.isEnabled = false
         durationDropDown.isEnabled = false
-        mStudentLife.gsrRoom(location, gId, adjustedDateString)
-                ?.subscribe({ gsr ->
-                    activity?.let {activity ->
-                        activity.runOnUiThread {
-                            val gsrRooms = gsr.rooms
-                            var timeSlotLengthZero = true
 
-                            if (gsrRooms == null) {
-                                // a certification error causes "room" field to remain null
-                                showNoResults()
-                            } else {
-                                for (i in gsrRooms.indices) {
-                                    val gsrRoom = gsrRooms[i]
-                                    val gsrTimeSlots = gsrRoom.slots
-                                    //checks if the time slots are ever nonzero
-                                    val size = gsrTimeSlots?.size ?: 0
-                                    if (size > 0) {
-                                        timeSlotLengthZero = false
-                                    }
-                                    if (gsrTimeSlots != null) {
-                                        filterInsertTimeSlots(gsrRoom, gsrTimeSlots, gId)
-                                    }
+        var gsrRooms:Array<GSRRoom> = arrayOf()
+        var timeSlotLengthZero = true
+
+        for (i in 0 until locations.count()) {
+            var location = locations.get(i)
+            var gId = gIds.get(i)
+
+            mStudentLife.gsrRoom(location, gId, adjustedDateString)
+                    ?.subscribe({ gsr ->
+                        activity?.let {activity ->
+                            activity.runOnUiThread {
+                                if (gsr.rooms != null) {
+                                    gsrRooms.plus(gsr.rooms!!)
                                 }
                             }
-                            // remove loading icon
-                            loadingPanel.visibility = View.GONE
-                            noResultsPanel.visibility = View.GONE
-                            // stop refreshing
-                            gsr_rooms_list?.visibility = View.VISIBLE
-                            gsr_refresh_layout?.isRefreshing = false
-
-                            if (timeSlotLengthZero) {
-                                gsr_no_rooms?.visibility = View.VISIBLE
-                            }
-
-                            gsr_rooms_list?.adapter = (context?.let {
-                                GsrBuildingAdapter(it, mGSRS, location.toString(), (durationDropDown.selectedItemPosition + 1) * 30)
-                            })
-
-                            mGSRS = ArrayList()
-                            selectDateButton.isClickable = true
-                            selectTimeButton.isClickable = true
-                            gsrLocationDropDown.isEnabled = true
-                            durationDropDown.isEnabled = true
                         }
+                    }, {
+                        Log.e("GsrFragment", "Error getting gsr times", it)
+                        activity?.let {
+                            activity ->
+                            activity.runOnUiThread {
+                                """
+                                showNoResults()
+                                selectDateButton.isClickable = true
+                                selectTimeButton.isClickable = true
+                                gsrLocationDropDown.isEnabled = true
+                                durationDropDown.isEnabled = true
+                                """
+                            } }
                     }
-                }, {
-                    Log.e("GsrFragment", "Error getting gsr times", it)
-                    activity?.let {
-                    activity ->
-                    activity.runOnUiThread {
-                        showNoResults()
-                        selectDateButton.isClickable = true
-                        selectTimeButton.isClickable = true
-                        gsrLocationDropDown.isEnabled = true
-                        durationDropDown.isEnabled = true
-                    } }
+                    )
+
+            for (j in gsrRooms.indices) {
+                val gsrRoom = gsrRooms[j]
+                val gsrTimeSlots = gsrRoom.slots
+                //checks if the time slots are ever nonzero
+                val size = gsrTimeSlots?.size ?: 0
+                if (size > 0) {
+                    timeSlotLengthZero = false
                 }
-                )
+                if (gsrTimeSlots != null) {
+                    filterInsertTimeSlots(gsrRoom, gsrTimeSlots, gId)
+                }
+            }
+        }
+
+        if (gsrRooms.isEmpty()) {
+            // a certification error causes "room" field to remain null
+            showNoResults()
+        }
+
+        // remove loading icon
+        loadingPanel.visibility = View.GONE
+        noResultsPanel.visibility = View.GONE
+        // stop refreshing
+        gsr_rooms_list?.visibility = View.VISIBLE
+        gsr_refresh_layout?.isRefreshing = false
+
+        if (timeSlotLengthZero) {
+            gsr_no_rooms?.visibility = View.VISIBLE
+        }
+
+        // TODO: need to fix the locations parameter possibly? but it doesn't look like its used
+        gsr_rooms_list?.adapter = (context?.let {
+            GsrBuildingAdapter(it, mGSRS, locations.toString(), (durationDropDown.selectedItemPosition + 1) * 30)
+        })
+
+        mGSRS = ArrayList()
+        selectDateButton.isClickable = true
+        selectTimeButton.isClickable = true
+        gsrLocationDropDown.isEnabled = true
+        durationDropDown.isEnabled = true
+    }
+
+    private fun timeToInt(time: DateTime): Double {
+        return time.hourOfDay + (time.minuteOfHour / 100.0)
     }
 
     private fun filterInsertTimeSlots(gsrRoom: GSRRoom, timeSlots: Array<GSRSlot>, gid: Int) {
@@ -412,9 +439,11 @@ class GsrFragment : Fragment() {
                                 i++
                             }
 
-                            val gsrs = gsrHashMap.keys.toList().toTypedArray()
+                            val gsrs = gsrHashMap.keys.toMutableList()
+                            //TODO: might need to edit gsrHashMap and gsrGIDHashMap
+                            gsrs.add(0, "All")
 
-                            val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
+                            val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs.toTypedArray())
                             gsrLocationDropDown.adapter = adapter
 
                             durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman Hall")
@@ -440,8 +469,11 @@ class GsrFragment : Fragment() {
                             gsrHashMap["Huntsman Hall"] = 1
                             gsrHashMap["PCPSE Building"] = 4370
                             gsrGIDHashMap["PCPSE Building"] = 7426
-                            val gsrs = gsrHashMap.keys.toList().toTypedArray()
-                            val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
+                            val gsrs = gsrHashMap.keys.toMutableList()
+                            //TODO: might need to edit gsrHashMap and gsrGIDHashMap
+                            gsrs.add(0, "All")
+
+                            val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs.toTypedArray())
                             gsrLocationDropDown.adapter = adapter
 
                             durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman Hall")
