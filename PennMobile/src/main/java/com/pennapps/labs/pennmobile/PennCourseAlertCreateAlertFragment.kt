@@ -26,6 +26,7 @@ import com.pennapps.labs.pennmobile.classes.Section
 import com.pennapps.labs.pennmobile.viewmodels.PennCourseAlertViewModel
 import kotlinx.android.synthetic.main.account_settings_dialog.*
 import kotlinx.android.synthetic.main.fragment_penn_course_alert_create_alert.view.*
+import kotlinx.android.synthetic.main.fragment_penn_course_alert_manage_alerts.*
 import kotlinx.android.synthetic.main.include_main.*
 import java.util.regex.Pattern
 
@@ -36,7 +37,6 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
     private lateinit var sectionSpinner: TextView
     private lateinit var dialog: Dialog
     private lateinit var mActivity: MainActivity
-
 
 
     override fun onCreateView(
@@ -67,7 +67,8 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
         viewModel.userInfo.observe(viewLifecycleOwner, Observer {
             val formattedPhoneNumber = viewModel.userInfo.value?.profile?.phone?.drop(2)
             val email = viewModel.userInfo.value?.profile?.email
-            phoneNumberEditText.text = Editable.Factory.getInstance().newEditable(formattedPhoneNumber)
+            phoneNumberEditText.text =
+                Editable.Factory.getInstance().newEditable(formattedPhoneNumber)
             emailEditText.text = Editable.Factory.getInstance().newEditable(email)
         })
 
@@ -84,18 +85,22 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
         )
 
         sectionSpinner = view.pca_section_spinner
-        sectionSpinner.isVisible = false
+//        sectionSpinner.isVisible = false
+//        sectionSpinner.isClickable = false
         val sectionSpinnerAdapter: ArrayAdapter<Section> = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_list_item_1,
             viewModel.sectionsList
         )
 
-        courseSpinner.setOnClickListener{
+        courseSpinner.setOnClickListener {
             dialog = Dialog(requireContext())
             dialog.setContentView(R.layout.dialog_pca_course_searchable_spinner)
             // set custom height and width
-            dialog.window?.setLayout(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
+            dialog.window?.setLayout(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
             // set transparent background
             dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
@@ -129,60 +134,78 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
 
                 override fun afterTextChanged(s: Editable) {}
             })
-            courseListView.onItemClickListener = OnItemClickListener { _, _, position, _ -> // when item selected from list
-                // set selected item on textView
-                courseSpinner.text = courseSpinnerAdapter.getItem(position).toString().substringBefore(" -")
-                viewModel.getSections(courseSpinner.text.toString(), sectionSpinnerAdapter)
-                sectionSpinner.isVisible = true
-                // Dismiss dialog
-                dialog.dismiss()
-            }
+            courseListView.onItemClickListener =
+                OnItemClickListener { _, _, position, _ -> // when item selected from list
+                    // set selected item on textView
+                    courseSpinner.text =
+                        courseSpinnerAdapter.getItem(position).toString().substringBefore(" -")
+                    viewModel.getSections(courseSpinner.text.toString(), sectionSpinnerAdapter)
+//                sectionSpinner.isVisible = true
+                    // Dismiss dialog
+                    dialog.dismiss()
+                }
         }
 
 
-        sectionSpinner.setOnClickListener{
-            dialog = Dialog(requireContext())
-            dialog.setContentView(R.layout.dialog_pca_section_searchable_spinner)
-            // set custom height and width
-            dialog.window?.setLayout(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
-            // set transparent background
-            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        sectionSpinner.setOnClickListener {
+            if (sectionSpinnerAdapter.isEmpty) {
+                Toast.makeText(context, "Select course number first!", Toast.LENGTH_SHORT).show()
+            } else {
+                dialog = Dialog(requireContext())
+                dialog.setContentView(R.layout.dialog_pca_section_searchable_spinner)
+                // set custom height and width
+                dialog.window?.setLayout(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                // set transparent background
+                dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-            dialog.window?.setGravity(Gravity.CENTER)
+                dialog.window?.setGravity(Gravity.CENTER)
 
-            dialog.setCancelable(true)
+                dialog.setCancelable(true)
 
-            // show dialog
-            dialog.show()
+                // show dialog
+                dialog.show()
 
-            val searchEditText = dialog.findViewById<EditText>(R.id.pca_section_search_edit_text)
-            val sectionListView = dialog.findViewById<ListView>(R.id.pca_section_list_view)
+                val searchEditText =
+                    dialog.findViewById<EditText>(R.id.pca_section_search_edit_text)
+                val sectionListView = dialog.findViewById<ListView>(R.id.pca_section_list_view)
 
-            sectionListView.adapter = sectionSpinnerAdapter
-            searchEditText.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
+                sectionListView.adapter = sectionSpinnerAdapter
+                searchEditText.addTextChangedListener(object : TextWatcher {
+                    override fun beforeTextChanged(
+                        s: CharSequence,
+                        start: Int,
+                        count: Int,
+                        after: Int
+                    ) {
+                    }
 
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    sectionSpinnerAdapter.filter.filter(s)
-                }
+                    override fun onTextChanged(
+                        s: CharSequence,
+                        start: Int,
+                        before: Int,
+                        count: Int
+                    ) {
+                        sectionSpinnerAdapter.filter.filter(s)
+                    }
 
-                override fun afterTextChanged(s: Editable) {}
-            })
-            sectionListView.onItemClickListener = OnItemClickListener { _, _, position, _ -> // when item selected from list
-                // set selected item on textView
-                sectionSpinner.text = sectionSpinnerAdapter.getItem(position).toString().substringBefore(" -")
-                viewModel.selectedSection = sectionSpinnerAdapter.getItem(position)!!
-                viewModel.isSectionSelected = true
-                alertButton.isClickable = true
-                // Dismiss dialog
-                dialog.dismiss()
+                    override fun afterTextChanged(s: Editable) {}
+                })
+                sectionListView.onItemClickListener =
+                    OnItemClickListener { _, _, position, _ -> // when item selected from list
+                        // set selected item on textView
+                        sectionSpinner.text =
+                            sectionSpinnerAdapter.getItem(position).toString().substringBefore(" -")
+                        viewModel.selectedSection = sectionSpinnerAdapter.getItem(position)!!
+                        viewModel.isSectionSelected = true
+                        alertButton.isClickable = true
+                        // Dismiss dialog
+                        dialog.dismiss()
+                    }
             }
+
         }
 
         alertButton.setOnClickListener {
@@ -191,34 +214,55 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
 //            alertButton.animate().translationYBy(-10f).start()
 
             if (emailEditText.text.isEmpty()) {
-                Toast.makeText(context, "Please enter your email address for alert purposes", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    "Please enter your email address for alert purposes",
+                    Toast.LENGTH_SHORT
+                ).show()
             } else if (phoneNumberEditText.text.isNotEmpty() && !isValidNumber(phoneNumberEditText.text.toString())) {
-                Toast.makeText(context, "Please enter a valid US number (or leave the field empty)", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    "Please enter a valid US number (or leave the field empty)",
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
                 if (viewModel.isSectionSelected) {
                     if (emailEditText.text.toString() != viewModel.userInfo.value?.profile?.email
-                        || phoneNumberEditText.text.toString() != viewModel.userInfo.value?.profile?.phone) {
-                        viewModel.updateUserInfo(emailEditText.text.toString(), phoneNumberEditText.text.toString())
+                        || phoneNumberEditText.text.toString() != viewModel.userInfo.value?.profile?.phone
+                    ) {
+                        viewModel.updateUserInfo(
+                            emailEditText.text.toString(),
+                            phoneNumberEditText.text.toString()
+                        )
                     }
                     val notifyWhenClosed = notifyClosedCheckbox.isChecked
-                    viewModel.createRegistration(viewModel.selectedSection.sectionId, false, notifyWhenClosed)
+                    viewModel.createRegistration(
+                        viewModel.selectedSection.sectionId,
+                        false,
+                        notifyWhenClosed
+                    )
                     courseSpinner.text = ""
                     sectionSpinner.text = ""
+                    courseSpinnerAdapter.clear()
+                    sectionSpinnerAdapter.clear()
                     viewModel.clearSelectedSection()
                 } else {
-                    Toast.makeText(context, "Please select a course section", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Please select a course section", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }
 
         viewModel.registrationCreatedSuccessfullyToast.observe(viewLifecycleOwner, Observer {
             if (it) {
-                Toast.makeText(context, "Registration Created Successfully!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Registration Created Successfully!", Toast.LENGTH_SHORT)
+                    .show()
                 viewModel.onSuccessToastDone()
             }
         })
 
     }
+
 
 //    override fun onResume() {
 //        super.onResume()

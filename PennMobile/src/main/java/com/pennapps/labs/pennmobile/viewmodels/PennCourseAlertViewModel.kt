@@ -31,8 +31,6 @@ class PennCourseAlertViewModel: ViewModel() {
 
 
     init {
-        coursesList.add(Course(id = "CIS-1100-001"))
-        sectionsList.add(Section(sectionId = "CIS-1200-001"))
         isSectionSelected = false
     }
 
@@ -290,6 +288,15 @@ class PennCourseAlertViewModel: ViewModel() {
 
             })
     }
+
+    //functions commented out in case delete on swipe is implemented
+    /*
+    fun removeRegistration(position: Int) {
+        _userRegistrations.value = _userRegistrations.value?.filter {
+            it.id != _userRegistrations.value!![position].id
+        }
+    }
+    */
 
     fun clearSelectedSection() {
         isSectionSelected = false

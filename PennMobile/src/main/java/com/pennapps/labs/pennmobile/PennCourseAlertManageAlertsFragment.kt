@@ -1,27 +1,30 @@
 package com.pennapps.labs.pennmobile
 
 import android.app.AlertDialog
-import android.app.Dialog
-import android.content.DialogInterface
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.Snackbar
 import com.pennapps.labs.pennmobile.adapters.RegistrationsAdapter
+import com.pennapps.labs.pennmobile.classes.PennCourseAlertRegistration
 import com.pennapps.labs.pennmobile.viewmodels.PennCourseAlertViewModel
 import kotlinx.android.synthetic.main.fragment_dining.view.*
+import kotlinx.android.synthetic.main.fragment_penn_course_alert_manage_alerts.*
 import kotlinx.android.synthetic.main.fragment_penn_course_alert_manage_alerts.view.*
 import kotlinx.android.synthetic.main.include_main.*
+
 
 class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnItemClickListener {
 
@@ -31,6 +34,9 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
     private lateinit var deleteButton: ImageView
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var mActivity: MainActivity
+    private lateinit var noAlertsImage: ImageView
+    private lateinit var noAlertsMessage: TextView
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,6 +49,8 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mActivity = activity as MainActivity
+        noAlertsImage = view.findViewById(R.id.no_alerts_image)
+        noAlertsMessage = view.findViewById(R.id.no_alerts_message)
 
         recyclerView = view.findViewById(R.id.registrations_recyclerview)
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -58,6 +66,13 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
                 adapter.submitList(null)
                 adapter.submitList(list)
                 swipeRefresh.isRefreshing = false
+                if (list.isEmpty()) {
+                    noAlertsImage.visibility = View.VISIBLE
+                    noAlertsMessage.visibility = View.VISIBLE
+                } else {
+                    noAlertsImage.visibility = View.GONE
+                    noAlertsMessage.visibility = View.GONE
+                }
             }
         })
 
@@ -91,8 +106,65 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
             }
         }
 
+        setNoDataViewsVisibility()
+
+        //uncomment and add some viewmodel functionality to handle swipe item deletion
+        /*
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                // this method is called
+                // when the item is moved.
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                // this method is called when we swipe our item to right direction.
+                // on below line we are getting the item at a particular position.
+                val deletedCourse: PennCourseAlertRegistration? =
+//                    recyclerDataArrayList.get(viewHolder.adapterPosition)
+                    viewModel.userRegistrations.value?.get(viewHolder.adapterPosition)
+
+                // below line is to get the position
+                // of the item at that position.
+                val position = viewHolder.adapterPosition
+
+                // this method is called when item is swiped.
+                // below line is to remove item from our array list.
+//                viewModel.userRegistrations.value?.removeAt(viewHolder.adapterPosition)
+                viewModel.removeRegistration(viewHolder.adapterPosition)
+                // below line is to notify our item is removed from adapter.
+                adapter.notifyItemRemoved(viewHolder.adapterPosition)
+
+                // below line is to display our snackbar with action.
+                deletedCourse?.section?.let {
+                    Snackbar.make(recyclerView, it, Snackbar.LENGTH_LONG)
+                        .setAction("Undo",
+                            View.OnClickListener { // adding on click listener to our action of snack bar.
+                                // below line is to add our item to array list with a position.
+//                                viewModel.userRegistrations.value?.put .add(position, deletedCourse)
+
+                                // below line is to notify item is
+                                // added to our adapter class.
+//                                recyclerViewAdapter.notifyItemInserted(position)
+                            }).show()
+                }
+            } // at last we are adding this
+            // to our recycler view.
+        }).attachToRecyclerView(recyclerView)
+    */
     }
 
+
+    private fun setNoDataViewsVisibility() {
+        if (viewModel.userRegistrations.value.isNullOrEmpty()) {
+            noAlertsMessage.visibility = View.VISIBLE
+            noAlertsImage.visibility = View.VISIBLE
+        }
+    }
     override fun onItemClick(position: Int) {
         //TODO: implement to make switches work backend
 //        Toast.makeText(context, "Item number $position clicked", Toast.LENGTH_SHORT).show()
