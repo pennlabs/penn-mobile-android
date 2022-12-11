@@ -27,7 +27,6 @@ class PennCourseAlertHolderFragment : Fragment() {
         super.onCreate(savedInstanceState)
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()
-""
     }
 
     override fun onCreateView(
@@ -52,7 +51,7 @@ class PennCourseAlertHolderFragment : Fragment() {
         viewPager.adapter = pagerAdapter
 
         //uncomment to disable swiping between tabs
-//        viewPager.isUserInputEnabled = false
+        //viewPager.isUserInputEnabled = false
 
         tabLayout = view.findViewById(R.id.pca_tab_layout)
         TabLayoutMediator(tabLayout, PCAPager) { tab, position ->

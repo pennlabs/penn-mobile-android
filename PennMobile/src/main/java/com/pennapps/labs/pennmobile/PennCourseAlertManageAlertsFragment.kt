@@ -190,12 +190,6 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
 //        viewModel.getRegistrationById(id)
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        Log.i("PCA_CF", "Resumed")
-////        mActivity.hideBottomBar()
-//        mActivity.expandable_bottom_bar.stopNestedScroll()
-//    }
 
     private fun showInternetErrorBar(view: View) {
         val internetConnectionBanner = view.findViewById<Toolbar>(R.id.internetConnectionPCAManage)

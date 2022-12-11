@@ -52,15 +52,10 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         mActivity = activity as MainActivity
 
-        val internetConnectionBanner = view.findViewById<Toolbar>(R.id.internetConnectionPCA)
-        val internetConnectionMessage =
-            view.findViewById<TextView>(R.id.internetConnection_message_pca)
         if (!isOnline(context)) {
-            internetConnectionBanner.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-            internetConnectionMessage.text = "Not Connected to Internet"
-            internetConnectionBanner.visibility = View.VISIBLE
+            showInternetErrorBar(view)
         } else {
-            internetConnectionBanner.visibility = View.GONE
+            hideInternetErrorBar(view)
         }
 
 
@@ -68,6 +63,8 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
         val pennKey = sp.getString(getString(R.string.pennkey), null)
         val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
         viewModel.setBearerTokenValue(bearerToken)
+
+        //if guest login
         if (pennKey == null) {
             handleGuestLogin(view)
         } else {
@@ -100,8 +97,6 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
             )
 
             sectionSpinner = view.pca_section_spinner
-//        sectionSpinner.isVisible = false
-//        sectionSpinner.isClickable = false
             val sectionSpinnerAdapter: ArrayAdapter<Section> = ArrayAdapter(
                 requireContext(),
                 android.R.layout.simple_list_item_1,
@@ -163,7 +158,6 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
                         courseSpinner.text =
                             courseSpinnerAdapter.getItem(position).toString().substringBefore(" -")
                         viewModel.getSections(courseSpinner.text.toString(), sectionSpinnerAdapter)
-//                sectionSpinner.isVisible = true
                         // Dismiss dialog
                         dialog.dismiss()
                     }
@@ -323,6 +317,19 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
 ////        mActivity.hideBottomBar()
 ////        mActivity.showBottomBar()
 //    }
+
+    private fun showInternetErrorBar(view: View) {
+        val internetConnectionBanner = view.findViewById<Toolbar>(R.id.internetConnectionPCAManage)
+        val internetConnectionMessage = view.findViewById<TextView>(R.id.internetConnection_message_pca_manage)
+        internetConnectionBanner.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+        internetConnectionMessage.text = "Not Connected to Internet"
+        internetConnectionBanner.visibility = View.VISIBLE
+    }
+
+    private fun hideInternetErrorBar(view: View) {
+        val internetConnectionBanner = view.findViewById<Toolbar>(R.id.internetConnectionPCAManage)
+        internetConnectionBanner.visibility = View.GONE
+    }
 
     private fun isValidNumber(number: String): Boolean {
         if (number.length < 10 || number.length > 13) {
