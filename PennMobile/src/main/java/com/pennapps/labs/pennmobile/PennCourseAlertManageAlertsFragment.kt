@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -48,6 +49,14 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (!isOnline(context)) {
+            showInternetErrorBar(view)
+            Toast.makeText(context, "Could not load alerts", Toast.LENGTH_SHORT).show()
+        } else {
+            hideInternetErrorBar(view)
+        }
+
         mActivity = activity as MainActivity
         noAlertsImage = view.findViewById(R.id.no_alerts_image)
         noAlertsMessage = view.findViewById(R.id.no_alerts_message)
@@ -159,12 +168,17 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
     }
 
 
+
     private fun setNoDataViewsVisibility() {
+        // Check if the recycler view data is empty
         if (viewModel.userRegistrations.value.isNullOrEmpty()) {
+            // Show no alerts message
             noAlertsMessage.visibility = View.VISIBLE
+            // Show no alerts image
             noAlertsImage.visibility = View.VISIBLE
         }
     }
+
     override fun onItemClick(position: Int) {
         //TODO: implement to make switches work backend
 //        Toast.makeText(context, "Item number $position clicked", Toast.LENGTH_SHORT).show()
@@ -182,5 +196,18 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
 ////        mActivity.hideBottomBar()
 //        mActivity.expandable_bottom_bar.stopNestedScroll()
 //    }
+
+    private fun showInternetErrorBar(view: View) {
+        val internetConnectionBanner = view.findViewById<Toolbar>(R.id.internetConnectionPCAManage)
+        val internetConnectionMessage = view.findViewById<TextView>(R.id.internetConnection_message_pca_manage)
+        internetConnectionBanner.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+        internetConnectionMessage.text = "Not Connected to Internet"
+        internetConnectionBanner.visibility = View.VISIBLE
+    }
+
+    private fun hideInternetErrorBar(view: View) {
+        val internetConnectionBanner = view.findViewById<Toolbar>(R.id.internetConnectionPCAManage)
+        internetConnectionBanner.visibility = View.GONE
+    }
 
 }

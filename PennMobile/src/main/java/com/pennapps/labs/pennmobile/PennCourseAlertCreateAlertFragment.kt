@@ -25,11 +25,12 @@ import com.pennapps.labs.pennmobile.classes.Course
 import com.pennapps.labs.pennmobile.classes.Section
 import com.pennapps.labs.pennmobile.viewmodels.PennCourseAlertViewModel
 import kotlinx.android.synthetic.main.account_settings_dialog.*
+import kotlinx.android.synthetic.main.fragment_dining.*
 import kotlinx.android.synthetic.main.fragment_penn_course_alert_create_alert.view.*
 import kotlinx.android.synthetic.main.fragment_penn_course_alert_manage_alerts.*
 import kotlinx.android.synthetic.main.include_main.*
 import java.util.regex.Pattern
-
+import androidx.appcompat.widget.Toolbar
 
 class PennCourseAlertCreateAlertFragment : Fragment() {
     private val viewModel: PennCourseAlertViewModel by activityViewModels()
@@ -51,6 +52,15 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         mActivity = activity as MainActivity
 
+        val internetConnectionBanner = view.findViewById<Toolbar>(R.id.internetConnectionPCA)
+        val internetConnectionMessage = view.findViewById<TextView>(R.id.internetConnection_message_pca)
+        if (!isOnline(context)) {
+            internetConnectionBanner.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            internetConnectionMessage.text = "Not Connected to Internet"
+            internetConnectionBanner.visibility = View.VISIBLE
+        } else {
+            internetConnectionBanner.visibility = View.GONE
+        }
 
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
 
