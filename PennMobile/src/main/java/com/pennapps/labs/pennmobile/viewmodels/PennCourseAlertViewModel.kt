@@ -19,8 +19,12 @@ class PennCourseAlertViewModel: ViewModel() {
     private val _userRegistrations = MutableLiveData<List<PennCourseAlertRegistration>>()
     val userRegistrations : LiveData<List<PennCourseAlertRegistration>> get() = _userRegistrations
     var isSectionSelected: Boolean
-    var deleteRegistrationErrorToast: Boolean = false
-    var cancelRegistrationErrorToast: Boolean = false
+
+    private val _deleteRegistrationErrorToast = MutableLiveData<Boolean>(false)
+    val deleteRegistrationErrorToast: LiveData<Boolean> get() = _deleteRegistrationErrorToast
+
+    private val _cancelRegistrationErrorToast = MutableLiveData<Boolean>(false)
+    val cancelRegistrationErrorToast: LiveData<Boolean> get() = _cancelRegistrationErrorToast
 
     private val _registrationCreatedSuccessfullyToast = MutableLiveData<Boolean>()
     val registrationCreatedSuccessfullyToast: LiveData<Boolean> get() = _registrationCreatedSuccessfullyToast
@@ -130,7 +134,7 @@ class PennCourseAlertViewModel: ViewModel() {
             val id = registration.id.toString()
             deleteRegistration(id)
         }
-        if (!deleteRegistrationErrorToast) {
+        if (!(_deleteRegistrationErrorToast.value)!!) {
             _userRegistrations.value = mutableListOf()
         }
     }
@@ -154,7 +158,7 @@ class PennCourseAlertViewModel: ViewModel() {
                 override fun onFailure(call: Call<String>, t: Throwable) {
                     _response = "Failure: " + t.message
                     Log.i("PCA_VM", _response)
-                    cancelRegistrationErrorToast = true
+                    _cancelRegistrationErrorToast.value = true
                 }
 
             })
@@ -209,7 +213,7 @@ class PennCourseAlertViewModel: ViewModel() {
                 override fun onFailure(call: Call<String>, t: Throwable) {
                     _response = "Failure: " + t.message
                     Log.i("PCA_VM", _response)
-                    deleteRegistrationErrorToast = true
+                    _deleteRegistrationErrorToast.value = true
                 }
 
             })
@@ -304,5 +308,13 @@ class PennCourseAlertViewModel: ViewModel() {
 
     fun onSuccessToastDone() {
         _registrationCreatedSuccessfullyToast.value = false
+    }
+
+    fun onCancelToastDone() {
+        _cancelRegistrationErrorToast.value = false
+    }
+
+    fun onDeleteToastDone() {
+        _deleteRegistrationErrorToast.value = false
     }
 }

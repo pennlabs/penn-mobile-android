@@ -68,6 +68,7 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
         adapter = RegistrationsAdapter(this)
         recyclerView.adapter = adapter
 
+
         viewModel.userRegistrations.observe(viewLifecycleOwner, Observer {
                 list ->
             run {
@@ -106,7 +107,6 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
                 Toast.makeText(context, "You do not have any registrations yet!", Toast.LENGTH_SHORT).show()
             }
         }
-
         swipeRefresh = view.findViewById(R.id.pca_manage_swiperefresh)
         swipeRefresh.setOnRefreshListener {
             viewModel.retrieveRegistrations()
@@ -116,6 +116,16 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
         }
 
         setNoDataViewsVisibility()
+
+        viewModel.cancelRegistrationErrorToast.observe(viewLifecycleOwner, Observer {
+            Toast.makeText(context, "Error canceling registration!", Toast.LENGTH_SHORT).show()
+            viewModel.onCancelToastDone()
+        })
+
+        viewModel.deleteRegistrationErrorToast.observe(viewLifecycleOwner, Observer {
+            Toast.makeText(context, "Error deleting registration!", Toast.LENGTH_SHORT).show()
+            viewModel.onDeleteToastDone()
+        })
 
         //uncomment and add some viewmodel functionality to handle swipe item deletion
         /*
