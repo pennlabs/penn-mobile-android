@@ -228,56 +228,39 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
             }
 
             alertButton.setOnClickListener {
-//            alertButton.animate().translationYBy(10f).setDuration(100).start()
-//            alertButton.animate().translationY(0f)
-//            alertButton.animate().translationYBy(-10f).start()
-
                 if (emailEditText.text.isEmpty()) {
-                    Toast.makeText(
-                        context,
-                        "Please enter your email address for alert purposes",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else if (phoneNumberEditText.text.isNotEmpty() && !isValidNumber(
-                        phoneNumberEditText.text.toString()
-                    )
-                ) {
-                    Toast.makeText(
-                        context,
-                        "Please enter a valid US number (or leave the field empty)",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(context, "Please enter your email address for alert purposes", Toast.LENGTH_SHORT).show()
+                } else if (phoneNumberEditText.text.isNotEmpty() && !isValidNumber(phoneNumberEditText.text.toString())) {
+                    // If phoneNumberEditText is not empty and the entered number is not valid, show a toast message
+                    Toast.makeText(context, "Please enter a valid US number (or leave the field empty)", Toast.LENGTH_SHORT).show()
                 } else {
+                    // If email is not empty and phone number (if entered) is valid
                     if (viewModel.isSectionSelected) {
+                        // If a course section is selected
                         if (emailEditText.text.toString() != viewModel.userInfo.value?.profile?.email
                             || phoneNumberEditText.text.toString() != viewModel.userInfo.value?.profile?.phone
                         ) {
-                            viewModel.updateUserInfo(
-                                emailEditText.text.toString(),
-                                phoneNumberEditText.text.toString()
-                            )
+                            // If the entered email or phone number is different from the stored values, update the user info
+                            viewModel.updateUserInfo(emailEditText.text.toString(), phoneNumberEditText.text.toString())
                         }
+                        // Check if the notifyClosedCheckbox is checked
                         val notifyWhenClosed = notifyClosedCheckbox.isChecked
-                        viewModel.createRegistration(
-                            viewModel.selectedSection.sectionId,
-                            false,
-                            notifyWhenClosed
-                        )
+                        // Create a registration for the selected section, passing the notifyWhenClosed value
+                        viewModel.createRegistration(viewModel.selectedSection.sectionId, false, notifyWhenClosed)
+                        // Clear the text and adapters for the courseSpinner and sectionSpinner
                         courseSpinner.text = ""
                         sectionSpinner.text = ""
                         courseSpinnerAdapter.clear()
                         sectionSpinnerAdapter.clear()
+                        // Clear the selected section in viewModel
                         viewModel.clearSelectedSection()
                     } else {
-                        Toast.makeText(
-                            context,
-                            "Please select a course section",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
+                        // If no course section is selected, prompt user to select a section
+                        Toast.makeText(context, "Please select a course section", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
+
 
             viewModel.registrationCreatedSuccessfullyToast.observe(viewLifecycleOwner, Observer {
                 if (it) {
