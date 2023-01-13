@@ -1,10 +1,6 @@
 package com.pennapps.labs.pennmobile
 
 import android.content.*
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -12,7 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
@@ -22,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.HomeAdapter
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
-import com.pennapps.labs.pennmobile.classes.DiningHallPreference
 import com.pennapps.labs.pennmobile.classes.HomeCell
 import com.pennapps.labs.pennmobile.classes.HomeCellInfo
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
@@ -32,14 +26,17 @@ import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.include_main.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class HomeFragment : Fragment() {
 
     private lateinit var mActivity: MainActivity
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var homepageListener: HomePageListener
 
+    interface HomePageListener {
+        fun homepage()
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -55,7 +52,12 @@ class HomeFragment : Fragment() {
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Home")
         bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
         FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
-        OAuth2NetworkManager(mActivity).getAccessToken()
+        homepageListener = object : HomePageListener {
+            override fun homepage() {
+                getHomePage()
+            }
+        }
+        OAuth2NetworkManager(mActivity).getAccessToken(homepageListener)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
