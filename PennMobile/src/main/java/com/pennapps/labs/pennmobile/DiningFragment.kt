@@ -60,10 +60,15 @@ class DiningFragment : Fragment() {
         v.dining_swiperefresh?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
         v.dining_halls_recycler_view?.layoutManager = LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false)
         v.dining_swiperefresh.setOnRefreshListener { getDiningHalls() }
-        getDiningHalls()
         // initAppBar(v)
         return v
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        getDiningHalls()
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.dining_sort, menu)
@@ -158,10 +163,6 @@ class DiningFragment : Fragment() {
                     mActivity.runOnUiThread {
                         Log.e("Dining", "Could not load Dining page", it)
                         loadingPanel?.visibility = View.GONE
-                        //internetConnectionDining?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-                        //internetConnection_message_dining?.text = getString(R.string.internet_error)
-                        //internetConnectionDining?.visibility = View.VISIBLE
-                        no_results?.visibility = View.VISIBLE
                         dining_swiperefresh?.isRefreshing = false
                     }
                 })

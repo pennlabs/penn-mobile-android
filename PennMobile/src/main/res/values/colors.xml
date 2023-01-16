@@ -63,6 +63,9 @@
     <color name="sneakerWarningOverlay">#BFFB8C00</color>
     <color name="dialogBlurColorOverlay">#41FFFFFF</color>
 
+    <color name="diningGreen">#BADFB8</color>
+    <color name="diningBlue">#99BCF7</color>
+
     <color name="darkRedBackground">#D9534F</color>
 
 </resources>

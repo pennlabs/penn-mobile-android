@@ -15,6 +15,7 @@ import com.pennapps.labs.pennmobile.classes.HomeCell;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
+import com.pennapps.labs.pennmobile.classes.Post;
 import com.pennapps.labs.pennmobile.classes.SaveAccountResponse;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
@@ -146,4 +147,11 @@ public interface StudentLife {
             @Header("Authorization") String bearerToken,
             @Field("venues") String venues,
             Callback<Response> callback);
+
+    @GET("/portal/posts/browse/")
+    Observable<List<Post>> validPostsList(
+            @Header("Authorization") String bearerToken
+    );
+
+
 }

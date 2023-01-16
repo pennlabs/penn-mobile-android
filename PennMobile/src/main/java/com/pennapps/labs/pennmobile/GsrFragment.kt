@@ -59,6 +59,8 @@ class GsrFragment : Fragment() {
     private lateinit var durationAdapter: ArrayAdapter<String>
     private lateinit var huntsmanDurationAdapter: ArrayAdapter<String>
 
+    private var populatedDropDownGSR = false
+
     private lateinit var mActivity: MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -173,6 +175,7 @@ class GsrFragment : Fragment() {
         view.gsr_refresh_layout?.setOnRefreshListener {
             searchForGSR(true)
         }
+        internetConnectionGSR?.visibility = View.VISIBLE
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -191,6 +194,17 @@ class GsrFragment : Fragment() {
     // Called when page loads and whenever user changes start/end time, date, or building
     @RequiresApi(Build.VERSION_CODES.M)
     fun searchForGSR(calledByRefreshLayout: Boolean) {
+        //displays banner if not connected
+        if (!isOnline(context)) {
+            internetConnectionGSR?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            internetConnection_message_gsr?.setText("Not Connected to Internet")
+            internetConnectionGSR?.visibility = View.VISIBLE
+        } else {
+            internetConnectionGSR?.visibility = View.GONE
+            if(!populatedDropDownGSR) {
+                populateDropDownGSR()
+            }
+        }
         var gsrLocation = gsrLocationDropDown.selectedItem.toString()
         val location = mapGSR(gsrLocation)
         val gid = mapGID(gsrLocation)
@@ -331,6 +345,7 @@ class GsrFragment : Fragment() {
         mStudentLife.location()
                 ?.subscribe({ locations ->
                     activity?.let {activity ->
+                        populatedDropDownGSR = true
                         activity.runOnUiThread {
                             //reset the drop down
                             val emptyArray = arrayOfNulls<String>(0)
