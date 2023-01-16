@@ -45,7 +45,8 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_penn_course_alert_create_alert, container, false)
+        return inflater.inflate(R.layout.fragment_penn_course_alert_create_alert, container,
+            false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -156,7 +157,8 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
                     OnItemClickListener { _, _, position, _ -> // when item selected from list
                         // set selected item on textView
                         courseSpinner.text =
-                            courseSpinnerAdapter.getItem(position).toString().substringBefore(" -")
+                            courseSpinnerAdapter.getItem(position).toString()
+                                .substringBefore(" -")
                         viewModel.getSections(courseSpinner.text.toString(), sectionSpinnerAdapter)
                         // Dismiss dialog
                         dialog.dismiss()
@@ -229,24 +231,47 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
 
             alertButton.setOnClickListener {
                 if (emailEditText.text.isEmpty()) {
-                    Toast.makeText(context, "Please enter your email address for alert purposes", Toast.LENGTH_SHORT).show()
-                } else if (phoneNumberEditText.text.isNotEmpty() && !isValidNumber(phoneNumberEditText.text.toString())) {
-                    // If phoneNumberEditText is not empty and the entered number is not valid, show a toast message
-                    Toast.makeText(context, "Please enter a valid US number (or leave the field empty)", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        "Please enter your email address for alert purposes",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else if (phoneNumberEditText.text.isNotEmpty() && !isValidNumber(
+                        phoneNumberEditText.text.toString()
+                    )
+                ) {
+                    // If phoneNumberEditText is not empty and the entered number is not valid,
+                    // show a toast message
+                    Toast.makeText(
+                        context,
+                        "Please enter a valid US number (or leave the field empty)",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 } else {
                     // If email is not empty and phone number (if entered) is valid
                     if (viewModel.isSectionSelected) {
                         // If a course section is selected
-                        if (emailEditText.text.toString() != viewModel.userInfo.value?.profile?.email
-                            || phoneNumberEditText.text.toString() != viewModel.userInfo.value?.profile?.phone
+                        if (emailEditText.text.toString() != viewModel.userInfo.value
+                                ?.profile?.email
+                            || phoneNumberEditText.text.toString() != viewModel.userInfo.value
+                                ?.profile?.phone
                         ) {
-                            // If the entered email or phone number is different from the stored values, update the user info
-                            viewModel.updateUserInfo(emailEditText.text.toString(), phoneNumberEditText.text.toString())
+                            // If the entered email or phone number is different from the
+                            // stored values, update the user info
+                            viewModel.updateUserInfo(
+                                emailEditText.text.toString(),
+                                phoneNumberEditText.text.toString()
+                            )
                         }
                         // Check if the notifyClosedCheckbox is checked
                         val notifyWhenClosed = notifyClosedCheckbox.isChecked
-                        // Create a registration for the selected section, passing the notifyWhenClosed value
-                        viewModel.createRegistration(viewModel.selectedSection.sectionId, false, notifyWhenClosed)
+                        // Create a registration for the selected section, passing
+                        // the notifyWhenClosed value
+                        viewModel.createRegistration(
+                            viewModel.selectedSection.sectionId,
+                            false,
+                            notifyWhenClosed
+                        )
                         // Clear the text and adapters for the courseSpinner and sectionSpinner
                         courseSpinner.text = ""
                         sectionSpinner.text = ""
@@ -256,7 +281,11 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
                         viewModel.clearSelectedSection()
                     } else {
                         // If no course section is selected, prompt user to select a section
-                        Toast.makeText(context, "Please select a course section", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            "Please select a course section",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
@@ -289,29 +318,16 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
         view.pca_notify_text.visibility = View.GONE
         view.pca_notify_checkbox.visibility = View.GONE
         view.pca_alert_button.visibility = View.GONE
-//        view.guestLoginErrorImage.visibility = View.VISIBLE
         view.guestLoginErrorText.visibility = View.VISIBLE
     }
 
-
-//    override fun onResume() {
-//        super.onResume()
-//        Log.i("PCA_CF", "Resumed")
-////        mActivity.hideBottomBar()
-////        mActivity.showBottomBar()
-//    }
-
     private fun showInternetErrorBar(view: View) {
         val internetConnectionBanner = view.findViewById<Toolbar>(R.id.internetConnectionPCAManage)
-        val internetConnectionMessage = view.findViewById<TextView>(R.id.internetConnection_message_pca_manage)
+        val internetConnectionMessage =
+            view.findViewById<TextView>(R.id.internetConnection_message_pca_manage)
         internetConnectionBanner.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
         internetConnectionMessage.text = "Not Connected to Internet"
         internetConnectionBanner.visibility = View.VISIBLE
-    }
-
-    private fun hideInternetErrorBar(view: View) {
-        val internetConnectionBanner = view.findViewById<Toolbar>(R.id.internetConnectionPCAManage)
-        internetConnectionBanner.visibility = View.GONE
     }
 
     private fun isValidNumber(number: String): Boolean {

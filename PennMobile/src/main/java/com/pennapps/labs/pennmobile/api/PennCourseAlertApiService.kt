@@ -30,7 +30,10 @@ interface PennCourseAlertApiService {
             Call<List<PennCourseAlertRegistration>>
 
     @POST("/api/alert/registrations/")
-    fun createRegistration(@Body registration: PCARegistrationBody, @Header("Authorization") token: String):
+    fun createRegistration(
+        @Body registration: PCARegistrationBody,
+        @Header("Authorization") token: String
+    ):
             Call<String>
 
     @GET("/api/alert/registrations/{id}/")
@@ -38,7 +41,11 @@ interface PennCourseAlertApiService {
             Call<PennCourseAlertRegistration>
 
     @PUT("/api/alert/registrations/{id}/")
-    fun updateRegistrationById(@Path("id") id: String, @Body updateRegistrationBody: PennCourseAlertUpdateBody, @Header("Authorization") token: String):
+    fun updateRegistrationById(
+        @Path("id") id: String,
+        @Body updateRegistrationBody: PennCourseAlertUpdateBody,
+        @Header("Authorization") token: String
+    ):
             Call<String>
 
     @GET("/api/base/{semester}/courses/")
@@ -46,7 +53,11 @@ interface PennCourseAlertApiService {
             Call<List<Course>>
 
     @GET("/api/base/{semester}/search/courses/")
-    fun getCourses(@Path("semester") semester: String, @Query("search") search: String, @Query("type") type: String):
+    fun getCourses(
+        @Path("semester") semester: String,
+        @Query("search") search: String,
+        @Query("type") type: String
+    ):
             Call<List<Course>>
 
     @GET("/api/base/{semester}/search/sections/")
@@ -63,7 +74,7 @@ interface PennCourseAlertApiService {
 }
 
 object PennCourseAlertApi {
-    val retrofitService : PennCourseAlertApiService by lazy {
+    val retrofitService: PennCourseAlertApiService by lazy {
         retrofit.create(PennCourseAlertApiService::class.java)
     }
 }

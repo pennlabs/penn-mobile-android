@@ -34,7 +34,10 @@ class PennCourseAlertHolderFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_penn_course_alert_holder, container, false)
+        val view = inflater.inflate(
+            R.layout.fragment_penn_course_alert_holder, container,
+            false
+        )
         initAppBar(view)
         return view
     }
@@ -50,7 +53,7 @@ class PennCourseAlertHolderFragment : Fragment() {
         viewPager = view.findViewById(R.id.PCAPager)
         viewPager.adapter = pagerAdapter
 
-        //uncomment to disable swiping between tabs
+        //TODO: uncomment to disable swiping between tabs
         //viewPager.isUserInputEnabled = false
 
         tabLayout = view.findViewById(R.id.pca_tab_layout)

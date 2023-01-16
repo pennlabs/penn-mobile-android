@@ -17,11 +17,14 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.PennCourseAlertRegistration
 import okhttp3.internal.format
 
-class RegistrationsAdapter(private val listener: OnItemClickListener): ListAdapter<PennCourseAlertRegistration, RegistrationsAdapter.ViewHolder>(RegistrationDiffCallBack()) {
+class RegistrationsAdapter(private val listener: OnItemClickListener):
+    ListAdapter<PennCourseAlertRegistration,
+            RegistrationsAdapter.ViewHolder>(RegistrationDiffCallBack()) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.pca_registration_list_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.pca_registration_list_item,
+            parent, false)
         return ViewHolder(view)
     }
 
@@ -29,7 +32,8 @@ class RegistrationsAdapter(private val listener: OnItemClickListener): ListAdapt
         holder.bindTo(getItem(position))
     }
 
-    inner class ViewHolder(registrationView: View): RecyclerView.ViewHolder(registrationView), View.OnClickListener {
+    inner class ViewHolder(registrationView: View): RecyclerView.ViewHolder(registrationView),
+        View.OnClickListener {
         var courseIdText: TextView
         var isOpenText: TextView
         var subscribedSwitch: SwitchCompat
@@ -44,15 +48,7 @@ class RegistrationsAdapter(private val listener: OnItemClickListener): ListAdapt
             notifyClosedSwitch = registrationView.findViewById(R.id.notify_closed_switch)
             statusCircle = registrationView.findViewById(R.id.statusCircle)
             lastNotified = registrationView.findViewById(R.id.lastNotifiedAt)
-//            registrationView.setOnClickListener(this)
 
-//            notifyClosedSwitch.setOnClickListener {
-//                Log.i("PCA_RV", "Notify switch clicked on course ${courseIdText.text}")
-//            }
-//
-//            subscribedSwitch.setOnClickListener {
-//                Log.i("PCA_RV", "Subscribed switch clicked on course ${courseIdText.text}")
-//            }
             notifyClosedSwitch.setOnClickListener(this)
             subscribedSwitch.setOnClickListener(this)
         }
@@ -66,7 +62,8 @@ class RegistrationsAdapter(private val listener: OnItemClickListener): ListAdapt
                 else -> "Unlisted"
             }
             subscribedSwitch.isChecked = !registration.cancelled
-            notifyClosedSwitch.isChecked = (registration.closeNotification && !registration.cancelled)
+            notifyClosedSwitch.isChecked = (registration.closeNotification
+                    && !registration.cancelled)
             if (!registration.lastNotificationSentAt.isNullOrEmpty()) {
                 lastNotified.text = formatDate(registration.lastNotificationSentAt)
             }
@@ -107,15 +104,22 @@ class RegistrationsAdapter(private val listener: OnItemClickListener): ListAdapt
 
     private fun formatDate(date: String): String {
         val formattedDate = "Last Notified "
-        return formattedDate.plus(date.slice(5..6)).plus("/").plus(date.slice(8..9)).plus("/").plus(date.slice(0..3))
-            .plus(" at ").plus(date.slice(11..15))
+        return formattedDate.plus(date.slice(5..6))
+            .plus("/")
+            .plus(date.slice(8..9))
+            .plus("/")
+            .plus(date.slice(0..3))
+            .plus(" at ")
+            .plus(date.slice(11..15))
     }
 
     private class RegistrationDiffCallBack : DiffUtil.ItemCallback<PennCourseAlertRegistration>() {
-        override fun areItemsTheSame(oldItem: PennCourseAlertRegistration, newItem: PennCourseAlertRegistration): Boolean =
+        override fun areItemsTheSame(oldItem: PennCourseAlertRegistration,
+                                     newItem: PennCourseAlertRegistration): Boolean =
             oldItem == newItem
 
-        override fun areContentsTheSame(oldItem: PennCourseAlertRegistration, newItem: PennCourseAlertRegistration): Boolean =
+        override fun areContentsTheSame(oldItem: PennCourseAlertRegistration,
+                                        newItem: PennCourseAlertRegistration): Boolean =
             oldItem == newItem
     }
 

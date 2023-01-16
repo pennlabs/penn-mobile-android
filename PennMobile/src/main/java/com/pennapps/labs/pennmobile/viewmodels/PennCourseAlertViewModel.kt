@@ -12,48 +12,49 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class PennCourseAlertViewModel: ViewModel() {
+const val TAG = "PCA_VM"
+
+class PennCourseAlertViewModel : ViewModel() {
     var coursesList = mutableListOf<Course>()
     var sectionsList = mutableListOf<Section>()
     lateinit var selectedSection: Section
     private val _userRegistrations = MutableLiveData<List<PennCourseAlertRegistration>>()
-    val userRegistrations : LiveData<List<PennCourseAlertRegistration>> get() = _userRegistrations
+    val userRegistrations: LiveData<List<PennCourseAlertRegistration>> get() = _userRegistrations
     var isSectionSelected: Boolean
-
-    private val _deleteRegistrationErrorToast = MutableLiveData<Boolean>(false)
-    val deleteRegistrationErrorToast: LiveData<Boolean> get() = _deleteRegistrationErrorToast
-
-    private val _cancelRegistrationErrorToast = MutableLiveData<Boolean>(false)
-    val cancelRegistrationErrorToast: LiveData<Boolean> get() = _cancelRegistrationErrorToast
-
     private val _registrationCreatedSuccessfullyToast = MutableLiveData<Boolean>()
-    val registrationCreatedSuccessfullyToast: LiveData<Boolean> get() = _registrationCreatedSuccessfullyToast
+    val registrationCreatedSuccessfullyToast: LiveData<Boolean>
+        get() =
+            _registrationCreatedSuccessfullyToast
     var bearerToken: String = ""
     var currentRegistration = PennCourseAlertRegistration(id = -1)
     private val _userInfo = MutableLiveData<UserInfo>()
-    val userInfo : LiveData<UserInfo> get() = _userInfo
-
+    val userInfo: LiveData<UserInfo> get() = _userInfo
 
     init {
         isSectionSelected = false
     }
 
-    fun createRegistration(section: String, autoResubscribe: Boolean = true, notifyWhenClosed: Boolean = false, id: String = "") {
+    fun createRegistration(
+        section: String,
+        autoResubscribe: Boolean = true,
+        notifyWhenClosed: Boolean = false,
+        id: String = ""
+    ) {
         var response = ""
-        Log.i("PCA-Create", "Section Number: $section")
+        Log.i(TAG, "Created Section Number: $section")
         val registrationBody = PCARegistrationBody(section, autoResubscribe, notifyWhenClosed)
         PennCourseAlertApi.retrofitService.createRegistration(registrationBody, bearerToken)
-            .enqueue(object: Callback<String> {
+            .enqueue(object : Callback<String> {
                 override fun onResponse(call: Call<String>, response: Response<String>) {
-                    Log.i("PCA-Create", "Successfully created registration")
-                    Log.i("PCA-Create", "Response: ${response.body()}")
+                    Log.i(TAG, "Successfully created registration")
+                    Log.i(TAG, "Response: ${response.body()}")
                     updateRegistrationsList()
                     _registrationCreatedSuccessfullyToast.value = true
                 }
 
                 override fun onFailure(call: Call<String>, t: Throwable) {
                     response = "Failure: " + t.message
-                    Log.i("PCA", response)
+                    Log.i(TAG, response)
                 }
             })
     }
@@ -62,52 +63,67 @@ class PennCourseAlertViewModel: ViewModel() {
         var response = ""
         //using search type course for query optimization
         PennCourseAlertApi.retrofitService.getCourses("current", id, "course")
-            .enqueue(object: Callback<List<Course>> {
+            .enqueue(object : Callback<List<Course>> {
                 override fun onResponse(
                     call: Call<List<Course>>,
                     response: Response<List<Course>>
                 ) {
                     coursesList = response.body() as MutableList<Course>? ?: mutableListOf()
-                    Log.i("PCA", "Size: ${coursesList.size}")
+                    Log.i(TAG, "Size: ${coursesList.size}")
                     if (coursesList.isNotEmpty()) {
                         adapter.clear()
-                        adapter.addAll(coursesList.sortedBy{it.id})
+                        adapter.addAll(coursesList.sortedBy { it.id })
                     }
                 }
 
                 override fun onFailure(call: Call<List<Course>>, t: Throwable) {
                     response = "Failure: " + t.message
-                    Log.i("PCA", response)
+                    Log.i(TAG, response)
                 }
 
             })
-
     }
+
     fun retrieveRegistrations() {
         var _response = ""
-        PennCourseAlertApi.retrofitService.getAllRegistrations(bearerToken).enqueue( object: Callback<List<PennCourseAlertRegistration>> {
-            override fun onFailure(call: Call<List<PennCourseAlertRegistration>>, t: Throwable) {
-                _response = "Failure: " + t.message
-                Log.i("PCA", "$_response")
-            }
-
-            override fun onResponse(call: Call<List<PennCourseAlertRegistration>>, response: Response<List<PennCourseAlertRegistration>>) {
-                Log.i("PCA", "success")
-                if (!response.body().isNullOrEmpty()) {
-                    _userRegistrations.value = response.body()!!
-                    _userRegistrations.value = _userRegistrations.value!!.sortedBy { it.section  }
-                    Log.i("PCA_VM", "notify ${_userRegistrations.value!![0].closeNotification}")
-                    Log.i("PCA_VM", "subscribed ${_userRegistrations.value!![0].cancelled}")
+        PennCourseAlertApi.retrofitService.getAllRegistrations(bearerToken)
+            .enqueue(object : Callback<List<PennCourseAlertRegistration>> {
+                override fun onFailure(
+                    call: Call<List<PennCourseAlertRegistration>>,
+                    t: Throwable
+                ) {
+                    _response = "Failure: " + t.message
+                    Log.i(TAG, "$_response")
                 }
-            }
-        })
+
+                override fun onResponse(
+                    call: Call<List<PennCourseAlertRegistration>>,
+                    response: Response<List<PennCourseAlertRegistration>>
+                ) {
+                    Log.i(TAG, "success")
+                    if (!response.body().isNullOrEmpty()) {
+                        _userRegistrations.value = response.body()!!
+                        _userRegistrations.value =
+                            _userRegistrations.value!!.sortedBy { it.section }
+                        Log.i(
+                            TAG,
+                            "notify ${_userRegistrations.value!![0].closeNotification}"
+                        )
+                        Log.i(
+                            TAG,
+                            "subscribed ${_userRegistrations.value!![0].cancelled}"
+                        )
+                    }
+                }
+            })
     }
+
     fun getSections(courseId: String, adapter: ArrayAdapter<Section>) {
         var response = ""
 
         //using search type course for query optimization
         PennCourseAlertApi.retrofitService.getSections("current", courseId)
-            .enqueue(object: Callback<List<Section>> {
+            .enqueue(object : Callback<List<Section>> {
                 override fun onResponse(
                     call: Call<List<Section>>,
                     response: Response<List<Section>>
@@ -116,15 +132,14 @@ class PennCourseAlertViewModel: ViewModel() {
 
                     if (sectionsList.isNotEmpty()) {
                         adapter.clear()
-                        adapter.addAll(sectionsList.sortedBy{it.sectionId})
+                        adapter.addAll(sectionsList.sortedBy { it.sectionId })
                     }
                 }
 
                 override fun onFailure(call: Call<List<Section>>, t: Throwable) {
                     response = "Failure: " + t.message
-                    Log.i("PCA", response)
+                    Log.i(TAG, response)
                 }
-
             })
     }
 
@@ -136,128 +151,120 @@ class PennCourseAlertViewModel: ViewModel() {
             val id = registration.id.toString()
             deleteRegistration(id)
         }
-        if (!(_deleteRegistrationErrorToast.value)!!) {
-            _userRegistrations.value = mutableListOf()
-        }
+        _userRegistrations.value = mutableListOf()
     }
 
     fun cancelRegistration(id: String) {
         var _response = ""
-        Log.i("PCA_VM", "Id is: $id")
-        val updateBody = PennCourseAlertUpdateBody(cancelled = true, deleted = false,
+        Log.i(TAG, "Id is: $id")
+        val updateBody = PennCourseAlertUpdateBody(
+            cancelled = true, deleted = false,
             autoResubscribe = false, closeNotifications = false, resubscribe = false
         )
         PennCourseAlertApi.retrofitService.updateRegistrationById(id, updateBody, bearerToken)
-            .enqueue(object: Callback<String> {
+            .enqueue(object : Callback<String> {
                 override fun onResponse(
                     call: Call<String>,
                     response: Response<String>
                 ) {
                     _response = response.code().toString() + "canceled successfully"
-                    Log.i("PCA_VM", _response)
+                    Log.i(TAG, _response)
                 }
 
                 override fun onFailure(call: Call<String>, t: Throwable) {
                     _response = "Failure: " + t.message
-                    Log.i("PCA_VM", _response)
-                    _cancelRegistrationErrorToast.value = true
+                    Log.i(TAG, _response)
                 }
-
             })
     }
 
     fun resubscribeToRegistration(id: String) {
         var _response = ""
-        Log.i("PCA_VM", "Id is: $id")
-        val updateBody = PennCourseAlertUpdateBody(cancelled = false,
+        Log.i(TAG, "Id is: $id")
+        val updateBody = PennCourseAlertUpdateBody(
+            cancelled = false,
             closeNotifications = false, resubscribe = true, autoResubscribe = true
         )
         PennCourseAlertApi.retrofitService.updateRegistrationById(id, updateBody, bearerToken)
-            .enqueue(object: Callback<String> {
+            .enqueue(object : Callback<String> {
                 override fun onResponse(
                     call: Call<String>,
                     response: Response<String>
                 ) {
                     _response = response.code().toString() + "resubscribed successfully"
-                    Log.i("PCA_VM", _response)
+                    Log.i(TAG, _response)
                 }
 
                 override fun onFailure(call: Call<String>, t: Throwable) {
                     _response = "Failure: " + t.message
-                    Log.i("PCA_VM", _response)
-                    _cancelRegistrationErrorToast.value = true
+                    Log.i(TAG, _response)
                 }
-
             })
     }
 
     fun switchOnClosedNotifications(id: String, notifyWhenClosed: Boolean) {
         var _response = ""
-        Log.i("PCA_VM", "Id is: $id")
+        Log.i(TAG, "Id is: $id")
 
         val updateBody = PennCourseAlertUpdateBody(closeNotifications = notifyWhenClosed)
 
         PennCourseAlertApi.retrofitService.updateRegistrationById(id, updateBody, bearerToken)
-            .enqueue(object: Callback<String> {
+            .enqueue(object : Callback<String> {
                 override fun onResponse(
                     call: Call<String>,
                     response: Response<String>
                 ) {
                     _response = response.code().toString() + " - " + response.body().toString()
-                    Log.i("PCA_VM_CLOSE", _response)
+                    Log.i(TAG, _response)
                 }
 
                 override fun onFailure(call: Call<String>, t: Throwable) {
                     _response = "Failure: " + t.message
-                    Log.i("PCA_VM", _response)
+                    Log.i(TAG, _response)
                 }
             })
     }
 
     private fun deleteRegistration(id: String) {
         var _response = ""
-        Log.i("PCA_VM", "Id is: $id")
-        val updateBody = PennCourseAlertUpdateBody(cancelled = true, deleted = true,
+        Log.i(TAG, "Id is: $id")
+        val updateBody = PennCourseAlertUpdateBody(
+            cancelled = true, deleted = true,
             autoResubscribe = false, closeNotifications = false, resubscribe = false
         )
         PennCourseAlertApi.retrofitService.updateRegistrationById(id, updateBody, bearerToken)
-            .enqueue(object: Callback<String> {
+            .enqueue(object : Callback<String> {
                 override fun onResponse(
                     call: Call<String>,
                     response: Response<String>
                 ) {
                     _response = response.code().toString()
-                    Log.i("PCA_VM", _response)
+                    Log.i(TAG, _response)
                 }
 
                 override fun onFailure(call: Call<String>, t: Throwable) {
                     _response = "Failure: " + t.message
-                    Log.i("PCA_VM", _response)
-                    _deleteRegistrationErrorToast.value = true
+                    Log.i(TAG, _response)
                 }
-
             })
     }
 
     fun getRegistrationById(id: String) {
         var _response = ""
         PennCourseAlertApi.retrofitService.getRegistrationById(id, bearerToken)
-            .enqueue(object: Callback<PennCourseAlertRegistration> {
+            .enqueue(object : Callback<PennCourseAlertRegistration> {
                 override fun onResponse(
                     call: Call<PennCourseAlertRegistration>,
                     response: Response<PennCourseAlertRegistration>
                 ) {
-//                    _response = response.code().toString() ?: ""
-//                    Log.i("PCA_VM", _response)
                     currentRegistration = response.body()!!
                 }
 
                 override fun onFailure(call: Call<PennCourseAlertRegistration>, t: Throwable) {
                     _response = "Failure: " + t.message
-                    Log.i("PCA_VM", _response)
+                    Log.i(TAG, _response)
 
                 }
-
             })
     }
 
@@ -273,54 +280,40 @@ class PennCourseAlertViewModel: ViewModel() {
         var _response = ""
         val profile = Profile(true, phone = phone, email = email)
         PennCourseAlertApi.retrofitService.updateInfo(profile, bearerToken)
-            .enqueue(object: Callback<String> {
+            .enqueue(object : Callback<String> {
                 override fun onResponse(
                     call: Call<String>,
                     response: Response<String>
                 ) {
                     _response = response.code().toString() ?: ""
-                    Log.i("PCA_VM", "User info updated successfully: $_response")
+                    Log.i(TAG, "User info updated successfully: $_response")
                 }
 
                 override fun onFailure(call: Call<String>, t: Throwable) {
                     _response = "Failure: " + t.message
-                    Log.i("PCA_VM",  _response)
-
+                    Log.i(TAG, _response)
                 }
-
             })
     }
 
     fun getUserInfo() {
         var _response = ""
         PennCourseAlertApi.retrofitService.retrieveUser(bearerToken)
-            .enqueue(object: Callback<UserInfo> {
+            .enqueue(object : Callback<UserInfo> {
                 override fun onResponse(
                     call: Call<UserInfo>,
                     response: Response<UserInfo>
                 ) {
                     _response = response.code().toString() ?: ""
-                    Log.i("PCA_VM", _response)
+                    Log.i(TAG, _response)
                     _userInfo.value = response.body()
                 }
-
                 override fun onFailure(call: Call<UserInfo>, t: Throwable) {
                     _response = "Failure: " + t.message
-                    Log.i("PCA_VM", _response)
-
+                    Log.i(TAG, _response)
                 }
-
             })
     }
-
-    //functions commented out in case delete on swipe is implemented
-    /*
-    fun removeRegistration(position: Int) {
-        _userRegistrations.value = _userRegistrations.value?.filter {
-            it.id != _userRegistrations.value!![position].id
-        }
-    }
-    */
 
     fun clearSelectedSection() {
         isSectionSelected = false
@@ -328,13 +321,5 @@ class PennCourseAlertViewModel: ViewModel() {
 
     fun onSuccessToastDone() {
         _registrationCreatedSuccessfullyToast.value = false
-    }
-
-    fun onCancelToastDone() {
-        _cancelRegistrationErrorToast.value = false
-    }
-
-    fun onDeleteToastDone() {
-        _deleteRegistrationErrorToast.value = false
     }
 }
