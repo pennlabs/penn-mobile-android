@@ -55,7 +55,7 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
         if (!isOnline(context)) {
             showInternetErrorBar(view)
         } else {
-            hideInternetErrorBar(view)
+//            hideInternetErrorBar(view)
         }
 
 

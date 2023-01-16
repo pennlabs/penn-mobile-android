@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile
 
 import android.app.AlertDialog
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -25,6 +26,7 @@ import kotlinx.android.synthetic.main.fragment_dining.view.*
 import kotlinx.android.synthetic.main.fragment_penn_course_alert_manage_alerts.*
 import kotlinx.android.synthetic.main.fragment_penn_course_alert_manage_alerts.view.*
 import kotlinx.android.synthetic.main.include_main.*
+import kotlinx.android.synthetic.main.pca_registration_list_item.*
 
 
 class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnItemClickListener {
@@ -117,15 +119,16 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
 
         setNoDataViewsVisibility()
 
-        viewModel.cancelRegistrationErrorToast.observe(viewLifecycleOwner, Observer {
-            Toast.makeText(context, "Error canceling registration!", Toast.LENGTH_SHORT).show()
-            viewModel.onCancelToastDone()
-        })
-
-        viewModel.deleteRegistrationErrorToast.observe(viewLifecycleOwner, Observer {
-            Toast.makeText(context, "Error deleting registration!", Toast.LENGTH_SHORT).show()
-            viewModel.onDeleteToastDone()
-        })
+        //TODO: handle error toasts
+//        viewModel.cancelRegistrationErrorToast.observe(viewLifecycleOwner, Observer {
+//            Toast.makeText(context, "Error canceling registration!", Toast.LENGTH_SHORT).show()
+//            viewModel.onCancelToastDone()
+//        })
+//
+//        viewModel.deleteRegistrationErrorToast.observe(viewLifecycleOwner, Observer {
+//            Toast.makeText(context, "Error deleting registration!", Toast.LENGTH_SHORT).show()
+//            viewModel.onDeleteToastDone()
+//        })
 
         //uncomment and add some viewmodel functionality to handle swipe item deletion
         /*
@@ -198,6 +201,30 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
 //        }
 //        val id = adapter.currentList[position].id.toString()
 //        viewModel.getRegistrationById(id)
+    }
+
+    override fun onClosedNotificationsSwitchClick(position: Int, onClosedNotificatons: Boolean) {
+        val id = adapter.currentList[position].id.toString()
+        Log.i("PCA_RV", "Item $position closedNoti" +
+                " clicked with closed noti set to $onClosedNotificatons")
+        if (subscribed_switch.isChecked) {
+            viewModel.switchOnClosedNotifications(id, onClosedNotificatons)
+        } else {
+            notify_closed_switch.isChecked = false
+            Toast.makeText(context, "Please toggle alert first to perform this action!",
+                Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onSubscribedSwitchClick(position: Int, onSubscribeNotifications: Boolean) {
+        Log.i("PCA_RV", "Item $position subscribed clicked with subscribed set to")
+        val id = adapter.currentList[position].id.toString()
+        if (onSubscribeNotifications) {
+            viewModel.resubscribeToRegistration(id)
+        } else {
+//            notify_closed_switch.isClickable = false
+            viewModel.cancelRegistration(id)
+        }
     }
 
 

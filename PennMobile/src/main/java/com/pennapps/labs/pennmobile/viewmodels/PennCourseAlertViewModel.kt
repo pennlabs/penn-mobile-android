@@ -96,6 +96,8 @@ class PennCourseAlertViewModel: ViewModel() {
                 if (!response.body().isNullOrEmpty()) {
                     _userRegistrations.value = response.body()!!
                     _userRegistrations.value = _userRegistrations.value!!.sortedBy { it.section  }
+                    Log.i("PCA_VM", "notify ${_userRegistrations.value!![0].closeNotification}")
+                    Log.i("PCA_VM", "subscribed ${_userRegistrations.value!![0].cancelled}")
                 }
             }
         })
@@ -139,7 +141,7 @@ class PennCourseAlertViewModel: ViewModel() {
         }
     }
 
-    private fun cancelRegistration(id: String) {
+    fun cancelRegistration(id: String) {
         var _response = ""
         Log.i("PCA_VM", "Id is: $id")
         val updateBody = PennCourseAlertUpdateBody(cancelled = true, deleted = false,
@@ -151,7 +153,7 @@ class PennCourseAlertViewModel: ViewModel() {
                     call: Call<String>,
                     response: Response<String>
                 ) {
-                    _response = response.code().toString()
+                    _response = response.code().toString() + "canceled successfully"
                     Log.i("PCA_VM", _response)
                 }
 
@@ -164,18 +166,11 @@ class PennCourseAlertViewModel: ViewModel() {
             })
     }
 
-    private fun turnCloseNotificationsOff(id: String) {
+    fun resubscribeToRegistration(id: String) {
         var _response = ""
         Log.i("PCA_VM", "Id is: $id")
-        getRegistrationById(id)
-
-        if (currentRegistration.id == -1) {
-            Log.i("PCA_VM", "Cannot retrieve registration to modify")
-            return
-        }
-
-        val updateBody = PennCourseAlertUpdateBody(cancelled = currentRegistration.cancelled, deleted = currentRegistration.deleted,
-            autoResubscribe = currentRegistration.autoResubscribe, closeNotifications = false, resubscribe = currentRegistration.autoResubscribe
+        val updateBody = PennCourseAlertUpdateBody(cancelled = false,
+            closeNotifications = false, resubscribe = true, autoResubscribe = true
         )
         PennCourseAlertApi.retrofitService.updateRegistrationById(id, updateBody, bearerToken)
             .enqueue(object: Callback<String> {
@@ -183,8 +178,33 @@ class PennCourseAlertViewModel: ViewModel() {
                     call: Call<String>,
                     response: Response<String>
                 ) {
-                    _response = response.code().toString()
+                    _response = response.code().toString() + "resubscribed successfully"
                     Log.i("PCA_VM", _response)
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    _response = "Failure: " + t.message
+                    Log.i("PCA_VM", _response)
+                    _cancelRegistrationErrorToast.value = true
+                }
+
+            })
+    }
+
+    fun switchOnClosedNotifications(id: String, notifyWhenClosed: Boolean) {
+        var _response = ""
+        Log.i("PCA_VM", "Id is: $id")
+
+        val updateBody = PennCourseAlertUpdateBody(closeNotifications = notifyWhenClosed)
+
+        PennCourseAlertApi.retrofitService.updateRegistrationById(id, updateBody, bearerToken)
+            .enqueue(object: Callback<String> {
+                override fun onResponse(
+                    call: Call<String>,
+                    response: Response<String>
+                ) {
+                    _response = response.code().toString() + " - " + response.body().toString()
+                    Log.i("PCA_VM_CLOSE", _response)
                 }
 
                 override fun onFailure(call: Call<String>, t: Throwable) {

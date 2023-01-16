@@ -47,7 +47,11 @@ class RegistrationsAdapter(private val listener: OnItemClickListener): ListAdapt
 //            registrationView.setOnClickListener(this)
 
 //            notifyClosedSwitch.setOnClickListener {
-//                Log.i("adapter", "Switch clicked on course ${courseIdText.text}")
+//                Log.i("PCA_RV", "Notify switch clicked on course ${courseIdText.text}")
+//            }
+//
+//            subscribedSwitch.setOnClickListener {
+//                Log.i("PCA_RV", "Subscribed switch clicked on course ${courseIdText.text}")
 //            }
             notifyClosedSwitch.setOnClickListener(this)
             subscribedSwitch.setOnClickListener(this)
@@ -77,6 +81,16 @@ class RegistrationsAdapter(private val listener: OnItemClickListener): ListAdapt
         override fun onClick(v: View?) {
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION) {
+                if (v?.id?.equals(R.id.subscribed_switch) == true) {
+                    Log.i("PCA_RV", "Subscribed switch clicked")
+                    listener.onSubscribedSwitchClick(position, subscribedSwitch.isChecked)
+                    notifyClosedSwitch.isChecked = false
+                }
+                if (v?.id?.equals(R.id.notify_closed_switch) == true) {
+                    Log.i("PCA_RV", "Notify switch clicked")
+                    listener.onClosedNotificationsSwitchClick(position,
+                        notifyClosedSwitch.isChecked)
+                }
                 listener.onItemClick(position)
             }
         }
@@ -86,6 +100,9 @@ class RegistrationsAdapter(private val listener: OnItemClickListener): ListAdapt
 
     interface OnItemClickListener {
         fun onItemClick(position: Int)
+        fun onSubscribedSwitchClick(position: Int, onSubscribeNotifications: Boolean)
+        fun onClosedNotificationsSwitchClick(position: Int, onClosedNotifications: Boolean)
+
     }
 
     private fun formatDate(date: String): String {
