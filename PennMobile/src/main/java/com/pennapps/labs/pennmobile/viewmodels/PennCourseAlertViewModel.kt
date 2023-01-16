@@ -36,13 +36,14 @@ class PennCourseAlertViewModel : ViewModel() {
 
     fun createRegistration(
         section: String,
-        autoResubscribe: Boolean = true,
         notifyWhenClosed: Boolean = false,
         id: String = ""
     ) {
         var response = ""
         Log.i(TAG, "Created Section Number: $section")
-        val registrationBody = PCARegistrationBody(section, autoResubscribe, notifyWhenClosed)
+        val registrationBody = PCARegistrationBody(section, autoResubscribe = true,
+            closeNotification = notifyWhenClosed
+        )
         PennCourseAlertApi.retrofitService.createRegistration(registrationBody, bearerToken)
             .enqueue(object : Callback<String> {
                 override fun onResponse(call: Call<String>, response: Response<String>) {

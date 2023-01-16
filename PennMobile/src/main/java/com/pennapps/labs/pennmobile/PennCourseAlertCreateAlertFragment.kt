@@ -269,7 +269,6 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
                         // the notifyWhenClosed value
                         viewModel.createRegistration(
                             viewModel.selectedSection.sectionId,
-                            false,
                             notifyWhenClosed
                         )
                         // Clear the text and adapters for the courseSpinner and sectionSpinner
