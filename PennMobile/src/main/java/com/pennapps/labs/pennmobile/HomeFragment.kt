@@ -73,11 +73,14 @@ class HomeFragment : Fragment() {
         view.home_refresh_layout
             .setOnRefreshListener { getHomePage() }
 
-        getHomePage()
         initAppBar(view)
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        getHomePage()
+    }
     @RequiresApi(Build.VERSION_CODES.M)
     private fun getHomePage() {
 
@@ -96,6 +99,9 @@ class HomeFragment : Fragment() {
             internetConnection_message?.text = getString(R.string.internet_error)
             home_cells_rv?.setPadding(0, 90, 0, 0)
             internetConnectionHome?.visibility = View.VISIBLE
+            home_refresh_layout?.isRefreshing = false
+            loadingPanel?.visibility = View.GONE
+            return
         } else {
             internetConnectionHome?.visibility = View.GONE
             home_cells_rv?.setPadding(0, 0, 0, 0)
@@ -104,7 +110,7 @@ class HomeFragment : Fragment() {
         // get API data
         val homepageCells = mutableListOf<HomeCell>()
 
-        for (i in 1..5) {
+        for (i in 1..6) {
             homepageCells.add(HomeCell())
         }
 
@@ -117,7 +123,7 @@ class HomeFragment : Fragment() {
                     newsCell.info = HomeCellInfo()
                     newsCell.info?.article = article
                     newsCell.type = "news"
-                    homepageCells.set(1, newsCell)
+                    homepageCells.set(2, newsCell)
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
                     home_refresh_layout?.isRefreshing = false
@@ -126,11 +132,7 @@ class HomeFragment : Fragment() {
                 mActivity.runOnUiThread {
                     Log.e("Home", "Could not load news", throwable)
                     throwable.printStackTrace()
-                    Toast.makeText(mActivity, "Could not load news", Toast.LENGTH_LONG).show()
                     loadingPanel?.visibility = View.GONE
-                    internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-                    internetConnection_message?.text = getString(R.string.internet_error)
-                    internetConnectionHome?.visibility = View.VISIBLE
                     home_refresh_layout?.isRefreshing = false
                 }
             })
@@ -154,7 +156,7 @@ class HomeFragment : Fragment() {
                     }
                     diningCellInfo.venues = venues
                     diningCell.info = diningCellInfo
-                    homepageCells.set(2, diningCell)
+                    homepageCells.set(3, diningCell)
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
                     internetConnectionHome?.visibility = View.GONE
@@ -162,13 +164,9 @@ class HomeFragment : Fragment() {
                 }
             }, { throwable ->
                 mActivity.runOnUiThread {
-                    Log.e("Home", "Could not load Home page", throwable)
+                    Log.e("Home", "Could not load Dining", throwable)
                     throwable.printStackTrace()
-                    Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
                     loadingPanel?.visibility = View.GONE
-                    internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-                    internetConnection_message?.text = getString(R.string.internet_error)
-                    internetConnectionHome?.visibility = View.VISIBLE
                     home_refresh_layout?.isRefreshing = false
                 }
             })
@@ -182,7 +180,7 @@ class HomeFragment : Fragment() {
                     val gsrBookingCell = HomeCell()
                     gsrBookingCell.type = "gsr_booking"
                     gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "Weigle")
-                    homepageCells.set(3, gsrBookingCell)
+                    homepageCells.set(4, gsrBookingCell)
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
                     home_refresh_layout?.isRefreshing = false
@@ -191,11 +189,7 @@ class HomeFragment : Fragment() {
                 mActivity.runOnUiThread {
                     Log.e("Home", "Could not load calendar", throwable)
                     throwable.printStackTrace()
-                    Toast.makeText(mActivity, "Could not load calendar", Toast.LENGTH_LONG).show()
                     loadingPanel?.visibility = View.GONE
-                    internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-                    internetConnection_message?.text = getString(R.string.internet_error)
-                    internetConnectionHome?.visibility = View.VISIBLE
                     home_refresh_layout?.isRefreshing = false
                 }
             })
@@ -210,7 +204,7 @@ class HomeFragment : Fragment() {
                         laundryCellInfo.roomId = preferences[0]
                     }
                     laundryCell.info = laundryCellInfo
-                    homepageCells.set(4, laundryCell)
+                    homepageCells.set(5, laundryCell)
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
                     internetConnectionHome?.visibility = View.GONE
@@ -220,13 +214,33 @@ class HomeFragment : Fragment() {
                 mActivity.runOnUiThread {
                     Log.e("Home", "Could not load laundry", throwable)
                     throwable.printStackTrace()
-                    Toast.makeText(mActivity, "Could not load home laundry", Toast.LENGTH_LONG).show()
                     loadingPanel?.visibility = View.GONE
-                    internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-                    internetConnection_message?.text = getString(R.string.internet_error)
-                    internetConnectionHome?.visibility = View.VISIBLE
                     home_refresh_layout?.isRefreshing = false
                 }
+            })
+
+            studentLife.validPostsList(bearerToken).subscribe ({ post ->
+                if (post.size >= 1) { //there exists a post
+                    mActivity.runOnUiThread {
+                        var postCell = HomeCell()
+                        postCell.info = HomeCellInfo()
+                        postCell.type = "post"
+                        postCell.info?.post = post[0]
+                        homepageCells.set(1, postCell)
+                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                        loadingPanel?.visibility = View.GONE
+                        home_refresh_layout?.isRefreshing = false
+                    }
+                }
+
+            }, {throwable ->
+                mActivity.runOnUiThread {
+                    Log.e("Home", "Could not load posts", throwable)
+                    throwable.printStackTrace()
+                    loadingPanel?.visibility = View.GONE
+                    home_refresh_layout?.isRefreshing = false
+                }
+
             })
 
             /*studentLife.getHomePage(bearerToken).subscribe({ cells ->
@@ -268,11 +282,7 @@ class HomeFragment : Fragment() {
                 mActivity.runOnUiThread {
                     Log.e("Home", "Could not load Home page", throwable)
                     throwable.printStackTrace()
-                    Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
                     loadingPanel?.visibility = View.GONE
-                    internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-                    internetConnection_message?.text = getString(R.string.internet_error)
-                    internetConnectionHome?.visibility = View.VISIBLE
                     home_refresh_layout?.isRefreshing = false
                 }
             })
@@ -296,11 +306,7 @@ class HomeFragment : Fragment() {
                 mActivity.runOnUiThread {
                     Log.e("Home", "Could not load Home page", throwable)
                     throwable.printStackTrace()
-                    Toast.makeText(mActivity, "Could not load Home page", Toast.LENGTH_LONG).show()
                     loadingPanel?.visibility = View.GONE
-                    internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-                    internetConnection_message?.text = getString(R.string.internet_error)
-                    internetConnectionHome?.visibility = View.VISIBLE
                     home_refresh_layout?.isRefreshing = false
                 }
             })

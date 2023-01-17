@@ -48,7 +48,7 @@ class DiningHolderFragment : Fragment() {
         pager.isUserInputEnabled = false
         TabLayoutMediator(tabLayout, pager) { tab, position ->
             if (position == 0) {
-                tab.text = "Dining"
+                tab.text = "Dining Halls"
             } else {
                 tab.text = "Insights"
             }
@@ -63,7 +63,7 @@ class DiningHolderFragment : Fragment() {
             internetConnectionDiningHolder?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
             internetConnection_message_dining_holder?.text = getString(R.string.internet_error)
             internetConnectionDiningHolder?.visibility = View.VISIBLE
-            // loadingPanel?.visibility = View.GONE
+            //loadingPanel?.visibility = View.GONE
         } else {
             internetConnectionDiningHolder?.visibility = View.GONE
             // loadingPanel?.visibility = View.GONE

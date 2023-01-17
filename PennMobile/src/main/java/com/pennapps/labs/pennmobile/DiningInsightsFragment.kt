@@ -15,21 +15,24 @@ import com.pennapps.labs.pennmobile.adapters.DiningInsightsCardAdapter
 import com.pennapps.labs.pennmobile.api.CampusExpress
 import com.pennapps.labs.pennmobile.api.CampusExpressNetworkManager
 import com.pennapps.labs.pennmobile.classes.DiningBalances
+import com.pennapps.labs.pennmobile.classes.DiningBalancesList
 import com.pennapps.labs.pennmobile.classes.DiningInsightCell
 import com.pennapps.labs.pennmobile.classes.DollarsSpentCell
 import kotlinx.android.synthetic.main.fragment_dining.*
 import kotlinx.android.synthetic.main.fragment_dining.view.*
 import kotlinx.android.synthetic.main.fragment_dining_insights.*
 import kotlinx.android.synthetic.main.fragment_dining_insights.view.*
+import kotlinx.android.synthetic.main.fragment_gsr.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 
 
 /**
- * A simple [Fragment] subclass.
- * Use the [DiningInsightsFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * Dining Insights Fragment
+ * Created by Julius Snipes
  */
 class DiningInsightsFragment : Fragment() {
 
@@ -59,8 +62,14 @@ class DiningInsightsFragment : Fragment() {
         networkManager = CampusExpressNetworkManager(mActivity)
         val diningBalance = DollarsSpentCell()
         diningBalance.type = "dining_balance"
+        val diningDollarsPredictionsCell = DiningInsightCell()
+        diningDollarsPredictionsCell.type = "dining_dollars_predictions"
+        val diningSwipesPredictionsCell = DiningInsightCell()
+        diningSwipesPredictionsCell.type = "dining_swipes_predictions"
         cells = ArrayList()
         cells.add(diningBalance)
+        cells.add(diningDollarsPredictionsCell)
+        cells.add(diningSwipesPredictionsCell)
         insightsrv = view.insightsrv
         insightsrv.adapter = DiningInsightsCardAdapter(cells)
         val networkManager = CampusExpressNetworkManager(mActivity)
@@ -79,6 +88,24 @@ class DiningInsightsFragment : Fragment() {
     }
 
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (!isOnline(context)) {
+            internetConnectionDiningInsights?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            internetConnection_message_dining_insights?.setText("Not Connected to Internet")
+            internetConnectionDiningInsights?.visibility = View.VISIBLE
+            dining_insights_refresh?.isRefreshing = false
+            return
+        } else {
+            internetConnectionDiningInsights?.visibility = View.GONE
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun refresh() {
         val accessToken = networkManager.getAccessToken()
         if (accessToken == "") {
@@ -98,7 +125,17 @@ class DiningInsightsFragment : Fragment() {
 
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun getInsights(accessToken: String?) {
+        if (!isOnline(context)) {
+            internetConnectionDiningInsights?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            internetConnection_message_dining_insights?.setText("Not Connected to Internet")
+            internetConnectionDiningInsights?.visibility = View.VISIBLE
+            dining_insights_refresh?.isRefreshing = false
+            return
+        } else {
+            internetConnectionDiningInsights?.visibility = View.GONE
+        }
         val bearerToken = "Bearer $accessToken"
         mCampusExpress.getCurrentDiningBalances(bearerToken).subscribe( { t: DiningBalances? ->
             activity?.runOnUiThread {
@@ -113,6 +150,23 @@ class DiningInsightsFragment : Fragment() {
                 dining_insights_refresh?.isRefreshing = false
             }
         })
+        val current = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val formattedCurrentDate = current.format(formatter)
+        mCampusExpress.getPastDiningBalances(bearerToken, DiningInsightsCardAdapter.START_DAY_OF_SEMESTER, formattedCurrentDate).subscribe( { t: DiningBalancesList? ->
+            activity?.runOnUiThread {
+                cells[1].diningBalancesList = t
+                cells[2].diningBalancesList = t
+                (insightsrv.adapter as DiningInsightsCardAdapter).notifyItemChanged(1)
+                (insightsrv.adapter as DiningInsightsCardAdapter).notifyItemChanged(2)
+                dining_insights_refresh?.isRefreshing = false
+            } },
+            { throwable ->
+                activity?.runOnUiThread {
+                    Log.e("DiningInsightsFragment", "Error getting balances", throwable)
+                    dining_insights_refresh?.isRefreshing = false
+                }
+            })
 
     }
     

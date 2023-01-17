@@ -148,11 +148,10 @@
         <item name="android:textSize">16sp</item>
     </style>
 
-    <style name="dining_insights_header">
+    <style name="dining_insights_header" parent="@android:style/TextAppearance.Widget.TabWidget">
         <item name="android:textColor">#101E3B</item>
-        <item name="fontFamily">@font/gilroy_extra_bold</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/gilroy_extra_bold</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="day_of_week">

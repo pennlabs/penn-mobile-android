@@ -349,17 +349,54 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
 
     private fun bindPostCell(holder: ViewHolder, cell: HomeCell) {
         val info = cell.info
-        holder.itemView.home_post_title.text = info?.title
-        holder.itemView.home_post_subtitle.text = info?.subtitle
-        holder.itemView.home_post_source.text = info?.source
-        holder.itemView.home_post_timestamp.text = info?.timeLabel
+        val post = cell.info?.post
+        holder.itemView.home_post_title.text = post?.title
+        holder.itemView.home_post_subtitle.text = post?.subtitle
+        holder.itemView.home_post_source.text = "Penn Labs" //post?.clubCode?.capitalize()
+        val time = post?.startDate?.substring(5, 7) + " / " +
+                post?.startDate?.substring(8, 10) + " - " +
+                post?.expireDate?.substring(5, 7) + " / " +
+                post?.expireDate?.substring(8, 10)
+        holder.itemView.home_post_timestamp.text = time
+        Picasso.get()
+            .load(post?.imageUrl)
+            .fit()
+            .centerCrop()
+            .into(holder.itemView.home_post_iv)
+        /** Adds dynamically generated accent color from the fetched image to the news card */
+        var accentColor: Int =  getColor(mContext, R.color.black)
+        GlobalScope.launch(Dispatchers.Default) {
+            val bitmap = Picasso.get().load(post?.imageUrl).get()
+            // Create palette from bitmap
+            fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
+            val vibrantSwatch: Palette.Swatch? = createPaletteSync(bitmap).darkVibrantSwatch
+            vibrantSwatch?.rgb?.let { accentColor = it }
+            mActivity.runOnUiThread {
+                // Change all the components to match the accent color palette
+                vibrantSwatch?.titleTextColor?.let {
+                    holder.itemView.home_post_title.setTextColor(ColorUtils.setAlphaComponent(it, 150))
+                    holder.itemView.home_post_subtitle.setTextColor(it)
+                    holder.itemView.home_post_timestamp.setTextColor(it)
+                    holder.itemView.home_post_source.setTextColor(it)
+                }
+                val bitmapDrawable = BitmapDrawable(
+                    holder.view.resources,
+                    bitmap)
 
-        Picasso.get().load(info?.imageUrl).fit().centerCrop().into(holder.itemView.home_post_iv)
-
+                holder.itemView.post_card_container.background = bitmapDrawable
+                holder.itemView.postBlurView
+                    .setOverlayColor(ColorUtils.setAlphaComponent(accentColor, 150))
+            }
+        }
+        /** Sets up blur view on post card */
+        holder.itemView.postBlurView.setupWith(holder.itemView.post_card_container)
+            .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))
+            .setBlurAlgorithm(RenderScriptBlur(mContext))
+            .setBlurRadius(25f)
+            .setHasFixedTransformationMatrix(true)
+        /** Post clicking logic if there exists a URL **/
+        val url = post?.postUrl ?: return
         holder.itemView.home_post_card.setOnClickListener {
-
-            val url = info?.postUrl
-
             val connection = NewsCustomTabsServiceConnection()
             builder = CustomTabsIntent.Builder()
             share = Intent(Intent.ACTION_SEND)
