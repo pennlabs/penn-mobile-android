@@ -40,7 +40,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
     private final List<Switch> switches = new ArrayList<>();
     private final int maxNumRooms = 3;
     private StudentLife labs;
-    private final String bearerToken;
+    private String bearerToken;
 
 
     public LaundrySettingsAdapter(Context context, HashMap<String, List<LaundryRoomSimple>> laundryRooms, List<String> laundryHalls) {

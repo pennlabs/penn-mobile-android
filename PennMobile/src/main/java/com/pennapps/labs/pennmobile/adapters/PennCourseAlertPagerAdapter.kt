@@ -20,7 +20,7 @@ class PennCourseAlertPagerAdapter(fragment: Fragment): FragmentStateAdapter(frag
 
     companion object {
         private const val CREATE_ALERT_POSITION = 0
-//        private const val MANAGE_ALERTS_POSITION = 1
+        private const val MANAGE_ALERTS_POSITION = 1
         const val COUNT = 2
     }
 }

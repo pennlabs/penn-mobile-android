@@ -53,9 +53,6 @@ class PennCourseAlertHolderFragment : Fragment() {
         viewPager = view.findViewById(R.id.PCAPager)
         viewPager.adapter = pagerAdapter
 
-        //TODO: uncomment to disable swiping between tabs
-        //viewPager.isUserInputEnabled = false
-
         tabLayout = view.findViewById(R.id.pca_tab_layout)
         TabLayoutMediator(tabLayout, PCAPager) { tab, position ->
             if (position == 0) {
