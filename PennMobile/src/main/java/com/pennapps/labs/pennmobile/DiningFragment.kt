@@ -69,6 +69,7 @@ class DiningFragment : Fragment() {
         getDiningHalls()
     }
 
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.dining_sort, menu)
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
@@ -131,7 +132,7 @@ class DiningFragment : Fragment() {
         //displays banner if not connected
         if (!isOnline(context)) {
             internetConnectionDining?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-            internetConnection_message_dining?.setText("Not Connected to Internet")
+            internetConnection_message_dining?.text = "Not Connected to Internet"
             internetConnectionDining?.visibility = View.VISIBLE
         } else {
             internetConnectionDining?.visibility = View.GONE
@@ -158,7 +159,7 @@ class DiningFragment : Fragment() {
                         view?.let {displaySnack(it, "Just Updated")}
                     }
                 }, {
-                    Log.e("DiningFragment", "Error getting dining halls", it);
+                    Log.e("DiningFragment", "Error getting dining halls", it)
                     mActivity.runOnUiThread {
                         Log.e("Dining", "Could not load Dining page", it)
                         loadingPanel?.visibility = View.GONE

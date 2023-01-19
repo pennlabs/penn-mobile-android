@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Linear layout as parent layout-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@android:color/white"
+    >
+
+    <!-- Text view to show the text Select course-->
+    <TextView
+        style="@style/pca_registration_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Section"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <!-- Edit text to allow user to type name
+        of item he/she wants to search-->
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/pca_section_search_edit_text"
+        android:hint="Search..."
+        android:padding="12dp"
+        android:singleLine="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        />
+
+    <!-- List view to insert list of items-->
+    <ListView
+        android:id="@+id/pca_section_list_view"
+        style="@style/pca_registration_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

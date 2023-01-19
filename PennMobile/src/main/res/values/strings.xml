@@ -197,6 +197,7 @@
     <string name="login_failed">"Login failed"</string>
     <string name="guest_mode">"Guest"</string>
     <string name="floating_bottom_bar_home">Home</string>
+    <string name="floating_bottom_bar_pca">PCA</string>
     <string name="floating_bottom_bar_dining">Dining</string>
     <string name="floating_bottom_bar_gsr_booking">GSR</string>
     <string name="floating_bottom_bar_laundry">Laundry</string>
@@ -211,5 +212,12 @@
         <item quantity="one">Alarm set for %1$d minute.</item>
         <item quantity="other">Alarm set for %1$d minutes.</item>
     </plurals>
+
+    <string name="pca_description">Get alerted when a course opens up!</string>
+    <string name="pca_title">Penn Course Alert</string>
+    <string name="pca_course">Course</string>
+    <string name="pca_phone_number">Phone Number</string>
+    <string name="pca_submit_button">Alert Me!</string>
+    <string name="pca_notify_when_closed">Notify when closed?</string>
 
 </resources>

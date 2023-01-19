@@ -66,7 +66,7 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                 val sessionID = if (reservation.info == null) sp.getString(mContext.getString(R.string.huntsmanGSR_SessionID), "") else null
 
                 val labs = MainActivity.studentLifeInstance
-                val bearerToken = "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ");
+                val bearerToken = "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
                 labs.cancelReservation(bearerToken, null, bookingID, sessionID, object : ResponseCallback() {
                     override fun success(response: Response) {
                         if (reservations.size > position) {

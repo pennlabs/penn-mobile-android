@@ -96,6 +96,9 @@ class MainActivity : AppCompatActivity() {
                         .addItem(GSR, R.drawable.ic_gsr_grey)
                         .textRes(R.string.floating_bottom_bar_gsr_booking)
                         .colorRes(R.color.floating_bottom_bar_selected).create()
+                        .addItem(PCA, R.drawable.ic_pca_grey)
+                        .textRes(R.string.floating_bottom_bar_pca)
+                        .colorRes(R.color.floating_bottom_bar_selected).create()
                         .addItem(LAUNDRY, R.drawable.ic_laundry_grey)
                         .textRes(R.string.floating_bottom_bar_laundry)
                         .colorRes(R.color.floating_bottom_bar_selected).create()
@@ -131,6 +134,7 @@ class MainActivity : AppCompatActivity() {
                     fragment = HomeFragment()
                 }
                 "Dining" -> fragment = DiningHolderFragment()
+                "PCA" -> fragment = PennCourseAlertHolderFragment()
                 "GSR" -> fragment = GsrTabbedFragment()
                 "Laundry" -> fragment = LaundryFragment()
                 "More" -> fragment = MoreFragment()
@@ -154,6 +158,7 @@ class MainActivity : AppCompatActivity() {
 
     fun startHomeFragment() {
         OAuth2NetworkManager(this).getAccessToken()
+
         val fragment: Fragment = HomeFragment()
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)
@@ -205,7 +210,6 @@ class MainActivity : AppCompatActivity() {
         if (fragment != null) {
             runOnUiThread {
                 try {
-                    //TODO ALI COMMENT
                     if (popBackStack) {
                         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                     }
@@ -261,6 +265,7 @@ class MainActivity : AppCompatActivity() {
         const val DINING = 3
         const val LAUNDRY = 4
         const val MORE = 5
+        const val PCA = 6
 
         private var mStudentLife: StudentLife? = null
         private var mPlatform: Platform? = null
