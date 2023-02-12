@@ -52,7 +52,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
         MainActivity mainActivity = (MainActivity) mContext;
         bearerToken = "Bearer " + sp.getString(mainActivity.getString(R.string.access_token), "");
 
-        labs = MainActivity.getStudentLifeInstance();
+        labs = MainActivity.Companion.getStudentLifeInstance();
 
         // first time
         if (sp.getInt(s, -1) == -1) {

@@ -33,10 +33,12 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.CampusExpress
 import com.pennapps.labs.pennmobile.api.Platform
+import com.pennapps.labs.pennmobile.api.StudentLifePolls
 import com.pennapps.labs.pennmobile.api.Serializer.*
 import com.pennapps.labs.pennmobile.classes.*
 import com.pennapps.labs.pennmobile.components.floatingbottombar.ExpandableBottomBarMenuItem
@@ -49,6 +51,10 @@ import kotlinx.android.synthetic.main.include_main.*
 import retrofit.RestAdapter
 import retrofit.android.AndroidLog
 import retrofit.converter.GsonConverter
+import rx.Observable
+import rx.Observer
+//import io.reactivex.rxjava3.core.Observable
+//import rxjava3.kotlin.subscribeBy
 
 class MainActivity : AppCompatActivity() {
     private var tabShowed = false
@@ -69,14 +75,14 @@ class MainActivity : AppCompatActivity() {
         }
         super.onCreate(savedInstanceState)
         if (applicationContext.resources.configuration.uiMode and
-                Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
+            Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
             setTheme(R.style.DarkBackground)
         }
         setContentView(R.layout.activity_main)
         Utils.getCurrentSystemTime()
 
         //tabBarView = findViewById(R.id.bottom_navigation)
-       // toolbar = findViewById(R.id.toolbar)
+        // toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(appbar.findViewById(R.id.toolbar))
         fragmentManager = supportFragmentManager
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
@@ -161,9 +167,9 @@ class MainActivity : AppCompatActivity() {
 
         val fragment: Fragment = HomeFragment()
         fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, fragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit()
+            .replace(R.id.content_frame, fragment)
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .commit()
         expandable_bottom_bar.select(HOME)
         expandable_bottom_bar.visibility = View.VISIBLE
     }
@@ -172,9 +178,9 @@ class MainActivity : AppCompatActivity() {
         val fragment: Fragment = LoginFragment()
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, fragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit()
+            .replace(R.id.content_frame, fragment)
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .commit()
         expandable_bottom_bar.visibility = View.GONE
     }
 
@@ -214,10 +220,10 @@ class MainActivity : AppCompatActivity() {
                         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                     }
                     fragmentManager.beginTransaction()
-                            .replace(R.id.content_frame, fragment)
-                            .addToBackStack(null)
-                            .setTransition(FragmentTransaction.TRANSIT_NONE)
-                            .commit()
+                        .replace(R.id.content_frame, fragment)
+                        .addToBackStack(null)
+                        .setTransition(FragmentTransaction.TRANSIT_NONE)
+                        .commit()
                 } catch (e: IllegalStateException) {
                     //ignore because the onSaveInstanceState etc states are called when activity is going to background etc
                 }
@@ -237,7 +243,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun setTitle(title: CharSequence) {
         appbar.findViewById<View>(R.id.toolbar)
-                .findViewById<TextView>(R.id.toolbar_title).text = title
+            .findViewById<TextView>(R.id.toolbar_title).text = title
     }
 
     override fun onBackPressed() {
@@ -268,6 +274,7 @@ class MainActivity : AppCompatActivity() {
         const val PCA = 6
 
         private var mStudentLife: StudentLife? = null
+        private var mStudentLifePolls: StudentLifePolls? = null
         private var mPlatform: Platform? = null
         private var mCampusExpress: CampusExpress? = null
 
@@ -295,14 +302,36 @@ class MainActivity : AppCompatActivity() {
                     val gsonBuilder = GsonBuilder()
                     val gson = gsonBuilder.create()
                     val restAdapter = RestAdapter.Builder()
-                            .setConverter(GsonConverter(gson))
-                            .setLogLevel(RestAdapter.LogLevel.FULL)
-                            .setLog(AndroidLog("Platform"))
-                            .setEndpoint(Platform.platformBaseUrl)
-                            .build()
+                        .setConverter(GsonConverter(gson))
+                        .setLogLevel(RestAdapter.LogLevel.FULL)
+                        .setLog(AndroidLog("Platform"))
+                        .setEndpoint(Platform.platformBaseUrl)
+                        .build()
                     mPlatform = restAdapter.create(Platform::class.java)
                 }
                 return mPlatform!!
+            }
+
+        @JvmStatic
+        val StudentLifePollsInstance: StudentLifePolls
+            get() {
+                if (mStudentLifePolls == null) {
+                    val gsonBuilder = GsonBuilder()
+                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Poll?>?>() {}.type, PollsSerializer())
+                    gsonBuilder.registerTypeAdapter(object:  TypeToken<MutableList<PollPop?>?>() {}.type, PollPopsSerializer())
+                    gsonBuilder.registerTypeAdapter(object:  TypeToken<MutableList<PollResult?>?>() {}.type, PollResultsSerializer())
+                    gsonBuilder.registerTypeAdapter(object:  TypeToken<MutableList<Post?>?>() {}.type, PostsSerializer())
+                    val gson = gsonBuilder.create()
+                    val restAdapter = RestAdapter.Builder()
+                        .setConverter(GsonConverter(gson))
+                        .setEndpoint("https://pennmobile.org/api/portal/")
+                        .build()
+                    mStudentLifePolls = restAdapter.create(StudentLifePolls::class.java)
+                }
+
+
+                Log.d("Polls tAG", "I am about to return ")
+                return mStudentLifePolls!!
             }
 
         @JvmStatic
@@ -335,9 +364,9 @@ class MainActivity : AppCompatActivity() {
                     gsonBuilder.registerTypeAdapter(object:  TypeToken<MutableList<Post?>?>() {}.type, PostsSerializer())
                     val gson = gsonBuilder.create()
                     val restAdapter = RestAdapter.Builder()
-                            .setConverter(GsonConverter(gson))
-                            .setEndpoint("https://pennmobile.org/api")
-                            .build()
+                        .setConverter(GsonConverter(gson))
+                        .setEndpoint("https://pennmobile.org/api")
+                        .build()
                     mStudentLife = restAdapter.create(StudentLife::class.java)
                 }
                 return mStudentLife!!
@@ -349,18 +378,18 @@ class MainActivity : AppCompatActivity() {
 //checks if internet is connected
 fun isOnline(context: Context?): Boolean {
     val connectivityManager =
-            context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     if (connectivityManager != null) {
         val capabilities =
-                if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-                    } else {
-                        return true
-                    }
+            if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
                 } else {
                     return true
                 }
+            } else {
+                return true
+            }
         if (capabilities != null) {
             when {
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
@@ -386,14 +415,14 @@ fun isOnline(context: Context?): Boolean {
 fun ViewGroup.showSneakerToast(message: String, doOnRetry: (() -> Unit)?, sneakerColor: Int) {
     val sneaker = Sneaker.with(this)
     val view = LayoutInflater.from(this.context)
-            .inflate(R.layout.custom_sneaker_view, sneaker.getView(), false)
+        .inflate(R.layout.custom_sneaker_view, sneaker.getView(), false)
 
     view.blurView.setupWith(this)
-            .setFrameClearDrawable(ColorDrawable(Color.TRANSPARENT))
-            .setBlurAlgorithm(RenderScriptBlur(this.context))
-            .setBlurRadius(10f)
-            .setHasFixedTransformationMatrix(true)
-            .setOverlayColor(resources.getColor(sneakerColor))
+        .setFrameClearDrawable(ColorDrawable(Color.TRANSPARENT))
+        .setBlurAlgorithm(RenderScriptBlur(this.context))
+        .setBlurRadius(10f)
+        .setHasFixedTransformationMatrix(true)
+        .setOverlayColor(resources.getColor(sneakerColor))
 
     val retryBtn = view.findViewById<TextView>(R.id.retryButton)
     doOnRetry ?: run { retryBtn.visibility = View.GONE }

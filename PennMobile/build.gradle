@@ -31,7 +31,6 @@ android {
     buildTypes {
         debug {
             matchingFallbacks = ['qa', 'release']
-            testCoverageEnabled true
         }
         release {}
     }
@@ -110,11 +109,21 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'com.kaspersky.android-components:kaspresso:1.1.0'
+
     implementation "com.squareup.retrofit2:retrofit:2.6.2"
     implementation "com.squareup.retrofit2:converter-moshi:2.5.0"
     implementation 'com.squareup.retrofit2:converter-scalars:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
 
+    //Firebase
+    implementation ("com.google.firebase:firebase-bom:26.7.0")
+    //implementation 'com.google.firebase:firebase-messaging-ktx:21.0.1'
+    implementation 'com.google.firebase:firebase-messaging:21.0.1'
+    //implementation "com.google.firebase:firebase-analytics-ktx"
+    //implementation 'com.google.firebase-analytics:17.2.1
+    implementation 'com.google.firebase:firebase-analytics:17.4.1'
+    //implementation 'com.google.firebase:firebase-crashlytics:17.0.0'
+    implementation "androidx.constraintlayout:constraintlayout:2.1.0"
 }
 
 String getPlatformClientID() {
@@ -172,4 +181,6 @@ task jacocoTestReport(type: JacocoReport) {
       'jacoco/testDebugUnitTest.exec'
 //      'outputs/code_coverage/debugAndroidTest/connected/*.ec'
   ])
+
+
 }

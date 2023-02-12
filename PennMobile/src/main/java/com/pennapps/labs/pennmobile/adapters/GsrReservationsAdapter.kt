@@ -1,6 +1,9 @@
 package com.pennapps.labs.pennmobile.adapters
 
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
+import android.os.SystemClock
 import android.preference.PreferenceManager
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
@@ -8,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.GSRReservation
@@ -15,13 +19,13 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.gsr_reservation.view.*
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
+import org.joda.time.LocalDateTime
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
 import android.content.Intent
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import android.widget.Toast.LENGTH_SHORT
 
 
 class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>)
@@ -46,6 +50,7 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
         val day = from.toString("EEEE, MMMM d")
         val fromHour = from.toString("h:mm a")
         val toHour = to.toString("h:mm a")
+        val localDateTime = LocalDateTime()
 
         // huntsman reservation responses don't have an image url so we set it here
         val imageUrl = reservation.info?.get("thumbnail") ?: "https://s3.us-east-2.amazonaws.com/labs.api/dining/MBA+Cafe.jpg"
@@ -53,6 +58,7 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
 
         holder.itemView.gsr_reservation_location_tv.text = roomName
         holder.itemView.gsr_reservation_date_tv.text = day + "\n" + fromHour + "-" + toHour
+
 
         holder.itemView.gsr_reservation_cancel_btn.setOnClickListener {
             // create dialog to confirm that you want to cancel reservation
@@ -93,6 +99,8 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
             builder.show()
         }
     }
+
+
 
     override fun getItemCount(): Int {
         return reservations.size

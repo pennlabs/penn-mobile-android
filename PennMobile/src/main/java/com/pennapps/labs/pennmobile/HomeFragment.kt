@@ -20,8 +20,10 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.gson.JsonArray
 import com.pennapps.labs.pennmobile.adapters.HomeAdapter
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
+import com.pennapps.labs.pennmobile.api.StudentLifePolls
 import com.pennapps.labs.pennmobile.classes.DiningHallPreference
 import com.pennapps.labs.pennmobile.classes.HomeCell
 import com.pennapps.labs.pennmobile.classes.HomeCellInfo
@@ -31,6 +33,9 @@ import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.include_main.*
 import kotlinx.android.synthetic.main.loading_panel.*
+import retrofit.Callback
+import retrofit.RetrofitError
+import retrofit.client.Response
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -39,6 +44,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var mActivity: MainActivity
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var mStudentLifePolls: StudentLifePolls
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +61,38 @@ class HomeFragment : Fragment() {
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Home")
         bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
         FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
+
+        //Observable commands needed
+        val sp = android.preference.PreferenceManager.getDefaultSharedPreferences(mActivity)
+        val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "")
+        val postList = mStudentLifePolls.validPostsList(bearerToken,
+            object : Callback<JsonArray?> {
+                override fun success(t: JsonArray?, response: Response?) {
+                    if (t != null) {
+                        Log.d("TAGaa", "success: $t")
+                        val size : Int = t.size()
+                        for (i in 0..size){
+                            val str = t.get(i).asJsonObject.get("target_populations")
+                            Log.d("taggy", str.toString())
+
+                        }
+
+                    } else {
+                        Log.d("TAG p", "success: nullo")
+                    }
+                }
+
+                override fun failure(error: RetrofitError?) {
+                    if (error != null) {
+                        //hits here
+                        Log.d("TAG p", "failure: $error")
+                    } else {
+                        Log.d("TAG p", "failure: wha")
+                    }
+                }
+
+            })
+
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -311,7 +349,7 @@ class HomeFragment : Fragment() {
                 }
             })
 
-    }
+        }
 
     }
 
@@ -334,12 +372,12 @@ class HomeFragment : Fragment() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 this.profile_background.setImageDrawable(
                     resources.getDrawable
-                    (R.drawable.ic_guest_avatar, context?.theme))
+                        (R.drawable.ic_guest_avatar, context?.theme))
             } else {
                 @Suppress("DEPRECATION")
                 this.profile_background.setImageDrawable(
                     resources.getDrawable
-                    (R.drawable.ic_guest_avatar))
+                        (R.drawable.ic_guest_avatar))
             }
         }
         if (Build.VERSION.SDK_INT > 17) {
@@ -367,7 +405,7 @@ class HomeFragment : Fragment() {
         }
         if (Build.VERSION.SDK_INT > 16) {
             (view.appbar_home.layoutParams
-                as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
+                    as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
         }
         view.profile.setOnClickListener {
             //TODO: Account Settings

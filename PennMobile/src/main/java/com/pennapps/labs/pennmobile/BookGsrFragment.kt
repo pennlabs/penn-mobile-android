@@ -1,6 +1,12 @@
 package com.pennapps.labs.pennmobile
 
+import android.app.Activity
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -14,6 +20,8 @@ import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult
 import kotlinx.android.synthetic.main.gsr_details_book.view.*
+import org.joda.time.LocalDate
+import org.joda.time.LocalDateTime
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
@@ -96,6 +104,8 @@ class BookGsrFragment : Fragment() {
     }
 
     private fun bookGSR(gsrId: Int, gsrLocationCode: Int, startTime: String?, endTime: String?, gid: Int, roomId: Int, roomName: String) {
+
+
 
         var sessionID = ""
         var bearerToken = ""
@@ -180,5 +190,4 @@ class BookGsrFragment : Fragment() {
             return fragment
         }
     }
-
 }

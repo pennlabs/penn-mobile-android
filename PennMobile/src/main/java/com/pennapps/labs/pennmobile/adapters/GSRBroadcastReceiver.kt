@@ -1,5 +1,7 @@
-package com.pennapps.labs.pennmobile
+package com.pennapps.labs.pennmobile.adapters
 
+import com.pennapps.labs.pennmobile.MainActivity
+import com.pennapps.labs.pennmobile.R
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -11,31 +13,30 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 
-class LaundryBroadcastReceiver : BroadcastReceiver() {
+class GSRBroadcastReceiver : BroadcastReceiver() {
 
     private var notificationID = 0
 
     override fun onReceive(context: Context, intent: Intent) {
-        val roomName = intent.getStringExtra(context.resources.getString(R.string.laundry_room_name))
-        val machineType = intent.getStringExtra(context.resources.getString(R.string.laundry_machine_type))
-        val id = intent.getIntExtra(context.resources.getString(R.string.laundry_machine_id), -1)
-
+        //val roomName = intent.getStringExtra(context.resources.getString(R.string.laundry_room_name))
+        //val machineType = intent.getStringExtra(context.resources.getString(R.string.laundry_machine_type))
+        //val id = intent.getIntExtra(context.resources.getString(R.string.laundry_machine_id), -1)
+        val id = 100
         // checks for errors
-        if (roomName == null || machineType == null || id == -1) {
-            return
-        }
+//        if (roomName == null || machineType == null || id == -1) {
+//            return
+//        }
         notificationID = id + 1
         val builder = StringBuilder()
-        builder.append("A ").append(machineType).append(" in ").append(roomName).append(" is available!")
-
+        builder.append("Your booking will be available in 10 minutes!")
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         // build notification
         val mBuilder: NotificationCompat.Builder
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channelName = "Laundry Alarm"
-            val channelId = "pennmobile_laundry_alarm"
-            val description = "Alarm for laundry machine availability"
+            val channelName = "GSR Alarm"
+            val channelId = "pennmobile_gsr_alarm"
+            val description = "Alarm for GSR room availability"
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(channelId, channelName, importance)
             channel.description = description
@@ -43,13 +44,13 @@ class LaundryBroadcastReceiver : BroadcastReceiver() {
             channel.lightColor = ContextCompat.getColor(context, R.color.color_primary)
             notificationManager.createNotificationChannel(channel)
             mBuilder = NotificationCompat.Builder(context, channel.id)
-                    .setSmallIcon(R.drawable.ic_bottom_nav_laundry_grey)
+                    //.setSmallIcon(R.drawable.ic_bottom_nav_laundry_grey)
                     .setContentTitle(context.getString(R.string.app_name))
                     .setContentText(builder)
         } else {
-            val channelId = "pennmobile_laundry_alarm"
+            val channelId = "pennmobile_gsr_alarm"
             mBuilder = NotificationCompat.Builder(context, channelId)
-                    .setSmallIcon(R.drawable.ic_bottom_nav_laundry_grey)
+                    //.setSmallIcon(R.drawable.ic_bottom_nav_laundry_grey)
                     .setContentTitle(context.getString(R.string.app_name))
                     .setContentText(builder)
         }
@@ -60,9 +61,9 @@ class LaundryBroadcastReceiver : BroadcastReceiver() {
         }
 
         // intent to go to main activity
-        val laundryIntent = Intent(context, MainActivity::class.java)
-        laundryIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-        val notifyIntent = PendingIntent.getActivity(context, notificationID, laundryIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val gsrIntent = Intent(context, MainActivity::class.java)
+        gsrIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+        val notifyIntent = PendingIntent.getActivity(context, notificationID, gsrIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         mBuilder.setContentIntent(notifyIntent)
         notificationManager.notify(notificationID, mBuilder.build())
 
