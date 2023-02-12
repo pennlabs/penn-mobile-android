@@ -9,4 +9,6 @@ open class DiningInsightCell {
     var type: String? = null
 
     var diningBalances : DiningBalances? = null
+
+    var diningBalancesList : DiningBalancesList? = null
 }

@@ -9,12 +9,10 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pennapps.labs.pennmobile.adapters.DiningSettingsAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import kotlinx.android.synthetic.main.fragment_dining_preferences.*
 import kotlinx.android.synthetic.main.fragment_dining_preferences.view.*
 import kotlinx.android.synthetic.main.include_main.*
-import kotlinx.android.synthetic.main.fragment_dining_preferences.view.*
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response

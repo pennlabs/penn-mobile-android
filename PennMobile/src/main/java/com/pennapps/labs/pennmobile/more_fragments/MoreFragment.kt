@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile.more
+package com.pennapps.labs.pennmobile.more_fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater

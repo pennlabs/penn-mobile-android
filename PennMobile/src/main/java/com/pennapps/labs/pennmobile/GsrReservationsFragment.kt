@@ -53,8 +53,32 @@ class GsrReservationsFragment : Fragment() {
         return view
     }
 
-    private fun getReservations() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (!isOnline(context)) {
+            internetConnectionGSRReservations?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            internetConnection_message_gsr_reservations?.text = "Not Connected to Internet"
+            internetConnectionGSRReservations?.visibility = View.VISIBLE
+            gsr_reservations_refresh_layout?.isRefreshing = false
+            loadingPanel?.visibility = View.GONE
+            gsr_no_reservations?.visibility = View.VISIBLE
+        } else {
+            internetConnectionGSRReservations?.visibility = View.GONE
+        }
+    }
 
+    private fun getReservations() {
+        if (!isOnline(context)) {
+            internetConnectionGSRReservations?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            internetConnection_message_gsr_reservations?.text = "Not Connected to Internet"
+            internetConnectionGSRReservations?.visibility = View.VISIBLE
+            gsr_reservations_refresh_layout?.isRefreshing = false
+            gsr_reservations_rv?.adapter = GsrReservationsAdapter(ArrayList())
+            loadingPanel?.visibility = View.GONE
+            gsr_no_reservations?.visibility = View.VISIBLE
+        } else {
+            internetConnectionGSRReservations?.visibility = View.GONE
+        }
         // get email and session id from shared preferences
         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
         val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
@@ -77,7 +101,8 @@ class GsrReservationsFragment : Fragment() {
             }
         }, { throwable ->
             mActivity.runOnUiThread {
-                Log.e("GsrReservationsFragment", "Error getting reservations", throwable);
+                Log.e("GsrReservationsFragment", "Error getting reservations", throwable)
+                gsr_reservations_rv?.adapter = GsrReservationsAdapter(ArrayList())
                 throwable.printStackTrace()
                 loadingPanel?.visibility = View.GONE
                 gsr_no_reservations?.visibility = View.VISIBLE

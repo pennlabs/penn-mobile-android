@@ -297,6 +297,7 @@ public class Serializer {
         }
     }
 
+    // for custom posts
     //poll
     public static class PollsSerializer implements JsonDeserializer<List<Poll>> {
 
@@ -315,14 +316,12 @@ public class Serializer {
         @Override
         public List<Post> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
                 throws JsonParseException {
-
             Log.d("TAG is itoooo", String.valueOf(je.isJsonArray())); //true
             Log.d("Printer tag", "deserialize: " + je.getAsString());
             JsonElement content = je.getAsJsonArray();
             return new Gson().fromJson(content, new TypeToken<List<Post>>() {}.getType());
         }
     }
-
     //pollpop
     public static class PollPopsSerializer implements JsonDeserializer<List<PollPop>> {
 

@@ -17,7 +17,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.preference.PreferenceManager
-import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult
 import kotlinx.android.synthetic.main.gsr_details_book.view.*
@@ -114,7 +113,7 @@ class BookGsrFragment : Fragment() {
             val sp = PreferenceManager.getDefaultSharedPreferences(activity)
             sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "") ?: ""
             bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
-            Log.i("BookGSRFragment", "$bearerToken");
+            Log.i("BookGSRFragment", "$bearerToken")
 
         }
         Log.i("BookGSRFragment", "Bearer $bearerToken")

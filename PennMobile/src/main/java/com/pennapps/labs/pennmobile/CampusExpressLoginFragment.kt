@@ -92,8 +92,8 @@ class CampusExpressLoginFragment : Fragment() {
             .build()
         webView.loadUrl(uri.toString())
         val webSettings = webView.settings
-        webSettings.setJavaScriptEnabled(true)
-        webSettings.javaScriptCanOpenWindowsAutomatically = true;
+        webSettings.javaScriptEnabled = true
+        webSettings.javaScriptCanOpenWindowsAutomatically = true
         webView.webViewClient = MyWebViewClient()
 
         cancelButton.setOnClickListener {

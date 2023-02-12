@@ -22,7 +22,6 @@ import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.RequestListener
 import com.pennapps.labs.pennmobile.adapters.AboutAdapter
 import kotlinx.android.synthetic.main.fragment_about.view.*
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.include_main.*
 
 class AboutFragment : Fragment() {

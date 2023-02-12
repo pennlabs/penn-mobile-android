@@ -32,6 +32,10 @@
 
         <include layout="@layout/loading_panel" />
 
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/dining_swiperefresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
         <FrameLayout
             android:id="@+id/dining_fragment"
             android:layout_width="fill_parent"
@@ -59,10 +63,6 @@
                     android:textStyle="bold"
                     android:visibility="gone" />-->
 
-                <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                    android:id="@+id/dining_swiperefresh"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/dining_halls_recycler_view"
@@ -73,10 +73,9 @@
                         android:scrollbars="none"
                         tools:list_item="@layout/dining_list_item" />
 
-                </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
             </LinearLayout>
         </FrameLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </LinearLayout>
     <androidx.coordinatorlayout.widget.CoordinatorLayout

@@ -90,7 +90,7 @@
 
     <fragment
         android:id="@+id/com.pennapps.labs.pennmobile.more.MorePreferences"
-        android:name="com.pennapps.labs.pennmobile.more.PreferenceFragment"
+        android:name="com.pennapps.labs.pennmobile.more_fragments.PreferenceFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="12dp"

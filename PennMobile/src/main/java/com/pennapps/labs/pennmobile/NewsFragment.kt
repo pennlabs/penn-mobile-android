@@ -20,17 +20,8 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
-import androidx.annotation.RequiresApi
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.preference.PreferenceManager
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
-import com.pennapps.labs.pennmobile.utils.Utils
-import kotlinx.android.synthetic.main.fragment_about.view.*
-import kotlinx.android.synthetic.main.fragment_fitness.*
-import kotlinx.android.synthetic.main.fragment_fitness.internetConnectionFitness
-import kotlinx.android.synthetic.main.fragment_fitness.internetConnection_message_fitness
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.android.synthetic.main.fragment_news.initials
 import kotlinx.android.synthetic.main.fragment_news.profile_background

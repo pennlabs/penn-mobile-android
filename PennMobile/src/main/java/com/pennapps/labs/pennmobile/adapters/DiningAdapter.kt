@@ -68,7 +68,6 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
                     holder.hallHours?.text = diningHall.openTimes().toLowerCase()
                 }
             }
-
             // Load the menu for each dining hall
             if (diningHall.isResidential && !loaded[position]) {
                 holder.progressBar?.visibility = View.VISIBLE

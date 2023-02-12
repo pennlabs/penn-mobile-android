@@ -12,13 +12,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.pennapps.labs.pennmobile.GsrTabbedFragment
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.classes.CalendarEvent
-import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.gsr_reservation.view.*
 import kotlinx.android.synthetic.main.home_gsr_building.view.*
-import kotlinx.android.synthetic.main.university_event.view.*
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
 
 class HomeGsrBuildingAdapter(private var buildings: ArrayList<String>)
     : RecyclerView.Adapter<HomeGsrBuildingAdapter.HomeGsrBuildingViewHolder>() {

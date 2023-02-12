@@ -23,7 +23,6 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.ColorUtils
-import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -44,7 +43,7 @@ import com.pennapps.labs.pennmobile.api.Serializer.*
 import com.pennapps.labs.pennmobile.classes.*
 import com.pennapps.labs.pennmobile.components.floatingbottombar.ExpandableBottomBarMenuItem
 import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
-import com.pennapps.labs.pennmobile.more.MoreFragment
+import com.pennapps.labs.pennmobile.more_fragments.MoreFragment
 import com.pennapps.labs.pennmobile.utils.Utils
 import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.android.synthetic.main.custom_sneaker_view.view.*
@@ -93,23 +92,26 @@ class MainActivity : AppCompatActivity() {
         StrictMode.setThreadPolicy(policy)
 
         expandable_bottom_bar.addItems(
-            ExpandableBottomBarMenuItem.Builder(this)
-                .addItem(HOME, R.drawable.ic_home_grey)
-                .textRes(R.string.floating_bottom_bar_home)
-                .colorRes(R.color.floating_bottom_bar_selected).create()
-                .addItem(DINING, R.drawable.ic_dining_grey)
-                .textRes(R.string.floating_bottom_bar_dining)
-                .colorRes(R.color.floating_bottom_bar_selected).create()
-                .addItem(GSR, R.drawable.ic_gsr_grey)
-                .textRes(R.string.floating_bottom_bar_gsr_booking)
-                .colorRes(R.color.floating_bottom_bar_selected).create()
-                .addItem(LAUNDRY, R.drawable.ic_laundry_grey)
-                .textRes(R.string.floating_bottom_bar_laundry)
-                .colorRes(R.color.floating_bottom_bar_selected).create()
-                .addItem(MORE, R.drawable.ic_more_grey)
-                .textRes(R.string.floating_bottom_bar_more)
-                .colorRes(R.color.floating_bottom_bar_selected).create()
-                .build()
+                ExpandableBottomBarMenuItem.Builder(this)
+                        .addItem(HOME, R.drawable.ic_home_grey)
+                        .textRes(R.string.floating_bottom_bar_home)
+                        .colorRes(R.color.floating_bottom_bar_selected).create()
+                        .addItem(DINING, R.drawable.ic_dining_grey)
+                        .textRes(R.string.floating_bottom_bar_dining)
+                        .colorRes(R.color.floating_bottom_bar_selected).create()
+                        .addItem(GSR, R.drawable.ic_gsr_grey)
+                        .textRes(R.string.floating_bottom_bar_gsr_booking)
+                        .colorRes(R.color.floating_bottom_bar_selected).create()
+                        .addItem(PCA, R.drawable.ic_pca_grey)
+                        .textRes(R.string.floating_bottom_bar_pca)
+                        .colorRes(R.color.floating_bottom_bar_selected).create()
+                        .addItem(LAUNDRY, R.drawable.ic_laundry_grey)
+                        .textRes(R.string.floating_bottom_bar_laundry)
+                        .colorRes(R.color.floating_bottom_bar_selected).create()
+                        .addItem(MORE, R.drawable.ic_more_grey)
+                        .textRes(R.string.floating_bottom_bar_more)
+                        .colorRes(R.color.floating_bottom_bar_selected).create()
+                        .build()
         )
         onExpandableBottomNavigationItemSelected()
         showBottomBar()
@@ -138,6 +140,7 @@ class MainActivity : AppCompatActivity() {
                     fragment = HomeFragment()
                 }
                 "Dining" -> fragment = DiningHolderFragment()
+                "PCA" -> fragment = PennCourseAlertHolderFragment()
                 "GSR" -> fragment = GsrTabbedFragment()
                 "Laundry" -> fragment = LaundryFragment()
                 "More" -> fragment = MoreFragment()
@@ -161,6 +164,7 @@ class MainActivity : AppCompatActivity() {
 
     fun startHomeFragment() {
         OAuth2NetworkManager(this).getAccessToken()
+
         val fragment: Fragment = HomeFragment()
         fragmentManager.beginTransaction()
             .replace(R.id.content_frame, fragment)
@@ -212,7 +216,6 @@ class MainActivity : AppCompatActivity() {
         if (fragment != null) {
             runOnUiThread {
                 try {
-                    //TODO ALI COMMENT
                     if (popBackStack) {
                         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                     }
@@ -268,6 +271,7 @@ class MainActivity : AppCompatActivity() {
         const val DINING = 3
         const val LAUNDRY = 4
         const val MORE = 5
+        const val PCA = 6
 
         private var mStudentLife: StudentLife? = null
         private var mStudentLifePolls: StudentLifePolls? = null
@@ -356,6 +360,8 @@ class MainActivity : AppCompatActivity() {
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<HomeCell?>?>() {}.type, HomePageSerializer())
                     // gets user
                     gsonBuilder.registerTypeAdapter(Account::class.java, UserSerializer())
+                    // gets posts
+                    gsonBuilder.registerTypeAdapter(object:  TypeToken<MutableList<Post?>?>() {}.type, PostsSerializer())
                     val gson = gsonBuilder.create()
                     val restAdapter = RestAdapter.Builder()
                         .setConverter(GsonConverter(gson))

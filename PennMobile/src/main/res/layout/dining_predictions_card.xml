@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/predictions_title"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:gravity="top"
+        tools:text="@string/dining_dollars_predictions"
+        style="@style/dining_insights_header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/dining_predictions_box"
+        android:layout_width="350dp"
+        android:layout_height="330dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/dining_insights_rectangle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/predictions_title" />
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/dining_predictions_graph"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="30dp"
+        android:elevation="10dp"
+        app:layout_constraintEnd_toEndOf="@id/dining_predictions_box"
+        app:layout_constraintStart_toStartOf="@id/dining_predictions_box"
+        app:layout_constraintTop_toTopOf="@+id/dining_predictions_box" />
+
+    <TextView
+        android:id="@+id/extra"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        tools:text="Extra Balance"
+        android:fontFamily="@font/gilroy_light"
+        app:layout_constraintStart_toStartOf="@+id/dining_predictions_graph"
+        app:layout_constraintTop_toBottomOf="@+id/dining_predictions_graph" />
+
+    <TextView
+        android:id="@+id/extraAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="$0.00"
+        android:fontFamily="@font/gilroy_bold"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/extra"
+        app:layout_constraintTop_toBottomOf="@+id/extra" />
+
+    <TextView
+        android:id="@+id/extraNote"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:layout_marginStart="50dp"
+        tools:text="TextView"
+        android:textSize="11sp"
+        android:fontFamily="@font/gilroy_light"
+        app:layout_constraintStart_toEndOf="@+id/extra"
+        app:layout_constraintTop_toBottomOf="@+id/dining_predictions_graph" />
+</androidx.constraintlayout.widget.ConstraintLayout>

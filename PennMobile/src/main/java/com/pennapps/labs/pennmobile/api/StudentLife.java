@@ -12,10 +12,10 @@ import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.GSRReservation;
 import com.pennapps.labs.pennmobile.classes.Gym;
 import com.pennapps.labs.pennmobile.classes.HomeCell;
-import com.pennapps.labs.pennmobile.classes.HomeCellInfo;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
+import com.pennapps.labs.pennmobile.classes.Post;
 import com.pennapps.labs.pennmobile.classes.SaveAccountResponse;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
@@ -42,6 +42,10 @@ public interface StudentLife {
 
     @GET("/dining/venues")
     Observable<List<Venue>> venues();
+
+    @GET("/dining/menus/{day}")
+    Observable<List<DiningHall.Menu>> getMenus(
+            @Path("day") String day);
 
     @GET("/dining/weekly_menu/{id}")
     Observable<DiningHall> daily_menu(
@@ -143,4 +147,11 @@ public interface StudentLife {
             @Header("Authorization") String bearerToken,
             @Field("venues") String venues,
             Callback<Response> callback);
+
+    @GET("/portal/posts/browse/")
+    Observable<List<Post>> validPostsList(
+            @Header("Authorization") String bearerToken
+    );
+
+
 }

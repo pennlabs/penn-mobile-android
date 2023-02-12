@@ -61,7 +61,7 @@ class DiningInfoFragment : Fragment() {
     }
 
     private fun hasMeals(day: VenueInterval): Boolean {
-        return day.meals.isNotEmpty();
+        return day.meals.isNotEmpty()
     }
 
     private fun addDiningHour(day: VenueInterval, vertical: ArrayList<TextView>): ArrayList<TextView> {

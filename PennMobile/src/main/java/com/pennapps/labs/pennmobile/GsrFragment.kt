@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.annotation.RequiresApi
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.GsrBuildingAdapter
@@ -20,9 +19,6 @@ import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRContainer
 import com.pennapps.labs.pennmobile.classes.GSRRoom
 import com.pennapps.labs.pennmobile.classes.GSRSlot
-import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
-import com.pennapps.labs.pennmobile.utils.Utils
-import kotlinx.android.synthetic.main.fragment_dining.view.*
 import kotlinx.android.synthetic.main.fragment_gsr.*
 import kotlinx.android.synthetic.main.fragment_gsr.view.*
 import org.joda.time.DateTime
@@ -62,6 +58,8 @@ class GsrFragment : Fragment() {
 
     private lateinit var durationAdapter: ArrayAdapter<String>
     private lateinit var huntsmanDurationAdapter: ArrayAdapter<String>
+
+    private var populatedDropDownGSR = false
 
     private lateinit var mActivity: MainActivity
 
@@ -177,6 +175,7 @@ class GsrFragment : Fragment() {
         view.gsr_refresh_layout?.setOnRefreshListener {
             searchForGSR(true)
         }
+        internetConnectionGSR?.visibility = View.VISIBLE
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -195,6 +194,17 @@ class GsrFragment : Fragment() {
     // Called when page loads and whenever user changes start/end time, date, or building
     @RequiresApi(Build.VERSION_CODES.M)
     fun searchForGSR(calledByRefreshLayout: Boolean) {
+        //displays banner if not connected
+        if (!isOnline(context)) {
+            internetConnectionGSR?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            internetConnection_message_gsr?.setText("Not Connected to Internet")
+            internetConnectionGSR?.visibility = View.VISIBLE
+        } else {
+            internetConnectionGSR?.visibility = View.GONE
+            if(!populatedDropDownGSR) {
+                populateDropDownGSR()
+            }
+        }
         var gsrLocation = gsrLocationDropDown.selectedItem.toString()
         val location = mapGSR(gsrLocation)
         val gid = mapGID(gsrLocation)
@@ -335,6 +345,7 @@ class GsrFragment : Fragment() {
         mStudentLife.location()
                 ?.subscribe({ locations ->
                     activity?.let {activity ->
+                        populatedDropDownGSR = true
                         activity.runOnUiThread {
                             //reset the drop down
                             val emptyArray = arrayOfNulls<String>(0)

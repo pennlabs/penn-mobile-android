@@ -4,11 +4,9 @@ import android.app.Activity
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Context.VIBRATOR_SERVICE
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.SystemClock
-import android.os.Vibrator
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +22,6 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.MachineDetail
 import com.pennapps.labs.pennmobile.showSneakerToast
 import kotlinx.android.synthetic.main.laundry_dryer_item.view.*
-import java.util.*
 
 class LaundryMachineAdapter(var context: Context, var mMachineDetails: List<MachineDetail>, machineType: String, roomName: String) : RecyclerView.Adapter<LaundryMachineAdapter.CustomViewHolder>() {
     private var mRoomName: String

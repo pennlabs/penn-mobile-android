@@ -3,8 +3,8 @@ package com.pennapps.labs.pennmobile.classes
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class GSRReservationInfo {
-    @SerializedName("thumbnail")
+class DiningBalancesList {
+    @SerializedName("balance_list")
     @Expose
-    var thumbnail: String? = null
+    var diningBalancesList: List<DiningBalances>? = null
 }

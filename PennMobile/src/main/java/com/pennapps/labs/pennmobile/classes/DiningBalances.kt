@@ -13,4 +13,7 @@ open class DiningBalances {
     @SerializedName("guest_visits")
     @Expose
     var guestVisits: Int? = null
+    @SerializedName("date")
+    @Expose
+    var date: String? = null
 }

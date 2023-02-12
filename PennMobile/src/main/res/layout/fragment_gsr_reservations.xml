@@ -31,9 +31,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/internetConnectionGSRReservations"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                tools:ignore="MissingConstraints">
+
+                <TextView
+                    android:id="@+id/internetConnection_message_gsr_reservations"
+                    style="@style/internet_error_message" />
+
+            </androidx.appcompat.widget.Toolbar>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/gsr_reservations_rv"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/internetConnectionGSRReservations"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile.classes
 
 import android.util.Log
-import com.google.gson.annotations.SerializedName
 import org.joda.time.DateTime
 import org.joda.time.IllegalInstantException
 import org.joda.time.Interval

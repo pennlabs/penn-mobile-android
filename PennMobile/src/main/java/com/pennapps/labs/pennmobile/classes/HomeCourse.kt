@@ -15,7 +15,7 @@ class HomeCourse {
     var end_time: String? = null
 
 //    Example:
-//    "building": "TOWN",
+//    "building": "TOWNE",
 //    "code": "240",
 //    "dept": "CIS",
 //    "end_date": "2019-12-09",

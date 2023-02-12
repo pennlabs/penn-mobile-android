@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile.more
+package com.pennapps.labs.pennmobile.more_fragments
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog

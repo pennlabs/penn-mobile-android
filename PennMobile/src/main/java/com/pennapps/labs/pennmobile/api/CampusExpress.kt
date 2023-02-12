@@ -1,15 +1,11 @@
 package com.pennapps.labs.pennmobile.api
 
-import com.pennapps.labs.pennmobile.classes.AccessTokenResponse
 import com.pennapps.labs.pennmobile.classes.CampusExpressAccessTokenResponse
 import com.pennapps.labs.pennmobile.classes.DiningBalances
-import com.pennapps.labs.pennmobile.classes.GetUserResponse
+import com.pennapps.labs.pennmobile.classes.DiningBalancesList
 import retrofit.Callback
-import retrofit.http.Field
-import retrofit.http.FormUrlEncoded
 import retrofit.http.Header
 import retrofit.http.GET
-import retrofit.http.POST
 import retrofit.http.Query
 import rx.Observable
 
@@ -33,11 +29,12 @@ interface CampusExpress {
     fun getCurrentDiningBalances(
         @Header("x-authorization") bearerToken: String?) : Observable<DiningBalances>
 
-    @FormUrlEncoded
-    @POST("/accounts/introspect/")
-    fun getUser(
-        @Header("Authorization") authorizationHeader: String?,
-        @Field("token") token: String?,
-        callback: Callback<GetUserResponse?>?
-    )
+    @GET("/dining/pastBalances")
+    fun getPastDiningBalances(
+        @Header("x-authorization") bearerToken: String?,
+        @Query("start_date") startDate: String?,
+        @Query("end_date") endDate: String?
+    ) : Observable<DiningBalancesList>
+
+
 }

@@ -10,8 +10,6 @@ import android.view.ViewGroup
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.CalendarEvent
 import kotlinx.android.synthetic.main.university_event.view.*
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
 
 class UniversityEventAdapter(private var events: ArrayList<CalendarEvent>) :
     RecyclerView.Adapter<UniversityEventAdapter.UniversityEventViewHolder>() {
