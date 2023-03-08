@@ -1,13 +1,16 @@
 package com.pennapps.labs.pennmobile
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -55,6 +58,7 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
         )
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -95,7 +99,20 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
 
         viewModel.retrieveRegistrations()
 
+        val scaleUp = AnimationUtils.loadAnimation(context, R.anim.pca_delete_scaleup)
+        val scaleDown = AnimationUtils.loadAnimation(context, R.anim.pca_delete_scaledown)
+
         deleteButton = view.findViewById(R.id.deleteRegistrations)
+
+        deleteButton.setOnTouchListener { v, event ->
+            when (event?.action) {
+                MotionEvent.ACTION_UP -> deleteButton.startAnimation(scaleUp)
+                MotionEvent.ACTION_DOWN -> deleteButton.startAnimation(scaleDown)
+            }
+
+            v?.onTouchEvent(event) ?: true
+        }
+
         deleteButton.setOnClickListener {
             if (viewModel.userRegistrations.value?.isEmpty() == false) {
                 val dialogLayout = layoutInflater.inflate(R.layout.pca_dialog_delete_registrations, null)
