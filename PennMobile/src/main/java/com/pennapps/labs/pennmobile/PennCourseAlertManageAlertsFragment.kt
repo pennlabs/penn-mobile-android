@@ -1,16 +1,19 @@
 package com.pennapps.labs.pennmobile
 
 import android.app.AlertDialog
+import android.app.Dialog
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -95,18 +98,35 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
         deleteButton = view.findViewById(R.id.deleteRegistrations)
         deleteButton.setOnClickListener {
             if (viewModel.userRegistrations.value?.isEmpty() == false) {
-                val builder = AlertDialog.Builder(activity)
-                builder.setTitle("Confirm Delete")
-                builder.setMessage("Are you sure you want to delete all of your registrations?")
-                builder.setPositiveButton("Yes") { dialog, _ ->
-                    viewModel.deleteRegistrations()
-                    dialog.cancel()
-                }
-                builder.setNegativeButton("No") { dialog, _ ->
-                    dialog.cancel()
-                }
+
+                val dialogLayout = layoutInflater.inflate(R.layout.pca_dialog_delete_registrations, null)
+                val builder = AlertDialog.Builder(activity, R.style.dialog_style)
+                builder.setView(dialogLayout)
                 val alert = builder.create()
+                alert.window?.setBackgroundDrawableResource(R.drawable.pca_dialog_bg_window)
                 alert.show()
+
+                val confirmButton = alert.findViewById<Button>(R.id.pca_dialog_confirm_button)
+                confirmButton.setOnClickListener {
+                    viewModel.deleteRegistrations()
+                    alert.cancel()
+                }
+                val cancelButton = alert.findViewById<Button>(R.id.pca_dialog_cancel_button)
+                cancelButton.setOnClickListener {
+                    alert.cancel()
+                }
+
+//                builder.setTitle("Confirm Delete")
+//                builder.setMessage("Are you sure you want to delete all of your registrations?")
+//                builder.setPositiveButton("Yes") { dialog, _ ->
+//                    viewModel.deleteRegistrations()
+//                    dialog.cancel()
+//                }
+//                builder.setNegativeButton("No") { dialog, _ ->
+//                    dialog.cancel()
+//                }
+//                val alert = builder.create()
+//                alert.show()
             } else {
                 Toast.makeText(
                     context,
