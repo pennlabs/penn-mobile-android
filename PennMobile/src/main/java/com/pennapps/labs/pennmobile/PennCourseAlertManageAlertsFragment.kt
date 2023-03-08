@@ -98,7 +98,6 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
         deleteButton = view.findViewById(R.id.deleteRegistrations)
         deleteButton.setOnClickListener {
             if (viewModel.userRegistrations.value?.isEmpty() == false) {
-
                 val dialogLayout = layoutInflater.inflate(R.layout.pca_dialog_delete_registrations, null)
                 val builder = AlertDialog.Builder(activity, R.style.dialog_style)
                 builder.setView(dialogLayout)
@@ -115,18 +114,6 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
                 cancelButton.setOnClickListener {
                     alert.cancel()
                 }
-
-//                builder.setTitle("Confirm Delete")
-//                builder.setMessage("Are you sure you want to delete all of your registrations?")
-//                builder.setPositiveButton("Yes") { dialog, _ ->
-//                    viewModel.deleteRegistrations()
-//                    dialog.cancel()
-//                }
-//                builder.setNegativeButton("No") { dialog, _ ->
-//                    dialog.cancel()
-//                }
-//                val alert = builder.create()
-//                alert.show()
             } else {
                 Toast.makeText(
                     context,
