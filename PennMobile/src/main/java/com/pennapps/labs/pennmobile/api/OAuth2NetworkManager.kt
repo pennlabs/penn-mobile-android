@@ -37,6 +37,8 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
                 refreshAccessToken()
             }
         }
+        val refreshToken = sp.getString(mActivity.getString(R.string.refresh_token), "")
+        Log.d("Refresh", "$refreshToken")
     }
 
     private fun refreshAccessToken() {
@@ -60,6 +62,8 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
                             val date = Date(System.currentTimeMillis().plus(expiresInInt)) //or simply new Date();
                             editor.putLong(mActivity.getString(R.string.token_generated), date.time)
                             editor.apply()
+                            Log.d("RefreshToken", "$refreshToken")
+                            Log.d("ClientId", clientID)
                         }
                     }
 

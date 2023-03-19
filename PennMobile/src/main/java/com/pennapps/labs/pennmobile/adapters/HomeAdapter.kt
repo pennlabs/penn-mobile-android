@@ -32,10 +32,16 @@ import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.CalendarEvent
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.HomeCell
+import com.pennapps.labs.pennmobile.classes.PollCell
 import com.pennapps.labs.pennmobile.components.sneaker.Utils.convertToDp
 import com.squareup.picasso.Picasso
 import eightbitlab.com.blurview.RenderScriptBlur
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.home_base_card.view.*
+import kotlinx.android.synthetic.main.home_base_card.view.home_card_rv
+import kotlinx.android.synthetic.main.home_base_card.view.home_card_subtitle
+import kotlinx.android.synthetic.main.home_base_card.view.home_card_title
+import kotlinx.android.synthetic.main.poll_card.view.*
 import kotlinx.android.synthetic.main.home_news_card.view.*
 import kotlinx.android.synthetic.main.home_post_card.view.*
 import kotlinx.coroutines.Dispatchers
@@ -68,6 +74,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         private const val GSR_BOOKING = 6
         private const val POST = 7
         private const val FEATURE = 8
+        private const val POLL = 9
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -84,6 +91,9 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             }
             FEATURE -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_post_card, parent, false))
+            }
+            POLL -> {
+                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.poll_card, parent, false))
             }
             NOT_SUPPORTED -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.empty_view, parent, false))
@@ -105,6 +115,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             "gsr_booking" -> bindGsrBookingCell(holder, cell)
             "post" -> bindPostCell(holder, cell)
             "feature" -> bindFeatureCell(holder, cell)
+            "poll" -> bindPollCell(holder, cell)
             else -> Log.i("HomeAdapter", "Unsupported type of data at position $position")
         }
     }
@@ -132,6 +143,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             "gsr_booking" -> GSR_BOOKING
             "post" -> POST
             "feature" -> FEATURE
+            "poll" -> POLL
             else -> NOT_SUPPORTED
         }
     }
@@ -437,6 +449,17 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             mActivity.fragmentTransact(FlingFragment(), false)
         }
     }
+
+    private fun bindPollCell(holder: ViewHolder, cell: HomeCell) {
+        val poll = (cell as PollCell).poll
+        holder.itemView.home_card_title?.text = poll.question
+        var voteCount = 0
+        poll.options.forEach { voteCount +=  it.voteCount}
+        holder.itemView.home_card_subtitle_2?.text = "$voteCount Votes"
+        holder.itemView.home_card_rv?.layoutManager = LinearLayoutManager(mContext)
+        holder.itemView.home_card_rv?.adapter = PollOptionAdapter(ArrayList(poll.options), poll)
+    }
+
     // Chrome custom tabs to launch news site
 
     internal inner class NewsCustomTabsServiceConnection : CustomTabsServiceConnection() {

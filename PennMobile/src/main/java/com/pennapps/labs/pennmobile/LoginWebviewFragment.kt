@@ -174,7 +174,11 @@ class LoginWebviewFragment : Fragment() {
             if (url.contains("callback") && url.contains("?code=")) {
                 val urlArr = url.split("?code=").toTypedArray()
                 val authCode = urlArr[urlArr.size - 1]
-                initiateAuthentication(authCode)
+                Log.d("AuthCode", authCode)
+                Log.d("ClientId", clientID)
+                Log.d("RedirectURI", redirectUri)
+                Log.d("CodeVerifier", codeVerifier)
+                //initiateAuthentication(authCode)
             }
             if (url.contains("weblogin") && url.contains("pennkey")) {
                 if (Build.VERSION.SDK_INT >= 19) {

@@ -220,4 +220,6 @@
     <string name="pca_submit_button">Alert Me!</string>
     <string name="pca_notify_when_closed">Notify when closed?</string>
 
+    <!-- Poll -->
+    <string name="vote">Vote</string>
 </resources>
