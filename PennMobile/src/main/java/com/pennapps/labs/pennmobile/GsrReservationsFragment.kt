@@ -84,10 +84,10 @@ class GsrReservationsFragment : Fragment() {
         val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
         val email = sp.getString(getString(R.string.email_address), "")
         OAuth2NetworkManager(mActivity).getAccessToken()
-        val token = "Bearer " + sp.getString(getString(R.string.access_token), "")
+        val token = sp.getString(getString(R.string.access_token), "")
 
         val labs = MainActivity.studentLifeInstance
-        labs.getGsrReservations(token).subscribe({ reservations ->
+        labs.getGsrReservations("Bearer $token").subscribe({ reservations ->
             mActivity.runOnUiThread {
                 gsr_reservations_rv?.adapter = GsrReservationsAdapter(ArrayList(reservations))
                 loadingPanel?.visibility = View.GONE

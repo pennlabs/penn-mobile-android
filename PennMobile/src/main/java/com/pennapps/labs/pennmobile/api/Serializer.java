@@ -26,6 +26,7 @@ import com.pennapps.labs.pennmobile.classes.LaundryUsage;
 import com.pennapps.labs.pennmobile.classes.Post;
 import com.pennapps.labs.pennmobile.classes.Venue;
 import com.pennapps.labs.pennmobile.classes.VenueInterval;
+import com.pennapps.labs.pennmobile.classes.WhartonStatus;
 
 import java.lang.reflect.Type;
 import java.text.Format;
@@ -169,11 +170,7 @@ public class Serializer {
                 GSRLocation location = new GSRLocation();
                 JsonObject jsonLocation = jsonLocations.get(i).getAsJsonObject();
 
-                try {
-                    location.id = jsonLocation.get("lid").getAsInt();
-                } catch (Exception e) {
-                    continue;
-                }
+                location.id = jsonLocation.get("lid").getAsString();
                 location.gid = jsonLocation.get("gid").getAsInt();
                 location.name = jsonLocation.get("name").getAsString();
                 location.kind = jsonLocation.get("kind").getAsString();
