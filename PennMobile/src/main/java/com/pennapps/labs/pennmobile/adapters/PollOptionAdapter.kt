@@ -3,7 +3,9 @@ package com.pennapps.labs.pennmobile.adapters
 import android.content.Context
 import android.os.Build
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
@@ -11,6 +13,7 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.Poll
 import com.pennapps.labs.pennmobile.classes.PollOption
 import kotlinx.android.synthetic.main.poll_list_item.view.*
+import kotlin.math.abs
 import kotlin.math.round
 
 
@@ -46,14 +49,46 @@ class PollOptionAdapter(private var pollOptions: ArrayList<PollOption>, private 
             pollOptions.forEach {
                 poll.totalVotes += it.voteCount
             }
-            poll.isVisible = true
+            poll.isVisible = false
         }
 
+        var startX : Float? = null
+        var startY : Float? = null
+        holder.itemView.seek_bar?.setOnTouchListener(OnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    startX = event.x
+                    startY = event.y
+                }
+                MotionEvent.ACTION_UP -> {
+                    val endX = event.x
+                    val endY = event.y
+                    if (startX != null && startY != null && isAClick(startX!!, endX, startY!!, endY)) {
+                        poll.selectOption(pollOption)
+                        notifyDataSetChanged()
+                    }
+                }
+            }
+            true })
+        if(pollOption.selected) {
+            holder.itemView.tv_option?.text = "Selected!"
+        }
         if(poll.isVisible) {
             holder.itemView.tv_votes?.text = "${pollOption.voteCount}"
             val votePercent = (pollOption.voteCount.div(poll.totalVotes.toDouble())) * 100
             holder.itemView.tv_percent?.text = String.format("%.2f%%", votePercent)
             holder.itemView.seek_bar?.progress = round(votePercent).toInt()
+            holder.itemView.seek_bar?.setOnTouchListener(OnTouchListener { v, event -> true })
         }
+    }
+
+    private fun isAClick(startX: Float, endX: Float, startY: Float, endY: Float): Boolean {
+        val differenceX = abs(startX - endX)
+        val differenceY = abs(startY - endY)
+        return !(differenceX > CLICK_ACTION_THRESHOLD /* =5 */ || differenceY > CLICK_ACTION_THRESHOLD)
+    }
+
+    companion object {
+        private const val CLICK_ACTION_THRESHOLD : Int = 200
     }
 }

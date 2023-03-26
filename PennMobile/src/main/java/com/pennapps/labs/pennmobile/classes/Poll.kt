@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile.classes
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.pennapps.labs.pennmobile.adapters.HomeAdapter
 
 class Poll {
 
@@ -46,6 +47,20 @@ class Poll {
 
     @Expose
     var isVisible : Boolean = false
+
+    //@Expose
+    //var homeAdapter : HomeAdapter? = null
+
+    fun selectOption(pollOption: PollOption) {
+        options.forEach { if(pollOption.id == it.id) {
+            it.selected = !it.selected
+        } else {
+            if(!multiselect) {
+                it.selected = false
+            }
+        }}
+        //gui?.notifyDataSetChanged()
+    }
 
     // Device id + poll id -> hash -> id
 

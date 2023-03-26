@@ -7,7 +7,7 @@ class PollOption {
 
     @SerializedName("id")
     @Expose
-    private val id : Int? = null
+    val id : Int? = null
 
     @SerializedName("poll")
     @Expose
@@ -20,6 +20,8 @@ class PollOption {
     @SerializedName("vote_count")
     @Expose
     var voteCount : Int = 0
+
+    var selected : Boolean = false
 
     var isVisible : Boolean = false
 }
