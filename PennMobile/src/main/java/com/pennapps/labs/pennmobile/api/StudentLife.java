@@ -20,6 +20,7 @@ import com.pennapps.labs.pennmobile.classes.Post;
 import com.pennapps.labs.pennmobile.classes.SaveAccountResponse;
 import com.pennapps.labs.pennmobile.classes.Venue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.Callback;
@@ -160,6 +161,14 @@ public interface StudentLife {
             @Header("Authorization") String bearerToken,
             @Field("id_hash") int idHash
     );
+
+    @FormUrlEncoded
+    @POST("/portal/votes/")
+    void createPollVote(
+            @Header("Authorization") String bearerToken,
+            @Field("id_hash") int idHash,
+            @Field("poll_options") ArrayList<Integer> pollOptions,
+            Callback<Response> callback);
 
 
 }

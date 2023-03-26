@@ -117,7 +117,7 @@ class MainActivity : AppCompatActivity() {
         if (pennKey == null && !guestMode) {
             startLoginFragment()
         } else {
-            startHomeFragment()
+            OAuth2NetworkManager(this).getAccessTokenStartup()
         }
     }
 
@@ -157,8 +157,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun startHomeFragment() {
-        OAuth2NetworkManager(this).getAccessToken()
-
         val fragment: Fragment = HomeFragment()
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)

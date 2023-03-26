@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -48,6 +49,10 @@ import kotlinx.android.synthetic.main.home_post_card.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import retrofit.Callback
+import retrofit.ResponseCallback
+import retrofit.RetrofitError
+import retrofit.client.Response
 import rx.Observable
 
 
@@ -473,6 +478,22 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
                 (holder.itemView.home_card_rv?.adapter as PollOptionAdapter).notifyDataSetChanged()
                 holder.itemView.vote_btn?.isClickable = false
                 notifyItemChanged(position)
+                val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
+                val bearerToken = "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
+                val selectedOptions = ArrayList<Int>()
+                poll.options.forEach { if (it.id != null && it.selected) {
+                    selectedOptions.add(it.id)
+                } }
+                mStudentLife.createPollVote(bearerToken, 1, selectedOptions, object : ResponseCallback() {
+                    override fun success(response: Response?) {
+                        Log.i("HomeAdapter", "Successfully voted for poll!")
+                    }
+
+                    override fun failure(error: RetrofitError?) {
+                        Log.e("HomeAdapter", "Error voting for poll", error)
+                    }
+
+                })
             }
         } else {
             holder.itemView.vote_btn?.setTextColor(mContext.resources.getColor(R.color.gray))
