@@ -53,9 +53,20 @@ class Poll {
 
     fun selectOption(pollOption: PollOption) {
         options.forEach { if(pollOption.id == it.id) {
+            if(it.selected) {
+                it.voteCount = it.voteCount - 1
+                totalVotes -= 1
+            } else {
+                it.voteCount = it.voteCount + 1
+                totalVotes += 1
+            }
             it.selected = !it.selected
         } else {
             if(!multiselect) {
+                if(it.selected) {
+                    it.voteCount = it.voteCount - 1
+                    totalVotes -= 1
+                }
                 it.selected = false
             }
         }}

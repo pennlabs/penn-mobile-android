@@ -1,7 +1,9 @@
 package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -45,12 +47,6 @@ class PollOptionAdapter(private var pollOptions: ArrayList<PollOption>, private 
 
     private fun bindPollOption(holder: ViewHolder, pollOption: PollOption) {
         holder.itemView.tv_option?.text = pollOption.choice
-        if(!poll.isVisible) {
-            pollOptions.forEach {
-                poll.totalVotes += it.voteCount
-            }
-            poll.isVisible = false
-        }
 
         var startX : Float? = null
         var startY : Float? = null
@@ -71,7 +67,17 @@ class PollOptionAdapter(private var pollOptions: ArrayList<PollOption>, private 
             }
             true })
         if(pollOption.selected) {
-            holder.itemView.tv_option?.text = "Selected!"
+            holder.itemView.tv_option?.setTextColor(mContext.resources.getColor(R.color.color_secondary))
+            holder.itemView.tv_percent?.setTextColor(mContext.resources.getColor(R.color.color_secondary))
+            holder.itemView.tv_votes?.setTextColor(mContext.resources.getColor(R.color.color_secondary))
+            holder.itemView.seek_bar?.progressDrawable = mContext.getDrawable(R.drawable.poll_track_selected)
+            holder.itemView.card_view?.foreground = mContext.getDrawable(R.drawable.card_view_border)
+        } else {
+            holder.itemView.tv_option?.setTextColor(Color.parseColor("#13284B"))
+            holder.itemView.tv_percent?.setTextColor(Color.parseColor("#13284B"))
+            holder.itemView.tv_votes?.setTextColor(Color.parseColor("#13284B"))
+            holder.itemView.seek_bar?.progressDrawable = mContext.getDrawable(R.drawable.poll_track)
+            holder.itemView.card_view?.foreground = null
         }
         if(poll.isVisible) {
             holder.itemView.tv_votes?.text = "${pollOption.voteCount}"

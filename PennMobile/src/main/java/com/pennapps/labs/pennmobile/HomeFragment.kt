@@ -124,6 +124,7 @@ class HomeFragment : Fragment() {
                 }
                 mActivity.runOnUiThread {
                     val pollCell = PollCell(poll[0])
+                    pollCell.poll.options.forEach { pollCell.poll.totalVotes += it.voteCount }
                     homepageCells[0] = pollCell
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE

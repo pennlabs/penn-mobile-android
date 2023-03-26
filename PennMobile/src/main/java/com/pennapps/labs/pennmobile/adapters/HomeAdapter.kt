@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
@@ -453,11 +454,21 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
     private fun bindPollCell(holder: ViewHolder, cell: HomeCell) {
         val poll = (cell as PollCell).poll
         holder.itemView.home_card_title?.text = poll.question
-        var voteCount = 0
-        poll.options.forEach { voteCount +=  it.voteCount}
-        holder.itemView.home_card_subtitle_2?.text = "$voteCount Votes"
+        holder.itemView.home_card_subtitle_2?.text = "${poll.totalVotes} Votes"
         holder.itemView.home_card_rv?.layoutManager = LinearLayoutManager(mContext)
         holder.itemView.home_card_rv?.adapter = PollOptionAdapter(ArrayList(poll.options), poll)
+        holder.itemView.vote_btn?.setOnClickListener {
+            var isSelected = false
+            poll.options.forEach { isSelected = isSelected || it.selected }
+            if(!isSelected) {
+                Toast.makeText(mActivity, "Need to select an option to vote", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            poll.isVisible = true
+            (holder.itemView.home_card_rv?.adapter as PollOptionAdapter).notifyDataSetChanged()
+            holder.itemView.vote_btn?.isClickable = false
+            notifyItemChanged(0)
+        }
     }
 
     // Chrome custom tabs to launch news site
