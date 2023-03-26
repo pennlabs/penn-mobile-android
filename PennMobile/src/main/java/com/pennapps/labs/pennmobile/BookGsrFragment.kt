@@ -89,22 +89,23 @@ class BookGsrFragment : Fragment() {
             } else if (!emailEt.text.toString().matches("""[\w]+@(seas\.|sas\.|wharton\.|nursing\.)?upenn\.edu""".toRegex())) {
                 Toast.makeText(activity, "Please enter a valid Penn email", Toast.LENGTH_LONG).show()
             } else {
-                bookGSR(Integer.parseInt(gsrID), Integer.parseInt(gsrLocationCode), startTime, endTime, gid, roomId, roomName)
+                bookGSR(Integer.parseInt(gsrID), gsrLocationCode, startTime, endTime, gid, roomId, roomName)
             }
         }
         return v
     }
 
-    private fun bookGSR(gsrId: Int, gsrLocationCode: Int, startTime: String?, endTime: String?, gid: Int, roomId: Int, roomName: String) {
+    private fun bookGSR(gsrId: Int, gsrLocationCode: String, startTime: String?, endTime: String?, gid: Int, roomId: Int, roomName: String) {
 
         var sessionID = ""
         var bearerToken = ""
+        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+        Log.i("Bearer Token", sp.getString(getString(R.string.access_token), "").toString());
         activity?.let { activity ->
             val sp = PreferenceManager.getDefaultSharedPreferences(activity)
             sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "") ?: ""
             bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
             Log.i("BookGSRFragment", "$bearerToken")
-
         }
         Log.i("BookGSRFragment", "Bearer $bearerToken")
         Log.i("BookGSRFragment", "Start $startTime")

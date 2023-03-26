@@ -18,6 +18,7 @@ import com.pennapps.labs.pennmobile.classes.LaundryUsage;
 import com.pennapps.labs.pennmobile.classes.Post;
 import com.pennapps.labs.pennmobile.classes.SaveAccountResponse;
 import com.pennapps.labs.pennmobile.classes.Venue;
+import com.pennapps.labs.pennmobile.classes.WhartonStatus;
 
 import java.util.List;
 
@@ -68,10 +69,16 @@ public interface StudentLife {
 
     @GET("/gsr/availability/{id}/{gid}")
     Observable<GSR> gsrRoom(
-            @Path("id") int id,
+            @Header("Authorization") String bearerToken,
+            @Path("id") String id,
             @Path("gid") int gid,
             @Query("start") String date
             );
+
+    @GET("/gsr/wharton")
+    Observable<WhartonStatus> isWharton (
+            @Header("Authorization") String bearerToken
+    );
 
     @FormUrlEncoded
     @POST("/gsr/book/")

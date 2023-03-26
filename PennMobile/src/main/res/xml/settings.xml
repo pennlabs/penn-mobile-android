@@ -70,7 +70,7 @@
             android:id="@+id/pref_campus_express_link"
             app:iconSpaceReserved="false"
             app:key="pref_campus_express_link"
-            app:title="Campus express" />
+            app:title="Campus Express" />
         <Preference
             android:id="@+id/pref_canvas_link"
             app:iconSpaceReserved="false"
