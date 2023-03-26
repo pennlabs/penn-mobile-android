@@ -178,7 +178,7 @@ class LoginWebviewFragment : Fragment() {
                 Log.d("ClientId", clientID)
                 Log.d("RedirectURI", redirectUri)
                 Log.d("CodeVerifier", codeVerifier)
-                //initiateAuthentication(authCode)
+                initiateAuthentication(authCode)
             }
             if (url.contains("weblogin") && url.contains("pennkey")) {
                 if (Build.VERSION.SDK_INT >= 19) {

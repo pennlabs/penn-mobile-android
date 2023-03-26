@@ -116,7 +116,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             "gsr_booking" -> bindGsrBookingCell(holder, cell)
             "post" -> bindPostCell(holder, cell)
             "feature" -> bindFeatureCell(holder, cell)
-            "poll" -> bindPollCell(holder, cell)
+            "poll" -> bindPollCell(holder, cell, position)
             else -> Log.i("HomeAdapter", "Unsupported type of data at position $position")
         }
     }
@@ -451,23 +451,32 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         }
     }
 
-    private fun bindPollCell(holder: ViewHolder, cell: HomeCell) {
+    private fun bindPollCell(holder: ViewHolder, cell: HomeCell, position: Int) {
         val poll = (cell as PollCell).poll
         holder.itemView.home_card_title?.text = poll.question
         holder.itemView.home_card_subtitle_2?.text = "${poll.totalVotes} Votes"
         holder.itemView.home_card_rv?.layoutManager = LinearLayoutManager(mContext)
         holder.itemView.home_card_rv?.adapter = PollOptionAdapter(ArrayList(poll.options), poll)
-        holder.itemView.vote_btn?.setOnClickListener {
-            var isSelected = false
-            poll.options.forEach { isSelected = isSelected || it.selected }
-            if(!isSelected) {
-                Toast.makeText(mActivity, "Need to select an option to vote", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+        if(!poll.isVisible) {
+            holder.itemView.vote_btn?.setOnClickListener {
+                var isSelected = false
+                poll.options.forEach { isSelected = isSelected || it.selected }
+                if (!isSelected) {
+                    Toast.makeText(
+                        mActivity,
+                        "Need to select an option to vote",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@setOnClickListener
+                }
+                poll.isVisible = true
+                (holder.itemView.home_card_rv?.adapter as PollOptionAdapter).notifyDataSetChanged()
+                holder.itemView.vote_btn?.isClickable = false
+                notifyItemChanged(position)
             }
-            poll.isVisible = true
-            (holder.itemView.home_card_rv?.adapter as PollOptionAdapter).notifyDataSetChanged()
-            holder.itemView.vote_btn?.isClickable = false
-            notifyItemChanged(0)
+        } else {
+            holder.itemView.vote_btn?.setTextColor(mContext.resources.getColor(R.color.gray))
+            holder.itemView.vote_btn?.setOnClickListener {}
         }
     }
 
