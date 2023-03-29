@@ -1,10 +1,12 @@
 package com.pennapps.labs.pennmobile.api;
 
+import com.pennapps.labs.pennmobile.classes.AccessTokenResponse;
 import com.pennapps.labs.pennmobile.classes.Account;
 import com.pennapps.labs.pennmobile.classes.Article;
 import com.pennapps.labs.pennmobile.classes.CalendarEvent;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.DiningPreferences;
+import com.pennapps.labs.pennmobile.classes.DiningRequest;
 import com.pennapps.labs.pennmobile.classes.FlingEvent;
 import com.pennapps.labs.pennmobile.classes.GSR;
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult;
@@ -33,6 +35,7 @@ import retrofit.http.Headers;
 import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
+import retrofit.mime.TypedInput;
 import rx.Observable;
 
 /**
@@ -40,6 +43,15 @@ import rx.Observable;
  * Retrofit interface to the Penn Mobile API
  */
 public interface StudentLife {
+
+
+    @FormUrlEncoded
+    @POST("/accounts/token/")
+    void refreshAccessToken(
+            @Field("refresh_token") String refreshToken,
+            @Field("grant_type") String grantType,
+            @Field("client_id") String clientID,
+            Callback<AccessTokenResponse> callback);
 
     @GET("/dining/venues")
     Observable<List<Venue>> venues();
@@ -148,11 +160,11 @@ public interface StudentLife {
             @Field("rooms") String rooms,
             Callback<Response> callback);
 
-    @FormUrlEncoded
-    @POST("/dining/preferences")
+    @Headers({"Content-Type: application/json"})
+    @POST("/dining/preferences/")
     void sendDiningPref(
             @Header("Authorization") String bearerToken,
-            @Field("venues") String venues,
+            @Body DiningRequest body,
             Callback<Response> callback);
 
     @GET("/portal/posts/browse/")
