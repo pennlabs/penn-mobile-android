@@ -159,14 +159,14 @@ public interface StudentLife {
     @POST("/portal/polls/browse/")
     Observable<List<Poll>> browsePolls(
             @Header("Authorization") String bearerToken,
-            @Field("id_hash") int idHash
+            @Field("id_hash") String idHash
     );
 
     @FormUrlEncoded
     @POST("/portal/votes/")
     void createPollVote(
             @Header("Authorization") String bearerToken,
-            @Field("id_hash") int idHash,
+            @Field("id_hash") String idHash,
             @Field("poll_options") ArrayList<Integer> pollOptions,
             Callback<Response> callback);
 

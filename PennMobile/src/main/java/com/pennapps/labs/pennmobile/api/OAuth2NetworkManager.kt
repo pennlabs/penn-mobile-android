@@ -26,19 +26,17 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
     fun getAccessToken() {
         val expiresIn = sp.getString(mActivity.getString(R.string.expires_in), "")
         if (expiresIn != "") {
-            val seconds = expiresIn?.toInt()
-            val calendar = Calendar.getInstance()
-            val expiresAt = Date(sp.getLong(mActivity.getString(R.string.token_generated), 0))
-            calendar.time = Date()
-            if (seconds != null) {
-                calendar.add(Calendar.SECOND, -seconds)
-            }
-            if (calendar.time.after(expiresAt)) { // if it has expired, refresh access token
+            val expiresAt = sp.getLong(mActivity.getString(R.string.token_expires_at), 0)
+            val currentTime = Calendar.getInstance().timeInMillis
+            if (currentTime >= expiresAt) { // if it has expired, refresh access token
+                Log.i("Accounts", "Expired")
                 refreshAccessToken()
+            } else {
+                Log.i("Accounts", "Not Expired")
             }
+        } else {
+            refreshAccessToken()
         }
-        val refreshToken = sp.getString(mActivity.getString(R.string.refresh_token), "")
-        Log.d("Refresh", "$refreshToken")
     }
 
     private fun refreshAccessToken() {
@@ -55,15 +53,12 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
                             editor.putString(mActivity.getString(R.string.access_token), t?.accessToken)
                             editor.putString(mActivity.getString(R.string.refresh_token), t?.refreshToken)
                             editor.putString(mActivity.getString(R.string.expires_in), t?.expiresIn)
-                            val calendar = Calendar.getInstance()
-                            calendar.time = Date()
                             val expiresIn = t?.expiresIn
-                            val expiresInInt = expiresIn!!.toInt()
-                            val date = Date(System.currentTimeMillis().plus(expiresInInt)) //or simply new Date();
-                            editor.putLong(mActivity.getString(R.string.token_generated), date.time)
+                            val expiresInInt = (expiresIn!!.toInt() * 1000)
+                            val currentTime = Calendar.getInstance().timeInMillis
+                            editor.putLong(mActivity.getString(R.string.token_expires_at), currentTime + expiresInInt)
                             editor.apply()
-                            Log.d("RefreshToken", "$refreshToken")
-                            Log.d("ClientId", clientID)
+                            Log.i("Accounts", "Reloaded Homepage")
                         }
                     }
 
@@ -77,18 +72,19 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
     fun getAccessTokenStartup() {
         val expiresIn = sp.getString(mActivity.getString(R.string.expires_in), "")
         if (expiresIn != "") {
-            val seconds = expiresIn?.toInt()
-            val calendar = Calendar.getInstance()
-            val expiresAt = Date(sp.getLong(mActivity.getString(R.string.token_generated), 0))
-            calendar.time = Date()
-            if (seconds != null) {
-                calendar.add(Calendar.SECOND, -seconds)
-            }
-            if (calendar.time.after(expiresAt)) { // if it has expired, refresh access token
-                refreshAccessTokenStartup()
+            val expiresAt = sp.getLong(mActivity.getString(R.string.token_expires_at), 0)
+            val currentTime = Calendar.getInstance().timeInMillis
+            if (currentTime >= expiresAt) { // if it has expired, refresh access token
+                Log.i("Accounts", "Expired")
+                refreshAccessToken()
             } else {
+                Log.i("Accounts", "Current Time: $currentTime")
+                Log.i("Accounts", "Expires At Time: $expiresAt")
+                Log.i("Accounts", "Not Expired")
                 mActivity.startHomeFragment()
             }
+        } else {
+            refreshAccessTokenStartup()
         }
     }
 
@@ -106,20 +102,39 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
                         editor.putString(mActivity.getString(R.string.access_token), t?.accessToken)
                         editor.putString(mActivity.getString(R.string.refresh_token), t?.refreshToken)
                         editor.putString(mActivity.getString(R.string.expires_in), t?.expiresIn)
-                        val calendar = Calendar.getInstance()
-                        calendar.time = Date()
+                        val currentTime = Calendar.getInstance().timeInMillis
                         val expiresIn = t?.expiresIn
-                        val expiresInInt = expiresIn!!.toInt()
-                        val date = Date(System.currentTimeMillis().plus(expiresInInt)) //or simply new Date();
-                        editor.putLong(mActivity.getString(R.string.token_generated), date.time)
+                        val expiresInInt = (expiresIn!!.toInt() * 1000)
+                        editor.putLong(mActivity.getString(R.string.token_expires_at), currentTime + expiresInInt)
                         editor.apply()
                         mActivity.startHomeFragment()
+                        Log.i("Accounts", "Reloaded Homepage")
                     }
                 }
 
                 override fun failure(error: RetrofitError) {
-                    Log.e("Accounts", "Error refreshing access token $error")
-                    mActivity.startLoginFragment()
+                    Log.e("Accounts", "Error refreshing access token $error", error)
+                    val expiresAt = sp.getLong(mActivity.getString(R.string.token_expires_at), 0)
+                    if(System.currentTimeMillis() - expiresAt > 6.912e+9) {
+                        val editor = sp.edit()
+                        editor.remove(mActivity.getString(R.string.penn_password))
+                        editor.remove(mActivity.getString(R.string.penn_user))
+                        editor.remove(mActivity.getString(R.string.first_name))
+                        editor.remove(mActivity.getString(R.string.last_name))
+                        editor.remove(mActivity.getString(R.string.email_address))
+                        editor.remove(mActivity.getString(R.string.pennkey))
+                        editor.remove(mActivity.getString(R.string.accountID))
+                        editor.remove(mActivity.getString(R.string.access_token))
+                        editor.remove(mActivity.getString(R.string.expires_in))
+                        editor.remove(mActivity.getString(R.string.token_expires_at))
+                        editor.remove(mActivity.getString(R.string.guest_mode))
+                        editor.remove(mActivity.getString(R.string.campus_express_token))
+                        editor.remove(mActivity.getString(R.string.campus_token_expires_in))
+                        editor.apply()
+                        mActivity.startLoginFragment()
+                    } else {
+                        mActivity.startHomeFragment()
+                    }
                 }
             })
     }

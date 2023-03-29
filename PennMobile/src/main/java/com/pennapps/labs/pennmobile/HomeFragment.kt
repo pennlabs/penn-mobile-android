@@ -28,6 +28,7 @@ import com.pennapps.labs.pennmobile.classes.HomeCellInfo
 import com.pennapps.labs.pennmobile.classes.PollCell
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.utils.Utils
+import com.pennapps.labs.pennmobile.utils.Utils.getSha256Hash
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.include_main.*
@@ -117,8 +118,8 @@ class HomeFragment : Fragment() {
 
         val studentLife = MainActivity.studentLifeInstance
         if (bearerToken != "Bearer ") {
-
-            studentLife.browsePolls(bearerToken, 1).subscribe( { poll ->
+            val idHash = getSha256Hash(deviceID)
+            studentLife.browsePolls(bearerToken, idHash).subscribe( { poll ->
                 if(poll.size == 0) {
                     return@subscribe
                 }

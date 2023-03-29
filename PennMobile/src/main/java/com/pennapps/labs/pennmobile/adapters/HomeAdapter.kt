@@ -30,12 +30,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.*
 import com.pennapps.labs.pennmobile.DiningFragment.Companion.getMenus
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.CalendarEvent
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.HomeCell
 import com.pennapps.labs.pennmobile.classes.PollCell
 import com.pennapps.labs.pennmobile.components.sneaker.Utils.convertToDp
+import com.pennapps.labs.pennmobile.utils.Utils
 import com.squareup.picasso.Picasso
 import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -460,6 +462,9 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         val poll = (cell as PollCell).poll
         holder.itemView.home_card_title?.text = poll.question
         holder.itemView.home_card_subtitle_2?.text = "${poll.totalVotes} Votes"
+        if(poll.clubCode != null) {
+            holder.itemView.home_card_subtitle?.text = "POLL FROM ${poll.clubCode}"
+        }
         holder.itemView.home_card_rv?.layoutManager = LinearLayoutManager(mContext)
         holder.itemView.home_card_rv?.adapter = PollOptionAdapter(ArrayList(poll.options), poll)
         if(!poll.isVisible) {
@@ -484,7 +489,9 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
                 poll.options.forEach { if (it.id != null && it.selected) {
                     selectedOptions.add(it.id)
                 } }
-                mStudentLife.createPollVote(bearerToken, 1, selectedOptions, object : ResponseCallback() {
+                val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
+                val idHash = Utils.getSha256Hash(deviceID)
+                mStudentLife.createPollVote(bearerToken, idHash, selectedOptions, object : ResponseCallback() {
                     override fun success(response: Response?) {
                         Log.i("HomeAdapter", "Successfully voted for poll!")
                     }
