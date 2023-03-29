@@ -36,7 +36,6 @@ import retrofit.http.Headers;
 import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
-import retrofit.mime.TypedInput;
 import rx.Observable;
 
 /**
