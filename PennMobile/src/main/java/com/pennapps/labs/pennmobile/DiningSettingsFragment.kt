@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
 import com.pennapps.labs.pennmobile.adapters.DiningSettingsAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
@@ -18,7 +17,6 @@ import kotlinx.android.synthetic.main.include_main.*
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
-import retrofit.mime.TypedByteArray
 import rx.Observable
 
 
@@ -99,11 +97,6 @@ class DiningSettingsFragment : Fragment() {
                 favoriteDiningHalls.add(hall.id)
             }
         }
-
-        /*val dr = DiningRequest(favoriteDiningHalls)
-        val gson = Gson()
-
-        Log.i("Dining Request", gson.toJson(dr))*/
 
         val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
         mStudentLife.sendDiningPref(bearerToken, DiningRequest(favoriteDiningHalls),
