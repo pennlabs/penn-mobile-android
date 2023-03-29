@@ -97,12 +97,6 @@ class DiningSettingsFragment : Fragment() {
                 favoriteDiningHalls.add(hall.id)
             }
         }
-
-        /*val dr = DiningRequest(favoriteDiningHalls)
-        val gson = Gson()
-
-        Log.i("Dining Request", gson.toJson(dr))*/
-
         val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
         mStudentLife.sendDiningPref(bearerToken, DiningRequest(favoriteDiningHalls),
                 object : ResponseCallback() {
