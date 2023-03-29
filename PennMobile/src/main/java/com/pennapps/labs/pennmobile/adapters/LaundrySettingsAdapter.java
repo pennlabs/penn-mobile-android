@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.pennapps.labs.pennmobile.MainActivity;
 import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.api.StudentLife;
+import com.pennapps.labs.pennmobile.classes.LaundryRequest;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
     private final String s;
     private final List<Switch> switches = new ArrayList<>();
     private final int maxNumRooms = 3;
-    private StudentLife labs;
+    private StudentLife studentLife;
     private String bearerToken;
 
 
@@ -52,7 +53,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
         MainActivity mainActivity = (MainActivity) mContext;
         bearerToken = "Bearer " + sp.getString(mainActivity.getString(R.string.access_token), "");
 
-        labs = MainActivity.getStudentLifeInstance();
+        studentLife = MainActivity.getStudentLifeInstance();
 
         // first time
         if (sp.getInt(s, -1) == -1) {
@@ -256,8 +257,8 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
     }
 
     private void getPreferencesData() {
-        labs = MainActivity.getStudentLifeInstance();
-        labs.getLaundryPref(bearerToken).subscribe(new Action1<List<Integer>>() {
+        studentLife = MainActivity.getStudentLifeInstance();
+        studentLife.getLaundryPref(bearerToken).subscribe(new Action1<List<Integer>>() {
             @Override
             public void call(List<Integer> integers) {
             }
@@ -276,11 +277,12 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
             }
         }
 
-        //preferences must be in the form of 1,2,3 (exclude brackets)
-        String api_prepared_string = favoriteLaundryRooms.toString();
-        api_prepared_string = api_prepared_string.substring(1, api_prepared_string.length() - 1);
+        if (favoriteLaundryRooms.isEmpty()) {
+            return;
+        }
 
-        labs.sendLaundryPref(bearerToken, api_prepared_string, new ResponseCallback() {
+        studentLife.sendLaundryPref(bearerToken, new LaundryRequest(favoriteLaundryRooms),
+                new ResponseCallback() {
             @Override
             public void success(Response response) {
                 Log.i("Laundry", "Saved laundry preferences");
