@@ -194,11 +194,6 @@ class LoginWebviewFragment : Fragment() {
     }
 
     private fun initiateAuthentication(authCode: String) {
-        Log.i("Authcode", "$authCode")
-        Log.i("grantType", "authorization_code")
-        Log.i("clientID", "$clientID")
-        Log.i("redirectURI", "$redirectUri")
-        Log.i("codeVerifier", "$codeVerifier")
         mPlatform?.getAccessToken(authCode,
             "authorization_code", clientID, redirectUri, codeVerifier,
             object : Callback<AccessTokenResponse> {
