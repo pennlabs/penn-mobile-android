@@ -25,8 +25,10 @@ import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.classes.DiningHallPreference
 import com.pennapps.labs.pennmobile.classes.HomeCell
 import com.pennapps.labs.pennmobile.classes.HomeCellInfo
+import com.pennapps.labs.pennmobile.classes.PollCell
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.utils.Utils
+import com.pennapps.labs.pennmobile.utils.Utils.getSha256Hash
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.include_main.*
@@ -110,12 +112,29 @@ class HomeFragment : Fragment() {
         // get API data
         val homepageCells = mutableListOf<HomeCell>()
 
-        for (i in 1..6) {
+        for (i in 1..7) {
             homepageCells.add(HomeCell())
         }
 
         val studentLife = MainActivity.studentLifeInstance
         if (bearerToken != "Bearer ") {
+            val idHash = getSha256Hash(deviceID)
+            studentLife.browsePolls(bearerToken, idHash).subscribe( { poll ->
+                if(poll.size == 0) {
+                    return@subscribe
+                }
+                mActivity.runOnUiThread {
+                    val pollCell = PollCell(poll[0])
+                    pollCell.poll.options.forEach { pollCell.poll.totalVotes += it.voteCount }
+                    homepageCells[0] = pollCell
+                    home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                    loadingPanel?.visibility = View.GONE
+                    internetConnectionHome?.visibility = View.GONE
+                    home_refresh_layout?.isRefreshing = false
+                }
+            }, { throwable ->
+                Log.e("Poll", "Error retrieving polls", throwable)
+            })
 
             studentLife.news.subscribe({ article ->
                 mActivity.runOnUiThread {
@@ -123,7 +142,7 @@ class HomeFragment : Fragment() {
                     newsCell.info = HomeCellInfo()
                     newsCell.info?.article = article
                     newsCell.type = "news"
-                    homepageCells.set(2, newsCell)
+                    homepageCells[3] = newsCell
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
                     home_refresh_layout?.isRefreshing = false
@@ -156,7 +175,7 @@ class HomeFragment : Fragment() {
                     }
                     diningCellInfo.venues = venues
                     diningCell.info = diningCellInfo
-                    homepageCells.set(3, diningCell)
+                    homepageCells[4] = diningCell
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
                     internetConnectionHome?.visibility = View.GONE
@@ -176,11 +195,11 @@ class HomeFragment : Fragment() {
                     val calendar = HomeCell()
                     calendar.type = "calendar"
                     calendar.events = events
-                    homepageCells.set(0, calendar)
+                    homepageCells[1] = calendar
                     val gsrBookingCell = HomeCell()
                     gsrBookingCell.type = "gsr_booking"
                     gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "Weigle")
-                    homepageCells.set(4, gsrBookingCell)
+                    homepageCells[5] = gsrBookingCell
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
                     home_refresh_layout?.isRefreshing = false
@@ -204,7 +223,7 @@ class HomeFragment : Fragment() {
                         laundryCellInfo.roomId = preferences[0]
                     }
                     laundryCell.info = laundryCellInfo
-                    homepageCells.set(5, laundryCell)
+                    homepageCells[6] = laundryCell
                     home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                     loadingPanel?.visibility = View.GONE
                     internetConnectionHome?.visibility = View.GONE
@@ -226,7 +245,7 @@ class HomeFragment : Fragment() {
                         postCell.info = HomeCellInfo()
                         postCell.type = "post"
                         postCell.info?.post = post[0]
-                        homepageCells.set(1, postCell)
+                        homepageCells[2] = postCell
                         home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                         loadingPanel?.visibility = View.GONE
                         home_refresh_layout?.isRefreshing = false

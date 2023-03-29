@@ -9,10 +9,12 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
@@ -28,19 +30,31 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.*
 import com.pennapps.labs.pennmobile.DiningFragment.Companion.getMenus
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.CalendarEvent
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.HomeCell
+import com.pennapps.labs.pennmobile.classes.PollCell
 import com.pennapps.labs.pennmobile.components.sneaker.Utils.convertToDp
+import com.pennapps.labs.pennmobile.utils.Utils
 import com.squareup.picasso.Picasso
 import eightbitlab.com.blurview.RenderScriptBlur
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.home_base_card.view.*
+import kotlinx.android.synthetic.main.home_base_card.view.home_card_rv
+import kotlinx.android.synthetic.main.home_base_card.view.home_card_subtitle
+import kotlinx.android.synthetic.main.home_base_card.view.home_card_title
+import kotlinx.android.synthetic.main.poll_card.view.*
 import kotlinx.android.synthetic.main.home_news_card.view.*
 import kotlinx.android.synthetic.main.home_post_card.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import retrofit.Callback
+import retrofit.ResponseCallback
+import retrofit.RetrofitError
+import retrofit.client.Response
 import rx.Observable
 
 
@@ -68,6 +82,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         private const val GSR_BOOKING = 6
         private const val POST = 7
         private const val FEATURE = 8
+        private const val POLL = 9
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -84,6 +99,9 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             }
             FEATURE -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_post_card, parent, false))
+            }
+            POLL -> {
+                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.poll_card, parent, false))
             }
             NOT_SUPPORTED -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.empty_view, parent, false))
@@ -105,6 +123,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             "gsr_booking" -> bindGsrBookingCell(holder, cell)
             "post" -> bindPostCell(holder, cell)
             "feature" -> bindFeatureCell(holder, cell)
+            "poll" -> bindPollCell(holder, cell, position)
             else -> Log.i("HomeAdapter", "Unsupported type of data at position $position")
         }
     }
@@ -132,6 +151,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             "gsr_booking" -> GSR_BOOKING
             "post" -> POST
             "feature" -> FEATURE
+            "poll" -> POLL
             else -> NOT_SUPPORTED
         }
     }
@@ -437,6 +457,57 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             mActivity.fragmentTransact(FlingFragment(), false)
         }
     }
+
+    private fun bindPollCell(holder: ViewHolder, cell: HomeCell, position: Int) {
+        val poll = (cell as PollCell).poll
+        holder.itemView.home_card_title?.text = poll.question
+        holder.itemView.home_card_subtitle_2?.text = "${poll.totalVotes} Votes"
+        if(poll.clubCode != null) {
+            holder.itemView.home_card_subtitle?.text = "POLL FROM ${poll.clubCode}"
+        }
+        holder.itemView.home_card_rv?.layoutManager = LinearLayoutManager(mContext)
+        holder.itemView.home_card_rv?.adapter = PollOptionAdapter(ArrayList(poll.options), poll)
+        if(!poll.isVisible) {
+            holder.itemView.vote_btn?.setOnClickListener {
+                var isSelected = false
+                poll.options.forEach { isSelected = isSelected || it.selected }
+                if (!isSelected) {
+                    Toast.makeText(
+                        mActivity,
+                        "Need to select an option to vote",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@setOnClickListener
+                }
+                poll.isVisible = true
+                (holder.itemView.home_card_rv?.adapter as PollOptionAdapter).notifyDataSetChanged()
+                holder.itemView.vote_btn?.isClickable = false
+                notifyItemChanged(position)
+                val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
+                val bearerToken = "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
+                val selectedOptions = ArrayList<Int>()
+                poll.options.forEach { if (it.id != null && it.selected) {
+                    selectedOptions.add(it.id)
+                } }
+                val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
+                val idHash = Utils.getSha256Hash(deviceID)
+                mStudentLife.createPollVote(bearerToken, idHash, selectedOptions, object : ResponseCallback() {
+                    override fun success(response: Response?) {
+                        Log.i("HomeAdapter", "Successfully voted for poll!")
+                    }
+
+                    override fun failure(error: RetrofitError?) {
+                        Log.e("HomeAdapter", "Error voting for poll", error)
+                    }
+
+                })
+            }
+        } else {
+            holder.itemView.vote_btn?.setTextColor(mContext.resources.getColor(R.color.gray))
+            holder.itemView.vote_btn?.setOnClickListener {}
+        }
+    }
+
     // Chrome custom tabs to launch news site
 
     internal inner class NewsCustomTabsServiceConnection : CustomTabsServiceConnection() {

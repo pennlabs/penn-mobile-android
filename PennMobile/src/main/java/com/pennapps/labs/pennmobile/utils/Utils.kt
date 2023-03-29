@@ -1,10 +1,11 @@
 package com.pennapps.labs.pennmobile.utils
 
 import android.content.Context
+import android.os.Build
 import android.util.TypedValue
+import java.security.MessageDigest
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 /** Created by Davies Lumumba on 8/12/20. */
 object Utils {
@@ -55,5 +56,23 @@ object Utils {
         val tv = TypedValue()
         context.theme.resolveAttribute(color, tv, true)
         return tv.data
+    }
+
+    fun getSha256Hash(codeVerifier: String): String {
+
+        // Hash the code verifier
+        val md = MessageDigest.getInstance("SHA-256")
+        val byteArr = md.digest(codeVerifier.toByteArray())
+
+        // Base-64 encode
+        var codeChallenge =
+            Base64.getEncoder().encodeToString(byteArr)
+
+        // Replace characters to make it web safe
+        codeChallenge = codeChallenge.replace("=", "")
+        codeChallenge = codeChallenge.replace("+", "-")
+        codeChallenge = codeChallenge.replace("/", "_")
+
+        return codeChallenge
     }
 }
