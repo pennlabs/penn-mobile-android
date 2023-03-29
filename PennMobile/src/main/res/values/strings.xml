@@ -180,7 +180,7 @@
     <string name="access_token">accessToken</string>
     <string name="refresh_token">refreshToken</string>
     <string name="expires_in">expiresIn</string>
-    <string name="token_generated">tokenGenerated</string>
+    <string name="token_expires_at">tokenExpiresAt</string>
     <string name="penn_user">pennUser</string>
     <string name="penn_password">pennPassword</string>
     <string name="title_activity_login">Sign in</string>
@@ -220,4 +220,6 @@
     <string name="pca_submit_button">Alert Me!</string>
     <string name="pca_notify_when_closed">Notify when closed?</string>
 
+    <!-- Poll -->
+    <string name="vote">Vote</string>
 </resources>

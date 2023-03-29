@@ -18,11 +18,13 @@ import com.pennapps.labs.pennmobile.classes.LaundryRequest;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
+import com.pennapps.labs.pennmobile.classes.Poll;
 import com.pennapps.labs.pennmobile.classes.Post;
 import com.pennapps.labs.pennmobile.classes.SaveAccountResponse;
 import com.pennapps.labs.pennmobile.classes.Venue;
 import com.pennapps.labs.pennmobile.classes.WhartonStatus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.Callback;
@@ -167,6 +169,21 @@ public interface StudentLife {
     Observable<List<Post>> validPostsList(
             @Header("Authorization") String bearerToken
     );
+
+    @FormUrlEncoded
+    @POST("/portal/polls/browse/")
+    Observable<List<Poll>> browsePolls(
+            @Header("Authorization") String bearerToken,
+            @Field("id_hash") String idHash
+    );
+
+    @FormUrlEncoded
+    @POST("/portal/votes/")
+    void createPollVote(
+            @Header("Authorization") String bearerToken,
+            @Field("id_hash") String idHash,
+            @Field("poll_options") ArrayList<Integer> pollOptions,
+            Callback<Response> callback);
 
 
 }
