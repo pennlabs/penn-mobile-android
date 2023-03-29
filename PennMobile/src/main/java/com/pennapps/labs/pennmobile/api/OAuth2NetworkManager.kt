@@ -15,7 +15,6 @@ import java.util.*
 class OAuth2NetworkManager(private var mActivity: MainActivity) {
 
     private var mPlatform = MainActivity.platformInstance
-    // private var mStudentLife = MainActivity.studentLifeInstance
     private val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
     val editor = sp?.edit()
 
