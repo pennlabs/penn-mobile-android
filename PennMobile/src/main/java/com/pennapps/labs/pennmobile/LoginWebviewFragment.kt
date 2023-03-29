@@ -134,7 +134,6 @@ class LoginWebviewFragment : Fragment() {
             var cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" +
                     KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7)
             cipher.init(Cipher.DECRYPT_MODE, secretkey, IvParameterSpec(encryptionIv))
-
             var passwordBytes = cipher.doFinal(encryptedPassword)
             var password = String(passwordBytes, Charset.forName("UTF-8"))
             return password
@@ -200,6 +199,7 @@ class LoginWebviewFragment : Fragment() {
 
     private fun initiateAuthentication(authCode: String) {
         mPlatform?.getAccessToken(authCode,
+
                 "authorization_code", clientID, redirectUri, codeVerifier,
                 object : Callback<AccessTokenResponse> {
 
@@ -219,13 +219,12 @@ class LoginWebviewFragment : Fragment() {
                             getUser(accessToken)
                         }
                     }
-
-                    override fun failure(error: RetrofitError) {
-                        Log.e("Accounts", "Error fetching access token $error", error)
-                        Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
-                        mActivity.startLoginFragment()
-                    }
-                })
+                override fun failure(error: RetrofitError) {
+                    Log.e("Accounts", "Error fetching access token $error", error)
+                    Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
+                    mActivity.startLoginFragment()
+                }
+            })
     }
 
     private fun getUser(accessToken: String?) {

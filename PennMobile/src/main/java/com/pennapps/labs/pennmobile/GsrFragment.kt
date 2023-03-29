@@ -13,8 +13,10 @@ import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.annotation.RequiresApi
+import androidx.preference.PreferenceManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.GsrBuildingAdapter
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRContainer
 import com.pennapps.labs.pennmobile.classes.GSRRoom
@@ -41,7 +43,7 @@ class GsrFragment : Fragment() {
     private lateinit var mStudentLife: StudentLife
 
     //list that holds all GSR rooms
-    private val gsrHashMap = HashMap<String, Int>()
+    private val gsrHashMap = HashMap<String, String?>()
 
     //list that holds all GSR rooms and their gids
     private val gsrGIDHashMap = HashMap<String, Int>()
@@ -60,6 +62,9 @@ class GsrFragment : Fragment() {
     private lateinit var huntsmanDurationAdapter: ArrayAdapter<String>
 
     private var populatedDropDownGSR = false
+
+    private var bearerToken = ""
+    private var isWharton = false
 
     private lateinit var mActivity: MainActivity
 
@@ -95,6 +100,8 @@ class GsrFragment : Fragment() {
         durationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m", "120m"))
         huntsmanDurationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m"))
 
+        // update user status by getting the bearer token and checking wharton status
+        updateStatus()
 
         // populate the list of gsrs
         populateDropDownGSR()
@@ -187,7 +194,28 @@ class GsrFragment : Fragment() {
         if (Build.VERSION.SDK_INT > 17){
             mActivity?.setSelectedTab(MainActivity.GSR)
         }
+        updateStatus()
         populateDropDownGSR()
+    }
+
+    private fun updateStatus() {
+        OAuth2NetworkManager(mActivity).getAccessToken()
+        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+        bearerToken =  sp.getString(getString(R.string.access_token), "").toString();
+
+        if (bearerToken.isNullOrEmpty()) {
+            Toast.makeText(activity, "You are not logged in!", Toast.LENGTH_LONG).show()
+        } else {
+            mStudentLife.isWharton(
+                "Bearer $bearerToken")
+                ?.subscribe({ status ->
+                    isWharton = status.isWharton
+                }, {
+                    Log.e("GsrFragment", "Error getting Wharton status", it)
+                    isWharton = false
+                }
+                )
+        }
     }
 
     // Performs GSR search
@@ -208,7 +236,7 @@ class GsrFragment : Fragment() {
         var gsrLocation = gsrLocationDropDown.selectedItem.toString()
         val location = mapGSR(gsrLocation)
         val gid = mapGID(gsrLocation)
-        if (location == -1) {
+        if (location.isNullOrEmpty() || bearerToken.isNullOrEmpty()) {
             showNoResults()
         } else {
             // display loading screen if user did not use swipe refresh
@@ -216,21 +244,37 @@ class GsrFragment : Fragment() {
                 loadingPanel.visibility = View.VISIBLE
                 gsr_rooms_list?.visibility = View.GONE
             }
-            noResultsPanel.visibility = View.GONE
-            gsr_no_rooms?.visibility = View.GONE
-            //get the hours
-            getTimes(location, gid)
+
+            if (!isWharton && (location == "ARB" || location == "JMHH")) {
+                showNoResults()
+                if (!calledByRefreshLayout) {
+                    Toast.makeText(activity,
+                        "You need to have a Wharton pennkey to access Wharton GSRs",
+                        Toast.LENGTH_LONG).show()
+                }
+            } else {
+                noResultsPanel.visibility = View.GONE
+                gsr_no_rooms?.visibility = View.GONE
+                // get the hours
+                getTimes(location, gid)
+            }
         }
     }
 
     // Performs GET request and fetches the rooms and availability
-    private fun getTimes(location: Int, gId: Int) {
+    private fun getTimes(location: String, gId: Int) {
         val adjustedDateString = selectedDateTime.toString(adjustedDateFormat)
         selectDateButton.isClickable = false
         selectTimeButton.isClickable = false
         gsrLocationDropDown.isEnabled = false
         durationDropDown.isEnabled = false
-        mStudentLife.gsrRoom(location, gId, adjustedDateString)
+
+        Log.i("GsrFragment", "Bearer Token: $bearerToken");
+        Log.i("GsrFragment", "Wharton Status: $isWharton")
+
+        mStudentLife.gsrRoom(
+            "Bearer $bearerToken",
+            location, gId, adjustedDateString)
                 ?.subscribe({ gsr ->
                     activity?.let {activity ->
                         activity.runOnUiThread {
@@ -338,10 +382,8 @@ class GsrFragment : Fragment() {
         }
     }
 
-
     @RequiresApi(Build.VERSION_CODES.M)
     private fun populateDropDownGSR() {
-
         mStudentLife.location()
                 ?.subscribe({ locations ->
                     activity?.let {activity ->
@@ -354,72 +396,16 @@ class GsrFragment : Fragment() {
                             gsrLocationDropDown.adapter = emptyAdapter
 
                             val numLocations = locations.size
-
                             var i = 0
                             // go through all the rooms
                             while (i < numLocations) {
                                 val locationName = locations[i]?.name ?: ""
-                                when (locations[i].id) {
-                                    1086 -> {
-                                        if (locations[i].name.equals("VP Ground Floor")) {
-                                            gsrHashMap["VP Ground Floor"] = 1086
-                                            gsrGIDHashMap["VP Ground Floor"] = locations[i].gid
-                                        } else if (locations[i].name.equals("Weigle")) {
-                                            gsrHashMap["Weigle"] = 1086
-                                            gsrGIDHashMap["Weigle"] = locations[i].gid
-                                        } else if (locations[i].name.equals("VP 3rd Floor")) {
-                                            gsrHashMap["VP 3rd Floor"] = 1086
-                                            gsrGIDHashMap["VP 3rd Floor"] = locations[i].gid
-                                        } else if (locations[i].name.equals("VP 4th Floor")) {
-                                            gsrHashMap["VP 4th Floor"] = 1086
-                                            gsrGIDHashMap["VP 4th Floor"] = locations[i].gid
-                                        }
-                                    }
-                                    2587 -> {
-                                        gsrHashMap["Lippincott"] = 2587
-                                        gsrGIDHashMap["Lippincott"] = locations[i].gid
-                                    }
-                                    2495 -> {
-                                        gsrHashMap["Edu Commons"] = 2495
-                                        gsrGIDHashMap["Edu Commons"] = locations[i].gid
-                                    }
-                                    2683 -> {
-                                        gsrHashMap["Biomedical"] = 2683
-                                        gsrGIDHashMap["Biomedical"] = locations[i].gid
-                                    }
-                                    2637 -> {
-                                        gsrHashMap["Fisher"] = 2637
-                                        gsrGIDHashMap["Fisher"] = locations[i].gid
-                                    }
-                                    1090 -> {
-                                        gsrHashMap["Levin Building"] = 1090
-                                        gsrGIDHashMap["Levin Building"] = locations[i].gid
-                                    }
-                                    2634 -> {
-                                        gsrHashMap["Museum Library"] = 2634
-                                        gsrGIDHashMap["Museum Library"] = locations[i].gid
-                                    }
-                                    2636 -> {
-                                        gsrHashMap["VP Seminar"] = 2636
-                                        gsrGIDHashMap["VP Seminar"] = locations[i].gid
-                                    }
-                                    2611 -> {
-                                        gsrHashMap["VP Special Use"] = 2611
-                                        gsrGIDHashMap["VP Special Use"] = locations[i].gid
-                                    }
-                                    1 -> {
-                                        gsrHashMap["Huntsman Hall"] = 1
-                                        gsrGIDHashMap["Huntsman Hall"] = locations[i].gid
-                                    }
-                                    4370 -> {
-                                        gsrHashMap["PCPSE Building"] = 4370
-                                        gsrGIDHashMap["PCPSE Building"] = locations[i].gid
-                                    }
-                                    else -> {
-                                        gsrHashMap[locationName] = locations[i].id
-                                        gsrGIDHashMap[locationName] = locations[i].gid
-                                    }
+                                if (locationName.isNullOrEmpty()) {
+                                    Log.w("Empty location name",
+                                        locations[i].id ?: locations[i].gid.toString());
                                 }
+                                gsrHashMap[locationName] = locations[i].id
+                                gsrGIDHashMap[locationName] = locations[i].gid
                                 i++
                             }
 
@@ -428,7 +414,7 @@ class GsrFragment : Fragment() {
                             val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
                             gsrLocationDropDown.adapter = adapter
 
-                            durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman Hall")
+                            durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman")
                                 huntsmanDurationAdapter else durationAdapter
                             searchForGSR(false)
                         }
@@ -438,24 +424,25 @@ class GsrFragment : Fragment() {
                     activity?.let { activity ->
                         activity.runOnUiThread {
                             //hard coded in case runs into error
-                            gsrHashMap["VP Ground Floor"] = 1086
-                            gsrHashMap["Weigle"] = 1086
-                            gsrHashMap["Lippincott"] = 2587
-                            gsrHashMap["Edu Commons"] = 2495
-                            gsrHashMap["Biomedical"] = 2683
-                            gsrHashMap["Fisher"] = 2637
-                            gsrHashMap["Levin Building"] = 1090
-                            gsrHashMap["Museum Library"] = 2634
-                            gsrHashMap["VP Seminar"] = 2636
-                            gsrHashMap["VP Special Use"] = 2611
-                            gsrHashMap["Huntsman Hall"] = 1
-                            gsrHashMap["PCPSE Building"] = 4370
+                            gsrHashMap["VP Ground Floor"] = "1086"
+                            gsrHashMap["Weigle"] = "1086"
+                            gsrHashMap["Lippincott"] = "2587"
+                            gsrHashMap["Edu Commons"] = "2495"
+                            gsrHashMap["Biomedical"] = "2683"
+                            gsrHashMap["Fisher"] = "2637"
+                            gsrHashMap["Levin Building"] = "1090"
+                            gsrHashMap["Museum Library"] = "2634"
+                            gsrHashMap["VP Seminar"] = "2636"
+                            gsrHashMap["VP Special Use"] = "2611"
+                            gsrHashMap["Huntsman Hall"] = "JMHH"
+                            gsrHashMap["Academic Research"] = "ARB"
+                            gsrHashMap["PCPSE Building"] = "4370"
                             gsrGIDHashMap["PCPSE Building"] = 7426
                             val gsrs = gsrHashMap.keys.toList().toTypedArray()
                             val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
                             gsrLocationDropDown.adapter = adapter
 
-                            durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman Hall")
+                            durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman")
                                 huntsmanDurationAdapter else durationAdapter
                             searchForGSR(false)
                         }
@@ -465,7 +452,7 @@ class GsrFragment : Fragment() {
         gsrLocationDropDown.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View?, i: Int, l: Long) {
                 // change possible durations depending on the location
-                durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman Hall")
+                durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman")
                     huntsmanDurationAdapter else durationAdapter
                 searchForGSR(false)
             }
@@ -495,7 +482,7 @@ class GsrFragment : Fragment() {
     }
 
     //takes the name of the gsr and returns an int for the corresponding code
-    fun mapGSR(name: String): Int = gsrHashMap[name] ?: 0
+    fun mapGSR(name: String): String = gsrHashMap[name] ?: ""
 
     //takes the name of the gsr and returns an int for the corresponding gid
     fun mapGID(name: String): Int = gsrGIDHashMap[name] ?: 0
