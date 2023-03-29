@@ -97,7 +97,6 @@ class DiningSettingsFragment : Fragment() {
                 favoriteDiningHalls.add(hall.id)
             }
         }
-
         val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
         mStudentLife.sendDiningPref(bearerToken, DiningRequest(favoriteDiningHalls),
                 object : ResponseCallback() {

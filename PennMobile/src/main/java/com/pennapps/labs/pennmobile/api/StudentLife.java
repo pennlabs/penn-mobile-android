@@ -14,6 +14,7 @@ import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.GSRReservation;
 import com.pennapps.labs.pennmobile.classes.Gym;
 import com.pennapps.labs.pennmobile.classes.HomeCell;
+import com.pennapps.labs.pennmobile.classes.LaundryRequest;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
@@ -44,8 +45,6 @@ import rx.Observable;
  * Retrofit interface to the Penn Mobile API
  */
 public interface StudentLife {
-
-
     @FormUrlEncoded
     @POST("/accounts/token/")
     void refreshAccessToken(
@@ -123,7 +122,6 @@ public interface StudentLife {
             @Header("Authorization") String bearerToken
     );
 
-
     @GET("/fitness/schedule")
     Observable<List<Gym>> getGymData();
 
@@ -154,11 +152,10 @@ public interface StudentLife {
     Observable<List<Integer>> getLaundryPref(
             @Header("Authorization") String bearerToken);
 
-    @FormUrlEncoded
-    @POST("/laundry/preferences")
+    @POST("/laundry/preferences/")
     void sendLaundryPref(
             @Header("Authorization") String bearerToken,
-            @Field("rooms") String rooms,
+            @Body LaundryRequest rooms,
             Callback<Response> callback);
 
     @Headers({"Content-Type: application/json"})
