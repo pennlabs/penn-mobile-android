@@ -12,6 +12,7 @@ import com.pennapps.labs.pennmobile.classes.GSR;
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.GSRReservation;
+import com.pennapps.labs.pennmobile.classes.GetUserResponse;
 import com.pennapps.labs.pennmobile.classes.Gym;
 import com.pennapps.labs.pennmobile.classes.HomeCell;
 import com.pennapps.labs.pennmobile.classes.LaundryRequest;
@@ -45,6 +46,17 @@ import rx.Observable;
  * Retrofit interface to the Penn Mobile API
  */
 public interface StudentLife {
+
+    @FormUrlEncoded
+    @POST("/accounts/token/")
+    void getAccessToken(
+            @Field("code") String authCode,
+            @Field("grant_type") String grantType,
+            @Field("client_id") String clientID,
+            @Field("redirect_uri") String redirectURI,
+            @Field("code_verifier") String codeVerifier,
+            Callback<AccessTokenResponse> callback);
+
     @FormUrlEncoded
     @POST("/accounts/token/")
     void refreshAccessToken(

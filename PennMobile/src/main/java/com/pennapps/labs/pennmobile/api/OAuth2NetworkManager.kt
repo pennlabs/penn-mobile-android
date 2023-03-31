@@ -14,7 +14,7 @@ import java.util.*
 
 class OAuth2NetworkManager(private var mActivity: MainActivity) {
 
-    private var mPlatform = MainActivity.platformInstance
+    private var mStudentLife = MainActivity.studentLifeInstance
     private val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
     val editor = sp?.edit()
 
@@ -43,7 +43,7 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
         val refreshToken = sp.getString(mActivity.getString(R.string.refresh_token), "")
         val clientID = BuildConfig.PLATFORM_CLIENT_ID
 
-        mPlatform.refreshAccessToken(refreshToken,
+        mStudentLife.refreshAccessToken(refreshToken,
                 "refresh_token", clientID,
                 object : Callback<AccessTokenResponse> {
 
@@ -92,7 +92,7 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
         val refreshToken = sp.getString(mActivity.getString(R.string.refresh_token), "")
         val clientID = BuildConfig.PLATFORM_CLIENT_ID
 
-        mPlatform.refreshAccessToken(refreshToken,
+        mStudentLife.refreshAccessToken(refreshToken,
             "refresh_token", clientID,
             object : Callback<AccessTokenResponse> {
 

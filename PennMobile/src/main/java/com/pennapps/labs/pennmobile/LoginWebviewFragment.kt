@@ -198,27 +198,28 @@ class LoginWebviewFragment : Fragment() {
     }
 
     private fun initiateAuthentication(authCode: String) {
-        mPlatform?.getAccessToken(authCode,
+        mStudentLife.getAccessToken(authCode,
 
-                "authorization_code", clientID, redirectUri, codeVerifier,
-                object : Callback<AccessTokenResponse> {
+            "authorization_code", clientID, redirectUri, codeVerifier,
+            object : Callback<AccessTokenResponse> {
 
-                    override fun success(t: AccessTokenResponse?, response: Response?) {
-                        if (response?.status == 200) {
-                            val accessToken = t?.accessToken
-                            val editor = sp.edit()
-                            editor.putString(getString(R.string.access_token), accessToken)
-                            editor.putString(getString(R.string.refresh_token), t?.refreshToken)
-                            editor.putString(getString(R.string.expires_in), t?.expiresIn)
+                override fun success(t: AccessTokenResponse?, response: Response?) {
+                    if (response?.status == 200) {
+                        val accessToken = t?.accessToken
+                        val editor = sp.edit()
+                        editor.putString(getString(R.string.access_token), accessToken)
+                        editor.putString(getString(R.string.refresh_token), t?.refreshToken)
+                        editor.putString(getString(R.string.expires_in), t?.expiresIn)
 
-                            val expiresInInt = t?.expiresIn!!.toInt() * 1000
-                            Log.i("LoginWebview", "Expires In: $expiresInInt")
-                            val currentTime = Calendar.getInstance().timeInMillis
-                            editor.putLong(getString(R.string.token_expires_at), currentTime + expiresInInt)
-                            editor.apply()
-                            getUser(accessToken)
-                        }
+                        val expiresInInt = t?.expiresIn!!.toInt() * 1000
+                        Log.i("LoginWebview", "Expires In: $expiresInInt")
+                        val currentTime = Calendar.getInstance().timeInMillis
+                        editor.putLong(getString(R.string.token_expires_at), currentTime + expiresInInt)
+                        editor.apply()
+                        getUser(accessToken)
                     }
+                }
+
                 override fun failure(error: RetrofitError) {
                     Log.e("Accounts", "Error fetching access token $error", error)
                     Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
