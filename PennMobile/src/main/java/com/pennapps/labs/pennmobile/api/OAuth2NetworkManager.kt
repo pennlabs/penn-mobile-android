@@ -76,7 +76,7 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
             val currentTime = Calendar.getInstance().timeInMillis
             if (currentTime >= expiresAt) { // if it has expired, refresh access token
                 Log.i("Accounts", "Expired")
-                refreshAccessToken()
+                refreshAccessTokenStartup()
             } else {
                 Log.i("Accounts", "Current Time: $currentTime")
                 Log.i("Accounts", "Expires At Time: $expiresAt")
