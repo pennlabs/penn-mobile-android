@@ -222,4 +222,5 @@
 
     <!-- Poll -->
     <string name="vote">Vote</string>
+    <string name="interactive_user_engagement_banner">Interactive User Engagement Banner</string>
 </resources>

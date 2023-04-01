@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
@@ -39,6 +40,7 @@ import com.pennapps.labs.pennmobile.api.CampusExpress
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Serializer.*
 import com.pennapps.labs.pennmobile.classes.*
+import com.pennapps.labs.pennmobile.components.BannerView
 import com.pennapps.labs.pennmobile.components.floatingbottombar.ExpandableBottomBarMenuItem
 import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
 import com.pennapps.labs.pennmobile.more_fragments.MoreFragment
@@ -54,6 +56,7 @@ class MainActivity : AppCompatActivity() {
     private var tabShowed = false
     private lateinit var fragmentManager: FragmentManager
     private lateinit var mSharedPrefs: SharedPreferences
+    private var isShowingBanners = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -124,6 +127,18 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         showBottomBar()
+        showBannersIfNeeded()
+    }
+
+    private fun showBannersIfNeeded() {
+        if (!isShowingBanners && BannerView.shouldShowBanners()) {
+            isShowingBanners = true
+            val view = BannerView(applicationContext)
+            addContentView(view, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, BannerView.getHeight(applicationContext)))
+            val layoutParams = this.content_frame.layoutParams as CoordinatorLayout.LayoutParams
+            layoutParams.setMargins(0, BannerView.getHeight(applicationContext), 0, layoutParams.bottomMargin)
+            this.content_frame.layoutParams = layoutParams
+        }
     }
 
     private fun onExpandableBottomNavigationItemSelected() {
@@ -246,14 +261,14 @@ class MainActivity : AppCompatActivity() {
     fun hideBottomBar() {
         expandable_bottom_bar.visibility = View.GONE
         val layoutParams = this.content_frame.layoutParams as CoordinatorLayout.LayoutParams
-        layoutParams.setMargins(0, 0, 0, 0)
+        layoutParams.setMargins(0, layoutParams.topMargin, 0, 0)
         this.content_frame.layoutParams = layoutParams
     }
 
     fun showBottomBar() {
         expandable_bottom_bar.visibility = View.VISIBLE
         val layoutParams = this.content_frame.layoutParams as CoordinatorLayout.LayoutParams
-        layoutParams.setMargins(0, 0, 0, Utils.dpToPixel(this, 16f))
+        layoutParams.setMargins(0, layoutParams.topMargin, 0, Utils.dpToPixel(this, 16f))
         this.content_frame.layoutParams = layoutParams
     }
 
