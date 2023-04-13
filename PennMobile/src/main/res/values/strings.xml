@@ -30,6 +30,10 @@
     <string name="accessibility_description">Screen menu</string>
     <string name="accessibility_item_description">%1$s menu item</string>
 
+    <!-- Fitness -->
+    <string name="fitness_room_open">Open</string>
+    <string name="fitness_room_closed">Closed</string>
+
     <!-- Dining -->
     <string name="dining_hall_open">Open</string>
     <string name="dining_hall_closed">Closed</string>
@@ -222,4 +226,5 @@
 
     <!-- Poll -->
     <string name="vote">Vote</string>
+    <string name="pottruck">Pottruck</string>
 </resources>

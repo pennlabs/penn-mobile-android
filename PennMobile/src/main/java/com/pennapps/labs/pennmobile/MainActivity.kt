@@ -134,7 +134,7 @@ class MainActivity : AppCompatActivity() {
                     fragment = HomeFragment()
                 }
                 "Dining" -> fragment = DiningHolderFragment()
-                "PCA" -> fragment = PennCourseAlertHolderFragment()
+                "PCA" -> fragment = FitnessHolderFragment()
                 "GSR" -> fragment = GsrTabbedFragment()
                 "Laundry" -> fragment = LaundryFragment()
                 "More" -> fragment = MoreFragment()

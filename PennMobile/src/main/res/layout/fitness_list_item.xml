@@ -1,71 +1,210 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fitness_list_item_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_weight="10"
+    >
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/fitness_list_info_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="10"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/item_gym_image_cardview"
-        android:layout_width="140dp"
-        android:layout_height="89dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
+        android:id="@+id/item_fitness_image_cardview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp"
         android:elevation="0dp"
         app:cardCornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1.57"
+        app:layout_constraintEnd_toStartOf="@+id/fitness_image_guideline"
+        app:layout_constraintHorizontal_weight="6"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        >
 
         <ImageView
-            android:id="@+id/gym_image_view"
+            android:id="@+id/item_fitness_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            />
     </androidx.cardview.widget.CardView>
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/fitness_image_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.45"
+        />
+
     <TextView
-        android:id="@+id/gym_status_view"
-        style="@style/DiningStatusLabel"
-        android:layout_centerVertical="true"
+        android:id="@+id/item_fitness_status"
+        style="@style/FitnessStatusLabel"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
-        app:layout_constraintBottom_toTopOf="@+id/gym_hours_view"
-        app:layout_constraintStart_toEndOf="@+id/item_gym_image_cardview"
-        app:layout_constraintTop_toBottomOf="@+id/gym_name_view"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toEndOf="@+id/item_fitness_image_cardview"
+        app:layout_constraintTop_toBottomOf="@+id/item_fitness_name"
         tools:background="@drawable/label_green"
-        tools:text="Open" />
-
-    <TextView
-        android:id="@+id/gym_name_view"
-        style="@style/HallName"
-        android:layout_width="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="6dp"
-        app:layout_constraintStart_toEndOf="@+id/item_gym_image_cardview"
-        app:layout_constraintTop_toTopOf="@+id/item_gym_image_cardview"
-        tools:text="Pottruck" />
-
-    <TextView
-        android:id="@+id/gym_hours_view"
-        style="@style/Menu"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginBottom="6dp"
-        android:autoSizeMaxTextSize="13sp"
-        android:autoSizeMinTextSize="9sp"
-        android:autoSizeStepGranularity="2sp"
-        android:autoSizeTextType="uniform"
-        app:layout_constraintBottom_toBottomOf="@+id/item_gym_image_cardview"
-        app:layout_constraintStart_toEndOf="@+id/item_gym_image_cardview"
         tools:text="Open"
-        tools:visibility="visible" />
+        />
+
+    <TextView
+        android:id="@+id/item_fitness_name"
+        style="@style/HallName"
+        android:layout_width="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="4dp"
+        android:ellipsize="marquee"
+        android:fontFamily="@font/sf_pro_display_medium"
+        android:singleLine="true"
+        app:layout_constraintEnd_toStartOf="@+id/fitness_loading_guideline"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@id/item_fitness_image_cardview"
+        app:layout_constraintTop_toTopOf="@+id/item_fitness_image_cardview"
+        tools:text="Pottruck Fitness"
+        />
+
+    <TextView
+        android:id="@+id/item_fitness_hours"
+        style="@style/Menu"
+        android:layout_width="0dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        app:autoSizeMaxTextSize="13sp"
+        app:autoSizeMinTextSize="9sp"
+        app:autoSizeStepGranularity="2sp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/item_fitness_image_cardview"
+        app:layout_constraintTop_toBottomOf="@+id/item_fitness_status"
+        tools:text="Closes at 9:00PM"
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/fitness_loading_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.9"
+        />
+
+    <ProgressBar
+        android:id="@+id/fitness_progress"
+        style="@android:style/Widget.ProgressBar.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="8dp"
+        android:adjustViewBounds="true"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/color_primary"
+        android:indeterminateTintMode="src_in"
+        android:paddingStart="10dp"
+        android:paddingLeft="10dp"
+        android:paddingEnd="8dp"
+        android:paddingRight="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <ImageView
+        android:id="@+id/fitness_more_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="2dp"
+        android:layout_marginRight="2dp"
+        android:src="@drawable/ic_chevron_right_black_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/settings_grey" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/fitness_list_extra_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/fitness_list_info_layout"
+        app:layout_constraintTop_toBottomOf="@+id/fitness_list_info_layout"
+        android:layout_margin="8dp"
+        android:paddingBottom="8dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_margin="4dp"
+            app:cardCornerRadius="8dp">
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/barchart_times"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="8dp"/>
+
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:id="@+id/linear_layout_extras"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintRight_toRightOf="@+id/linear_layout_extras">
+
+                <!--<com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/progress_bar"
+                    app:indicatorSize="70dp"
+                    android:progress="70"
+                    app:trackCornerRadius="5dp"
+                    app:trackThickness="7dp"
+                    app:trackColor="#DDD"
+                    app:indicatorColor="@color/blue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+                -->
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
