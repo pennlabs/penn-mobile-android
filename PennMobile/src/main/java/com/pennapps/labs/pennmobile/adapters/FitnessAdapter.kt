@@ -72,7 +72,7 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
             room: FitnessRoom
         ) {
             if (hasExtraData) return
-            room.roomId?.let { studentLife.getFitnessRoomUsage(it).subscribe(
+            room.roomId?.let { studentLife.getFitnessRoomUsage(it, 3, "week").subscribe(
                 { roomUsage ->
                     createBarChart(context, roomUsage)
                     activity.runOnUiThread {
@@ -95,9 +95,11 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
 
             val timeData = roomData.roomUsage
             val curHour = LocalDateTime.now().hour
+            var mxUsage = 0f
             // assume that we start at 6am and end at 11 pm
             for (i in 6..23) {
                 val v = if (timeData == null) 0f else timeData[i.toString()] ?: 0f
+                mxUsage = maxOf(mxUsage, v)
                 entries.add(BarEntry((i - 6).toFloat(), v))
                 colors.add(if (i == curHour) darkBlue else blue)
                 labels.add(if (i > 12) "${i - 12}pm" else "${i}am")
@@ -120,8 +122,9 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
             leftAxis.setDrawGridLines(false)
             leftAxis.setDrawAxisLine(false)
             leftAxis.setDrawLabels(false);
-            leftAxis.axisMinimum = -5.0f
-            leftAxis.axisMaximum = 100.0f
+
+            leftAxis.axisMinimum = -0.05f * mxUsage
+            leftAxis.axisMaximum = mxUsage
 
             val rightAxis: YAxis = barChart.axisRight
             rightAxis.setDrawGridLines(false)

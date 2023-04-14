@@ -203,5 +203,7 @@ public interface StudentLife {
 
     @GET("/penndata/fitness/usage/{id}")
     Observable<FitnessRoomUsage> getFitnessRoomUsage(
-            @Path("id") int id);
+            @Path("id") int id,
+            @Query("num_samples") int samples,
+            @Query("group_by") String groupBy);
 }
