@@ -39,6 +39,23 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
         }
     }
 
+    fun getAccessToken(function: () -> Unit) {
+        val expiresIn = sp.getString(mActivity.getString(R.string.expires_in), "")
+        if (expiresIn != "") {
+            val expiresAt = sp.getLong(mActivity.getString(R.string.token_expires_at), 0)
+            val currentTime = Calendar.getInstance().timeInMillis
+            if (currentTime >= expiresAt) { // if it has expired, refresh access token
+                Log.i("Accounts", "Expired")
+                refreshAccessToken(function)
+            } else {
+                Log.i("Accounts", "Not Expired")
+                function.invoke()
+            }
+        } else {
+            refreshAccessToken(function)
+        }
+    }
+
     private fun refreshAccessToken() {
         val refreshToken = sp.getString(mActivity.getString(R.string.refresh_token), "")
         val clientID = BuildConfig.PLATFORM_CLIENT_ID
@@ -64,9 +81,40 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
 
                     override fun failure(error: RetrofitError) {
                         Log.e("Accounts", "Error refreshing access token $error")
-                        // mActivity.startLoginFragment()
                     }
                 })
+    }
+
+    private fun refreshAccessToken(function: () -> Unit) {
+        val refreshToken = sp.getString(mActivity.getString(R.string.refresh_token), "")
+        val clientID = BuildConfig.PLATFORM_CLIENT_ID
+
+        mStudentLife.refreshAccessToken(refreshToken,
+            "refresh_token", clientID,
+            object : Callback<AccessTokenResponse> {
+
+                override fun success(t: AccessTokenResponse?, response: Response?) {
+                    if (response?.status == 200) {
+                        val editor = sp.edit()
+                        editor.putString(mActivity.getString(R.string.access_token), t?.accessToken)
+                        editor.putString(mActivity.getString(R.string.refresh_token), t?.refreshToken)
+                        editor.putString(mActivity.getString(R.string.expires_in), t?.expiresIn)
+                        val expiresIn = t?.expiresIn
+                        val expiresInInt = (expiresIn!!.toInt() * 1000)
+                        val currentTime = Calendar.getInstance().timeInMillis
+                        editor.putLong(mActivity.getString(R.string.token_expires_at), currentTime + expiresInInt)
+                        editor.apply()
+                        function.invoke()
+                        Log.i("Accounts", "Reloaded Homepage")
+                    }
+                }
+
+                override fun failure(error: RetrofitError) {
+                    Log.e("Accounts", "Error refreshing access token $error")
+                    function.invoke()
+                    // mActivity.startLoginFragment()
+                }
+            })
     }
 
     fun getAccessTokenStartup() {

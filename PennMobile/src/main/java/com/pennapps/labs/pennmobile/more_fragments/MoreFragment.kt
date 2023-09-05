@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
@@ -23,6 +24,10 @@ class MoreFragment : Fragment() {
         super.onCreate(savedInstanceState)
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.more_frame, PreferenceFragment())
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .commit()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

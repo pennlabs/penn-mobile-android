@@ -5,8 +5,7 @@
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:showIn="@layout/activity_main">
+    android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar_home"
@@ -99,39 +98,40 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/laundry_machine_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
     <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clickable="true"
             android:visibility="visible">
 
-            <LinearLayout
-            android:id="@+id/no_results_message"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <include layout="@layout/no_results" />
-        </LinearLayout>
 
-        <TextView
-                android:id="@+id/laundry_help_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="@string/laundry_help_text" />
-
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/laundry_machine_refresh"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/favorite_laundry_list"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:scrollbars="none" />
 
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        <LinearLayout
+            android:id="@+id/no_results_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <include layout="@layout/no_results" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/laundry_help_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/laundry_help_text" />
 
         </FrameLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
