@@ -56,6 +56,7 @@ class MoreFragment : Fragment() {
                             R.drawable.ic_guest_avatar, context?.theme)
             )
         }
+        mActivity.setSelectedTab(MainActivity.MORE)
         super.onResume()
     }
 

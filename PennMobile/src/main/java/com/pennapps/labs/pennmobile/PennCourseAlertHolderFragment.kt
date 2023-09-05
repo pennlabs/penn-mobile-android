@@ -42,6 +42,11 @@ class PennCourseAlertHolderFragment : Fragment() {
         return view
     }
 
+    override fun onResume() {
+        mActivity.setSelectedTab(MainActivity.PCA)
+        super.onResume()
+    }
+
     private fun initAppBar(view: View?) {
         view?.title_view?.text = "Penn Course Alert"
         view?.date_view?.text = Utils.getCurrentSystemTime()
