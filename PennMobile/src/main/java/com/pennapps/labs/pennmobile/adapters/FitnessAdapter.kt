@@ -30,7 +30,7 @@ import com.pennapps.labs.pennmobile.classes.FitnessRoom
 import com.pennapps.labs.pennmobile.classes.FitnessRoomUsage
 import com.pennapps.labs.pennmobile.classes.RoundedBarChartRenderer
 import java.time.LocalDateTime
-import java.time.ZoneId
+import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -225,11 +225,20 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
         holder.roomView.text = room.roomName
 
         // check if the room is currently open
-        val currentTime = ZonedDateTime.now()
-        val startTime = ZonedDateTime.parse(room.openTime)
-        val endTime = ZonedDateTime.parse(room.closeTime)
+        // NOT time zone safe
+        val currentTime = LocalTime.now()
 
-        val isOpen = currentTime.isAfter(startTime) and currentTime.isBefore(endTime)
+        // Sunday -> 0, Monday -> 1, etc.
+        val dayOfWeek = ZonedDateTime.now().dayOfWeek.value;
+
+        // the open and close time lists start with monday
+        val openTimeString = room.openTimeList?.get((dayOfWeek + 6) % 7)
+        val closeTimeString = room.closeTimeList?.get((dayOfWeek + 6) % 7)
+
+        val openTime = LocalTime.parse(openTimeString)
+        val closeTime = LocalTime.parse(closeTimeString)
+
+        val isOpen = currentTime.isAfter(openTime) and currentTime.isBefore(closeTime)
         if (isOpen) {
             holder.statusView.setText(R.string.fitness_room_open)
             holder.statusView.background = ContextCompat.getDrawable(mContext, R.drawable.label_green)
@@ -238,14 +247,9 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
             holder.statusView.background = ContextCompat.getDrawable(mContext, R.drawable.label_red)
         }
 
-        // convert time zone to display
-        val zid = ZoneId.systemDefault()
-        val localStart = startTime.withZoneSameInstant(zid)
-        val localEnd = endTime.withZoneSameLocal(zid)
-
         // format and assign the times
         val timeFormatter = DateTimeFormatter.ofPattern("hh:mm a")
-        val hours = "${localStart.format(timeFormatter)} - ${localEnd.format(timeFormatter)}"
+        val hours = "${openTime.format(timeFormatter)} - ${closeTime.format(timeFormatter)}"
         holder.hoursView.text = hours
 
         // make progress bar invisible

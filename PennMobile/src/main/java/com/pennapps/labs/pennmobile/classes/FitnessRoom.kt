@@ -26,11 +26,14 @@ class FitnessRoom {
 
     @SerializedName("open")
     @Expose
-    var openTime: String? = null
+    var openTimeList: List<String>? = null
 
     @SerializedName("close")
     @Expose
-    var closeTime: String? = null
+    var closeTimeList: List<String>? = null
+
+    val openTime: String = "2023-09-15T16:52:00-04:00"
+    val closeTime: String = "2023-09-15T16:52:00-04:00"
 
     val imageURL = "https://s3.us-east-2.amazonaws.com/labs.api/dining/1920-commons.jpg"
 }
