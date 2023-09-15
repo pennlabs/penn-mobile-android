@@ -25,6 +25,7 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.fragment.app.FragmentTransaction
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -51,7 +52,6 @@ import kotlinx.android.synthetic.main.home_post_card.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import retrofit.Callback
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
@@ -172,7 +172,11 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         holder.itemView.home_card_subtitle.text = "DINING HALLS"
         holder.itemView.dining_prefs_btn.visibility = View.VISIBLE
         holder.itemView.dining_prefs_btn.setOnClickListener {
-            mActivity.fragmentTransact(DiningSettingsFragment(), false)
+            mActivity.supportFragmentManager.beginTransaction()
+                .replace(R.id.content_frame, DiningSettingsFragment())
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit()
         }
 
         mStudentLife.venues()
