@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.pennapps.labs.pennmobile.GsrTabbedFragment
+import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import kotlinx.android.synthetic.main.home_gsr_building.view.*
 
@@ -58,11 +59,7 @@ class HomeGsrBuildingAdapter(private var buildings: ArrayList<String>)
                     if (popBackStack) {
                         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                     }
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.content_frame, fragment)
-                            .addToBackStack("Main Activity")
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .commit()
+                    (activity as MainActivity).setTab(MainActivity.GSR_ID)
                 } catch (e: IllegalStateException) {
                     Log.e("HomeAdapter", e.toString())
                 }

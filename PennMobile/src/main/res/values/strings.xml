@@ -17,6 +17,7 @@
     <string name="labs_icon">Penn Labs</string>
     <string name="no_results">No results found</string>
     <string name="action_licenses">Open Source Licenses</string>
+    <string name="more">More</string>
 
     <!-- Contacts -->
     <string name="add_contact">Add contact</string>

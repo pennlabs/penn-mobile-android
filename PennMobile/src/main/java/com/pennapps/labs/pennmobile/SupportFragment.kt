@@ -43,7 +43,7 @@ class SupportFragment : ListFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_support, container, false)
-        setHasOptionsMenu(true)
+        setHasOptionsMenu(false)
         mActivity.toolbar.visibility = View.VISIBLE
         mActivity.toolbar.setNavigationIcon(R.drawable.ic_back_navigation)
         mActivity.toolbar.setNavigationOnClickListener { mActivity.onBackPressed() }
@@ -61,13 +61,18 @@ class SupportFragment : ListFragment() {
                 val frag = SaveContactsFragment()
                 val fragmentManager = mActivity.supportFragmentManager
                 fragmentManager.beginTransaction()
-                        .replace((requireView().parent as ViewGroup).id, frag, "SAVE_CONTACTS_FRAGMENT")
+                        .replace(R.id.save_contacts_fragment, frag, "SAVE_CONTACTS_FRAGMENT")
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .addToBackStack(null)
                         .commitAllowingStateLoss()
             }
         }
         return true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mActivity.toolbar.visibility = View.GONE
     }
 
     override fun onResume() {

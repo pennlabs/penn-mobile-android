@@ -33,18 +33,18 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
+import com.pennapps.labs.pennmobile.adapters.MainPagerAdapter
 import com.pennapps.labs.pennmobile.api.CampusExpress
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Serializer.*
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.*
-import com.pennapps.labs.pennmobile.components.floatingbottombar.ExpandableBottomBarMenuItem
 import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
-import com.pennapps.labs.pennmobile.more_fragments.MoreFragment
 import com.pennapps.labs.pennmobile.utils.Utils
 import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.android.synthetic.main.custom_sneaker_view.view.*
+import kotlinx.android.synthetic.main.fragment_dining_holder.*
 import kotlinx.android.synthetic.main.include_main.*
 import retrofit.RestAdapter
 import retrofit.android.AndroidLog
@@ -75,8 +75,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         Utils.getCurrentSystemTime()
 
-        //tabBarView = findViewById(R.id.bottom_navigation)
-       // toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(appbar.findViewById(R.id.toolbar))
         fragmentManager = supportFragmentManager
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
@@ -84,29 +82,10 @@ class MainActivity : AppCompatActivity() {
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
-
-        expandable_bottom_bar.addItems(
-                ExpandableBottomBarMenuItem.Builder(this)
-                        .addItem(HOME, R.drawable.ic_home_grey)
-                        .textRes(R.string.floating_bottom_bar_home)
-                        .colorRes(R.color.floating_bottom_bar_selected).create()
-                        .addItem(DINING, R.drawable.ic_dining_grey)
-                        .textRes(R.string.floating_bottom_bar_dining)
-                        .colorRes(R.color.floating_bottom_bar_selected).create()
-                        .addItem(GSR, R.drawable.ic_gsr_grey)
-                        .textRes(R.string.floating_bottom_bar_gsr_booking)
-                        .colorRes(R.color.floating_bottom_bar_selected).create()
-                        .addItem(PCA, R.drawable.ic_pca_grey)
-                        .textRes(R.string.floating_bottom_bar_pca)
-                        .colorRes(R.color.floating_bottom_bar_selected).create()
-                        .addItem(LAUNDRY, R.drawable.ic_laundry_grey)
-                        .textRes(R.string.floating_bottom_bar_laundry)
-                        .colorRes(R.color.floating_bottom_bar_selected).create()
-                        .addItem(MORE, R.drawable.ic_more_grey)
-                        .textRes(R.string.floating_bottom_bar_more)
-                        .colorRes(R.color.floating_bottom_bar_selected).create()
-                        .build()
-        )
+        val mainPagerAdapter = MainPagerAdapter(fragmentManager, lifecycle)
+        main_view_pager?.adapter = mainPagerAdapter
+        main_view_pager.isUserInputEnabled = false
+        main_view_pager.offscreenPageLimit = 5
         onExpandableBottomNavigationItemSelected()
         showBottomBar()
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -127,26 +106,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onExpandableBottomNavigationItemSelected() {
-        expandable_bottom_bar.onItemSelectedListener = { _, item ->
-            var fragment: Fragment? = null
-            when (item.text as String) {
-                "Home" -> if (fragmentManager.backStackEntryCount > 0) {
-                    fragment = HomeFragment()
-                }
-                "Dining" -> fragment = DiningHolderFragment()
-                "PCA" -> fragment = FitnessHolderFragment()
-                "GSR" -> fragment = GsrTabbedFragment()
-                "Laundry" -> fragment = LaundryFragment()
-                "More" -> fragment = MoreFragment()
+        expandable_bottom_bar.setOnNavigationItemSelectedListener { item ->
+            val position = when (item.itemId) {
+                R.id.nav_home-> MainPagerAdapter.HOME_POSITION
+                R.id.nav_dining-> MainPagerAdapter.DINING_POSITION
+                R.id.nav_gsr-> MainPagerAdapter.GSR_POSITION
+                R.id.nav_laundry-> MainPagerAdapter.LAUNDRY_POSITION
+                R.id.nav_more-> MainPagerAdapter.MORE_POSITION
+                else -> MainPagerAdapter.HOME_POSITION
             }
-            fragmentTransact(fragment, true)
+            main_view_pager.setCurrentItem(position, false)
+            true
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    fun setSelectedTab(id: Int) {
-        expandable_bottom_bar.select(id)
+    fun setTab(id: Int) {
+        expandable_bottom_bar.selectedItemId = id
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    fun setSelectedTab(id: Int) {}
 
     fun closeKeyboard() {
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -157,13 +136,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun startHomeFragment() {
-        val fragment: Fragment = HomeFragment()
-        fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, fragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit()
-        expandable_bottom_bar.select(HOME)
+        for (fragment in supportFragmentManager.fragments) {
+            if(fragment != null) {
+                fragmentManager.beginTransaction().remove(fragment).commit()
+            }
+        }
+        main_view_pager.visibility = View.VISIBLE
         expandable_bottom_bar.visibility = View.VISIBLE
+        setTab(HOME_ID)
     }
 
     fun startLoginFragment() {
@@ -173,6 +153,7 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.content_frame, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()
+        main_view_pager.visibility = View.GONE
         expandable_bottom_bar.visibility = View.GONE
     }
 
@@ -264,6 +245,12 @@ class MainActivity : AppCompatActivity() {
         const val LAUNDRY = 4
         const val MORE = 5
         const val PCA = 6
+
+        const val HOME_ID = R.id.nav_home
+        const val GSR_ID = R.id.nav_gsr
+        const val DINING_ID = R.id.nav_dining
+        const val LAUNDRY_ID = R.id.nav_laundry
+        const val MORE_ID = R.id.nav_more
 
         private var mStudentLife: StudentLife? = null
         private var mPlatform: Platform? = null

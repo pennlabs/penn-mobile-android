@@ -180,7 +180,10 @@ class GsrFragment : Fragment() {
         // handle swipe to refresh
         view.gsr_refresh_layout?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
         view.gsr_refresh_layout?.setOnRefreshListener {
-            searchForGSR(true)
+            OAuth2NetworkManager(mActivity).getAccessToken {
+                updateStatus()
+                searchForGSR(true)
+            }
         }
         internetConnectionGSR?.visibility = View.VISIBLE
     }
@@ -188,14 +191,6 @@ class GsrFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onResume() {
         super.onResume()
-        val mActivity : MainActivity? = activity as MainActivity
-        mActivity?.removeTabs()
-        mActivity?.setTitle(R.string.gsr)
-        if (Build.VERSION.SDK_INT > 17){
-            mActivity?.setSelectedTab(MainActivity.GSR)
-        }
-        updateStatus()
-        populateDropDownGSR()
     }
 
     private fun updateStatus() {

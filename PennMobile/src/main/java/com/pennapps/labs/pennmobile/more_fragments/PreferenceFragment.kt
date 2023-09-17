@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.widget.TextView
+import androidx.fragment.app.FragmentTransaction
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
@@ -91,19 +92,31 @@ class PreferenceFragment : PreferenceFragmentCompat() {
 
         val newsFeaturePref: Preference? = findPreference("pref_news_feature")
         newsFeaturePref?.setOnPreferenceClickListener {
-            mActivity.fragmentTransact(NewsFragment(), false)
+            mActivity.supportFragmentManager.beginTransaction()
+                .replace(R.id.content_frame, NewsFragment())
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit()
             return@setOnPreferenceClickListener true
         }
 
         val contactsFeaturePref: Preference? = findPreference("pref_contacts_feature")
         contactsFeaturePref?.setOnPreferenceClickListener {
-            mActivity.fragmentTransact(SupportFragment(), false)
+            mActivity.supportFragmentManager.beginTransaction()
+                .replace(R.id.content_frame, SupportFragment())
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit()
             return@setOnPreferenceClickListener true
         }
 
         val aboutFeaturePref: Preference? = findPreference("pref_about_feature")
         aboutFeaturePref?.setOnPreferenceClickListener {
-            mActivity.fragmentTransact(AboutFragment(), false)
+            mActivity.supportFragmentManager.beginTransaction()
+                .replace(R.id.more_frame, AboutFragment())
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit()
             return@setOnPreferenceClickListener true
         }
 

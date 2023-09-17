@@ -95,6 +95,27 @@ class LaundryFragment : Fragment() {
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mActivity.removeTabs()
+        mActivity.toolbar.visibility = View.GONE
+        numRooms = sp?.getInt(mContext.getString(R.string.num_rooms_pref), 100) ?: 0
+
+        // get num rooms to display
+        count = 0
+        for (i in 0 until numRooms) {
+            if (sp?.getBoolean(i.toString(), false) == true) {
+                count += 1
+            }
+        }
+        mActivity.setTitle(R.string.laundry)
+        if (Build.VERSION.SDK_INT > 17){
+            mActivity.setSelectedTab(MainActivity.LAUNDRY)
+        }
+        loadingPanel?.visibility = View.VISIBLE
+        updateRooms()
+    }
+
     private fun initAppBar(view: View) {
         if (Build.VERSION.SDK_INT > 16) {
             (view.appbar_home.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
@@ -132,23 +153,6 @@ class LaundryFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        mActivity.removeTabs()
-        mActivity.toolbar.visibility = View.GONE
-        numRooms = sp?.getInt(mContext.getString(R.string.num_rooms_pref), 100) ?: 0
-
-        // get num rooms to display
-        count = 0
-        for (i in 0 until numRooms) {
-            if (sp?.getBoolean(i.toString(), false) == true) {
-                count += 1
-            }
-        }
-        mActivity.setTitle(R.string.laundry)
-        if (Build.VERSION.SDK_INT > 17){
-            mActivity.setSelectedTab(MainActivity.LAUNDRY)
-        }
-        loadingPanel?.visibility = View.VISIBLE
-        updateRooms()
     }
 
     private fun updateRooms() {

@@ -42,25 +42,22 @@
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/main_view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
     </FrameLayout>
 
-    <com.pennapps.labs.pennmobile.components.floatingbottombar.ExpandableBottomBar
+    <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/expandable_bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/nav_bar_height"
         android:layout_gravity="bottom"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="8dp"
-        app:exb_backgroundColor="#FFFFFF"
-        app:exb_backgroundCornerRadius="16dp"
-        app:exb_itemBackgroundCornerRadius="0dp"
-        app:exb_itemBackgroundOpacity="0.2"
-        app:exb_itemInactiveColor="#adadad"
-        app:exb_item_horizontal_margin="0dp"
-        app:exb_item_horizontal_padding="0dp"
-        app:exb_item_vertical_margin="0dp"
-        app:exb_item_vertical_padding="0dp"
-        app:layout_behavior=".components.floatingbottombar.behavior.ExpandableBottomBarScrollableBehavior" />
+        android:background="@color/white"
+        android:visibility="gone"
+        app:layout_behavior=".components.floatingbottombar.behavior.ExpandableBottomBarScrollableBehavior"
+        app:menu="@menu/bottom_nav_bar" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

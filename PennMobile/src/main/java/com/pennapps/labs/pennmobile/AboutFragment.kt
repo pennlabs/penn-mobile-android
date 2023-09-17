@@ -34,9 +34,9 @@ class AboutFragment : Fragment() {
         mActivity = activity as MainActivity
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity)
         mActivity.closeKeyboard()
-        mActivity.toolbar.visibility = View.VISIBLE
-        mActivity.toolbar.setNavigationIcon(R.drawable.ic_back_navigation)
-        mActivity.toolbar.setNavigationOnClickListener { mActivity.onBackPressed() }
+        //mActivity.toolbar.visibility = View.VISIBLE
+        //mActivity.toolbar.setNavigationIcon(R.drawable.ic_back_navigation)
+        //mActivity.toolbar.setNavigationOnClickListener { mActivity.onBackPressed() }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -90,7 +90,7 @@ class AboutFragment : Fragment() {
             }
         }
 
-        mActivity.toolbar.visibility = View.VISIBLE
+        //mActivity.toolbar.visibility = View.VISIBLE
         mActivity.hideBottomBar()
         mActivity.setTitle(R.string.contacts)
 
