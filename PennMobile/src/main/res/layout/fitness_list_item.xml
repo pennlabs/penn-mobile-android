@@ -179,28 +179,61 @@
             android:orientation="horizontal">
 
             <androidx.cardview.widget.CardView
-                android:layout_width="wrap_content"
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_margin="4dp"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintRight_toRightOf="@+id/linear_layout_extras">
+
+                <TextView
+                    android:id="@+id/item_pottruck_last_updated"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:padding="8dp"
+                    app:cardCornerRadius="8dp"
+                    app:autoSizeMaxTextSize="13sp"
+                    app:autoSizeMinTextSize="9sp"
+                    app:autoSizeStepGranularity="2sp"
+                    app:autoSizeTextType="uniform"
+                    tools:text="Last Updated: 722 hours and 3 minutes ago"
+                    android:textSize="17sp"
+                    />
+
+            </androidx.cardview.widget.CardView>
+
+
+            <androidx.cardview.widget.CardView
+                android:layout_weight="1"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 app:cardCornerRadius="8dp"
                 app:layout_constraintRight_toRightOf="@+id/linear_layout_extras">
 
-                <!--<com.google.android.material.progressindicator.CircularProgressIndicator
-                    android:id="@+id/progress_bar"
-                    app:indicatorSize="70dp"
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/item_pottruck_capacity_circle"
+                    android:layout_gravity="center"
+                    app:indicatorSize="80dp"
                     android:progress="70"
                     app:trackCornerRadius="5dp"
                     app:trackThickness="7dp"
                     app:trackColor="#DDD"
-                    app:indicatorColor="@color/blue"
+                    app:indicatorColor="@color/logo_light_blue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="12dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
-                -->
+                    android:layout_margin="4dp"/>
+
+                <TextView
+                    android:id="@+id/item_pottruck_capacity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    tools:text="60%"
+                    android:textSize="18sp"/>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 

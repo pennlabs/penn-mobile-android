@@ -14,6 +14,7 @@ import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.github.mikephil.charting.charts.BarChart
@@ -29,6 +30,7 @@ import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.FitnessRoom
 import com.pennapps.labs.pennmobile.classes.FitnessRoomUsage
 import com.pennapps.labs.pennmobile.classes.RoundedBarChartRenderer
+import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -49,6 +51,10 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
         val progressBar : ProgressBar
         val arrowView : ImageView
 
+        val lastUpdatedView : TextView
+        val capacityViewCircle : com.google.android.material.progressindicator.CircularProgressIndicator
+        val capacityView : TextView
+
         private val extraInfoView : LinearLayout
         private val barChart : BarChart
 
@@ -62,6 +68,10 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
             statusView = view.findViewById(R.id.item_fitness_status)
             hoursView = view.findViewById(R.id.item_fitness_hours)
             arrowView = view.findViewById(R.id.fitness_more_indicator)
+
+            lastUpdatedView = view.findViewById(R.id.item_pottruck_last_updated)
+            capacityViewCircle = view.findViewById(R.id.item_pottruck_capacity_circle)
+            capacityView = view.findViewById(R.id.item_pottruck_capacity)
 
             extraInfoView = view.findViewById(R.id.fitness_list_extra_layout)
             progressBar = view.findViewById(R.id.fitness_progress)
@@ -105,7 +115,7 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
                 labels.add(if (i > 12) "${i - 12}pm" else "${i}am")
             }
 
-            barChart.xAxis.valueFormatter = IndexAxisValueFormatter(labels);
+            barChart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
 
             val set = BarDataSet(entries, "BarDataSet")
 
@@ -113,7 +123,7 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
             set.colors = colors
 
             val data = BarData(set)
-            data.isHighlightEnabled = false;
+            data.isHighlightEnabled = false
             data.barWidth = 0.5f // set custom bar width
             val tf = ResourcesCompat.getFont(context, R.font.sf_pro_display_regular)
             barChart.xAxis.typeface = tf
@@ -121,7 +131,7 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
             val leftAxis: YAxis = barChart.axisLeft
             leftAxis.setDrawGridLines(false)
             leftAxis.setDrawAxisLine(false)
-            leftAxis.setDrawLabels(false);
+            leftAxis.setDrawLabels(false)
 
             leftAxis.axisMinimum = -0.05f * mxUsage
             leftAxis.axisMaximum = mxUsage
@@ -129,7 +139,7 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
             val rightAxis: YAxis = barChart.axisRight
             rightAxis.setDrawGridLines(false)
             rightAxis.setDrawAxisLine(false)
-            rightAxis.setDrawLabels(false);
+            rightAxis.setDrawLabels(false)
 
             val xAxis : XAxis = barChart.xAxis
             xAxis.setDrawGridLines(false)
@@ -137,11 +147,11 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
             xAxis.position = XAxis.XAxisPosition.BOTTOM
             xAxis.setDrawAxisLine(true)
 
-            barChart.legend.isEnabled = false;
+            barChart.legend.isEnabled = false
             barChart.setDrawBorders(false)
             barChart.setFitBars(true)
             barChart.description.isEnabled = false
-            barChart.setScaleEnabled(false);
+            barChart.setScaleEnabled(false)
 
             barChart.renderer = RoundedBarChartRenderer(barChart, barChart.animator,
                 barChart.viewPortHandler, 50.0f)
@@ -155,8 +165,8 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
             val view = extraInfoView
 
             if (!extraIsVisible) {
-                view.visibility = View.VISIBLE;
-                view.alpha = 0.0f;
+                view.visibility = View.VISIBLE
+                view.alpha = 0.0f
 
                 view.animate()
                     .alpha(1.0f)
@@ -170,11 +180,11 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
                     0.5f
                 )
                 rotate.duration = 200
-                rotate.fillAfter = true;
+                rotate.fillAfter = true
                 rotate.interpolator = LinearInterpolator()
                 arrowView.startAnimation(rotate)
             } else {
-                view.visibility = View.GONE;
+                view.visibility = View.GONE
 
                 val rotate = RotateAnimation(
                     90f,
@@ -185,7 +195,7 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
                     0.5f
                 )
                 rotate.duration = 10
-                rotate.fillAfter = true;
+                rotate.fillAfter = true
                 rotate.interpolator = LinearInterpolator()
                 arrowView.startAnimation(rotate)
             }
@@ -203,7 +213,7 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
     }
 
     override fun onViewAttachedToWindow(holder: ViewHolder) {
-        // rerotate the image if the extra information panels are open
+        // re-rotate the image if the extra information panels are open
         if (holder.extraIsVisible) {
             val rotate = RotateAnimation(
                 0f,
@@ -214,7 +224,7 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
                 0.5f
             )
             rotate.duration = 10
-            rotate.fillAfter = true;
+            rotate.fillAfter = true
             rotate.interpolator = LinearInterpolator()
             holder.arrowView.startAnimation(rotate)
         }
@@ -229,7 +239,7 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
         val currentTime = LocalTime.now()
 
         // Sunday -> 0, Monday -> 1, etc.
-        val dayOfWeek = ZonedDateTime.now().dayOfWeek.value;
+        val dayOfWeek = ZonedDateTime.now().dayOfWeek.value
 
         // the open and close time lists start with monday
         val openTimeString = room.openTimeList?.get((dayOfWeek + 6) % 7)
@@ -256,7 +266,31 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
         holder.progressBar.visibility = View.INVISIBLE
 
         // get image from url
-        Glide.with(mContext).load(room.imageURL).into(holder.imageView);
+        Glide.with(mContext).load(room.imageURL).into(holder.imageView)
+
+
+        // update the capacity
+        if (room.capacity == null) {
+            holder.capacityView.text = "N/A"
+            holder.capacityViewCircle.progress = 0
+        } else {
+            val capacityInt = room.capacity!!.toInt()
+            val capacity = "$capacityInt%"
+
+            holder.capacityView.text = capacity
+            holder.capacityViewCircle.progress = capacityInt
+        }
+
+        // update the time for last updated
+        val lastUpdateTime = ZonedDateTime.parse(room.lastUpdated)
+        val duration = Duration.between(lastUpdateTime, ZonedDateTime.now())
+
+        val hourDiff = duration.toHours()
+        val minuteDiff = duration.toMinutes() % 60
+
+        val lastUpd = "<b>Last Updated:</b> $hourDiff hours and $minuteDiff minutes ago"
+
+        holder.lastUpdatedView.text = HtmlCompat.fromHtml(lastUpd, HtmlCompat.FROM_HTML_MODE_COMPACT)
 
         holder.mainView.bringToFront()
         // garbage code starts here ------------------------------------
