@@ -32,5 +32,7 @@ class FitnessRoom {
     @Expose
     var closeTimeList: List<String>? = null
 
-    val imageURL = "https://s3.us-east-2.amazonaws.com/labs.api/dining/1920-commons.jpg"
+    @SerializedName("image_url")
+    @Expose
+    var imageURL: String? = null
 }

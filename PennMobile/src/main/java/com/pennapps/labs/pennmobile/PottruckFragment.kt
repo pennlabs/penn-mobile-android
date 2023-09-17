@@ -57,13 +57,14 @@ class PottruckFragment : Fragment() {
         //displays banner if not connected
         if (!getConnected()) return
 
-        mStudentLife.getFitnessRooms()
+        mStudentLife.fitnessRooms
             .subscribe({ fitnessRooms ->
                 for (room in fitnessRooms) {
                     Log.i("Fitness Room${room.roomId}", "${room.roomName}")
                 }
+                val sortedRooms = fitnessRooms.sortedBy {it.roomName}
                 mActivity.runOnUiThread {
-                    val adapter = FitnessAdapter(fitnessRooms)
+                    val adapter = FitnessAdapter(sortedRooms)
                     recyclerView.adapter = adapter
                     loadingPanel.visibility = View.GONE
                     swipeRefresh.isRefreshing = false
