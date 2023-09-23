@@ -160,15 +160,43 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="150dp"
             android:layout_margin="4dp"
             app:cardCornerRadius="8dp">
 
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/barchart_times"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="8dp"/>
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/timeCapacity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2 PM: Slightly Busy"
+                    android:fontFamily="@font/sf_pro_display_medium"
+                    android:layout_margin="10dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"/>
+
+                <TextView
+                    android:id="@+id/item_pottruck_last_updated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Updated 2 hours ago"
+                    android:fontFamily="@font/sf_pro_display_medium"
+                    android:layout_margin="10dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"/>
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/barchart_times"
+                    android:layout_width="match_parent"
+                    android:layout_height="110dp"
+                    app:layout_constraintTop_toBottomOf="@id/timeCapacity"
+                    android:layout_marginBottom="8dp" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         </androidx.cardview.widget.CardView>
 
@@ -186,25 +214,78 @@
                 app:cardCornerRadius="8dp"
                 app:layout_constraintRight_toRightOf="@+id/linear_layout_extras">
 
-                <TextView
-                    android:id="@+id/item_pottruck_last_updated"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:padding="8dp"
-                    app:cardCornerRadius="8dp"
-                    app:autoSizeMaxTextSize="13sp"
-                    app:autoSizeMinTextSize="9sp"
-                    app:autoSizeStepGranularity="2sp"
-                    app:autoSizeTextType="uniform"
-                    tools:text="Last Updated: 722 hours and 3 minutes ago"
-                    android:textSize="17sp"
-                    />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/fitness_sunday"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="Sunday"
+                            android:gravity="center_vertical|start" />
+                        <TextView
+                            android:id="@+id/fitness_sunday_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="Closed"
+                            android:gravity="center_vertical|end"
+                            android:layout_weight="1"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/fitness_mf"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="Mon - Fri"
+                            android:gravity="center_vertical|start" />
+                        <TextView
+                            android:id="@+id/fitness_mf_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="6am-8pm"
+                            android:gravity="center_vertical|end"
+                            android:layout_weight="1"/>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/fitness_sat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="Saturday"
+                            android:gravity="center_vertical|start" />
+                        <TextView
+                            android:id="@+id/fitness_sat_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="10:30am-11:30pm"
+                            android:gravity="center_vertical|end"
+                            android:layout_weight="1"/>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
 
             </androidx.cardview.widget.CardView>
-
 
             <androidx.cardview.widget.CardView
                 android:layout_weight="1"
@@ -217,23 +298,37 @@
                 <com.google.android.material.progressindicator.CircularProgressIndicator
                     android:id="@+id/item_pottruck_capacity_circle"
                     android:layout_gravity="center"
-                    app:indicatorSize="80dp"
+                    app:indicatorSize="90dp"
                     android:progress="70"
                     app:trackCornerRadius="5dp"
-                    app:trackThickness="7dp"
+                    app:trackThickness="8dp"
                     app:trackColor="#DDD"
                     app:indicatorColor="@color/logo_light_blue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"/>
 
-                <TextView
-                    android:id="@+id/item_pottruck_capacity"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    tools:text="60%"
-                    android:textSize="18sp"/>
+                    android:orientation="vertical"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:id="@+id/item_pottruck_capacity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        tools:text="60%"
+                        android:textSize="18sp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Capacity"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 

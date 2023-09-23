@@ -11,6 +11,6 @@ class FitnessPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
         if (position == 0) {
             return PottruckFragment()
         }
-        return DiningFragment()
+        return PottruckFragment()
     }
 }

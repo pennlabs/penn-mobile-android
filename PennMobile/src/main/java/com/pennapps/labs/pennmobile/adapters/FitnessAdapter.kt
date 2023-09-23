@@ -10,7 +10,11 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -27,6 +31,7 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.StudentLife
+import com.pennapps.labs.pennmobile.classes.FitnessAdapterDataModel
 import com.pennapps.labs.pennmobile.classes.FitnessRoom
 import com.pennapps.labs.pennmobile.classes.FitnessRoomUsage
 import com.pennapps.labs.pennmobile.classes.RoundedBarChartRenderer
@@ -36,13 +41,14 @@ import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
+class FitnessAdapter(private val isFavorite : Boolean, private val dataModel: FitnessAdapterDataModel) :
         RecyclerView.Adapter<FitnessAdapter.ViewHolder>() {
 
     private lateinit var mActivity: Activity
     private lateinit var mContext : Context
     private lateinit var mStudentLife : StudentLife
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+    class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val mainView : ConstraintLayout
         val roomView : TextView
         val statusView : TextView
@@ -51,6 +57,7 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
         val progressBar : ProgressBar
         val arrowView : ImageView
 
+        val timeCapacityView : TextView
         val lastUpdatedView : TextView
         val capacityViewCircle : com.google.android.material.progressindicator.CircularProgressIndicator
         val capacityView : TextView
@@ -69,6 +76,7 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
             hoursView = view.findViewById(R.id.item_fitness_hours)
             arrowView = view.findViewById(R.id.fitness_more_indicator)
 
+            timeCapacityView = view.findViewById(R.id.timeCapacity)
             lastUpdatedView = view.findViewById(R.id.item_pottruck_last_updated)
             capacityViewCircle = view.findViewById(R.id.item_pottruck_capacity_circle)
             capacityView = view.findViewById(R.id.item_pottruck_capacity)
@@ -204,11 +212,13 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.fitness_list_item, parent, false)
         mContext = parent.context
         mActivity = mContext as MainActivity
         mStudentLife = MainActivity.studentLifeInstance
+
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.fitness_list_item, parent, false)
+
         return ViewHolder(view)
     }
 
@@ -231,19 +241,21 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val room = fitnessRooms[position]
+
+        val room = dataModel.getRoom(isFavorite, position)
         holder.roomView.text = room.roomName
 
         // check if the room is currently open
         // NOT time zone safe
         val currentTime = LocalTime.now()
 
-        // Sunday -> 0, Monday -> 1, etc.
-        val dayOfWeek = ZonedDateTime.now().dayOfWeek.value
+        // dayOfWeek gives Sunday -> 0, Monday -> 1, etc.
+        // but we want 0 -> monday
+        val dayOfWeek = (ZonedDateTime.now().dayOfWeek.value + 6) % 7
 
         // the open and close time lists start with monday
-        val openTimeString = room.openTimeList?.get((dayOfWeek + 6) % 7)
-        val closeTimeString = room.closeTimeList?.get((dayOfWeek + 6) % 7)
+        val openTimeString = room.openTimeList?.get(dayOfWeek)
+        val closeTimeString = room.closeTimeList?.get(dayOfWeek)
 
         val openTime = LocalTime.parse(openTimeString)
         val closeTime = LocalTime.parse(closeTimeString)
@@ -262,35 +274,104 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
         val hours = "${openTime.format(timeFormatter)} - ${closeTime.format(timeFormatter)}"
         holder.hoursView.text = hours
 
+        // format and assign the times for the rest of the week
+        // definitely not the best way to do this, but I am lazy
+
+        val mfIndex = if (dayOfWeek < 5) dayOfWeek else 0
+        val mfOpenTime = LocalTime.parse(room.openTimeList?.get(mfIndex))
+        val mfCloseTime = LocalTime.parse(room.closeTimeList?.get(mfIndex))
+        val mfHours = "${mfOpenTime.format(timeFormatter)} - ${mfCloseTime.format(timeFormatter)}"
+
+        val saturdayIndex = 5
+        val saturdayOpenTime = LocalTime.parse(room.openTimeList?.get(saturdayIndex))
+        val saturdayCloseTime = LocalTime.parse(room.closeTimeList?.get(saturdayIndex))
+        val saturdayHours = "${saturdayOpenTime.format(timeFormatter)} - ${saturdayCloseTime.format(timeFormatter)}"
+
+        val sundayIndex = 6
+        val sundayOpenTime = LocalTime.parse(room.openTimeList?.get(sundayIndex))
+        val sundayCloseTime = LocalTime.parse(room.closeTimeList?.get(sundayIndex))
+        val sundayHours = "${sundayOpenTime.format(timeFormatter)} - ${sundayCloseTime.format(timeFormatter)}"
+
+
+        (holder.view.findViewById(R.id.fitness_sunday_time) as TextView).text = sundayHours
+        (holder.view.findViewById(R.id.fitness_mf_time) as TextView).text = mfHours
+        (holder.view.findViewById(R.id.fitness_sat_time) as TextView).text = saturdayHours
+
+        val blue = Color.parseColor("#1280F0")
+
+        if (dayOfWeek < 5) {
+            (holder.view.findViewById(R.id.fitness_mf) as TextView).setTextColor(blue)
+            (holder.view.findViewById(R.id.fitness_mf_time) as TextView).setTextColor(blue)
+        } else if (dayOfWeek == 5) {
+            (holder.view.findViewById(R.id.fitness_sat) as TextView).setTextColor(blue)
+            (holder.view.findViewById(R.id.fitness_sat_time) as TextView).setTextColor(blue)
+        } else {
+            (holder.view.findViewById(R.id.fitness_sunday) as TextView).setTextColor(blue)
+            (holder.view.findViewById(R.id.fitness_sunday_time) as TextView).setTextColor(blue)
+
+        }
+
         // make progress bar invisible
         holder.progressBar.visibility = View.INVISIBLE
 
         // get image from url
         Glide.with(mContext).load(room.imageURL).into(holder.imageView)
 
+        var busyness : String
 
         // update the capacity
         if (room.capacity == null) {
+            busyness = "N/A"
             holder.capacityView.text = "N/A"
             holder.capacityViewCircle.progress = 0
         } else {
             val capacityInt = room.capacity!!.toInt()
             val capacity = "$capacityInt%"
 
-            holder.capacityView.text = capacity
+            if (capacityInt == 0) {
+                busyness = "Empty"
+            } else if (capacityInt < 10) {
+                busyness = "Not very busy"
+            } else if (capacityInt < 30) {
+                busyness = "Slightly busy"
+            } else if (capacityInt < 60) {
+                busyness = "Pretty busy"
+            } else if (capacityInt < 90) {
+                busyness = "Extremely busy"
+            } else {
+                busyness = "Packed"
+            }
+
             holder.capacityViewCircle.progress = capacityInt
+            holder.capacityView.text = capacity
         }
+
+        // update the time and capacity
+        var curHour = currentTime.hour
+
+        val ampm = if (curHour >= 12) "PM" else "AM"
+        if (curHour > 12) curHour -= 12
+        if (curHour == 0) curHour += 12
+
+        val timeCap = "<a><font color = #1280F0>$curHour $ampm:</a> $busyness"
+        holder.timeCapacityView.text = HtmlCompat.fromHtml(timeCap, HtmlCompat.FROM_HTML_MODE_COMPACT)
 
         // update the time for last updated
         val lastUpdateTime = ZonedDateTime.parse(room.lastUpdated)
         val duration = Duration.between(lastUpdateTime, ZonedDateTime.now())
 
-        val hourDiff = duration.toHours()
-        val minuteDiff = duration.toMinutes() % 60
+        val updHours = duration.toHours()
 
-        val lastUpd = "<b>Last Updated:</b> $hourDiff hours and $minuteDiff minutes ago"
+        val lastUpd = if (updHours > 2L) {
+            "Updated $updHours hours ago"
+        } else if (updHours == 1L) {
+            "Updated $updHours hour ago"
+        } else {
+            val updMinutes = duration.toMinutes()
+            "Updated $updMinutes minutes ago"
+        }
 
-        holder.lastUpdatedView.text = HtmlCompat.fromHtml(lastUpd, HtmlCompat.FROM_HTML_MODE_COMPACT)
+        holder.lastUpdatedView.text = lastUpd
 
         holder.mainView.bringToFront()
         // garbage code starts here ------------------------------------
@@ -304,5 +385,5 @@ class FitnessAdapter(private val fitnessRooms: List<FitnessRoom>) :
         }
     }
 
-    override fun getItemCount() = fitnessRooms.size
+    override fun getItemCount() = dataModel.getNumber(isFavorite)
 }

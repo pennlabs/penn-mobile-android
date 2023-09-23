@@ -5,10 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.pennapps.labs.pennmobile.adapters.FitnessPagerAdapter
@@ -50,7 +48,7 @@ class FitnessHolderFragment: Fragment() {
             if (position == 0) {
                 tab.text = "Pottruck"
             } else {
-                tab.text = "Other Facilities"
+                tab.text = "Favorites"
             }
         }.attach()
     }
@@ -60,7 +58,7 @@ class FitnessHolderFragment: Fragment() {
      * fills in the textViews for the title/date
      */
     private fun initAppBar() {
-        val appBarLayout : AppBarLayout = mView.findViewById(R.id.appbar_home_holder);
+        val appBarLayout : AppBarLayout = mView.findViewById(R.id.appbar_home_holder)
         val titleView : TextView = mView.findViewById(R.id.title_view)
         val dateView : TextView = mView.findViewById(R.id.date_view)
 
