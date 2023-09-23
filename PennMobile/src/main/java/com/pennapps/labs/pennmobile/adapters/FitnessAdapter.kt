@@ -49,42 +49,25 @@ class FitnessAdapter(private val isFavorite : Boolean, private val dataModel: Fi
     private lateinit var mStudentLife : StudentLife
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val mainView : ConstraintLayout
-        val roomView : TextView
-        val statusView : TextView
-        val hoursView : TextView
-        val imageView : ImageView
-        val progressBar : ProgressBar
-        val arrowView : ImageView
+        val mainView : ConstraintLayout = view.findViewById(R.id.fitness_list_info_layout)
+        val roomView : TextView = view.findViewById(R.id.item_fitness_name)
+        val statusView : TextView = view.findViewById(R.id.item_fitness_status)
+        val hoursView : TextView = view.findViewById(R.id.item_fitness_hours)
+        val imageView : ImageView = view.findViewById(R.id.item_fitness_image)
+        val progressBar : ProgressBar = view.findViewById(R.id.fitness_progress)
+        val arrowView : ImageView = view.findViewById(R.id.fitness_more_indicator)
 
-        val timeCapacityView : TextView
-        val lastUpdatedView : TextView
-        val capacityViewCircle : com.google.android.material.progressindicator.CircularProgressIndicator
-        val capacityView : TextView
+        val timeCapacityView : TextView = view.findViewById(R.id.timeCapacity)
+        val lastUpdatedView : TextView = view.findViewById(R.id.item_pottruck_last_updated)
+        val capacityViewCircle : com.google.android.material.progressindicator.CircularProgressIndicator =
+            view.findViewById(R.id.item_pottruck_capacity_circle)
+        val capacityView : TextView = view.findViewById(R.id.item_pottruck_capacity)
 
-        private val extraInfoView : LinearLayout
-        private val barChart : BarChart
+        private val extraInfoView : LinearLayout = view.findViewById(R.id.fitness_list_extra_layout)
+        private val barChart : BarChart = view.findViewById(R.id.barchart_times)
 
         var extraIsVisible = false
         var hasExtraData = false
-
-        init {
-            mainView = view.findViewById(R.id.fitness_list_info_layout)
-            roomView = view.findViewById(R.id.item_fitness_name)
-            imageView = view.findViewById(R.id.item_fitness_image)
-            statusView = view.findViewById(R.id.item_fitness_status)
-            hoursView = view.findViewById(R.id.item_fitness_hours)
-            arrowView = view.findViewById(R.id.fitness_more_indicator)
-
-            timeCapacityView = view.findViewById(R.id.timeCapacity)
-            lastUpdatedView = view.findViewById(R.id.item_pottruck_last_updated)
-            capacityViewCircle = view.findViewById(R.id.item_pottruck_capacity_circle)
-            capacityView = view.findViewById(R.id.item_pottruck_capacity)
-
-            extraInfoView = view.findViewById(R.id.fitness_list_extra_layout)
-            progressBar = view.findViewById(R.id.fitness_progress)
-            barChart = view.findViewById(R.id.barchart_times)
-        }
 
         fun getExtraData(context: Context, activity: Activity, studentLife : StudentLife,
             room: FitnessRoom
@@ -317,7 +300,7 @@ class FitnessAdapter(private val isFavorite : Boolean, private val dataModel: Fi
         // get image from url
         Glide.with(mContext).load(room.imageURL).into(holder.imageView)
 
-        var busyness : String
+        val busyness : String
 
         // update the capacity
         if (room.capacity == null) {
@@ -328,18 +311,18 @@ class FitnessAdapter(private val isFavorite : Boolean, private val dataModel: Fi
             val capacityInt = room.capacity!!.toInt()
             val capacity = "$capacityInt%"
 
-            if (capacityInt == 0) {
-                busyness = "Empty"
+            busyness = if (capacityInt == 0) {
+                "Empty"
             } else if (capacityInt < 10) {
-                busyness = "Not very busy"
+                "Not very busy"
             } else if (capacityInt < 30) {
-                busyness = "Slightly busy"
+                "Slightly busy"
             } else if (capacityInt < 60) {
-                busyness = "Pretty busy"
+                "Pretty busy"
             } else if (capacityInt < 90) {
-                busyness = "Extremely busy"
+                "Extremely busy"
             } else {
-                busyness = "Packed"
+                "Packed"
             }
 
             holder.capacityViewCircle.progress = capacityInt
@@ -349,11 +332,11 @@ class FitnessAdapter(private val isFavorite : Boolean, private val dataModel: Fi
         // update the time and capacity
         var curHour = currentTime.hour
 
-        val ampm = if (curHour >= 12) "PM" else "AM"
+        val amPm = if (curHour >= 12) "PM" else "AM"
         if (curHour > 12) curHour -= 12
         if (curHour == 0) curHour += 12
 
-        val timeCap = "<a><font color = #1280F0>$curHour $ampm:</a> $busyness"
+        val timeCap = "<a><font color = #1280F0>$curHour $amPm:</a> $busyness"
         holder.timeCapacityView.text = HtmlCompat.fromHtml(timeCap, HtmlCompat.FROM_HTML_MODE_COMPACT)
 
         // update the time for last updated

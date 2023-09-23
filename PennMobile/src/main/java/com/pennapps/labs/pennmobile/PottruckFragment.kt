@@ -11,6 +11,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,11 +19,18 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.pennapps.labs.pennmobile.adapters.FitnessAdapter
 import com.pennapps.labs.pennmobile.adapters.FitnessHeaderAdapter
+import com.pennapps.labs.pennmobile.adapters.HomeAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
+import com.pennapps.labs.pennmobile.classes.FitnessAdapterDataModel
 import com.pennapps.labs.pennmobile.classes.FitnessPreferenceViewModel
+import com.pennapps.labs.pennmobile.classes.HomeCell
+import com.pennapps.labs.pennmobile.classes.HomeCellInfo
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.utils.Utils
-
+import kotlinx.android.synthetic.main.fragment_home.home_cells_rv
+import kotlinx.android.synthetic.main.fragment_home.home_refresh_layout
+import kotlinx.android.synthetic.main.fragment_home.internetConnectionHome
+import kotlinx.android.synthetic.main.loading_panel.loadingPanel
 
 class PottruckFragment : Fragment() {
     private lateinit var mActivity : MainActivity
@@ -38,6 +46,7 @@ class PottruckFragment : Fragment() {
     private lateinit var otherAdapter : FitnessAdapter
     private lateinit var favoriteHeaderAdapter : FitnessHeaderAdapter
     private lateinit var otherHeaderAdapter : FitnessHeaderAdapter
+    private lateinit var concatAdapter : ConcatAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,35 +92,29 @@ class PottruckFragment : Fragment() {
                 }
                 val sortedRooms = fitnessRooms.sortedBy {it.roomName}
 
-                dataModel = FitnessPreferenceViewModel(sortedRooms)
+                dataModel = FitnessPreferenceViewModel(mActivity, mStudentLife, sortedRooms)
 
                 mActivity.runOnUiThread {
+                    val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
+                    val context = mActivity.applicationContext
+                    val bearerToken = "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
-                    favoritesAdapter = FitnessAdapter(true, dataModel)
-                    otherAdapter = FitnessAdapter(false, dataModel)
-
-                    favoriteHeaderAdapter = FitnessHeaderAdapter("Favorites")
-                    otherHeaderAdapter = FitnessHeaderAdapter("Other Facilities")
-
-                    val concatenated = ConcatAdapter(favoriteHeaderAdapter, favoritesAdapter,
-                        otherHeaderAdapter, otherAdapter)
-
-                    recyclerView.adapter = concatenated
-                    loadingPanel.visibility = View.GONE
-                    swipeRefresh.isRefreshing = false
-
-                    // set click listener for favorites button
-                    val fitnessPref : ImageView = view.findViewById(R.id.fitness_preferences)
-                    fitnessPref.setOnClickListener {
-                        dataModel.savePreferences()
-                        val prefDialog = FitnessPreferencesFragment(dataModel, object: CloseListener{
-                            override fun updateAdapters() {
-                                favoritesAdapter.notifyDataSetChanged()
-                                otherAdapter.notifyDataSetChanged()
+                    mStudentLife.getFitnessPreferences(bearerToken).subscribe({ favorites ->
+                        mActivity.runOnUiThread {
+                            for (roomId in favorites) {
+                                dataModel.addId(roomId)
                             }
-                        })
-                        prefDialog.show(mActivity.supportFragmentManager, "Fitness Preferences Dialog")
-                    }
+                            dataModel.updatePositionMap()
+
+                            setAdapters()
+                        }
+                    }, { throwable ->
+                        mActivity.runOnUiThread {
+                            // empty preferences
+                            setAdapters()
+                            Log.e("Pottruck Fragment", "Could not load Fitness Preferences", throwable)
+                        }
+                    })
                 }
             }, {
                 Log.e("PottruckFragment", "Error getting fitness rooms", it)
@@ -121,6 +124,34 @@ class PottruckFragment : Fragment() {
                     swipeRefresh.isRefreshing = false
                 }
             })
+    }
+
+    private fun setAdapters() {
+        favoritesAdapter = FitnessAdapter(true, dataModel)
+        otherAdapter = FitnessAdapter(false, dataModel)
+
+        favoriteHeaderAdapter = FitnessHeaderAdapter("Favorites")
+        otherHeaderAdapter = FitnessHeaderAdapter("Other Facilities")
+
+        val concatAdapter = ConcatAdapter(favoriteHeaderAdapter, favoritesAdapter,
+            otherHeaderAdapter, otherAdapter)
+
+        recyclerView.adapter = concatAdapter
+        loadingPanel.visibility = View.GONE
+        swipeRefresh.isRefreshing = false
+
+        // set click listener for favorites button
+        val fitnessPref : ImageView = mView.findViewById(R.id.fitness_preferences)
+        fitnessPref.setOnClickListener {
+            dataModel.savePreferences()
+            val prefDialog = FitnessPreferencesFragment(dataModel, object: CloseListener{
+                override fun updateAdapters() {
+                    favoritesAdapter.notifyDataSetChanged()
+                    otherAdapter.notifyDataSetChanged()
+                }
+            })
+            prefDialog.show(mActivity.supportFragmentManager, "Fitness Preferences Dialog")
+        }
     }
 
     /**

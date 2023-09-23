@@ -1,8 +1,16 @@
 package com.pennapps.labs.pennmobile.classes
 
+import android.app.Activity
 import android.util.Log
+import androidx.preference.PreferenceManager
+import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.api.StudentLife
+import retrofit.ResponseCallback
+import retrofit.RetrofitError
+import retrofit.client.Response
 
-class FitnessPreferenceViewModel(private val roomList: List<FitnessRoom>) : FitnessAdapterDataModel {
+class FitnessPreferenceViewModel(private val activity: Activity,
+    private val studentLife: StudentLife, private val roomList: List<FitnessRoom>) : FitnessAdapterDataModel {
 
     private val roomTot = roomList.size
 
@@ -48,6 +56,14 @@ class FitnessPreferenceViewModel(private val roomList: List<FitnessRoom>) : Fitn
         return favoriteRooms.contains(roomId)
     }
 
+    fun clearFavorites() {
+        favoriteRooms.clear()
+    }
+
+    fun addId(roomId: Int) {
+        favoriteRooms.add(roomId)
+    }
+
     fun updatePositionMap() {
         val numFavorites = favoriteRooms.size
         var curFavIndex = 0
@@ -71,9 +87,21 @@ class FitnessPreferenceViewModel(private val roomList: List<FitnessRoom>) : Fitn
         favoriteRooms.addAll(prevFavoriteRooms)
     }
 
-
     fun updateRemotePreferences() {
+        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+        val context = activity.applicationContext
+        val bearerToken = "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
+        studentLife.sendFitnessPref(bearerToken, FitnessRequest(ArrayList(favoriteRooms)),
+            object : ResponseCallback() {
+                override fun success(response: Response) {
+                    Log.i("Fitness Preference View Model", "fitness preferences saved")
+                }
+                override fun failure(error: RetrofitError) {
+                    Log.e("Fitness Preference View Model", "Error saving fitness " +
+                            "preferences: $error", error)
+                }
+            })
     }
 
 }

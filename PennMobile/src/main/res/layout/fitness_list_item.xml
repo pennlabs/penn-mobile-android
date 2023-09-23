@@ -9,9 +9,6 @@
     android:layout_weight="10"
     >
     <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/fitness_list_info_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,7 +22,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="4dp"
         android:elevation="0dp"
@@ -58,7 +54,6 @@
         android:id="@+id/item_fitness_status"
         style="@style/FitnessStatusLabel"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toEndOf="@+id/item_fitness_image_cardview"
         app:layout_constraintTop_toBottomOf="@+id/item_fitness_name"
@@ -71,7 +66,6 @@
         style="@style/HallName"
         android:layout_width="0dp"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="4dp"
         android:ellipsize="marquee"
         android:fontFamily="@font/sf_pro_display_medium"
@@ -117,15 +111,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="12dp"
-        android:layout_marginRight="8dp"
         android:adjustViewBounds="true"
         android:indeterminate="true"
         android:indeterminateTint="@color/color_primary"
         android:indeterminateTintMode="src_in"
         android:paddingStart="10dp"
-        android:paddingLeft="10dp"
         android:paddingEnd="8dp"
-        android:paddingRight="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -136,7 +127,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="2dp"
-        android:layout_marginRight="2dp"
         android:src="@drawable/ic_chevron_right_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -172,7 +162,7 @@
                     android:id="@+id/timeCapacity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2 PM: Slightly Busy"
+                    tools:text="2 PM: Slightly Busy"
                     android:fontFamily="@font/sf_pro_display_medium"
                     android:layout_margin="10dp"
                     app:layout_constraintTop_toTopOf="parent"
@@ -182,7 +172,7 @@
                     android:id="@+id/item_pottruck_last_updated"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Updated 2 hours ago"
+                    tools:text="Updated 2 hours ago"
                     android:fontFamily="@font/sf_pro_display_medium"
                     android:layout_margin="10dp"
                     app:layout_constraintTop_toTopOf="parent"
@@ -229,13 +219,13 @@
                             android:id="@+id/fitness_sunday"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:text="Sunday"
+                            android:text="@string/fitness_sunday"
                             android:gravity="center_vertical|start" />
                         <TextView
                             android:id="@+id/fitness_sunday_time"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:text="Closed"
+                            tools:text="Closed"
                             android:gravity="center_vertical|end"
                             android:layout_weight="1"/>
 
@@ -250,13 +240,13 @@
                             android:id="@+id/fitness_mf"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:text="Mon - Fri"
+                            android:text="@string/fitness_mf"
                             android:gravity="center_vertical|start" />
                         <TextView
                             android:id="@+id/fitness_mf_time"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:text="6am-8pm"
+                            tools:text="6am-8pm"
                             android:gravity="center_vertical|end"
                             android:layout_weight="1"/>
 
@@ -270,13 +260,13 @@
                             android:id="@+id/fitness_sat"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:text="Saturday"
+                            android:text="@string/fitness_sat"
                             android:gravity="center_vertical|start" />
                         <TextView
                             android:id="@+id/fitness_sat_time"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:text="10:30am-11:30pm"
+                            tools:text="10:30am-11:30pm"
                             android:gravity="center_vertical|end"
                             android:layout_weight="1"/>
 
@@ -325,7 +315,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Capacity"
+                        android:text="@string/fitness_capacity"
                         android:textSize="12sp"/>
                 </LinearLayout>
 

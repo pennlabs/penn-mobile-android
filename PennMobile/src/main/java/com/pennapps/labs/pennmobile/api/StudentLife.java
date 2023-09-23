@@ -7,6 +7,7 @@ import com.pennapps.labs.pennmobile.classes.CalendarEvent;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.DiningPreferences;
 import com.pennapps.labs.pennmobile.classes.DiningRequest;
+import com.pennapps.labs.pennmobile.classes.FitnessRequest;
 import com.pennapps.labs.pennmobile.classes.FitnessRoom;
 import com.pennapps.labs.pennmobile.classes.FitnessRoomUsage;
 import com.pennapps.labs.pennmobile.classes.FlingEvent;
@@ -206,4 +207,14 @@ public interface StudentLife {
             @Path("id") int id,
             @Query("num_samples") int samples,
             @Query("group_by") String groupBy);
+
+    @GET("/penndata/fitness/preferences")
+    Observable<List<Integer>> getFitnessPreferences(
+            @Header("Authorization") String bearerToken);
+
+    @POST("/penndata/fitness/preferences/")
+    void sendFitnessPref(
+            @Header("Authorization") String bearerToken,
+            @Body FitnessRequest rooms,
+            Callback<Response> callback);
 }
