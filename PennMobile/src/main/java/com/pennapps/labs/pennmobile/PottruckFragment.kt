@@ -46,7 +46,6 @@ class PottruckFragment : Fragment() {
     private lateinit var otherAdapter : FitnessAdapter
     private lateinit var favoriteHeaderAdapter : FitnessHeaderAdapter
     private lateinit var otherHeaderAdapter : FitnessHeaderAdapter
-    private lateinit var concatAdapter : ConcatAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
