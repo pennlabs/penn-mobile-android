@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         if (pennKey == null && !guestMode) {
             startLoginFragment()
         } else {
-            OAuth2NetworkManager(this).getAccessTokenStartup()
+            startHomeFragment()
         }
     }
 
