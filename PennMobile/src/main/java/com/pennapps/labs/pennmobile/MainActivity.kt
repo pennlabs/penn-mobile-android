@@ -49,6 +49,7 @@ import kotlinx.android.synthetic.main.include_main.*
 import retrofit.RestAdapter
 import retrofit.android.AndroidLog
 import retrofit.converter.GsonConverter
+import java.util.Calendar
 
 class MainActivity : AppCompatActivity() {
     private var tabShowed = false
@@ -80,6 +81,17 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.setHomeButtonEnabled(false)
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
+
+
+        // for some testing
+        val editor = mSharedPrefs.edit()
+        editor.putString(this.getString(R.string.access_token), "hehe")
+        editor.putString(this.getString(R.string.refresh_token), "hehe")
+        val currentTime = Calendar.getInstance().timeInMillis - 100
+        editor.putLong(this.getString(R.string.token_expires_at), currentTime)
+        editor.apply()
+
+
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
         val mainPagerAdapter = MainPagerAdapter(fragmentManager, lifecycle)
@@ -147,14 +159,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun startLoginFragment() {
+
+        val currentFragment = fragmentManager.findFragmentById(R.id.content_frame)
         val fragment: Fragment = LoginFragment()
-        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        fragmentManager.beginTransaction()
+
+        // change the fragment only if we're not already on the login fragment
+        if (currentFragment == null || currentFragment::class != fragment::class) {
+            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()
-        main_view_pager.visibility = View.GONE
-        expandable_bottom_bar.visibility = View.GONE
+            main_view_pager.visibility = View.GONE
+            expandable_bottom_bar.visibility = View.GONE
+        }
     }
 
     fun showErrorToast(errorMessage: Int) {
