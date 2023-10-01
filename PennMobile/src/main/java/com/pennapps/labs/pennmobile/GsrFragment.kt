@@ -59,7 +59,8 @@ class GsrFragment : Fragment() {
     private val gsrSlotFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZZ")
 
     private lateinit var durationAdapter: ArrayAdapter<String>
-    private lateinit var huntsmanDurationAdapter: ArrayAdapter<String>
+    private lateinit var whartonDurationAdapter: ArrayAdapter<String>
+    private lateinit var biotechDurationAdapter: ArrayAdapter<String>
 
     private var populatedDropDownGSR = false
 
@@ -98,7 +99,8 @@ class GsrFragment : Fragment() {
         noResultsPanel = view.gsr_no_results
 
         durationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m", "120m"))
-        huntsmanDurationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m"))
+        whartonDurationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m"))
+        biotechDurationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m", "120m", "150m", "180m"))
 
         // update user status by getting the bearer token and checking wharton status
         updateStatus()
@@ -409,8 +411,10 @@ class GsrFragment : Fragment() {
                             val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
                             gsrLocationDropDown.adapter = adapter
 
-                            durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman")
-                                huntsmanDurationAdapter else durationAdapter
+                            durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman"
+                                || gsrLocationDropDown.selectedItem.toString() == "Academic Research")
+                                whartonDurationAdapter else if (gsrLocationDropDown.selectedItem.toString() == "Biomedical")
+                                biotechDurationAdapter else durationAdapter
                             searchForGSR(false)
                         }
                     }
@@ -423,7 +427,7 @@ class GsrFragment : Fragment() {
                             gsrHashMap["Weigle"] = "1086"
                             gsrHashMap["Lippincott"] = "2587"
                             gsrHashMap["Edu Commons"] = "2495"
-                            gsrHashMap["Biomedical"] = "2683"
+                            gsrHashMap["Biotech Commons"] = "2683"
                             gsrHashMap["Fisher"] = "2637"
                             gsrHashMap["Levin Building"] = "1090"
                             gsrHashMap["Museum Library"] = "2634"
@@ -437,8 +441,10 @@ class GsrFragment : Fragment() {
                             val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
                             gsrLocationDropDown.adapter = adapter
 
-                            durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman")
-                                huntsmanDurationAdapter else durationAdapter
+                            durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman"
+                                || gsrLocationDropDown.selectedItem.toString() == "Academic Research")
+                                whartonDurationAdapter else if (gsrLocationDropDown.selectedItem.toString() == "Biotech Commons")
+                                    biotechDurationAdapter else durationAdapter
                             searchForGSR(false)
                         }
                     }
@@ -448,11 +454,16 @@ class GsrFragment : Fragment() {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View?, i: Int, l: Long) {
                 // change possible durations depending on the location
                 var durationPos = durationDropDown.selectedItemPosition
-                if (durationPos == 3 && gsrLocationDropDown.selectedItem.toString() == "Huntsman") {
+                if (durationPos >= 3 && (gsrLocationDropDown.selectedItem.toString() == "Huntsman"
+                            || gsrLocationDropDown.selectedItem.toString() == "Academic Research")) {
                     durationPos = 2
+                } else if (durationPos > 3 && gsrLocationDropDown.selectedItem.toString() != "Biotech Commons") {
+                    durationPos = 3
                 }
-                durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman")
-                    huntsmanDurationAdapter else durationAdapter
+                durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman"
+                    || gsrLocationDropDown.selectedItem.toString() == "Academic Research")
+                    whartonDurationAdapter else if (gsrLocationDropDown.selectedItem.toString() == "Biotech Commons")
+                    biotechDurationAdapter else durationAdapter
                 durationDropDown.setSelection(durationPos)
                 searchForGSR(false)
             }
