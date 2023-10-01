@@ -82,16 +82,6 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setHomeButtonEnabled(false)
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
 
-
-        // for some testing
-        val editor = mSharedPrefs.edit()
-        editor.putString(this.getString(R.string.access_token), "hehe")
-        editor.putString(this.getString(R.string.refresh_token), "hehe")
-        val currentTime = Calendar.getInstance().timeInMillis - 100
-        editor.putLong(this.getString(R.string.token_expires_at), currentTime)
-        editor.apply()
-
-
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
         val mainPagerAdapter = MainPagerAdapter(fragmentManager, lifecycle)
