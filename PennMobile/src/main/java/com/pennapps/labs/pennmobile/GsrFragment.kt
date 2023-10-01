@@ -447,8 +447,13 @@ class GsrFragment : Fragment() {
         gsrLocationDropDown.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View?, i: Int, l: Long) {
                 // change possible durations depending on the location
+                var durationPos = durationDropDown.selectedItemPosition
+                if (durationPos == 3 && gsrLocationDropDown.selectedItem.toString() == "Huntsman") {
+                    durationPos = 2
+                }
                 durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman")
                     huntsmanDurationAdapter else durationAdapter
+                durationDropDown.setSelection(durationPos)
                 searchForGSR(false)
             }
 
