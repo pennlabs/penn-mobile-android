@@ -60,7 +60,11 @@
             app:iconSpaceReserved="false"
             app:key="pref_labs_link"
             app:title="Penn Labs" />
-
+        <Preference
+            android:id="@+id/pref_feedback_link"
+            app:iconSpaceReserved="false"
+            app:key="pref_feedback_link"
+            app:title="Feedback" />
         <Preference
             android:id="@+id/pref_penn_link"
             app:iconSpaceReserved="false"

@@ -126,6 +126,12 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             return@setOnPreferenceClickListener true
         }
 
+        val feedbackPref: Preference? = findPreference("pref_feedback_link")
+        feedbackPref?.setOnPreferenceClickListener {
+            openLink(Feedback)
+            return@setOnPreferenceClickListener true
+        }
+
         val pennHomepagePref: Preference? = findPreference("pref_penn_link")
         pennHomepagePref?.setOnPreferenceClickListener {
             openLink(PennHomepage)
@@ -234,6 +240,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
 
     companion object {
         private const val PennLabs = "https://pennlabs.org"
+        private const val Feedback = "https://airtable.com/shr1oylDR3qzCpTXq"
         private const val PennHomepage = "https://www.upenn.edu"
         private const val CampusExpress = "https://prod.campusexpress.upenn.edu"
         private const val Canvas = "https://canvas.upenn.edu"
