@@ -261,6 +261,7 @@ class LoginWebviewFragment : Fragment() {
     }
 
     private fun saveAccount(account: Account, pennkey: String, accessToken: String?) {
+        // warning this network call is unsafe
         mStudentLife.saveAccount("Bearer $accessToken", pennkey, account, object : Callback<SaveAccountResponse> {
 
             override fun success(t: SaveAccountResponse?, response: Response?) {

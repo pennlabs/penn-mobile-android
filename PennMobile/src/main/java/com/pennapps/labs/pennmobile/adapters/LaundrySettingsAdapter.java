@@ -17,6 +17,7 @@ import com.pennapps.labs.pennmobile.R;
 import com.pennapps.labs.pennmobile.api.StudentLife;
 import com.pennapps.labs.pennmobile.classes.LaundryRequest;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -257,6 +258,7 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
     }
 
     private void getPreferencesData() {
+        // warning, network call is unsafe
         studentLife = MainActivity.getStudentLifeInstance();
         studentLife.getLaundryPref(bearerToken).subscribe(new Action1<List<Integer>>() {
             @Override
@@ -280,18 +282,26 @@ public class LaundrySettingsAdapter extends BaseExpandableListAdapter {
         if (favoriteLaundryRooms.isEmpty()) {
             return;
         }
+        
+        MainActivity mainActivity = (MainActivity) mContext;
 
-        studentLife.sendLaundryPref(bearerToken, new LaundryRequest(favoriteLaundryRooms),
-                new ResponseCallback() {
-            @Override
-            public void success(Response response) {
-                Log.i("Laundry", "Saved laundry preferences");
-            }
+        OAuth2NetworkManager oauth = new OAuth2NetworkManager(mainActivity);
+        oauth.getAccessToken(() -> {
+            bearerToken = "Bearer " + sp.getString(mainActivity.getString(R.string.access_token), "");
+                    studentLife.sendLaundryPref(bearerToken, new LaundryRequest(favoriteLaundryRooms),
+                            new ResponseCallback() {
+                                @Override
+                                public void success(Response response) {
+                                    Log.i("Laundry", "Saved laundry preferences");
+                                }
 
-            @Override
-            public void failure(RetrofitError error) {
-                Log.e("Laundry", "Error saving laundry preferences: " + error, error);
-            }
-        });
+                                @Override
+                                public void failure(RetrofitError error) {
+                                    Log.e("Laundry", "Error saving laundry preferences: " + error, error);
+                                }
+                            });
+                    return null;
+                }
+        );
     }
 }

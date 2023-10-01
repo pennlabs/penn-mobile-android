@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.preference.PreferenceManager
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult
 import kotlinx.android.synthetic.main.gsr_details_book.view.*
@@ -97,22 +98,27 @@ class BookGsrFragment : Fragment() {
 
     private fun bookGSR(gsrId: Int, gsrLocationCode: String, startTime: String?, endTime: String?, gid: Int, roomId: Int, roomName: String) {
 
-        var sessionID = ""
-        var bearerToken = ""
-        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-        Log.i("Bearer Token", sp.getString(getString(R.string.access_token), "").toString());
-        activity?.let { activity ->
+
+
+        OAuth2NetworkManager(activity as MainActivity).getAccessToken {
+            var sessionID = ""
+            var bearerToken = ""
             val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-            sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "") ?: ""
-            bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
-            Log.i("BookGSRFragment", "$bearerToken")
-        }
-        Log.i("BookGSRFragment", "Bearer $bearerToken")
-        Log.i("BookGSRFragment", "Start $startTime")
-        Log.i("BookGSRFragment", "End $endTime")
-        Log.i("BookGSRFragment", "GID $gid")
-        Log.i("BookGSRFragment", "ID $roomId")
-        Log.i("BookGSRFragment", "Room Name $roomName")
+            Log.i("Bearer Token", sp.getString(getString(R.string.access_token), "").toString());
+            activity?.let { activity ->
+                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "") ?: ""
+                bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
+                Log.i("BookGSRFragment", "$bearerToken")
+            }
+            Log.i("BookGSRFragment", "Bearer $bearerToken")
+            Log.i("BookGSRFragment", "Start $startTime")
+            Log.i("BookGSRFragment", "End $endTime")
+            Log.i("BookGSRFragment", "GID $gid")
+            Log.i("BookGSRFragment", "ID $roomId")
+            Log.i("BookGSRFragment", "Room Name $roomName")
+
+
         mStudentLife.bookGSR(
                 //Passing the values
                 bearerToken,
@@ -162,7 +168,7 @@ class BookGsrFragment : Fragment() {
                                 .commit()
                     }
                 }
-        )
+        )}
     }
 
     companion object {
