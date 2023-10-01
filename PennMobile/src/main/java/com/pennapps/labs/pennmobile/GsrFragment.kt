@@ -101,7 +101,9 @@ class GsrFragment : Fragment() {
         huntsmanDurationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m"))
 
         // update user status by getting the bearer token and checking wharton status
-        updateStatus()
+        OAuth2NetworkManager(mActivity).getAccessToken {
+            updateStatus()
+        }
 
         // populate the list of gsrs
         populateDropDownGSR()
@@ -194,7 +196,6 @@ class GsrFragment : Fragment() {
     }
 
     private fun updateStatus() {
-        OAuth2NetworkManager(mActivity).getAccessToken()
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
         bearerToken =  sp.getString(getString(R.string.access_token), "").toString();
 
