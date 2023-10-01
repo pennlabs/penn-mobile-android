@@ -23,6 +23,7 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
         return deviceID
     }
 
+    @Synchronized
     fun getAccessToken() {
         val expiresIn = sp.getString(mActivity.getString(R.string.expires_in), "")
         if (expiresIn != "") {
@@ -39,6 +40,7 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
         }
     }
 
+    @Synchronized
     fun getAccessToken(function: () -> Unit) {
         val expiresIn = sp.getString(mActivity.getString(R.string.expires_in), "")
         if (expiresIn != "") {
@@ -56,6 +58,7 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
         }
     }
 
+    @Synchronized
     private fun refreshAccessToken() {
         val refreshToken = sp.getString(mActivity.getString(R.string.refresh_token), "")
         val clientID = BuildConfig.PLATFORM_CLIENT_ID
@@ -85,6 +88,7 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
                 })
     }
 
+    @Synchronized
     private fun refreshAccessToken(function: () -> Unit) {
         val refreshToken = sp.getString(mActivity.getString(R.string.refresh_token), "")
         val clientID = BuildConfig.PLATFORM_CLIENT_ID
