@@ -483,24 +483,31 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
                 (holder.itemView.home_card_rv?.adapter as PollOptionAdapter).notifyDataSetChanged()
                 holder.itemView.vote_btn?.isClickable = false
                 notifyItemChanged(position)
-                val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
-                val bearerToken = "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
                 val selectedOptions = ArrayList<Int>()
                 poll.options.forEach { if (it.id != null && it.selected) {
                     selectedOptions.add(it.id)
                 } }
                 val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
                 val idHash = Utils.getSha256Hash(deviceID)
-                mStudentLife.createPollVote(bearerToken, idHash, selectedOptions, object : ResponseCallback() {
-                    override fun success(response: Response?) {
-                        Log.i("HomeAdapter", "Successfully voted for poll!")
-                    }
+                OAuth2NetworkManager(mActivity).getAccessToken {
+                    val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
+                    val bearerToken = "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
 
-                    override fun failure(error: RetrofitError?) {
-                        Log.e("HomeAdapter", "Error voting for poll", error)
-                    }
+                    mStudentLife.createPollVote(
+                        bearerToken,
+                        idHash,
+                        selectedOptions,
+                        object : ResponseCallback() {
+                            override fun success(response: Response?) {
+                                Log.i("HomeAdapter", "Successfully voted for poll!")
+                            }
 
-                })
+                            override fun failure(error: RetrofitError?) {
+                                Log.e("HomeAdapter", "Error voting for poll", error)
+                            }
+
+                        })
+                }
             }
         } else {
             holder.itemView.vote_btn?.setTextColor(mContext.resources.getColor(R.color.gray))
