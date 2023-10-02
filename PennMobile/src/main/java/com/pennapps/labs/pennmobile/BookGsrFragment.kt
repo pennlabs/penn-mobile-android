@@ -1,5 +1,7 @@
 package com.pennapps.labs.pennmobile
 
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -14,7 +16,9 @@ import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult
+import kotlinx.android.synthetic.main.gsr_details_book.*
 import kotlinx.android.synthetic.main.gsr_details_book.view.*
+import kotlinx.android.synthetic.main.loading_panel.*
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
@@ -90,6 +94,9 @@ class BookGsrFragment : Fragment() {
             } else if (!emailEt.text.toString().matches("""[\w]+@(seas\.|sas\.|wharton\.|nursing\.)?upenn\.edu""".toRegex())) {
                 Toast.makeText(activity, "Please enter a valid Penn email", Toast.LENGTH_LONG).show()
             } else {
+                submit.isClickable = false
+                submit.background.setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY)
+                loading?.visibility = View.VISIBLE
                 bookGSR(Integer.parseInt(gsrID), gsrLocationCode, startTime, endTime, gid, roomId, roomName)
             }
         }
@@ -148,6 +155,7 @@ class BookGsrFragment : Fragment() {
                             Log.e("BookGsrFragment", "GSR booking failed with " + result.getError())
                         }
                         // go back to GSR fragment
+                        loading?.visibility = View.GONE
                         activity?.onBackPressed()
                     }
 
@@ -155,6 +163,7 @@ class BookGsrFragment : Fragment() {
                         //If any error occurred displaying the error as toast
                         Log.e("BookGSRFragment", "Error booking gsr", error)
                         Toast.makeText(activity, "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
+                        loading?.visibility = View.GONE
                         activity?.onBackPressed()
                     }
                 }
