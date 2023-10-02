@@ -144,6 +144,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
         main_view_pager.visibility = View.VISIBLE
+        val mainPagerAdapter = MainPagerAdapter(fragmentManager, lifecycle)
+        main_view_pager?.adapter = mainPagerAdapter
+        main_view_pager.isUserInputEnabled = false
+        main_view_pager.offscreenPageLimit = 5
         expandable_bottom_bar.visibility = View.VISIBLE
         setTab(HOME_ID)
     }
