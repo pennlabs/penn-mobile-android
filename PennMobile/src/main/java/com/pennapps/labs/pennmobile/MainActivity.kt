@@ -42,14 +42,17 @@ import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.*
 import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
 import com.pennapps.labs.pennmobile.utils.Utils
+import com.squareup.okhttp.OkHttpClient
 import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.android.synthetic.main.custom_sneaker_view.view.*
 import kotlinx.android.synthetic.main.fragment_dining_holder.*
 import kotlinx.android.synthetic.main.include_main.*
 import retrofit.RestAdapter
 import retrofit.android.AndroidLog
+import retrofit.client.OkClient
 import retrofit.converter.GsonConverter
 import java.util.Calendar
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
     private var tabShowed = false
@@ -331,8 +334,13 @@ class MainActivity : AppCompatActivity() {
                     // gets posts
                     gsonBuilder.registerTypeAdapter(object:  TypeToken<MutableList<Post?>?>() {}.type, PostsSerializer())
                     val gson = gsonBuilder.create()
+                    val okHttpClient = OkHttpClient()
+                    okHttpClient.setConnectTimeout(35, TimeUnit.SECONDS) // Connection timeout
+                    okHttpClient.setReadTimeout(35, TimeUnit.SECONDS)    // Read timeout
+                    okHttpClient.setWriteTimeout(35, TimeUnit.SECONDS)   // Write timeout
                     val restAdapter = RestAdapter.Builder()
                             .setConverter(GsonConverter(gson))
+                            .setClient(OkClient(okHttpClient))
                             .setEndpoint("https://pennmobile.org/api")
                             .build()
                     mStudentLife = restAdapter.create(StudentLife::class.java)

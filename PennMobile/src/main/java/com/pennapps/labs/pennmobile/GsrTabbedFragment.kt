@@ -28,13 +28,7 @@ class GsrTabbedFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_gsr_tabs, container, false)
-        val fragmentAdapter = activity?.supportFragmentManager?.let { GsrPagerAdapter(it) }
-        viewPager = view.gsr_viewpager
-        viewPager.adapter = fragmentAdapter
-
         initAppBar(view)
-        tabLayout = view.gsr_tab_layout
-        tabLayout.setupWithViewPager(viewPager)
 
         return view
     }
@@ -43,6 +37,11 @@ class GsrTabbedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val fragmentAdapter = activity?.supportFragmentManager?.let { GsrPagerAdapter(it) }
+        viewPager = view.gsr_viewpager
+        viewPager.adapter = fragmentAdapter
+        tabLayout = view.gsr_tab_layout
+        tabLayout.setupWithViewPager(viewPager)
         //displays banner if not connected
         if (!isOnline(context)) {
             internetConnectionGSR?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
