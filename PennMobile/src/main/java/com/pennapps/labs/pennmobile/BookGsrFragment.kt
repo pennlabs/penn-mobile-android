@@ -148,24 +148,14 @@ class BookGsrFragment : Fragment() {
                             Log.e("BookGsrFragment", "GSR booking failed with " + result.getError())
                         }
                         // go back to GSR fragment
-                        val fragmentManager = (context as MainActivity).supportFragmentManager
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.content_frame, GsrTabbedFragment())
-                                .addToBackStack("GSR Fragment")
-                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                .commit()
+                        activity?.onBackPressed()
                     }
 
                     override fun failure(error: RetrofitError) {
                         //If any error occurred displaying the error as toast
                         Log.e("BookGSRFragment", "Error booking gsr", error)
                         Toast.makeText(activity, "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
-                        val fragmentManager = (context as MainActivity).supportFragmentManager
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.content_frame, GsrTabbedFragment())
-                                .addToBackStack("GSR Fragment")
-                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                .commit()
+                        activity?.onBackPressed()
                     }
                 }
         )}
