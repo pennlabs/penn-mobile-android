@@ -223,4 +223,6 @@
 
     <!-- Poll -->
     <string name="vote">Vote</string>
+    <string name="sort_by">Sort By:</string>
+    <string name="room_number">Room Number</string>
 </resources>
