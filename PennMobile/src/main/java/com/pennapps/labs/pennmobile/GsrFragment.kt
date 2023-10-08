@@ -180,6 +180,11 @@ class GsrFragment : Fragment() {
             datePickerDialog.datePicker.minDate = minDate
             datePickerDialog.show()
         }
+
+        sortingSwitch.setOnClickListener{
+            sortByTime = sortingSwitch.isChecked
+            searchForGSR(false)
+        }
         // handle swipe to refresh
         view.gsr_refresh_layout?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
         view.gsr_refresh_layout?.setOnRefreshListener {
