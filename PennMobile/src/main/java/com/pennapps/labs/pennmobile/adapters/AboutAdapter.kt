@@ -43,9 +43,7 @@ class AboutAdapter(private var members: ArrayList<String>)
             "Aaron Mei" -> R.drawable.aaron
             else -> null
         }
-        if (android.os.Build.VERSION.SDK_INT >=  android.os.Build.VERSION_CODES.M){
-            if (imageId != null) holder.view.person_iv?.setImageResource(imageId)
-        }
+        if (imageId != null) holder.view.person_iv?.setImageResource(imageId)
 
     }
 

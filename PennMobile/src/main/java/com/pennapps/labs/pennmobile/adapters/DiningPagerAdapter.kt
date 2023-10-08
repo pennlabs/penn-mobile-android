@@ -9,10 +9,10 @@ import com.pennapps.labs.pennmobile.DiningInsightsFragment
 
 class DiningPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle?) : FragmentStateAdapter(fragmentManager, lifecycle!!) {
     override fun createFragment(position: Int): Fragment {
-        if (position == 0) {
-            return DiningFragment()
+        return if (position == 0) {
+            DiningFragment()
         } else {
-            return DiningInsightsFragment()
+            DiningInsightsFragment()
         }
     }
 

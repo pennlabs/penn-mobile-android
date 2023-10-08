@@ -76,9 +76,7 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
             holder.layout.setBackgroundResource(0);
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.layout.getLayoutParams();
             layoutParams.setMargins(0, 0, 0, 0);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                layoutParams.setMarginStart(0);
-            }
+            layoutParams.setMarginStart(0);
             holder.layout.setLayoutParams(layoutParams);
             CardView container = (CardView) holder.dryerRecyclerView.getParent();
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) container.getLayoutParams();
