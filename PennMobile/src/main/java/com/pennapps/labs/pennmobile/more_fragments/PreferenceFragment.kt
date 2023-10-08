@@ -207,22 +207,18 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                         val initials = firstName.first().toString() + lastName.first()
                         editor.putString(getString(R.string.initials), initials.capitalize())
                         editor.apply()
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                            (activity?.window?.decorView as ViewGroup).showSneakerToast(
-                                    "Profile details updated successfully.", null,
-                                    R.color.sneakerBlurColorOverlay)
-                        }
+                        (activity?.window?.decorView as ViewGroup).showSneakerToast(
+                                "Profile details updated successfully.", null,
+                                R.color.sneakerBlurColorOverlay)
                         val userLoginPref: Preference? = findPreference("pref_account_login_logout")
                         userLoginPref?.summary = "You are currently signed in as ${
                             sharedPreference.getString(getString(R.string.first_name), null)
                         }"
                         activity?.findViewById<TextView>(R.id.initials)?.text = initials
                     } else {
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                            (activity?.window?.decorView as ViewGroup).showSneakerToast(
-                                    "Complete required fields to update your profile information.", { showEditProfileDialog() },
-                                    R.color.sneakerWarningOverlay)
-                        }
+                        (activity?.window?.decorView as ViewGroup).showSneakerToast(
+                                "Complete required fields to update your profile information.", { showEditProfileDialog() },
+                                R.color.sneakerWarningOverlay)
                     }
                     dialog.dismiss()
                 }

@@ -49,17 +49,4 @@ class Gym {
             }
             return false
         }
-
-    /*fun currentInterval(): Interval {
-
-        val current = DateTime()
-        for (i in intervalList!!) {
-            if (i.contains(current)) {
-                return i
-            }
-        }
-
-        // if this isn't open right now, throw exception
-        throw IllegalStateException()
-    }*/
 }
