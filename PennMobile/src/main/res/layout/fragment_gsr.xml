@@ -37,7 +37,7 @@
             android:minWidth="0dp"
             android:textColor="@color/color_primary"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/sort_by_text"
             app:layout_constraintEnd_toEndOf="@+id/gsr_date_text"
             app:layout_constraintStart_toStartOf="@+id/gsr_date_text"
             app:layout_constraintTop_toBottomOf="@id/gsr_date_text" />
@@ -52,7 +52,7 @@
             android:minWidth="0dp"
             android:textColor="@color/color_primary"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/sort_by_text"
             app:layout_constraintEnd_toEndOf="@+id/gsr_time_text"
             app:layout_constraintStart_toStartOf="@+id/gsr_time_text"
             app:layout_constraintTop_toBottomOf="@id/gsr_time_text" />
@@ -67,7 +67,7 @@
             android:gravity="center"
             android:textAlignment="center"
             android:spinnerMode="dropdown"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/sort_by_text"
             app:layout_constraintEnd_toEndOf="@+id/gsr_building_text"
             app:layout_constraintStart_toStartOf="@+id/gsr_building_text"
             app:layout_constraintTop_toBottomOf="@id/gsr_building_text" />
@@ -79,7 +79,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="16dp"
             android:background="@null"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/sort_by_text"
             app:layout_constraintEnd_toEndOf="@+id/gsr_duration_text"
             app:layout_constraintStart_toStartOf="@+id/gsr_duration_text"
             app:layout_constraintTop_toBottomOf="@id/gsr_duration_text" />
@@ -133,9 +133,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
+            android:paddingBottom="10dp"
             android:textColor="@color/color_primary"
             android:text = "@string/sort_by"
-            app:layout_constraintTop_toBottomOf="@id/gsr_date_text"
+            app:layout_constraintTop_toBottomOf="@id/gsr_select_date"
             app:layout_constraintStart_toStartOf="@id/gsr_date_text"/>
 
         <TextView
@@ -146,19 +147,22 @@
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginBottom="16dp"
+            android:paddingBottom="10dp"
             android:textColor="@color/color_primary"
             android:text = "@string/room_number"
-            app:layout_constraintTop_toBottomOf="@id/gsr_date_text"
+            app:layout_constraintTop_toBottomOf="@id/gsr_select_date"
             app:layout_constraintStart_toEndOf="@id/sort_by_text"/>
 
         <Switch
             android:id="@+id/sorting_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
+            android:paddingBottom="10dp"
+            android:paddingTop ="10dp"
+            android:paddingLeft="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/sort_by_room_number_text"
-            app:layout_constraintTop_toBottomOf="@id/gsr_date_text"
+            app:layout_constraintTop_toBottomOf="@id/gsr_select_date"
             app:layout_constraintVertical_bias="1.0" />
 
         <TextView
@@ -167,9 +171,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
+            android:paddingBottom="10dp"
             android:textColor="@color/color_primary"
             android:text = "@string/time"
-            app:layout_constraintTop_toBottomOf="@id/gsr_date_text"
+            app:layout_constraintTop_toBottomOf="@id/gsr_select_date"
             app:layout_constraintStart_toEndOf="@id/sorting_switch"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
