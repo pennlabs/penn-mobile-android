@@ -17,6 +17,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.webkit.CookieManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -157,6 +158,19 @@ class MainActivity : AppCompatActivity() {
 
     fun startLoginFragment() {
 
+        CookieManager.getInstance().removeAllCookie()
+        val editor = PreferenceManager.getDefaultSharedPreferences(this).edit()
+        editor.remove(getString(R.string.penn_password))
+        editor.remove(getString(R.string.penn_user))
+        editor.remove(getString(R.string.first_name))
+        editor.remove(getString(R.string.last_name))
+        editor.remove(getString(R.string.email_address))
+        editor.remove(getString(R.string.pennkey))
+        editor.remove(getString(R.string.accountID))
+        editor.remove(getString(R.string.access_token))
+        editor.remove(getString(R.string.guest_mode))
+        editor.remove(getString(R.string.initials))
+        editor.apply()
         val currentFragment = fragmentManager.findFragmentById(R.id.content_frame)
         val fragment: Fragment = LoginFragment()
 
