@@ -3,10 +3,16 @@ package com.pennapps.labs.pennmobile.api
 import android.preference.PreferenceManager
 import android.provider.Settings
 import android.util.Log
+import androidx.lifecycle.lifecycleScope
 import com.pennapps.labs.pennmobile.BuildConfig
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.AccessTokenResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.withLock
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
@@ -25,24 +31,33 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
 
     @Synchronized
     fun getAccessToken(function: () -> Unit) {
-        val expiresIn = sp.getString(mActivity.getString(R.string.expires_in), "")
-        if (expiresIn != "") {
-            val expiresAt = sp.getLong(mActivity.getString(R.string.token_expires_at), 0)
-            val currentTime = Calendar.getInstance().timeInMillis
-            if (currentTime >= expiresAt) { // if it has expired, refresh access token
-                Log.i("Accounts", "Expired")
-                refreshAccessToken(function)
+        mActivity.lifecycleScope.launch {
+            val tokenMutex = mActivity.tokenMutex
+            tokenMutex.lock()
+            val expiresIn = sp.getString(mActivity.getString(R.string.expires_in), "")
+            if (expiresIn != "") {
+                val expiresAt = sp.getLong(mActivity.getString(R.string.token_expires_at), 0)
+                val currentTime = Calendar.getInstance().timeInMillis
+                if (currentTime >= expiresAt) { // if it has expired, refresh access token
+                    Log.i("Accounts", "Expired")
+                    refreshAccessToken (function) {
+                        tokenMutex.unlock()
+                    }
+                } else {
+                    Log.i("Accounts", "Not Expired")
+                    tokenMutex.unlock()
+                    function.invoke()
+                }
             } else {
-                Log.i("Accounts", "Not Expired")
-                function.invoke()
+                refreshAccessToken (function) {
+                    tokenMutex.unlock()
+                }
             }
-        } else {
-            refreshAccessToken(function)
         }
     }
 
     @Synchronized
-    private fun refreshAccessToken(function: () -> Unit) {
+    private fun refreshAccessToken(function: () -> Unit, unlockMutex: () -> Unit) {
         val refreshToken = sp.getString(mActivity.getString(R.string.refresh_token), "")
         val clientID = BuildConfig.PLATFORM_CLIENT_ID
 
@@ -61,6 +76,7 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
                         val currentTime = Calendar.getInstance().timeInMillis
                         editor.putLong(mActivity.getString(R.string.token_expires_at), currentTime + expiresInInt)
                         editor.apply()
+                        unlockMutex.invoke()
                         function.invoke()
                         Log.i("Accounts", "Reloaded Homepage")
                     }
@@ -72,9 +88,8 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
 
                     if (error.response != null && error.response.status == 400) {
                         mActivity.startLoginFragment()
+                        unlockMutex.invoke()
                     }
-
-                    function.invoke()
                 }
             })
     }
