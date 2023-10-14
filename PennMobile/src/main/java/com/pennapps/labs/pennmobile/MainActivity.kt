@@ -48,6 +48,7 @@ import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.android.synthetic.main.custom_sneaker_view.view.*
 import kotlinx.android.synthetic.main.fragment_dining_holder.*
 import kotlinx.android.synthetic.main.include_main.*
+import kotlinx.coroutines.sync.Mutex
 import retrofit.RestAdapter
 import retrofit.android.AndroidLog
 import retrofit.client.OkClient
@@ -59,6 +60,8 @@ class MainActivity : AppCompatActivity() {
     private var tabShowed = false
     private lateinit var fragmentManager: FragmentManager
     private lateinit var mSharedPrefs: SharedPreferences
+
+    val tokenMutex = Mutex()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
