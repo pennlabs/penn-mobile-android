@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile
 
-import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.FragmentTransaction
@@ -80,8 +79,6 @@ class SupportFragment : ListFragment() {
         mActivity.removeTabs()
         mActivity.setTitle(R.string.support)
         mActivity.hideBottomBar()
-        if (Build.VERSION.SDK_INT > 17) {
-            mActivity.setSelectedTab(MainActivity.MORE)
-        }
+        mActivity.setSelectedTab(MainActivity.MORE)
     }
 }

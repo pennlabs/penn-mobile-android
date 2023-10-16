@@ -5,15 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.pennapps.labs.pennmobile.adapters.PennCourseAlertPagerAdapter
-import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.utils.Utils
 import kotlinx.android.synthetic.main.fragment_penn_course_alert_holder.*
-import kotlinx.android.synthetic.main.fragment_penn_course_alert_holder.view.*
 import kotlinx.android.synthetic.main.fragment_penn_course_alert_holder.view.date_view
 import kotlinx.android.synthetic.main.fragment_penn_course_alert_holder.view.title_view
 

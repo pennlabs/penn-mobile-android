@@ -1,7 +1,5 @@
 package com.pennapps.labs.pennmobile
 
-import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,10 +29,10 @@ class LoginFragment : Fragment() {
         val v = inflater.inflate(R.layout.fragment_login, container, false)
 
         val fragmentManager = mActivity.supportFragmentManager
-        var gif = R.drawable.login_background
-        if (Build.VERSION.SDK_INT > 28 && (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) {
-            //gif = R.drawable.login_background_dark
-        }
+        val gif = R.drawable.login_background
+//        if (Build.VERSION.SDK_INT > 28 && (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) {
+//            gif = R.drawable.login_background_dark
+//        }
 
         Glide.with(this).asGif().load(gif).listener(object : RequestListener<GifDrawable> {
             override fun onLoadFailed(e: GlideException?, model: Any?, target: com.bumptech.glide.request.target.Target<GifDrawable>?, isFirstResource: Boolean): Boolean {

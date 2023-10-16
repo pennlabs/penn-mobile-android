@@ -2,7 +2,6 @@ package com.pennapps.labs.pennmobile
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
@@ -151,9 +150,7 @@ class LaundrySettingsFragment : Fragment() {
         super.onResume()
         mActivity.removeTabs()
         mActivity.setTitle(R.string.laundry)
-        if (Build.VERSION.SDK_INT > 17){
-            mActivity.setSelectedTab(MainActivity.LAUNDRY)
-        }
+        mActivity.setSelectedTab(MainActivity.LAUNDRY)
     }
 
     override fun onDestroyView() {

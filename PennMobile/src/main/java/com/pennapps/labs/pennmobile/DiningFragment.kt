@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile
 
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,7 +11,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.annotation.RequiresApi
 import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -54,7 +52,6 @@ class DiningFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_dining, container, false)
         v.dining_swiperefresh?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
@@ -90,7 +87,6 @@ class DiningFragment : Fragment() {
         menu.setGroupVisible(R.id.action_sort_by, diningInfoFragment == null || !diningInfoFragment.isVisible)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun setSortByMethod(method: String) {
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
         val editor = sp.edit()
@@ -99,7 +95,6 @@ class DiningFragment : Fragment() {
         getDiningHalls()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle presses on the action bar items
         when (item.itemId) {
@@ -126,7 +121,6 @@ class DiningFragment : Fragment() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun getDiningHalls() {
 
         //displays banner if not connected
@@ -172,9 +166,7 @@ class DiningFragment : Fragment() {
         super.onResume()
         mActivity.removeTabs()
         mActivity.setTitle(R.string.dining)
-        if (Build.VERSION.SDK_INT > 17) {
-            mActivity.setSelectedTab(MainActivity.DINING)
-        }
+        mActivity.setSelectedTab(MainActivity.DINING)
     }
 
 
@@ -184,13 +176,8 @@ class DiningFragment : Fragment() {
     @Suppress("DEPRECATION")
     private fun displaySnack(view: View, text: String) {
         val snackBar = Snackbar.make(view.snack_bar_dining, text, Snackbar.LENGTH_SHORT)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            snackBar.setTextColor(resources.getColor(R.color.white, context?.theme))
-            snackBar.setBackgroundTint(resources.getColor(R.color.penn_mobile_grey, context?.theme))
-        } else {
-            snackBar.setTextColor(resources.getColor(R.color.white))
-            snackBar.setBackgroundTint(resources.getColor(R.color.penn_mobile_grey))
-        }
+        snackBar.setTextColor(resources.getColor(R.color.white, context?.theme))
+        snackBar.setBackgroundTint(resources.getColor(R.color.penn_mobile_grey, context?.theme))
         // SnackBar message and action TextViews are placed inside a LinearLayout
         val snackBarLayout = snackBar.view as Snackbar.SnackbarLayout
         for (i in 0 until snackBarLayout.childCount) {
@@ -205,7 +192,6 @@ class DiningFragment : Fragment() {
 
     companion object {
         // Gets the dining hall menus
-        @RequiresApi(Build.VERSION_CODES.O)
         fun getMenus(venues: MutableList<DiningHall>) : Unit {
             val idVenueMap = mutableMapOf<Int, DiningHall>()
             venues.forEach { idVenueMap[it.id] = it }

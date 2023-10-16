@@ -2,12 +2,10 @@ package com.pennapps.labs.pennmobile
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.*
-import androidx.annotation.RequiresApi
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -64,7 +62,6 @@ class LaundryFragment : Fragment() {
         FirebaseAnalytics.getInstance(mContext).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_laundry, container, false)
 
@@ -109,17 +106,13 @@ class LaundryFragment : Fragment() {
             }
         }
         mActivity.setTitle(R.string.laundry)
-        if (Build.VERSION.SDK_INT > 17){
-            mActivity.setSelectedTab(MainActivity.LAUNDRY)
-        }
+        mActivity.setSelectedTab(MainActivity.LAUNDRY)
         loadingPanel?.visibility = View.VISIBLE
         updateRooms()
     }
 
     private fun initAppBar(view: View) {
-        if (Build.VERSION.SDK_INT > 16) {
-            (view.appbar_home.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
-        }
+        (view.appbar_home.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
         view.title_view.text = getString(R.string.laundry)
         view.date_view.text = Utils.getCurrentSystemTime()
         view.laundry_preferences.setOnClickListener {

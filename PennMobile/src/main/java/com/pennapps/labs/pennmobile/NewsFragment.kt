@@ -106,11 +106,7 @@ class NewsFragment : ListFragment() {
         val serviceIntent = Intent(SERVICE_ACTION)
         serviceIntent.setPackage("com.android.chrome")
         val resolveInfos = context.packageManager.queryIntentServices(serviceIntent, 0)
-        if (resolveInfos != null ) {
-            return resolveInfos.isNotEmpty()
-        } else {
-            return false
-        }
+        return resolveInfos.isNotEmpty()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -225,20 +221,11 @@ class NewsFragment : ListFragment() {
         if (initials != null && initials.isNotEmpty()) {
             this.initials.text = initials
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                this.profile_background.setImageDrawable(
-                        resources.getDrawable
-                        (R.drawable.ic_guest_avatar, context?.theme))
-            } else {
-                @Suppress("DEPRECATION")
-                this.profile_background.setImageDrawable(
-                        resources.getDrawable
-                        (R.drawable.ic_guest_avatar))
-            }
+            this.profile_background.setImageDrawable(
+                    resources.getDrawable
+                    (R.drawable.ic_guest_avatar, context?.theme))
         }
-        if (Build.VERSION.SDK_INT > 17){
-            mActivity?.setSelectedTab(MainActivity.MORE)
-        }
+        mActivity?.setSelectedTab(MainActivity.MORE)
     }
 
     override fun onDestroyView() {

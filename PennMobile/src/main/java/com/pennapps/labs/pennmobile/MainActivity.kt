@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -19,7 +18,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.ColorUtils
@@ -44,7 +42,6 @@ import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
 import com.pennapps.labs.pennmobile.utils.Utils
 import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.android.synthetic.main.custom_sneaker_view.view.*
-import kotlinx.android.synthetic.main.fragment_dining_holder.*
 import kotlinx.android.synthetic.main.include_main.*
 import retrofit.RestAdapter
 import retrofit.android.AndroidLog
@@ -59,13 +56,6 @@ class MainActivity : AppCompatActivity() {
         setTheme(R.style.AppTheme)
         if (Build.VERSION.SDK_INT > 28) {
             setTheme(R.style.DarkModeApi29)
-        }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            val alert = AlertDialog.Builder(this)
-            alert.setTitle("Android version")
-            alert.setMessage("You are running an older version of Android. Features may be limited")
-            alert.setPositiveButton("OK", null)
-            alert.show()
         }
         super.onCreate(savedInstanceState)
         if (applicationContext.resources.configuration.uiMode and
@@ -124,7 +114,6 @@ class MainActivity : AppCompatActivity() {
         expandable_bottom_bar.selectedItemId = id
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     fun setSelectedTab(id: Int) {}
 
     fun closeKeyboard() {
@@ -335,31 +324,21 @@ class MainActivity : AppCompatActivity() {
 fun isOnline(context: Context?): Boolean {
     val connectivityManager =
             context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    if (connectivityManager != null) {
-        val capabilities =
-                if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-                    } else {
-                        return true
-                    }
-                } else {
-                    return true
-                }
-        if (capabilities != null) {
-            when {
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
-                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
-                    return true
-                }
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
-                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
-                    return true
-                }
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
-                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
-                    return true
-                }
+    val capabilities =
+        connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+    if (capabilities != null) {
+        when {
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                return true
+            }
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                return true
+            }
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                return true
             }
         }
     }
@@ -367,7 +346,6 @@ fun isOnline(context: Context?): Boolean {
 }
 
 /** Shows an error sneaker given a view group with an optional retry function */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 fun ViewGroup.showSneakerToast(message: String, doOnRetry: (() -> Unit)?, sneakerColor: Int) {
     val sneaker = Sneaker.with(this)
     val view = LayoutInflater.from(this.context)

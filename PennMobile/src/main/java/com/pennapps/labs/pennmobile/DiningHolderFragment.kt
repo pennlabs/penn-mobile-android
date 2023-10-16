@@ -1,12 +1,10 @@
 package com.pennapps.labs.pennmobile
 
-import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.pennapps.labs.pennmobile.adapters.DiningPagerAdapter
@@ -29,7 +27,6 @@ class DiningHolderFragment : Fragment() {
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_dining_holder, container, false)
@@ -56,7 +53,6 @@ class DiningHolderFragment : Fragment() {
         setTitle("Dining")
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun getConnected() {
         //displays banner if not connected
         if (!isOnline(context)) {
@@ -66,8 +62,6 @@ class DiningHolderFragment : Fragment() {
             //loadingPanel?.visibility = View.GONE
         } else {
             internetConnectionDiningHolder?.visibility = View.GONE
-            // loadingPanel?.visibility = View.GONE
-            // dining_swiperRefresh_holder?.isRefreshing = false
         }
     }
 
@@ -76,15 +70,11 @@ class DiningHolderFragment : Fragment() {
         mActivity.removeTabs()
         //mActivity.toolbar.visibility = View.GONE
         mActivity.setTitle(R.string.dining)
-        if (Build.VERSION.SDK_INT > 17) {
-            mActivity.setSelectedTab(MainActivity.DINING)
-        }
+        mActivity.setSelectedTab(MainActivity.DINING)
     }
 
     private fun initAppBar(view: View) {
-        if (Build.VERSION.SDK_INT > 16) {
-            (view.appbar_home_holder.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
-        }
+        (view.appbar_home_holder.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
         view.date_view.text = Utils.getCurrentSystemTime()
     }
 

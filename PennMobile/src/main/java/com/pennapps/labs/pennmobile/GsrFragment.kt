@@ -188,7 +188,6 @@ class GsrFragment : Fragment() {
         internetConnectionGSR?.visibility = View.VISIBLE
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onResume() {
         super.onResume()
     }
@@ -215,7 +214,6 @@ class GsrFragment : Fragment() {
 
     // Performs GSR search
     // Called when page loads and whenever user changes start/end time, date, or building
-    @RequiresApi(Build.VERSION_CODES.M)
     fun searchForGSR(calledByRefreshLayout: Boolean) {
         //displays banner if not connected
         if (!isOnline(context)) {
@@ -377,7 +375,6 @@ class GsrFragment : Fragment() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun populateDropDownGSR() {
         mStudentLife.location()
                 ?.subscribe({ locations ->

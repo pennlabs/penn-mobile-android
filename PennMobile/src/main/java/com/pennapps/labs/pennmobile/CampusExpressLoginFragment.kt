@@ -2,7 +2,6 @@ package com.pennapps.labs.pennmobile
 
 import android.content.SharedPreferences
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -173,13 +172,8 @@ class CampusExpressLoginFragment : Fragment() {
         val byteArr = md.digest(codeVerifier.toByteArray())
 
         // Base-64 encode
-        var codeChallenge = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        var codeChallenge =
             Base64.getEncoder().encodeToString(byteArr)
-        } else {
-            String(
-                android.util.Base64.encode(byteArr, android.util.Base64.DEFAULT),
-                Charsets.UTF_8)
-        }
 
         // Replace characters to make it web safe
         codeChallenge = codeChallenge.replace("=", "")
