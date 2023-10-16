@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.pennapps.labs.pennmobile.api.PennCourseAlertApi
 import com.pennapps.labs.pennmobile.classes.*
-import org.apache.commons.lang3.ObjectUtils
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

@@ -4,18 +4,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ImageView
-import android.widget.Switch
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.PennCourseAlertRegistration
-import okhttp3.internal.format
 
 class RegistrationsAdapter(private val listener: OnItemClickListener):
     ListAdapter<PennCourseAlertRegistration,
