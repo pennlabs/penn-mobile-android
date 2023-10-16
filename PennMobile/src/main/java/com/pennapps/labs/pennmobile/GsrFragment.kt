@@ -101,9 +101,7 @@ class GsrFragment : Fragment() {
         huntsmanDurationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m"))
 
         // update user status by getting the bearer token and checking wharton status
-        OAuth2NetworkManager(mActivity).getAccessToken {
-            updateStatus()
-        }
+        updateStatus()
 
         // populate the list of gsrs
         populateDropDownGSR()
@@ -233,27 +231,34 @@ class GsrFragment : Fragment() {
         var gsrLocation = gsrLocationDropDown.selectedItem.toString()
         val location = mapGSR(gsrLocation)
         val gid = mapGID(gsrLocation)
-        if (location.isNullOrEmpty() || bearerToken.isNullOrEmpty()) {
-            showNoResults()
-        } else {
-            // display loading screen if user did not use swipe refresh
-            if (!calledByRefreshLayout) {
-                loadingPanel.visibility = View.VISIBLE
-                gsr_rooms_list?.visibility = View.GONE
-            }
+        OAuth2NetworkManager(mActivity).getAccessToken {
+            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+            bearerToken = sp.getString(getString(R.string.access_token), "").toString();
 
-            if (!isWharton && (location == "ARB" || location == "JMHH")) {
+            if (location.isNullOrEmpty() || bearerToken.isNullOrEmpty()) {
                 showNoResults()
-                if (!calledByRefreshLayout) {
-                    Toast.makeText(activity,
-                        "You need to have a Wharton pennkey to access Wharton GSRs",
-                        Toast.LENGTH_LONG).show()
-                }
             } else {
-                noResultsPanel.visibility = View.GONE
-                gsr_no_rooms?.visibility = View.GONE
-                // get the hours
-                getTimes(location, gid)
+                // display loading screen if user did not use swipe refresh
+                if (!calledByRefreshLayout) {
+                    loadingPanel.visibility = View.VISIBLE
+                    gsr_rooms_list?.visibility = View.GONE
+                }
+
+                if (!isWharton && (location == "ARB" || location == "JMHH")) {
+                    showNoResults()
+                    if (!calledByRefreshLayout) {
+                        Toast.makeText(
+                            activity,
+                            "You need to have a Wharton pennkey to access Wharton GSRs",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                } else {
+                    noResultsPanel.visibility = View.GONE
+                    gsr_no_rooms?.visibility = View.GONE
+                    // get the hours
+                    getTimes(location, gid)
+                }
             }
         }
     }
