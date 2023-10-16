@@ -71,7 +71,7 @@ class HomeFragment : Fragment() {
         view.home_refresh_layout
             .setColorSchemeResources(R.color.color_accent, R.color.color_primary)
         view.home_refresh_layout
-            .setOnRefreshListener { OAuth2NetworkManager(mActivity).getAccessToken { getHomePage() } }
+            .setOnRefreshListener { getHomePage() }
 
         initAppBar(view)
         return view
@@ -85,13 +85,7 @@ class HomeFragment : Fragment() {
     private fun getHomePage() {
 
         // get session id from shared preferences
-        val sp = sharedPreferences
-        val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
-        val accountID = sp.getString(getString(R.string.accountID), "")
-        val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
-        OAuth2NetworkManager(mActivity).getAccessToken()
-        val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
-        Log.i("HomeFragment", bearerToken)
+
 
         //displays banner if not connected
         if (!isOnline(context)) {
@@ -115,196 +109,202 @@ class HomeFragment : Fragment() {
         }
 
         val studentLife = MainActivity.studentLifeInstance
-        if (bearerToken != "Bearer ") {
-            val idHash = getSha256Hash(deviceID)
-            studentLife.browsePolls(bearerToken, idHash).subscribe( { poll ->
-                if(poll.size == 0) {
-                    return@subscribe
-                }
-                mActivity.runOnUiThread {
-                    val pollCell = PollCell(poll[0])
-                    pollCell.poll.options.forEach { pollCell.poll.totalVotes += it.voteCount }
-                    homepageCells[0] = pollCell
-                    home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
-                    loadingPanel?.visibility = View.GONE
-                    internetConnectionHome?.visibility = View.GONE
-                    home_refresh_layout?.isRefreshing = false
-                }
-            }, { throwable ->
-                Log.e("Poll", "Error retrieving polls", throwable)
-            })
-
-            studentLife.news.subscribe({ article ->
-                mActivity.runOnUiThread {
-                    val newsCell = HomeCell()
-                    newsCell.info = HomeCellInfo()
-                    newsCell.info?.article = article
-                    newsCell.type = "news"
-                    homepageCells[3] = newsCell
-                    home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
-                    loadingPanel?.visibility = View.GONE
-                    home_refresh_layout?.isRefreshing = false
-                }
-            }, { throwable ->
-                mActivity.runOnUiThread {
-                    Log.e("Home", "Could not load news", throwable)
-                    throwable.printStackTrace()
-                    loadingPanel?.visibility = View.GONE
-                    home_refresh_layout?.isRefreshing = false
-                }
-            })
-
-            studentLife.getDiningPreferences(bearerToken).subscribe({ preferences ->
-                mActivity.runOnUiThread {
-                    val list = preferences.preferences
-                    val venues = mutableListOf<Int>()
-                    val diningCell = HomeCell()
-                    diningCell.type = "dining"
-                    val diningCellInfo = HomeCellInfo()
-                    if(list?.isEmpty() == true ) {
-                        venues.add(593)
-                        venues.add(1442)
-                        venues.add(636)
-                    } else {
-                        list?.forEach({
-                            it.id?.let { it1 -> venues.add(it1) }
-                        })
-
+        OAuth2NetworkManager(mActivity).getAccessToken {
+            val sp = sharedPreferences
+            val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
+            val accountID = sp.getString(getString(R.string.accountID), "")
+            val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
+            val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
+            Log.i("HomeFragment", bearerToken)
+            if (bearerToken != "Bearer ") {
+                val idHash = getSha256Hash(deviceID)
+                studentLife.browsePolls(bearerToken, idHash).subscribe({ poll ->
+                    if (poll.size == 0) {
+                        return@subscribe
                     }
-                    diningCellInfo.venues = venues
-                    diningCell.info = diningCellInfo
-                    homepageCells[4] = diningCell
-                    home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
-                    loadingPanel?.visibility = View.GONE
-                    internetConnectionHome?.visibility = View.GONE
-                    home_refresh_layout?.isRefreshing = false
-                }
-            }, { throwable ->
-                mActivity.runOnUiThread {
-                    Log.e("Home", "Could not load Dining", throwable)
-                    throwable.printStackTrace()
-                    loadingPanel?.visibility = View.GONE
-                    home_refresh_layout?.isRefreshing = false
-                }
-            })
-
-            studentLife.calendar.subscribe({ events ->
-                mActivity.runOnUiThread {
-                    val calendar = HomeCell()
-                    calendar.type = "calendar"
-                    calendar.events = events
-                    homepageCells[1] = calendar
-                    val gsrBookingCell = HomeCell()
-                    gsrBookingCell.type = "gsr_booking"
-                    gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "Weigle")
-                    homepageCells[5] = gsrBookingCell
-                    home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
-                    loadingPanel?.visibility = View.GONE
-                    home_refresh_layout?.isRefreshing = false
-                }
-            }, { throwable ->
-                mActivity.runOnUiThread {
-                    Log.e("Home", "Could not load calendar", throwable)
-                    throwable.printStackTrace()
-                    loadingPanel?.visibility = View.GONE
-                    home_refresh_layout?.isRefreshing = false
-                }
-            })
-
-            studentLife.getLaundryPref(bearerToken).subscribe({ preferences ->
-                mActivity.runOnUiThread {
-                    val venues = mutableListOf<Int>()
-                    val laundryCell = HomeCell()
-                    laundryCell.type = "laundry"
-                    val laundryCellInfo = HomeCellInfo()
-                    if(preferences?.isEmpty() == false ) {
-                        laundryCellInfo.roomId = preferences[0]
-                    }
-                    laundryCell.info = laundryCellInfo
-                    homepageCells[6] = laundryCell
-                    home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
-                    loadingPanel?.visibility = View.GONE
-                    internetConnectionHome?.visibility = View.GONE
-                    home_refresh_layout?.isRefreshing = false
-                }
-            }, { throwable ->
-                mActivity.runOnUiThread {
-                    Log.e("Home", "Could not load laundry", throwable)
-                    throwable.printStackTrace()
-                    loadingPanel?.visibility = View.GONE
-                    home_refresh_layout?.isRefreshing = false
-                }
-            })
-
-            studentLife.validPostsList(bearerToken).subscribe ({ post ->
-                if (post.size >= 1) { //there exists a post
                     mActivity.runOnUiThread {
-                        var postCell = HomeCell()
-                        postCell.info = HomeCellInfo()
-                        postCell.type = "post"
-                        postCell.info?.post = post[0]
-                        homepageCells[2] = postCell
+                        val pollCell = PollCell(poll[0])
+                        pollCell.poll.options.forEach { pollCell.poll.totalVotes += it.voteCount }
+                        homepageCells[0] = pollCell
+                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                        loadingPanel?.visibility = View.GONE
+                        internetConnectionHome?.visibility = View.GONE
+                        home_refresh_layout?.isRefreshing = false
+                    }
+                }, { throwable ->
+                    Log.e("Poll", "Error retrieving polls", throwable)
+                })
+
+                studentLife.news.subscribe({ article ->
+                    mActivity.runOnUiThread {
+                        val newsCell = HomeCell()
+                        newsCell.info = HomeCellInfo()
+                        newsCell.info?.article = article
+                        newsCell.type = "news"
+                        homepageCells[3] = newsCell
                         home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                         loadingPanel?.visibility = View.GONE
                         home_refresh_layout?.isRefreshing = false
                     }
-                }
+                }, { throwable ->
+                    mActivity.runOnUiThread {
+                        Log.e("Home", "Could not load news", throwable)
+                        throwable.printStackTrace()
+                        loadingPanel?.visibility = View.GONE
+                        home_refresh_layout?.isRefreshing = false
+                    }
+                })
 
-            }, {throwable ->
-                mActivity.runOnUiThread {
-                    Log.e("Home", "Could not load posts", throwable)
-                    throwable.printStackTrace()
-                    loadingPanel?.visibility = View.GONE
-                    home_refresh_layout?.isRefreshing = false
-                }
+                studentLife.getDiningPreferences(bearerToken).subscribe({ preferences ->
+                    mActivity.runOnUiThread {
+                        val list = preferences.preferences
+                        val venues = mutableListOf<Int>()
+                        val diningCell = HomeCell()
+                        diningCell.type = "dining"
+                        val diningCellInfo = HomeCellInfo()
+                        if (list?.isEmpty() == true) {
+                            venues.add(593)
+                            venues.add(1442)
+                            venues.add(636)
+                        } else {
+                            list?.forEach({
+                                it.id?.let { it1 -> venues.add(it1) }
+                            })
 
-            })
-    } else {
-            studentLife.calendar.subscribe({ events ->
-                mActivity.runOnUiThread {
-                    val calendar = HomeCell()
-                    calendar.type = "calendar"
-                    calendar.events = events
-                    homepageCells.add(0, calendar)
-                    home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
-                    loadingPanel?.visibility = View.GONE
-                    home_refresh_layout?.isRefreshing = false
-                }
-            }, { throwable ->
-                mActivity.runOnUiThread {
-                    Log.e("Home", "Could not load Home page", throwable)
-                    throwable.printStackTrace()
-                    loadingPanel?.visibility = View.GONE
-                    home_refresh_layout?.isRefreshing = false
-                }
-            })
+                        }
+                        diningCellInfo.venues = venues
+                        diningCell.info = diningCellInfo
+                        homepageCells[4] = diningCell
+                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                        loadingPanel?.visibility = View.GONE
+                        internetConnectionHome?.visibility = View.GONE
+                        home_refresh_layout?.isRefreshing = false
+                    }
+                }, { throwable ->
+                    mActivity.runOnUiThread {
+                        Log.e("Home", "Could not load Dining", throwable)
+                        throwable.printStackTrace()
+                        loadingPanel?.visibility = View.GONE
+                        home_refresh_layout?.isRefreshing = false
+                    }
+                })
 
-            studentLife.news.subscribe({ article ->
-                mActivity.runOnUiThread {
-                    val newsCell = HomeCell()
-                    newsCell.info = HomeCellInfo()
-                    newsCell.info?.article = article
-                    newsCell.type = "news"
-                    homepageCells.add(homepageCells.size, newsCell)
-                    val gsrBookingCell = HomeCell()
-                    gsrBookingCell.type = "gsr_booking"
-                    gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "Weigle")
-                    homepageCells.add(homepageCells.size, gsrBookingCell)
-                    home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
-                    loadingPanel?.visibility = View.GONE
-                    home_refresh_layout?.isRefreshing = false
-                }
-            }, { throwable ->
-                mActivity.runOnUiThread {
-                    Log.e("Home", "Could not load Home page", throwable)
-                    throwable.printStackTrace()
-                    loadingPanel?.visibility = View.GONE
-                    home_refresh_layout?.isRefreshing = false
-                }
-            })
+                studentLife.calendar.subscribe({ events ->
+                    mActivity.runOnUiThread {
+                        val calendar = HomeCell()
+                        calendar.type = "calendar"
+                        calendar.events = events
+                        homepageCells[1] = calendar
+                        val gsrBookingCell = HomeCell()
+                        gsrBookingCell.type = "gsr_booking"
+                        gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "Weigle")
+                        homepageCells[5] = gsrBookingCell
+                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                        loadingPanel?.visibility = View.GONE
+                        home_refresh_layout?.isRefreshing = false
+                    }
+                }, { throwable ->
+                    mActivity.runOnUiThread {
+                        Log.e("Home", "Could not load calendar", throwable)
+                        throwable.printStackTrace()
+                        loadingPanel?.visibility = View.GONE
+                        home_refresh_layout?.isRefreshing = false
+                    }
+                })
 
-    }
+                studentLife.getLaundryPref(bearerToken).subscribe({ preferences ->
+                    mActivity.runOnUiThread {
+                        val venues = mutableListOf<Int>()
+                        val laundryCell = HomeCell()
+                        laundryCell.type = "laundry"
+                        val laundryCellInfo = HomeCellInfo()
+                        if (preferences?.isEmpty() == false) {
+                            laundryCellInfo.roomId = preferences[0]
+                        }
+                        laundryCell.info = laundryCellInfo
+                        homepageCells[6] = laundryCell
+                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                        loadingPanel?.visibility = View.GONE
+                        internetConnectionHome?.visibility = View.GONE
+                        home_refresh_layout?.isRefreshing = false
+                    }
+                }, { throwable ->
+                    mActivity.runOnUiThread {
+                        Log.e("Home", "Could not load laundry", throwable)
+                        throwable.printStackTrace()
+                        loadingPanel?.visibility = View.GONE
+                        home_refresh_layout?.isRefreshing = false
+                    }
+                })
 
+                studentLife.validPostsList(bearerToken).subscribe({ post ->
+                    if (post.size >= 1) { //there exists a post
+                        mActivity.runOnUiThread {
+                            var postCell = HomeCell()
+                            postCell.info = HomeCellInfo()
+                            postCell.type = "post"
+                            postCell.info?.post = post[0]
+                            homepageCells[2] = postCell
+                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            loadingPanel?.visibility = View.GONE
+                            home_refresh_layout?.isRefreshing = false
+                        }
+                    }
+
+                }, { throwable ->
+                    mActivity.runOnUiThread {
+                        Log.e("Home", "Could not load posts", throwable)
+                        throwable.printStackTrace()
+                        loadingPanel?.visibility = View.GONE
+                        home_refresh_layout?.isRefreshing = false
+                    }
+
+                })
+            } else {
+                studentLife.calendar.subscribe({ events ->
+                    mActivity.runOnUiThread {
+                        val calendar = HomeCell()
+                        calendar.type = "calendar"
+                        calendar.events = events
+                        homepageCells.add(0, calendar)
+                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                        loadingPanel?.visibility = View.GONE
+                        home_refresh_layout?.isRefreshing = false
+                    }
+                }, { throwable ->
+                    mActivity.runOnUiThread {
+                        Log.e("Home", "Could not load Home page", throwable)
+                        throwable.printStackTrace()
+                        loadingPanel?.visibility = View.GONE
+                        home_refresh_layout?.isRefreshing = false
+                    }
+                })
+
+                studentLife.news.subscribe({ article ->
+                    mActivity.runOnUiThread {
+                        val newsCell = HomeCell()
+                        newsCell.info = HomeCellInfo()
+                        newsCell.info?.article = article
+                        newsCell.type = "news"
+                        homepageCells.add(homepageCells.size, newsCell)
+                        val gsrBookingCell = HomeCell()
+                        gsrBookingCell.type = "gsr_booking"
+                        gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "Weigle")
+                        homepageCells.add(homepageCells.size, gsrBookingCell)
+                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                        loadingPanel?.visibility = View.GONE
+                        home_refresh_layout?.isRefreshing = false
+                    }
+                }, { throwable ->
+                    mActivity.runOnUiThread {
+                        Log.e("Home", "Could not load Home page", throwable)
+                        throwable.printStackTrace()
+                        loadingPanel?.visibility = View.GONE
+                        home_refresh_layout?.isRefreshing = false
+                    }
+                })
+            }
+        }
     }
 
     private val broadcastReceiver = object : BroadcastReceiver() {
