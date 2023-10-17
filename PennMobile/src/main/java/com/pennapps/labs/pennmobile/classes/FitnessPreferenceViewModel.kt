@@ -3,7 +3,9 @@ package com.pennapps.labs.pennmobile.classes
 import android.app.Activity
 import android.util.Log
 import androidx.preference.PreferenceManager
+import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
@@ -87,21 +89,30 @@ class FitnessPreferenceViewModel(private val activity: Activity,
         favoriteRooms.addAll(prevFavoriteRooms)
     }
 
-    fun updateRemotePreferences() {
+    fun updateRemotePreferences(mActivity : MainActivity) {
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
         val context = activity.applicationContext
-        val bearerToken = "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
-        studentLife.sendFitnessPref(bearerToken, FitnessRequest(ArrayList(favoriteRooms)),
-            object : ResponseCallback() {
-                override fun success(response: Response) {
-                    Log.i("Fitness Preference View Model", "fitness preferences saved")
-                }
-                override fun failure(error: RetrofitError) {
-                    Log.e("Fitness Preference View Model", "Error saving fitness " +
-                            "preferences: $error", error)
-                }
-            })
+        OAuth2NetworkManager(mActivity).getAccessToken {
+
+            val bearerToken =
+                "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
+
+
+            studentLife.sendFitnessPref(bearerToken, FitnessRequest(ArrayList(favoriteRooms)),
+                object : ResponseCallback() {
+                    override fun success(response: Response) {
+                        Log.i("Fitness Preference View Model", "fitness preferences saved")
+                    }
+
+                    override fun failure(error: RetrofitError) {
+                        Log.e(
+                            "Fitness Preference View Model", "Error saving fitness " +
+                                    "preferences: $error", error
+                        )
+                    }
+                })
+        }
     }
 
 }

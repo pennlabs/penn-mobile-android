@@ -17,11 +17,14 @@ interface CloseListener {
 
 class FitnessPreferencesFragment(private val dataModel: FitnessPreferenceViewModel,
                                  private val listener: CloseListener) : DialogFragment() {
+
+    private lateinit var mActivity : MainActivity
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        mActivity = activity as MainActivity
         return inflater.inflate(R.layout.fragment_fitness_preferences, container, false)
     }
 
@@ -42,7 +45,7 @@ class FitnessPreferencesFragment(private val dataModel: FitnessPreferenceViewMod
         val saveText : TextView = view.findViewById(R.id.fitness_fragment_pref_save)
         saveText.setOnClickListener {
             dataModel.updatePositionMap()
-            dataModel.updateRemotePreferences()
+            dataModel.updateRemotePreferences(mActivity)
             listener.updateAdapters()
 
             dialog?.dismiss()
