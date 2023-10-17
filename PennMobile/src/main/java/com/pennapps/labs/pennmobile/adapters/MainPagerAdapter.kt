@@ -8,7 +8,6 @@ import com.pennapps.labs.pennmobile.DiningHolderFragment
 import com.pennapps.labs.pennmobile.GsrTabbedFragment
 import com.pennapps.labs.pennmobile.HomeFragment
 import com.pennapps.labs.pennmobile.LaundryFragment
-import com.pennapps.labs.pennmobile.PottruckFragment
 import com.pennapps.labs.pennmobile.more_fragments.MoreFragment
 
 class MainPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle?) : FragmentStateAdapter(fragmentManager, lifecycle!!) {
