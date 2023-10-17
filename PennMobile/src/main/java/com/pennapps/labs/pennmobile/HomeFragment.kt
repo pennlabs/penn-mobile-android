@@ -125,27 +125,37 @@ class HomeFragment : Fragment() {
             if (bearerToken != "Bearer ") {
                 val totalCells = 6
 
-
                 val idHash = getSha256Hash(deviceID)
                 studentLife.browsePolls(bearerToken, idHash).subscribe({ poll ->
-                    if (poll.size == 0) {
-                        return@subscribe
-                    }
-                    mActivity.runOnUiThread {
-                        val pollCell = PollCell(poll[0])
-                        pollCell.poll.options.forEach { pollCell.poll.totalVotes += it.voteCount }
-                        homepageCells[0] = pollCell
-                        loaded++
-
-                        if (loaded == totalCells) {
-                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
-                            loadingPanel?.visibility = View.GONE
-                            internetConnectionHome?.visibility = View.GONE
-                            home_refresh_layout?.isRefreshing = false
+                    if (poll.size > 0) {
+                        mActivity.runOnUiThread {
+                            val pollCell = PollCell(poll[0])
+                            pollCell.poll.options.forEach { pollCell.poll.totalVotes += it.voteCount }
+                            homepageCells[0] = pollCell
                         }
+                    }
+                    loaded++
+
+                    Log.i("HomeFragment", "polls $loaded")
+
+                    if (loaded == totalCells) {
+                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                        loadingPanel?.visibility = View.GONE
+                        internetConnectionHome?.visibility = View.GONE
+                        home_refresh_layout?.isRefreshing = false
                     }
                 }, { throwable ->
                     Log.e("Poll", "Error retrieving polls", throwable)
+                    loaded++
+
+                    Log.i("HomeFragment", "polls $loaded")
+
+                    if (loaded == totalCells) {
+                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                        loadingPanel?.visibility = View.GONE
+                        internetConnectionHome?.visibility = View.GONE
+                        home_refresh_layout?.isRefreshing = false
+                    }
                 })
 
                 studentLife.news.subscribe({ article ->
@@ -157,6 +167,7 @@ class HomeFragment : Fragment() {
                         homepageCells[3] = newsCell
 
                         loaded++
+                        Log.i("HomeFragment", "news $loaded")
 
                         if (loaded == totalCells) {
                             home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
@@ -171,8 +182,10 @@ class HomeFragment : Fragment() {
                         throwable.printStackTrace()
 
                         loaded++
+                        Log.i("HomeFragment", "news $loaded")
 
                         if (loaded == totalCells) {
+                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
                             internetConnectionHome?.visibility = View.GONE
                             home_refresh_layout?.isRefreshing = false
@@ -202,6 +215,7 @@ class HomeFragment : Fragment() {
                         homepageCells[4] = diningCell
 
                         loaded++
+                        Log.i("HomeFragment", "dining $loaded")
 
                         if (loaded == totalCells) {
                             home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
@@ -216,8 +230,10 @@ class HomeFragment : Fragment() {
                         throwable.printStackTrace()
 
                         loaded++
+                        Log.i("HomeFragment", "dining $loaded")
 
                         if (loaded == totalCells) {
+                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
                             internetConnectionHome?.visibility = View.GONE
                             home_refresh_layout?.isRefreshing = false
@@ -236,6 +252,7 @@ class HomeFragment : Fragment() {
                         gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "Weigle")
                         homepageCells[5] = gsrBookingCell
                         loaded++
+                        Log.i("HomeFragment", "calendar $loaded")
 
                         if (loaded == totalCells) {
                             home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
@@ -249,8 +266,10 @@ class HomeFragment : Fragment() {
                         Log.e("Home", "Could not load calendar", throwable)
                         throwable.printStackTrace()
                         loaded++
+                        Log.i("HomeFragment", "calendar $loaded")
 
                         if (loaded == totalCells) {
+                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
                             internetConnectionHome?.visibility = View.GONE
                             home_refresh_layout?.isRefreshing = false
@@ -270,6 +289,7 @@ class HomeFragment : Fragment() {
                         laundryCell.info = laundryCellInfo
                         homepageCells[6] = laundryCell
                         loaded++
+                        Log.i("HomeFragment", "laundry $loaded")
 
                         if (loaded == totalCells) {
                             home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
@@ -283,8 +303,10 @@ class HomeFragment : Fragment() {
                         Log.e("Home", "Could not load laundry", throwable)
                         throwable.printStackTrace()
                         loaded++
+                        Log.i("HomeFragment", "laundry $loaded")
 
                         if (loaded == totalCells) {
+                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
                             internetConnectionHome?.visibility = View.GONE
                             home_refresh_layout?.isRefreshing = false
@@ -300,15 +322,17 @@ class HomeFragment : Fragment() {
                             postCell.type = "post"
                             postCell.info?.post = post[0]
                             homepageCells[2] = postCell
-                            loaded++
-
-                            if (loaded == totalCells) {
-                                home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
-                                loadingPanel?.visibility = View.GONE
-                                internetConnectionHome?.visibility = View.GONE
-                                home_refresh_layout?.isRefreshing = false
-                            }
                         }
+                    }
+
+                    loaded++
+                    Log.i("HomeFragment", "posts $loaded")
+
+                    if (loaded == totalCells) {
+                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                        loadingPanel?.visibility = View.GONE
+                        internetConnectionHome?.visibility = View.GONE
+                        home_refresh_layout?.isRefreshing = false
                     }
 
                 }, { throwable ->
@@ -316,8 +340,10 @@ class HomeFragment : Fragment() {
                         Log.e("Home", "Could not load posts", throwable)
                         throwable.printStackTrace()
                         loaded++
+                        Log.i("HomeFragment", "posts $loaded")
 
                         if (loaded == totalCells) {
+                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
                             internetConnectionHome?.visibility = View.GONE
                             home_refresh_layout?.isRefreshing = false
@@ -350,6 +376,7 @@ class HomeFragment : Fragment() {
                         loaded++
 
                         if (loaded == totalCells) {
+                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
                             internetConnectionHome?.visibility = View.GONE
                             home_refresh_layout?.isRefreshing = false
@@ -384,6 +411,7 @@ class HomeFragment : Fragment() {
                         loaded++
 
                         if (loaded == totalCells) {
+                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
                             internetConnectionHome?.visibility = View.GONE
                             home_refresh_layout?.isRefreshing = false
