@@ -8,11 +8,7 @@ import com.pennapps.labs.pennmobile.BuildConfig
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.AccessTokenResponse
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.withLock
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response

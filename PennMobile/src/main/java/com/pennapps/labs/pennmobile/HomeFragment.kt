@@ -81,6 +81,9 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         getHomePage()
     }
+
+
+
     @RequiresApi(Build.VERSION_CODES.M)
     private fun getHomePage() {
 
@@ -108,6 +111,9 @@ class HomeFragment : Fragment() {
             homepageCells.add(HomeCell())
         }
 
+        // number of cells loaded
+        var loaded = 0
+
         val studentLife = MainActivity.studentLifeInstance
         OAuth2NetworkManager(mActivity).getAccessToken {
             val sp = sharedPreferences
@@ -117,15 +123,22 @@ class HomeFragment : Fragment() {
             val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
             Log.i("HomeFragment", bearerToken)
             if (bearerToken != "Bearer ") {
+                val totalCells = 6
+
                 val idHash = getSha256Hash(deviceID)
                 studentLife.browsePolls(bearerToken, idHash).subscribe({ poll ->
-                    if (poll.size == 0) {
-                        return@subscribe
+                    if (poll.size > 0) {
+                        mActivity.runOnUiThread {
+                            val pollCell = PollCell(poll[0])
+                            pollCell.poll.options.forEach { pollCell.poll.totalVotes += it.voteCount }
+                            homepageCells[0] = pollCell
+                        }
                     }
-                    mActivity.runOnUiThread {
-                        val pollCell = PollCell(poll[0])
-                        pollCell.poll.options.forEach { pollCell.poll.totalVotes += it.voteCount }
-                        homepageCells[0] = pollCell
+                    loaded++
+
+                    Log.i("HomeFragment", "polls $loaded")
+
+                    if (loaded == totalCells) {
                         home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
                         loadingPanel?.visibility = View.GONE
                         internetConnectionHome?.visibility = View.GONE
@@ -133,6 +146,16 @@ class HomeFragment : Fragment() {
                     }
                 }, { throwable ->
                     Log.e("Poll", "Error retrieving polls", throwable)
+                    loaded++
+
+                    Log.i("HomeFragment", "polls $loaded")
+
+                    if (loaded == totalCells) {
+                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                        loadingPanel?.visibility = View.GONE
+                        internetConnectionHome?.visibility = View.GONE
+                        home_refresh_layout?.isRefreshing = false
+                    }
                 })
 
                 studentLife.news.subscribe({ article ->
@@ -142,16 +165,31 @@ class HomeFragment : Fragment() {
                         newsCell.info?.article = article
                         newsCell.type = "news"
                         homepageCells[3] = newsCell
-                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
-                        loadingPanel?.visibility = View.GONE
-                        home_refresh_layout?.isRefreshing = false
+
+                        loaded++
+                        Log.i("HomeFragment", "news $loaded")
+
+                        if (loaded == totalCells) {
+                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            loadingPanel?.visibility = View.GONE
+                            internetConnectionHome?.visibility = View.GONE
+                            home_refresh_layout?.isRefreshing = false
+                        }
                     }
                 }, { throwable ->
                     mActivity.runOnUiThread {
                         Log.e("Home", "Could not load news", throwable)
                         throwable.printStackTrace()
-                        loadingPanel?.visibility = View.GONE
-                        home_refresh_layout?.isRefreshing = false
+
+                        loaded++
+                        Log.i("HomeFragment", "news $loaded")
+
+                        if (loaded == totalCells) {
+                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            loadingPanel?.visibility = View.GONE
+                            internetConnectionHome?.visibility = View.GONE
+                            home_refresh_layout?.isRefreshing = false
+                        }
                     }
                 })
 
@@ -175,17 +213,31 @@ class HomeFragment : Fragment() {
                         diningCellInfo.venues = venues
                         diningCell.info = diningCellInfo
                         homepageCells[4] = diningCell
-                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
-                        loadingPanel?.visibility = View.GONE
-                        internetConnectionHome?.visibility = View.GONE
-                        home_refresh_layout?.isRefreshing = false
+
+                        loaded++
+                        Log.i("HomeFragment", "dining $loaded")
+
+                        if (loaded == totalCells) {
+                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            loadingPanel?.visibility = View.GONE
+                            internetConnectionHome?.visibility = View.GONE
+                            home_refresh_layout?.isRefreshing = false
+                        }
                     }
                 }, { throwable ->
                     mActivity.runOnUiThread {
                         Log.e("Home", "Could not load Dining", throwable)
                         throwable.printStackTrace()
-                        loadingPanel?.visibility = View.GONE
-                        home_refresh_layout?.isRefreshing = false
+
+                        loaded++
+                        Log.i("HomeFragment", "dining $loaded")
+
+                        if (loaded == totalCells) {
+                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            loadingPanel?.visibility = View.GONE
+                            internetConnectionHome?.visibility = View.GONE
+                            home_refresh_layout?.isRefreshing = false
+                        }
                     }
                 })
 
@@ -199,16 +251,29 @@ class HomeFragment : Fragment() {
                         gsrBookingCell.type = "gsr_booking"
                         gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "Weigle")
                         homepageCells[5] = gsrBookingCell
-                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
-                        loadingPanel?.visibility = View.GONE
-                        home_refresh_layout?.isRefreshing = false
+                        loaded++
+                        Log.i("HomeFragment", "calendar $loaded")
+
+                        if (loaded == totalCells) {
+                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            loadingPanel?.visibility = View.GONE
+                            internetConnectionHome?.visibility = View.GONE
+                            home_refresh_layout?.isRefreshing = false
+                        }
                     }
                 }, { throwable ->
                     mActivity.runOnUiThread {
                         Log.e("Home", "Could not load calendar", throwable)
                         throwable.printStackTrace()
-                        loadingPanel?.visibility = View.GONE
-                        home_refresh_layout?.isRefreshing = false
+                        loaded++
+                        Log.i("HomeFragment", "calendar $loaded")
+
+                        if (loaded == totalCells) {
+                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            loadingPanel?.visibility = View.GONE
+                            internetConnectionHome?.visibility = View.GONE
+                            home_refresh_layout?.isRefreshing = false
+                        }
                     }
                 })
 
@@ -223,17 +288,29 @@ class HomeFragment : Fragment() {
                         }
                         laundryCell.info = laundryCellInfo
                         homepageCells[6] = laundryCell
-                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
-                        loadingPanel?.visibility = View.GONE
-                        internetConnectionHome?.visibility = View.GONE
-                        home_refresh_layout?.isRefreshing = false
+                        loaded++
+                        Log.i("HomeFragment", "laundry $loaded")
+
+                        if (loaded == totalCells) {
+                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            loadingPanel?.visibility = View.GONE
+                            internetConnectionHome?.visibility = View.GONE
+                            home_refresh_layout?.isRefreshing = false
+                        }
                     }
                 }, { throwable ->
                     mActivity.runOnUiThread {
                         Log.e("Home", "Could not load laundry", throwable)
                         throwable.printStackTrace()
-                        loadingPanel?.visibility = View.GONE
-                        home_refresh_layout?.isRefreshing = false
+                        loaded++
+                        Log.i("HomeFragment", "laundry $loaded")
+
+                        if (loaded == totalCells) {
+                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            loadingPanel?.visibility = View.GONE
+                            internetConnectionHome?.visibility = View.GONE
+                            home_refresh_layout?.isRefreshing = false
+                        }
                     }
                 })
 
@@ -245,38 +322,65 @@ class HomeFragment : Fragment() {
                             postCell.type = "post"
                             postCell.info?.post = post[0]
                             homepageCells[2] = postCell
-                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
-                            loadingPanel?.visibility = View.GONE
-                            home_refresh_layout?.isRefreshing = false
                         }
+                    }
+
+                    loaded++
+                    Log.i("HomeFragment", "posts $loaded")
+
+                    if (loaded == totalCells) {
+                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                        loadingPanel?.visibility = View.GONE
+                        internetConnectionHome?.visibility = View.GONE
+                        home_refresh_layout?.isRefreshing = false
                     }
 
                 }, { throwable ->
                     mActivity.runOnUiThread {
                         Log.e("Home", "Could not load posts", throwable)
                         throwable.printStackTrace()
-                        loadingPanel?.visibility = View.GONE
-                        home_refresh_layout?.isRefreshing = false
+                        loaded++
+                        Log.i("HomeFragment", "posts $loaded")
+
+                        if (loaded == totalCells) {
+                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            loadingPanel?.visibility = View.GONE
+                            internetConnectionHome?.visibility = View.GONE
+                            home_refresh_layout?.isRefreshing = false
+                        }
                     }
 
                 })
             } else {
+                val totalCells = 2
+
                 studentLife.calendar.subscribe({ events ->
                     mActivity.runOnUiThread {
                         val calendar = HomeCell()
                         calendar.type = "calendar"
                         calendar.events = events
                         homepageCells.add(0, calendar)
-                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
-                        loadingPanel?.visibility = View.GONE
-                        home_refresh_layout?.isRefreshing = false
+                        loaded++
+
+                        if (loaded == totalCells) {
+                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            loadingPanel?.visibility = View.GONE
+                            internetConnectionHome?.visibility = View.GONE
+                            home_refresh_layout?.isRefreshing = false
+                        }
                     }
                 }, { throwable ->
                     mActivity.runOnUiThread {
                         Log.e("Home", "Could not load Home page", throwable)
                         throwable.printStackTrace()
-                        loadingPanel?.visibility = View.GONE
-                        home_refresh_layout?.isRefreshing = false
+                        loaded++
+
+                        if (loaded == totalCells) {
+                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            loadingPanel?.visibility = View.GONE
+                            internetConnectionHome?.visibility = View.GONE
+                            home_refresh_layout?.isRefreshing = false
+                        }
                     }
                 })
 
@@ -291,16 +395,27 @@ class HomeFragment : Fragment() {
                         gsrBookingCell.type = "gsr_booking"
                         gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "Weigle")
                         homepageCells.add(homepageCells.size, gsrBookingCell)
-                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
-                        loadingPanel?.visibility = View.GONE
-                        home_refresh_layout?.isRefreshing = false
+                        loaded++
+
+                        if (loaded == totalCells) {
+                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            loadingPanel?.visibility = View.GONE
+                            internetConnectionHome?.visibility = View.GONE
+                            home_refresh_layout?.isRefreshing = false
+                        }
                     }
                 }, { throwable ->
                     mActivity.runOnUiThread {
                         Log.e("Home", "Could not load Home page", throwable)
                         throwable.printStackTrace()
-                        loadingPanel?.visibility = View.GONE
-                        home_refresh_layout?.isRefreshing = false
+                        loaded++
+
+                        if (loaded == totalCells) {
+                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            loadingPanel?.visibility = View.GONE
+                            internetConnectionHome?.visibility = View.GONE
+                            home_refresh_layout?.isRefreshing = false
+                        }
                     }
                 })
             }
@@ -375,5 +490,12 @@ class HomeFragment : Fragment() {
             (view as ViewGroup).showSneakerToast(message = text, doOnRetry = { }, sneakerColor = R.color.sneakerBlurColorOverlay)
         }
     }
+
+    enum class Cells {
+        POLLS, NEWS, DINING, CALENDAR, LAUNDRY, POSTS
+    }
+
+
+
 
 }
