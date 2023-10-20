@@ -54,8 +54,6 @@
         </FrameLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -63,7 +61,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/internetConnectionDiningHolder"
+            android:id="@+id/internetConnectionFitnessHolder"
             android:layout_width="match_parent"
             android:layout_height="24dp"
             app:layout_scrollFlags="scroll|enterAlways"
@@ -71,7 +69,7 @@
             tools:ignore="MissingConstraints">
 
             <TextView
-                android:id="@+id/internetConnection_message_dining_holder"
+                android:id="@+id/internetConnection_message_fitness_holder"
                 style="@style/internet_error_message" />
 
         </androidx.appcompat.widget.Toolbar>
@@ -81,7 +79,7 @@
         <!--<include layout="@layout/loading_panel" />-->
 
         <FrameLayout
-            android:id="@+id/dining_fragment"
+            android:id="@+id/fitness_fragment"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_marginLeft="8dp"
@@ -94,7 +92,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/dining_hall_text"
+                    android:id="@+id/fitness_text"
                     style="@style/InfoText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -102,36 +100,36 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="10dp"
-                    android:text="Dining Halls"
+                    android:text="@string/pottruck"
                     android:textSize="22sp"
                     android:textStyle="bold"
                     android:visibility="gone" />
 
-                    <LinearLayout
-                        android:id="@+id/constraint"
+                <LinearLayout
+                    android:id="@+id/constraint"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    tools:showIn="@layout/activity_main">
+
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/tabLayout"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        tools:showIn="@layout/activity_main">
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintBottom_toTopOf="@+id/pager"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tabTextAppearance="@style/tab_text"
+                        app:tabSelectedTextColor="#257FE1"
+                        app:tabTextColor="#101E3B"/>
 
-                        <com.google.android.material.tabs.TabLayout
-                            android:id="@+id/tabLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            app:layout_constraintBottom_toTopOf="@+id/pager"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:tabTextAppearance="@style/tab_text"
-                            app:tabSelectedTextColor="#257FE1"
-                            app:tabTextColor="#101E3B"/>
-
-                        <androidx.viewpager2.widget.ViewPager2
-                            android:id="@+id/pager"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
-                    </LinearLayout>
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:id="@+id/pager"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
 
             </LinearLayout>
         </FrameLayout>
@@ -143,7 +141,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/snack_bar_dining"
+        android:id="@+id/snack_bar_fitness"
         android:rotation="180"
         android:layout_below="@id/appbar_home"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"

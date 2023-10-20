@@ -26,7 +26,6 @@ class DiningHolderFragment : Fragment() {
         super.onCreate(savedInstanceState)
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()
-
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
