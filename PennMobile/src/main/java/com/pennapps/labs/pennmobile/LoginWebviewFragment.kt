@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile
 
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
@@ -98,48 +97,43 @@ class LoginWebviewFragment : Fragment() {
     }
 
     private fun encryptPassword(password: String) {
-        if (Build.VERSION.SDK_INT >= 26) {
-            var secretKey = createSecretKey() as SecretKey
-            var cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7)
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey)
+        val secretKey = createSecretKey() as SecretKey
+        val cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7)
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey)
 
-            var encryptionIv = cipher.iv
-            var passwordBytes = password.toByteArray(Charset.forName("UTF-8"))
-            var encryptedPasswordBytes = cipher.doFinal(passwordBytes)
-            var encryptedPassword = Base64.getEncoder().encodeToString(encryptedPasswordBytes)
+        val encryptionIv = cipher.iv
+        val passwordBytes = password.toByteArray(Charset.forName("UTF-8"))
+        val encryptedPasswordBytes = cipher.doFinal(passwordBytes)
+        val encryptedPassword = Base64.getEncoder().encodeToString(encryptedPasswordBytes)
 
-            //save the encrypted password
-            val spEditor = sp.edit()
-            spEditor.putString("penn_password", encryptedPassword)
-            spEditor.apply()
-            spEditor.commit()
-            spEditor.putString("encryptionIv", Base64.getEncoder().encodeToString(encryptionIv))
-            spEditor.apply()
-            spEditor.commit()
-        }
+        //save the encrypted password
+        val spEditor = sp.edit()
+        spEditor.putString("penn_password", encryptedPassword)
+        spEditor.apply()
+        spEditor.commit()
+        spEditor.putString("encryptionIv", Base64.getEncoder().encodeToString(encryptionIv))
+        spEditor.apply()
+        spEditor.commit()
     }
 
     private fun getDecodedPassword(): String? {
-        if (Build.VERSION.SDK_INT >= 26) {
-            var base64EncryptedPassword = sp.getString("penn_password", "null")
-            var base64EncryptionIv = sp.getString("encryptionIv", "null")
+        val base64EncryptedPassword = sp.getString("penn_password", "null")
+        val base64EncryptionIv = sp.getString("encryptionIv", "null")
 
-            var encryptionIv = Base64.getDecoder().decode(base64EncryptionIv)
-            var encryptedPassword = Base64.getDecoder().decode(base64EncryptedPassword)
+        val encryptionIv = Base64.getDecoder().decode(base64EncryptionIv)
+        val encryptedPassword = Base64.getDecoder().decode(base64EncryptedPassword)
 
-            var keyStore = KeyStore.getInstance("AndroidKeyStore")
-            keyStore.load(null)
+        val keyStore = KeyStore.getInstance("AndroidKeyStore")
+        keyStore.load(null)
 
-            var secretkey = keyStore.getKey("Key", null) as SecretKey
-            var cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" +
-                    KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7)
-            cipher.init(Cipher.DECRYPT_MODE, secretkey, IvParameterSpec(encryptionIv))
-            var passwordBytes = cipher.doFinal(encryptedPassword)
-            var password = String(passwordBytes, Charset.forName("UTF-8"))
-            return password
-        } else {
-            return null
-        }
+        val secretkey = keyStore.getKey("Key", null) as SecretKey
+        val cipher = Cipher.getInstance(
+            KeyProperties.KEY_ALGORITHM_AES + "/" +
+                    KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7
+        )
+        cipher.init(Cipher.DECRYPT_MODE, secretkey, IvParameterSpec(encryptionIv))
+        val passwordBytes = cipher.doFinal(encryptedPassword)
+        return String(passwordBytes, Charset.forName("UTF-8"))
     }
 
     private fun saveUsername(username: String) {
@@ -149,16 +143,13 @@ class LoginWebviewFragment : Fragment() {
     }
 
     private fun createSecretKey(): SecretKey? {
-        if (Build.VERSION.SDK_INT >= 23) {
-            val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore")
-            keyGenerator.init(KeyGenParameterSpec.Builder("Key", KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
-                    .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-                    .setUserAuthenticationRequired(false)
-                    .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
-                    .build())
-            return keyGenerator.generateKey()
-        }
-        return null
+        val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore")
+        keyGenerator.init(KeyGenParameterSpec.Builder("Key", KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
+                .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
+                .setUserAuthenticationRequired(false)
+                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
+                .build())
+        return keyGenerator.generateKey()
     }
 
     inner class MyWebViewClient : WebViewClient() {
@@ -180,18 +171,16 @@ class LoginWebviewFragment : Fragment() {
                 initiateAuthentication(authCode)
             }
             if (url.contains("weblogin") && url.contains("pennkey")) {
-                if (Build.VERSION.SDK_INT >= 19) {
-                    webView.evaluateJavascript("document.getElementById('pennname').value;", ValueCallback<String> { s ->
-                        if (s != null || s != "null") {
-                            saveUsername(s)
-                        }
-                    })
-                    webView.evaluateJavascript("document.getElementById('password').value;", ValueCallback<String> { s ->
-                        if (s != null || s != "null") {
-                            encryptPassword(s)
-                        }
-                    })
-                }
+                webView.evaluateJavascript("document.getElementById('pennname').value;", ValueCallback<String> { s ->
+                    if (s != null || s != "null") {
+                        saveUsername(s)
+                    }
+                })
+                webView.evaluateJavascript("document.getElementById('password').value;", ValueCallback<String> { s ->
+                    if (s != null || s != "null") {
+                        encryptPassword(s)
+                    }
+                })
             }
             return super.shouldOverrideUrlLoading(view, url)
         }
@@ -287,13 +276,8 @@ class LoginWebviewFragment : Fragment() {
         val byteArr = md.digest(codeVerifier.toByteArray())
 
         // Base-64 encode
-        var codeChallenge = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        var codeChallenge =
             Base64.getEncoder().encodeToString(byteArr)
-        } else {
-            String(
-                    android.util.Base64.encode(byteArr, android.util.Base64.DEFAULT),
-                    Charsets.UTF_8)
-        }
 
         // Replace characters to make it web safe
         codeChallenge = codeChallenge.replace("=", "")

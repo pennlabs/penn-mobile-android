@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile
 
-import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -8,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.FitnessAdapter
 import kotlinx.android.synthetic.main.fragment_fitness.*
@@ -49,14 +47,12 @@ class FitnessFragment : Fragment() {
         return view
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.gym_refresh_layout?.setOnRefreshListener { getGymData() }
         // get api data
         getGymData()
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun getGymData() {
 
         //displays banner if not connected
@@ -74,8 +70,6 @@ class FitnessFragment : Fragment() {
         super.onResume()
         mActivity.removeTabs()
         mActivity.setTitle(R.string.fitness)
-        if (Build.VERSION.SDK_INT > 17){
-            mActivity.setSelectedTab(MainActivity.MORE)
-        }
+        mActivity.setSelectedTab(MainActivity.MORE)
     }
 }

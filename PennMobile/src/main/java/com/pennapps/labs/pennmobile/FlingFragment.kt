@@ -45,7 +45,6 @@ class FlingFragment : Fragment() {
                 val builder = Builder()
                 val customTabsIntent = builder.build()
                 customTabsIntent.launchUrl(mActivity, Uri.parse(url))
-                true
             }
         }
         return super.onOptionsItemSelected(item)

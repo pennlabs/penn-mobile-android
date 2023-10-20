@@ -3,7 +3,6 @@ package com.pennapps.labs.pennmobile.adapters
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View

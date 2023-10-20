@@ -116,7 +116,7 @@ class BookGsrFragment : Fragment() {
                 val sp = PreferenceManager.getDefaultSharedPreferences(activity)
                 sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "") ?: ""
                 bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
-                Log.i("BookGSRFragment", "$bearerToken")
+                Log.i("BookGSRFragment", bearerToken)
             }
             Log.i("BookGSRFragment", "Bearer $bearerToken")
             Log.i("BookGSRFragment", "Start $startTime")

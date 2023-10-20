@@ -1,13 +1,11 @@
 package com.pennapps.labs.pennmobile
 
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,15 +16,10 @@ import com.pennapps.labs.pennmobile.classes.DiningBalances
 import com.pennapps.labs.pennmobile.classes.DiningBalancesList
 import com.pennapps.labs.pennmobile.classes.DiningInsightCell
 import com.pennapps.labs.pennmobile.classes.DollarsSpentCell
-import kotlinx.android.synthetic.main.fragment_dining.*
-import kotlinx.android.synthetic.main.fragment_dining.view.*
 import kotlinx.android.synthetic.main.fragment_dining_insights.*
 import kotlinx.android.synthetic.main.fragment_dining_insights.view.*
-import kotlinx.android.synthetic.main.fragment_gsr.*
-import kotlinx.android.synthetic.main.fragment_home.view.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -41,7 +34,6 @@ class DiningInsightsFragment : Fragment() {
     private lateinit var networkManager: CampusExpressNetworkManager
     private lateinit var cells : ArrayList<DiningInsightCell>
     private lateinit var insightsrv : RecyclerView
-    @RequiresApi(Build.VERSION_CODES.O)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +42,6 @@ class DiningInsightsFragment : Fragment() {
         mActivity.closeKeyboard()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_dining_insights, container, false)
@@ -105,7 +96,6 @@ class DiningInsightsFragment : Fragment() {
         super.onResume()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun refresh() {
         val accessToken = networkManager.getAccessToken()
         if (accessToken == "") {
@@ -125,7 +115,6 @@ class DiningInsightsFragment : Fragment() {
 
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun getInsights(accessToken: String?) {
         if (!isOnline(context)) {
             internetConnectionDiningInsights?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))

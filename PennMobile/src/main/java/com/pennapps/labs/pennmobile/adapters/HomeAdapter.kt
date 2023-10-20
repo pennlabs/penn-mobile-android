@@ -265,16 +265,11 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         }
 
         /** Sets up blur view on news card */
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            holder.itemView.blurView.setupWith(holder.itemView.news_card_container)
-                .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))
-                .setBlurAlgorithm(RenderScriptBlur(mContext))
-                .setBlurRadius(25f)
-                .setHasFixedTransformationMatrix(true)
-        } else {
-            holder.itemView.blurView.setBackgroundColor(ColorUtils
-                .setAlphaComponent(getColor(mContext, R.color.black), 225))
-        }
+        holder.itemView.blurView.setupWith(holder.itemView.news_card_container)
+            .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))
+            .setBlurAlgorithm(RenderScriptBlur(mContext))
+            .setBlurRadius(25f)
+            .setHasFixedTransformationMatrix(true)
 
         holder.itemView.button.setOnClickListener {
 
@@ -344,9 +339,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         val params : ConstraintLayout.LayoutParams =
             holder.itemView.home_card_rv.layoutParams as ConstraintLayout.LayoutParams
         params.setMargins(0, 0, 0, 0)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            params.marginStart = 0
-        }
+        params.marginStart = 0
 
         holder.itemView.home_card_rv.layoutParams = params
 

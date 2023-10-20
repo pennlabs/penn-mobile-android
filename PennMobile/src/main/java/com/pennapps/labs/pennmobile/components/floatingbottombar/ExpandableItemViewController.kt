@@ -98,9 +98,7 @@ internal open class ExpandableItemViewController(
             menuItemVerticalMarginBottom: Int
     ) {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            textView.setTextAppearance(R.style.fontBottomBar)
-        }
+        textView.setTextAppearance(R.style.fontBottomBar)
         val activity = parent.context as Activity
         val displayMetrics = DisplayMetrics()
         activity.windowManager.defaultDisplay.getMetrics(displayMetrics)

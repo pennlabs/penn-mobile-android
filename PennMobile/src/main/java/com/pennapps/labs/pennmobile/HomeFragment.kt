@@ -57,7 +57,6 @@ class HomeFragment : Fragment() {
         FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -82,13 +81,7 @@ class HomeFragment : Fragment() {
         getHomePage()
     }
 
-
-
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun getHomePage() {
-
-        // get session id from shared preferences
-
 
         //displays banner if not connected
         if (!isOnline(context)) {
@@ -117,8 +110,6 @@ class HomeFragment : Fragment() {
         val studentLife = MainActivity.studentLifeInstance
         OAuth2NetworkManager(mActivity).getAccessToken {
             val sp = sharedPreferences
-            val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
-            val accountID = sp.getString(getString(R.string.accountID), "")
             val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
             val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
             Log.i("HomeFragment", bearerToken)
@@ -317,7 +308,7 @@ class HomeFragment : Fragment() {
                 studentLife.validPostsList(bearerToken).subscribe({ post ->
                     if (post.size >= 1) { //there exists a post
                         mActivity.runOnUiThread {
-                            var postCell = HomeCell()
+                            val postCell = HomeCell()
                             postCell.info = HomeCellInfo()
                             postCell.type = "post"
                             postCell.info?.post = post[0]
@@ -423,7 +414,6 @@ class HomeFragment : Fragment() {
     }
 
     private val broadcastReceiver = object : BroadcastReceiver() {
-        @RequiresApi(Build.VERSION_CODES.M)
         override fun onReceive(context: Context?, intent: Intent?) {
             getHomePage()
         }
@@ -438,20 +428,11 @@ class HomeFragment : Fragment() {
         if (initials != null && initials.isNotEmpty()) {
             this.initials.text = initials
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                this.profile_background.setImageDrawable(
-                    resources.getDrawable
-                    (R.drawable.ic_guest_avatar, context?.theme))
-            } else {
-                @Suppress("DEPRECATION")
-                this.profile_background.setImageDrawable(
-                    resources.getDrawable
-                    (R.drawable.ic_guest_avatar))
-            }
+            this.profile_background.setImageDrawable(
+                resources.getDrawable
+                (R.drawable.ic_guest_avatar, context?.theme))
         }
-        if (Build.VERSION.SDK_INT > 17) {
-            mActivity.setSelectedTab(MainActivity.HOME)
-        }
+        mActivity.setSelectedTab(MainActivity.HOME)
         mActivity.showBottomBar()
     }
 
@@ -472,10 +453,8 @@ class HomeFragment : Fragment() {
         } ?: run {
             view.date_view.text = Utils.getCurrentSystemTime()
         }
-        if (Build.VERSION.SDK_INT > 16) {
-            (view.appbar_home.layoutParams
-                as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
-        }
+        (view.appbar_home.layoutParams
+            as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
         view.profile.setOnClickListener {
             //TODO: Account Settings
         }
@@ -486,9 +465,7 @@ class HomeFragment : Fragment() {
      */
     @Suppress("DEPRECATION")
     private fun displaySnack(view: View, text: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            (view as ViewGroup).showSneakerToast(message = text, doOnRetry = { }, sneakerColor = R.color.sneakerBlurColorOverlay)
-        }
+        (view as ViewGroup).showSneakerToast(message = text, doOnRetry = { }, sneakerColor = R.color.sneakerBlurColorOverlay)
     }
 
     enum class Cells {

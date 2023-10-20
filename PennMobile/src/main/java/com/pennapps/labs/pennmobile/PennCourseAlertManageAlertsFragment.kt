@@ -2,8 +2,6 @@ package com.pennapps.labs.pennmobile
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.app.Dialog
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,22 +14,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.snackbar.Snackbar
 import com.pennapps.labs.pennmobile.adapters.RegistrationsAdapter
-import com.pennapps.labs.pennmobile.classes.PennCourseAlertRegistration
 import com.pennapps.labs.pennmobile.viewmodels.PennCourseAlertViewModel
-import kotlinx.android.synthetic.main.fragment_dining.view.*
-import kotlinx.android.synthetic.main.fragment_penn_course_alert_manage_alerts.*
-import kotlinx.android.synthetic.main.fragment_penn_course_alert_manage_alerts.view.*
-import kotlinx.android.synthetic.main.include_main.*
 import kotlinx.android.synthetic.main.pca_registration_list_item.*
 
 

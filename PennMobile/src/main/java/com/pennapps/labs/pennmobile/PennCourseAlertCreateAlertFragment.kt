@@ -3,32 +3,23 @@ package com.pennapps.labs.pennmobile
 import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.opengl.Visibility
 import android.os.Bundle
-import android.telephony.PhoneNumberUtils
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.Course
 import com.pennapps.labs.pennmobile.classes.Section
 import com.pennapps.labs.pennmobile.viewmodels.PennCourseAlertViewModel
-import kotlinx.android.synthetic.main.account_settings_dialog.*
-import kotlinx.android.synthetic.main.fragment_dining.*
 import kotlinx.android.synthetic.main.fragment_penn_course_alert_create_alert.view.*
-import kotlinx.android.synthetic.main.fragment_penn_course_alert_manage_alerts.*
-import kotlinx.android.synthetic.main.include_main.*
 import java.util.regex.Pattern
 import androidx.appcompat.widget.Toolbar
 
@@ -334,7 +325,7 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
             return false
         }
         val reg = "^([0-9\\+]|\\(\\d{1,3}\\))[0-9\\-\\. ]{3,15}$"
-        var pattern: Pattern = Pattern.compile(reg)
+        val pattern: Pattern = Pattern.compile(reg)
         val matcher = pattern.matcher(number)
         return matcher.matches()
     }

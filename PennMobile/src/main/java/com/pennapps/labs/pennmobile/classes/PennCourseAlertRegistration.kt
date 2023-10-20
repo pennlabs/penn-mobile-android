@@ -2,6 +2,10 @@ package com.pennapps.labs.pennmobile.classes
 
 import com.google.gson.annotations.SerializedName
 
+/**
+ * Created by Ali Krema, Fall 2022.
+ */
+
 data class PennCourseAlertRegistration(
     @SerializedName("cancelled_at")
     val cancelledAt: String = "",

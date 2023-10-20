@@ -74,7 +74,6 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val cell = cells[position]
         when (cell.type) {
@@ -109,7 +108,6 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
         // Populate dining dollars spent card
 
     }
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun bindDiningDollarsPredictions(holder: ViewHolder, cell: DiningInsightCell) {
         val v = holder.view
         val tvPredictionsTitle = (v.findViewById<View>(R.id.predictions_title) as TextView)
@@ -117,7 +115,6 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
         bindPredictions(holder, cell, DINING_DOLLARS_PREDICTIONS)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun bindDiningSwipesPredictions(holder: ViewHolder, cell: DiningInsightCell) {
         val v = holder.view
         val tvPredictionsTitle = (v.findViewById<View>(R.id.predictions_title) as TextView)
@@ -125,7 +122,6 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
         bindPredictions(holder, cell, DINING_SWIPES_PREDICTIONS)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun bindPredictions(holder: ViewHolder, cell: DiningInsightCell, typeId: Int) {
         // Populate dining dollars predictions card
         if (cell.diningBalancesList == null) {
@@ -205,7 +201,6 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun setData(amounts: List<Float>, diningDollarsGraph: LineChart, holder: ViewHolder, typeId: Int) {
         val values: ArrayList<Entry> = ArrayList()
         amounts.forEachIndexed { index, amount ->

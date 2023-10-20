@@ -297,7 +297,7 @@ public class CustomAlertDialogue extends DialogFragment {
         }
 
         float radius = 5;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && builder.getDecorView() != null)
+        if (builder.getDecorView() != null)
         {
             CustomBlurDialogue blurDialogue = view.findViewById(stream.customalert.R.id.blurview);
             blurDialogue.create(builder.getDecorView(), radius);
@@ -318,7 +318,7 @@ public class CustomAlertDialogue extends DialogFragment {
                 cancelButton.setTextColor(ContextCompat.getColor(view.getContext(), builder.getCancelColor()));
             }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && builder.getDecorView() != null)
+            if (builder.getDecorView() != null)
             {
                 CustomBlurDialogue blurDialogue = view.findViewById(stream.customalert.R.id.blurview_button);
                 blurDialogue.create(builder.getDecorView(), radius);
@@ -337,7 +337,7 @@ public class CustomAlertDialogue extends DialogFragment {
 
         initListView(view);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && builder.getDecorView() != null)
+        if (builder.getDecorView() != null)
         {
             CustomBlurDialogue blurDialogue = view.findViewById(stream.customalert.R.id.blurview);
             blurDialogue.create(builder.getDecorView(), radius);
@@ -351,7 +351,7 @@ public class CustomAlertDialogue extends DialogFragment {
         initListView(view);
 
         float radius = 5;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && builder.getDecorView() != null)
+        if (builder.getDecorView() != null)
         {
             CustomBlurDialogue blurDialogue = view.findViewById(stream.customalert.R.id.blurview);
             blurDialogue.create(builder.getDecorView(), radius);
@@ -511,7 +511,7 @@ public class CustomAlertDialogue extends DialogFragment {
         }
 
         float radius = 5;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && builder.getDecorView() != null)
+        if (builder.getDecorView() != null)
         {
             CustomBlurDialogue blurDialogue = view.findViewById(R.id.blurrview);
             blurDialogue.create(builder.getDecorView(), radius);
