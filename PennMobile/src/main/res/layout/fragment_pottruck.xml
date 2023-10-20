@@ -5,7 +5,7 @@
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:showIn="@layout/activity_main">
+    android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar_home_holder"
@@ -28,8 +28,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|top"
                 android:layout_marginStart="24dp"
-                android:layout_marginLeft="24dp"
                 android:layout_marginTop="24dp" />
+
 
             <TextView
                 android:id="@+id/title_view"
@@ -38,10 +38,20 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|bottom"
                 android:layout_marginStart="24dp"
-                android:layout_marginLeft="24dp"
                 android:layout_marginBottom="4dp"
                 android:maxLines="1"
                 />
+
+            <ImageView
+                android:id="@+id/fitness_preferences"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_bottom_nav_settings_blue"
+                android:layout_gravity="end|bottom"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="8dp"
+                />
+
 
             <ImageView
                 android:id="@+id/divider"
@@ -54,8 +64,6 @@
         </FrameLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -63,79 +71,52 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/internetConnectionDiningHolder"
+            android:id="@+id/toolbar_fitness_connection"
             android:layout_width="match_parent"
             android:layout_height="24dp"
+            android:visibility="gone"
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             tools:ignore="MissingConstraints">
 
             <TextView
-                android:id="@+id/internetConnection_message_dining_holder"
+                android:id="@+id/text_fitness_connection_message"
                 style="@style/internet_error_message" />
 
         </androidx.appcompat.widget.Toolbar>
 
-        <!--<include layout="@layout/no_results" />-->
+        <include layout="@layout/loading_panel" />
 
-        <!--<include layout="@layout/loading_panel" />-->
 
-        <FrameLayout
-            android:id="@+id/dining_fragment"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            tools:visibility="visible">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swiperefresh_fitness"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp">
 
-                <TextView
-                    android:id="@+id/dining_hall_text"
-                    style="@style/InfoText"
+
+            <FrameLayout
+                android:id="@+id/framelayout_fitness"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                tools:visibility="visible">
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view_fitness_rooms"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="10dp"
-                    android:text="Dining Halls"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:scrollbars="none"
+                    tools:list_item="@layout/fitness_list_item" />
 
-                    <LinearLayout
-                        android:id="@+id/constraint"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        tools:showIn="@layout/activity_main">
 
-                        <com.google.android.material.tabs.TabLayout
-                            android:id="@+id/tabLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            app:layout_constraintBottom_toTopOf="@+id/pager"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:tabTextAppearance="@style/tab_text"
-                            app:tabSelectedTextColor="#257FE1"
-                            app:tabTextColor="#101E3B"/>
-
-                        <androidx.viewpager2.widget.ViewPager2
-                            android:id="@+id/pager"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
-                    </LinearLayout>
-
-            </LinearLayout>
-        </FrameLayout>
-
+            </FrameLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>
 
     <!-- Coordinator Layout used to position the SnackBar -->
@@ -143,7 +124,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/snack_bar_dining"
+        android:id="@+id/snack_bar_fitness"
         android:rotation="180"
         android:layout_below="@id/appbar_home"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"

@@ -64,30 +64,6 @@ class FitnessFragment : Fragment() {
             internetConnectionFitness?.visibility = View.GONE
         }
 
-        // get API data
-        val labs = MainActivity.studentLifeInstance
-        labs.gymData.subscribe({ gyms ->
-            mActivity.runOnUiThread {
-                gym_list?.adapter = FitnessAdapter(gyms)
-                // get rid of loading screen
-                loadingPanel?.visibility = View.GONE
-                if (gyms.size > 0) {
-                    no_results?.visibility = View.GONE
-                } else {
-                    no_results?.visibility = View.VISIBLE
-                }
-                // stop refreshing
-                gym_refresh_layout?.isRefreshing = false
-            }
-        }, { throwable ->
-            mActivity.runOnUiThread {
-                throwable.printStackTrace()
-                Toast.makeText(activity, "Could not load gym information", Toast.LENGTH_LONG).show()
-                loadingPanel?.visibility = View.GONE
-                no_results?.visibility = View.VISIBLE
-                gym_refresh_layout?.isRefreshing = false
-            }
-        })
     }
 
     override fun onResume() {

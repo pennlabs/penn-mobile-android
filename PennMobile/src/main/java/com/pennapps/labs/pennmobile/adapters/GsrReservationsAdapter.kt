@@ -22,6 +22,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.widget.Toast.LENGTH_SHORT
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 
 
 class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>)
@@ -62,30 +63,53 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
 
             builder.setPositiveButton("Confirm") { _, _ ->
                 val bookingID = reservation.booking_id
-                val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
-                val sessionID = if (reservation.info == null) sp.getString(mContext.getString(R.string.huntsmanGSR_SessionID), "") else null
 
-                val labs = MainActivity.studentLifeInstance
-                val bearerToken = "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
-                labs.cancelReservation(bearerToken, null, bookingID, sessionID, object : ResponseCallback() {
-                    override fun success(response: Response) {
-                        if (reservations.size > position) {
-                            reservations.removeAt(position)
-                        }
-                        run {
-                            if (reservations.size == 0) {
-                                var intent = Intent("refresh")
-                                LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent)
-                            } else {
-                                notifyItemRemoved(position)
-                            }}
-                    }
+                OAuth2NetworkManager(mContext as MainActivity).getAccessToken {
 
-                    override fun failure(error: RetrofitError) {
-                        Log.e("GsrReservationsAdapter", "Error canceling gsr reservation", error)
-                        Toast.makeText(mContext, "Error deleting your GSR reservation.", LENGTH_SHORT).show()
-                    }
-                })
+                    val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
+                    val sessionID = if (reservation.info == null) sp.getString(
+                        mContext.getString(R.string.huntsmanGSR_SessionID),
+                        ""
+                    ) else null
+
+                    val labs = MainActivity.studentLifeInstance
+                    val bearerToken =
+                        "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
+                    labs.cancelReservation(
+                        bearerToken,
+                        null,
+                        bookingID,
+                        sessionID,
+                        object : ResponseCallback() {
+                            override fun success(response: Response) {
+                                if (reservations.size > position) {
+                                    reservations.removeAt(position)
+                                }
+                                run {
+                                    if (reservations.size == 0) {
+                                        var intent = Intent("refresh")
+                                        LocalBroadcastManager.getInstance(mContext)
+                                            .sendBroadcast(intent)
+                                    } else {
+                                        notifyItemRemoved(position)
+                                    }
+                                }
+                            }
+
+                            override fun failure(error: RetrofitError) {
+                                Log.e(
+                                    "GsrReservationsAdapter",
+                                    "Error canceling gsr reservation",
+                                    error
+                                )
+                                Toast.makeText(
+                                    mContext,
+                                    "Error deleting your GSR reservation.",
+                                    LENGTH_SHORT
+                                ).show()
+                            }
+                        })
+                }
             }
 
             builder.setNegativeButton("Cancel") { _, _ -> }

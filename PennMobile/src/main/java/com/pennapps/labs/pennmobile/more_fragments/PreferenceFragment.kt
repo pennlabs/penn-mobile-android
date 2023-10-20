@@ -120,6 +120,17 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             return@setOnPreferenceClickListener true
         }
 
+        val fitnessFeaturePref: Preference? = findPreference("pref_fitness_feature")
+        fitnessFeaturePref?.setOnPreferenceClickListener {
+            mActivity.supportFragmentManager.beginTransaction()
+                .replace(R.id.content_frame, PottruckFragment())
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit()
+            return@setOnPreferenceClickListener true
+        }
+
+
         val pennLabsPref: Preference? = findPreference("pref_labs_link")
         pennLabsPref?.setOnPreferenceClickListener {
             openLink(PennLabs)

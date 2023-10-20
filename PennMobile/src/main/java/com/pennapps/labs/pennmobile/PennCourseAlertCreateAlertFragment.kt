@@ -50,7 +50,6 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
 //            hideInternetErrorBar(view)
         }
 
-
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
         val pennKey = sp.getString(getString(R.string.pennkey), null)
         val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
@@ -71,9 +70,10 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
             viewModel.userInfo.observe(viewLifecycleOwner, Observer {
                 val formattedPhoneNumber = viewModel.userInfo.value?.profile?.phone?.drop(2)
                 val email = viewModel.userInfo.value?.profile?.email
+
                 phoneNumberEditText.text =
-                    Editable.Factory.getInstance().newEditable(formattedPhoneNumber)
-                emailEditText.text = Editable.Factory.getInstance().newEditable(email)
+                    Editable.Factory.getInstance().newEditable(formattedPhoneNumber?: "")
+                emailEditText.text = Editable.Factory.getInstance().newEditable(email?: "")
             })
 
             val alertButton = view.findViewById<Button>(R.id.pca_alert_button)

@@ -24,7 +24,6 @@ class DiningHolderFragment : Fragment() {
         super.onCreate(savedInstanceState)
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

@@ -46,4 +46,6 @@
         android:id="@+id/submit_gsr"
         android:text="@string/submit"
         style="@style/submit_button" />
+
+    <include android:id="@+id/loading" layout="@layout/loading_panel" android:visibility="gone"/>
 </RelativeLayout>

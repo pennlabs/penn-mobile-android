@@ -55,7 +55,6 @@ class AboutFragment : Fragment() {
         view.our_team_rv?.layoutManager = GridLayoutManager(context, 3)
         view.alumni_rv?.layoutManager = GridLayoutManager(context, 3)
         val members = arrayListOf("Rohan Chhaya", "Julius Snipes", "Aaron Mei", "Trini Feng", "Vedha Avali")
-
         val alumni = arrayListOf("Marta García Ferreiro", "Varun Ramakrishnan", "Sahit Penmatcha",
             "Anna Wang", "Sophia Ye", "Awad Irfan", "Liz Powell", "Davies Lumumba", "Anna Jiang", "Ali Krema")
         view.our_team_rv?.adapter = AboutAdapter(members)
