@@ -26,7 +26,6 @@ import com.pennapps.labs.pennmobile.classes.LaundryUsage;
 import com.pennapps.labs.pennmobile.classes.Post;
 import com.pennapps.labs.pennmobile.classes.Venue;
 import com.pennapps.labs.pennmobile.classes.VenueInterval;
-import com.pennapps.labs.pennmobile.classes.WhartonStatus;
 
 import java.lang.reflect.Type;
 import java.text.Format;

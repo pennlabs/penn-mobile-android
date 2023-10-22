@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile.utils
 
 import android.content.Context
-import android.os.Build
 import android.util.TypedValue
 import java.security.MessageDigest
 import java.text.SimpleDateFormat

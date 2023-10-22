@@ -31,6 +31,10 @@
     <string name="accessibility_description">Screen menu</string>
     <string name="accessibility_item_description">%1$s menu item</string>
 
+    <!-- Fitness -->
+    <string name="fitness_room_open">Open</string>
+    <string name="fitness_room_closed">Closed</string>
+
     <!-- Dining -->
     <string name="dining_hall_open">Open</string>
     <string name="dining_hall_closed">Closed</string>
@@ -67,6 +71,7 @@
     <string name="out_of_dining_swipes_message">You have no swipes left for this semester.</string>
     <string name="out_of_dining_swipes_prediction_message">Based on your current balance and past behavior, we project you\'ll run out on this date.</string>
     <string name="extra_dining_swipes_message">Based on your past behavior, we project you\'ll end the semester with swipes to spare.</string>
+    <string name="dining_graph_point">Date Filler Text \n Swipes Filler Text</string>
 
     <!-- LaundryRoom -->
     <string name="laundry_washer">Washers</string>
@@ -132,8 +137,8 @@
     <string name="feedback_txt">Click below to give us feedback!</string>
     <string name="request_feature">REQUEST A FEATURE</string>
     <string name="our_team">Our Team</string>
-    <string name="alumni">Alumni</string>
-    <string name="penn_labs_copyright">\u00A9 2021 Penn Labs</string>
+    <string name="alumni">Alumni (2020-2023) </string>
+    <string name="penn_labs_copyright">\u00A9 2023 Penn Labs</string>
     <string name="pref_courses_title">Courses</string>
     <string name="pref_recitations">Show recitations</string>
 
@@ -225,4 +230,9 @@
     <string name="vote">Vote</string>
     <string name="sort_by">Sort By:</string>
     <string name="room_number">Room Number</string>
+    <string name="pottruck">Pottruck</string>
+    <string name="fitness_sunday">Sunday</string>
+    <string name="fitness_mf">Mon - Fri</string>
+    <string name="fitness_sat">Saturday</string>
+    <string name="fitness_capacity">Capacity</string>
 </resources>

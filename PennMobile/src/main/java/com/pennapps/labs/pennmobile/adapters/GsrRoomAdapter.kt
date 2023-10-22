@@ -28,25 +28,6 @@ class GsrRoomAdapter(internal var timeRanges: ArrayList<String>, internal var id
             if (duration > 0) {
                 val startTime = starts[position]
                 val endTime = ends[position]
-                /*if (gsrLocationCode == "JMHH") {
-                    val huntsmanGSRLogin = HuntsmanGSRLogin.newInstance(localGSRID, gsrLocationCode, startTime, endTime,
-                        gid, roomName)
-                    val fragmentManager = (context as MainActivity).supportFragmentManager
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.content_frame, huntsmanGSRLogin)
-                            .addToBackStack("GSR Fragment")
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .commit()
-                } else {
-                    val bookGsrFragment = BookGsrFragment.newInstance(localGSRID, gsrLocationCode, startTime, endTime,
-                            gid, localGSRID.toInt(), roomName)
-                    val fragmentManager = (context as MainActivity).supportFragmentManager
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.content_frame, bookGsrFragment)
-                            .addToBackStack("GSR Fragment")
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .commit()
-                }*/
                 val bookGsrFragment = BookGsrFragment.newInstance(localGSRID, gsrLocationCode, startTime, endTime,
                     gid, localGSRID.toInt(), roomName)
                 val fragmentManager = (context as MainActivity).supportFragmentManager

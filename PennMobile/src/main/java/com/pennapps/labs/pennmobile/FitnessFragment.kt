@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile
 
-import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -8,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.FitnessAdapter
 import kotlinx.android.synthetic.main.fragment_fitness.*
@@ -49,14 +47,12 @@ class FitnessFragment : Fragment() {
         return view
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.gym_refresh_layout?.setOnRefreshListener { getGymData() }
         // get api data
         getGymData()
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun getGymData() {
 
         //displays banner if not connected
@@ -68,38 +64,12 @@ class FitnessFragment : Fragment() {
             internetConnectionFitness?.visibility = View.GONE
         }
 
-        // get API data
-        val labs = MainActivity.studentLifeInstance
-        labs.gymData.subscribe({ gyms ->
-            mActivity.runOnUiThread {
-                gym_list?.adapter = FitnessAdapter(gyms)
-                // get rid of loading screen
-                loadingPanel?.visibility = View.GONE
-                if (gyms.size > 0) {
-                    no_results?.visibility = View.GONE
-                } else {
-                    no_results?.visibility = View.VISIBLE
-                }
-                // stop refreshing
-                gym_refresh_layout?.isRefreshing = false
-            }
-        }, { throwable ->
-            mActivity.runOnUiThread {
-                throwable.printStackTrace()
-                Toast.makeText(activity, "Could not load gym information", Toast.LENGTH_LONG).show()
-                loadingPanel?.visibility = View.GONE
-                no_results?.visibility = View.VISIBLE
-                gym_refresh_layout?.isRefreshing = false
-            }
-        })
     }
 
     override fun onResume() {
         super.onResume()
         mActivity.removeTabs()
         mActivity.setTitle(R.string.fitness)
-        if (Build.VERSION.SDK_INT > 17){
-            mActivity.setSelectedTab(MainActivity.MORE)
-        }
+        mActivity.setSelectedTab(MainActivity.MORE)
     }
 }

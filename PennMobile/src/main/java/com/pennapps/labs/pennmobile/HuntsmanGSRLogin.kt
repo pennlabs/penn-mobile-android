@@ -13,6 +13,7 @@ import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult
 import kotlinx.android.synthetic.main.fragment_huntsman_gsrlogin.*
@@ -102,7 +103,9 @@ class HuntsmanGSRLogin : Fragment() {
 
     // performs POST request and redirects user to GSR booking fragment
     private fun bookHuntsmanGSR(bearerToken : String, sessionID : String) {
-        mStudentLife.bookGSR(
+        OAuth2NetworkManager(activity as MainActivity).getAccessToken {
+
+            mStudentLife.bookGSR(
                 //Passing the values
                 bearerToken,
                 startTime,
@@ -116,11 +119,12 @@ class HuntsmanGSRLogin : Fragment() {
                     override fun success(result: GSRBookingResult?, response: Response?) {
                         //Display the output as a toast
                         if (result?.getResults() == true) {
-                            Toast.makeText(mActivity, "GSR successfully booked", Toast.LENGTH_LONG).show()
-                        }
-                        else {
+                            Toast.makeText(mActivity, "GSR successfully booked", Toast.LENGTH_LONG)
+                                .show()
+                        } else {
                             Log.e("HuntsmanGSRLogin", "GSR booking failed: " + result?.getError())
-                            Toast.makeText(mActivity, "GSR booking failed", Toast.LENGTH_LONG).show()
+                            Toast.makeText(mActivity, "GSR booking failed", Toast.LENGTH_LONG)
+                                .show()
                             val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
                             val editor = sp.edit()
                             editor.remove(getString(R.string.huntsmanGSR_SessionID))
@@ -130,9 +134,9 @@ class HuntsmanGSRLogin : Fragment() {
                         val gsrFragment = GsrTabbedFragment()
                         val fragmentManager = mActivity.supportFragmentManager
                         fragmentManager.beginTransaction()
-                                .replace(R.id.content_frame, gsrFragment)
-                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                .commit()
+                            .replace(R.id.content_frame, gsrFragment)
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .commit()
                     }
 
                     override fun failure(error: RetrofitError?) {
@@ -147,12 +151,13 @@ class HuntsmanGSRLogin : Fragment() {
                         val gsrFragment = GsrTabbedFragment()
                         val fragmentManager = mActivity.supportFragmentManager
                         fragmentManager.beginTransaction()
-                                .replace(R.id.content_frame, gsrFragment)
-                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                .commit()
+                            .replace(R.id.content_frame, gsrFragment)
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .commit()
                     }
                 }
-        )
+            )
+        }
     }
 
     companion object {

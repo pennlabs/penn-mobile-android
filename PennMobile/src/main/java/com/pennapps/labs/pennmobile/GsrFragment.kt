@@ -60,7 +60,8 @@ class GsrFragment : Fragment() {
     private val gsrSlotFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZZ")
 
     private lateinit var durationAdapter: ArrayAdapter<String>
-    private lateinit var huntsmanDurationAdapter: ArrayAdapter<String>
+    private lateinit var whartonDurationAdapter: ArrayAdapter<String>
+    private lateinit var biotechDurationAdapter: ArrayAdapter<String>
 
     private var populatedDropDownGSR = false
 
@@ -102,7 +103,8 @@ class GsrFragment : Fragment() {
         sortByTime = sortingSwitch.isChecked
 
         durationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m", "120m"))
-        huntsmanDurationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m"))
+        whartonDurationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m"))
+        biotechDurationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m", "120m", "150m", "180m"))
 
         // update user status by getting the bearer token and checking wharton status
         updateStatus()
@@ -188,42 +190,40 @@ class GsrFragment : Fragment() {
         // handle swipe to refresh
         view.gsr_refresh_layout?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
         view.gsr_refresh_layout?.setOnRefreshListener {
-            OAuth2NetworkManager(mActivity).getAccessToken {
-                updateStatus()
-                searchForGSR(true)
-            }
+            updateStatus()
+            searchForGSR(true)
         }
         internetConnectionGSR?.visibility = View.VISIBLE
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onResume() {
         super.onResume()
     }
 
     private fun updateStatus() {
-        OAuth2NetworkManager(mActivity).getAccessToken()
-        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-        bearerToken =  sp.getString(getString(R.string.access_token), "").toString();
+        OAuth2NetworkManager(mActivity).getAccessToken {
+            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+            bearerToken = sp.getString(getString(R.string.access_token), "").toString();
 
-        if (bearerToken.isNullOrEmpty()) {
-            Toast.makeText(activity, "You are not logged in!", Toast.LENGTH_LONG).show()
-        } else {
-            mStudentLife.isWharton(
-                "Bearer $bearerToken")
-                ?.subscribe({ status ->
-                    isWharton = status.isWharton
-                }, {
-                    Log.e("GsrFragment", "Error getting Wharton status", it)
-                    isWharton = false
-                }
+            if (bearerToken.isNullOrEmpty()) {
+                Toast.makeText(activity, "You are not logged in!", Toast.LENGTH_LONG).show()
+            } else {
+                mStudentLife.isWharton(
+                    "Bearer $bearerToken"
                 )
+                    ?.subscribe({ status ->
+                        isWharton = status.isWharton
+                    }, {
+                        Log.e("GsrFragment", "Error getting Wharton status", it)
+                        isWharton = false
+                    }
+                    )
+            }
         }
     }
 
     // Performs GSR search
     // Called when page loads and whenever user changes start/end time, date, or building
-    @RequiresApi(Build.VERSION_CODES.M)
     fun searchForGSR(calledByRefreshLayout: Boolean) {
         //displays banner if not connected
         if (!isOnline(context)) {
@@ -239,27 +239,34 @@ class GsrFragment : Fragment() {
         var gsrLocation = gsrLocationDropDown.selectedItem.toString()
         val location = mapGSR(gsrLocation)
         val gid = mapGID(gsrLocation)
-        if (location.isNullOrEmpty() || bearerToken.isNullOrEmpty()) {
-            showNoResults()
-        } else {
-            // display loading screen if user did not use swipe refresh
-            if (!calledByRefreshLayout) {
-                loadingPanel.visibility = View.VISIBLE
-                gsr_rooms_list?.visibility = View.GONE
-            }
+        OAuth2NetworkManager(mActivity).getAccessToken {
+            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+            bearerToken = sp.getString(getString(R.string.access_token), "").toString();
 
-            if (!isWharton && (location == "ARB" || location == "JMHH")) {
+            if (location.isNullOrEmpty() || bearerToken.isNullOrEmpty()) {
                 showNoResults()
-                if (!calledByRefreshLayout) {
-                    Toast.makeText(activity,
-                        "You need to have a Wharton pennkey to access Wharton GSRs",
-                        Toast.LENGTH_LONG).show()
-                }
             } else {
-                noResultsPanel.visibility = View.GONE
-                gsr_no_rooms?.visibility = View.GONE
-                // get the hours
-                getTimes(location, gid)
+                // display loading screen if user did not use swipe refresh
+                if (!calledByRefreshLayout) {
+                    loadingPanel.visibility = View.VISIBLE
+                    gsr_rooms_list?.visibility = View.GONE
+                }
+
+                if (!isWharton && (location == "ARB" || location == "JMHH")) {
+                    showNoResults()
+                    if (!calledByRefreshLayout) {
+                        Toast.makeText(
+                            activity,
+                            "You need to have a Wharton pennkey to access Wharton GSRs",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                } else {
+                    noResultsPanel.visibility = View.GONE
+                    gsr_no_rooms?.visibility = View.GONE
+                    // get the hours
+                    getTimes(location, gid)
+                }
             }
         }
     }
@@ -273,14 +280,20 @@ class GsrFragment : Fragment() {
         durationDropDown.isEnabled = false
         sortingSwitch.isClickable = false
 
-        Log.i("GsrFragment", "Bearer Token: $bearerToken");
-        Log.i("GsrFragment", "Wharton Status: $isWharton")
 
-        mStudentLife.gsrRoom(
-            "Bearer $bearerToken",
-            location, gId, adjustedDateString)
+        OAuth2NetworkManager(mActivity).getAccessToken {
+            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+            bearerToken = sp.getString(getString(R.string.access_token), "").toString();
+
+            Log.i("GsrFragment", "Bearer Token: $bearerToken");
+            Log.i("GsrFragment", "Wharton Status: $isWharton")
+
+            mStudentLife.gsrRoom(
+                "Bearer $bearerToken",
+                location, gId, adjustedDateString
+            )
                 ?.subscribe({ gsr ->
-                    activity?.let {activity ->
+                    activity?.let { activity ->
                         activity.runOnUiThread {
                             val gsrRooms = gsr.rooms
                             var timeSlotLengthZero = true
@@ -315,6 +328,7 @@ class GsrFragment : Fragment() {
 
                             gsr_rooms_list?.adapter = (context?.let {
                                 GsrBuildingAdapter(it, mGSRS, location.toString(), (durationDropDown.selectedItemPosition + 1) * 30, sortByTime)
+
                             })
 
                             mGSRS = ArrayList()
@@ -328,19 +342,20 @@ class GsrFragment : Fragment() {
                     }
                 }, {
                     Log.e("GsrFragment", "Error getting gsr times", it)
-                    activity?.let {
-                    activity ->
-                    activity.runOnUiThread {
-                        showNoResults()
-                        selectDateButton.isClickable = true
-                        selectTimeButton.isClickable = true
-                        gsrLocationDropDown.isEnabled = true
-                        durationDropDown.isEnabled = true
-                        sortingSwitch.isClickable = true
+           activity?.let { activity ->
+                        activity.runOnUiThread {
+                            showNoResults()
+                            selectDateButton.isClickable = true
+                            selectTimeButton.isClickable = true
+                            gsrLocationDropDown.isEnabled = true
+                            durationDropDown.isEnabled = true
+                            sortingSwitch.isClickable = true
 
-                    } }
+                        }
+                    }
                 }
                 )
+        }
     }
 
     private fun filterInsertTimeSlots(gsrRoom: GSRRoom, timeSlots: Array<GSRSlot>, gid: Int) {
@@ -390,7 +405,6 @@ class GsrFragment : Fragment() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun populateDropDownGSR() {
         mStudentLife.location()
                 ?.subscribe({ locations ->
@@ -422,8 +436,10 @@ class GsrFragment : Fragment() {
                             val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
                             gsrLocationDropDown.adapter = adapter
 
-                            durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman")
-                                huntsmanDurationAdapter else durationAdapter
+                            durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman"
+                                || gsrLocationDropDown.selectedItem.toString() == "Academic Research")
+                                whartonDurationAdapter else if (gsrLocationDropDown.selectedItem.toString() == "Biomedical")
+                                biotechDurationAdapter else durationAdapter
                             searchForGSR(false)
                         }
                     }
@@ -436,7 +452,7 @@ class GsrFragment : Fragment() {
                             gsrHashMap["Weigle"] = "1086"
                             gsrHashMap["Lippincott"] = "2587"
                             gsrHashMap["Edu Commons"] = "2495"
-                            gsrHashMap["Biomedical"] = "2683"
+                            gsrHashMap["Biotech Commons"] = "2683"
                             gsrHashMap["Fisher"] = "2637"
                             gsrHashMap["Levin Building"] = "1090"
                             gsrHashMap["Museum Library"] = "2634"
@@ -450,8 +466,10 @@ class GsrFragment : Fragment() {
                             val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
                             gsrLocationDropDown.adapter = adapter
 
-                            durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman")
-                                huntsmanDurationAdapter else durationAdapter
+                            durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman"
+                                || gsrLocationDropDown.selectedItem.toString() == "Academic Research")
+                                whartonDurationAdapter else if (gsrLocationDropDown.selectedItem.toString() == "Biotech Commons")
+                                    biotechDurationAdapter else durationAdapter
                             searchForGSR(false)
                         }
                     }
@@ -460,8 +478,18 @@ class GsrFragment : Fragment() {
         gsrLocationDropDown.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View?, i: Int, l: Long) {
                 // change possible durations depending on the location
-                durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman")
-                    huntsmanDurationAdapter else durationAdapter
+                var durationPos = durationDropDown.selectedItemPosition
+                if (durationPos >= 3 && (gsrLocationDropDown.selectedItem.toString() == "Huntsman"
+                            || gsrLocationDropDown.selectedItem.toString() == "Academic Research")) {
+                    durationPos = 2
+                } else if (durationPos > 3 && gsrLocationDropDown.selectedItem.toString() != "Biotech Commons") {
+                    durationPos = 3
+                }
+                durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman"
+                    || gsrLocationDropDown.selectedItem.toString() == "Academic Research")
+                    whartonDurationAdapter else if (gsrLocationDropDown.selectedItem.toString() == "Biotech Commons")
+                    biotechDurationAdapter else durationAdapter
+                durationDropDown.setSelection(durationPos)
                 searchForGSR(false)
             }
 

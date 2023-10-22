@@ -3,7 +3,6 @@ package com.pennapps.labs.pennmobile
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -110,8 +109,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         super.onResume()
         mActivity.removeTabs()
         mActivity.setTitle(R.string.action_settings)
-        if (Build.VERSION.SDK_INT > 17) {
-            mActivity.setSelectedTab(MainActivity.MORE)
-        }
+        mActivity.setSelectedTab(MainActivity.MORE)
     }
 }

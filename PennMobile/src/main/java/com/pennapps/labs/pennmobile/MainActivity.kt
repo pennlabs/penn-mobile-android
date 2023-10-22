@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -17,9 +16,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.webkit.CookieManager
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.ColorUtils
@@ -42,30 +41,28 @@ import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.*
 import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
 import com.pennapps.labs.pennmobile.utils.Utils
+import com.squareup.okhttp.OkHttpClient
 import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.android.synthetic.main.custom_sneaker_view.view.*
-import kotlinx.android.synthetic.main.fragment_dining_holder.*
 import kotlinx.android.synthetic.main.include_main.*
+import kotlinx.coroutines.sync.Mutex
 import retrofit.RestAdapter
 import retrofit.android.AndroidLog
+import retrofit.client.OkClient
 import retrofit.converter.GsonConverter
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
     private var tabShowed = false
     private lateinit var fragmentManager: FragmentManager
     private lateinit var mSharedPrefs: SharedPreferences
 
+    val tokenMutex = Mutex()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         if (Build.VERSION.SDK_INT > 28) {
             setTheme(R.style.DarkModeApi29)
-        }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            val alert = AlertDialog.Builder(this)
-            alert.setTitle("Android version")
-            alert.setMessage("You are running an older version of Android. Features may be limited")
-            alert.setPositiveButton("OK", null)
-            alert.show()
         }
         super.onCreate(savedInstanceState)
         if (applicationContext.resources.configuration.uiMode and
@@ -80,6 +77,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.setHomeButtonEnabled(false)
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
+
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
         val mainPagerAdapter = MainPagerAdapter(fragmentManager, lifecycle)
@@ -96,7 +94,7 @@ class MainActivity : AppCompatActivity() {
         if (pennKey == null && !guestMode) {
             startLoginFragment()
         } else {
-            OAuth2NetworkManager(this).getAccessTokenStartup()
+            startHomeFragment()
         }
     }
 
@@ -124,7 +122,6 @@ class MainActivity : AppCompatActivity() {
         expandable_bottom_bar.selectedItemId = id
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     fun setSelectedTab(id: Int) {}
 
     fun closeKeyboard() {
@@ -142,19 +139,42 @@ class MainActivity : AppCompatActivity() {
             }
         }
         main_view_pager.visibility = View.VISIBLE
+        val mainPagerAdapter = MainPagerAdapter(fragmentManager, lifecycle)
+        main_view_pager?.adapter = mainPagerAdapter
+        main_view_pager.isUserInputEnabled = false
+        main_view_pager.offscreenPageLimit = 5
         expandable_bottom_bar.visibility = View.VISIBLE
         setTab(HOME_ID)
     }
 
     fun startLoginFragment() {
+
+        CookieManager.getInstance().removeAllCookie()
+        val editor = PreferenceManager.getDefaultSharedPreferences(this).edit()
+        editor.remove(getString(R.string.penn_password))
+        editor.remove(getString(R.string.penn_user))
+        editor.remove(getString(R.string.first_name))
+        editor.remove(getString(R.string.last_name))
+        editor.remove(getString(R.string.email_address))
+        editor.remove(getString(R.string.pennkey))
+        editor.remove(getString(R.string.accountID))
+        editor.remove(getString(R.string.access_token))
+        editor.remove(getString(R.string.guest_mode))
+        editor.remove(getString(R.string.initials))
+        editor.apply()
+        val currentFragment = fragmentManager.findFragmentById(R.id.content_frame)
         val fragment: Fragment = LoginFragment()
-        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        fragmentManager.beginTransaction()
+
+        // change the fragment only if we're not already on the login fragment
+        if (currentFragment == null || currentFragment::class != fragment::class) {
+            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()
-        main_view_pager.visibility = View.GONE
-        expandable_bottom_bar.visibility = View.GONE
+            main_view_pager.visibility = View.GONE
+            expandable_bottom_bar.visibility = View.GONE
+        }
     }
 
     fun showErrorToast(errorMessage: Int) {
@@ -319,8 +339,13 @@ class MainActivity : AppCompatActivity() {
                     // gets posts
                     gsonBuilder.registerTypeAdapter(object:  TypeToken<MutableList<Post?>?>() {}.type, PostsSerializer())
                     val gson = gsonBuilder.create()
+                    val okHttpClient = OkHttpClient()
+                    okHttpClient.setConnectTimeout(35, TimeUnit.SECONDS) // Connection timeout
+                    okHttpClient.setReadTimeout(35, TimeUnit.SECONDS)    // Read timeout
+                    okHttpClient.setWriteTimeout(35, TimeUnit.SECONDS)   // Write timeout
                     val restAdapter = RestAdapter.Builder()
                             .setConverter(GsonConverter(gson))
+                            .setClient(OkClient(okHttpClient))
                             .setEndpoint("https://pennmobile.org/api")
                             .build()
                     mStudentLife = restAdapter.create(StudentLife::class.java)
@@ -335,31 +360,21 @@ class MainActivity : AppCompatActivity() {
 fun isOnline(context: Context?): Boolean {
     val connectivityManager =
             context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    if (connectivityManager != null) {
-        val capabilities =
-                if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-                    } else {
-                        return true
-                    }
-                } else {
-                    return true
-                }
-        if (capabilities != null) {
-            when {
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
-                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
-                    return true
-                }
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
-                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
-                    return true
-                }
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
-                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
-                    return true
-                }
+    val capabilities =
+        connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+    if (capabilities != null) {
+        when {
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                return true
+            }
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                return true
+            }
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                return true
             }
         }
     }
@@ -367,7 +382,6 @@ fun isOnline(context: Context?): Boolean {
 }
 
 /** Shows an error sneaker given a view group with an optional retry function */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 fun ViewGroup.showSneakerToast(message: String, doOnRetry: (() -> Unit)?, sneakerColor: Int) {
     val sneaker = Sneaker.with(this)
     val view = LayoutInflater.from(this.context)

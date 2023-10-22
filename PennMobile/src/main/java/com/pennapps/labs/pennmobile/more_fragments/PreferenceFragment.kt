@@ -120,9 +120,26 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             return@setOnPreferenceClickListener true
         }
 
+        val fitnessFeaturePref: Preference? = findPreference("pref_fitness_feature")
+        fitnessFeaturePref?.setOnPreferenceClickListener {
+            mActivity.supportFragmentManager.beginTransaction()
+                .replace(R.id.content_frame, PottruckFragment())
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit()
+            return@setOnPreferenceClickListener true
+        }
+
+
         val pennLabsPref: Preference? = findPreference("pref_labs_link")
         pennLabsPref?.setOnPreferenceClickListener {
             openLink(PennLabs)
+            return@setOnPreferenceClickListener true
+        }
+
+        val feedbackPref: Preference? = findPreference("pref_feedback_link")
+        feedbackPref?.setOnPreferenceClickListener {
+            openLink(Feedback)
             return@setOnPreferenceClickListener true
         }
 
@@ -201,22 +218,18 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                         val initials = firstName.first().toString() + lastName.first()
                         editor.putString(getString(R.string.initials), initials.capitalize())
                         editor.apply()
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                            (activity?.window?.decorView as ViewGroup).showSneakerToast(
-                                    "Profile details updated successfully.", null,
-                                    R.color.sneakerBlurColorOverlay)
-                        }
+                        (activity?.window?.decorView as ViewGroup).showSneakerToast(
+                                "Profile details updated successfully.", null,
+                                R.color.sneakerBlurColorOverlay)
                         val userLoginPref: Preference? = findPreference("pref_account_login_logout")
                         userLoginPref?.summary = "You are currently signed in as ${
                             sharedPreference.getString(getString(R.string.first_name), null)
                         }"
                         activity?.findViewById<TextView>(R.id.initials)?.text = initials
                     } else {
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                            (activity?.window?.decorView as ViewGroup).showSneakerToast(
-                                    "Complete required fields to update your profile information.", { showEditProfileDialog() },
-                                    R.color.sneakerWarningOverlay)
-                        }
+                        (activity?.window?.decorView as ViewGroup).showSneakerToast(
+                                "Complete required fields to update your profile information.", { showEditProfileDialog() },
+                                R.color.sneakerWarningOverlay)
                     }
                     dialog.dismiss()
                 }
@@ -234,6 +247,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
 
     companion object {
         private const val PennLabs = "https://pennlabs.org"
+        private const val Feedback = "https://airtable.com/shr1oylDR3qzCpTXq"
         private const val PennHomepage = "https://www.upenn.edu"
         private const val CampusExpress = "https://prod.campusexpress.upenn.edu"
         private const val Canvas = "https://canvas.upenn.edu"

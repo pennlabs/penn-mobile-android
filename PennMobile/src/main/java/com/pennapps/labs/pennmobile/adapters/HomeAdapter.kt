@@ -25,6 +25,7 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.fragment.app.FragmentTransaction
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -51,7 +52,6 @@ import kotlinx.android.synthetic.main.home_post_card.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import retrofit.Callback
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
@@ -172,7 +172,11 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         holder.itemView.home_card_subtitle.text = "DINING HALLS"
         holder.itemView.dining_prefs_btn.visibility = View.VISIBLE
         holder.itemView.dining_prefs_btn.setOnClickListener {
-            mActivity.fragmentTransact(DiningSettingsFragment(), false)
+            mActivity.supportFragmentManager.beginTransaction()
+                .replace(R.id.content_frame, DiningSettingsFragment())
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit()
         }
 
         mStudentLife.venues()
@@ -261,16 +265,11 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         }
 
         /** Sets up blur view on news card */
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            holder.itemView.blurView.setupWith(holder.itemView.news_card_container)
-                .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))
-                .setBlurAlgorithm(RenderScriptBlur(mContext))
-                .setBlurRadius(25f)
-                .setHasFixedTransformationMatrix(true)
-        } else {
-            holder.itemView.blurView.setBackgroundColor(ColorUtils
-                .setAlphaComponent(getColor(mContext, R.color.black), 225))
-        }
+        holder.itemView.blurView.setupWith(holder.itemView.news_card_container)
+            .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))
+            .setBlurAlgorithm(RenderScriptBlur(mContext))
+            .setBlurRadius(25f)
+            .setHasFixedTransformationMatrix(true)
 
         holder.itemView.button.setOnClickListener {
 
@@ -340,9 +339,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         val params : ConstraintLayout.LayoutParams =
             holder.itemView.home_card_rv.layoutParams as ConstraintLayout.LayoutParams
         params.setMargins(0, 0, 0, 0)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            params.marginStart = 0
-        }
+        params.marginStart = 0
 
         holder.itemView.home_card_rv.layoutParams = params
 
@@ -483,24 +480,31 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
                 (holder.itemView.home_card_rv?.adapter as PollOptionAdapter).notifyDataSetChanged()
                 holder.itemView.vote_btn?.isClickable = false
                 notifyItemChanged(position)
-                val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
-                val bearerToken = "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
                 val selectedOptions = ArrayList<Int>()
                 poll.options.forEach { if (it.id != null && it.selected) {
                     selectedOptions.add(it.id)
                 } }
                 val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
                 val idHash = Utils.getSha256Hash(deviceID)
-                mStudentLife.createPollVote(bearerToken, idHash, selectedOptions, object : ResponseCallback() {
-                    override fun success(response: Response?) {
-                        Log.i("HomeAdapter", "Successfully voted for poll!")
-                    }
+                OAuth2NetworkManager(mActivity).getAccessToken {
+                    val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
+                    val bearerToken = "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
 
-                    override fun failure(error: RetrofitError?) {
-                        Log.e("HomeAdapter", "Error voting for poll", error)
-                    }
+                    mStudentLife.createPollVote(
+                        bearerToken,
+                        idHash,
+                        selectedOptions,
+                        object : ResponseCallback() {
+                            override fun success(response: Response?) {
+                                Log.i("HomeAdapter", "Successfully voted for poll!")
+                            }
 
-                })
+                            override fun failure(error: RetrofitError?) {
+                                Log.e("HomeAdapter", "Error voting for poll", error)
+                            }
+
+                        })
+                }
             }
         } else {
             holder.itemView.vote_btn?.setTextColor(mContext.resources.getColor(R.color.gray))

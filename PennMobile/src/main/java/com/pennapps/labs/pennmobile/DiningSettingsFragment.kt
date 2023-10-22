@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pennapps.labs.pennmobile.adapters.DiningSettingsAdapter
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.DiningRequest
@@ -97,18 +98,25 @@ class DiningSettingsFragment : Fragment() {
                 favoriteDiningHalls.add(hall.id)
             }
         }
-        val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
-        mStudentLife.sendDiningPref(bearerToken, DiningRequest(favoriteDiningHalls),
+        OAuth2NetworkManager(activity as MainActivity).getAccessToken {
+            val bearerToken =
+                "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
+            mStudentLife.sendDiningPref(bearerToken, DiningRequest(favoriteDiningHalls),
                 object : ResponseCallback() {
-            override fun success(response: Response) {
-                mActivity.onBackPressed()
-            }
+                    override fun success(response: Response) {
+                        mActivity.onBackPressed()
+                    }
 
-            override fun failure(error: RetrofitError) {
-                Log.e("Dining", "Error saving dining preferences: $error")
-                Toast.makeText(mActivity, "Error saving dining preferences", Toast.LENGTH_SHORT).show()
-            }
-        })
+                    override fun failure(error: RetrofitError) {
+                        Log.e("Dining", "Error saving dining preferences: $error")
+                        Toast.makeText(
+                            mActivity,
+                            "Error saving dining preferences",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                })
+        }
     }
 
 
