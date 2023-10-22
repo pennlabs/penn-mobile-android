@@ -133,49 +133,49 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
+            android:layout_marginRight="5dp"
             android:paddingBottom="10dp"
+            android:textStyle="bold"
             android:textColor="@color/color_primary"
             android:text = "@string/sort_by"
             app:layout_constraintTop_toBottomOf="@id/gsr_select_date"
-            app:layout_constraintStart_toStartOf="@id/gsr_date_text"/>
+            app:layout_constraintEnd_toStartOf="@id/sort_by_room_number_text"/>
 
         <TextView
             android:id = "@+id/sort_by_room_number_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginBottom="16dp"
             android:paddingBottom="10dp"
             android:textColor="@color/color_primary"
             android:text = "@string/room_number"
             app:layout_constraintTop_toBottomOf="@id/gsr_select_date"
-            app:layout_constraintStart_toEndOf="@id/sort_by_text"/>
+            app:layout_constraintEnd_toStartOf="@id/sorting_switch"/>
 
         <Switch
             android:id="@+id/sorting_switch"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:paddingTop="2dp"
             android:paddingBottom="10dp"
-            android:paddingTop ="10dp"
-            android:paddingLeft="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/sort_by_room_number_text"
-            app:layout_constraintTop_toBottomOf="@id/gsr_select_date"
+            app:layout_constraintEnd_toStartOf="@+id/sort_by_time_text"
+            app:layout_constraintTop_toTopOf="@id/sort_by_room_number_text"
             app:layout_constraintVertical_bias="1.0" />
 
         <TextView
-            android:id = "@+id/sort_by_time_text"
+            android:id="@+id/sort_by_time_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginRight="10dp"
             android:paddingBottom="10dp"
+            android:text="@string/time"
             android:textColor="@color/color_primary"
-            android:text = "@string/time"
-            app:layout_constraintTop_toBottomOf="@id/gsr_select_date"
-            app:layout_constraintStart_toEndOf="@id/sorting_switch"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/gsr_select_date" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
