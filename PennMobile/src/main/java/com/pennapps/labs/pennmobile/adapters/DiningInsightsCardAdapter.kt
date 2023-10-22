@@ -20,9 +20,12 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.pennapps.labs.pennmobile.*
 import com.pennapps.labs.pennmobile.classes.DiningInsightCell
+import com.pennapps.labs.pennmobile.classes.DiningMarkerView
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -178,9 +181,39 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
         yAxis.setDrawZeroLine(false)
         yAxis.setDrawLimitLinesBehindData(false)
         setData(amounts, predictionChart, holder, typeId)
-        predictionChart.setTouchEnabled(false)
         xAxis.removeAllLimitLines()
         xAxis.addLimitLine(endOfTermLine)
+
+        // Enable touch gestures and marker
+        predictionChart.setTouchEnabled(true)
+        predictionChart.setPinchZoom(false)
+        predictionChart.setScaleEnabled(false)
+
+        val markerView = DiningMarkerView(mContext, R.layout.dining_marker_view)
+        predictionChart.marker = markerView
+
+        // Set an event listener to display marker content
+        predictionChart.setOnChartValueSelectedListener(object :
+                OnChartValueSelectedListener {
+            override fun onValueSelected(e: Entry?, h: Highlight?) {
+                if (e != null) {
+                    if (h != null) {
+                        markerView.setGraphType(typeId)
+                        markerView.refreshContent(e, h)
+                    }
+                    predictionChart.invalidate()
+                }
+            }
+
+            override fun onNothingSelected() {
+                // Hide the marker when nothing is selected
+                predictionChart.marker = null
+            }
+        })
+        // Don't think this is necessary, add just in case
+        predictionChart.invalidate()
+
+
     }
 
     private fun bindDiningBalanceCells(holder: ViewHolder, cell: DiningInsightCell) {
@@ -233,6 +266,7 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
             actualValues.setDrawValues(false)
             actualValues.setDrawCircles(false)
             actualValues.setDrawFilled(false)
+            actualValues.setDrawHighlightIndicators(false)
             if(typeId == DINING_DOLLARS_PREDICTIONS) {
                 actualValues.color = mContext.getColor(R.color.diningGreen)
             } else if(typeId == DINING_SWIPES_PREDICTIONS) {
@@ -246,6 +280,7 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
             predictionSet.color = mContext.getColor(R.color.gray)
             predictionSet.lineWidth = 4f
             predictionSet.enableDashedLine(10f, 10f, 0f)
+            predictionSet.setDrawHighlightIndicators(false)
             val dataSets: ArrayList<ILineDataSet> = ArrayList()
             dataSets.add(actualValues)
             dataSets.add(predictionSet)
