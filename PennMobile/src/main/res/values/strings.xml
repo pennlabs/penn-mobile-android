@@ -235,4 +235,5 @@
     <string name="fitness_mf">Mon - Fri</string>
     <string name="fitness_sat">Saturday</string>
     <string name="fitness_capacity">Capacity</string>
+    <string name="room">Room</string>
 </resources>
