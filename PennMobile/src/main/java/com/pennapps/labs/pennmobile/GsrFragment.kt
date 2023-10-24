@@ -38,6 +38,7 @@ class GsrFragment : Fragment() {
     lateinit var durationDropDown: Spinner
     lateinit var loadingPanel: LinearLayout
     lateinit var noResultsPanel: LinearLayout
+    lateinit var sortingSwitch: Switch
 
     // api manager
     private lateinit var mStudentLife: StudentLife
@@ -66,6 +67,7 @@ class GsrFragment : Fragment() {
 
     private var bearerToken = ""
     private var isWharton = false
+    private var sortByTime = false
 
     private lateinit var mActivity: MainActivity
 
@@ -97,6 +99,8 @@ class GsrFragment : Fragment() {
         durationDropDown = view.gsr_duration
         loadingPanel = view.gsr_loading
         noResultsPanel = view.gsr_no_results
+        sortingSwitch = view.sorting_switch
+        sortByTime = sortingSwitch.isChecked
 
         durationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m", "120m"))
         whartonDurationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m"))
@@ -179,6 +183,10 @@ class GsrFragment : Fragment() {
             datePickerDialog.show()
         }
 
+        sortingSwitch.setOnClickListener{
+            sortByTime = sortingSwitch.isChecked
+            searchForGSR(false)
+        }
         // handle swipe to refresh
         view.gsr_refresh_layout?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
         view.gsr_refresh_layout?.setOnRefreshListener {
@@ -270,6 +278,7 @@ class GsrFragment : Fragment() {
         selectTimeButton.isClickable = false
         gsrLocationDropDown.isEnabled = false
         durationDropDown.isEnabled = false
+        sortingSwitch.isClickable = false
 
 
         OAuth2NetworkManager(mActivity).getAccessToken {
@@ -318,12 +327,8 @@ class GsrFragment : Fragment() {
                             }
 
                             gsr_rooms_list?.adapter = (context?.let {
-                                GsrBuildingAdapter(
-                                    it,
-                                    mGSRS,
-                                    location.toString(),
-                                    (durationDropDown.selectedItemPosition + 1) * 30
-                                )
+                                GsrBuildingAdapter(it, mGSRS, location.toString(), (durationDropDown.selectedItemPosition + 1) * 30, sortByTime)
+
                             })
 
                             mGSRS = ArrayList()
@@ -331,17 +336,21 @@ class GsrFragment : Fragment() {
                             selectTimeButton.isClickable = true
                             gsrLocationDropDown.isEnabled = true
                             durationDropDown.isEnabled = true
+                            sortingSwitch.isClickable = true
+
                         }
                     }
                 }, {
                     Log.e("GsrFragment", "Error getting gsr times", it)
-                    activity?.let { activity ->
+           activity?.let { activity ->
                         activity.runOnUiThread {
                             showNoResults()
                             selectDateButton.isClickable = true
                             selectTimeButton.isClickable = true
                             gsrLocationDropDown.isEnabled = true
                             durationDropDown.isEnabled = true
+                            sortingSwitch.isClickable = true
+
                         }
                     }
                 }

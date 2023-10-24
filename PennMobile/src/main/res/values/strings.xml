@@ -228,9 +228,12 @@
 
     <!-- Poll -->
     <string name="vote">Vote</string>
+    <string name="sort_by">Sort By:</string>
+    <string name="room_number">Room Number</string>
     <string name="pottruck">Pottruck</string>
     <string name="fitness_sunday">Sunday</string>
     <string name="fitness_mf">Mon - Fri</string>
     <string name="fitness_sat">Saturday</string>
     <string name="fitness_capacity">Capacity</string>
+    <string name="room">Room</string>
 </resources>
