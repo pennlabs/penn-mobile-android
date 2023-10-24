@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.pennapps.labs.pennmobile"
-    android:versionCode="69"
-    android:versionName="2.4.3">
+    android:versionCode="70"
+    android:versionName="3.0.0">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <application
