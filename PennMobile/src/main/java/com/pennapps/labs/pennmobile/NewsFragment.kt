@@ -20,17 +20,8 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
-import androidx.annotation.RequiresApi
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.preference.PreferenceManager
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
-import com.pennapps.labs.pennmobile.utils.Utils
-import kotlinx.android.synthetic.main.fragment_about.view.*
-import kotlinx.android.synthetic.main.fragment_fitness.*
-import kotlinx.android.synthetic.main.fragment_fitness.internetConnectionFitness
-import kotlinx.android.synthetic.main.fragment_fitness.internetConnection_message_fitness
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.android.synthetic.main.fragment_news.initials
 import kotlinx.android.synthetic.main.fragment_news.profile_background
@@ -115,11 +106,7 @@ class NewsFragment : ListFragment() {
         val serviceIntent = Intent(SERVICE_ACTION)
         serviceIntent.setPackage("com.android.chrome")
         val resolveInfos = context.packageManager.queryIntentServices(serviceIntent, 0)
-        if (resolveInfos != null ) {
-            return resolveInfos.isNotEmpty()
-        } else {
-            return false
-        }
+        return resolveInfos.isNotEmpty()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -234,20 +221,11 @@ class NewsFragment : ListFragment() {
         if (initials != null && initials.isNotEmpty()) {
             this.initials.text = initials
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                this.profile_background.setImageDrawable(
-                        resources.getDrawable
-                        (R.drawable.ic_guest_avatar, context?.theme))
-            } else {
-                @Suppress("DEPRECATION")
-                this.profile_background.setImageDrawable(
-                        resources.getDrawable
-                        (R.drawable.ic_guest_avatar))
-            }
+            this.profile_background.setImageDrawable(
+                    resources.getDrawable
+                    (R.drawable.ic_guest_avatar, context?.theme))
         }
-        if (Build.VERSION.SDK_INT > 17){
-            mActivity?.setSelectedTab(MainActivity.MORE)
-        }
+        mActivity?.setSelectedTab(MainActivity.MORE)
     }
 
     override fun onDestroyView() {

@@ -32,23 +32,18 @@ class AboutAdapter(private var members: ArrayList<String>)
             "Davies Lumumba" -> R.drawable.davies
             "Sophia Ye" -> R.drawable.sophia
             "Sahit Penmatcha" -> R.drawable.sahit
-            "Vishesh Patel" -> R.drawable.vishesh
             "Awad Irfan" -> R.drawable.awad
             "Liz Powell" -> R.drawable.liz
             "Anna Jiang" -> R.drawable.anna_jiang
             "Rohan Chhaya" -> R.drawable.rohan
-            "Belinda Xi" -> R.drawable.belinda
             "Julius Snipes" -> R.drawable.julius
-            "Ansh Nagwekar" -> R.drawable.ansh
-            "Zhiyan Lu" -> R.drawable.zhiyan
             "Ali Krema" -> R.drawable.ali
-            "Jenny Li" -> R.drawable.jenny
-            "Sruthi Kurada" -> R.drawable.sruthi
+            "Trini Feng" -> R.drawable.trini
+            "Vedha Avali" -> R.drawable.vedha
+            "Aaron Mei" -> R.drawable.aaron
             else -> null
         }
-        if (android.os.Build.VERSION.SDK_INT >=  android.os.Build.VERSION_CODES.M){
-            if (imageId != null) holder.view.person_iv?.setImageResource(imageId)
-        }
+        if (imageId != null) holder.view.person_iv?.setImageResource(imageId)
 
     }
 

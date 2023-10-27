@@ -74,19 +74,16 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
         String title;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public ExpandableBottomTabBar(Context context) {
         super(context);
         init(context, null, 0);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public ExpandableBottomTabBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs, 0);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public ExpandableBottomTabBar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs, defStyleAttr);
@@ -96,7 +93,6 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
         mOnTabClickedListener = listener;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
         mContext = context;
         populateAttributes(context, attrs);
@@ -120,31 +116,23 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
             mMoreTabPosition = mMaxTabPerRow - 1;
             String bgColor = attrs.getAttributeValue(ANDROID_NS, "background");
             if (bgColor.contains("@")) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    mBgColor = getResources().getColor(Integer.valueOf(bgColor.replace("@", "")), null);
-                } else {
-                    mBgColor = getResources().getColor(Integer.valueOf(bgColor.replace("@", "")));
-                }
+                mBgColor = getResources().getColor(Integer.valueOf(bgColor.replace("@", "")), null);
             } else if (bgColor.contains("#")) {
                 mBgColor = Color.parseColor(bgColor);
             }
             String textColor = attrs.getAttributeValue(ANDROID_NS, "textColor");
             if (textColor.contains("@")) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    mTabTextColor = getResources().getColor(Integer.valueOf(textColor.replace("@", "")), null);
-                } else {
-                    mTabTextColor = getResources().getColor(Integer.valueOf(textColor.replace("@", "")));
-                }
+                mTabTextColor = getResources().getColor(Integer.valueOf(textColor.replace("@", "")), null);
             } else if (textColor.contains("#")) {
                 mTabTextColor = Color.parseColor(textColor);
             }
             String textSize = attrs.getAttributeValue(ANDROID_NS, "textSize");
             if (textSize.contains("sp")) {
-                mTextSize = Float.valueOf(textSize.replace("sp", ""));
+                mTextSize = Float.parseFloat(textSize.replace("sp", ""));
             } else if (textSize.contains("dp")) {
-                mTextSize = Float.valueOf(textSize.replace("dp", ""));
+                mTextSize = Float.parseFloat(textSize.replace("dp", ""));
             } else {
-                mTextSize = Float.valueOf(textSize);
+                mTextSize = Float.parseFloat(textSize);
             }
             XmlResourceParser parser = context.getResources().getXml(mTabXmlResource);
             parse(parser);
@@ -234,7 +222,6 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
      * Set the selected tab
      * @param index
      */
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void setSelectedTab(int index) {
         this.mSelectedTab = index;
         setFocusOnTab(mSelectedTab);
@@ -251,12 +238,10 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
         return mSelectedTab;
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     public ExpandableBottomTabBar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void initializeViews() {
         int width = LayoutParams.MATCH_PARENT;
         int height = LayoutParams.WRAP_CONTENT;
@@ -270,7 +255,6 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
         initializeTabContainers();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void initializeTabContainers() {
         int layoutCount = 1;
         if (mTabCount > mMaxTabPerRow) {
@@ -327,7 +311,6 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void setFocusOnTab(int index) {
         if (index == mSelectedTab) {
             ((TextView) mTabViewList.get(index)).setTextColor(mSelectedTabTextColor);
@@ -343,7 +326,6 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void resetFocusOnAllTabs() {
         for (View textView : mTabViewList) {
             ((TextView) textView).setTextColor(mTabTextColor);
@@ -359,7 +341,6 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
         return i / mMaxTabPerRow;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void onClick(View view) {
         int pos = -1;
@@ -481,7 +462,6 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
         return bundle;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void onRestoreInstanceState(Parcelable state) {
         if (state instanceof Bundle) {

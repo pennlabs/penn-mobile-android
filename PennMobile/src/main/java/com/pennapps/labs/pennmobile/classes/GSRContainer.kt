@@ -30,5 +30,6 @@ class GSRContainer(val gsrName: String, constructorTimeRange: String, constructo
 
         availableGSRSlots.add(newGSRSlot)
     }
+
 }
 

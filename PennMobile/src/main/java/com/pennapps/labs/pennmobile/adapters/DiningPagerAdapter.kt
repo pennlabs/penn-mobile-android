@@ -6,14 +6,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.pennapps.labs.pennmobile.DiningFragment
 import com.pennapps.labs.pennmobile.DiningInsightsFragment
-import java.util.*
 
 class DiningPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle?) : FragmentStateAdapter(fragmentManager, lifecycle!!) {
     override fun createFragment(position: Int): Fragment {
-        if (position == 0) {
-            return DiningFragment()
+        return if (position == 0) {
+            DiningFragment()
         } else {
-            return DiningInsightsFragment()
+            DiningInsightsFragment()
         }
     }
 

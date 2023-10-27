@@ -17,6 +17,7 @@
     <string name="labs_icon">Penn Labs</string>
     <string name="no_results">No results found</string>
     <string name="action_licenses">Open Source Licenses</string>
+    <string name="more">More</string>
 
     <!-- Contacts -->
     <string name="add_contact">Add contact</string>
@@ -29,6 +30,10 @@
     <!--Floating Bottom Bar -->
     <string name="accessibility_description">Screen menu</string>
     <string name="accessibility_item_description">%1$s menu item</string>
+
+    <!-- Fitness -->
+    <string name="fitness_room_open">Open</string>
+    <string name="fitness_room_closed">Closed</string>
 
     <!-- Dining -->
     <string name="dining_hall_open">Open</string>
@@ -47,14 +52,26 @@
     <string name="sort_by_open">Order by Open Status</string>
     <string name="dining_closed">Closed today</string>
     <string name="dining_balance">Dining Balance</string>
-    <string name="dining_dollars">Dining Balance</string>
+    <string name="dining_dollars">Dining Dollars</string>
     <string name="dining_swipes">Swipes</string>
     <string name="dining_guest_swipes">Guest Swipes</string>
     <string name="money">$</string>
     <string name="average_dining_dollars_spent">Average Dining Dollars Spent</string>
     <string name="past_week">this past week</string>
+    <string name="dining_dollars_predictions">Dining Dollars Predictions</string>
+    <string name="dining_swipes_predictions">Swipes Predictions</string>
     <string name="campus_express_token">Campus Express Token</string>
     <string name="campus_token_expires_in">Campus Express Token Expires In</string>
+    <string name="extra_balance">Extra Balance</string>
+    <string name="out_of_dining_dollars">Out of Dollars</string>
+    <string name="out_of_dining_dollars_message">You have no dining dollars left for this semester.</string>
+    <string name="out_of_dining_dollars_prediction_message">Based on your current balance and past behavior, we project you\'ll run out on this date.</string>
+    <string name="extra_dining_dollars_message">Based on your past behavior, we project you\'ll end the semester with dining dollars to spare.</string>
+    <string name="out_of_dining_swipes">Out of Swipes</string>
+    <string name="out_of_dining_swipes_message">You have no swipes left for this semester.</string>
+    <string name="out_of_dining_swipes_prediction_message">Based on your current balance and past behavior, we project you\'ll run out on this date.</string>
+    <string name="extra_dining_swipes_message">Based on your past behavior, we project you\'ll end the semester with swipes to spare.</string>
+    <string name="dining_graph_point">Date Filler Text \n Swipes Filler Text</string>
 
     <!-- LaundryRoom -->
     <string name="laundry_washer">Washers</string>
@@ -120,8 +137,8 @@
     <string name="feedback_txt">Click below to give us feedback!</string>
     <string name="request_feature">REQUEST A FEATURE</string>
     <string name="our_team">Our Team</string>
-    <string name="alumni">Alumni</string>
-    <string name="penn_labs_copyright">\u00A9 2021 Penn Labs</string>
+    <string name="alumni">Alumni (2020-2023) </string>
+    <string name="penn_labs_copyright">\u00A9 2023 Penn Labs</string>
     <string name="pref_courses_title">Courses</string>
     <string name="pref_recitations">Show recitations</string>
 
@@ -169,7 +186,7 @@
     <string name="access_token">accessToken</string>
     <string name="refresh_token">refreshToken</string>
     <string name="expires_in">expiresIn</string>
-    <string name="token_generated">tokenGenerated</string>
+    <string name="token_expires_at">tokenExpiresAt</string>
     <string name="penn_user">pennUser</string>
     <string name="penn_password">pennPassword</string>
     <string name="title_activity_login">Sign in</string>
@@ -189,6 +206,7 @@
     <string name="login_failed">"Login failed"</string>
     <string name="guest_mode">"Guest"</string>
     <string name="floating_bottom_bar_home">Home</string>
+    <string name="floating_bottom_bar_pca">PCA</string>
     <string name="floating_bottom_bar_dining">Dining</string>
     <string name="floating_bottom_bar_gsr_booking">GSR</string>
     <string name="floating_bottom_bar_laundry">Laundry</string>
@@ -204,4 +222,21 @@
         <item quantity="other">Alarm set for %1$d minutes.</item>
     </plurals>
 
+    <string name="pca_description">Get alerted when a course opens up!</string>
+    <string name="pca_title">Penn Course Alert</string>
+    <string name="pca_course">Course</string>
+    <string name="pca_phone_number">Phone Number</string>
+    <string name="pca_submit_button">Alert Me!</string>
+    <string name="pca_notify_when_closed">Notify when closed?</string>
+
+    <!-- Poll -->
+    <string name="vote">Vote</string>
+    <string name="sort_by">Sort By:</string>
+    <string name="room_number">Room Number</string>
+    <string name="pottruck">Pottruck</string>
+    <string name="fitness_sunday">Sunday</string>
+    <string name="fitness_mf">Mon - Fri</string>
+    <string name="fitness_sat">Saturday</string>
+    <string name="fitness_capacity">Capacity</string>
+    <string name="room">Room</string>
 </resources>

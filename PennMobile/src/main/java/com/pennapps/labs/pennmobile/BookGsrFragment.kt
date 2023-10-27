@@ -8,6 +8,8 @@ import android.content.Context
 import android.content.Context.ALARM_SERVICE
 import android.content.Intent
 import android.os.Build
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -25,7 +27,9 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult
+import kotlinx.android.synthetic.main.gsr_details_book.*
 import kotlinx.android.synthetic.main.gsr_details_book.view.*
+import kotlinx.android.synthetic.main.loading_panel.*
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
@@ -106,29 +110,38 @@ class BookGsrFragment : Fragment() {
             } else if (!emailEt.text.toString().matches("""[\w]+@(seas\.|sas\.|wharton\.|nursing\.)?upenn\.edu""".toRegex())) {
                 Toast.makeText(activity, "Please enter a valid Penn email", Toast.LENGTH_LONG).show()
             } else {
-                bookGSR(Integer.parseInt(gsrID), Integer.parseInt(gsrLocationCode), startTime, endTime, gid, roomId, roomName)
+                submit.isClickable = false
+                submit.background.setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY)
+                loading?.visibility = View.VISIBLE
+                bookGSR(Integer.parseInt(gsrID), gsrLocationCode, startTime, endTime, gid, roomId, roomName)
             }
         }
         return v
     }
 
-    private fun bookGSR(gsrId: Int, gsrLocationCode: Int, startTime: String?, endTime: String?, gid: Int, roomId: Int, roomName: String) {
+    private fun bookGSR(gsrId: Int, gsrLocationCode: String, startTime: String?, endTime: String?, gid: Int, roomId: Int, roomName: String) {
 
-        var sessionID = ""
-        var bearerToken = ""
-        activity?.let { activity ->
+
+
+        OAuth2NetworkManager(activity as MainActivity).getAccessToken {
+            var sessionID = ""
+            var bearerToken = ""
             val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-            sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "") ?: ""
-            bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
-            Log.i("BookGSRFragment", "$bearerToken");
+            Log.i("Bearer Token", sp.getString(getString(R.string.access_token), "").toString());
+            activity?.let { activity ->
+                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "") ?: ""
+                bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
+                Log.i("BookGSRFragment", bearerToken)
+            }
+            Log.i("BookGSRFragment", "Bearer $bearerToken")
+            Log.i("BookGSRFragment", "Start $startTime")
+            Log.i("BookGSRFragment", "End $endTime")
+            Log.i("BookGSRFragment", "GID $gid")
+            Log.i("BookGSRFragment", "ID $roomId")
+            Log.i("BookGSRFragment", "Room Name $roomName")
 
-        }
-        Log.i("BookGSRFragment", "Bearer $bearerToken")
-        Log.i("BookGSRFragment", "Start $startTime")
-        Log.i("BookGSRFragment", "End $endTime")
-        Log.i("BookGSRFragment", "GID $gid")
-        Log.i("BookGSRFragment", "ID $roomId")
-        Log.i("BookGSRFragment", "Room Name $roomName")
+
         mStudentLife.bookGSR(
                 //Passing the values
                 bearerToken,
@@ -191,27 +204,19 @@ class BookGsrFragment : Fragment() {
                             Log.e("BookGsrFragment", "GSR booking failed with " + result.getError())
                         }
                         // go back to GSR fragment
-                        val fragmentManager = (context as MainActivity).supportFragmentManager
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.content_frame, GsrTabbedFragment())
-                                .addToBackStack("GSR Fragment")
-                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                .commit()
+                        loading?.visibility = View.GONE
+                        activity?.onBackPressed()
                     }
 
                     override fun failure(error: RetrofitError) {
                         //If any error occurred displaying the error as toast
                         Log.e("BookGSRFragment", "Error booking gsr", error)
                         Toast.makeText(activity, "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
-                        val fragmentManager = (context as MainActivity).supportFragmentManager
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.content_frame, GsrTabbedFragment())
-                                .addToBackStack("GSR Fragment")
-                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                .commit()
+                        loading?.visibility = View.GONE
+                        activity?.onBackPressed()
                     }
                 }
-        )
+        )}
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -2,7 +2,6 @@ package com.pennapps.labs.pennmobile
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
@@ -41,6 +40,7 @@ class LaundrySettingsFragment : Fragment() {
         mActivity.closeKeyboard()
         setHasOptionsMenu(true)
         mActivity.toolbar.visibility = View.VISIBLE
+        mActivity.expandable_bottom_bar.visibility = View.GONE
 
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "12")
@@ -98,7 +98,7 @@ class LaundrySettingsFragment : Fragment() {
                             var roomList: MutableList<LaundryRoomSimple> = ArrayList()
 
                             // if hall name already exists, get the list of rooms and add to that
-                            val hallName = rooms[i].location ?: ""
+                            var hallName = rooms[i].location ?: ""
 
                             if (hallList.contains(hallName)) {
                                 roomList = hashMap[hallName] as MutableList<LaundryRoomSimple>
@@ -113,6 +113,11 @@ class LaundrySettingsFragment : Fragment() {
                                 if (i >= rooms.size) {
                                     break
                                 }
+                            }
+
+                            // name formatting for consistency
+                            if (hallName == "Lauder College House") {
+                                hallName = "Lauder"
                             }
 
                             // add the hall name to the list
@@ -145,9 +150,7 @@ class LaundrySettingsFragment : Fragment() {
         super.onResume()
         mActivity.removeTabs()
         mActivity.setTitle(R.string.laundry)
-        if (Build.VERSION.SDK_INT > 17){
-            mActivity.setSelectedTab(MainActivity.LAUNDRY)
-        }
+        mActivity.setSelectedTab(MainActivity.LAUNDRY)
     }
 
     override fun onDestroyView() {

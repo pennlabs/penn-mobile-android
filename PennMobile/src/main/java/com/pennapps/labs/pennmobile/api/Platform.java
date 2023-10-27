@@ -3,8 +3,6 @@ package com.pennapps.labs.pennmobile.api;
 import com.pennapps.labs.pennmobile.classes.AccessTokenResponse;
 import com.pennapps.labs.pennmobile.classes.GetUserResponse;
 
-import org.apache.commons.lang3.RandomStringUtils;
-
 import retrofit.Callback;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;

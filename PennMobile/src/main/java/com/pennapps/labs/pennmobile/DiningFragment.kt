@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile
 
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,8 +11,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.annotation.RequiresApi
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -21,8 +18,6 @@ import com.pennapps.labs.pennmobile.adapters.DiningAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.Venue
-import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
-import com.pennapps.labs.pennmobile.utils.Utils
 import kotlinx.android.synthetic.main.fragment_dining.*
 import kotlinx.android.synthetic.main.fragment_dining.internetConnectionDining
 import kotlinx.android.synthetic.main.fragment_dining.internetConnection_message_dining
@@ -30,6 +25,8 @@ import kotlinx.android.synthetic.main.fragment_dining.view.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.no_results.*
 import rx.Observable
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class DiningFragment : Fragment() {
 
@@ -55,20 +52,20 @@ class DiningFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_dining, container, false)
         v.dining_swiperefresh?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
         v.dining_halls_recycler_view?.layoutManager = LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false)
         v.dining_swiperefresh.setOnRefreshListener { getDiningHalls() }
-        getDiningHalls()
         // initAppBar(v)
         return v
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getDiningHalls()
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.dining_sort, menu)
@@ -90,7 +87,6 @@ class DiningFragment : Fragment() {
         menu.setGroupVisible(R.id.action_sort_by, diningInfoFragment == null || !diningInfoFragment.isVisible)
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun setSortByMethod(method: String) {
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
         val editor = sp.edit()
@@ -99,7 +95,6 @@ class DiningFragment : Fragment() {
         getDiningHalls()
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle presses on the action bar items
         when (item.itemId) {
@@ -126,13 +121,12 @@ class DiningFragment : Fragment() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun getDiningHalls() {
 
         //displays banner if not connected
         if (!isOnline(context)) {
             internetConnectionDining?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-            internetConnection_message_dining?.setText("Not Connected to Internet")
+            internetConnection_message_dining?.text = "Not Connected to Internet"
             internetConnectionDining?.visibility = View.VISIBLE
         } else {
             internetConnectionDining?.visibility = View.GONE
@@ -148,6 +142,7 @@ class DiningFragment : Fragment() {
                 .toList()
                 .subscribe({ diningHalls ->
                     mActivity.runOnUiThread {
+                        getMenus(diningHalls)
                         val adapter = DiningAdapter(diningHalls)
                         dining_halls_recycler_view?.adapter = adapter
                         loadingPanel?.visibility = View.GONE
@@ -158,14 +153,10 @@ class DiningFragment : Fragment() {
                         view?.let {displaySnack(it, "Just Updated")}
                     }
                 }, {
-                    Log.e("DiningFragment", "Error getting dining halls", it);
+                    Log.e("DiningFragment", "Error getting dining halls", it)
                     mActivity.runOnUiThread {
                         Log.e("Dining", "Could not load Dining page", it)
                         loadingPanel?.visibility = View.GONE
-                        //internetConnectionDining?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-                        //internetConnection_message_dining?.text = getString(R.string.internet_error)
-                        //internetConnectionDining?.visibility = View.VISIBLE
-                        no_results?.visibility = View.VISIBLE
                         dining_swiperefresh?.isRefreshing = false
                     }
                 })
@@ -175,9 +166,7 @@ class DiningFragment : Fragment() {
         super.onResume()
         mActivity.removeTabs()
         mActivity.setTitle(R.string.dining)
-        if (Build.VERSION.SDK_INT > 17) {
-            mActivity.setSelectedTab(MainActivity.DINING)
-        }
+        mActivity.setSelectedTab(MainActivity.DINING)
     }
 
 
@@ -187,13 +176,8 @@ class DiningFragment : Fragment() {
     @Suppress("DEPRECATION")
     private fun displaySnack(view: View, text: String) {
         val snackBar = Snackbar.make(view.snack_bar_dining, text, Snackbar.LENGTH_SHORT)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            snackBar.setTextColor(resources.getColor(R.color.white, context?.theme))
-            snackBar.setBackgroundTint(resources.getColor(R.color.penn_mobile_grey, context?.theme))
-        } else {
-            snackBar.setTextColor(resources.getColor(R.color.white))
-            snackBar.setBackgroundTint(resources.getColor(R.color.penn_mobile_grey))
-        }
+        snackBar.setTextColor(resources.getColor(R.color.white, context?.theme))
+        snackBar.setBackgroundTint(resources.getColor(R.color.penn_mobile_grey, context?.theme))
         // SnackBar message and action TextViews are placed inside a LinearLayout
         val snackBarLayout = snackBar.view as Snackbar.SnackbarLayout
         for (i in 0 until snackBarLayout.childCount) {
@@ -207,6 +191,28 @@ class DiningFragment : Fragment() {
     }
 
     companion object {
+        // Gets the dining hall menus
+        fun getMenus(venues: MutableList<DiningHall>) : Unit {
+            val idVenueMap = mutableMapOf<Int, DiningHall>()
+            venues.forEach { idVenueMap[it.id] = it }
+            val current = LocalDateTime.now()
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            val formatted = current.format(formatter)
+            val studentLife = MainActivity.studentLifeInstance
+            studentLife.getMenus(formatted).subscribe({ menus ->
+                menus.forEach { menu ->
+                    val id = menu.venue?.venue_id
+                    val diningHall = idVenueMap[id]
+                    val diningHallMenus = diningHall?.menus ?: mutableListOf()
+                    diningHallMenus.add(menu)
+                    diningHall?.sortMeals(diningHallMenus)
+                }
+            }, { throwable ->
+                Log.e("DiningFragment", "Error getting Menus", throwable)
+            })
+
+        }
+
         // Takes a venue then adds an image and modifies venue name if name is too long
         fun createHall(venue: Venue): DiningHall {
             when (venue.id) {

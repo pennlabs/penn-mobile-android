@@ -53,37 +53,64 @@ class GsrReservationsFragment : Fragment() {
         return view
     }
 
-    private fun getReservations() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (!isOnline(context)) {
+            internetConnectionGSRReservations?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            internetConnection_message_gsr_reservations?.text = "Not Connected to Internet"
+            internetConnectionGSRReservations?.visibility = View.VISIBLE
+            gsr_reservations_refresh_layout?.isRefreshing = false
+            loadingPanel?.visibility = View.GONE
+            gsr_no_reservations?.visibility = View.VISIBLE
+        } else {
+            internetConnectionGSRReservations?.visibility = View.GONE
+        }
+    }
 
+    private fun getReservations() {
+        if (!isOnline(context)) {
+            internetConnectionGSRReservations?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            internetConnection_message_gsr_reservations?.text = "Not Connected to Internet"
+            internetConnectionGSRReservations?.visibility = View.VISIBLE
+            gsr_reservations_refresh_layout?.isRefreshing = false
+            gsr_reservations_rv?.adapter = GsrReservationsAdapter(ArrayList())
+            loadingPanel?.visibility = View.GONE
+            gsr_no_reservations?.visibility = View.VISIBLE
+        } else {
+            internetConnectionGSRReservations?.visibility = View.GONE
+        }
         // get email and session id from shared preferences
-        val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
-        val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
-        val email = sp.getString(getString(R.string.email_address), "")
-        OAuth2NetworkManager(mActivity).getAccessToken()
-        val token = "Bearer " + sp.getString(getString(R.string.access_token), "")
 
         val labs = MainActivity.studentLifeInstance
-        labs.getGsrReservations(token).subscribe({ reservations ->
-            mActivity.runOnUiThread {
-                gsr_reservations_rv?.adapter = GsrReservationsAdapter(ArrayList(reservations))
-                loadingPanel?.visibility = View.GONE
-                if (reservations.size > 0) {
-                    gsr_no_reservations?.visibility = View.GONE
-                } else {
-                    gsr_no_reservations?.visibility = View.VISIBLE
+
+        OAuth2NetworkManager(mActivity).getAccessToken {
+            val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
+            val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
+            val email = sp.getString(getString(R.string.email_address), "")
+            val token = sp.getString(getString(R.string.access_token), "")
+            labs.getGsrReservations("Bearer $token").subscribe({ reservations ->
+                mActivity.runOnUiThread {
+                    gsr_reservations_rv?.adapter = GsrReservationsAdapter(ArrayList(reservations))
+                    loadingPanel?.visibility = View.GONE
+                    if (reservations.size > 0) {
+                        gsr_no_reservations?.visibility = View.GONE
+                    } else {
+                        gsr_no_reservations?.visibility = View.VISIBLE
+                    }
+                    // stop refreshing
+                    gsr_reservations_refresh_layout?.isRefreshing = false
                 }
-                // stop refreshing
-                gsr_reservations_refresh_layout?.isRefreshing = false
-            }
-        }, { throwable ->
-            mActivity.runOnUiThread {
-                Log.e("GsrReservationsFragment", "Error getting reservations", throwable);
-                throwable.printStackTrace()
-                loadingPanel?.visibility = View.GONE
-                gsr_no_reservations?.visibility = View.VISIBLE
-                gsr_reservations_refresh_layout?.isRefreshing = false
-            }
-        })
+            }, { throwable ->
+                mActivity.runOnUiThread {
+                    Log.e("GsrReservationsFragment", "Error getting reservations", throwable)
+                    gsr_reservations_rv?.adapter = GsrReservationsAdapter(ArrayList())
+                    throwable.printStackTrace()
+                    loadingPanel?.visibility = View.GONE
+                    gsr_no_reservations?.visibility = View.VISIBLE
+                    gsr_reservations_refresh_layout?.isRefreshing = false
+                }
+            })
+        }
     }
 
     private val broadcastReceiver = object: BroadcastReceiver() {

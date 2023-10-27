@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:title="@string/home"
+        android:icon="@drawable/ic_bottom_nav_home_grey"/>
+    <item
+        android:id="@+id/nav_dining"
+        android:title="@string/dining"
+        android:icon="@drawable/ic_bottom_nav_dining_grey"/>
+    <item
+        android:id="@+id/nav_gsr"
+        android:title="@string/gsr"
+        android:icon="@drawable/ic_bottom_nav_booking_grey"/>
+    <item
+        android:id="@+id/nav_laundry"
+        android:title="@string/laundry"
+        android:icon="@drawable/ic_bottom_nav_laundry_grey"/>
+
+    <item
+        android:id="@+id/nav_more"
+        android:title="@string/more"
+        android:icon="@drawable/ic_bottom_nav_more_grey"/>
+</menu>

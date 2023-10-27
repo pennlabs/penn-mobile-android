@@ -23,7 +23,7 @@ class GSRRoom {
 
     @SerializedName("lid")
     @Expose
-    var lid: Int? = null
+    var lid: String? = null
 
 
     @SerializedName("room_name")

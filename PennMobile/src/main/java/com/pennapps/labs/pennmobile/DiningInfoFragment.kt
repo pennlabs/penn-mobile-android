@@ -3,7 +3,6 @@ package com.pennapps.labs.pennmobile
 import android.content.Context
 import android.graphics.Color
 import android.net.ConnectivityManager
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -61,7 +60,7 @@ class DiningInfoFragment : Fragment() {
     }
 
     private fun hasMeals(day: VenueInterval): Boolean {
-        return day.meals.isNotEmpty();
+        return day.meals.isNotEmpty()
     }
 
     private fun addDiningHour(day: VenueInterval, vertical: ArrayList<TextView>): ArrayList<TextView> {
@@ -73,9 +72,7 @@ class DiningInfoFragment : Fragment() {
         textView.text = dateString
         textView.setTextAppearance(mActivity, R.style.DiningInfoDate)
         textView.setPadding(0, 40, 0, 0)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            textView.typeface = resources.getFont(R.font.gilroy_light)
-        }
+        textView.typeface = resources.getFont(R.font.gilroy_light)
         textView.setTextColor(resources.getColor(R.color.color_primary_dark))
 
         if (vertical.isEmpty()) {

@@ -7,7 +7,6 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 
@@ -31,32 +30,22 @@ class LaundryBroadcastReceiver : BroadcastReceiver() {
 
         // build notification
         val mBuilder: NotificationCompat.Builder
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channelName = "Laundry Alarm"
-            val channelId = "pennmobile_laundry_alarm"
-            val description = "Alarm for laundry machine availability"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(channelId, channelName, importance)
-            channel.description = description
-            channel.enableLights(true)
-            channel.lightColor = ContextCompat.getColor(context, R.color.color_primary)
-            notificationManager.createNotificationChannel(channel)
-            mBuilder = NotificationCompat.Builder(context, channel.id)
-                    .setSmallIcon(R.drawable.ic_bottom_nav_laundry_grey)
-                    .setContentTitle(context.getString(R.string.app_name))
-                    .setContentText(builder)
-        } else {
-            val channelId = "pennmobile_laundry_alarm"
-            mBuilder = NotificationCompat.Builder(context, channelId)
-                    .setSmallIcon(R.drawable.ic_bottom_nav_laundry_grey)
-                    .setContentTitle(context.getString(R.string.app_name))
-                    .setContentText(builder)
-        }
+        val channelName = "Laundry Alarm"
+        val channelId = "pennmobile_laundry_alarm"
+        val description = "Alarm for laundry machine availability"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(channelId, channelName, importance)
+        channel.description = description
+        channel.enableLights(true)
+        channel.lightColor = ContextCompat.getColor(context, R.color.color_primary)
+        notificationManager.createNotificationChannel(channel)
+        mBuilder = NotificationCompat.Builder(context, channel.id)
+                .setSmallIcon(R.drawable.ic_bottom_nav_laundry_grey)
+                .setContentTitle(context.getString(R.string.app_name))
+                .setContentText(builder)
         mBuilder.setAutoCancel(true)
         mBuilder.setDefaults(Notification.DEFAULT_SOUND or Notification.DEFAULT_VIBRATE)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mBuilder.color = ContextCompat.getColor(context, R.color.color_primary)
-        }
+        mBuilder.color = ContextCompat.getColor(context, R.color.color_primary)
 
         // intent to go to main activity
         val laundryIntent = Intent(context, MainActivity::class.java)

@@ -19,14 +19,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.webkit.CookieManager
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
-import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -37,39 +36,37 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
+import com.pennapps.labs.pennmobile.adapters.MainPagerAdapter
 import com.pennapps.labs.pennmobile.api.CampusExpress
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Serializer.*
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.*
-import com.pennapps.labs.pennmobile.components.floatingbottombar.ExpandableBottomBarMenuItem
 import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
-import com.pennapps.labs.pennmobile.more.MoreFragment
 import com.pennapps.labs.pennmobile.utils.Utils
+import com.squareup.okhttp.OkHttpClient
 import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.android.synthetic.main.custom_sneaker_view.view.*
 import kotlinx.android.synthetic.main.include_main.*
+import kotlinx.coroutines.sync.Mutex
 import retrofit.RestAdapter
 import retrofit.android.AndroidLog
+import retrofit.client.OkClient
 import retrofit.converter.GsonConverter
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
     private var tabShowed = false
     private lateinit var fragmentManager: FragmentManager
     private lateinit var mSharedPrefs: SharedPreferences
 
+    val tokenMutex = Mutex()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         if (Build.VERSION.SDK_INT > 28) {
             setTheme(R.style.DarkModeApi29)
-        }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            val alert = AlertDialog.Builder(this)
-            alert.setTitle("Android version")
-            alert.setMessage("You are running an older version of Android. Features may be limited")
-            alert.setPositiveButton("OK", null)
-            alert.show()
         }
         super.onCreate(savedInstanceState)
         if (applicationContext.resources.configuration.uiMode and
@@ -79,35 +76,18 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         Utils.getCurrentSystemTime()
 
-        //tabBarView = findViewById(R.id.bottom_navigation)
-       // toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(appbar.findViewById(R.id.toolbar))
         fragmentManager = supportFragmentManager
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.setHomeButtonEnabled(false)
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
+
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
-
-        expandable_bottom_bar.addItems(
-                ExpandableBottomBarMenuItem.Builder(this)
-                        .addItem(HOME, R.drawable.ic_home_grey)
-                        .textRes(R.string.floating_bottom_bar_home)
-                        .colorRes(R.color.floating_bottom_bar_selected).create()
-                        .addItem(DINING, R.drawable.ic_dining_grey)
-                        .textRes(R.string.floating_bottom_bar_dining)
-                        .colorRes(R.color.floating_bottom_bar_selected).create()
-                        .addItem(GSR, R.drawable.ic_gsr_grey)
-                        .textRes(R.string.floating_bottom_bar_gsr_booking)
-                        .colorRes(R.color.floating_bottom_bar_selected).create()
-                        .addItem(LAUNDRY, R.drawable.ic_laundry_grey)
-                        .textRes(R.string.floating_bottom_bar_laundry)
-                        .colorRes(R.color.floating_bottom_bar_selected).create()
-                        .addItem(MORE, R.drawable.ic_more_grey)
-                        .textRes(R.string.floating_bottom_bar_more)
-                        .colorRes(R.color.floating_bottom_bar_selected).create()
-                        .build()
-        )
+        val mainPagerAdapter = MainPagerAdapter(fragmentManager, lifecycle)
+        main_view_pager?.adapter = mainPagerAdapter
+        main_view_pager.isUserInputEnabled = false
+        main_view_pager.offscreenPageLimit = 5
         onExpandableBottomNavigationItemSelected()
         showBottomBar()
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -129,25 +109,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onExpandableBottomNavigationItemSelected() {
-        expandable_bottom_bar.onItemSelectedListener = { _, item ->
-            var fragment: Fragment? = null
-            when (item.text as String) {
-                "Home" -> if (fragmentManager.backStackEntryCount > 0) {
-                    fragment = HomeFragment()
-                }
-                "Dining" -> fragment = DiningHolderFragment()
-                "GSR" -> fragment = GsrTabbedFragment()
-                "Laundry" -> fragment = LaundryFragment()
-                "More" -> fragment = MoreFragment()
+        expandable_bottom_bar.setOnNavigationItemSelectedListener { item ->
+            val position = when (item.itemId) {
+                R.id.nav_home-> MainPagerAdapter.HOME_POSITION
+                R.id.nav_dining-> MainPagerAdapter.DINING_POSITION
+                R.id.nav_gsr-> MainPagerAdapter.GSR_POSITION
+                R.id.nav_laundry-> MainPagerAdapter.LAUNDRY_POSITION
+                R.id.nav_more-> MainPagerAdapter.MORE_POSITION
+                else -> MainPagerAdapter.HOME_POSITION
             }
-            fragmentTransact(fragment, true)
+            main_view_pager.setCurrentItem(position, false)
+            true
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    fun setSelectedTab(id: Int) {
-        expandable_bottom_bar.select(id)
+    fun setTab(id: Int) {
+        expandable_bottom_bar.selectedItemId = id
     }
+
+    fun setSelectedTab(id: Int) {}
 
     fun closeKeyboard() {
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -158,24 +138,48 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun startHomeFragment() {
-        OAuth2NetworkManager(this).getAccessToken()
-        val fragment: Fragment = HomeFragment()
-        fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, fragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit()
-        expandable_bottom_bar.select(HOME)
+        for (fragment in supportFragmentManager.fragments) {
+            if(fragment != null) {
+                fragmentManager.beginTransaction().remove(fragment).commit()
+            }
+        }
+        main_view_pager.visibility = View.VISIBLE
+        val mainPagerAdapter = MainPagerAdapter(fragmentManager, lifecycle)
+        main_view_pager?.adapter = mainPagerAdapter
+        main_view_pager.isUserInputEnabled = false
+        main_view_pager.offscreenPageLimit = 5
         expandable_bottom_bar.visibility = View.VISIBLE
+        setTab(HOME_ID)
     }
 
     fun startLoginFragment() {
+
+        CookieManager.getInstance().removeAllCookie()
+        val editor = PreferenceManager.getDefaultSharedPreferences(this).edit()
+        editor.remove(getString(R.string.penn_password))
+        editor.remove(getString(R.string.penn_user))
+        editor.remove(getString(R.string.first_name))
+        editor.remove(getString(R.string.last_name))
+        editor.remove(getString(R.string.email_address))
+        editor.remove(getString(R.string.pennkey))
+        editor.remove(getString(R.string.accountID))
+        editor.remove(getString(R.string.access_token))
+        editor.remove(getString(R.string.guest_mode))
+        editor.remove(getString(R.string.initials))
+        editor.apply()
+        val currentFragment = fragmentManager.findFragmentById(R.id.content_frame)
         val fragment: Fragment = LoginFragment()
-        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        fragmentManager.beginTransaction()
+
+        // change the fragment only if we're not already on the login fragment
+        if (currentFragment == null || currentFragment::class != fragment::class) {
+            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()
-        expandable_bottom_bar.visibility = View.GONE
+            main_view_pager.visibility = View.GONE
+            expandable_bottom_bar.visibility = View.GONE
+        }
     }
 
     fun showErrorToast(errorMessage: Int) {
@@ -210,7 +214,6 @@ class MainActivity : AppCompatActivity() {
         if (fragment != null) {
             runOnUiThread {
                 try {
-                    //TODO ALI COMMENT
                     if (popBackStack) {
                         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                     }
@@ -266,6 +269,13 @@ class MainActivity : AppCompatActivity() {
         const val DINING = 3
         const val LAUNDRY = 4
         const val MORE = 5
+        const val PCA = 6
+
+        const val HOME_ID = R.id.nav_home
+        const val GSR_ID = R.id.nav_gsr
+        const val DINING_ID = R.id.nav_dining
+        const val LAUNDRY_ID = R.id.nav_laundry
+        const val MORE_ID = R.id.nav_more
 
         private var mStudentLife: StudentLife? = null
         private var mPlatform: Platform? = null
@@ -348,9 +358,16 @@ class MainActivity : AppCompatActivity() {
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<HomeCell?>?>() {}.type, HomePageSerializer())
                     // gets user
                     gsonBuilder.registerTypeAdapter(Account::class.java, UserSerializer())
+                    // gets posts
+                    gsonBuilder.registerTypeAdapter(object:  TypeToken<MutableList<Post?>?>() {}.type, PostsSerializer())
                     val gson = gsonBuilder.create()
+                    val okHttpClient = OkHttpClient()
+                    okHttpClient.setConnectTimeout(35, TimeUnit.SECONDS) // Connection timeout
+                    okHttpClient.setReadTimeout(35, TimeUnit.SECONDS)    // Read timeout
+                    okHttpClient.setWriteTimeout(35, TimeUnit.SECONDS)   // Write timeout
                     val restAdapter = RestAdapter.Builder()
                             .setConverter(GsonConverter(gson))
+                            .setClient(OkClient(okHttpClient))
                             .setEndpoint("https://pennmobile.org/api")
                             .build()
                     mStudentLife = restAdapter.create(StudentLife::class.java)
@@ -365,31 +382,21 @@ class MainActivity : AppCompatActivity() {
 fun isOnline(context: Context?): Boolean {
     val connectivityManager =
             context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    if (connectivityManager != null) {
-        val capabilities =
-                if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-                    } else {
-                        return true
-                    }
-                } else {
-                    return true
-                }
-        if (capabilities != null) {
-            when {
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
-                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
-                    return true
-                }
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
-                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
-                    return true
-                }
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
-                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
-                    return true
-                }
+    val capabilities =
+        connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+    if (capabilities != null) {
+        when {
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                return true
+            }
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                return true
+            }
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                return true
             }
         }
     }
@@ -397,7 +404,6 @@ fun isOnline(context: Context?): Boolean {
 }
 
 /** Shows an error sneaker given a view group with an optional retry function */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 fun ViewGroup.showSneakerToast(message: String, doOnRetry: (() -> Unit)?, sneakerColor: Int) {
     val sneaker = Sneaker.with(this)
     val view = LayoutInflater.from(this.context)

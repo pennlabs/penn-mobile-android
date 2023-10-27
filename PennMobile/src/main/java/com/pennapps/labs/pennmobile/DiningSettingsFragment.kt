@@ -8,18 +8,18 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pennapps.labs.pennmobile.adapters.DiningSettingsAdapter
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
+import com.pennapps.labs.pennmobile.classes.DiningRequest
 import kotlinx.android.synthetic.main.fragment_dining_preferences.*
 import kotlinx.android.synthetic.main.fragment_dining_preferences.view.*
 import kotlinx.android.synthetic.main.include_main.*
-import kotlinx.android.synthetic.main.fragment_dining_preferences.view.*
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
 import rx.Observable
-import java.util.*
+
 
 class DiningSettingsFragment : Fragment() {
     private lateinit var mActivity: MainActivity
@@ -92,27 +92,31 @@ class DiningSettingsFragment : Fragment() {
         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
         val favoriteDiningHalls = ArrayList<Int>()
 
+
         for (hall in halls) {
             if (sp.getBoolean(hall.name, false)) {
                 favoriteDiningHalls.add(hall.id)
             }
         }
-
-        //preferences must be in the form of 1,2,3 (exclude brackets)
-        var apiPreparedString = favoriteDiningHalls.toString()
-        apiPreparedString = apiPreparedString.substring(1, apiPreparedString.length - 1)
-        val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
-        mStudentLife.sendDiningPref(bearerToken, apiPreparedString,
+        OAuth2NetworkManager(activity as MainActivity).getAccessToken {
+            val bearerToken =
+                "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
+            mStudentLife.sendDiningPref(bearerToken, DiningRequest(favoriteDiningHalls),
                 object : ResponseCallback() {
-            override fun success(response: Response) {
-                mActivity.onBackPressed()
-            }
+                    override fun success(response: Response) {
+                        mActivity.onBackPressed()
+                    }
 
-            override fun failure(error: RetrofitError) {
-                Log.e("Dining", "Error saving dining preferences: $error")
-                Toast.makeText(mActivity, "Error saving dining preferences", Toast.LENGTH_SHORT).show()
-            }
-        })
+                    override fun failure(error: RetrofitError) {
+                        Log.e("Dining", "Error saving dining preferences: $error")
+                        Toast.makeText(
+                            mActivity,
+                            "Error saving dining preferences",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                })
+        }
     }
 
 

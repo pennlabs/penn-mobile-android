@@ -26,7 +26,7 @@
 
         <Preference
             android:id="@+id/pref_news_feature"
-            app:icon="@drawable/ic_news_setting"
+            app:icon="@drawable/ic_news2"
             app:iconSpaceReserved="false"
             app:key="pref_news_feature"
             app:title="News" />
@@ -34,7 +34,7 @@
         <Preference
             android:id="@+id/pref_contact_feature"
             android:hapticFeedbackEnabled="true"
-            app:icon="@drawable/ic_contacts_setting"
+            app:icon="@drawable/ic_contacts2"
             app:iconSpaceReserved="false"
             app:key="pref_contacts_feature"
             app:title="Penn Contacts" />
@@ -42,10 +42,18 @@
         <Preference
             android:id="@+id/pref_about_feature"
             android:hapticFeedbackEnabled="true"
-            app:icon="@drawable/ic_about_setting"
+            app:icon="@drawable/ic_about2"
             app:iconSpaceReserved="false"
             app:key="pref_about_feature"
             app:title="About" />
+
+        <Preference
+            android:id="@+id/pref_fitness_feature"
+            android:hapticFeedbackEnabled="true"
+            app:icon="@drawable/ic_fitness2"
+            app:iconSpaceReserved="false"
+            app:key="pref_fitness_feature"
+            app:title="Fitness" />
 
 
     </PreferenceCategory>
@@ -60,7 +68,11 @@
             app:iconSpaceReserved="false"
             app:key="pref_labs_link"
             app:title="Penn Labs" />
-
+        <Preference
+            android:id="@+id/pref_feedback_link"
+            app:iconSpaceReserved="false"
+            app:key="pref_feedback_link"
+            app:title="Feedback" />
         <Preference
             android:id="@+id/pref_penn_link"
             app:iconSpaceReserved="false"
@@ -70,17 +82,17 @@
             android:id="@+id/pref_campus_express_link"
             app:iconSpaceReserved="false"
             app:key="pref_campus_express_link"
-            app:title="Campus express" />
+            app:title="Campus Express" />
         <Preference
             android:id="@+id/pref_canvas_link"
             app:iconSpaceReserved="false"
             app:key="pref_canvas_link"
             app:title="Canvas" />
         <Preference
-            android:id="@+id/pref_penn_in_touch_link"
+            android:id="@+id/pref_path_at_penn_link"
             app:iconSpaceReserved="false"
-            app:key="pref_penn_in_touch_link"
-            app:title="PennInTouch" />
+            app:key="pref_path_at_penn_link"
+            app:title="Path@Penn" />
         <Preference
             android:id="@+id/pref_penn_portal_link"
             app:iconSpaceReserved="false"

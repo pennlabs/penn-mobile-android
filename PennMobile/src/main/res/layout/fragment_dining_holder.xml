@@ -14,8 +14,7 @@
         android:background="@color/white"
         android:elevation="0dp"
         android:theme="@style/AppTheme.AppBarOverlay"
-        app:elevation="0dp"
-        tools:targetApi="lollipop">
+        app:elevation="0dp">
 
         <FrameLayout
             android:id="@+id/appbar_container"

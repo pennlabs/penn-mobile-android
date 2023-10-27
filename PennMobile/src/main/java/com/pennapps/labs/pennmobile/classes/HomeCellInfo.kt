@@ -4,11 +4,10 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
- * Created by Jackie on 2018-03-28. Updated by Marta on 2019-10-20.
+ * Created by Jackie on 2018-03-28.
  */
 
 class HomeCellInfo {
-
 
     // Article
     @SerializedName("article")
@@ -62,20 +61,14 @@ class HomeCellInfo {
     var featureStr: String? = null
 
     // Post
-    // Can also have source, title, subtitle, imageUrl
-    // All posts must have at least an image, an id, and a test flag
-    // Rules:
-    //  (1) A time label cannot exist without a source label
-    //  (2) An image cannot be accompanied with only a source label
-    //  (3) A subtitle cannot exist without a title
-
+    // Is defined of type 'Post' and has source, imageUrl,
+    // postUrl, title, subtitle, start/end times, and comments
+    //NOTE: Only the most recent post from the API will be processed
     @SerializedName("time_label")
-    var timeLabel: String? = null
-    @SerializedName("post_url")
-    var postUrl: String? = null
-    @SerializedName("post_id")
-    var postId: Int? = null
+    var post: Post? = null
     @SerializedName("test")
-    var isTest: Boolean? = null
+    val isTest: Boolean? = null
+
+
 
 }

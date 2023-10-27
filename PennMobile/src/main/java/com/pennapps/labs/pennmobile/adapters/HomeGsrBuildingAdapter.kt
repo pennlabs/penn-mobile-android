@@ -3,7 +3,6 @@ package com.pennapps.labs.pennmobile.adapters
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,14 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.pennapps.labs.pennmobile.GsrTabbedFragment
+import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.classes.CalendarEvent
-import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.gsr_reservation.view.*
 import kotlinx.android.synthetic.main.home_gsr_building.view.*
-import kotlinx.android.synthetic.main.university_event.view.*
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
 
 class HomeGsrBuildingAdapter(private var buildings: ArrayList<String>)
     : RecyclerView.Adapter<HomeGsrBuildingAdapter.HomeGsrBuildingViewHolder>() {
@@ -64,11 +58,7 @@ class HomeGsrBuildingAdapter(private var buildings: ArrayList<String>)
                     if (popBackStack) {
                         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                     }
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.content_frame, fragment)
-                            .addToBackStack("Main Activity")
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .commit()
+                    (activity as MainActivity).setTab(MainActivity.GSR_ID)
                 } catch (e: IllegalStateException) {
                     Log.e("HomeAdapter", e.toString())
                 }

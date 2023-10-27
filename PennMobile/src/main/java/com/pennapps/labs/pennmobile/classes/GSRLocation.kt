@@ -15,7 +15,7 @@ class GSRLocation {
 
     @SerializedName("lid")
     @Expose
-    @JvmField var id: Int = 0
+    @JvmField var id: String? = null
 
     @SerializedName("gid")
     @Expose

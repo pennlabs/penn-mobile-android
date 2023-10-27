@@ -1,10 +1,15 @@
 package com.pennapps.labs.pennmobile.api;
 
+import com.pennapps.labs.pennmobile.classes.AccessTokenResponse;
 import com.pennapps.labs.pennmobile.classes.Account;
 import com.pennapps.labs.pennmobile.classes.Article;
 import com.pennapps.labs.pennmobile.classes.CalendarEvent;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.DiningPreferences;
+import com.pennapps.labs.pennmobile.classes.DiningRequest;
+import com.pennapps.labs.pennmobile.classes.FitnessRequest;
+import com.pennapps.labs.pennmobile.classes.FitnessRoom;
+import com.pennapps.labs.pennmobile.classes.FitnessRoomUsage;
 import com.pennapps.labs.pennmobile.classes.FlingEvent;
 import com.pennapps.labs.pennmobile.classes.GSR;
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult;
@@ -12,13 +17,17 @@ import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.GSRReservation;
 import com.pennapps.labs.pennmobile.classes.Gym;
 import com.pennapps.labs.pennmobile.classes.HomeCell;
-import com.pennapps.labs.pennmobile.classes.HomeCellInfo;
+import com.pennapps.labs.pennmobile.classes.LaundryRequest;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
+import com.pennapps.labs.pennmobile.classes.Poll;
+import com.pennapps.labs.pennmobile.classes.Post;
 import com.pennapps.labs.pennmobile.classes.SaveAccountResponse;
 import com.pennapps.labs.pennmobile.classes.Venue;
+import com.pennapps.labs.pennmobile.classes.WhartonStatus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.Callback;
@@ -40,8 +49,30 @@ import rx.Observable;
  */
 public interface StudentLife {
 
+    @FormUrlEncoded
+    @POST("/accounts/token/")
+    void getAccessToken(
+            @Field("code") String authCode,
+            @Field("grant_type") String grantType,
+            @Field("client_id") String clientID,
+            @Field("redirect_uri") String redirectURI,
+            @Field("code_verifier") String codeVerifier,
+            Callback<AccessTokenResponse> callback);
+
+    @FormUrlEncoded
+    @POST("/accounts/token/")
+    void refreshAccessToken(
+            @Field("refresh_token") String refreshToken,
+            @Field("grant_type") String grantType,
+            @Field("client_id") String clientID,
+            Callback<AccessTokenResponse> callback);
+
     @GET("/dining/venues")
     Observable<List<Venue>> venues();
+
+    @GET("/dining/menus/{day}")
+    Observable<List<DiningHall.Menu>> getMenus(
+            @Path("day") String day);
 
     @GET("/dining/weekly_menu/{id}")
     Observable<DiningHall> daily_menu(
@@ -64,10 +95,16 @@ public interface StudentLife {
 
     @GET("/gsr/availability/{id}/{gid}")
     Observable<GSR> gsrRoom(
-            @Path("id") int id,
+            @Header("Authorization") String bearerToken,
+            @Path("id") String id,
             @Path("gid") int gid,
             @Query("start") String date
             );
+
+    @GET("/gsr/wharton")
+    Observable<WhartonStatus> isWharton (
+            @Header("Authorization") String bearerToken
+    );
 
     @FormUrlEncoded
     @POST("/gsr/book/")
@@ -99,7 +136,6 @@ public interface StudentLife {
             @Header("Authorization") String bearerToken
     );
 
-
     @GET("/fitness/schedule")
     Observable<List<Gym>> getGymData();
 
@@ -130,17 +166,54 @@ public interface StudentLife {
     Observable<List<Integer>> getLaundryPref(
             @Header("Authorization") String bearerToken);
 
-    @FormUrlEncoded
-    @POST("/laundry/preferences")
+    @POST("/laundry/preferences/")
     void sendLaundryPref(
             @Header("Authorization") String bearerToken,
-            @Field("rooms") String rooms,
+            @Body LaundryRequest rooms,
             Callback<Response> callback);
 
-    @FormUrlEncoded
-    @POST("/dining/preferences")
+    @Headers({"Content-Type: application/json"})
+    @POST("/dining/preferences/")
     void sendDiningPref(
             @Header("Authorization") String bearerToken,
-            @Field("venues") String venues,
+            @Body DiningRequest body,
+            Callback<Response> callback);
+
+    @GET("/portal/posts/browse/")
+    Observable<List<Post>> validPostsList(
+            @Header("Authorization") String bearerToken
+    );
+
+    @FormUrlEncoded
+    @POST("/portal/polls/browse/")
+    Observable<List<Poll>> browsePolls(
+            @Header("Authorization") String bearerToken,
+            @Field("id_hash") String idHash
+    );
+
+    @FormUrlEncoded
+    @POST("/portal/votes/")
+    void createPollVote(
+            @Header("Authorization") String bearerToken,
+            @Field("id_hash") String idHash,
+            @Field("poll_options") ArrayList<Integer> pollOptions,
+            Callback<Response> callback);
+    @GET("/penndata/fitness/rooms/")
+    Observable<List<FitnessRoom>> getFitnessRooms();
+
+    @GET("/penndata/fitness/usage/{id}")
+    Observable<FitnessRoomUsage> getFitnessRoomUsage(
+            @Path("id") int id,
+            @Query("num_samples") int samples,
+            @Query("group_by") String groupBy);
+
+    @GET("/penndata/fitness/preferences")
+    Observable<List<Integer>> getFitnessPreferences(
+            @Header("Authorization") String bearerToken);
+
+    @POST("/penndata/fitness/preferences/")
+    void sendFitnessPref(
+            @Header("Authorization") String bearerToken,
+            @Body FitnessRequest rooms,
             Callback<Response> callback);
 }

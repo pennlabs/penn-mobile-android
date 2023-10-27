@@ -44,13 +44,8 @@
 
     <Button
         android:id="@+id/submit_gsr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/gsr_email"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:textStyle="bold"
-        android:textColor="@color/gsr_green"
-        android:background="@drawable/gsr_room_background"
-        android:text="@string/submit" />
+        android:text="@string/submit"
+        style="@style/submit_button" />
+
+    <include android:id="@+id/loading" layout="@layout/loading_panel" android:visibility="gone"/>
 </RelativeLayout>

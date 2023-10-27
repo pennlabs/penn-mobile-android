@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/internetConnectionPCA"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/internetConnection_message_pca"
+            style="@style/internet_error_message" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+<!--    <include layout="@layout/loading_panel" />-->
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <!--    <TextView-->
+        <!--        android:id="@+id/pca_title"-->
+        <!--        android:layout_width="wrap_content"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:text="@string/pca_title"-->
+        <!--        tools:layout_editor_absoluteX="162dp"-->
+        <!--        tools:layout_editor_absoluteY="69dp" />-->
+
+        <TextView
+            android:id="@+id/pca_description"
+            style="@style/InfoText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/pca_description"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pcaLogo" />
+
+        <ImageView
+            android:id="@+id/pcaLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:src="@drawable/ic_pca_logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/guestLoginErrorImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_about_setting" />
+
+        <TextView
+            android:id="@+id/guestLoginErrorText"
+            style="@style/InfoText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Please login to use PCA!"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/pca_course_spinner"
+            style="@style/MainText"
+            android:layout_width="225dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="24dp"
+            android:gravity="center_vertical"
+            android:hint="@string/pca_course"
+            app:drawableEndCompat="@drawable/ic_baseline_arrow_drop_down_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pca_description" />
+
+        <TextView
+            android:id="@+id/pca_section_spinner"
+            style="@style/MainText"
+            android:layout_width="225dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:hint="Section"
+            app:drawableEndCompat="@drawable/ic_baseline_arrow_drop_down_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pca_course_spinner" />
+
+        <EditText
+            android:id="@+id/pca_email_edit_text"
+            style="@style/MainText"
+            android:layout_width="225dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:ems="10"
+            android:gravity="left"
+            android:hint="@string/email_address"
+            android:inputType="textEmailAddress"
+            android:minHeight="48dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pca_section_spinner" />
+
+        <EditText
+            android:id="@+id/pca_phone_edit_text"
+            style="@style/MainText"
+            android:layout_width="225dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:ems="10"
+            android:gravity="left"
+            android:hint="@string/pca_phone_number"
+            android:inputType="phone"
+            android:minHeight="48dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pca_email_edit_text"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="225dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pca_phone_edit_text">
+
+            <TextView
+                android:id="@+id/pca_notify_text"
+                style="@style/MainText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pca_notify_when_closed"
+                tools:layout_editor_absoluteX="99dp"
+                tools:layout_editor_absoluteY="397dp" />
+
+            <CheckBox
+                android:id="@+id/pca_notify_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                tools:layout_editor_absoluteX="267dp"
+                tools:layout_editor_absoluteY="381dp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/pca_alert_button"
+            style="@style/pca_alert_me"
+            android:layout_width="225dp"
+            android:layout_height="50dp"
+            android:text="@string/pca_submit_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

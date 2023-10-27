@@ -2,12 +2,10 @@ package com.pennapps.labs.pennmobile
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.*
-import androidx.annotation.RequiresApi
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -64,7 +62,6 @@ class LaundryFragment : Fragment() {
         FirebaseAnalytics.getInstance(mContext).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_laundry, container, false)
 
@@ -95,10 +92,27 @@ class LaundryFragment : Fragment() {
         return view
     }
 
-    private fun initAppBar(view: View) {
-        if (Build.VERSION.SDK_INT > 16) {
-            (view.appbar_home.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mActivity.removeTabs()
+        mActivity.toolbar.visibility = View.GONE
+        numRooms = sp?.getInt(mContext.getString(R.string.num_rooms_pref), 100) ?: 0
+
+        // get num rooms to display
+        count = 0
+        for (i in 0 until numRooms) {
+            if (sp?.getBoolean(i.toString(), false) == true) {
+                count += 1
+            }
         }
+        mActivity.setTitle(R.string.laundry)
+        mActivity.setSelectedTab(MainActivity.LAUNDRY)
+        loadingPanel?.visibility = View.VISIBLE
+        updateRooms()
+    }
+
+    private fun initAppBar(view: View) {
+        (view.appbar_home.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
         view.title_view.text = getString(R.string.laundry)
         view.date_view.text = Utils.getCurrentSystemTime()
         view.laundry_preferences.setOnClickListener {
@@ -132,23 +146,6 @@ class LaundryFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        mActivity.removeTabs()
-        mActivity.toolbar.visibility = View.GONE
-        numRooms = sp?.getInt(mContext.getString(R.string.num_rooms_pref), 100) ?: 0
-
-        // get num rooms to display
-        count = 0
-        for (i in 0 until numRooms) {
-            if (sp?.getBoolean(i.toString(), false) == true) {
-                count += 1
-            }
-        }
-        mActivity.setTitle(R.string.laundry)
-        if (Build.VERSION.SDK_INT > 17){
-            mActivity.setSelectedTab(MainActivity.LAUNDRY)
-        }
-        loadingPanel?.visibility = View.VISIBLE
-        updateRooms()
     }
 
     private fun updateRooms() {

@@ -9,10 +9,13 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.browser.customtabs.CustomTabsServiceConnection
@@ -22,23 +25,36 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.fragment.app.FragmentTransaction
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.*
+import com.pennapps.labs.pennmobile.DiningFragment.Companion.getMenus
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.CalendarEvent
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.HomeCell
+import com.pennapps.labs.pennmobile.classes.PollCell
 import com.pennapps.labs.pennmobile.components.sneaker.Utils.convertToDp
+import com.pennapps.labs.pennmobile.utils.Utils
 import com.squareup.picasso.Picasso
 import eightbitlab.com.blurview.RenderScriptBlur
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.home_base_card.view.*
+import kotlinx.android.synthetic.main.home_base_card.view.home_card_rv
+import kotlinx.android.synthetic.main.home_base_card.view.home_card_subtitle
+import kotlinx.android.synthetic.main.home_base_card.view.home_card_title
+import kotlinx.android.synthetic.main.poll_card.view.*
 import kotlinx.android.synthetic.main.home_news_card.view.*
 import kotlinx.android.synthetic.main.home_post_card.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import retrofit.ResponseCallback
+import retrofit.RetrofitError
+import retrofit.client.Response
 import rx.Observable
 
 
@@ -66,6 +82,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         private const val GSR_BOOKING = 6
         private const val POST = 7
         private const val FEATURE = 8
+        private const val POLL = 9
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -82,6 +99,9 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             }
             FEATURE -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_post_card, parent, false))
+            }
+            POLL -> {
+                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.poll_card, parent, false))
             }
             NOT_SUPPORTED -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.empty_view, parent, false))
@@ -103,6 +123,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             "gsr_booking" -> bindGsrBookingCell(holder, cell)
             "post" -> bindPostCell(holder, cell)
             "feature" -> bindFeatureCell(holder, cell)
+            "poll" -> bindPollCell(holder, cell, position)
             else -> Log.i("HomeAdapter", "Unsupported type of data at position $position")
         }
     }
@@ -130,6 +151,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             "gsr_booking" -> GSR_BOOKING
             "post" -> POST
             "feature" -> FEATURE
+            "poll" -> POLL
             else -> NOT_SUPPORTED
         }
     }
@@ -144,12 +166,17 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         holder.itemView.home_card_rv.adapter = GsrReservationsAdapter(ArrayList(reservations))
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun bindDiningCell(holder: ViewHolder, cell: HomeCell) {
         holder.itemView.home_card_title.text = "Favorites"
         holder.itemView.home_card_subtitle.text = "DINING HALLS"
         holder.itemView.dining_prefs_btn.visibility = View.VISIBLE
         holder.itemView.dining_prefs_btn.setOnClickListener {
-            mActivity.fragmentTransact(DiningSettingsFragment(), false)
+            mActivity.supportFragmentManager.beginTransaction()
+                .replace(R.id.content_frame, DiningSettingsFragment())
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit()
         }
 
         mStudentLife.venues()
@@ -168,6 +195,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
                             favorites.add(it)
                         }
                     }
+                    getMenus(favorites)
                     holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
                         LinearLayoutManager.VERTICAL, false)
                     holder.itemView.home_card_rv.adapter = DiningCardAdapter(favorites)
@@ -237,16 +265,11 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         }
 
         /** Sets up blur view on news card */
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            holder.itemView.blurView.setupWith(holder.itemView.news_card_container)
-                .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))
-                .setBlurAlgorithm(RenderScriptBlur(mContext))
-                .setBlurRadius(25f)
-                .setHasFixedTransformationMatrix(true)
-        } else {
-            holder.itemView.blurView.setBackgroundColor(ColorUtils
-                .setAlphaComponent(getColor(mContext, R.color.black), 225))
-        }
+        holder.itemView.blurView.setupWith(holder.itemView.news_card_container)
+            .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))
+            .setBlurAlgorithm(RenderScriptBlur(mContext))
+            .setBlurRadius(25f)
+            .setHasFixedTransformationMatrix(true)
 
         holder.itemView.button.setOnClickListener {
 
@@ -316,9 +339,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         val params : ConstraintLayout.LayoutParams =
             holder.itemView.home_card_rv.layoutParams as ConstraintLayout.LayoutParams
         params.setMargins(0, 0, 0, 0)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            params.marginStart = 0
-        }
+        params.marginStart = 0
 
         holder.itemView.home_card_rv.layoutParams = params
 
@@ -345,17 +366,54 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
 
     private fun bindPostCell(holder: ViewHolder, cell: HomeCell) {
         val info = cell.info
-        holder.itemView.home_post_title.text = info?.title
-        holder.itemView.home_post_subtitle.text = info?.subtitle
-        holder.itemView.home_post_source.text = info?.source
-        holder.itemView.home_post_timestamp.text = info?.timeLabel
+        val post = cell.info?.post
+        holder.itemView.home_post_title.text = post?.title
+        holder.itemView.home_post_subtitle.text = post?.subtitle
+        holder.itemView.home_post_source.text = "Penn Labs" //post?.clubCode?.capitalize()
+        val time = post?.startDate?.substring(5, 7) + " / " +
+                post?.startDate?.substring(8, 10) + " - " +
+                post?.expireDate?.substring(5, 7) + " / " +
+                post?.expireDate?.substring(8, 10)
+        holder.itemView.home_post_timestamp.text = time
+        Picasso.get()
+            .load(post?.imageUrl)
+            .fit()
+            .centerCrop()
+            .into(holder.itemView.home_post_iv)
+        /** Adds dynamically generated accent color from the fetched image to the news card */
+        var accentColor: Int =  getColor(mContext, R.color.black)
+        GlobalScope.launch(Dispatchers.Default) {
+            val bitmap = Picasso.get().load(post?.imageUrl).get()
+            // Create palette from bitmap
+            fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
+            val vibrantSwatch: Palette.Swatch? = createPaletteSync(bitmap).darkVibrantSwatch
+            vibrantSwatch?.rgb?.let { accentColor = it }
+            mActivity.runOnUiThread {
+                // Change all the components to match the accent color palette
+                vibrantSwatch?.titleTextColor?.let {
+                    holder.itemView.home_post_title.setTextColor(ColorUtils.setAlphaComponent(it, 150))
+                    holder.itemView.home_post_subtitle.setTextColor(it)
+                    holder.itemView.home_post_timestamp.setTextColor(it)
+                    holder.itemView.home_post_source.setTextColor(it)
+                }
+                val bitmapDrawable = BitmapDrawable(
+                    holder.view.resources,
+                    bitmap)
 
-        Picasso.get().load(info?.imageUrl).fit().centerCrop().into(holder.itemView.home_post_iv)
-
+                holder.itemView.post_card_container.background = bitmapDrawable
+                holder.itemView.postBlurView
+                    .setOverlayColor(ColorUtils.setAlphaComponent(accentColor, 150))
+            }
+        }
+        /** Sets up blur view on post card */
+        holder.itemView.postBlurView.setupWith(holder.itemView.post_card_container)
+            .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))
+            .setBlurAlgorithm(RenderScriptBlur(mContext))
+            .setBlurRadius(25f)
+            .setHasFixedTransformationMatrix(true)
+        /** Post clicking logic if there exists a URL **/
+        val url = post?.postUrl ?: return
         holder.itemView.home_post_card.setOnClickListener {
-
-            val url = info?.postUrl
-
             val connection = NewsCustomTabsServiceConnection()
             builder = CustomTabsIntent.Builder()
             share = Intent(Intent.ACTION_SEND)
@@ -396,6 +454,64 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             mActivity.fragmentTransact(FlingFragment(), false)
         }
     }
+
+    private fun bindPollCell(holder: ViewHolder, cell: HomeCell, position: Int) {
+        val poll = (cell as PollCell).poll
+        holder.itemView.home_card_title?.text = poll.question
+        holder.itemView.home_card_subtitle_2?.text = "${poll.totalVotes} Votes"
+        if(poll.clubCode != null) {
+            holder.itemView.home_card_subtitle?.text = "POLL FROM ${poll.clubCode}"
+        }
+        holder.itemView.home_card_rv?.layoutManager = LinearLayoutManager(mContext)
+        holder.itemView.home_card_rv?.adapter = PollOptionAdapter(ArrayList(poll.options), poll)
+        if(!poll.isVisible) {
+            holder.itemView.vote_btn?.setOnClickListener {
+                var isSelected = false
+                poll.options.forEach { isSelected = isSelected || it.selected }
+                if (!isSelected) {
+                    Toast.makeText(
+                        mActivity,
+                        "Need to select an option to vote",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@setOnClickListener
+                }
+                poll.isVisible = true
+                (holder.itemView.home_card_rv?.adapter as PollOptionAdapter).notifyDataSetChanged()
+                holder.itemView.vote_btn?.isClickable = false
+                notifyItemChanged(position)
+                val selectedOptions = ArrayList<Int>()
+                poll.options.forEach { if (it.id != null && it.selected) {
+                    selectedOptions.add(it.id)
+                } }
+                val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
+                val idHash = Utils.getSha256Hash(deviceID)
+                OAuth2NetworkManager(mActivity).getAccessToken {
+                    val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
+                    val bearerToken = "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
+
+                    mStudentLife.createPollVote(
+                        bearerToken,
+                        idHash,
+                        selectedOptions,
+                        object : ResponseCallback() {
+                            override fun success(response: Response?) {
+                                Log.i("HomeAdapter", "Successfully voted for poll!")
+                            }
+
+                            override fun failure(error: RetrofitError?) {
+                                Log.e("HomeAdapter", "Error voting for poll", error)
+                            }
+
+                        })
+                }
+            }
+        } else {
+            holder.itemView.vote_btn?.setTextColor(mContext.resources.getColor(R.color.gray))
+            holder.itemView.vote_btn?.setOnClickListener {}
+        }
+    }
+
     // Chrome custom tabs to launch news site
 
     internal inner class NewsCustomTabsServiceConnection : CustomTabsServiceConnection() {

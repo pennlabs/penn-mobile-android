@@ -56,25 +56,21 @@ public class CustomBlurDialogue extends BlurView {
         ViewGroup rootView = decorView.findViewById(android.R.id.content);
         Drawable windowBackground = decorView.getBackground();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            setupWith(rootView)
-                    .setFrameClearDrawable(windowBackground)
-                    .setBlurAlgorithm(new RenderScriptBlur(getContext()))
-                    .setBlurRadius(radius)
-                    .setHasFixedTransformationMatrix(true);
-        }
+        setupWith(rootView)
+                .setFrameClearDrawable(windowBackground)
+                .setBlurAlgorithm(new RenderScriptBlur(getContext()))
+                .setBlurRadius(radius)
+                .setHasFixedTransformationMatrix(true);
     }
 
     /**
-     * Set Rounded Corners on Lollipop and above. Use rounded drawable and disable blur below Lollipop.
+     * Set Rounded Corners
      * @param cornerRadius - set corner radius in pixels.
      */
     private void setRoundedCorners(int cornerRadius) {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setBackground(new RoundedCornersDrawable(cornerRadius));
-            setOutlineProvider(ViewOutlineProvider.BACKGROUND);
-            setClipToOutline(true);
-        }
+        setBackground(new RoundedCornersDrawable(cornerRadius));
+        setOutlineProvider(ViewOutlineProvider.BACKGROUND);
+        setClipToOutline(true);
     }
 }

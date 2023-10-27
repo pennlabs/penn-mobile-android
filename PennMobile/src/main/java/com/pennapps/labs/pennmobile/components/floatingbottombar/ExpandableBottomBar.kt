@@ -269,9 +269,7 @@ class ExpandableBottomBar @JvmOverloads constructor(
             return
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            applyTransition()
-        }
+        applyTransition()
 
         val set = ConstraintSet()
         set.clone(this)
@@ -283,7 +281,6 @@ class ExpandableBottomBar @JvmOverloads constructor(
         set.applyTo(this)
     }
 
-    @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun applyTransition() {
         val autoTransition = AutoTransition()
         autoTransition.duration = transitionDuration.toLong()
