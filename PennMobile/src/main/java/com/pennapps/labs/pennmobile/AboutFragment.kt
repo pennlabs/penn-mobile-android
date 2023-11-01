@@ -20,12 +20,15 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.RequestListener
 import com.pennapps.labs.pennmobile.adapters.AboutAdapter
-import kotlinx.android.synthetic.main.fragment_about.view.*
+import com.pennapps.labs.pennmobile.databinding.FragmentAboutBinding
 
 class AboutFragment : Fragment() {
 
     private lateinit var mActivity: MainActivity
     private lateinit var sharedPreferences: SharedPreferences
+
+    private var _binding: FragmentAboutBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,9 +38,10 @@ class AboutFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_about, container, false)
+        _binding = FragmentAboutBinding.inflate(inflater, container, false)
+        val view = binding.root
 
-        val gif = view.logo_gif_iv?.drawable
+        val gif = binding.logoGifIv
         if (gif is AnimatedVectorDrawable) {
             gif.start()
         } else {
@@ -49,25 +53,25 @@ class AboutFragment : Fragment() {
                     resource.setLoopCount(1)
                     return false
                 }
-            }).into(view.logo_gif_iv)
+            }).into(binding.logoGifIv)
         }
 
-        view.our_team_rv?.layoutManager = GridLayoutManager(context, 3)
-        view.alumni_rv?.layoutManager = GridLayoutManager(context, 3)
+        binding.ourTeamRv.layoutManager = GridLayoutManager(context, 3)
+        binding.alumniRv.layoutManager = GridLayoutManager(context, 3)
         val members = arrayListOf("Rohan Chhaya", "Julius Snipes", "Aaron Mei", "Trini Feng", "Vedha Avali")
         val alumni = arrayListOf("Marta García Ferreiro", "Varun Ramakrishnan", "Sahit Penmatcha",
             "Anna Wang", "Sophia Ye", "Awad Irfan", "Liz Powell", "Davies Lumumba", "Anna Jiang", "Ali Krema")
-        view.our_team_rv?.adapter = AboutAdapter(members)
-        view.alumni_rv?.adapter = AboutAdapter(alumni)
+        binding.ourTeamRv.adapter = AboutAdapter(members)
+        binding.alumniRv.adapter = AboutAdapter(alumni)
 
-        ViewCompat.setNestedScrollingEnabled(view.our_team_rv, false)
+        ViewCompat.setNestedScrollingEnabled(binding.ourTeamRv, false)
 
-        view.learn_more_btn?.setOnClickListener {
+        binding.learnMoreBtn.setOnClickListener {
             val i = Intent(Intent.ACTION_VIEW, Uri.parse("https://pennlabs.org"))
             startActivity(i)
         }
 
-        view.licenses_btn?.setOnClickListener {
+        binding.licensesBtn.setOnClickListener {
             val webView = LayoutInflater.from(mActivity).inflate(R.layout.dialog_licenses, null) as WebView
             webView.loadUrl("file:///android_asset/open_source_licenses.html")
             AlertDialog.Builder(mActivity, R.style.Theme_AppCompat_Light_Dialog_Alert)
@@ -82,6 +86,11 @@ class AboutFragment : Fragment() {
         mActivity.setTitle(R.string.contacts)
 
         return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onResume() {

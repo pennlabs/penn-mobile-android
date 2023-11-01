@@ -9,12 +9,15 @@ import android.view.*
 import android.widget.Toast
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.FlingRecyclerViewAdapter
-import kotlinx.android.synthetic.main.fragment_fling.*
+import com.pennapps.labs.pennmobile.databinding.FragmentFlingBinding
 
 
 class FlingFragment : Fragment() {
 
     private lateinit var mActivity: MainActivity
+
+    private var _binding : FragmentFlingBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,12 +56,13 @@ class FlingFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_fling, container, false)
+        _binding = FragmentFlingBinding.inflate(inflater, container, false)
+        val view = binding.root
         val labs = MainActivity.studentLifeInstance
         labs.flingEvents.subscribe({ flingEvents ->
             activity?.runOnUiThread {
-                fling_fragment_recyclerview?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                fling_fragment_recyclerview?.adapter = FlingRecyclerViewAdapter(context, flingEvents)
+                binding.flingFragmentRecyclerview.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                binding.flingFragmentRecyclerview.adapter = FlingRecyclerViewAdapter(context, flingEvents)
             }
         }, { activity?.runOnUiThread { Toast.makeText(activity, "Could not retrieve Spring Fling schedule", Toast.LENGTH_LONG).show() } })
         return view
@@ -66,6 +70,7 @@ class FlingFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        _binding = null
         mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
     }
 

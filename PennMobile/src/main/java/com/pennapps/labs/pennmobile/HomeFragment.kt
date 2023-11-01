@@ -5,14 +5,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -25,9 +23,9 @@ import com.pennapps.labs.pennmobile.classes.HomeCell
 import com.pennapps.labs.pennmobile.classes.HomeCellInfo
 import com.pennapps.labs.pennmobile.classes.PollCell
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
+import com.pennapps.labs.pennmobile.databinding.FragmentHomeBinding
 import com.pennapps.labs.pennmobile.utils.Utils
 import com.pennapps.labs.pennmobile.utils.Utils.getSha256Hash
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.include_main.*
 import kotlinx.android.synthetic.main.loading_panel.*
@@ -39,6 +37,9 @@ class HomeFragment : Fragment() {
 
     private lateinit var mActivity: MainActivity
     private lateinit var sharedPreferences: SharedPreferences
+
+    private var _binding : FragmentHomeBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +62,8 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_home, container, false)
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        val view = binding.root
 
         view.home_cells_rv.layoutManager = LinearLayoutManager(
             context,
@@ -76,6 +78,11 @@ class HomeFragment : Fragment() {
         return view
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHomePage()
@@ -85,16 +92,16 @@ class HomeFragment : Fragment() {
 
         //displays banner if not connected
         if (!isOnline(context)) {
-            internetConnectionHome?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-            internetConnection_message?.text = getString(R.string.internet_error)
-            home_cells_rv?.setPadding(0, 90, 0, 0)
-            internetConnectionHome?.visibility = View.VISIBLE
-            home_refresh_layout?.isRefreshing = false
+            binding.internetConnectionHome.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            binding.internetConnectionMessage.text = getString(R.string.internet_error)
+            binding.homeCellsRv.setPadding(0, 90, 0, 0)
+            binding.internetConnectionHome.visibility = View.VISIBLE
+            binding.homeRefreshLayout.isRefreshing = false
             loadingPanel?.visibility = View.GONE
             return
         } else {
-            internetConnectionHome?.visibility = View.GONE
-            home_cells_rv?.setPadding(0, 0, 0, 0)
+            binding.internetConnectionHome.visibility = View.GONE
+            binding.homeCellsRv.setPadding(0, 0, 0, 0)
         }
 
         // get API data
@@ -130,10 +137,10 @@ class HomeFragment : Fragment() {
                     Log.i("HomeFragment", "polls $loaded")
 
                     if (loaded == totalCells) {
-                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                        binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                         loadingPanel?.visibility = View.GONE
-                        internetConnectionHome?.visibility = View.GONE
-                        home_refresh_layout?.isRefreshing = false
+                        binding.internetConnectionHome.visibility = View.GONE
+                        binding.homeRefreshLayout.isRefreshing = false
                     }
                 }, { throwable ->
                     Log.e("Poll", "Error retrieving polls", throwable)
@@ -142,10 +149,10 @@ class HomeFragment : Fragment() {
                     Log.i("HomeFragment", "polls $loaded")
 
                     if (loaded == totalCells) {
-                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                        binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                         loadingPanel?.visibility = View.GONE
-                        internetConnectionHome?.visibility = View.GONE
-                        home_refresh_layout?.isRefreshing = false
+                        binding.internetConnectionHome.visibility = View.GONE
+                        binding.homeRefreshLayout.isRefreshing = false
                     }
                 })
 
@@ -161,10 +168,10 @@ class HomeFragment : Fragment() {
                         Log.i("HomeFragment", "news $loaded")
 
                         if (loaded == totalCells) {
-                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
-                            internetConnectionHome?.visibility = View.GONE
-                            home_refresh_layout?.isRefreshing = false
+                            binding.internetConnectionHome.visibility = View.GONE
+                            binding.homeRefreshLayout.isRefreshing = false
                         }
                     }
                 }, { throwable ->
@@ -176,10 +183,10 @@ class HomeFragment : Fragment() {
                         Log.i("HomeFragment", "news $loaded")
 
                         if (loaded == totalCells) {
-                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
-                            internetConnectionHome?.visibility = View.GONE
-                            home_refresh_layout?.isRefreshing = false
+                            binding.internetConnectionHome.visibility = View.GONE
+                            binding.homeRefreshLayout.isRefreshing = false
                         }
                     }
                 })
@@ -209,10 +216,10 @@ class HomeFragment : Fragment() {
                         Log.i("HomeFragment", "dining $loaded")
 
                         if (loaded == totalCells) {
-                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
-                            internetConnectionHome?.visibility = View.GONE
-                            home_refresh_layout?.isRefreshing = false
+                            binding.internetConnectionHome.visibility = View.GONE
+                            binding.homeRefreshLayout.isRefreshing = false
                         }
                     }
                 }, { throwable ->
@@ -224,10 +231,10 @@ class HomeFragment : Fragment() {
                         Log.i("HomeFragment", "dining $loaded")
 
                         if (loaded == totalCells) {
-                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
-                            internetConnectionHome?.visibility = View.GONE
-                            home_refresh_layout?.isRefreshing = false
+                            binding.internetConnectionHome.visibility = View.GONE
+                            binding.homeRefreshLayout.isRefreshing = false
                         }
                     }
                 })
@@ -246,10 +253,10 @@ class HomeFragment : Fragment() {
                         Log.i("HomeFragment", "calendar $loaded")
 
                         if (loaded == totalCells) {
-                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
-                            internetConnectionHome?.visibility = View.GONE
-                            home_refresh_layout?.isRefreshing = false
+                            binding.internetConnectionHome.visibility = View.GONE
+                            binding.homeRefreshLayout.isRefreshing = false
                         }
                     }
                 }, { throwable ->
@@ -260,10 +267,10 @@ class HomeFragment : Fragment() {
                         Log.i("HomeFragment", "calendar $loaded")
 
                         if (loaded == totalCells) {
-                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
-                            internetConnectionHome?.visibility = View.GONE
-                            home_refresh_layout?.isRefreshing = false
+                            binding.internetConnectionHome.visibility = View.GONE
+                            binding.homeRefreshLayout.isRefreshing = false
                         }
                     }
                 })
@@ -283,10 +290,10 @@ class HomeFragment : Fragment() {
                         Log.i("HomeFragment", "laundry $loaded")
 
                         if (loaded == totalCells) {
-                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
-                            internetConnectionHome?.visibility = View.GONE
-                            home_refresh_layout?.isRefreshing = false
+                            binding.internetConnectionHome.visibility = View.GONE
+                            binding.homeRefreshLayout.isRefreshing = false
                         }
                     }
                 }, { throwable ->
@@ -297,10 +304,10 @@ class HomeFragment : Fragment() {
                         Log.i("HomeFragment", "laundry $loaded")
 
                         if (loaded == totalCells) {
-                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
-                            internetConnectionHome?.visibility = View.GONE
-                            home_refresh_layout?.isRefreshing = false
+                            binding.internetConnectionHome.visibility = View.GONE
+                            binding.homeRefreshLayout.isRefreshing = false
                         }
                     }
                 })
@@ -320,10 +327,10 @@ class HomeFragment : Fragment() {
                     Log.i("HomeFragment", "posts $loaded")
 
                     if (loaded == totalCells) {
-                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                        binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                         loadingPanel?.visibility = View.GONE
-                        internetConnectionHome?.visibility = View.GONE
-                        home_refresh_layout?.isRefreshing = false
+                        binding.internetConnectionHome.visibility = View.GONE
+                        binding.homeRefreshLayout.isRefreshing = false
                     }
 
                 }, { throwable ->
@@ -334,10 +341,10 @@ class HomeFragment : Fragment() {
                         Log.i("HomeFragment", "posts $loaded")
 
                         if (loaded == totalCells) {
-                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
-                            internetConnectionHome?.visibility = View.GONE
-                            home_refresh_layout?.isRefreshing = false
+                            binding.internetConnectionHome.visibility = View.GONE
+                            binding.homeRefreshLayout.isRefreshing = false
                         }
                     }
 
@@ -354,10 +361,10 @@ class HomeFragment : Fragment() {
                         loaded++
 
                         if (loaded == totalCells) {
-                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
-                            internetConnectionHome?.visibility = View.GONE
-                            home_refresh_layout?.isRefreshing = false
+                            binding.internetConnectionHome.visibility = View.GONE
+                            binding.homeRefreshLayout.isRefreshing = false
                         }
                     }
                 }, { throwable ->
@@ -367,10 +374,10 @@ class HomeFragment : Fragment() {
                         loaded++
 
                         if (loaded == totalCells) {
-                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
-                            internetConnectionHome?.visibility = View.GONE
-                            home_refresh_layout?.isRefreshing = false
+                            binding.internetConnectionHome.visibility = View.GONE
+                            binding.homeRefreshLayout.isRefreshing = false
                         }
                     }
                 })
@@ -389,10 +396,10 @@ class HomeFragment : Fragment() {
                         loaded++
 
                         if (loaded == totalCells) {
-                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
-                            internetConnectionHome?.visibility = View.GONE
-                            home_refresh_layout?.isRefreshing = false
+                            binding.internetConnectionHome.visibility = View.GONE
+                            binding.homeRefreshLayout.isRefreshing = false
                         }
                     }
                 }, { throwable ->
@@ -402,10 +409,10 @@ class HomeFragment : Fragment() {
                         loaded++
 
                         if (loaded == totalCells) {
-                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
-                            internetConnectionHome?.visibility = View.GONE
-                            home_refresh_layout?.isRefreshing = false
+                            binding.internetConnectionHome.visibility = View.GONE
+                            binding.homeRefreshLayout.isRefreshing = false
                         }
                     }
                 })
@@ -426,9 +433,9 @@ class HomeFragment : Fragment() {
         mActivity.toolbar.visibility = View.GONE
         val initials = sharedPreferences.getString(getString(R.string.initials), null)
         if (initials != null && initials.isNotEmpty()) {
-            this.initials.text = initials
+            binding.initials.text = initials
         } else {
-            this.profile_background.setImageDrawable(
+            binding.profileBackground.setImageDrawable(
                 resources.getDrawable
                 (R.drawable.ic_guest_avatar, context?.theme))
         }
@@ -437,7 +444,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setTitle(title: CharSequence) {
-        title_view.text = title
+        binding.titleView.text = title
     }
 
     private fun initAppBar(view: View) {

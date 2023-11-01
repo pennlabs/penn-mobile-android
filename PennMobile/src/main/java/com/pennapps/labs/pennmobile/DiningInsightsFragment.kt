@@ -16,12 +16,11 @@ import com.pennapps.labs.pennmobile.classes.DiningBalances
 import com.pennapps.labs.pennmobile.classes.DiningBalancesList
 import com.pennapps.labs.pennmobile.classes.DiningInsightCell
 import com.pennapps.labs.pennmobile.classes.DollarsSpentCell
-import kotlinx.android.synthetic.main.fragment_dining_insights.*
-import kotlinx.android.synthetic.main.fragment_dining_insights.view.*
+import com.pennapps.labs.pennmobile.databinding.FragmentDiningInsightsBinding
+
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.collections.ArrayList
-
 
 /**
  * Dining Insights Fragment
@@ -35,6 +34,9 @@ class DiningInsightsFragment : Fragment() {
     private lateinit var cells : ArrayList<DiningInsightCell>
     private lateinit var insightsrv : RecyclerView
 
+    private var _binding : FragmentDiningInsightsBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mCampusExpress = MainActivity.campusExpressInstance
@@ -44,10 +46,12 @@ class DiningInsightsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_dining_insights, container, false)
-        view.dining_insights_refresh?.setOnRefreshListener { refresh() }
-        view.dining_insights_refresh?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
-        view.insightsrv.layoutManager = LinearLayoutManager(
+        _binding = FragmentDiningInsightsBinding.inflate(inflater, container, false)
+        val view = binding.root
+
+        binding.diningInsightsRefresh.setOnRefreshListener { refresh() }
+        binding.diningInsightsRefresh.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
+        binding.insightsrv.layoutManager = LinearLayoutManager(
                 context,
                 LinearLayoutManager.VERTICAL, false)
         networkManager = CampusExpressNetworkManager(mActivity)
@@ -61,7 +65,7 @@ class DiningInsightsFragment : Fragment() {
         cells.add(diningBalance)
         cells.add(diningDollarsPredictionsCell)
         cells.add(diningSwipesPredictionsCell)
-        insightsrv = view.insightsrv
+        insightsrv = binding.insightsrv
         insightsrv.adapter = DiningInsightsCardAdapter(cells)
         val networkManager = CampusExpressNetworkManager(mActivity)
         val accessToken = networkManager.getAccessToken()
@@ -78,17 +82,22 @@ class DiningInsightsFragment : Fragment() {
         return view
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (!isOnline(context)) {
-            internetConnectionDiningInsights?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-            internetConnection_message_dining_insights?.setText("Not Connected to Internet")
-            internetConnectionDiningInsights?.visibility = View.VISIBLE
-            dining_insights_refresh?.isRefreshing = false
+            binding.internetConnectionDiningInsights.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            binding.internetConnectionMessageDiningInsights.text = "Not Connected to Internet"
+            binding.internetConnectionDiningInsights.visibility = View.VISIBLE
+            binding.diningInsightsRefresh.isRefreshing = false
             return
         } else {
-            internetConnectionDiningInsights?.visibility = View.GONE
+            binding.internetConnectionDiningInsights.visibility = View.GONE
         }
     }
 
@@ -99,7 +108,7 @@ class DiningInsightsFragment : Fragment() {
     private fun refresh() {
         val accessToken = networkManager.getAccessToken()
         if (accessToken == "") {
-            dining_insights_refresh?.isRefreshing = false
+            binding.diningInsightsRefresh.isRefreshing = false
             val fragment = CampusExpressLoginFragment()
             parentFragmentManager.beginTransaction()
                 .replace(R.id.dining_insights_page, fragment)
@@ -107,7 +116,7 @@ class DiningInsightsFragment : Fragment() {
                 .addToBackStack("DiningInsightsFragment")
                 .commit()
         } else {
-            dining_insights_refresh?.isRefreshing = true
+            binding.diningInsightsRefresh.isRefreshing = true
             getInsights(accessToken)
         }
     }
@@ -117,13 +126,13 @@ class DiningInsightsFragment : Fragment() {
 
     private fun getInsights(accessToken: String?) {
         if (!isOnline(context)) {
-            internetConnectionDiningInsights?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-            internetConnection_message_dining_insights?.setText("Not Connected to Internet")
-            internetConnectionDiningInsights?.visibility = View.VISIBLE
-            dining_insights_refresh?.isRefreshing = false
+            binding.internetConnectionDiningInsights.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            binding.internetConnectionMessageDiningInsights.setText("Not Connected to Internet")
+            binding.internetConnectionDiningInsights.visibility = View.VISIBLE
+            binding.diningInsightsRefresh.isRefreshing = false
             return
         } else {
-            internetConnectionDiningInsights?.visibility = View.GONE
+            binding.internetConnectionDiningInsights.visibility = View.GONE
         }
         val bearerToken = "Bearer $accessToken"
         mCampusExpress.getCurrentDiningBalances(bearerToken).subscribe( { t: DiningBalances? ->
@@ -131,12 +140,12 @@ class DiningInsightsFragment : Fragment() {
                 val diningBalanceCell = cells[0]
                 diningBalanceCell.diningBalances = t
                 (insightsrv.adapter as DiningInsightsCardAdapter).notifyItemChanged(0)
-                dining_insights_refresh?.isRefreshing = false
+                binding.diningInsightsRefresh.isRefreshing = false
             } },
             { throwable ->
             activity?.runOnUiThread {
                 Log.e("DiningInsightsFragment", "Error getting balances", throwable)
-                dining_insights_refresh?.isRefreshing = false
+                binding.diningInsightsRefresh.isRefreshing = false
             }
         })
         val current = LocalDateTime.now()
@@ -148,12 +157,12 @@ class DiningInsightsFragment : Fragment() {
                 cells[2].diningBalancesList = t
                 (insightsrv.adapter as DiningInsightsCardAdapter).notifyItemChanged(1)
                 (insightsrv.adapter as DiningInsightsCardAdapter).notifyItemChanged(2)
-                dining_insights_refresh?.isRefreshing = false
+                binding.diningInsightsRefresh.isRefreshing = false
             } },
             { throwable ->
                 activity?.runOnUiThread {
                     Log.e("DiningInsightsFragment", "Error getting balances", throwable)
-                    dining_insights_refresh?.isRefreshing = false
+                    binding.diningInsightsRefresh.isRefreshing = false
                 }
             })
 

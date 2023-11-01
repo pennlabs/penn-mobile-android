@@ -22,9 +22,7 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.preference.PreferenceManager
 import com.google.firebase.analytics.FirebaseAnalytics
-import kotlinx.android.synthetic.main.fragment_news.*
-import kotlinx.android.synthetic.main.fragment_news.initials
-import kotlinx.android.synthetic.main.fragment_news.profile_background
+import com.pennapps.labs.pennmobile.databinding.FragmentNewsBinding
 import java.util.ArrayList
 
 
@@ -42,6 +40,9 @@ class NewsFragment : ListFragment() {
     private var builder: CustomTabsIntent.Builder? = null
     private var isCustomTabsSupported: Boolean = false
     private lateinit var sharedPreferences: SharedPreferences
+
+    private var _binding : FragmentNewsBinding? = null
+    private val binding get() = _binding!!
 
     internal inner class CustomListAdapter(@get:JvmName("getContext_") private val context: Context,
                                            newsNames: Array<String?>,
@@ -148,19 +149,20 @@ class NewsFragment : ListFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_news, container, false)
-        return view
+        _binding = FragmentNewsBinding.inflate(inflater, container, false)
+        return binding.root
     }
+
 
     private fun addNews() {
 
         //displays banner if not connected
         if (!isOnline(context)) {
-            internetConnectionNews?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-            internetConnection_message_news?.text = resources.getString(R.string.internet_error)
-            internetConnectionNews?.visibility = View.VISIBLE
+            binding.internetConnectionNews.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            binding.internetConnectionMessageNews.text = resources.getString(R.string.internet_error)
+            binding.internetConnectionNews.visibility = View.VISIBLE
         } else {
-            internetConnectionNews?.visibility = View.GONE
+            binding.internetConnectionNews.visibility = View.GONE
         }
 
         val dpDescription = "The Daily Pennsylvanian is the independent student newspaper of the University of Pennsylvania."
@@ -189,18 +191,17 @@ class NewsFragment : ListFragment() {
             val adapter = CustomListAdapter(context, newsUrls, allSites)
             mListView?.setAdapter(adapter)
         }
-
-
     }
-
 
     override fun onListItemClick(l: ListView, v: View, position: Int, id: Long) {
         l.let {l ->
             val url = l.getItemAtPosition(position) as String
                 if (isCustomTabsSupported) {
                     share?.putExtra(Intent.EXTRA_TEXT, url)
-                    builder?.addMenuItem("Share", PendingIntent.getActivity(context, 0,
-                            share, PendingIntent.FLAG_CANCEL_CURRENT))
+                    builder?.addMenuItem("Share", PendingIntent.getActivity(
+                        context, 0,
+                        share, PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                    ))
                     customTabsIntent = builder?.build()
                     activity?.let { activity ->
                         customTabsIntent?.launchUrl(activity, Uri.parse(url))
@@ -219,9 +220,9 @@ class NewsFragment : ListFragment() {
         mActivity?.setTitle(R.string.news)
         val initials = sharedPreferences.getString(getString(R.string.initials), null)
         if (initials != null && initials.isNotEmpty()) {
-            this.initials.text = initials
+            binding.initials.text = initials
         } else {
-            this.profile_background.setImageDrawable(
+            binding.profileBackground.setImageDrawable(
                     resources.getDrawable
                     (R.drawable.ic_guest_avatar, context?.theme))
         }
@@ -229,8 +230,9 @@ class NewsFragment : ListFragment() {
     }
 
     override fun onDestroyView() {
-        val mActivity : MainActivity? = activity as MainActivity
-        mActivity?.removeTabs()
+        val mActivity : MainActivity = activity as MainActivity
+        mActivity.removeTabs()
         super.onDestroyView()
+        _binding = null
     }
 }
