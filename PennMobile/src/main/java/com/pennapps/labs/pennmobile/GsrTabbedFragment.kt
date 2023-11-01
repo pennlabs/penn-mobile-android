@@ -25,7 +25,7 @@ class GsrTabbedFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentGsrTabsBinding.inflate(inflater, container, false)
         val view = binding.root
-        initAppBar(view)
+        initAppBar()
 
         mActivity = activity as MainActivity
 
@@ -55,12 +55,8 @@ class GsrTabbedFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        mActivity.hideBottomBar()
-    }
 
-    private fun initAppBar(view: View) {
+    private fun initAppBar() {
         (binding.appbarHome.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
         binding.titleView.text = getString(R.string.gsr)
         binding.dateView.text = Utils.getCurrentSystemTime()

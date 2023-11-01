@@ -204,10 +204,6 @@ class GsrFragment : Fragment() {
         binding.internetConnectionGSR.visibility = View.VISIBLE
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     private fun updateStatus() {
         OAuth2NetworkManager(mActivity).getAccessToken {
             val sp = PreferenceManager.getDefaultSharedPreferences(activity)

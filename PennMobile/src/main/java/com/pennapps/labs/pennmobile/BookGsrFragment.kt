@@ -63,8 +63,8 @@ class BookGsrFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val mActivity : MainActivity? = activity as MainActivity
-        mActivity?.setTitle(R.string.gsr)
+        val mActivity : MainActivity = activity as MainActivity
+        mActivity.setTitle(R.string.gsr)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -101,6 +101,10 @@ class BookGsrFragment : Fragment() {
                 bookGSR(Integer.parseInt(gsrID), gsrLocationCode, startTime, endTime, gid, roomId, roomName)
             }
         }
+
+        val mActivity : MainActivity = activity as MainActivity
+        mActivity.hideBottomBar()
+
         return view
     }
 
@@ -110,8 +114,6 @@ class BookGsrFragment : Fragment() {
     }
 
     private fun bookGSR(gsrId: Int, gsrLocationCode: String, startTime: String?, endTime: String?, gid: Int, roomId: Int, roomName: String) {
-
-
 
         OAuth2NetworkManager(activity as MainActivity).getAccessToken {
             var sessionID = ""
