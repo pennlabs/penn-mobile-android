@@ -124,8 +124,8 @@ class NewsFragment : ListFragment() {
         builder?.setToolbarColor(0x3E50B4)
         context?.let { context ->
             builder?.setStartAnimations(context,
-                    R.anim.abc_popup_enter,
-                    R.anim.abc_popup_exit)
+                    androidx.appcompat.R.anim.abc_popup_enter,
+                    androidx.appcompat.R.anim.abc_popup_exit)
             CustomTabsClient.bindCustomTabsService(context,
                     CUSTOM_TAB_PACKAGE_NAME, connection)
         }

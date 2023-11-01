@@ -100,7 +100,7 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
     }
 
     private void populateAttributes(Context context, AttributeSet attrs) {
-        mPrimaryColor = Utils.getColor(getContext(), R.attr.colorPrimary);
+        mPrimaryColor = Utils.getColor(getContext(), com.google.android.material.R.attr.colorPrimary);
         mScreenWidth = Utils.getScreenWidth(getContext());
         mTenDp = Utils.dpToPixel(getContext(), 10);
         mMaxFixedItemWidth = Utils.dpToPixel(getContext(), 168);

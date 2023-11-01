@@ -27,6 +27,7 @@ class GsrReservationsFragment : Fragment() {
     private var _binding : FragmentGsrReservationsBinding? = null
     private val binding get() = _binding!!
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -101,6 +102,7 @@ class GsrReservationsFragment : Fragment() {
                 mActivity.runOnUiThread {
                     binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList(reservations))
                     loadingPanel?.visibility = View.GONE
+
                     if (reservations.size > 0) {
                         binding.gsrNoReservations.visibility = View.GONE
                     } else {

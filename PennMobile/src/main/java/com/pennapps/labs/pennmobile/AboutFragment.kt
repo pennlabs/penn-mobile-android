@@ -74,7 +74,7 @@ class AboutFragment : Fragment() {
         binding.licensesBtn.setOnClickListener {
             val webView = LayoutInflater.from(mActivity).inflate(R.layout.dialog_licenses, null) as WebView
             webView.loadUrl("file:///android_asset/open_source_licenses.html")
-            AlertDialog.Builder(mActivity, R.style.Theme_AppCompat_Light_Dialog_Alert)
+            AlertDialog.Builder(mActivity, R.style.AppTheme_AppBarOverlay_Light)
                     .setTitle(getString(R.string.action_licenses))
                     .setView(webView)
                     .setPositiveButton(android.R.string.ok, null)

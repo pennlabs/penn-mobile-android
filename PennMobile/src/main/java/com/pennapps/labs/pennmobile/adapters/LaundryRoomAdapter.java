@@ -34,8 +34,6 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Jackie on 2017-10-21.
@@ -214,21 +212,21 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
         Context mContext;
         ArrayList<LaundryRoom> mRooms;
 
-        @BindView(R.id.laundry_room_title)
+        //@BindView(R.id.laundry_room_title)
         TextView name;
-        @BindView(R.id.fav_laundry_room_name)
+        //@BindView(R.id.fav_laundry_room_name)
         TextView title;
-        @BindView(R.id.washer_availability)
+        //@BindView(R.id.washer_availability)
         TextView washerAvailability;
-        @BindView(R.id.dryer_availability)
+        //@BindView(R.id.dryer_availability)
         TextView dryerAvailability;
-        @BindView(R.id.laundry_washer_machine_list)
+        //@BindView(R.id.laundry_washer_machine_list)
         RecyclerView washerRecyclerView;
-        @BindView(R.id.laundry_dryer_machine_list)
+        //@BindView(R.id.laundry_dryer_machine_list)
         RecyclerView dryerRecyclerView;
-        @BindView(R.id.laundry_availability_chart)
+        //@BindView(R.id.laundry_availability_chart)
         LineChart lineChart;
-        @BindView(R.id.laundry_card)
+        //@BindView(R.id.laundry_card)
         View layout;
 
         public CustomViewHolder(View view, Context context, ArrayList<LaundryRoom> rooms, List<LaundryUsage> roomsData) {
@@ -237,7 +235,22 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
             mContext = context;
             mRooms = rooms;
 
-            ButterKnife.bind(this, view);
+            //@BindView(R.id.laundry_room_title)
+            name = view.findViewById(R.id.laundry_room_title);
+            //@BindView(R.id.fav_laundry_room_name)
+            title = view.findViewById(R.id.fav_laundry_room_name);
+            //@BindView(R.id.washer_availability)
+            washerAvailability = view.findViewById(R.id.washer_availability);
+            //@BindView(R.id.dryer_availability)
+            dryerAvailability = view.findViewById(R.id.dryer_availability);
+            //@BindView(R.id.laundry_washer_machine_list)
+            washerRecyclerView = view.findViewById(R.id.laundry_washer_machine_list);
+            //@BindView(R.id.laundry_dryer_machine_list)
+            dryerRecyclerView = view.findViewById(R.id.laundry_dryer_machine_list);
+            //@BindView(R.id.laundry_availability_chart)
+            lineChart = view.findViewById(R.id.laundry_availability_chart);
+            //@BindView(R.id.laundry_card)
+            layout = view.findViewById(R.id.laundry_card);
         }
     }
 }
