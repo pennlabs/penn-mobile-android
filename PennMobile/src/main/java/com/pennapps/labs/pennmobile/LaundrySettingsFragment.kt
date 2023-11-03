@@ -42,7 +42,7 @@ class LaundrySettingsFragment : Fragment() {
         mActivity.closeKeyboard()
         setHasOptionsMenu(true)
         mActivity.toolbar.visibility = View.VISIBLE
-        mActivity.expandable_bottom_bar.visibility = View.GONE
+        mActivity.hideBottomBar()
 
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "12")
@@ -145,7 +145,6 @@ class LaundrySettingsFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        mActivity.toolbar.visibility = View.GONE
         mActivity.onBackPressed()
         return true
     }
@@ -159,7 +158,6 @@ class LaundrySettingsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        mActivity.hideBottomBar()
         mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
         _binding = null
     }

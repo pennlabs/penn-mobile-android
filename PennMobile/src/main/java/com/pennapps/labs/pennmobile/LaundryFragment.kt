@@ -103,7 +103,6 @@ class LaundryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mActivity.removeTabs()
-        mActivity.toolbar.visibility = View.GONE
         numRooms = sp?.getInt(mContext.getString(R.string.num_rooms_pref), 100) ?: 0
 
         // get num rooms to display
@@ -172,6 +171,12 @@ class LaundryFragment : Fragment() {
         roomsDataResult = ArrayList()
         laundryRoomsResult = ArrayList()
 
+        count = 0
+        for (i in 0 until numRooms) {
+            if (sp?.getBoolean(i.toString(), false) == true) {
+                count += 1
+            }
+        }
 
         // add data
         for (i in 0 until numRooms) {
