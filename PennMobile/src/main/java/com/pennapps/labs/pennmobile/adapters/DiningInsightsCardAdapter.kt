@@ -172,7 +172,12 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
         val yAxis: YAxis = predictionChart.axisLeft
         yAxis.typeface = tf
         yAxis.removeAllLimitLines()
-        yAxis.axisMaximum = amounts.max() ?: 0f
+        if (amounts.isEmpty()) {
+            yAxis.axisMaximum = 0f
+        } else {
+            yAxis.axisMaximum = amounts.max()
+        }
+
         yAxis.axisMinimum = 0f
         yAxis.setDrawZeroLine(false)
         yAxis.setDrawLimitLinesBehindData(false)
