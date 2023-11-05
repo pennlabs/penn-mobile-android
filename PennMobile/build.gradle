@@ -110,7 +110,7 @@ String getPlatformRedirectUri() {
 // Code Coverage: https://www.raywenderlich.com/10562143-continuous-integration-for-android#toc-anchor-014
 
 jacoco {
-  toolVersion = "0.8.5"
+  toolVersion = "0.8.11"
 }
 
 // https://stackoverflow.com/questions/68065743/cannot-run-gradle-test-tasks-because-of-java-lang-noclassdeffounderror-jdk-inte
