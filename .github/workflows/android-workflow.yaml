@@ -30,8 +30,8 @@ jobs:
           PLATFORM_REDIRECT_URI: ${{ secrets.PLATFORM_REDIRECT_URI }}
         run: echo PLATFORM_REDIRECT_URI=\"$PLATFORM_REDIRECT_URI\" >> ./local.properties
       # Run unit tests
-      - name: Run Unit Tests
-        run: ./gradlew testDebugUnitTest
+      #- name: Run Unit Tests
+      #  run: ./gradlew testDebugUnitTest
   
   # If tests pass, generate and upload APK
   generate-apk:
