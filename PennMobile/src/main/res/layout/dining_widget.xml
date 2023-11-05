@@ -10,23 +10,49 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_margin="5dp"
-        android:text="@string/swipes" />
+        android:text="@string/swipes"
+        android:layout_margin="5dp"/>
 
     <TextView
-        android:id="@+id/dollarsText"
+        android:id = "@+id/dollarsText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:text="Dollars"
+        android:layout_below="@id/swipesText"
         android:layout_margin="5dp"
-        android:layout_toEndOf="@id/swipesText"
-        android:text="@string/dollars" />
+        />
 
     <ProgressBar
-        android:id="@+id/swipesProgressBar"
-        style="?android:attr/progressBarStyle"
+        android:id="@+id/swipesBar"
+        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android/>
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_toEndOf="@id/swipesText"
+        android:layout_alignBottom="@id/swipesText"
+        android:layout_alignTop="@id/swipesText"
+        android:layout_alignParentEnd="true"
+        android:indeterminate="false"
+        android:progress="20"/>
+
+    <ProgressBar
+        android:id="@+id/dollarsBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_toEndOf="@id/dollarsText"
+        android:layout_alignBottom="@id/dollarsText"
+        android:layout_alignTop="@id/dollarsText"
+        android:layout_alignParentEnd="true"
+        android:indeterminate="false"
+        android:progress="62"/>
+
 
 </RelativeLayout>
