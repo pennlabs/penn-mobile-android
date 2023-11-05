@@ -12,11 +12,11 @@ jobs:
         uses: actions/checkout@v2
 
       # Set up Java JDK
-      - name: Set up JDK 11
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          java-version: '11'
-          distribution: 'corretto'
+          java-version: '17'
+          distribution: 'temurin'
 
       # Get the secrets from GitHub and add them to local.properties
       # https://blog.jakelee.co.uk/accessing-android-app-secret-from-github-actions-using-gradle/
@@ -30,8 +30,8 @@ jobs:
           PLATFORM_REDIRECT_URI: ${{ secrets.PLATFORM_REDIRECT_URI }}
         run: echo PLATFORM_REDIRECT_URI=\"$PLATFORM_REDIRECT_URI\" >> ./local.properties
       # Run unit tests
-      #- name: Run Unit Tests
-      #  run: ./gradlew testDebugUnitTest
+      - name: Run Unit Tests
+        run: ./gradlew testDebugUnitTest
   
   # If tests pass, generate and upload APK
   generate-apk:
@@ -44,11 +44,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v1
 
-      - name: Set up JDK 11
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          java-version: '11'
-          distribution: 'corretto'
+          java-version: '17'
+          distribution: 'temurin'
 
       # Get the secrets from GitHub and add them to local.properties
       - name: Access PLATFORM_CLIENT_ID
@@ -91,11 +91,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v1
 
-      - name: Set up JDK 11
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          java-version: '11'
-          distribution: 'corretto'
+          java-version: '17'
+          distribution: 'temurin'
 
       # Get the secrets from GitHub and add them to local.properties
       - name: Access PLATFORM_CLIENT_ID
