@@ -23,7 +23,6 @@ android {
         viewBinding true
     }
     compileSdkVersion 33
-    buildToolsVersion '29.0.3'
     defaultConfig {
         minSdkVersion 26
         targetSdkVersion 33
@@ -35,13 +34,6 @@ android {
     packagingOptions {
         pickFirst 'META-INF/LICENSE.txt'
         pickFirst 'META-INF/NOTICE.txt'
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
     }
 }
 
@@ -121,8 +113,10 @@ jacoco {
   toolVersion = "0.8.5"
 }
 
+// https://stackoverflow.com/questions/68065743/cannot-run-gradle-test-tasks-because-of-java-lang-noclassdeffounderror-jdk-inte
 tasks.withType(Test) {
-  jacoco.includeNoLocationClasses = true
+    jacoco.includeNoLocationClasses = true
+    jacoco.excludes = ['jdk.internal.*']
 }
 
 // Files with such regex patterns are to be excluded
