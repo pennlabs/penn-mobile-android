@@ -236,4 +236,6 @@
     <string name="fitness_sat">Saturday</string>
     <string name="fitness_capacity">Capacity</string>
     <string name="room">Room</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

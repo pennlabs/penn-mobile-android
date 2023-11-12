@@ -14,5 +14,6 @@ buildscript {
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.0.0'
 // Crashlytics Gradle plugin.
         classpath "org.jacoco:org.jacoco.core:0.8.5"
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.72'
     }
 }
