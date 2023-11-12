@@ -12,19 +12,20 @@ import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.DiningRequest
-import kotlinx.android.synthetic.main.fragment_dining_preferences.*
-import kotlinx.android.synthetic.main.fragment_dining_preferences.view.*
-import kotlinx.android.synthetic.main.include_main.*
+import com.pennapps.labs.pennmobile.databinding.FragmentDiningPreferencesBinding
+
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
 import rx.Observable
 
-
 class DiningSettingsFragment : Fragment() {
     private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
     private lateinit var halls: List<DiningHall>
+
+    private var _binding : FragmentDiningPreferencesBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,17 +34,19 @@ class DiningSettingsFragment : Fragment() {
         mActivity.title = "Select Favorites"
         mStudentLife = MainActivity.studentLifeInstance
         mStudentLife = MainActivity.studentLifeInstance
-        mActivity.toolbar.visibility = View.VISIBLE
+        mActivity.hideBottomBar()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val v = inflater.inflate(R.layout.fragment_dining_preferences, container, false)
-        v.dining_hall_rv.layoutManager = LinearLayoutManager(context,
+        _binding = FragmentDiningPreferencesBinding.inflate(inflater, container, false)
+        val v = binding.root
+        binding.diningHallRv.layoutManager = LinearLayoutManager(context,
                 LinearLayoutManager.VERTICAL, false)
         mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         getDiningHalls()
         return v
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.dining_preferences, menu)
@@ -76,7 +79,7 @@ class DiningSettingsFragment : Fragment() {
                     mActivity.runOnUiThread {
                         halls = diningHalls
                         val adapter = DiningSettingsAdapter(diningHalls)
-                        dining_hall_rv.adapter = adapter
+                        binding.diningHallRv.adapter = adapter
                     }
                 }, {
                     Log.e("DiningSettings", "error fetching dining halls")
@@ -85,7 +88,8 @@ class DiningSettingsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        mActivity.toolbar.visibility = View.GONE
+        _binding = null
+        mActivity.hideBottomBar()
     }
 
     private fun saveDiningPreferences() {

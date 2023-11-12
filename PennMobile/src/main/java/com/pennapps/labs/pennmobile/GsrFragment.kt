@@ -21,8 +21,7 @@ import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRContainer
 import com.pennapps.labs.pennmobile.classes.GSRRoom
 import com.pennapps.labs.pennmobile.classes.GSRSlot
-import kotlinx.android.synthetic.main.fragment_gsr.*
-import kotlinx.android.synthetic.main.fragment_gsr.view.*
+import com.pennapps.labs.pennmobile.databinding.FragmentGsrBinding
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import java.util.*
@@ -39,6 +38,9 @@ class GsrFragment : Fragment() {
     lateinit var loadingPanel: LinearLayout
     lateinit var noResultsPanel: LinearLayout
     lateinit var sortingSwitch: Switch
+
+    private var _binding : FragmentGsrBinding? = null
+    private val binding get() = _binding!!
 
     // api manager
     private lateinit var mStudentLife: StudentLife
@@ -88,18 +90,24 @@ class GsrFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_gsr, container, false)
+        _binding = FragmentGsrBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        selectDateButton = view.gsr_select_date
-        selectTimeButton = view.gsr_select_time
-        gsrLocationDropDown = view.gsr_building_selection
-        durationDropDown = view.gsr_duration
-        loadingPanel = view.gsr_loading
-        noResultsPanel = view.gsr_no_results
-        sortingSwitch = view.sorting_switch
+        selectDateButton = binding.gsrSelectDate
+        selectTimeButton = binding.gsrSelectTime
+        gsrLocationDropDown = binding.gsrBuildingSelection
+        durationDropDown = binding.gsrDuration
+        loadingPanel = binding.gsrLoading
+        noResultsPanel = binding.gsrNoResults
+        sortingSwitch = binding.sortingSwitch
         sortByTime = sortingSwitch.isChecked
 
         durationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m", "120m"))
@@ -121,7 +129,7 @@ class GsrFragment : Fragment() {
         // Set up recycler view for list of GSR rooms
         val gsrRoomListLayoutManager = LinearLayoutManager(context)
         gsrRoomListLayoutManager.orientation = LinearLayoutManager.VERTICAL
-        view.gsr_rooms_list.layoutManager = (gsrRoomListLayoutManager)
+        binding.gsrRoomsList.layoutManager = (gsrRoomListLayoutManager)
 
         /**
          * On Click functions for buttons
@@ -188,16 +196,12 @@ class GsrFragment : Fragment() {
             searchForGSR(false)
         }
         // handle swipe to refresh
-        view.gsr_refresh_layout?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
-        view.gsr_refresh_layout?.setOnRefreshListener {
+        binding.gsrRefreshLayout.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
+        binding.gsrRefreshLayout.setOnRefreshListener {
             updateStatus()
             searchForGSR(true)
         }
-        internetConnectionGSR?.visibility = View.VISIBLE
-    }
-
-    override fun onResume() {
-        super.onResume()
+        binding.internetConnectionGSR.visibility = View.VISIBLE
     }
 
     private fun updateStatus() {
@@ -227,11 +231,11 @@ class GsrFragment : Fragment() {
     fun searchForGSR(calledByRefreshLayout: Boolean) {
         //displays banner if not connected
         if (!isOnline(context)) {
-            internetConnectionGSR?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-            internetConnection_message_gsr?.setText("Not Connected to Internet")
-            internetConnectionGSR?.visibility = View.VISIBLE
+            binding.internetConnectionGSR.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            binding.internetConnectionMessageGsr.setText("Not Connected to Internet")
+            binding.internetConnectionGSR.visibility = View.VISIBLE
         } else {
-            internetConnectionGSR?.visibility = View.GONE
+            binding.internetConnectionGSR.visibility = View.GONE
             if(!populatedDropDownGSR) {
                 populateDropDownGSR()
             }
@@ -249,7 +253,7 @@ class GsrFragment : Fragment() {
                 // display loading screen if user did not use swipe refresh
                 if (!calledByRefreshLayout) {
                     loadingPanel.visibility = View.VISIBLE
-                    gsr_rooms_list?.visibility = View.GONE
+                    binding.gsrRoomsList.visibility = View.GONE
                 }
 
                 if (!isWharton && (location == "ARB" || location == "JMHH")) {
@@ -263,7 +267,7 @@ class GsrFragment : Fragment() {
                     }
                 } else {
                     noResultsPanel.visibility = View.GONE
-                    gsr_no_rooms?.visibility = View.GONE
+                    binding.gsrNoRooms.visibility = View.GONE
                     // get the hours
                     getTimes(location, gid)
                 }
@@ -319,14 +323,14 @@ class GsrFragment : Fragment() {
                             loadingPanel.visibility = View.GONE
                             noResultsPanel.visibility = View.GONE
                             // stop refreshing
-                            gsr_rooms_list?.visibility = View.VISIBLE
-                            gsr_refresh_layout?.isRefreshing = false
+                            binding.gsrRoomsList.visibility = View.VISIBLE
+                            binding.gsrRefreshLayout.isRefreshing = false
 
                             if (timeSlotLengthZero) {
-                                gsr_no_rooms?.visibility = View.VISIBLE
+                                binding.gsrNoRooms.visibility = View.VISIBLE
                             }
 
-                            gsr_rooms_list?.adapter = (context?.let {
+                            binding.gsrRoomsList.adapter = (context?.let {
                                 GsrBuildingAdapter(it, mGSRS, location.toString(), (durationDropDown.selectedItemPosition + 1) * 30, sortByTime)
 
                             })
@@ -513,8 +517,8 @@ class GsrFragment : Fragment() {
         // get rid of loading screen and display no results
         noResultsPanel.visibility = View.VISIBLE
         loadingPanel.visibility = View.GONE
-        gsr_rooms_list?.visibility = View.GONE
-        gsr_refresh_layout?.isRefreshing = false
+        binding.gsrRoomsList.visibility = View.GONE
+        binding.gsrRefreshLayout.isRefreshing = false
     }
 
     //takes the name of the gsr and returns an int for the corresponding code

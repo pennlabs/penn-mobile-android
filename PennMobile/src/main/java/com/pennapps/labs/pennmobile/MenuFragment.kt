@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.pennapps.labs.pennmobile.classes.DiningHall
-import kotlinx.android.synthetic.main.fragment_menu.view.*
 import kotlinx.android.synthetic.main.include_main.*
 import org.apache.commons.lang3.StringUtils
 
@@ -98,12 +97,13 @@ class MenuFragment : Fragment() {
         val v = inflater.inflate(R.layout.fragment_menu, container, false)
         pageAdapter = TabAdapter(mActivity.supportFragmentManager)
         (pageAdapter as TabAdapter).addTabs(mDiningHall)
-        val pager : ViewPager = v.menu_pager
+        val pager : ViewPager = v.findViewById(R.id.menu_pager)
         pager.adapter = pageAdapter
         v.setBackgroundColor(Color.WHITE)
         mActivity.addTabs(pageAdapter as TabAdapter, pager, true)
         return v
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.dining, menu)

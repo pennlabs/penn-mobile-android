@@ -266,11 +266,11 @@ class MainActivity : AppCompatActivity() {
         const val MORE = 5
         const val PCA = 6
 
-        const val HOME_ID = R.id.nav_home
-        const val GSR_ID = R.id.nav_gsr
-        const val DINING_ID = R.id.nav_dining
-        const val LAUNDRY_ID = R.id.nav_laundry
-        const val MORE_ID = R.id.nav_more
+        val HOME_ID = R.id.nav_home
+        val GSR_ID = R.id.nav_gsr
+        val DINING_ID = R.id.nav_dining
+        val LAUNDRY_ID = R.id.nav_laundry
+        val MORE_ID = R.id.nav_more
 
         private var mStudentLife: StudentLife? = null
         private var mPlatform: Platform? = null

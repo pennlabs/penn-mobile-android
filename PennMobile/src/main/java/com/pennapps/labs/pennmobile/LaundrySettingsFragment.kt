@@ -12,8 +12,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.LaundrySettingsAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple
-import kotlinx.android.synthetic.main.fragment_laundry_settings.*
-import kotlinx.android.synthetic.main.fragment_laundry_settings.view.*
+import com.pennapps.labs.pennmobile.databinding.FragmentLaundrySettingsBinding
 import kotlinx.android.synthetic.main.include_main.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.no_results.*
@@ -32,6 +31,9 @@ class LaundrySettingsFragment : Fragment() {
 
     private var numRooms: Int = 0
 
+    private var _binding : FragmentLaundrySettingsBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mStudentLife = MainActivity.studentLifeInstance
@@ -40,7 +42,7 @@ class LaundrySettingsFragment : Fragment() {
         mActivity.closeKeyboard()
         setHasOptionsMenu(true)
         mActivity.toolbar.visibility = View.VISIBLE
-        mActivity.expandable_bottom_bar.visibility = View.GONE
+        mActivity.hideBottomBar()
 
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "12")
@@ -50,13 +52,14 @@ class LaundrySettingsFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_laundry_settings, container, false)
+        _binding = FragmentLaundrySettingsBinding.inflate(inflater, container, false)
+        val view = binding.root
 
         // set up shared preferences
         sp = PreferenceManager.getDefaultSharedPreferences(mContext)
 
         // reset laundry rooms button
-        mButton = view.laundry_room_reset
+        mButton = binding.laundryRoomReset
         mButton?.setOnClickListener {
             // remove shared preferences
             val editor = sp?.edit()
@@ -76,6 +79,7 @@ class LaundrySettingsFragment : Fragment() {
         getHalls()
         return view
     }
+
 
     private fun getHalls() {
         mStudentLife.laundryRooms()
@@ -126,7 +130,7 @@ class LaundrySettingsFragment : Fragment() {
                         }
 
                         val mAdapter = LaundrySettingsAdapter(mContext, hashMap, hallList)
-                        laundry_building_expandable_list?.setAdapter(mAdapter)
+                        binding.laundryBuildingExpandableList.setAdapter(mAdapter)
 
                         loadingPanel?.visibility = View.GONE
                         no_results?.visibility = View.GONE
@@ -141,7 +145,6 @@ class LaundrySettingsFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        mActivity.toolbar.visibility = View.GONE
         mActivity.onBackPressed()
         return true
     }
@@ -154,8 +157,8 @@ class LaundrySettingsFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        mActivity.toolbar.visibility = View.GONE
-        mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
         super.onDestroyView()
+        mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        _binding = null
     }
 }

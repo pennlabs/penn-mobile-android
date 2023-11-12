@@ -22,7 +22,6 @@ import com.pennapps.labs.pennmobile.classes.AccessTokenResponse
 import com.pennapps.labs.pennmobile.classes.Account
 import com.pennapps.labs.pennmobile.classes.GetUserResponse
 import com.pennapps.labs.pennmobile.classes.SaveAccountResponse
-import kotlinx.android.synthetic.main.fragment_login_webview.view.*
 import org.apache.commons.lang3.RandomStringUtils
 import retrofit.Callback
 import retrofit.RetrofitError
@@ -81,7 +80,7 @@ class LoginWebviewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         webView = view.findViewById(R.id.webView)
-        headerLayout = view.linear_layout
+        headerLayout = view.findViewById(R.id.linear_layout)
         cancelButton = view.findViewById(R.id.cancel_button)
 
         webView.loadUrl(platformAuthUrl)

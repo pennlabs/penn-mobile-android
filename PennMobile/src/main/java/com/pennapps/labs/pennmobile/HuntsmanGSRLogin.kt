@@ -16,7 +16,7 @@ import android.widget.Toast
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult
-import kotlinx.android.synthetic.main.fragment_huntsman_gsrlogin.*
+import com.pennapps.labs.pennmobile.databinding.FragmentHuntsmanGsrloginBinding
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
@@ -33,6 +33,9 @@ class HuntsmanGSRLogin : Fragment() {
 
     private lateinit var mStudentLife: StudentLife
     private lateinit var mActivity: MainActivity
+
+    private var _binding : FragmentHuntsmanGsrloginBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +54,13 @@ class HuntsmanGSRLogin : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_huntsman_gsrlogin, container, false)
+        _binding = FragmentHuntsmanGsrloginBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,7 +77,7 @@ class HuntsmanGSRLogin : Fragment() {
 
     private fun loadWebpage() {
         // Get the web view settings instance
-        webViewGSR.webViewClient = object : WebViewClient() {
+        binding.webViewGSR.webViewClient = object : WebViewClient() {
 
             // Called every time a URL finishes loading, not just when the first URL finishes loading
             override fun onPageFinished(view : WebView, url : String) {
@@ -98,7 +107,7 @@ class HuntsmanGSRLogin : Fragment() {
                 }
             }
         }
-        webViewGSR.loadUrl("https://apps.wharton.upenn.edu/gsr/")
+        binding.webViewGSR.loadUrl("https://apps.wharton.upenn.edu/gsr/")
     }
 
     // performs POST request and redirects user to GSR booking fragment

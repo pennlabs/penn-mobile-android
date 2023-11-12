@@ -11,15 +11,18 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.pennapps.labs.pennmobile.adapters.FitnessPagerAdapter
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
+import com.pennapps.labs.pennmobile.databinding.FragmentFitnessHolderBinding
 import com.pennapps.labs.pennmobile.utils.Utils
 
-import kotlinx.android.synthetic.main.fragment_fitness_holder.pager
-import kotlinx.android.synthetic.main.fragment_fitness_holder.tabLayout
+
 
 class FitnessHolderFragment: Fragment() {
     private lateinit var mActivity : MainActivity
     private lateinit var mView : View
     private lateinit var pagerAdapter : FitnessPagerAdapter
+
+    private var _binding : FragmentFitnessHolderBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +35,13 @@ class FitnessHolderFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        return inflater.inflate(R.layout.fragment_fitness_holder, container, false)
+        _binding = FragmentFitnessHolderBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -42,9 +51,9 @@ class FitnessHolderFragment: Fragment() {
         initAppBar()
 
         pagerAdapter = FitnessPagerAdapter(this)
-        pager?.adapter = pagerAdapter
-        pager.isUserInputEnabled = false
-        TabLayoutMediator(tabLayout, pager) { tab, position ->
+        binding.pager.adapter = pagerAdapter
+        binding.pager.isUserInputEnabled = false
+        TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
             if (position == 0) {
                 tab.text = "Pottruck"
             } else {
@@ -53,14 +62,15 @@ class FitnessHolderFragment: Fragment() {
         }.attach()
     }
 
+
     /**
      * Initialize the app bar of the fragment and
      * fills in the textViews for the title/date
      */
     private fun initAppBar() {
-        val appBarLayout : AppBarLayout = mView.findViewById(R.id.appbar_home_holder)
-        val titleView : TextView = mView.findViewById(R.id.title_view)
-        val dateView : TextView = mView.findViewById(R.id.date_view)
+        val appBarLayout : AppBarLayout = binding.appbarHomeHolder
+        val titleView : TextView = binding.titleView
+        val dateView : TextView = binding.dateView
 
         (appBarLayout.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
         titleView.text = getString(R.string.fitness)

@@ -16,9 +16,8 @@ import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.classes.LaundryUsage
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
+import com.pennapps.labs.pennmobile.databinding.FragmentLaundryBinding
 import com.pennapps.labs.pennmobile.utils.Utils
-import kotlinx.android.synthetic.main.fragment_laundry.*
-import kotlinx.android.synthetic.main.fragment_laundry.view.*
 import kotlinx.android.synthetic.main.include_main.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.loading_panel.view.*
@@ -47,6 +46,9 @@ class LaundryFragment : Fragment() {
     private var count: Int = 0
     private var numRooms: Int = 0
 
+    private var _binding : FragmentLaundryBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -63,9 +65,10 @@ class LaundryFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_laundry, container, false)
+        _binding = FragmentLaundryBinding.inflate(inflater, container, false)
+        val view = binding.root
 
-        initAppBar(view)
+        initAppBar()
 
         // get num rooms to display
         sp = PreferenceManager.getDefaultSharedPreferences(mContext)
@@ -77,25 +80,29 @@ class LaundryFragment : Fragment() {
             }
         }
 
-        view.favorite_laundry_list?.layoutManager = LinearLayoutManager(mContext)
-        view.laundry_machine_refresh?.setOnRefreshListener { updateRooms() }
-        view.laundry_machine_refresh?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
+        binding.favoriteLaundryList.layoutManager = LinearLayoutManager(mContext)
+        binding.laundryMachineRefresh.setOnRefreshListener { updateRooms() }
+        binding.laundryMachineRefresh.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
 
         // no rooms chosen
         if (count == 0) {
             view.loadingPanel?.visibility = View.GONE
-            view.laundry_help_text?.visibility = View.VISIBLE
+            binding.laundryHelpText.visibility = View.VISIBLE
             mAdapter = LaundryRoomAdapter(mContext, laundryRooms, roomsData, false)
-            view.favorite_laundry_list?.adapter = mAdapter
+            binding.favoriteLaundryList.adapter = mAdapter
         }
 
         return view
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mActivity.removeTabs()
-        mActivity.toolbar.visibility = View.GONE
         numRooms = sp?.getInt(mContext.getString(R.string.num_rooms_pref), 100) ?: 0
 
         // get num rooms to display
@@ -111,11 +118,11 @@ class LaundryFragment : Fragment() {
         updateRooms()
     }
 
-    private fun initAppBar(view: View) {
-        (view.appbar_home.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
-        view.title_view.text = getString(R.string.laundry)
-        view.date_view.text = Utils.getCurrentSystemTime()
-        view.laundry_preferences.setOnClickListener {
+    private fun initAppBar() {
+        (binding.appbarHome.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
+        binding.titleView.text = getString(R.string.laundry)
+        binding.dateView.text = Utils.getCurrentSystemTime()
+        binding.laundryPreferences.setOnClickListener {
             val fragmentManager = mActivity.supportFragmentManager
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, LaundrySettingsFragment())
@@ -152,11 +159,11 @@ class LaundryFragment : Fragment() {
 
         //displays banner if not connected
         if (!isOnline(context)) {
-            internetConnectionLaundry?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-            internetConnection_message_laundry?.text = getString(R.string.internet_error)
-            internetConnectionLaundry?.visibility = View.VISIBLE
+            binding.internetConnectionLaundry?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            binding.internetConnectionMessageLaundry.text = getString(R.string.internet_error)
+            binding.internetConnectionLaundry.visibility = View.VISIBLE
         } else {
-            internetConnectionLaundry?.visibility = View.GONE
+            binding.internetConnectionLaundry.visibility = View.GONE
         }
 
         laundryRooms = ArrayList()
@@ -164,6 +171,12 @@ class LaundryFragment : Fragment() {
         roomsDataResult = ArrayList()
         laundryRoomsResult = ArrayList()
 
+        count = 0
+        for (i in 0 until numRooms) {
+            if (sp?.getBoolean(i.toString(), false) == true) {
+                count += 1
+            }
+        }
 
         // add data
         for (i in 0 until numRooms) {
@@ -176,9 +189,9 @@ class LaundryFragment : Fragment() {
         // no rooms chosen
         if (count == 0) {
             loadingPanel?.visibility = View.GONE
-            laundry_help_text?.visibility = View.VISIBLE
+            binding.laundryHelpText.visibility = View.VISIBLE
             mAdapter = LaundryRoomAdapter(mContext, laundryRooms, roomsData, false)
-            favorite_laundry_list?.adapter = mAdapter
+            binding.favoriteLaundryList.adapter = mAdapter
         }
     }
 
@@ -216,11 +229,11 @@ class LaundryFragment : Fragment() {
                             roomsData = roomsDataResult
                             laundryRooms = laundryRoomsResult
                             mAdapter = LaundryRoomAdapter(mContext, laundryRooms, roomsData, false)
-                            favorite_laundry_list?.adapter = mAdapter
+                            binding.favoriteLaundryList.adapter = mAdapter
                             no_results?.visibility = View.GONE
                             loadingPanel?.visibility = View.GONE
-                            laundry_help_text?.visibility = View.INVISIBLE
-                            laundry_machine_refresh?.isRefreshing = false
+                            binding.laundryHelpText.visibility = View.INVISIBLE
+                            binding.laundryMachineRefresh.isRefreshing = false
 
                         }
                     }
@@ -228,8 +241,8 @@ class LaundryFragment : Fragment() {
                     mActivity.runOnUiThread {
                         loadingPanel?.visibility = View.GONE
                         no_results?.visibility = View.VISIBLE
-                        laundry_help_text?.visibility = View.GONE
-                        laundry_machine_refresh?.isRefreshing = false
+                        binding.laundryHelpText.visibility = View.GONE
+                        binding.laundryMachineRefresh.isRefreshing = false
                         Log.e("Laundry", "Error getting laundry data: " + it.stackTrace)
                     }
                 })
@@ -250,8 +263,8 @@ class LaundryFragment : Fragment() {
                     mActivity.runOnUiThread {
                         loadingPanel?.visibility = View.GONE
                         no_results?.visibility = View.VISIBLE
-                        laundry_help_text?.visibility = View.GONE
-                        laundry_machine_refresh?.isRefreshing = false
+                        binding.laundryHelpText.visibility = View.GONE
+                        binding.laundryMachineRefresh.isRefreshing = false
                     }
                 })
     }
