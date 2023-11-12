@@ -132,28 +132,31 @@ class HomeFragment : Fragment() {
                             homepageCells[0] = pollCell
                         }
                     }
-                    loaded++
 
-                    Log.i("HomeFragment", "polls $loaded")
-
-                    if (loaded == totalCells) {
-                        binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
-                        loadingPanel?.visibility = View.GONE
-                        binding.internetConnectionHome.visibility = View.GONE
-                        binding.homeRefreshLayout.isRefreshing = false
+                    if (++loaded == totalCells) {
+                        mActivity.runOnUiThread {
+                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
+                            loadingPanel?.visibility = View.GONE
+                            binding.internetConnectionHome.visibility = View.GONE
+                            binding.homeRefreshLayout.isRefreshing = false
+                        }
                     }
+
+                    Log.i("HomeFragment", "polls success $loaded")
+
                 }, { throwable ->
                     Log.e("Poll", "Error retrieving polls", throwable)
-                    loaded++
+
+                    if (++loaded >= totalCells) {
+                        mActivity.runOnUiThread {
+                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
+                            loadingPanel?.visibility = View.GONE
+                            binding.internetConnectionHome.visibility = View.GONE
+                            binding.homeRefreshLayout.isRefreshing = false
+                        }
+                    }
 
                     Log.i("HomeFragment", "polls $loaded")
-
-                    if (loaded == totalCells) {
-                        binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
-                        loadingPanel?.visibility = View.GONE
-                        binding.internetConnectionHome.visibility = View.GONE
-                        binding.homeRefreshLayout.isRefreshing = false
-                    }
                 })
 
                 studentLife.news.subscribe({ article ->
@@ -164,30 +167,27 @@ class HomeFragment : Fragment() {
                         newsCell.type = "news"
                         homepageCells[3] = newsCell
 
-                        loaded++
-                        Log.i("HomeFragment", "news $loaded")
-
-                        if (loaded == totalCells) {
+                        if (++loaded >= totalCells) {
                             binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
                             binding.internetConnectionHome.visibility = View.GONE
                             binding.homeRefreshLayout.isRefreshing = false
                         }
+                        Log.i("HomeFragment", "news $loaded")
                     }
                 }, { throwable ->
                     mActivity.runOnUiThread {
                         Log.e("Home", "Could not load news", throwable)
                         throwable.printStackTrace()
 
-                        loaded++
-                        Log.i("HomeFragment", "news $loaded")
-
-                        if (loaded == totalCells) {
+                        if (++loaded >= totalCells) {
                             binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
                             binding.internetConnectionHome.visibility = View.GONE
                             binding.homeRefreshLayout.isRefreshing = false
                         }
+                        Log.i("HomeFragment", "news $loaded")
+
                     }
                 })
 
@@ -212,30 +212,27 @@ class HomeFragment : Fragment() {
                         diningCell.info = diningCellInfo
                         homepageCells[4] = diningCell
 
-                        loaded++
-                        Log.i("HomeFragment", "dining $loaded")
-
-                        if (loaded == totalCells) {
+                        if (++loaded >= totalCells) {
                             binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
                             binding.internetConnectionHome.visibility = View.GONE
                             binding.homeRefreshLayout.isRefreshing = false
                         }
+
+                        Log.i("HomeFragment", "dining $loaded")
                     }
                 }, { throwable ->
                     mActivity.runOnUiThread {
                         Log.e("Home", "Could not load Dining", throwable)
                         throwable.printStackTrace()
 
-                        loaded++
-                        Log.i("HomeFragment", "dining $loaded")
-
-                        if (loaded == totalCells) {
+                        if (++loaded >= totalCells) {
                             binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
                             binding.internetConnectionHome.visibility = View.GONE
                             binding.homeRefreshLayout.isRefreshing = false
                         }
+                        Log.i("HomeFragment", "dining $loaded")
                     }
                 })
 
@@ -249,29 +246,27 @@ class HomeFragment : Fragment() {
                         gsrBookingCell.type = "gsr_booking"
                         gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "Weigle")
                         homepageCells[5] = gsrBookingCell
-                        loaded++
-                        Log.i("HomeFragment", "calendar $loaded")
 
-                        if (loaded == totalCells) {
+                        if (++loaded >= totalCells) {
                             binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
                             binding.internetConnectionHome.visibility = View.GONE
                             binding.homeRefreshLayout.isRefreshing = false
                         }
+                        Log.i("HomeFragment", "calendar $loaded")
                     }
                 }, { throwable ->
                     mActivity.runOnUiThread {
                         Log.e("Home", "Could not load calendar", throwable)
                         throwable.printStackTrace()
-                        loaded++
-                        Log.i("HomeFragment", "calendar $loaded")
 
-                        if (loaded == totalCells) {
+                        if (++loaded >= totalCells) {
                             binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
                             binding.internetConnectionHome.visibility = View.GONE
                             binding.homeRefreshLayout.isRefreshing = false
                         }
+                        Log.i("HomeFragment", "calendar $loaded")
                     }
                 })
 
@@ -286,29 +281,27 @@ class HomeFragment : Fragment() {
                         }
                         laundryCell.info = laundryCellInfo
                         homepageCells[6] = laundryCell
-                        loaded++
-                        Log.i("HomeFragment", "laundry $loaded")
 
-                        if (loaded == totalCells) {
+                        if (++loaded >= totalCells) {
                             binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
                             binding.internetConnectionHome.visibility = View.GONE
                             binding.homeRefreshLayout.isRefreshing = false
                         }
+                        Log.i("HomeFragment", "laundry $loaded")
                     }
                 }, { throwable ->
                     mActivity.runOnUiThread {
                         Log.e("Home", "Could not load laundry", throwable)
                         throwable.printStackTrace()
-                        loaded++
-                        Log.i("HomeFragment", "laundry $loaded")
 
-                        if (loaded == totalCells) {
+                        if (++loaded >= totalCells) {
                             binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
                             binding.internetConnectionHome.visibility = View.GONE
                             binding.homeRefreshLayout.isRefreshing = false
                         }
+                        Log.i("HomeFragment", "laundry $loaded")
                     }
                 })
 
@@ -323,29 +316,26 @@ class HomeFragment : Fragment() {
                         }
                     }
 
-                    loaded++
-                    Log.i("HomeFragment", "posts $loaded")
-
-                    if (loaded == totalCells) {
+                    if (++loaded >= totalCells) {
                         binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                         loadingPanel?.visibility = View.GONE
                         binding.internetConnectionHome.visibility = View.GONE
                         binding.homeRefreshLayout.isRefreshing = false
                     }
+                    Log.i("HomeFragment", "posts $loaded")
 
                 }, { throwable ->
                     mActivity.runOnUiThread {
                         Log.e("Home", "Could not load posts", throwable)
                         throwable.printStackTrace()
-                        loaded++
-                        Log.i("HomeFragment", "posts $loaded")
 
-                        if (loaded == totalCells) {
+                        if (++loaded >= totalCells) {
                             binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
                             binding.internetConnectionHome.visibility = View.GONE
                             binding.homeRefreshLayout.isRefreshing = false
                         }
+                        Log.i("HomeFragment", "posts $loaded")
                     }
 
                 })
@@ -358,9 +348,8 @@ class HomeFragment : Fragment() {
                         calendar.type = "calendar"
                         calendar.events = events
                         homepageCells.add(0, calendar)
-                        loaded++
 
-                        if (loaded == totalCells) {
+                        if (++loaded >= totalCells) {
                             binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
                             binding.internetConnectionHome.visibility = View.GONE
@@ -371,9 +360,8 @@ class HomeFragment : Fragment() {
                     mActivity.runOnUiThread {
                         Log.e("Home", "Could not load Home page", throwable)
                         throwable.printStackTrace()
-                        loaded++
 
-                        if (loaded == totalCells) {
+                        if (++loaded >= totalCells) {
                             binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
                             binding.internetConnectionHome.visibility = View.GONE
@@ -393,9 +381,8 @@ class HomeFragment : Fragment() {
                         gsrBookingCell.type = "gsr_booking"
                         gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "Weigle")
                         homepageCells.add(homepageCells.size, gsrBookingCell)
-                        loaded++
 
-                        if (loaded == totalCells) {
+                        if (++loaded >= totalCells) {
                             binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
                             binding.internetConnectionHome.visibility = View.GONE
@@ -406,9 +393,8 @@ class HomeFragment : Fragment() {
                     mActivity.runOnUiThread {
                         Log.e("Home", "Could not load Home page", throwable)
                         throwable.printStackTrace()
-                        loaded++
 
-                        if (loaded == totalCells) {
+                        if (++loaded >= totalCells) {
                             binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
                             loadingPanel?.visibility = View.GONE
                             binding.internetConnectionHome.visibility = View.GONE
