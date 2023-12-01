@@ -12,11 +12,14 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.RequestListener
-import kotlinx.android.synthetic.main.fragment_login.view.*
+import com.pennapps.labs.pennmobile.databinding.FragmentLoginBinding
 
 class LoginFragment : Fragment() {
 
     private lateinit var mActivity: MainActivity
+
+    private var _binding : FragmentLoginBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +29,8 @@ class LoginFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val v = inflater.inflate(R.layout.fragment_login, container, false)
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
+        val v = binding.root
 
         val fragmentManager = mActivity.supportFragmentManager
         val gif = R.drawable.login_background
@@ -42,9 +46,9 @@ class LoginFragment : Fragment() {
                 resource.setLoopCount(1)
                 return false
             }
-        }).into(v.background_iv)
+        }).into(binding.backgroundIv)
 
-        v.login_button?.setOnClickListener {
+        binding.loginButton.setOnClickListener {
             val fragment = LoginWebviewFragment()
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, fragment)
@@ -52,7 +56,7 @@ class LoginFragment : Fragment() {
                     .commit()
         }
 
-        v.guest_button?.setOnClickListener {
+        binding.guestButton.setOnClickListener {
             val editor = PreferenceManager.getDefaultSharedPreferences(activity).edit()
             editor.remove(getString(R.string.penn_password))
             editor.remove(getString(R.string.penn_user))
@@ -68,6 +72,11 @@ class LoginFragment : Fragment() {
         }
 
         return v
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onResume() {

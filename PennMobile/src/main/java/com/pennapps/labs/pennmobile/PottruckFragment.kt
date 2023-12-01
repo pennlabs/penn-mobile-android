@@ -19,19 +19,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.pennapps.labs.pennmobile.adapters.FitnessAdapter
 import com.pennapps.labs.pennmobile.adapters.FitnessHeaderAdapter
-import com.pennapps.labs.pennmobile.adapters.HomeAdapter
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.classes.FitnessAdapterDataModel
 import com.pennapps.labs.pennmobile.classes.FitnessPreferenceViewModel
-import com.pennapps.labs.pennmobile.classes.HomeCell
-import com.pennapps.labs.pennmobile.classes.HomeCellInfo
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
+import com.pennapps.labs.pennmobile.databinding.FragmentPottruckBinding
 import com.pennapps.labs.pennmobile.utils.Utils
-import kotlinx.android.synthetic.main.fragment_home.home_cells_rv
-import kotlinx.android.synthetic.main.fragment_home.home_refresh_layout
 import kotlinx.android.synthetic.main.fragment_home.internetConnectionHome
-import kotlinx.android.synthetic.main.loading_panel.loadingPanel
 
 class PottruckFragment : Fragment() {
     private lateinit var mActivity : MainActivity
@@ -48,6 +42,9 @@ class PottruckFragment : Fragment() {
     private lateinit var favoriteHeaderAdapter : FitnessHeaderAdapter
     private lateinit var otherHeaderAdapter : FitnessHeaderAdapter
 
+    private var _binding : FragmentPottruckBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mStudentLife = MainActivity.studentLifeInstance
@@ -60,15 +57,21 @@ class PottruckFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         mActivity.hideBottomBar()
-        return inflater.inflate(R.layout.fragment_pottruck, container, false)
+        _binding = FragmentPottruckBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mView = view
 
-        swipeRefresh = view.findViewById(R.id.swiperefresh_fitness)
-        recyclerView = view.findViewById(R.id.recycler_view_fitness_rooms)
+        swipeRefresh = binding.swiperefreshFitness
+        recyclerView = binding.recyclerViewFitnessRooms
         loadingPanel = view.findViewById(R.id.loadingPanel)
 
         swipeRefresh.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
@@ -151,7 +154,7 @@ class PottruckFragment : Fragment() {
         swipeRefresh.isRefreshing = false
 
         // set click listener for favorites button
-        val fitnessPref : ImageView = mView.findViewById(R.id.fitness_preferences)
+        val fitnessPref : ImageView = binding.fitnessPreferences
         fitnessPref.setOnClickListener {
             dataModel.savePreferences()
             val prefDialog = FitnessPreferencesFragment(dataModel, object: CloseListener{
@@ -170,8 +173,8 @@ class PottruckFragment : Fragment() {
      */
     private fun getConnected(): Boolean {
         //displays banner if not connected
-        val connectionToolbar : Toolbar = mView.findViewById(R.id.toolbar_fitness_connection)
-        val connectionMessage : TextView = mView.findViewById(R.id.text_fitness_connection_message)
+        val connectionToolbar : Toolbar = binding.toolbarFitnessConnection
+        val connectionMessage : TextView = binding.textFitnessConnectionMessage
 
         if (!isOnline(context)) {
             connectionToolbar.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.darkRedBackground))
@@ -191,9 +194,9 @@ class PottruckFragment : Fragment() {
      * fills in the textViews for the title/date
      */
     private fun initAppBar() {
-        val appBarLayout : AppBarLayout = mView.findViewById(R.id.appbar_home_holder)
-        val titleView : TextView = mView.findViewById(R.id.title_view)
-        val dateView : TextView = mView.findViewById(R.id.date_view)
+        val appBarLayout : AppBarLayout = binding.appbarHomeHolder
+        val titleView : TextView = binding.titleView
+        val dateView : TextView = binding.dateView
 
         (appBarLayout.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
 

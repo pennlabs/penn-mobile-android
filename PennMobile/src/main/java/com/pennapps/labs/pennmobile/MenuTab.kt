@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.ExpandableListView
 import androidx.fragment.app.Fragment
 import com.pennapps.labs.pennmobile.adapters.MenuAdapter
-import kotlinx.android.synthetic.main.fragment_menu_tab.view.*
 import java.util.*
 
 class MenuTab : Fragment() {
@@ -31,7 +30,7 @@ class MenuTab : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_menu_tab, container, false)
-        val elv : ExpandableListView = v.station_list
+        val elv : ExpandableListView = v.findViewById(R.id.station_list)
         elv.setFooterDividersEnabled(true)
         elv.addFooterView(View(elv.context))
         elv.setAdapter(activity?.let { MenuAdapter(it, stations, stationInfo) })

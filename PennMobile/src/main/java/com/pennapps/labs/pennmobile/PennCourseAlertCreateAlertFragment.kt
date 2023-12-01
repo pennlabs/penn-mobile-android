@@ -19,9 +19,9 @@ import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.classes.Course
 import com.pennapps.labs.pennmobile.classes.Section
 import com.pennapps.labs.pennmobile.viewmodels.PennCourseAlertViewModel
-import kotlinx.android.synthetic.main.fragment_penn_course_alert_create_alert.view.*
 import java.util.regex.Pattern
 import androidx.appcompat.widget.Toolbar
+import com.pennapps.labs.pennmobile.databinding.FragmentPennCourseAlertCreateAlertBinding
 
 class PennCourseAlertCreateAlertFragment : Fragment() {
     private val viewModel: PennCourseAlertViewModel by activityViewModels()
@@ -30,14 +30,22 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
     private lateinit var dialog: Dialog
     private lateinit var mActivity: MainActivity
 
+    private var _binding : FragmentPennCourseAlertCreateAlertBinding? = null
+    private val binding get() = _binding!!
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_penn_course_alert_create_alert, container,
-            false)
+        _binding = FragmentPennCourseAlertCreateAlertBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,11 +65,10 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
 
         //if guest login
         if (pennKey == null) {
-            handleGuestLogin(view)
+            handleGuestLogin()
         } else {
-            hideGuestErrorMessage(view)
+            hideGuestErrorMessage()
             viewModel.getUserInfo()
-
 
             val emailEditText = view.findViewById<EditText>(R.id.pca_email_edit_text)
 
@@ -81,14 +88,14 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
 
             val notifyClosedCheckbox = view.findViewById<CheckBox>(R.id.pca_notify_checkbox)
 
-            courseSpinner = view.pca_course_spinner
+            courseSpinner = binding.pcaCourseSpinner
             val courseSpinnerAdapter: ArrayAdapter<Course> = ArrayAdapter(
                 requireContext(),
                 android.R.layout.simple_list_item_1,
                 viewModel.coursesList
             )
 
-            sectionSpinner = view.pca_section_spinner
+            sectionSpinner = binding.pcaSectionSpinner
             val sectionSpinnerAdapter: ArrayAdapter<Section> = ArrayAdapter(
                 requireContext(),
                 android.R.layout.simple_list_item_1,
@@ -296,19 +303,19 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
         }
     }
 
-    private fun hideGuestErrorMessage(view: View) {
-        view.guestLoginErrorText.visibility = View.GONE
+    private fun hideGuestErrorMessage() {
+        binding.guestLoginErrorText.visibility = View.GONE
     }
 
-    private fun handleGuestLogin(view: View) {
-        view.pca_course_spinner.visibility = View.GONE
-        view.pca_section_spinner.visibility = View.GONE
-        view.pca_email_edit_text.visibility = View.GONE
-        view.pca_phone_edit_text.visibility = View.GONE
-        view.pca_notify_text.visibility = View.GONE
-        view.pca_notify_checkbox.visibility = View.GONE
-        view.pca_alert_button.visibility = View.GONE
-        view.guestLoginErrorText.visibility = View.VISIBLE
+    private fun handleGuestLogin() {
+        binding.pcaCourseSpinner.visibility = View.GONE
+        binding.pcaSectionSpinner.visibility = View.GONE
+        binding.pcaEmailEditText.visibility = View.GONE
+        binding.pcaPhoneEditText.visibility = View.GONE
+        binding.pcaNotifyText.visibility = View.GONE
+        binding.pcaNotifyCheckbox.visibility = View.GONE
+        binding.pcaAlertButton.visibility = View.GONE
+        binding.guestLoginErrorText.visibility = View.VISIBLE
     }
 
     private fun showInternetErrorBar(view: View) {

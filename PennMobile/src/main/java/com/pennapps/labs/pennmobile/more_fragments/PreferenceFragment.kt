@@ -206,7 +206,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                 .setTitle("Contact Info")
                 .setMessage("This information is used when booking GSRs and when displaying your name on the app.")
                 .setPositiveText("Submit")
-                .setPositiveColor(R.color.positive)
+                .setPositiveColor(stream.customalert.R.color.positive)
                 .setOnInputClicked { _, dialog, inputList ->
                     val firstName = inputList[0].trim()
                     val lastName = inputList[1].trim()
@@ -234,7 +234,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                     dialog.dismiss()
                 }
                 .setNegativeText("Cancel")
-                .setNegativeColor(R.color.negative)
+                .setNegativeColor(stream.customalert.R.color.negative)
                 .setOnNegativeClicked { _, dialog -> dialog.dismiss() }
                 .setLineInputHint(hints)
                 .setLineInputText(text)

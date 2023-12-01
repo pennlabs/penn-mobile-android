@@ -282,8 +282,8 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             builder?.setToolbarColor(0x3E50B4)
             builder?.setStartAnimations(
                 mContext,
-                R.anim.abc_popup_enter,
-                R.anim.abc_popup_exit)
+                androidx.appcompat.R.anim.abc_popup_enter,
+                androidx.appcompat.R.anim.abc_popup_exit)
             CustomTabsClient.bindCustomTabsService(
                 mContext,
                 NewsFragment.CUSTOM_TAB_PACKAGE_NAME, connection)
@@ -420,8 +420,8 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             share?.type = "text/plain"
             builder?.setToolbarColor(0x3E50B4)
             builder?.setStartAnimations(mContext,
-                R.anim.abc_popup_enter,
-                R.anim.abc_popup_exit)
+                androidx.appcompat.R.anim.abc_popup_enter,
+                androidx.appcompat.R.anim.abc_popup_exit)
             CustomTabsClient.bindCustomTabsService(mContext,
                 NewsFragment.CUSTOM_TAB_PACKAGE_NAME, connection)
 

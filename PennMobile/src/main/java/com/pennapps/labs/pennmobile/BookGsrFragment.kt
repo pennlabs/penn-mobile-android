@@ -16,15 +16,15 @@ import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult
-import kotlinx.android.synthetic.main.gsr_details_book.*
-import kotlinx.android.synthetic.main.gsr_details_book.view.*
-import kotlinx.android.synthetic.main.loading_panel.*
+import com.pennapps.labs.pennmobile.databinding.GsrDetailsBookBinding
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
 
 
 class BookGsrFragment : Fragment() {
+    private var _binding: GsrDetailsBookBinding? = null
+    private val binding get() = _binding!!
 
     // fields for booking
     internal lateinit var firstNameEt: EditText
@@ -63,18 +63,19 @@ class BookGsrFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val mActivity : MainActivity? = activity as MainActivity
-        mActivity?.setTitle(R.string.gsr)
+        val mActivity : MainActivity = activity as MainActivity
+        mActivity.setTitle(R.string.gsr)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val v = inflater.inflate(R.layout.gsr_details_book, container, false)
+        _binding = GsrDetailsBookBinding.inflate(inflater, container, false)
+        val view = binding.root
 
-        firstNameEt = v.first_name
-        lastNameEt = v.last_name
-        emailEt = v.gsr_email
-        submit = v.submit_gsr
+        firstNameEt = binding.firstName
+        lastNameEt = binding.lastName
+        emailEt = binding.gsrEmail
+        submit = binding.submitGsr
 
         // get user email and name from shared preferences if it's already saved
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
@@ -96,16 +97,23 @@ class BookGsrFragment : Fragment() {
             } else {
                 submit.isClickable = false
                 submit.background.setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY)
-                loading?.visibility = View.VISIBLE
+                binding.loading.loadingPanel.visibility = View.VISIBLE
                 bookGSR(Integer.parseInt(gsrID), gsrLocationCode, startTime, endTime, gid, roomId, roomName)
             }
         }
-        return v
+
+        val mActivity : MainActivity = activity as MainActivity
+        mActivity.hideBottomBar()
+
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun bookGSR(gsrId: Int, gsrLocationCode: String, startTime: String?, endTime: String?, gid: Int, roomId: Int, roomName: String) {
-
-
 
         OAuth2NetworkManager(activity as MainActivity).getAccessToken {
             var sessionID = ""
@@ -155,7 +163,7 @@ class BookGsrFragment : Fragment() {
                             Log.e("BookGsrFragment", "GSR booking failed with " + result.getError())
                         }
                         // go back to GSR fragment
-                        loading?.visibility = View.GONE
+                        binding.loading.loadingPanel.visibility = View.GONE
                         activity?.onBackPressed()
                     }
 
@@ -163,7 +171,7 @@ class BookGsrFragment : Fragment() {
                         //If any error occurred displaying the error as toast
                         Log.e("BookGSRFragment", "Error booking gsr", error)
                         Toast.makeText(activity, "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
-                        loading?.visibility = View.GONE
+                        binding.loading.loadingPanel.visibility = View.GONE
                         activity?.onBackPressed()
                     }
                 }

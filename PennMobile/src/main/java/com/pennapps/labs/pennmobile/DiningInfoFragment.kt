@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.VenueInterval
-import kotlinx.android.synthetic.main.fragment_dining_info.view.*
 import org.joda.time.format.DateTimeFormat
 
 /**
@@ -27,6 +26,7 @@ class DiningInfoFragment : Fragment() {
     private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mDiningHall = arguments?.getParcelable("DiningHall")
@@ -37,7 +37,7 @@ class DiningInfoFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_dining_info, container, false)
         v.setBackgroundColor(Color.WHITE)
-        menuParent = v.dining_hours
+        menuParent = v.findViewById(R.id.dining_hours)
         fillInfo()
         return v
     }
