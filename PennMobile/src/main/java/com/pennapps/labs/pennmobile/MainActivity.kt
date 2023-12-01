@@ -98,10 +98,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        showBottomBar()
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        showBottomBar()
+//    }
 
     private fun onExpandableBottomNavigationItemSelected() {
         expandable_bottom_bar.setOnNavigationItemSelectedListener { item ->
