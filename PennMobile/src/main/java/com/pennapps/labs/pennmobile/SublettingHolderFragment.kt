@@ -6,18 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
-import com.pennapps.labs.pennmobile.adapters.DiningPagerAdapter
+import com.pennapps.labs.pennmobile.adapters.SublettingPagerAdapter
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
-import com.pennapps.labs.pennmobile.utils.Utils
-import kotlinx.android.synthetic.main.fragment_dining.view.dining_swiperefresh
 import kotlinx.android.synthetic.main.fragment_dining_holder.view.appbar_home_holder
-import kotlinx.android.synthetic.main.fragment_dining_holder.view.date_view
-import kotlinx.android.synthetic.main.fragment_gsr_tabs.view.appbar_home
-import kotlinx.android.synthetic.main.fragment_gsr_tabs.view.date_view
-import kotlinx.android.synthetic.main.fragment_gsr_tabs.view.title_view
-import kotlinx.android.synthetic.main.include_main.toolbar
+import com.google.android.material.tabs.TabLayoutMediator
+
 
 /**
  * A simple [Fragment] subclass.
@@ -26,8 +21,10 @@ import kotlinx.android.synthetic.main.include_main.toolbar
  * https://tutorials.eu/viewpager2-with-fragmentstateadapter-in-android/
  */
 class SublettingFragment : Fragment() {
-    lateinit var pagerAdapter: SublettingAdapter
+    lateinit var sublettingPagerAdapter: SublettingPagerAdapter
     private lateinit var mActivity: MainActivity
+    private lateinit var viewPager: ViewPager2
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,10 +34,17 @@ class SublettingFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_subletting, container, false)
-        initAppBar(view)
-        // Inflate the layout for this fragment
-        return view
+        return inflater.inflate(R.layout.fragment_subletting, container, false)
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        sublettingPagerAdapter = SublettingPagerAdapter(this)
+        viewPager = view.findViewById(R.id.pager)
+        viewPager.adapter = sublettingPagerAdapter
+        val tabLayout : TabLayout = view.findViewById(R.id.subletting_tab_layout)
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            tab.text = "OBJECT ${(position + 1)}"
+        }.attach()
+
     }
 
 
