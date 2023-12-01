@@ -130,6 +130,16 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             return@setOnPreferenceClickListener true
         }
 
+        val sublettingFeaturePref: Preference? = findPreference("pref_subletting_feature")
+        sublettingFeaturePref?.setOnPreferenceClickListener {
+            mActivity.supportFragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, SublettingFragment())
+                    .addToBackStack(null)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .commit()
+            return@setOnPreferenceClickListener true
+        }
+
 
         val pennLabsPref: Preference? = findPreference("pref_labs_link")
         pennLabsPref?.setOnPreferenceClickListener {

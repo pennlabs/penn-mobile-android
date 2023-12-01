@@ -55,6 +55,14 @@
             app:key="pref_fitness_feature"
             app:title="Fitness" />
 
+        <Preference
+            android:id="@+id/pref_subletting_feature"
+            android:hapticFeedbackEnabled="true"
+            app:icon="@drawable/ic_subletting_test_foreground"
+            app:iconSpaceReserved="false"
+            app:key="pref_subletting_feature"
+            app:title="Subletting" />
+
 
     </PreferenceCategory>
 
