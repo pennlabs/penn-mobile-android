@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.viewpager2.widget.ViewPager2
+import com.pennapps.labs.pennmobile.adapters.SubletterPagerAdapter
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -17,10 +19,14 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class SubletterFragment : Fragment() {
-
+    lateinit var subletterPagerAdapter: SubletterPagerAdapter
+    private lateinit var mActivity: MainActivity
+    private lateinit var viewPager: ViewPager2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mActivity = activity as MainActivity
+        mActivity.closeKeyboard()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -28,6 +34,8 @@ class SubletterFragment : Fragment() {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_subletter_view, container, false)
     }
+
+
 
 
 
