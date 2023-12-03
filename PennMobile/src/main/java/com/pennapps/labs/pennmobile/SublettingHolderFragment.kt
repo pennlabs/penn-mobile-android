@@ -38,7 +38,7 @@ class SublettingFragment : Fragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         sublettingPagerAdapter = SublettingPagerAdapter(this)
-        viewPager = view.findViewById(R.id.pager)
+        viewPager = view.findViewById(R.id.viewPager2)
         viewPager.adapter = sublettingPagerAdapter
         val tabLayout : TabLayout = view.findViewById(R.id.subletting_tab_layout)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
