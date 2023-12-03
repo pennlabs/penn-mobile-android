@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
 
     val tokenMutex = Mutex()
 
-    private lateinit var firebaseAnalytics: FirebaseAnalytics
+    private lateinit var mFirebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -92,13 +92,8 @@ class MainActivity : AppCompatActivity() {
         showBottomBar()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        // firebase test
-        //Firebase.analytics.logEvent("log_thing", null)
-        //firebaseAnalytics.logEvent
-
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        firebaseAnalytics.logEvent("log_thing", null)
-
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mFirebaseAnalytics.logEvent("MainActivity", null)
 
         // Show HomeFragment if logged in, otherwise show LoginFragment
         val pennKey = mSharedPrefs.getString(getString(R.string.pennkey), null)
@@ -108,11 +103,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             startHomeFragment()
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        //showBottomBar()
     }
 
     private fun onExpandableBottomNavigationItemSelected() {

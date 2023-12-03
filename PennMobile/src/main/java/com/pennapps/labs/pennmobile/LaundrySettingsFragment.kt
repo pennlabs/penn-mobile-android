@@ -67,7 +67,7 @@ class LaundrySettingsFragment : Fragment() {
             editor?.apply()
 
             for (i in 0 until numRooms) {
-                editor?.remove(Integer.toString(i))?.apply()
+                editor?.remove(i.toString())?.apply()
             }
 
             //view.laundry_building_expandable_list?.setAdapter(mAdapter)

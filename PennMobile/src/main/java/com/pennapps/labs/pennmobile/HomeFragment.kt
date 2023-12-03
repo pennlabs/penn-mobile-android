@@ -72,7 +72,9 @@ class HomeFragment : Fragment() {
         view.home_refresh_layout
             .setColorSchemeResources(R.color.color_accent, R.color.color_primary)
         view.home_refresh_layout
-            .setOnRefreshListener { getHomePage() }
+            .setOnRefreshListener {
+                getHomePage()
+            }
 
         initAppBar(view)
         return view
