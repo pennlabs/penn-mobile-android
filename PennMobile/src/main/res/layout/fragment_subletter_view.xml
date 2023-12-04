@@ -34,10 +34,12 @@
         android:id="@+id/subletter_tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/my_listings_text"
-        />
+        app:tabIndicatorColor="@color/color_bottom_nav_selected"
+        app:tabTextAppearance="@style/TextAppearance.AppCompat.Small" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/subletter_view_pager"

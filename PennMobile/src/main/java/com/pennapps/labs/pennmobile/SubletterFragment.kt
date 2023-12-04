@@ -6,12 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.pennapps.labs.pennmobile.adapters.SubletterPagerAdapter
 
 // TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+
 
 /**
  * A simple [Fragment] subclass.
@@ -32,7 +32,23 @@ class SubletterFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_subletter_view, container, false)
+        val rootView = inflater.inflate(R.layout.fragment_subletter_view, container, false)
+        viewPager = rootView.findViewById(R.id.subletter_view_pager)
+        subletterPagerAdapter = SubletterPagerAdapter(this)
+        viewPager.adapter = subletterPagerAdapter
+
+        val tabLayout: TabLayout = rootView.findViewById(R.id.subletter_tab_layout)
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            if(position == 0) {
+                tab.text = "Posted"
+            } else {
+                tab.text = "Drafts"
+            }
+
+        }.attach()
+
+        return rootView
+
     }
 
 
