@@ -100,7 +100,7 @@ class PottruckFragment : Fragment() {
 
 
                 mActivity.runOnUiThread {
-                    OAuth2NetworkManager(mActivity).getAccessToken {
+                    mActivity.mNetworkManager.getAccessToken {
                         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
                         val context = mActivity.applicationContext
                         val bearerToken =

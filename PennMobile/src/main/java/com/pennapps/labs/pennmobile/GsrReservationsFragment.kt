@@ -93,7 +93,7 @@ class GsrReservationsFragment : Fragment() {
 
         val labs = MainActivity.studentLifeInstance
 
-        OAuth2NetworkManager(mActivity).getAccessToken {
+        mActivity.mNetworkManager.getAccessToken {
             val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
             val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
             val email = sp.getString(getString(R.string.email_address), "")

@@ -102,7 +102,7 @@ class DiningSettingsFragment : Fragment() {
                 favoriteDiningHalls.add(hall.id)
             }
         }
-        OAuth2NetworkManager(activity as MainActivity).getAccessToken {
+        mActivity.mNetworkManager.getAccessToken {
             val bearerToken =
                 "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
             mStudentLife.sendDiningPref(bearerToken, DiningRequest(favoriteDiningHalls),

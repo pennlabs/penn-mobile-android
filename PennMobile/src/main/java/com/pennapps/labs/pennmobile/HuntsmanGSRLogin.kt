@@ -112,7 +112,7 @@ class HuntsmanGSRLogin : Fragment() {
 
     // performs POST request and redirects user to GSR booking fragment
     private fun bookHuntsmanGSR(bearerToken : String, sessionID : String) {
-        OAuth2NetworkManager(activity as MainActivity).getAccessToken {
+        (activity as MainActivity).mNetworkManager.getAccessToken {
 
             mStudentLife.bookGSR(
                 //Passing the values

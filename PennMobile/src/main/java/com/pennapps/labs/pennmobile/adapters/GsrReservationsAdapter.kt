@@ -64,7 +64,7 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
             builder.setPositiveButton("Confirm") { _, _ ->
                 val bookingID = reservation.booking_id
 
-                OAuth2NetworkManager(mContext as MainActivity).getAccessToken {
+                (mContext as MainActivity).mNetworkManager.getAccessToken {
 
                     val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
                     val sessionID = if (reservation.info == null) sp.getString(

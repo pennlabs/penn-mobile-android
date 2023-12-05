@@ -205,7 +205,7 @@ class GsrFragment : Fragment() {
     }
 
     private fun updateStatus() {
-        OAuth2NetworkManager(mActivity).getAccessToken {
+        mActivity.mNetworkManager.getAccessToken {
             val sp = PreferenceManager.getDefaultSharedPreferences(activity)
             bearerToken = sp.getString(getString(R.string.access_token), "").toString();
 
@@ -243,7 +243,7 @@ class GsrFragment : Fragment() {
         var gsrLocation = gsrLocationDropDown.selectedItem.toString()
         val location = mapGSR(gsrLocation)
         val gid = mapGID(gsrLocation)
-        OAuth2NetworkManager(mActivity).getAccessToken {
+        mActivity.mNetworkManager.getAccessToken {
             val sp = PreferenceManager.getDefaultSharedPreferences(activity)
             bearerToken = sp.getString(getString(R.string.access_token), "").toString();
 
@@ -285,7 +285,7 @@ class GsrFragment : Fragment() {
         sortingSwitch.isClickable = false
 
 
-        OAuth2NetworkManager(mActivity).getAccessToken {
+        mActivity.mNetworkManager.getAccessToken {
             val sp = PreferenceManager.getDefaultSharedPreferences(activity)
             bearerToken = sp.getString(getString(R.string.access_token), "").toString();
 

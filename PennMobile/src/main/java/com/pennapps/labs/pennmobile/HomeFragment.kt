@@ -115,7 +115,7 @@ class HomeFragment : Fragment() {
         var loaded = 0
 
         val studentLife = MainActivity.studentLifeInstance
-        OAuth2NetworkManager(mActivity).getAccessToken {
+        mActivity.mNetworkManager.getAccessToken {
             val sp = sharedPreferences
             val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
             val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()

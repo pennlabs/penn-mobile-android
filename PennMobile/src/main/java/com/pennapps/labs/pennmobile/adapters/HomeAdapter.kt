@@ -486,7 +486,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
                 } }
                 val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
                 val idHash = Utils.getSha256Hash(deviceID)
-                OAuth2NetworkManager(mActivity).getAccessToken {
+                mActivity.mNetworkManager.getAccessToken {
                     val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
                     val bearerToken = "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
 
