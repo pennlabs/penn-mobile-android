@@ -51,11 +51,6 @@ class HomeFragment : Fragment() {
             .getInstance(mActivity)
             .registerReceiver(broadcastReceiver, IntentFilter("refresh"))
 
-        val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "11")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Home")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
-        FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
     }
 
     override fun onCreateView(

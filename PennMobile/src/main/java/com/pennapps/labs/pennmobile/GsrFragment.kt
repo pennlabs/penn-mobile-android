@@ -81,12 +81,6 @@ class GsrFragment : Fragment() {
 
         // set default GSR selection date + time to the current date and time
         selectedDateTime = DateTime.now()
-
-        val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "0")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "GSR")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
-        FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

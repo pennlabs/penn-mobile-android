@@ -24,12 +24,6 @@ class FlingFragment : Fragment() {
         setHasOptionsMenu(true)
         mActivity = activity as MainActivity
         mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "7")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Spring Fling")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
-        FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

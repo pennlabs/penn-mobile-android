@@ -43,12 +43,6 @@ class LaundrySettingsFragment : Fragment() {
         setHasOptionsMenu(true)
         mActivity.toolbar.visibility = View.VISIBLE
         mActivity.hideBottomBar()
-
-        val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "12")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Laundry Settings")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
-        FirebaseAnalytics.getInstance(mContext).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -69,8 +63,6 @@ class LaundrySettingsFragment : Fragment() {
             for (i in 0 until numRooms) {
                 editor?.remove(i.toString())?.apply()
             }
-
-            //view.laundry_building_expandable_list?.setAdapter(mAdapter)
         }
 
         // set up back button

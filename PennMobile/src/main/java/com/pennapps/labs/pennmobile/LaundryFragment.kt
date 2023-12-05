@@ -56,12 +56,6 @@ class LaundryFragment : Fragment() {
         mActivity = activity as MainActivity
         mContext = mActivity
         setHasOptionsMenu(true)
-
-        val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "3")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Laundry")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
-        FirebaseAnalytics.getInstance(mContext).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

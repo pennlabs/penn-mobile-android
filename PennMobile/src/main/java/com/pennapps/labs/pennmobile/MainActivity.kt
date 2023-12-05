@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        mFirebaseAnalytics.logEvent("MainActivity", null)
+        mFirebaseAnalytics.logEvent("MainActivityStart", null)
 
         // Show HomeFragment if logged in, otherwise show LoginFragment
         val pennKey = mSharedPrefs.getString(getString(R.string.pennkey), null)
