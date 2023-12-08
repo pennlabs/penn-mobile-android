@@ -239,4 +239,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="my_listings">My Listings</string>
+    <string name="you_currently_have_no_listings">You currently have no listings</string>
+    <string name="you_currently_have_no_draft_listings">You currently have no draft listings</string>
+    <string name="add_listing">Add Listing</string>
 </resources>
