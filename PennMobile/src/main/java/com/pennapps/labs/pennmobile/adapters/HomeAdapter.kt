@@ -8,14 +8,12 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.Build
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.browser.customtabs.CustomTabsServiceConnection
@@ -168,7 +166,6 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         holder.itemView.home_card_rv.adapter = GsrReservationsAdapter(ArrayList(reservations))
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun bindDiningCell(holder: ViewHolder, cell: HomeCell) {
         holder.itemView.home_card_title.text = "Favorites"
         holder.itemView.home_card_subtitle.text = "DINING HALLS"
@@ -367,6 +364,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         holder.itemView.home_card_rv.adapter = HomeGsrBuildingAdapter(ArrayList(buildings))
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun bindPostCell(holder: ViewHolder, cell: HomeCell) {
         val info = cell.info
         val post = cell.info?.post

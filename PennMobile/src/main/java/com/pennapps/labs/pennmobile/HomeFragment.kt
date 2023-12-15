@@ -61,7 +61,7 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val view = binding.root
 
@@ -203,9 +203,9 @@ class HomeFragment : Fragment() {
                             venues.add(1442)
                             venues.add(636)
                         } else {
-                            list?.forEach({
+                            list?.forEach {
                                 it.id?.let { it1 -> venues.add(it1) }
-                            })
+                            }
 
                         }
                         diningCellInfo.venues = venues
@@ -272,7 +272,6 @@ class HomeFragment : Fragment() {
 
                 studentLife.getLaundryPref(bearerToken).subscribe({ preferences ->
                     mActivity.runOnUiThread {
-                        val venues = mutableListOf<Int>()
                         val laundryCell = HomeCell()
                         laundryCell.type = "laundry"
                         val laundryCellInfo = HomeCellInfo()
@@ -418,7 +417,7 @@ class HomeFragment : Fragment() {
         this.setTitle(getString(R.string.home))
         mActivity.toolbar.visibility = View.GONE
         val initials = sharedPreferences.getString(getString(R.string.initials), null)
-        if (initials != null && initials.isNotEmpty()) {
+        if (!initials.isNullOrEmpty()) {
             binding.initials.text = initials
         } else {
             binding.profileBackground.setImageDrawable(
@@ -452,20 +451,4 @@ class HomeFragment : Fragment() {
             //TODO: Account Settings
         }
     }
-
-    /**
-     * Show a SnackBar message right below the app bar
-     */
-    @Suppress("DEPRECATION")
-    private fun displaySnack(view: View, text: String) {
-        (view as ViewGroup).showSneakerToast(message = text, doOnRetry = { }, sneakerColor = R.color.sneakerBlurColorOverlay)
-    }
-
-    enum class Cells {
-        POLLS, NEWS, DINING, CALENDAR, LAUNDRY, POSTS
-    }
-
-
-
-
 }

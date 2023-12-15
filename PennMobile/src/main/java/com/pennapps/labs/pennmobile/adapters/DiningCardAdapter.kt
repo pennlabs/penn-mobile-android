@@ -36,7 +36,7 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
     private lateinit var mStudentLife: StudentLife
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        var currentHall = favoriteHalls[position]
+        val currentHall = favoriteHalls[position]
         Glide.with(mContext).load(currentHall.image).fitCenter().centerCrop().into(itemImage)
         itemName.text = currentHall.name
         if (currentHall.isOpen) {
@@ -44,7 +44,7 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
             if (currentHall.openMeal() != "all") {
                 itemStatus.setText(getOpenStatusLabel(currentHall.openMeal()!!))
             }
-            itemHours.text = currentHall.openTimes().toLowerCase()
+            itemHours.text = currentHall.openTimes().lowercase()
         } else {
             itemStatus.setText(R.string.dining_hall_closed)
             itemStatus.background = ContextCompat.getDrawable(itemStatus.context, R.drawable.label_red)
@@ -52,7 +52,7 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
             if (openTimes.isEmpty()) {
                 itemHours.setText(R.string.dining_closed)
             } else {
-                itemHours.text = currentHall.openTimes().toLowerCase()
+                itemHours.text = currentHall.openTimes().lowercase()
             }
         }
 

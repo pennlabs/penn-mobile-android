@@ -16,7 +16,6 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -71,7 +70,7 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
         recyclerView.adapter = adapter
 
 
-        viewModel.userRegistrations.observe(viewLifecycleOwner, Observer { list ->
+        viewModel.userRegistrations.observe(viewLifecycleOwner) { list ->
             run {
                 Log.i("PCA", "list size is ${list.size}")
                 adapter.submitList(null)
@@ -85,7 +84,7 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
                     noAlertsMessage.visibility = View.GONE
                 }
             }
-        })
+        }
 
         viewModel.retrieveRegistrations()
 
@@ -155,14 +154,14 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
         Log.i("PCA_RV", "Item $position clicked")
     }
 
-    override fun onClosedNotificationsSwitchClick(position: Int, onClosedNotificatons: Boolean) {
+    override fun onClosedNotificationsSwitchClick(position: Int, onClosedNotifications: Boolean) {
         val id = adapter.currentList[position].id.toString()
         Log.i(
             "PCA_RV", "Item $position closedNoti" +
-                    " clicked with closed noti set to $onClosedNotificatons"
+                    " clicked with closed noti set to $onClosedNotifications"
         )
         if (subscribed_switch.isChecked) {
-            viewModel.switchOnClosedNotifications(id, onClosedNotificatons)
+            viewModel.switchOnClosedNotifications(id, onClosedNotifications)
         } else {
             notify_closed_switch.isChecked = false
             Toast.makeText(

@@ -13,7 +13,6 @@ import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
-import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult
 import com.pennapps.labs.pennmobile.databinding.FragmentHuntsmanGsrloginBinding
@@ -52,7 +51,7 @@ class HuntsmanGSRLogin : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         _binding = FragmentHuntsmanGsrloginBinding.inflate(inflater, container, false)
         return binding.root
@@ -100,7 +99,7 @@ class HuntsmanGSRLogin : Fragment() {
                     editor.apply()
                     if (startTime.substring(9,13) == "2330") {
                         val newDay = endTime[7] + 1
-                        var newEndTime = endTime.substring(0,7) + newDay + endTime.substring(8,endTime.length)
+                        val newEndTime = endTime.substring(0,7) + newDay + endTime.substring(8,endTime.length)
                         endTime = newEndTime
                     }
                     bookHuntsmanGSR(bearerToken, sessionid)
@@ -166,22 +165,6 @@ class HuntsmanGSRLogin : Fragment() {
                     }
                 }
             )
-        }
-    }
-
-    companion object {
-
-        fun newInstance(gsrID: String, gsrLocationCode: String, startTime: String, endTime: String, gid: Int, roomName: String): HuntsmanGSRLogin {
-            val fragment = HuntsmanGSRLogin()
-            val args = Bundle()
-            args.putString("gsrID", gsrID)
-            args.putString("gsrLocationCode", gsrLocationCode)
-            args.putString("startTime", startTime)
-            args.putString("endTime", endTime)
-            args.putInt("gid", gid)
-            args.putString("roomName", roomName)
-            fragment.arguments = args
-            return fragment
         }
     }
 }

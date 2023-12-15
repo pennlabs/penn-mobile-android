@@ -2,7 +2,6 @@ package com.pennapps.labs.pennmobile
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,11 +11,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
-import androidx.annotation.RequiresApi
 import androidx.preference.PreferenceManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.GsrBuildingAdapter
-import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRContainer
 import com.pennapps.labs.pennmobile.classes.GSRRoom
@@ -99,7 +96,6 @@ class GsrFragment : Fragment() {
         _binding = null
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         selectDateButton = binding.gsrSelectDate
         selectTimeButton = binding.gsrSelectTime
@@ -144,7 +140,7 @@ class GsrFragment : Fragment() {
 
             // Launch Time Picker Dialog
             val timePickerDialog = TimePickerDialog(activity,
-                    TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+                    { _, hourOfDay, minute ->
 
                         // Update hour + minute
                         selectedDateTime = DateTime(selectedDateTime.year, selectedDateTime.monthOfYear, selectedDateTime.dayOfMonth, hourOfDay, minute)
@@ -165,7 +161,7 @@ class GsrFragment : Fragment() {
             val mDay = c.get(Calendar.DAY_OF_MONTH)
 
             val datePickerDialog = DatePickerDialog(mActivity,
-                    DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+                     { _, year, monthOfYear, dayOfMonth ->
                         //account for index starting at 0
                         val entryMonth = monthOfYear + 1
 
@@ -207,9 +203,9 @@ class GsrFragment : Fragment() {
     private fun updateStatus() {
         mActivity.mNetworkManager.getAccessToken {
             val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-            bearerToken = sp.getString(getString(R.string.access_token), "").toString();
+            bearerToken = sp.getString(getString(R.string.access_token), "").toString()
 
-            if (bearerToken.isNullOrEmpty()) {
+            if (bearerToken.isEmpty()) {
                 Toast.makeText(activity, "You are not logged in!", Toast.LENGTH_LONG).show()
             } else {
                 mStudentLife.isWharton(
@@ -240,14 +236,14 @@ class GsrFragment : Fragment() {
                 populateDropDownGSR()
             }
         }
-        var gsrLocation = gsrLocationDropDown.selectedItem.toString()
+        val gsrLocation = gsrLocationDropDown.selectedItem.toString()
         val location = mapGSR(gsrLocation)
         val gid = mapGID(gsrLocation)
         mActivity.mNetworkManager.getAccessToken {
             val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-            bearerToken = sp.getString(getString(R.string.access_token), "").toString();
+            bearerToken = sp.getString(getString(R.string.access_token), "").toString()
 
-            if (location.isNullOrEmpty() || bearerToken.isNullOrEmpty()) {
+            if (location.isEmpty() || bearerToken.isEmpty()) {
                 showNoResults()
             } else {
                 // display loading screen if user did not use swipe refresh
@@ -287,9 +283,9 @@ class GsrFragment : Fragment() {
 
         mActivity.mNetworkManager.getAccessToken {
             val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-            bearerToken = sp.getString(getString(R.string.access_token), "").toString();
+            bearerToken = sp.getString(getString(R.string.access_token), "").toString()
 
-            Log.i("GsrFragment", "Bearer Token: $bearerToken");
+            Log.i("GsrFragment", "Bearer Token: $bearerToken")
             Log.i("GsrFragment", "Wharton Status: $isWharton")
 
             mStudentLife.gsrRoom(
@@ -331,7 +327,7 @@ class GsrFragment : Fragment() {
                             }
 
                             binding.gsrRoomsList.adapter = (context?.let {
-                                GsrBuildingAdapter(it, mGSRS, location.toString(), (durationDropDown.selectedItemPosition + 1) * 30, sortByTime)
+                                GsrBuildingAdapter(it, mGSRS, location, (durationDropDown.selectedItemPosition + 1) * 30, sortByTime)
 
                             })
 
@@ -426,9 +422,9 @@ class GsrFragment : Fragment() {
                             // go through all the rooms
                             while (i < numLocations) {
                                 val locationName = locations[i]?.name ?: ""
-                                if (locationName.isNullOrEmpty()) {
+                                if (locationName.isEmpty()) {
                                     Log.w("Empty location name",
-                                        locations[i].id ?: locations[i].gid.toString());
+                                        locations[i].id ?: locations[i].gid.toString())
                                 }
                                 gsrHashMap[locationName] = locations[i].id
                                 gsrGIDHashMap[locationName] = locations[i].gid

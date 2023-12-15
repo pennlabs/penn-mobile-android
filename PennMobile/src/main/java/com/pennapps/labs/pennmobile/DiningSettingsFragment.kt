@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pennapps.labs.pennmobile.adapters.DiningSettingsAdapter
-import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.DiningRequest
@@ -37,7 +36,7 @@ class DiningSettingsFragment : Fragment() {
         mActivity.hideBottomBar()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentDiningPreferencesBinding.inflate(inflater, container, false)
         val v = binding.root
         binding.diningHallRv.layoutManager = LinearLayoutManager(context,

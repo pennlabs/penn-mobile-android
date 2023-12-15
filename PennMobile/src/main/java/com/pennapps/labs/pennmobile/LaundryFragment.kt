@@ -200,10 +200,10 @@ class LaundryFragment : Fragment() {
                     if (laundryRoomsResult.size == count) {
 
                         // sort laundry rooms data by hall name
-                        roomsDataResult.sortWith(Comparator { usage1, usage2 -> usage2.id - usage1.id })
+                        roomsDataResult.sortWith { usage1, usage2 -> usage2.id - usage1.id }
 
                         // sort laundry rooms by name
-                        laundryRoomsResult.sortWith(Comparator { room1, room2 -> room2.id - room1.id })
+                        laundryRoomsResult.sortWith { room1, room2 -> room2.id - room1.id }
 
                         // update UI
                         mActivity.runOnUiThread {

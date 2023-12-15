@@ -51,7 +51,7 @@ class LaundrySettingsFragment : Fragment() {
         FirebaseAnalytics.getInstance(mContext).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentLaundrySettingsBinding.inflate(inflater, container, false)
         val view = binding.root
 

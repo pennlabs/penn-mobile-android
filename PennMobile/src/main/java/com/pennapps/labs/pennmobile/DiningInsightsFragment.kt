@@ -45,7 +45,7 @@ class DiningInsightsFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
         _binding = FragmentDiningInsightsBinding.inflate(inflater, container, false)
         val view = binding.root
 
@@ -101,9 +101,6 @@ class DiningInsightsFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
 
     private fun refresh() {
         val accessToken = networkManager.getAccessToken()
@@ -127,7 +124,7 @@ class DiningInsightsFragment : Fragment() {
     private fun getInsights(accessToken: String?) {
         if (!isOnline(context)) {
             binding.internetConnectionDiningInsights.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-            binding.internetConnectionMessageDiningInsights.setText("Not Connected to Internet")
+            binding.internetConnectionMessageDiningInsights.text = "Not Connected to Internet"
             binding.internetConnectionDiningInsights.visibility = View.VISIBLE
             binding.diningInsightsRefresh.isRefreshing = false
             return

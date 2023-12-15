@@ -39,7 +39,7 @@ class MenuFragment : Fragment() {
                     val foodItems = StringBuilder() // for design purposes
                     for (i in station.items.indices) {
                         val txt = station.items[i].title
-                        foodItems.append(txt?.get(0)?.toUpperCase())
+                        foodItems.append(txt?.get(0)?.uppercaseChar())
                         foodItems.append(txt?.substring(1, txt.length))
                         if (i < station.items.size - 1) {
                             foodItems.append("\n")
@@ -74,7 +74,7 @@ class MenuFragment : Fragment() {
             return myFragment
         }
 
-        override fun getPageTitle(position: Int): CharSequence? {
+        override fun getPageTitle(position: Int): CharSequence {
             return headers[position]
         }
 

@@ -15,7 +15,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.GsrReservationsAdapter
-import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.databinding.FragmentGsrReservationsBinding
 
 import kotlinx.android.synthetic.main.loading_panel.loadingPanel
@@ -43,7 +42,7 @@ class GsrReservationsFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
         _binding = FragmentGsrReservationsBinding.inflate(inflater, container, false)
         val view = binding.root
 

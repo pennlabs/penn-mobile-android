@@ -19,7 +19,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.pennapps.labs.pennmobile.adapters.FitnessAdapter
 import com.pennapps.labs.pennmobile.adapters.FitnessHeaderAdapter
-import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.FitnessPreferenceViewModel
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
@@ -55,7 +54,7 @@ class PottruckFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         mActivity.hideBottomBar()
         _binding = FragmentPottruckBinding.inflate(inflater, container, false)
         return binding.root
@@ -76,16 +75,16 @@ class PottruckFragment : Fragment() {
 
         swipeRefresh.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
         recyclerView.layoutManager = LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false)
-        swipeRefresh.setOnRefreshListener { getFitnessRooms(view) }
+        swipeRefresh.setOnRefreshListener { getFitnessRooms() }
 
         // populate the title/date of the app bar
         initAppBar()
 
         // populate recyclerview
-        getFitnessRooms(view)
+        getFitnessRooms()
     }
 
-    private fun getFitnessRooms(view: View) {
+    private fun getFitnessRooms() {
         //displays banner if not connected
         if (!getConnected()) return
 
