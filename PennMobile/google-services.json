@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "86950866683",
-    "project_id": "pennmobilefbtest",
-    "storage_bucket": "pennmobilefbtest.appspot.com"
+    "project_number": "261196915337",
+    "project_id": "penn-mobile-android",
+    "storage_bucket": "penn-mobile-android.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:86950866683:android:0b66c19f0e9f40617a4a5e",
+        "mobilesdk_app_id": "1:261196915337:android:82e48698e3df3cdf3bdc58",
         "android_client_info": {
           "package_name": "com.pennapps.labs.pennmobile"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDPyjYP8lTQFHt-uy8UBLdKGrGAmHzyhuA"
+          "current_key": "AIzaSyCavOsfwwY54_dlm_oW4wMDLJgdXghLYP8"
         }
       ],
       "services": {

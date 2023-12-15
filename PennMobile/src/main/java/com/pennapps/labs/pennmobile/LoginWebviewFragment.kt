@@ -15,6 +15,8 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Platform.platformBaseUrl
@@ -92,7 +94,6 @@ class LoginWebviewFragment : Fragment() {
         cancelButton.setOnClickListener {
             mActivity.startLoginFragment()
         }
-
     }
 
     private fun encryptPassword(password: String) {
@@ -193,6 +194,9 @@ class LoginWebviewFragment : Fragment() {
 
                 override fun success(t: AccessTokenResponse?, response: Response?) {
                     if (response?.status == 200) {
+
+                        FirebaseAnalytics.getInstance(mActivity).logEvent("LoginEvent", null)
+
                         val accessToken = t?.accessToken
                         val editor = sp.edit()
                         editor.putString(getString(R.string.access_token), accessToken)
@@ -209,6 +213,7 @@ class LoginWebviewFragment : Fragment() {
                 }
 
                 override fun failure(error: RetrofitError) {
+                    FirebaseCrashlytics.getInstance().recordException(error)
                     Log.e("Accounts", "Error fetching access token $error", error)
                     Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
                     mActivity.startLoginFragment()

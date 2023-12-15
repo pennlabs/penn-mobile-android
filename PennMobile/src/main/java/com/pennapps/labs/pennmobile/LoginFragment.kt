@@ -34,9 +34,6 @@ class LoginFragment : Fragment() {
 
         val fragmentManager = mActivity.supportFragmentManager
         val gif = R.drawable.login_background
-//        if (Build.VERSION.SDK_INT > 28 && (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) {
-//            gif = R.drawable.login_background_dark
-//        }
 
         Glide.with(this).asGif().load(gif).listener(object : RequestListener<GifDrawable> {
             override fun onLoadFailed(e: GlideException?, model: Any?, target: com.bumptech.glide.request.target.Target<GifDrawable>?, isFirstResource: Boolean): Boolean {
