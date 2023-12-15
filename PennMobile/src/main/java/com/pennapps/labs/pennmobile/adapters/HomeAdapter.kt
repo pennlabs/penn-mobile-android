@@ -25,10 +25,12 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.FragmentTransaction
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.pennapps.labs.pennmobile.*
 import com.pennapps.labs.pennmobile.DiningFragment.Companion.getMenus
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
@@ -49,6 +51,7 @@ import kotlinx.android.synthetic.main.home_base_card.view.home_card_title
 import kotlinx.android.synthetic.main.poll_card.view.*
 import kotlinx.android.synthetic.main.home_news_card.view.*
 import kotlinx.android.synthetic.main.home_post_card.view.*
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -203,22 +206,22 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun bindNewsCell(holder: ViewHolder, cell: HomeCell) {
         val article = cell.info?.article
         holder.itemView.home_news_title.text = article?.title
         holder.itemView.home_news_subtitle.text = article?.subtitle
         holder.itemView.home_news_timestamp.text = article?.timestamp?.trim()
 
-        Picasso.get()
-            .load(article?.imageUrl)
-            .fit()
+        Glide.with(mContext).load(article?.imageUrl)
+            .fitCenter()
             .centerCrop()
             .into(holder.itemView.home_news_iv)
 
         /** Adds dynamically generated accent color from the fetched image to the news card */
         var accentColor: Int =  getColor(mContext, R.color.black)
         GlobalScope.launch(Dispatchers.Default) {
-            val bitmap = Picasso.get().load(article?.imageUrl).get()
+            val bitmap = Glide.with(mContext).load(article?.imageUrl).submit().get().toBitmap()
 
             // Create palette from bitmap
             fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
@@ -244,6 +247,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
                 holder.itemView.blurView
                     .setOverlayColor(ColorUtils.setAlphaComponent(accentColor, 150))
             }
+
         }
 
         /** Logic for the more info button on the news card */
@@ -375,15 +379,14 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
                 post?.expireDate?.substring(5, 7) + " / " +
                 post?.expireDate?.substring(8, 10)
         holder.itemView.home_post_timestamp.text = time
-        Picasso.get()
-            .load(post?.imageUrl)
-            .fit()
+        Glide.with(mContext).load(post?.imageUrl)
+            .fitCenter()
             .centerCrop()
             .into(holder.itemView.home_post_iv)
         /** Adds dynamically generated accent color from the fetched image to the news card */
         var accentColor: Int =  getColor(mContext, R.color.black)
         GlobalScope.launch(Dispatchers.Default) {
-            val bitmap = Picasso.get().load(post?.imageUrl).get()
+            val bitmap = Glide.with(mContext).load(post?.imageUrl).submit().get().toBitmap()
             // Create palette from bitmap
             fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
             val vibrantSwatch: Palette.Swatch? = createPaletteSync(bitmap).darkVibrantSwatch
