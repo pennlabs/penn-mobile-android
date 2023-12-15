@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager

@@ -3,7 +3,7 @@ package com.pennapps.labs.pennmobile
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.util.Log
 import android.view.*
 import androidx.coordinatorlayout.widget.CoordinatorLayout
