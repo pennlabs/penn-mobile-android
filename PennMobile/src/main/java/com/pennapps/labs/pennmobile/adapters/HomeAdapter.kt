@@ -41,7 +41,6 @@ import com.pennapps.labs.pennmobile.classes.HomeCell
 import com.pennapps.labs.pennmobile.classes.PollCell
 import com.pennapps.labs.pennmobile.components.sneaker.Utils.convertToDp
 import com.pennapps.labs.pennmobile.utils.Utils
-import com.squareup.picasso.Picasso
 import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.home_base_card.view.*
@@ -449,7 +448,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         holder.itemView.home_post_source?.text = info?.source
         holder.itemView.home_post_timestamp?.text = info?.timestamp
         if (info?.imageUrl != null) {
-            Picasso.get().load(info.imageUrl).fit().centerCrop().into(holder.itemView.home_post_iv)
+            Glide.with(mContext).load(info.imageUrl).fitCenter().centerCrop().into(holder.itemView.home_post_iv)
         }
 
         // For now, we only use Feature cards for Spring Fling so we show the Fling Fragment
