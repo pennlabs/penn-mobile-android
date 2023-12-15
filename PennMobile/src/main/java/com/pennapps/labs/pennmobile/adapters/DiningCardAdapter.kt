@@ -13,12 +13,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import com.bumptech.glide.Glide
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.MenuFragment
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.dining_list_item.view.*
 import rx.android.schedulers.AndroidSchedulers
 
@@ -37,7 +37,7 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var currentHall = favoriteHalls[position]
-        Picasso.get().load(currentHall.image).fit().centerCrop().into(itemImage)
+        Glide.with(mContext).load(currentHall.image).fitCenter().centerCrop().into(itemImage)
         itemName.text = currentHall.name
         if (currentHall.isOpen) {
             itemStatus.background = ContextCompat.getDrawable(itemStatus.context, R.drawable.label_green)
