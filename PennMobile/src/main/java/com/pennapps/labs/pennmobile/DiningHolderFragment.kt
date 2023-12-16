@@ -74,8 +74,8 @@ class DiningHolderFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        getConnected()
         mActivity.removeTabs()
-        //mActivity.toolbar.visibility = View.GONE
         mActivity.setTitle(R.string.dining)
         mActivity.setSelectedTab(MainActivity.DINING)
     }

@@ -89,6 +89,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun getHomePage() {
+        mActivity.showBottomBar()
 
         //displays banner if not connected
         if (!isOnline(context)) {
