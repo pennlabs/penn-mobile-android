@@ -23,19 +23,16 @@ import com.pennapps.labs.pennmobile.api.Platform.platformBaseUrl
 import com.pennapps.labs.pennmobile.classes.AccessTokenResponse
 import com.pennapps.labs.pennmobile.classes.Account
 import com.pennapps.labs.pennmobile.classes.GetUserResponse
-import com.pennapps.labs.pennmobile.classes.SaveAccountResponse
 import org.apache.commons.lang3.RandomStringUtils
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
 import java.nio.charset.Charset
-import java.security.KeyStore
 import java.security.MessageDigest
 import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
-import javax.crypto.spec.IvParameterSpec
 
 class LoginWebviewFragment : Fragment() {
 
@@ -110,30 +107,8 @@ class LoginWebviewFragment : Fragment() {
         val spEditor = sp.edit()
         spEditor.putString("penn_password", encryptedPassword)
         spEditor.apply()
-        spEditor.commit()
         spEditor.putString("encryptionIv", Base64.getEncoder().encodeToString(encryptionIv))
         spEditor.apply()
-        spEditor.commit()
-    }
-
-    private fun getDecodedPassword(): String? {
-        val base64EncryptedPassword = sp.getString("penn_password", "null")
-        val base64EncryptionIv = sp.getString("encryptionIv", "null")
-
-        val encryptionIv = Base64.getDecoder().decode(base64EncryptionIv)
-        val encryptedPassword = Base64.getDecoder().decode(base64EncryptedPassword)
-
-        val keyStore = KeyStore.getInstance("AndroidKeyStore")
-        keyStore.load(null)
-
-        val secretkey = keyStore.getKey("Key", null) as SecretKey
-        val cipher = Cipher.getInstance(
-            KeyProperties.KEY_ALGORITHM_AES + "/" +
-                    KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7
-        )
-        cipher.init(Cipher.DECRYPT_MODE, secretkey, IvParameterSpec(encryptionIv))
-        val passwordBytes = cipher.doFinal(encryptedPassword)
-        return String(passwordBytes, Charset.forName("UTF-8"))
     }
 
     private fun saveUsername(username: String) {
@@ -171,16 +146,12 @@ class LoginWebviewFragment : Fragment() {
                 initiateAuthentication(authCode)
             }
             if (url.contains("weblogin") && url.contains("pennkey")) {
-                webView.evaluateJavascript("document.getElementById('pennname').value;", ValueCallback<String> { s ->
-                    if (s != null || s != "null") {
-                        saveUsername(s)
-                    }
-                })
-                webView.evaluateJavascript("document.getElementById('password').value;", ValueCallback<String> { s ->
-                    if (s != null || s != "null") {
-                        encryptPassword(s)
-                    }
-                })
+                webView.evaluateJavascript("document.getElementById('pennname').value;") { s ->
+                    saveUsername(s)
+                }
+                webView.evaluateJavascript("document.getElementById('password').value;") { s ->
+                    encryptPassword(s)
+                }
             }
             return super.shouldOverrideUrlLoading(view, url)
         }
@@ -251,26 +222,6 @@ class LoginWebviewFragment : Fragment() {
                         mActivity.startLoginFragment()
                     }
                 })
-    }
-
-    private fun saveAccount(account: Account, pennkey: String, accessToken: String?) {
-        // warning this network call is unsafe
-        mStudentLife.saveAccount("Bearer $accessToken", pennkey, account, object : Callback<SaveAccountResponse> {
-
-            override fun success(t: SaveAccountResponse?, response: Response?) {
-                val editor = sp.edit()
-                editor.putString(getString(R.string.accountID), t?.accountID)
-                editor.apply()
-                // After saving the account, go to homepage
-                mActivity.startHomeFragment()
-            }
-
-            override fun failure(error: RetrofitError) {
-                Log.e("Accounts", "Error saving account $error", error)
-                Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
-                mActivity.startLoginFragment()
-            }
-        })
     }
 
     private fun getCodeChallenge(codeVerifier: String): String {

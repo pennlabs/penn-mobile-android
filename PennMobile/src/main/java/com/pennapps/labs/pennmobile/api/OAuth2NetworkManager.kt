@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.api
 
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.provider.Settings
 import android.util.Log
 import androidx.lifecycle.lifecycleScope

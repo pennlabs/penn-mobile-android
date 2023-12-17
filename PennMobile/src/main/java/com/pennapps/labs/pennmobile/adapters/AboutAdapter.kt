@@ -25,7 +25,7 @@ class AboutAdapter(private var members: ArrayList<String>)
 
     override fun onBindViewHolder(holder: TeamViewHolder, position: Int) {
         holder.view.name_tv?.text = members[position]
-        var imageId = when (members[position]) {
+        val imageId = when (members[position]) {
             "Marta García Ferreiro" -> R.drawable.marta
             "Varun Ramakrishnan" -> R.drawable.varun
             "Anna Wang" -> R.drawable.anna

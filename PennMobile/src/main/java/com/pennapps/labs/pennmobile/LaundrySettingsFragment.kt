@@ -45,7 +45,7 @@ class LaundrySettingsFragment : Fragment() {
         mActivity.hideBottomBar()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentLaundrySettingsBinding.inflate(inflater, container, false)
         val view = binding.root
 

@@ -29,7 +29,7 @@ class DiningHolderFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
         _binding = FragmentDiningHolderBinding.inflate(inflater, container, false)
         val view = binding.root
         view.dining_swiperefresh?.setOnRefreshListener { getConnected() }
@@ -68,14 +68,14 @@ class DiningHolderFragment : Fragment() {
             binding.internetConnectionDiningHolder.visibility = View.VISIBLE
             //loadingPanel?.visibility = View.GONE
         } else {
-            binding.internetConnectionDiningHolder?.visibility = View.GONE
+            binding.internetConnectionDiningHolder.visibility = View.GONE
         }
     }
 
     override fun onResume() {
         super.onResume()
+        getConnected()
         mActivity.removeTabs()
-        //mActivity.toolbar.visibility = View.GONE
         mActivity.setTitle(R.string.dining)
         mActivity.setSelectedTab(MainActivity.DINING)
     }

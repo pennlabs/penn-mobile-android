@@ -33,7 +33,7 @@ class FitnessHolderFragment: Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         super.onCreateView(inflater, container, savedInstanceState)
         _binding = FragmentFitnessHolderBinding.inflate(inflater, container, false)
         return binding.root

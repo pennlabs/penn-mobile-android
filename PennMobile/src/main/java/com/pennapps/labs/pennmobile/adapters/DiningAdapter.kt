@@ -57,7 +57,7 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
                 if (diningHall.openMeal() != "all" && diningHall.openMeal() != null) {
                     holder.hallStatus?.setText(getOpenStatusLabel(diningHall.openMeal() ?: ""))
                 }
-                holder.hallHours?.text = diningHall.openTimes().toLowerCase()
+                holder.hallHours?.text = diningHall.openTimes().lowercase()
             } else {
                 holder.hallStatus?.setText(R.string.dining_hall_closed)
                 holder.hallStatus?.background = ContextCompat.getDrawable(context, R.drawable.label_red)
@@ -65,7 +65,7 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
                 if (openTimes.isEmpty()) {
                     holder.hallHours?.setText(R.string.dining_closed)
                 } else {
-                    holder.hallHours?.text = diningHall.openTimes().toLowerCase()
+                    holder.hallHours?.text = diningHall.openTimes().lowercase()
                 }
             }
             // Load the menu for each dining hall

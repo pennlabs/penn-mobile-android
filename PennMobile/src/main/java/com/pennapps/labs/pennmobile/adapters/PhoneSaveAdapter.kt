@@ -16,7 +16,6 @@ class PhoneSaveAdapter(context: Context, contacts: List<Contact?>, s: MutableLis
     private val state: BooleanArray = BooleanArray(size)
 
     override fun getView(pos: Int, view: View?, parent: ViewGroup): View {
-        //var view = view
         val currentPerson = getItem(pos)
         val view = view ?: inflater.inflate(R.layout.phone_save_list_item, parent, false)
 

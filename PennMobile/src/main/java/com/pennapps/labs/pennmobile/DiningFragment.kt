@@ -46,7 +46,7 @@ class DiningFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentDiningBinding.inflate(inflater, container, false)
         val v = binding.root
         binding.diningSwiperefresh.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
@@ -71,8 +71,7 @@ class DiningFragment : Fragment() {
         inflater.inflate(R.menu.dining_sort, menu)
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
         // sort the dining halls in the user-specified order
-        val order = sp.getString("dining_sortBy", "RESIDENTIAL")
-        when (order) {
+        when (sp.getString("dining_sortBy", "RESIDENTIAL")) {
             "RESIDENTIAL" -> {
                 menu.findItem(R.id.action_sort_residential).isChecked = true
             }
@@ -192,7 +191,7 @@ class DiningFragment : Fragment() {
 
     companion object {
         // Gets the dining hall menus
-        fun getMenus(venues: MutableList<DiningHall>) : Unit {
+        fun getMenus(venues: MutableList<DiningHall>) {
             val idVenueMap = mutableMapOf<Int, DiningHall>()
             venues.forEach { idVenueMap[it.id] = it }
             val current = LocalDateTime.now()

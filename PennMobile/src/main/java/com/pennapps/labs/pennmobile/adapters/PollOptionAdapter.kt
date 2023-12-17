@@ -2,13 +2,10 @@ package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
 import android.graphics.Color
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.View.OnTouchListener
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.Poll
@@ -26,7 +23,6 @@ class PollOptionAdapter(private var pollOptions: ArrayList<PollOption>, private 
         return ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.poll_list_item, parent, false))
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val pollOption = pollOptions[position]
         bindPollOption(holder, pollOption)
@@ -49,7 +45,7 @@ class PollOptionAdapter(private var pollOptions: ArrayList<PollOption>, private 
 
         var startX : Float? = null
         var startY : Float? = null
-        holder.itemView.seek_bar?.setOnTouchListener(OnTouchListener { v, event ->
+        holder.itemView.seek_bar?.setOnTouchListener { v, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     startX = event.x
@@ -64,7 +60,7 @@ class PollOptionAdapter(private var pollOptions: ArrayList<PollOption>, private 
                     }
                 }
             }
-            true })
+            true }
         if(pollOption.selected) {
             holder.itemView.tv_option?.setTextColor(mContext.resources.getColor(R.color.color_secondary))
             holder.itemView.tv_percent?.setTextColor(mContext.resources.getColor(R.color.color_secondary))
@@ -83,7 +79,7 @@ class PollOptionAdapter(private var pollOptions: ArrayList<PollOption>, private 
             val votePercent = (pollOption.voteCount.div(poll.totalVotes.toDouble())) * 100
             holder.itemView.tv_percent?.text = String.format("%.2f%%", votePercent)
             holder.itemView.seek_bar?.progress = round(votePercent).toInt()
-            holder.itemView.seek_bar?.setOnTouchListener(OnTouchListener { v, event -> true })
+            holder.itemView.seek_bar?.setOnTouchListener { v, event -> true }
         }
     }
 
