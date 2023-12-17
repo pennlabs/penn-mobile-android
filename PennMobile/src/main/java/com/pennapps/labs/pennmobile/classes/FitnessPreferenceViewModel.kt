@@ -93,7 +93,7 @@ class FitnessPreferenceViewModel(private val activity: Activity,
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
         val context = activity.applicationContext
 
-        OAuth2NetworkManager(mActivity).getAccessToken {
+        mActivity.mNetworkManager.getAccessToken {
 
             val bearerToken =
                 "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()

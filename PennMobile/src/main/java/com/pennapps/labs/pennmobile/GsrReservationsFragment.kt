@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -15,7 +15,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.GsrReservationsAdapter
-import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.databinding.FragmentGsrReservationsBinding
 
 import kotlinx.android.synthetic.main.loading_panel.loadingPanel
@@ -43,7 +42,7 @@ class GsrReservationsFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
         _binding = FragmentGsrReservationsBinding.inflate(inflater, container, false)
         val view = binding.root
 
@@ -93,7 +92,7 @@ class GsrReservationsFragment : Fragment() {
 
         val labs = MainActivity.studentLifeInstance
 
-        OAuth2NetworkManager(mActivity).getAccessToken {
+        mActivity.mNetworkManager.getAccessToken {
             val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
             val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
             val email = sp.getString(getString(R.string.email_address), "")

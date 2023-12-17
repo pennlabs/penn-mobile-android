@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mSharedPrefs: SharedPreferences
 
     val tokenMutex = Mutex()
-
+    val mNetworkManager by lazy { OAuth2NetworkManager(this) }
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         if (Build.VERSION.SDK_INT > 28) {
@@ -97,11 +97,6 @@ class MainActivity : AppCompatActivity() {
             startHomeFragment()
         }
     }
-
-//    override fun onResume() {
-//        super.onResume()
-//        showBottomBar()
-//    }
 
     private fun onExpandableBottomNavigationItemSelected() {
         expandable_bottom_bar.setOnNavigationItemSelectedListener { item ->
@@ -268,9 +263,6 @@ class MainActivity : AppCompatActivity() {
 
         val HOME_ID = R.id.nav_home
         val GSR_ID = R.id.nav_gsr
-        val DINING_ID = R.id.nav_dining
-        val LAUNDRY_ID = R.id.nav_laundry
-        val MORE_ID = R.id.nav_more
 
         private var mStudentLife: StudentLife? = null
         private var mPlatform: Platform? = null

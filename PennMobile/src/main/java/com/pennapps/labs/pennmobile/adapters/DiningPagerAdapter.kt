@@ -32,6 +32,6 @@ class DiningPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle?
     companion object {
         private const val HOME_POSITION = 0
         private const val INSIGHTS_POSITION = 1
-        val COUNT = 2
+        const val COUNT = 2
     }
 }

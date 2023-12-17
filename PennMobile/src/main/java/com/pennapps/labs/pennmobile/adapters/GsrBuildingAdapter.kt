@@ -21,7 +21,7 @@ class GsrBuildingAdapter(internal var context: Context, internal var gsrs: Array
     }
 
     override fun onBindViewHolder(holder: GsrBuildingHolder, position: Int) {
-        var timeGsrs = gsrs.sortedWith(compareBy { it.start })
+        val timeGsrs = gsrs.sortedWith(compareBy { it.start })
 
         if (position < itemCount) {
             val gsrRoomsRecyclerView = holder.recyclerView

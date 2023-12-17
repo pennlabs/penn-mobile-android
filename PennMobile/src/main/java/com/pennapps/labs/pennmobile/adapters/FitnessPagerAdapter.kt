@@ -2,7 +2,6 @@ package com.pennapps.labs.pennmobile.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.pennapps.labs.pennmobile.DiningFragment
 import com.pennapps.labs.pennmobile.PottruckFragment
 
 class FitnessPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
