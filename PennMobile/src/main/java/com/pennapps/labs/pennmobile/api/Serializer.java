@@ -1,8 +1,5 @@
 package com.pennapps.labs.pennmobile.api;
 
-
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
