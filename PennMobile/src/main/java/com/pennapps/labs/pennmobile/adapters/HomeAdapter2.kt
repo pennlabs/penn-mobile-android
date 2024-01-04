@@ -25,6 +25,7 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.lifecycleScope
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -52,6 +53,7 @@ import kotlinx.android.synthetic.main.home_post_card.view.*
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
@@ -203,7 +205,6 @@ class HomeAdapter2(private val dataModel: HomepageDataModel) :
             }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun bindNewsCell(holder: ViewHolder, cell: HomeCell) {
         val article = cell.info?.article
         holder.itemView.home_news_title.text = article?.title
@@ -217,7 +218,7 @@ class HomeAdapter2(private val dataModel: HomepageDataModel) :
 
         /** Adds dynamically generated accent color from the fetched image to the news card */
         var accentColor: Int =  getColor(mContext, R.color.black)
-        GlobalScope.launch(Dispatchers.Default) {
+        mActivity.lifecycleScope.launch(Dispatchers.Default) {
             val bitmap = Glide.with(mContext).load(article?.imageUrl).submit().get().toBitmap()
 
             // Create palette from bitmap
@@ -243,7 +244,9 @@ class HomeAdapter2(private val dataModel: HomepageDataModel) :
                     bitmap)
                 holder.itemView.blurView
                     .setOverlayColor(ColorUtils.setAlphaComponent(accentColor, 150))
+
             }
+
 
         }
 
@@ -383,7 +386,7 @@ class HomeAdapter2(private val dataModel: HomepageDataModel) :
             .into(holder.itemView.home_post_iv)
         /** Adds dynamically generated accent color from the fetched image to the news card */
         var accentColor: Int =  getColor(mContext, R.color.black)
-        GlobalScope.launch(Dispatchers.Default) {
+        mActivity.lifecycleScope.launch(Dispatchers.Default) {
             val bitmap = Glide.with(mContext).load(post?.imageUrl).submit().get().toBitmap()
             // Create palette from bitmap
             fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
