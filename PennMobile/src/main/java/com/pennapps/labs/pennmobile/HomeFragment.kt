@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -88,6 +89,12 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getHomePage()
+        homepageViewModel.blurViewsLoaded.observe(viewLifecycleOwner) { loaded ->
+            if (loaded) {
+                binding.homeCellsRv.visibility = View.VISIBLE
+                loadingPanel?.visibility = View.GONE
+            }
+        }
     }
 
     private fun getOnline() : Boolean {
@@ -150,7 +157,7 @@ class HomeFragment : Fragment() {
                 homepageViewModel.populateHomePageCells(studentLife, bearerToken, deviceID) {
                     mActivity.runOnUiThread {
                         binding.homeCellsRv.adapter = HomeAdapter2(homepageViewModel)
-                        loadingPanel?.visibility = View.GONE
+                        binding.homeCellsRv.visibility = View.INVISIBLE
                         binding.internetConnectionHome.visibility = View.GONE
                         binding.homeRefreshLayout.isRefreshing = false
                     }

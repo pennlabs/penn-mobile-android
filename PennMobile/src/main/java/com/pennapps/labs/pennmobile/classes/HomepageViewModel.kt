@@ -1,5 +1,8 @@
 package com.pennapps.labs.pennmobile.classes
 
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.utils.Utils.getSha256Hash
@@ -23,13 +26,20 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
 
     private val homepageCells = mutableListOf<HomeCell>()
     private val cellMutex = Mutex()
+    private val _blurViewsLoaded = MutableLiveData<Boolean>(false)
+    val blurViewsLoaded: LiveData<Boolean>
+        get() = _blurViewsLoaded
+
+    private var postBlurViewLoaded = false
+    private var newsBlurViewLoaded = false
+    private val postBlurMutex = Mutex()
+    private val newsBlurMutex = Mutex()
 
     init {
         for (i in 1..NUM_CELLS) {
             homepageCells.add(HomeCell())
         }
     }
-
     @Synchronized
     fun updateHomePageCells(studentLife: StudentLife, bearerToken: String, deviceID: String,
                               update: (Int) -> Unit, callback: () -> Unit) {
@@ -147,6 +157,8 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
                 postCell.info?.post = post[0]
 
                 addCell(postCell, POST_POS)
+            } else {
+                setPostBlurView(true)
             }
 
             latch.countDown()
@@ -183,6 +195,41 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
             throwable.printStackTrace()
             latch.countDown()
         })
+    }
+
+    private fun setPostBlurView(status: Boolean) = runBlocking {
+        postBlurMutex.withLock {
+            postBlurViewLoaded = status
+        }
+        updateBlurViewStatus()
+    }
+    private fun setNewsBlurView(status: Boolean) = runBlocking {
+        newsBlurMutex.withLock {
+           newsBlurViewLoaded = status
+        }
+        updateBlurViewStatus()
+    }
+    private fun updateBlurViewStatus() = runBlocking {
+        postBlurMutex.lock()
+        newsBlurMutex.lock()
+        Log.i("HomeBlurViewLoadStatus", "Called updateBlurViewStatus")
+        Log.i("HomeBlurViewLoadStatus", "News: $newsBlurViewLoaded")
+        Log.i("HomeBlurViewLoadStatus", "Posts: $postBlurViewLoaded")
+        if (newsBlurViewLoaded && postBlurViewLoaded) {
+            _blurViewsLoaded.postValue(true)
+        } else {
+            _blurViewsLoaded.postValue(false)
+        }
+        postBlurMutex.unlock()
+        newsBlurMutex.unlock()
+    }
+
+    override fun notifyPostBlurLoaded() {
+        setPostBlurView(true)
+    }
+
+    override fun notifyNewsBlurLoaded() {
+        setNewsBlurView(true)
     }
 
     override fun getSize(): Int {

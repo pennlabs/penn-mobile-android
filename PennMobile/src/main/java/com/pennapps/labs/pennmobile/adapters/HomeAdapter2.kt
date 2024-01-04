@@ -245,6 +245,7 @@ class HomeAdapter2(private val dataModel: HomepageDataModel) :
                 holder.itemView.blurView
                     .setOverlayColor(ColorUtils.setAlphaComponent(accentColor, 150))
 
+                dataModel.notifyNewsBlurLoaded()
             }
 
 
@@ -368,7 +369,6 @@ class HomeAdapter2(private val dataModel: HomepageDataModel) :
         holder.itemView.home_card_rv.adapter = HomeGsrBuildingAdapter(ArrayList(buildings))
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun bindPostCell(holder: ViewHolder, cell: HomeCell) {
         val info = cell.info
         val post = cell.info?.post
@@ -407,6 +407,7 @@ class HomeAdapter2(private val dataModel: HomepageDataModel) :
                 holder.itemView.post_card_container.background = bitmapDrawable
                 holder.itemView.postBlurView
                     .setOverlayColor(ColorUtils.setAlphaComponent(accentColor, 150))
+                dataModel.notifyPostBlurLoaded()
             }
         }
         /** Sets up blur view on post card */
