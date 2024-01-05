@@ -24,9 +24,9 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         private const val LAUNDRY_POS = 5
     }
 
-    private val homepageCells = mutableListOf<HomeCell>()
+    private val homepageCells = mutableListOf<HomeCell2>()
     private val cellMutex = Mutex()
-    private val _blurViewsLoaded = MutableLiveData<Boolean>(false)
+    private val _blurViewsLoaded = MutableLiveData(false)
     val blurViewsLoaded: LiveData<Boolean>
         get() = _blurViewsLoaded
 
@@ -37,9 +37,15 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
 
     init {
         for (i in 1..NUM_CELLS) {
-            homepageCells.add(HomeCell())
+            homepageCells.add(HomeCell2())
         }
     }
+
+    fun resetBlurViews() {
+        setPostBlurView(false)
+        setNewsBlurView(false)
+    }
+
     @Synchronized
     fun updateHomePageCells(studentLife: StudentLife, bearerToken: String, deviceID: String,
                               update: (Int) -> Unit, callback: () -> Unit) {
@@ -77,7 +83,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         callback.invoke()
     }
 
-    private fun addCell(cell: HomeCell, pos: Int) = runBlocking {
+    private fun addCell(cell: HomeCell2, pos: Int) = runBlocking {
         cellMutex.withLock {
             homepageCells[pos] = cell
         }
@@ -107,7 +113,10 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
             newsCell.info?.article = article
             newsCell.type = "news"
 
-            addCell(newsCell, NEWS_POS)
+            val newsCell2 = NewsCell(article)
+            Log.i("HC2", "${newsCell2.type}")
+
+            addCell(newsCell2, NEWS_POS)
             latch.countDown()
         }, { throwable ->
             throwable.printStackTrace()
@@ -121,7 +130,10 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
             calendar.type = "calendar"
             calendar.events = events
 
-            addCell(calendar, CALENDAR_POS)
+            val calendarCell = CalendarCell(events)
+            Log.i("HC2", "${calendarCell.type}")
+
+            addCell(calendarCell, CALENDAR_POS)
             latch.countDown()
         }, { throwable ->
             throwable.printStackTrace()
@@ -140,7 +152,10 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
             }
             laundryCell.info = laundryCellInfo
 
-            addCell(laundryCell, LAUNDRY_POS)
+            val laundryCell2 = if (preferences.isNullOrEmpty()) LaundryCell(0) else LaundryCell(preferences[0])
+            Log.i("HC2", "${laundryCell2.type}")
+
+            addCell(laundryCell2, LAUNDRY_POS)
             latch.countDown()
         }, { throwable ->
             throwable.printStackTrace()
@@ -156,7 +171,10 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
                 postCell.type = "post"
                 postCell.info?.post = post[0]
 
-                addCell(postCell, POST_POS)
+                val postCell2 = PostCell(post[0])
+                Log.i("HC2", "${postCell2.type}")
+
+                addCell(postCell2, POST_POS)
             } else {
                 setPostBlurView(true)
             }
@@ -189,7 +207,10 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
             diningCellInfo.venues = venues
             diningCell.info = diningCellInfo
 
-            addCell(diningCell, DINING_POS)
+            val diningCell2 = DiningCell(venues)
+            Log.i("HC2", "${diningCell2.type}")
+
+            addCell(diningCell2, DINING_POS)
             latch.countDown()
         }, { throwable ->
             throwable.printStackTrace()
@@ -201,13 +222,11 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         postBlurMutex.withLock {
             postBlurViewLoaded = status
         }
-        updateBlurViewStatus()
     }
     private fun setNewsBlurView(status: Boolean) = runBlocking {
         newsBlurMutex.withLock {
            newsBlurViewLoaded = status
         }
-        updateBlurViewStatus()
     }
     private fun updateBlurViewStatus() = runBlocking {
         postBlurMutex.lock()
@@ -226,17 +245,19 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
 
     override fun notifyPostBlurLoaded() {
         setPostBlurView(true)
+        updateBlurViewStatus()
     }
 
     override fun notifyNewsBlurLoaded() {
         setNewsBlurView(true)
+        updateBlurViewStatus()
     }
 
     override fun getSize(): Int {
         return homepageCells.size
     }
 
-    override fun getCell(position: Int): HomeCell {
+    override fun getCell(position: Int): HomeCell2 {
         return homepageCells[position]
     }
 }
