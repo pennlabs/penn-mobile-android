@@ -55,6 +55,8 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
            for (i in 0 until NUM_CELLS) {
                if (prevList[i] != homepageCells[i]) {
                    update(i)
+               } else {
+                   Log.i("CellUpdates", "saved an update")
                }
            }
            callback.invoke()
@@ -77,6 +79,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
             latch.await()
         } else {
             val latch = CountDownLatch(2)
+            clearLoggedIn()
             getCalendar(studentLife, latch)
             getNews(studentLife, latch)
             latch.await()
@@ -88,6 +91,15 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         cellMutex.withLock {
             homepageCells[pos] = cell
         }
+    }
+
+    private fun clearLoggedIn() {
+        addCell(HomeCell2(), POLL_POS)
+        addCell(HomeCell2(), LAUNDRY_POS)
+        addCell(HomeCell2(), POST_POS)
+        addCell(HomeCell2(), DINING_POS)
+
+        setPostBlurView(true)
     }
 
     private fun getPolls(studentLife: StudentLife, bearerToken: String, deviceID: String,
@@ -227,11 +239,13 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
             postBlurViewLoaded = status
         }
     }
+
     private fun setNewsBlurView(status: Boolean) = runBlocking {
         newsBlurMutex.withLock {
            newsBlurViewLoaded = status
         }
     }
+
     private fun updateBlurViewStatus() = runBlocking {
         postBlurMutex.lock()
         newsBlurMutex.lock()
