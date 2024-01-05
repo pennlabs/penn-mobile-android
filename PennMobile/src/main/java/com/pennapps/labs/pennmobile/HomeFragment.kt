@@ -117,6 +117,7 @@ class HomeFragment : Fragment() {
     private fun refreshHomePage() {
         mActivity.showBottomBar()
 
+
         if (!getOnline()) {
             return
         }
@@ -128,18 +129,30 @@ class HomeFragment : Fragment() {
             val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
 
             lifecycleScope.launch(Dispatchers.Default) {
-                homepageViewModel.updateHomePageCells(studentLife, bearerToken, deviceID, { pos ->
-                   mActivity.runOnUiThread {
-                       binding.homeCellsRv.adapter!!.notifyItemChanged(pos)
-                   }
-                }, {
-                   mActivity.runOnUiThread {
-                       binding.homeRefreshLayout.isRefreshing = false
-                   }
-                })
+                if (binding.homeCellsRv.adapter == null) {
+                    homepageViewModel.populateHomePageCells(studentLife, bearerToken, deviceID) {
+                        mActivity.runOnUiThread {
+                            binding.homeCellsRv.adapter = HomeAdapter2(homepageViewModel)
+                            binding.homeCellsRv.visibility = View.INVISIBLE
+                            binding.internetConnectionHome.visibility = View.GONE
+                            binding.homeRefreshLayout.isRefreshing = false
+                        }
+                    }
+                } else {
+                    homepageViewModel.updateHomePageCells(studentLife, bearerToken, deviceID, { pos ->
+                       mActivity.runOnUiThread {
+                           binding.homeCellsRv.adapter!!.notifyItemChanged(pos)
+                       }
+                    }, {
+                       mActivity.runOnUiThread {
+                           binding.homeRefreshLayout.isRefreshing = false
+                       }
+                    })
+                }
             }
         }
     }
+
     private fun getHomePage() {
         mActivity.showBottomBar()
 

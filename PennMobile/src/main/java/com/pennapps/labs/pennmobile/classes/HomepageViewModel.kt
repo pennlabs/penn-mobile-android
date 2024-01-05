@@ -44,6 +44,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
     fun resetBlurViews() {
         setPostBlurView(false)
         setNewsBlurView(false)
+        updateBlurViewStatus()
     }
 
     @Synchronized
@@ -119,6 +120,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
             addCell(newsCell2, NEWS_POS)
             latch.countDown()
         }, { throwable ->
+            
             throwable.printStackTrace()
             latch.countDown()
         })
@@ -158,6 +160,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
             addCell(laundryCell2, LAUNDRY_POS)
             latch.countDown()
         }, { throwable ->
+            setNewsBlurView(true)
             throwable.printStackTrace()
             latch.countDown()
         })
@@ -182,6 +185,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
             latch.countDown()
 
         }, { throwable ->
+            setPostBlurView(true)
             throwable.printStackTrace()
             latch.countDown()
         })
