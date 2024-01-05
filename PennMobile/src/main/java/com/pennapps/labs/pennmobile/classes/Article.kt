@@ -28,4 +28,29 @@ class Article {
     @SerializedName("link")
     @Expose
     val articleUrl: String? = null
+
+    override fun equals(other: Any?) : Boolean {
+        return when(other) {
+            is Article -> {
+                this.imageUrl == other.imageUrl &&
+                this.source == other.source &&
+                this.title == other.title &&
+                this.subtitle == other.subtitle &&
+                this.timestamp == other.timestamp &&
+                this.articleUrl == other.articleUrl
+            } else -> false
+        }
+    }
+
+    override fun hashCode() : Int {
+        // lazy hash function but we don't use this method anyways
+        val urlHash = imageUrl.hashCode().toString()
+        val sourceHash = source.hashCode().toString()
+        val titleHash = title.hashCode().toString()
+        val subtitleHash = subtitle.hashCode().toString()
+        val timeHash = timestamp.hashCode().toString()
+        val articleHash = articleUrl.hashCode().toString()
+
+        return (urlHash + sourceHash + titleHash + subtitleHash + timeHash + articleHash).hashCode()
+    }
 }

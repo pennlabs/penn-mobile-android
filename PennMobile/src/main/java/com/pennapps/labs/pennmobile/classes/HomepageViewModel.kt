@@ -52,14 +52,14 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
                               update: (Int) -> Unit, callback: () -> Unit) {
         val prevList = homepageCells.toList()
         populateHomePageCells(studentLife, bearerToken, deviceID) {
-           for (i in 0 until NUM_CELLS) {
-               if (prevList[i] != homepageCells[i]) {
-                   update(i)
-               } else {
-                   Log.i("CellUpdates", "saved an update")
-               }
-           }
-           callback.invoke()
+            for (i in 0 until NUM_CELLS) {
+                if (prevList[i] != homepageCells[i]) {
+                    update(i)
+                } else {
+                    Log.i("CellUpdates", "saved an update ${i}")
+                }
+            }
+            callback.invoke()
         }
     }
 
@@ -98,7 +98,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         addCell(HomeCell2(), LAUNDRY_POS)
         addCell(HomeCell2(), POST_POS)
         addCell(HomeCell2(), DINING_POS)
-
+        
         setPostBlurView(true)
     }
 
