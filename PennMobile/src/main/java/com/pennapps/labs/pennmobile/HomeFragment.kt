@@ -7,13 +7,16 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -56,6 +59,7 @@ class HomeFragment : Fragment() {
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Home")
         bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
         FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
+
     }
 
     override fun onCreateView(
@@ -111,13 +115,30 @@ class HomeFragment : Fragment() {
         set to View.VISIBLE instead of View.INVISIBLE and hide loadingPanel
         */
         homepageViewModel.resetBlurViews()
-        getHomePage()
         homepageViewModel.blurViewsLoaded.observe(viewLifecycleOwner) { loaded ->
             if (loaded) {
                 binding.homeCellsRv.visibility = View.VISIBLE
                 loadingPanel?.visibility = View.GONE
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                homepageViewModel.updateState.collect { updateState ->
+                    Log.i("Fuck", "fuck")
+                    updateState.positions.firstOrNull()?.let { pos ->
+                        if (binding.homeCellsRv.adapter != null) {
+                            mActivity.runOnUiThread {
+                                binding.homeCellsRv.adapter!!.notifyItemChanged(pos)
+                            }
+                            homepageViewModel.updatedPosition(pos)
+                        }
+                    }
+                }
+            }
+        }
+
+        getHomePage()
     }
 
     private fun getOnline() : Boolean {

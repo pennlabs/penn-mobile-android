@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,6 +40,8 @@ class DiningSettingsAdapter(private var diningHalls: List<DiningHall>)
             val editor = sp.edit()
             editor.putBoolean(hall.name, switch.isChecked)
             editor.apply()
+
+            Log.i("Dining", "hi yeah")
         }
     }
 

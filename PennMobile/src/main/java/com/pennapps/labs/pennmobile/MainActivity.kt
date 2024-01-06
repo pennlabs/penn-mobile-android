@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity() {
 
     val tokenMutex = Mutex()
     val mNetworkManager by lazy { OAuth2NetworkManager(this) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         if (Build.VERSION.SDK_INT > 28) {
@@ -81,7 +82,8 @@ class MainActivity : AppCompatActivity() {
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
         val mainPagerAdapter = MainPagerAdapter(fragmentManager, lifecycle)
-        main_view_pager?.adapter = mainPagerAdapter
+        main_view_pager.setSaveEnabled(false);
+        main_view_pager.adapter = mainPagerAdapter
         main_view_pager.isUserInputEnabled = false
         main_view_pager.offscreenPageLimit = 5
         onExpandableBottomNavigationItemSelected()
@@ -134,10 +136,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         main_view_pager.visibility = View.VISIBLE
-        val mainPagerAdapter = MainPagerAdapter(fragmentManager, lifecycle)
-        main_view_pager?.adapter = mainPagerAdapter
-        main_view_pager.isUserInputEnabled = false
-        main_view_pager.offscreenPageLimit = 5
         expandable_bottom_bar.visibility = View.VISIBLE
         setTab(HOME_ID)
     }

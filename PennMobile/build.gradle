@@ -54,7 +54,7 @@ dependencies {
     implementation 'joda-time:joda-time:2.12.5'
     implementation 'org.apache.commons:commons-lang3:3.13.0'
     implementation 'androidx.annotation:annotation:1.7.0'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
     implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0@aar") {
         transitive = true

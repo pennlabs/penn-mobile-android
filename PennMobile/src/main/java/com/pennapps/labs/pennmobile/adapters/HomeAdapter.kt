@@ -159,7 +159,7 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         holder.itemView.dining_prefs_btn.visibility = View.VISIBLE
         holder.itemView.dining_prefs_btn.setOnClickListener {
             mActivity.supportFragmentManager.beginTransaction()
-                .replace(R.id.content_frame, DiningSettingsFragment())
+                .replace(R.id.content_frame, DiningSettingsFragment(dataModel))
                 .addToBackStack(null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()

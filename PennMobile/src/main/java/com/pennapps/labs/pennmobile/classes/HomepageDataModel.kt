@@ -5,4 +5,5 @@ interface HomepageDataModel {
     fun getCell(position: Int) : HomeCell
     fun notifyPostBlurLoaded()
     fun notifyNewsBlurLoaded()
+    fun updateDining(venues: List<Int>)
 }

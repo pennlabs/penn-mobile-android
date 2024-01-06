@@ -7,6 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.utils.Utils.getSha256Hash
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
@@ -37,6 +41,12 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
     private val homepageCells = mutableListOf<HomeCell>()
     private val cellMutex = Mutex()
 
+    data class ItemUpdateEvents(val positions : List<Int> = emptyList())
+
+    
+    private val _updateState = MutableStateFlow(ItemUpdateEvents())
+    val updateState: StateFlow<ItemUpdateEvents> = _updateState.asStateFlow()
+
     /* Changes to true once both of the blur views are done generating.
     Should be changed to false whenever HomeFragment is initially created because the RecyclerView
     is only shown when this value changes from false to true
@@ -54,6 +64,20 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         // homepageCells should always be populated
         for (i in 1..NUM_CELLS) {
             homepageCells.add(HomeCell())
+        }
+    }
+
+    fun updatedPosition(pos: Int) {
+        _updateState.update { currentUpdateState ->
+            val npositions = currentUpdateState.positions.filterNot { it == pos }
+            currentUpdateState.copy(positions = npositions)
+        }
+    }
+
+    fun updatePosition(pos: Int) {
+        _updateState.update { currentUpdateState ->
+            val npositions = currentUpdateState.positions + pos
+            currentUpdateState.copy(positions = npositions)
         }
     }
 
@@ -289,6 +313,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         newsBlurMutex.unlock()
     }
 
+
     /**
      * Allows adapter to tell the ViewModel that the post blur view is processed
      */
@@ -314,6 +339,12 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
     }
 
     override fun getCell(position: Int): HomeCell {
+        // be careful to not read an old value
         return homepageCells[position]
+    }
+
+    override fun updateDining(venues : List<Int>) {
+        addCell(DiningCell(venues), DINING_POS) 
+        updatePosition(DINING_POS)
     }
 }

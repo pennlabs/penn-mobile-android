@@ -53,7 +53,6 @@ class LaundryFragment : Fragment() {
         mStudentLife = MainActivity.studentLifeInstance
         mActivity = activity as MainActivity
         mContext = mActivity
-        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -124,26 +123,7 @@ class LaundryFragment : Fragment() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.laundry_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-        if (id == R.id.laundry_settings) {
-            val fragmentManager = mActivity.supportFragmentManager
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, LaundrySettingsFragment())
-                    .addToBackStack("Laundry Settings Fragment")
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .commit()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
     private fun updateRooms() {
-
         //displays banner if not connected
         if (!isOnline(context)) {
             binding.internetConnectionLaundry.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
