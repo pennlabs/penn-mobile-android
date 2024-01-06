@@ -320,12 +320,8 @@ class MainActivity : AppCompatActivity() {
                     // gets laundry preferences (used only for testing)
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Int?>?>() {}.type, LaundryPrefSerializer())
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<FlingEvent?>?>() {}.type, FlingEventSerializer())
-                    // gets fitness
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Gym?>?>() {}.type, GymSerializer())
                     // gets gsr reservations
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<GSRReservation?>?>() {}.type, GsrReservationSerializer())
-                    // gets homepage
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<HomeCell?>?>() {}.type, HomePageSerializer())
                     // gets user
                     gsonBuilder.registerTypeAdapter(Account::class.java, UserSerializer())
                     // gets posts

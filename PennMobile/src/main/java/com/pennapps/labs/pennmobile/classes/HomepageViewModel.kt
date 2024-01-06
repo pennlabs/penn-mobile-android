@@ -4,18 +4,28 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.utils.Utils.getSha256Hash
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.util.concurrent.CountDownLatch
 
+/**
+ * ViewModel for the homepage cells used by HomeFragment and HomeAdapter. Handles network requests
+ * for generating HomeCell content and also tells HomeFragment when the blur views (for news and
+ * posts) have finished loaded.
+ */
 class HomepageViewModel : HomepageDataModel, ViewModel() {
     companion object {
         private const val NUM_CELLS = 6
+        private const val NUM_CELLS_LOGGED_IN = NUM_CELLS
+        private const val NUM_CELLS_GUEST = 2
 
         // Types of Home Cells
+        // Corresponds to the position of the cell in the RecyclerView
         private const val POLL_POS = 0
         private const val CALENDAR_POS = 1
         private const val NEWS_POS = 2
@@ -24,8 +34,13 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         private const val LAUNDRY_POS = 5
     }
 
-    private val homepageCells = mutableListOf<HomeCell2>()
+    private val homepageCells = mutableListOf<HomeCell>()
     private val cellMutex = Mutex()
+
+    /* Changes to true once both of the blur views are done generating.
+    Should be changed to false whenever HomeFragment is initially created because the RecyclerView
+    is only shown when this value changes from false to true
+     */
     private val _blurViewsLoaded = MutableLiveData(false)
     val blurViewsLoaded: LiveData<Boolean>
         get() = _blurViewsLoaded
@@ -36,17 +51,31 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
     private val newsBlurMutex = Mutex()
 
     init {
+        // homepageCells should always be populated
         for (i in 1..NUM_CELLS) {
-            homepageCells.add(HomeCell2())
+            homepageCells.add(HomeCell())
         }
     }
 
+    /**
+     * Resets the blur view. Should be called from main thread because updating _blurViewsLoaded
+     * must be synchronous.
+     * This function should be called whenever HomeFragment is created.
+     */
     fun resetBlurViews() {
-        setPostBlurView(false)
-        setNewsBlurView(false)
-        updateBlurViewStatus()
+        _blurViewsLoaded.value = false
+        viewModelScope.launch {
+            setNewsBlurView(false)
+            setPostBlurView(false)
+        }
+
     }
 
+    /**
+     * Updates each homepage cell. If a cell changes, then update is called with the index of the
+     * cell that was changed (created with the intention to play nice with RecyclerView and is used
+     * in conjunction with NotifyItemChanged().
+     */
     @Synchronized
     fun updateHomePageCells(studentLife: StudentLife, bearerToken: String, deviceID: String,
                               update: (Int) -> Unit, callback: () -> Unit) {
@@ -55,30 +84,36 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
             for (i in 0 until NUM_CELLS) {
                 if (prevList[i] != homepageCells[i]) {
                     update(i)
+                    Log.i("CellUpdates", "updated index ${i}")
                 } else {
-                    Log.i("CellUpdates", "saved an update ${i}")
+                    Log.i("CellUpdates", "saved an update at index ${i}")
                 }
             }
             callback.invoke()
         }
     }
 
+    /**
+     * Makes the network requests that populates the Homepage Cells.
+     * This function requires a correct (non-expired) bearerToken!!
+     */
     @Synchronized
     fun populateHomePageCells(studentLife: StudentLife, bearerToken: String, deviceID: String,
                               callback: () -> Unit) {
         val isLoggedIn = bearerToken != "Bearer "
 
         if (isLoggedIn) {
-            val latch = CountDownLatch(6)
+            val latch = CountDownLatch(NUM_CELLS_LOGGED_IN)
             getPolls(studentLife, bearerToken, deviceID, latch)
             getNews(studentLife, latch)
             getCalendar(studentLife, latch)
             getLaundry(studentLife, bearerToken, latch)
             getPosts(studentLife, bearerToken, latch)
             getDiningPrefs(studentLife, bearerToken, latch)
+            // waits until all of the network calls are processed
             latch.await()
         } else {
-            val latch = CountDownLatch(2)
+            val latch = CountDownLatch(NUM_CELLS_GUEST)
             clearLoggedIn()
             getCalendar(studentLife, latch)
             getNews(studentLife, latch)
@@ -87,19 +122,26 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         callback.invoke()
     }
 
-    private fun addCell(cell: HomeCell2, pos: Int) = runBlocking {
+    /**
+     * Clears the unused cells for guest mode. Also postBlurViewLoaded is vacuously true since guest
+     * mode does not use it
+     */
+    private fun clearLoggedIn() {
+        addCell(HomeCell(), POLL_POS)
+        addCell(HomeCell(), LAUNDRY_POS)
+        addCell(HomeCell(), POST_POS)
+        addCell(HomeCell(), DINING_POS)
+
+        setPostBlurView(true)
+    }
+
+    /**
+     * Updates the cell at position pos.
+     */
+    private fun addCell(cell: HomeCell, pos: Int) = runBlocking {
         cellMutex.withLock {
             homepageCells[pos] = cell
         }
-    }
-
-    private fun clearLoggedIn() {
-        addCell(HomeCell2(), POLL_POS)
-        addCell(HomeCell2(), LAUNDRY_POS)
-        addCell(HomeCell2(), POST_POS)
-        addCell(HomeCell2(), DINING_POS)
-        
-        setPostBlurView(true)
     }
 
     private fun getPolls(studentLife: StudentLife, bearerToken: String, deviceID: String,
@@ -112,8 +154,11 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
                 addCell(pollCell, POLL_POS)
             }
 
+            Log.i("HomepageViewModel", "Loaded polls") 
+
             latch.countDown()
         }, { throwable ->
+            Log.i("HomepageViewModel", "Could not load polls")
             throwable.printStackTrace()
             latch.countDown()
         })
@@ -121,18 +166,15 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
 
     private fun getNews(studentLife: StudentLife, latch: CountDownLatch) {
         studentLife.news.subscribe({ article ->
-            val newsCell = HomeCell()
-            newsCell.info = HomeCellInfo()
-            newsCell.info?.article = article
-            newsCell.type = "news"
+            val newsCell = NewsCell(article)
+            addCell(newsCell, NEWS_POS)
 
-            val newsCell2 = NewsCell(article)
-            Log.i("HC2", "${newsCell2.type}")
+            Log.i("HomepageViewModel", "Loaded news") 
 
-            addCell(newsCell2, NEWS_POS)
             latch.countDown()
-        }, { throwable ->
             
+        }, { throwable ->
+            Log.i("HomepageViewModel", "Could not load news")
             throwable.printStackTrace()
             latch.countDown()
         })
@@ -140,39 +182,30 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
 
     private fun getCalendar(studentLife: StudentLife, latch: CountDownLatch) {
         studentLife.calendar.subscribe({ events ->
-            val calendar = HomeCell()
-            calendar.type = "calendar"
-            calendar.events = events
-
             val calendarCell = CalendarCell(events)
-            Log.i("HC2", "${calendarCell.type}")
+
+            Log.i("HomepageViewModel", "Loaded calendar")
 
             addCell(calendarCell, CALENDAR_POS)
             latch.countDown()
         }, { throwable ->
+            Log.i("HomepageViewModel", "Could not load calendar")
             throwable.printStackTrace()
             latch.countDown()
         })
     }
 
-
     private fun getLaundry(studentLife: StudentLife, bearerToken: String, latch: CountDownLatch) {
         studentLife.getLaundryPref(bearerToken).subscribe({ preferences ->
-            val laundryCell = HomeCell()
-            laundryCell.type = "laundry"
-            val laundryCellInfo = HomeCellInfo()
-            if (preferences?.isEmpty() == false) {
-                laundryCellInfo.roomId = preferences[0]
-            }
-            laundryCell.info = laundryCellInfo
+            val laundryCell = if (preferences.isNullOrEmpty()) LaundryCell(0) else LaundryCell(preferences[0])
 
-            val laundryCell2 = if (preferences.isNullOrEmpty()) LaundryCell(0) else LaundryCell(preferences[0])
-            Log.i("HC2", "${laundryCell2.type}")
+            Log.i("HomepageViewModel", "Loaded laundry")
 
-            addCell(laundryCell2, LAUNDRY_POS)
+            addCell(laundryCell, LAUNDRY_POS)
             latch.countDown()
         }, { throwable ->
             setNewsBlurView(true)
+            Log.i("HomepageViewModel", "Could not load laundry")
             throwable.printStackTrace()
             latch.countDown()
         })
@@ -181,22 +214,18 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
     private fun getPosts(studentLife: StudentLife, bearerToken: String, latch: CountDownLatch) {
         studentLife.validPostsList(bearerToken).subscribe({ post ->
             if (post.size >= 1) { //there exists a post
-                val postCell = HomeCell()
-                postCell.info = HomeCellInfo()
-                postCell.type = "post"
-                postCell.info?.post = post[0]
+                val postCell = PostCell(post[0])
 
-                val postCell2 = PostCell(post[0])
-                Log.i("HC2", "${postCell2.type}")
-
-                addCell(postCell2, POST_POS)
+                addCell(postCell, POST_POS)
             } else {
                 setPostBlurView(true)
             }
 
-            latch.countDown()
+            Log.i("HomepageViewModel", "Loaded posts")
 
+            latch.countDown()
         }, { throwable ->
+            Log.i("HomepageViewModel", "Could not load posts")
             setPostBlurView(true)
             throwable.printStackTrace()
             latch.countDown()
@@ -207,9 +236,6 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         studentLife.getDiningPreferences(bearerToken).subscribe({ preferences ->
             val list = preferences.preferences
             val venues = mutableListOf<Int>()
-            val diningCell = HomeCell()
-            diningCell.type = "dining"
-            val diningCellInfo = HomeCellInfo()
             if (list?.isEmpty() == true) {
                 venues.add(593)
                 venues.add(1442)
@@ -220,15 +246,14 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
                 }
             }
 
-            diningCellInfo.venues = venues
-            diningCell.info = diningCellInfo
+            val diningCell = DiningCell(venues)
+            addCell(diningCell, DINING_POS)
 
-            val diningCell2 = DiningCell(venues)
-            Log.i("HC2", "${diningCell2.type}")
+            Log.i("HomepageViewModel", "Loaded dining")
 
-            addCell(diningCell2, DINING_POS)
             latch.countDown()
         }, { throwable ->
+            Log.i("HomepageViewModel", "Could not load dining")
             throwable.printStackTrace()
             latch.countDown()
         })
@@ -246,6 +271,9 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         }
     }
 
+    /**
+     * Updates blurViewsLoaded based on the states of postBlurView and newsBlurView
+     */
     private fun updateBlurViewStatus() = runBlocking {
         postBlurMutex.lock()
         newsBlurMutex.lock()
@@ -261,21 +289,31 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         newsBlurMutex.unlock()
     }
 
+    /**
+     * Allows adapter to tell the ViewModel that the post blur view is processed
+     */
     override fun notifyPostBlurLoaded() {
         setPostBlurView(true)
         updateBlurViewStatus()
     }
 
+    /**
+     * Allows adapter to tell the ViewModel that the news blur view is processed
+     */
     override fun notifyNewsBlurLoaded() {
         setNewsBlurView(true)
         updateBlurViewStatus()
     }
 
+    /**
+     * Since homepageCells is always populated, it should always have NUM_CELLS cells. The idea is
+     * that we keep the unused cells empty.
+     */
     override fun getSize(): Int {
-        return homepageCells.size
+        return NUM_CELLS
     }
 
-    override fun getCell(position: Int): HomeCell2 {
+    override fun getCell(position: Int): HomeCell {
         return homepageCells[position]
     }
 }

@@ -2,7 +2,7 @@ package com.pennapps.labs.pennmobile.classes
 
 interface HomepageDataModel {
     fun getSize() : Int
-    fun getCell(position: Int) : HomeCell2
+    fun getCell(position: Int) : HomeCell
     fun notifyPostBlurLoaded()
     fun notifyNewsBlurLoaded()
 }

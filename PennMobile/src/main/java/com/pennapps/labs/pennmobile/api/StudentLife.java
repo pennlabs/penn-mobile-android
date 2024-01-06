@@ -16,7 +16,6 @@ import com.pennapps.labs.pennmobile.classes.GSRBookingResult;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.GSRReservation;
 import com.pennapps.labs.pennmobile.classes.Gym;
-import com.pennapps.labs.pennmobile.classes.HomeCell;
 import com.pennapps.labs.pennmobile.classes.LaundryRequest;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
@@ -130,15 +129,6 @@ public interface StudentLife {
     @GET("/penndata/calendar")
     Observable<List<CalendarEvent>> getCalendar();
 
-    // home page
-    @GET("/penndata/homepage")
-    Observable<List<HomeCell>> getHomePage(
-            @Header("Authorization") String bearerToken
-    );
-
-    @GET("/fitness/schedule")
-    Observable<List<Gym>> getGymData();
-
     @GET("/gsr/reservations")
     Observable<List<GSRReservation>> getGsrReservations(
             @Header("Authorization") String bearerToken
@@ -198,6 +188,7 @@ public interface StudentLife {
             @Field("id_hash") String idHash,
             @Field("poll_options") ArrayList<Integer> pollOptions,
             Callback<Response> callback);
+
     @GET("/penndata/fitness/rooms/")
     Observable<List<FitnessRoom>> getFitnessRooms();
 
