@@ -125,7 +125,6 @@ class HomeFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 homepageViewModel.updateState.collect { updateState ->
-                    Log.i("Fuck", "fuck")
                     updateState.positions.firstOrNull()?.let { pos ->
                         if (binding.homeCellsRv.adapter != null) {
                             mActivity.runOnUiThread {

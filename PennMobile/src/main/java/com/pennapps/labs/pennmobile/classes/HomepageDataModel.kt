@@ -6,4 +6,5 @@ interface HomepageDataModel {
     fun notifyPostBlurLoaded()
     fun notifyNewsBlurLoaded()
     fun updateDining(venues: List<Int>)
+    fun getDiningHallPrefs() : List<Int>
 }

@@ -347,4 +347,13 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         addCell(DiningCell(venues), DINING_POS) 
         updatePosition(DINING_POS)
     }
+
+    override fun getDiningHallPrefs() : List<Int> {
+        // if empty, return an empty list
+        val diningCell = homepageCells[DINING_POS]
+        if (diningCell.type != "dining") {
+            return emptyList()
+        }
+        return (diningCell as DiningCell).venues
+    }
 }

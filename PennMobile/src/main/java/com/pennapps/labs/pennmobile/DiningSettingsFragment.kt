@@ -29,6 +29,8 @@ class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
     private var _binding : FragmentDiningPreferencesBinding? = null
     private val binding get() = _binding!!
 
+    private var savedNewPrefs = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -83,8 +85,7 @@ class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
                 .subscribe({ diningHalls ->
                     mActivity.runOnUiThread {
                         halls = diningHalls
-                        val adapter = DiningSettingsAdapter(diningHalls)
-                        binding.diningHallRv.adapter = adapter
+                        binding.diningHallRv.adapter = DiningSettingsAdapter(diningHalls)
                     }
                 }, {
                     Log.e("DiningSettings", "error fetching dining halls")
@@ -92,15 +93,27 @@ class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
+        super.onDestroyView() 
+        if (!savedNewPrefs) restoreOriginal()
         mActivity.toolbar.visibility = View.GONE
         _binding = null
     }
 
+    private fun restoreOriginal() {
+        val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
+        val originalPreferences = dataModel.getDiningHallPrefs()
+
+        val editor = sp.edit()
+        for (hall in halls) {
+            editor.putBoolean(hall.name, originalPreferences.contains(hall.id))
+            editor.apply()
+        }
+    }
+
     private fun saveDiningPreferences() {
+        savedNewPrefs = true
         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
         val favoriteDiningHalls = ArrayList<Int>()
-
 
         for (hall in halls) {
             if (sp.getBoolean(hall.name, false)) {
