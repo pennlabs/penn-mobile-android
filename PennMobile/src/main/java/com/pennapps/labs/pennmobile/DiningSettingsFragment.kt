@@ -29,6 +29,7 @@ class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
     private var _binding : FragmentDiningPreferencesBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var originalPreferences : List<Int>
     private var savedNewPrefs = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,6 +76,7 @@ class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
 
     private fun getDiningHalls() {
         // Map each item in the list of venues to a Venue Observable, then map each Venue to a DiningHall Observable
+        originalPreferences = dataModel.getDiningHallPrefs()
         mStudentLife.venues()
                 .flatMap { venues -> Observable.from(venues) }
                 .flatMap { venue ->
@@ -93,15 +95,14 @@ class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView() 
-        if (!savedNewPrefs) restoreOriginal()
         mActivity.toolbar.visibility = View.GONE
+        if (!savedNewPrefs) restoreOriginal()
         _binding = null
+        super.onDestroyView() 
     }
 
     private fun restoreOriginal() {
         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
-        val originalPreferences = dataModel.getDiningHallPrefs()
 
         val editor = sp.edit()
         for (hall in halls) {
