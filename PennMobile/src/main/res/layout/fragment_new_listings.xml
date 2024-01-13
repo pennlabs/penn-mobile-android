@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/new_listings_text"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="25sp"
+        android:fontFamily="@font/sf_pro_display_regular"
+        android:text="New Listings"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        app:layout_constraintTop_toBottomOf="@id/new_listings_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/new_listing_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="26sp"
+            android:layout_marginTop="50sp"
+            android:fontFamily="@font/sf_pro_display_bold"
+            android:paddingTop="50sp"
+            android:text="@string/new_listing"
+            android:textSize="26sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ImageView
+            android:id="@+id/main_image"
+            android:layout_width="match_parent"
+            android:layout_height="161sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/new_listing_text"
+            app:srcCompat="@drawable/subletting_rectangle" />
+
+            <ImageView
+                android:id="@+id/main_image_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/add_photo"
+                app:layout_constraintBottom_toTopOf="@id/add_photos_text"
+                app:layout_constraintEnd_toEndOf="@id/main_image"
+                app:layout_constraintStart_toStartOf="@id/main_image"
+                app:srcCompat="@drawable/add_photo" />
+
+            <TextView
+                android:id="@+id/add_photos_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="@string/add_photos"
+                android:textColor="#8A8A8D"
+                android:textSize="12dp"
+                app:layout_constraintBottom_toBottomOf="@id/main_image"
+                app:layout_constraintEnd_toEndOf="@id/main_image"
+                app:layout_constraintStart_toStartOf="@id/main_image"
+                app:layout_constraintTop_toTopOf="@id/main_image" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

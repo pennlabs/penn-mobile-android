@@ -242,4 +242,7 @@
     <string name="you_currently_have_no_listings">You currently have no listings</string>
     <string name="you_currently_have_no_draft_listings">You currently have no draft listings</string>
     <string name="add_listing">Add Listing</string>
+    <string name="new_listing">New Listing</string>
+    <string name="add_photo">Add Photo</string>
+    <string name="add_photos">Add Photos</string>
 </resources>
