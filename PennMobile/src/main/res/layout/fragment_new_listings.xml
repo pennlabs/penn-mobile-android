@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/new_listings_text"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="25sp"
         android:fontFamily="@font/sf_pro_display_regular"
         android:text="New Listings"
@@ -19,44 +19,44 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
-        app:layout_constraintTop_toBottomOf="@id/new_listings_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        app:layout_constraintTop_toBottomOf="@id/new_listings_text"
+        app:layout_constraintVertical_bias="1.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/new_listing_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="26sp"
-            android:layout_marginTop="50sp"
-            android:fontFamily="@font/sf_pro_display_bold"
-            android:paddingTop="50sp"
-            android:text="@string/new_listing"
-            android:textSize="26sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            <TextView
+                android:id="@+id/new_listing_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="26sp"
+                android:layout_marginTop="50sp"
+                android:fontFamily="@font/sf_pro_display_bold"
+                android:paddingTop="50sp"
+                android:text="@string/new_listing"
+                android:textSize="26sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/main_image"
-            android:layout_width="match_parent"
-            android:layout_height="161sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/new_listing_text"
-            app:srcCompat="@drawable/subletting_rectangle" />
+            <ImageView
+                android:id="@+id/main_image"
+                android:layout_width="match_parent"
+                android:layout_height="161sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/new_listing_text"
+                app:srcCompat="@drawable/subletting_rectangle" />
 
             <ImageView
                 android:id="@+id/main_image_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/add_photo"
-                app:layout_constraintBottom_toTopOf="@id/add_photos_text"
+                app:layout_constraintBottom_toTopOf="@+id/add_photos_text"
                 app:layout_constraintEnd_toEndOf="@id/main_image"
                 app:layout_constraintStart_toStartOf="@id/main_image"
                 app:srcCompat="@drawable/add_photo" />
@@ -65,22 +65,496 @@
                 android:id="@+id/add_photos_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="10sp"
                 android:fontFamily="@font/sf_pro_display_regular"
                 android:text="@string/add_photos"
                 android:textColor="#8A8A8D"
-                android:textSize="12dp"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="@id/main_image"
                 app:layout_constraintEnd_toEndOf="@id/main_image"
                 app:layout_constraintStart_toStartOf="@id/main_image"
                 app:layout_constraintTop_toTopOf="@id/main_image" />
 
+
+            <TextView
+                android:id="@+id/listing_name_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="26sp"
+                android:layout_marginTop="25sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="Listing Name"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/main_image" />
+
+            <EditText
+                android:id="@+id/listing_name_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="26sp"
+                android:layout_marginEnd="26sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/listing_name_text" />
+
+            <TextView
+                android:id="@+id/price_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="26sp"
+                android:layout_marginTop="15sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="Price/month"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/listing_name_input" />
+
+            <EditText
+                android:id="@+id/price_input"
+                android:layout_width="165sp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="26sp"
+                android:inputType="number"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/price_text" />
+
+            <TextView
+                android:id="@+id/negotiable_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="Negotiable?"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@id/negotiable_input"
+                app:layout_constraintTop_toBottomOf="@id/listing_name_input" />
+
+            <Spinner
+                android:id="@+id/negotiable_input"
+                android:layout_width="165sp"
+                android:layout_height="45sp"
+                android:layout_marginStart="30sp"
+                app:layout_constraintStart_toEndOf="@id/price_input"
+                app:layout_constraintTop_toBottomOf="@id/price_text" />
+
+            <TextView
+                android:id="@+id/location_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="26sp"
+                android:layout_marginTop="15sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="Location"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/price_input" />
+
+            <EditText
+                android:id="@+id/street_address_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="26sp"
+                android:layout_marginEnd="26sp"
+                android:hint="Street Address"
+                android:textColorHint="#8A8A8D"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/location_text" />
+
+            <EditText
+                android:id="@+id/apartment_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="26sp"
+                android:layout_marginEnd="26sp"
+                android:hint="Apartment, suite, etc (optional)"
+                android:textColorHint="#8A8A8D"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/street_address_input" />
+
+            <EditText
+                android:id="@+id/postal_code_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="26sp"
+                android:layout_marginEnd="26sp"
+                android:hint="Postal code"
+                android:inputType="number"
+                android:textColorHint="#8A8A8D"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/apartment_input" />
+
+            <TextView
+                android:id="@+id/date_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="26sp"
+                android:layout_marginTop="15sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="Date"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/postal_code_input" />
+
+            <EditText
+                android:id="@+id/start_date_input"
+                android:layout_width="165sp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="26sp"
+                android:layout_marginEnd="10sp"
+                android:hint="Start"
+                android:inputType="date"
+                android:textColorHint="#8A8A8D"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/date_text" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5sp"
+                android:layout_marginBottom="5sp"
+                app:layout_constraintBottom_toBottomOf="@id/start_date_input"
+                app:layout_constraintEnd_toEndOf="@id/start_date_input"
+                app:layout_constraintTop_toTopOf="@id/start_date_input"
+                app:srcCompat="@drawable/ic_calendar" />
+
+
+            <EditText
+                android:id="@+id/end_date_input"
+                android:layout_width="165sp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30sp"
+                android:hint="End"
+                android:inputType="date"
+                android:textColorHint="#8A8A8D"
+                app:layout_constraintStart_toEndOf="@id/start_date_input"
+                app:layout_constraintTop_toBottomOf="@id/date_text" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5sp"
+                android:layout_marginBottom="5sp"
+                app:layout_constraintBottom_toBottomOf="@id/end_date_input"
+                app:layout_constraintEnd_toEndOf="@id/end_date_input"
+                app:layout_constraintTop_toTopOf="@id/end_date_input"
+                app:srcCompat="@drawable/ic_calendar" />
+
+            <TextView
+                android:id="@+id/bed_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="26sp"
+                android:layout_marginTop="15sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="# Bed"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/start_date_input" />
+
+            <Spinner
+                android:id="@+id/bed_input"
+                android:layout_width="165sp"
+                android:layout_height="45sp"
+                android:layout_marginStart="26sp"
+                android:layout_marginEnd="10sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/bed_text" />
+
+            <TextView
+                android:id="@+id/bath_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="# Bath"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@id/bath_input"
+                app:layout_constraintTop_toBottomOf="@id/start_date_input" />
+
+            <Spinner
+                android:id="@+id/bath_input"
+                android:layout_width="165sp"
+                android:layout_height="45sp"
+                android:layout_marginStart="30sp"
+                app:layout_constraintStart_toEndOf="@id/bed_input"
+                app:layout_constraintTop_toBottomOf="@id/bath_text" />
+
+            <TextView
+                android:id="@+id/roommates_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="26sp"
+                android:layout_marginTop="15sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="# Roommates"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/bed_input" />
+
+            <EditText
+                android:id="@+id/roommates_input"
+                android:layout_width="165sp"
+                android:layout_height="45sp"
+                android:layout_marginStart="26sp"
+                android:inputType="number"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/roommates_text" />
+
+            <TextView
+                android:id="@+id/amenities_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="26sp"
+                android:layout_marginTop="15sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="Amenities"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/roommates_input" />
+
+            <CheckBox
+                android:id="@+id/bathroom_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="26sp"
+                android:layout_marginTop="10sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="Private bathroom"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/amenities_text" />
+
+            <CheckBox
+                android:id="@+id/laundry_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/amenities_text"
+                app:layout_constraintStart_toEndOf="@id/bathroom_check"
+                android:layout_marginTop="10sp"
+                android:layout_marginStart="10sp"
+                android:text="In-unit laundry"
+                android:textSize="16sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+
+                />
+
+            <CheckBox
+                android:id="@+id/gym_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/bathroom_check"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="26sp"
+                android:text="Gym"
+                android:textSize="16sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+
+                />
+
+            <CheckBox
+                android:id="@+id/wifi_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="Wifi"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@id/gym_check"
+                app:layout_constraintTop_toBottomOf="@id/bathroom_check" />
+
+            <CheckBox
+                android:id="@+id/closet_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="Walk-in closet"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@id/wifi_check"
+                app:layout_constraintTop_toBottomOf="@id/bathroom_check" />
+
+            <CheckBox
+                android:id="@+id/furnished_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/gym_check"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="26sp"
+                android:text="Furnished"
+                android:textSize="16sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+
+                />
+
+            <CheckBox
+                android:id="@+id/utilities_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="Utilities Included"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@id/furnished_check"
+                app:layout_constraintTop_toBottomOf="@id/gym_check" />
+
+            <CheckBox
+                android:id="@+id/pool_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/furnished_check"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="26sp"
+                android:text="Swimming Pool"
+                android:textSize="16sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+
+                />
+
+            <CheckBox
+                android:id="@+id/lounge_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="Resident Lounge"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@id/pool_check"
+                app:layout_constraintTop_toBottomOf="@id/furnished_check" />
+
+            <CheckBox
+                android:id="@+id/parking_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/pool_check"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="26sp"
+                android:text="Parking"
+                android:textSize="16sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+
+                />
+
+            <CheckBox
+                android:id="@+id/patio_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:shadowColor="@color/black"
+                android:text="Wifi"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@id/parking_check"
+                app:layout_constraintTop_toBottomOf="@id/pool_check" />
+            <CheckBox
+                android:id="@+id/kitchen_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="Kitchen"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@id/patio_check"
+                app:layout_constraintTop_toBottomOf="@id/pool_check" />
+            <CheckBox
+                android:id="@+id/dog_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/parking_check"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="26sp"
+                android:text="Dog-friendly"
+                android:textSize="16sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+
+                />
+
+            <CheckBox
+                android:id="@+id/cat_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="Cat-friendly"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@id/dog_check"
+                app:layout_constraintTop_toBottomOf="@id/parking_check" />
+
+
+            <TextView
+                android:id="@+id/description_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="26sp"
+                android:layout_marginTop="26sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="Description (optional)"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/dog_check" />
+
+            <EditText
+                android:id="@+id/description_input"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/description_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:gravity="top|start"
+                android:layout_gravity="top|start"
+                android:lines="5"
+                android:maxLines="10"
+                android:minLines="1"
+                android:maxLength="300"
+                android:hint="Enter text (up to 300 characters)"
+                android:layout_marginStart="26sp"
+                android:layout_marginEnd="26sp"/>
+
+            <Button
+                android:id="@+id/draft_button"
+                android:layout_width="165sp"
+                android:layout_marginTop="30sp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="26sp"
+                android:backgroundTint="@color/white"
+                android:text="Save Draft"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/description_input" />
+
+            <Button
+                android:id="@+id/post_button"
+                android:layout_width="165sp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30sp"
+                android:layout_marginTop="30sp"
+                android:backgroundTint="#639AFF"
+                android:text="Post"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@id/draft_button"
+                app:layout_constraintTop_toBottomOf="@id/description_input" />
+
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
-
-
     </ScrollView>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
