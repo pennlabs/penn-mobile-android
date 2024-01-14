@@ -245,4 +245,13 @@
     <string name="new_listing">New Listing</string>
     <string name="add_photo">Add Photo</string>
     <string name="add_photos">Add Photos</string>
+    <string name="new_listings">New Listings</string>
+    <string name="listing_name">Listing Name</string>
+    <string name="price_month">Price/month</string>
+    <string name="negotiable">Negotiable?</string>
+    <string name="street_address">Street Address</string>
+    <string name="apartment_suite_etc_optional">Apartment, suite, etc (optional)</string>
+    <string name="postal_code">Postal code</string>
+    <string name="start">Start</string>
+    <string name="end">End</string>
 </resources>

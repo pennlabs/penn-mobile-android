@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="5sp"
         android:fontFamily="@font/sf_pro_display_regular"
-        android:text="@string/you_currently_have_no_draft_listings"
+        android:text="@string/you_currently_have_no_listings"
         android:textColor="#8A8A8D"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,7 +29,7 @@
         app:layout_constraintTop_toBottomOf="@+id/posted_house_image" />
 
     <Button
-        android:id="@+id/draft_add_listing_button"
+        android:id="@+id/posted_add_listing_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5sp"
