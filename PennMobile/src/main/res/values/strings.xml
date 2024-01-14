@@ -254,4 +254,26 @@
     <string name="postal_code">Postal code</string>
     <string name="start">Start</string>
     <string name="end">End</string>
+    <string name="bath"># Bath</string>
+    <string name="roommates"># Roommates</string>
+    <string name="amenities">Amenities</string>
+    <string name="private_bathroom">Private bathroom</string>
+    <string name="in_unit_laundry">In-unit laundry</string>
+    <string name="gym">Gym</string>
+    <string name="wifi">Wifi</string>
+    <string name="walk_in_closet">Walk-in closet</string>
+    <string name="furnished">Furnished</string>
+    <string name="utilities_included">Utilities Included</string>
+    <string name="swimming_pool">Swimming Pool</string>
+    <string name="resident_lounge">Resident Lounge</string>
+    <string name="parking">Parking</string>
+    <string name="kitchen">Kitchen</string>
+    <string name="dog_friendly">Dog-friendly</string>
+    <string name="cat_friendly">Cat-friendly</string>
+    <string name="description_optional">Description (optional)</string>
+    <string name="enter_text_up_to_300_characters">Enter text (up to 300 characters)</string>
+    <string name="save_draft">Save Draft</string>
+    <string name="post">Post</string>
+    <string name="bed"># Bed</string>
+    <string name="calendar_icon">calendar icon</string>
 </resources>

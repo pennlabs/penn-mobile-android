@@ -27,14 +27,16 @@ class SubletterPostedListingsFragment : Fragment() {
 
 
     private fun navigateCreateNewListing() {
-        val mainActivity = activity as MainActivity
+        val mainActivity = context as MainActivity
         val fragment = NewListingsFragment()
 
         val fragmentManager = mainActivity.supportFragmentManager
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment, "NEW_LISTING_FRAGMENT")
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
                 .commitAllowingStateLoss()
 
     }
+
 }

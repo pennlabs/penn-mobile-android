@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/windowBackground">
 
     <TextView
         android:id="@+id/new_listings_text"
@@ -11,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="25sp"
         android:fontFamily="@font/sf_pro_display_regular"
-        android:text="@string/new_listings"
+        android:text="@string/new_listing"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -19,16 +20,15 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
+        android:id="@+id/new_listing_scrollview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/new_listings_text">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/windowBackground">
+            android:layout_height="0dp">
 
             <TextView
                 android:id="@+id/new_listing_text"
@@ -98,47 +98,73 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/listing_name_text" />
 
-            <TextView
-                android:id="@+id/price_text"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/price_negotiable_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="26sp"
+                android:orientation="horizontal"
                 android:layout_marginTop="15sp"
-                android:fontFamily="@font/sf_pro_display_regular"
-                android:text="@string/price_month"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/listing_name_input" />
-
-            <EditText
-                android:id="@+id/price_input"
-                android:layout_width="165sp"
-                android:layout_height="wrap_content"
                 android:layout_marginStart="26sp"
-                android:inputType="number"
+                android:layout_marginEnd="26sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/price_text" />
+                app:layout_constraintTop_toBottomOf="@id/listing_name_input">
 
-            <TextView
-                android:id="@+id/negotiable_text"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/price_text"
+                    android:layout_width="0dp"
+                    android:layout_marginEnd="10sp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/sf_pro_display_regular"
+                    android:text="@string/price_month"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/negotiable_text"
+                    android:layout_width="0dp"
+                    android:layout_marginStart="10sp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/sf_pro_display_regular"
+                    android:text="@string/negotiable"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@id/price_text"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/price_negotiable_input_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15sp"
-                android:fontFamily="@font/sf_pro_display_regular"
-                android:text="@string/negotiable"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@id/negotiable_input"
-                app:layout_constraintTop_toBottomOf="@id/listing_name_input" />
+                android:orientation="horizontal"
+                android:layout_marginStart="26sp"
+                android:layout_marginEnd="26sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/price_negotiable_layout">
 
-            <Spinner
-                android:id="@+id/negotiable_input"
-                android:layout_width="165sp"
-                android:layout_height="45sp"
-                android:layout_marginStart="30sp"
-                app:layout_constraintStart_toEndOf="@id/price_input"
-                app:layout_constraintTop_toBottomOf="@id/price_text" />
+                <EditText
+                    android:id="@+id/price_input"
+                    android:layout_width="0dp"
+                    android:layout_marginEnd="10sp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/price_text" />
+
+                <Spinner
+                    android:id="@+id/negotiable_input"
+                    android:layout_width="0dp"
+                    android:layout_marginStart="10sp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    app:layout_constraintStart_toEndOf="@id/price_input"
+                    app:layout_constraintTop_toBottomOf="@id/price_text"
+                    android:entries="@array/yes_no_options"/>
+
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/location_text"
@@ -151,7 +177,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/price_input" />
+                app:layout_constraintTop_toBottomOf="@id/price_negotiable_input_layout" />
 
             <EditText
                 android:id="@+id/street_address_input"
@@ -203,91 +229,119 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/postal_code_input" />
 
-            <EditText
-                android:id="@+id/start_date_input"
-                android:layout_width="165sp"
+            <LinearLayout
+                android:id="@+id/date_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_marginStart="26sp"
-                android:layout_marginEnd="10sp"
-                android:hint="@string/start"
-                android:inputType="date"
-                android:textColorHint="#8A8A8D"
+                android:layout_marginEnd="26sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/date_text" />
+                app:layout_constraintTop_toBottomOf="@id/date_text">
 
-            <ImageView
-                android:layout_width="wrap_content"
+                <EditText
+                    android:id="@+id/start_date_input"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10sp"
+                    android:hint="@string/start"
+                    android:inputType="date"
+                    android:textColorHint="#8A8A8D"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/date_text" />
+
+                <EditText
+                    android:id="@+id/end_date_input"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10sp"
+                    android:hint="@string/end"
+                    android:inputType="date"
+                    android:textColorHint="#8A8A8D"
+                    app:layout_constraintStart_toEndOf="@id/start_date_input"
+                    app:layout_constraintTop_toBottomOf="@id/date_text" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/bed_bath_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5sp"
-                android:layout_marginBottom="5sp"
-                app:layout_constraintBottom_toBottomOf="@id/start_date_input"
-                app:layout_constraintEnd_toEndOf="@id/start_date_input"
-                app:layout_constraintTop_toTopOf="@id/start_date_input"
-                app:srcCompat="@drawable/ic_calendar" />
-
-
-            <EditText
-                android:id="@+id/end_date_input"
-                android:layout_width="165sp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30sp"
-                android:hint="@string/end"
-                android:inputType="date"
-                android:textColorHint="#8A8A8D"
-                app:layout_constraintStart_toEndOf="@id/start_date_input"
-                app:layout_constraintTop_toBottomOf="@id/date_text" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5sp"
-                android:layout_marginBottom="5sp"
-                app:layout_constraintBottom_toBottomOf="@id/end_date_input"
-                app:layout_constraintEnd_toEndOf="@id/end_date_input"
-                app:layout_constraintTop_toTopOf="@id/end_date_input"
-                app:srcCompat="@drawable/ic_calendar" />
-
-            <TextView
-                android:id="@+id/bed_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_marginStart="26sp"
                 android:layout_marginTop="15sp"
-                android:fontFamily="@font/sf_pro_display_regular"
-                android:text="# Bed"
-                android:textSize="16sp"
-                android:textStyle="bold"
+                android:layout_marginEnd="26sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/start_date_input" />
+                app:layout_constraintTop_toBottomOf="@id/date_layout">
 
-            <Spinner
-                android:id="@+id/bed_input"
-                android:layout_width="165sp"
-                android:layout_height="45sp"
-                android:layout_marginStart="26sp"
-                android:layout_marginEnd="10sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/bed_text" />
+                <TextView
+                    android:id="@+id/bed_text"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sf_pro_display_regular"
+                    android:text="@string/bed"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/date_layout" />
 
-            <TextView
-                android:id="@+id/bath_text"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/bath_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/sf_pro_display_regular"
+                    android:text="@string/bath"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@id/bath_input"
+                    app:layout_constraintTop_toBottomOf="@id/date_layout" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/bed_bath_input_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="26sp"
                 android:layout_marginTop="15sp"
-                android:fontFamily="@font/sf_pro_display_regular"
-                android:text="# Bath"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@id/bath_input"
-                app:layout_constraintTop_toBottomOf="@id/start_date_input" />
+                android:layout_marginEnd="26sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/bed_bath_layout">
 
-            <Spinner
-                android:id="@+id/bath_input"
-                android:layout_width="165sp"
-                android:layout_height="45sp"
-                android:layout_marginStart="30sp"
-                app:layout_constraintStart_toEndOf="@id/bed_input"
-                app:layout_constraintTop_toBottomOf="@id/bath_text" />
+                <Spinner
+                    android:id="@+id/bed_input"
+                    android:layout_width="0sp"
+                    android:layout_weight="1"
+                    android:layout_height="45sp"
+                    android:layout_marginEnd="10sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/bed_bath_layout"
+                    android:entries="@array/num_options"/>
+
+
+                <Spinner
+                    android:id="@+id/bath_input"
+                    android:layout_width="0sp"
+                    android:layout_weight="1"
+                    android:layout_height="45sp"
+                    android:layout_marginStart="10sp"
+                    app:layout_constraintStart_toEndOf="@id/bed_input"
+                    app:layout_constraintTop_toBottomOf="@id/bed_bath_layout"
+                    android:entries="@array/num_options"/>
+
+
+            </LinearLayout>
+
+
+
+
+
+
 
             <TextView
                 android:id="@+id/roommates_text"
@@ -296,11 +350,11 @@
                 android:layout_marginStart="26sp"
                 android:layout_marginTop="15sp"
                 android:fontFamily="@font/sf_pro_display_regular"
-                android:text="# Roommates"
+                android:text="@string/roommates"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/bed_input" />
+                app:layout_constraintTop_toBottomOf="@id/bed_bath_input_layout" />
 
             <EditText
                 android:id="@+id/roommates_input"
@@ -318,7 +372,7 @@
                 android:layout_marginStart="26sp"
                 android:layout_marginTop="15sp"
                 android:fontFamily="@font/sf_pro_display_regular"
-                android:text="Amenities"
+                android:text="@string/amenities"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -331,7 +385,7 @@
                 android:layout_marginStart="26sp"
                 android:layout_marginTop="10sp"
                 android:fontFamily="@font/sf_pro_display_regular"
-                android:text="Private bathroom"
+                android:text="@string/private_bathroom"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/amenities_text" />
@@ -343,7 +397,7 @@
                 android:layout_marginStart="10sp"
                 android:layout_marginTop="10sp"
                 android:fontFamily="@font/sf_pro_display_regular"
-                android:text="In-unit laundry"
+                android:text="@string/in_unit_laundry"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/bathroom_check"
                 app:layout_constraintTop_toBottomOf="@id/amenities_text"
@@ -356,7 +410,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="26sp"
                 android:fontFamily="@font/sf_pro_display_regular"
-                android:text="Gym"
+                android:text="@string/gym"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/bathroom_check"
@@ -369,7 +423,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10sp"
                 android:fontFamily="@font/sf_pro_display_regular"
-                android:text="Wifi"
+                android:text="@string/wifi"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/gym_check"
                 app:layout_constraintTop_toBottomOf="@id/bathroom_check" />
@@ -380,7 +434,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10sp"
                 android:fontFamily="@font/sf_pro_display_regular"
-                android:text="Walk-in closet"
+                android:text="@string/walk_in_closet"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/wifi_check"
                 app:layout_constraintTop_toBottomOf="@id/bathroom_check" />
@@ -391,7 +445,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="26sp"
                 android:fontFamily="@font/sf_pro_display_regular"
-                android:text="Furnished"
+                android:text="@string/furnished"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/gym_check"
@@ -404,7 +458,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10sp"
                 android:fontFamily="@font/sf_pro_display_regular"
-                android:text="Utilities Included"
+                android:text="@string/utilities_included"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/furnished_check"
                 app:layout_constraintTop_toBottomOf="@id/gym_check" />
@@ -415,7 +469,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="26sp"
                 android:fontFamily="@font/sf_pro_display_regular"
-                android:text="Swimming Pool"
+                android:text="@string/swimming_pool"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/furnished_check"
@@ -428,7 +482,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10sp"
                 android:fontFamily="@font/sf_pro_display_regular"
-                android:text="Resident Lounge"
+                android:text="@string/resident_lounge"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/pool_check"
                 app:layout_constraintTop_toBottomOf="@id/furnished_check" />
@@ -439,7 +493,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="26sp"
                 android:fontFamily="@font/sf_pro_display_regular"
-                android:text="Parking"
+                android:text="@string/parking"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/pool_check"
@@ -453,7 +507,7 @@
                 android:layout_marginStart="10sp"
                 android:fontFamily="@font/sf_pro_display_regular"
                 android:shadowColor="@color/black"
-                android:text="Wifi"
+                android:text="@string/wifi"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/parking_check"
                 app:layout_constraintTop_toBottomOf="@id/pool_check" />
@@ -464,7 +518,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10sp"
                 android:fontFamily="@font/sf_pro_display_regular"
-                android:text="Kitchen"
+                android:text="@string/kitchen"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/patio_check"
                 app:layout_constraintTop_toBottomOf="@id/pool_check" />
@@ -475,7 +529,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="26sp"
                 android:fontFamily="@font/sf_pro_display_regular"
-                android:text="Dog-friendly"
+                android:text="@string/dog_friendly"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/parking_check"
@@ -488,7 +542,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10sp"
                 android:fontFamily="@font/sf_pro_display_regular"
-                android:text="Cat-friendly"
+                android:text="@string/cat_friendly"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/dog_check"
                 app:layout_constraintTop_toBottomOf="@id/parking_check" />
@@ -501,7 +555,7 @@
                 android:layout_marginStart="26sp"
                 android:layout_marginTop="26sp"
                 android:fontFamily="@font/sf_pro_display_regular"
-                android:text="Description (optional)"
+                android:text="@string/description_optional"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -515,7 +569,7 @@
                 android:layout_marginStart="26sp"
                 android:layout_marginEnd="26sp"
                 android:gravity="top|start"
-                android:hint="Enter text (up to 300 characters)"
+                android:hint="@string/enter_text_up_to_300_characters"
                 android:inputType="textMultiLine"
                 android:lines="5"
                 android:maxLength="300"
@@ -524,36 +578,63 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/description_text" />
 
-            <Button
-                android:id="@+id/draft_button"
-                android:layout_width="165sp"
+            <LinearLayout
+                android:id="@+id/button_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_marginStart="26sp"
                 android:layout_marginTop="30sp"
-                android:backgroundTint="@color/white"
-                android:text="Save Draft"
-                android:textSize="16sp"
+                android:layout_marginEnd="26sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/description_input" />
+                app:layout_constraintTop_toBottomOf="@id/description_input">
 
-            <Button
-                android:id="@+id/post_button"
-                android:layout_width="165sp"
+
+                <Button
+                    android:id="@+id/draft_button"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:backgroundTint="@color/white"
+                    android:text="@string/save_draft"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+
+                <Button
+                    android:id="@+id/post_button"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10sp"
+                    android:backgroundTint="#639AFF"
+                    android:text="@string/post"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    app:layout_constraintTop_toBottomOf="@id/description_input" />
+
+
+            </LinearLayout>
+
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="30sp"
-                android:layout_marginTop="30sp"
-                android:backgroundTint="#639AFF"
-                android:text="Post"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                app:layout_constraintStart_toEndOf="@id/draft_button"
-                app:layout_constraintTop_toBottomOf="@id/description_input" />
+                app:layout_constraintTop_toBottomOf="@id/button_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="delete later"
+                android:textSize="75dp"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </ScrollView>
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
