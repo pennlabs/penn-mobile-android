@@ -1,13 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
+        android:id="@+id/listings_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="subletter"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:layout_marginTop="25sp"
+        android:fontFamily="@font/sf_pro_display_regular"
+        android:text="Listings"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/my_listings_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="26sp"
+        android:layout_marginTop="50sp"
+        android:fontFamily="@font/sf_pro_display_bold"
+        android:text="@string/my_listings"
+        android:textSize="26sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/listings_text" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/subletter_tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/my_listings_text"
+        app:tabIndicatorColor="@color/color_bottom_nav_selected"
+        app:tabTextAppearance="@style/TextAppearance.AppCompat.Small" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/subletter_view_pager"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/subletter_tab_layout"
+        android:layout_height="wrap_content"/>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

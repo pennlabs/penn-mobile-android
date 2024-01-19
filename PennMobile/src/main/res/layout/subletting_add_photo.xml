@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/gsr_room"
+    android:layout_width="80dp"
+    android:layout_height="80dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:background="@drawable/rounded_corners_white"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:padding="4dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/main_image_icon"
+        android:layout_width="27dp"
+        android:layout_height="22dp"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="@string/add_photo"
+        app:srcCompat="@drawable/add_photo"/>
+
+    <TextView
+        android:id="@+id/add_photos_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10sp"
+        android:fontFamily="@font/sf_pro_display_regular"
+        android:text="@string/add_photos"
+        android:textColor="#8A8A8D"
+        android:textSize="12sp"
+        android:layout_gravity="center_horizontal"
+
+        />
+
+</LinearLayout>
