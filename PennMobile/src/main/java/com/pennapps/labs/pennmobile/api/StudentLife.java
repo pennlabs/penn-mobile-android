@@ -24,6 +24,7 @@ import com.pennapps.labs.pennmobile.classes.LaundryUsage;
 import com.pennapps.labs.pennmobile.classes.Poll;
 import com.pennapps.labs.pennmobile.classes.Post;
 import com.pennapps.labs.pennmobile.classes.SaveAccountResponse;
+import com.pennapps.labs.pennmobile.classes.Sublet;
 import com.pennapps.labs.pennmobile.classes.Venue;
 import com.pennapps.labs.pennmobile.classes.WhartonStatus;
 
@@ -216,4 +217,11 @@ public interface StudentLife {
             @Header("Authorization") String bearerToken,
             @Body FitnessRequest rooms,
             Callback<Response> callback);
+
+    @POST("/sublet/properties/")
+    void createSublet(
+            @Header("Authorization") String bearerToken,
+            @Body Sublet sublet
+    );
+
 }
