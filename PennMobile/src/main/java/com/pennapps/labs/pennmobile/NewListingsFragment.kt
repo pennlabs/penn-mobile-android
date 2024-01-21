@@ -34,15 +34,16 @@ class NewListingsFragment : Fragment() {
 
     //Sublet variables
     private lateinit var title : String
-    private lateinit var price : EditText
+    private lateinit var price : String
     private var streetAddress : String? = null
     private var apartment : String? = null
     private var zipCode : String? = null
-    private lateinit var startDate : EditText
-    private lateinit var endDate : EditText
+    private lateinit var startDate : String
+    private lateinit var endDate : String
     private var beds : Int? = null
     private var baths : Int? = null
     private var description: String?  = null
+    private lateinit var amenities: List<AmenitiesItem>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,6 +77,23 @@ class NewListingsFragment : Fragment() {
                 Toast.makeText(activity, "Please fill in all required fields before booking",
                         Toast.LENGTH_LONG).show()
             } else {
+                title = titleEt.text.toString()
+                price = priceEt.text.toString()
+                streetAddress = streetAddressEt.text.toString() + ", " + apartmentEt.text.toString() +
+                        ", " + zipCodeEt.text.toString()
+                if (streetAddress.equals(", , ")) {
+                    streetAddress = null
+                }
+                startDate = startEt.text.toString()
+                endDate = endEt.text.toString()
+                //do beds, baths
+                description = descriptionEt.text.toString()
+                if (description.equals("")) {
+                    description = null;
+                }
+                postSublet(title, Integer.parseInt(price), streetAddress, startDate, endDate, beds,
+                        baths, amenities, description)
+
             }
 
         }
