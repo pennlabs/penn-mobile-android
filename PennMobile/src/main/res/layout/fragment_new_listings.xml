@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:id="@+id/new_listing_scrollview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -599,9 +599,7 @@
                     android:backgroundTint="@color/white"
                     android:text="@string/save_draft"
                     android:textSize="16sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    />
+                    app:layout_constraintStart_toStartOf="parent" />
 
 
                 <Button
@@ -627,14 +625,14 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/button_layout"
                 app:layout_constraintStart_toStartOf="parent"
-                android:textSize="75sp"/>
+                android:text="delete later"
+                android:textSize="75dp"/>
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
-
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
 
 
