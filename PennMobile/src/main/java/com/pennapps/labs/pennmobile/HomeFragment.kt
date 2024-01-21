@@ -130,10 +130,12 @@ class HomeFragment : Fragment() {
                     Log.i("HomeFragment", "polls $loaded")
 
                     if (loaded == totalCells) {
-                        home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
-                        loadingPanel?.visibility = View.GONE
-                        internetConnectionHome?.visibility = View.GONE
-                        home_refresh_layout?.isRefreshing = false
+                        mActivity.runOnUiThread {
+                            home_cells_rv?.adapter = HomeAdapter(ArrayList(homepageCells))
+                            loadingPanel?.visibility = View.GONE
+                            internetConnectionHome?.visibility = View.GONE
+                            home_refresh_layout?.isRefreshing = false
+                        }
                     }
                 }, { throwable ->
                     Log.e("Poll", "Error retrieving polls", throwable)

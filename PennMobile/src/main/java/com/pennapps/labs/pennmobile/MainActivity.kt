@@ -106,12 +106,12 @@ class MainActivity : AppCompatActivity() {
     private fun onExpandableBottomNavigationItemSelected() {
         expandable_bottom_bar.setOnNavigationItemSelectedListener { item ->
             val position = when (item.itemId) {
-                R.id.nav_home-> MainPagerAdapter.HOME_POSITION
-                R.id.nav_dining-> MainPagerAdapter.DINING_POSITION
-                R.id.nav_gsr-> MainPagerAdapter.GSR_POSITION
-                R.id.nav_laundry-> MainPagerAdapter.LAUNDRY_POSITION
-                R.id.nav_more-> MainPagerAdapter.MORE_POSITION
-                else -> MainPagerAdapter.HOME_POSITION
+                R.id.nav_home-> 0
+                R.id.nav_dining-> 1
+                R.id.nav_gsr-> 2
+                R.id.nav_laundry-> 3
+                R.id.nav_more-> 4
+                else -> 0
             }
             main_view_pager.setCurrentItem(position, false)
             true

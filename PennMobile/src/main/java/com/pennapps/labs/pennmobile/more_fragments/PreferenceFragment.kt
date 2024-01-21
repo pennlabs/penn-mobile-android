@@ -110,6 +110,16 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             return@setOnPreferenceClickListener true
         }
 
+        val selectPreferencePref: Preference? = findPreference("pref_account_preferences")
+        selectPreferencePref?.setOnPreferenceClickListener {
+            mActivity.supportFragmentManager.beginTransaction()
+                .replace(R.id.more_frame, DynamicTabsFragment())
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit()
+            return@setOnPreferenceClickListener true
+        }
+
         val aboutFeaturePref: Preference? = findPreference("pref_about_feature")
         aboutFeaturePref?.setOnPreferenceClickListener {
             mActivity.supportFragmentManager.beginTransaction()

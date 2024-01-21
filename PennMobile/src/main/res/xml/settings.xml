@@ -14,6 +14,11 @@
             android:title="Edit your profile"
             app:iconSpaceReserved="false" />
         <Preference
+            android:id="@+id/pref_account_preferences"
+            android:key="pref_account_preferences"
+            android:title="Select Preferences"
+            app:iconSpaceReserved="false" />
+        <Preference
             android:id="@+id/pref_account_login_logout"
             android:key="pref_account_login_logout"
             android:title="Log In"
