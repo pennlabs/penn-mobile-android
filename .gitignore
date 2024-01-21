@@ -73,3 +73,5 @@ fastlane/readme.md
 src/main/assets/crashlytics-build.properties
 src/main/res/values/com_crashlytics_export_strings.xml
 crashlytics.properties
+PennMobile/google-services.json
+PennMobile/google-services.json
