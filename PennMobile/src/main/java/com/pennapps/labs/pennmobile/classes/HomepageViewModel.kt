@@ -196,7 +196,6 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
             Log.i("HomepageViewModel", "Loaded news") 
 
             latch.countDown()
-            
         }, { throwable ->
             Log.i("HomepageViewModel", "Could not load news")
             throwable.printStackTrace()
@@ -343,11 +342,19 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         return homepageCells[position]
     }
 
+    /**
+     * Updates the dining hall preferences. Used from the
+     * dining pref cell on the homepage
+     */
     override fun updateDining(venues : List<Int>) {
         addCell(DiningCell(venues), DINING_POS) 
         updatePosition(DINING_POS)
     }
 
+    /**
+     * Gets the dining hall preferences as a list. Used by the dining preferences
+     * cell on the homepage
+     */
     override fun getDiningHallPrefs() : List<Int> {
         // if empty, return an empty list
         val diningCell = homepageCells[DINING_POS]
