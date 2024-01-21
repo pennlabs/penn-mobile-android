@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.api
 
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import java.util.*

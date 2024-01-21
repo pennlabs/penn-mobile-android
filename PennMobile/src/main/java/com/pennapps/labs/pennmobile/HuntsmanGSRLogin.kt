@@ -2,7 +2,7 @@ package com.pennapps.labs.pennmobile
 
 
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -13,7 +13,6 @@ import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
-import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult
 import com.pennapps.labs.pennmobile.databinding.FragmentHuntsmanGsrloginBinding
@@ -52,7 +51,7 @@ class HuntsmanGSRLogin : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         _binding = FragmentHuntsmanGsrloginBinding.inflate(inflater, container, false)
         return binding.root
@@ -100,7 +99,7 @@ class HuntsmanGSRLogin : Fragment() {
                     editor.apply()
                     if (startTime.substring(9,13) == "2330") {
                         val newDay = endTime[7] + 1
-                        var newEndTime = endTime.substring(0,7) + newDay + endTime.substring(8,endTime.length)
+                        val newEndTime = endTime.substring(0,7) + newDay + endTime.substring(8,endTime.length)
                         endTime = newEndTime
                     }
                     bookHuntsmanGSR(bearerToken, sessionid)
@@ -112,7 +111,7 @@ class HuntsmanGSRLogin : Fragment() {
 
     // performs POST request and redirects user to GSR booking fragment
     private fun bookHuntsmanGSR(bearerToken : String, sessionID : String) {
-        OAuth2NetworkManager(activity as MainActivity).getAccessToken {
+        (activity as MainActivity).mNetworkManager.getAccessToken {
 
             mStudentLife.bookGSR(
                 //Passing the values
@@ -166,22 +165,6 @@ class HuntsmanGSRLogin : Fragment() {
                     }
                 }
             )
-        }
-    }
-
-    companion object {
-
-        fun newInstance(gsrID: String, gsrLocationCode: String, startTime: String, endTime: String, gid: Int, roomName: String): HuntsmanGSRLogin {
-            val fragment = HuntsmanGSRLogin()
-            val args = Bundle()
-            args.putString("gsrID", gsrID)
-            args.putString("gsrLocationCode", gsrLocationCode)
-            args.putString("startTime", startTime)
-            args.putString("endTime", endTime)
-            args.putInt("gid", gid)
-            args.putString("roomName", roomName)
-            fragment.arguments = args
-            return fragment
         }
     }
 }

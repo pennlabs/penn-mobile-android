@@ -257,7 +257,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
 
     companion object {
         private const val PennLabs = "https://pennlabs.org"
-        private const val Feedback = "https://airtable.com/shr1oylDR3qzCpTXq"
+        private const val Feedback = "https://airtable.com/appFRa4NQvNMEbWsA/shrn4VbSQa8QDj8OG"
         private const val PennHomepage = "https://www.upenn.edu"
         private const val CampusExpress = "https://prod.campusexpress.upenn.edu"
         private const val Canvas = "https://canvas.upenn.edu"

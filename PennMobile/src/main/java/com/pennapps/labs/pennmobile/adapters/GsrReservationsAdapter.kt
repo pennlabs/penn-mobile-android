@@ -1,7 +1,7 @@
 package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
@@ -22,7 +22,6 @@ import android.content.Intent
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.widget.Toast.LENGTH_SHORT
-import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 
 
 class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>)
@@ -64,7 +63,7 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
             builder.setPositiveButton("Confirm") { _, _ ->
                 val bookingID = reservation.booking_id
 
-                OAuth2NetworkManager(mContext as MainActivity).getAccessToken {
+                (mContext as MainActivity).mNetworkManager.getAccessToken {
 
                     val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
                     val sessionID = if (reservation.info == null) sp.getString(

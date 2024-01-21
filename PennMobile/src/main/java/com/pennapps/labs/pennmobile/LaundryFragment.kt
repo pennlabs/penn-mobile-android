@@ -3,14 +3,13 @@ package com.pennapps.labs.pennmobile
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.util.Log
 import android.view.*
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.LaundryRoomAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.LaundryRoom
@@ -18,7 +17,6 @@ import com.pennapps.labs.pennmobile.classes.LaundryUsage
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentLaundryBinding
 import com.pennapps.labs.pennmobile.utils.Utils
-import kotlinx.android.synthetic.main.include_main.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.loading_panel.view.*
 import kotlinx.android.synthetic.main.no_results.*
@@ -56,15 +54,9 @@ class LaundryFragment : Fragment() {
         mActivity = activity as MainActivity
         mContext = mActivity
         setHasOptionsMenu(true)
-
-        val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "3")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Laundry")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
-        FirebaseAnalytics.getInstance(mContext).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentLaundryBinding.inflate(inflater, container, false)
         val view = binding.root
 
@@ -150,16 +142,11 @@ class LaundryFragment : Fragment() {
         }
         return super.onOptionsItemSelected(item)
     }
-
-    override fun onResume() {
-        super.onResume()
-    }
-
     private fun updateRooms() {
 
         //displays banner if not connected
         if (!isOnline(context)) {
-            binding.internetConnectionLaundry?.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            binding.internetConnectionLaundry.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
             binding.internetConnectionMessageLaundry.text = getString(R.string.internet_error)
             binding.internetConnectionLaundry.visibility = View.VISIBLE
         } else {
@@ -213,16 +200,10 @@ class LaundryFragment : Fragment() {
                     if (laundryRoomsResult.size == count) {
 
                         // sort laundry rooms data by hall name
-                        roomsDataResult.sortWith(Comparator { usage1, usage2 -> usage2.id - usage1.id })
+                        roomsDataResult.sortWith { usage1, usage2 -> usage2.id - usage1.id }
 
                         // sort laundry rooms by name
-                        laundryRoomsResult.sortWith(Comparator { room1, room2 -> room2.id - room1.id })
-
-                        var loading = false
-                        // make sure results are finished loading
-                        while (roomsDataResult.size != count) {
-                            loading = true
-                        }
+                        laundryRoomsResult.sortWith { room1, room2 -> room2.id - room1.id }
 
                         // update UI
                         mActivity.runOnUiThread {

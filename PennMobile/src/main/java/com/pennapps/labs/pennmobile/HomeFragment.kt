@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.HomeAdapter
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.classes.HomeCell
@@ -31,7 +30,6 @@ import kotlinx.android.synthetic.main.include_main.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import java.util.*
 import kotlin.collections.ArrayList
-
 
 class HomeFragment : Fragment() {
 
@@ -51,17 +49,12 @@ class HomeFragment : Fragment() {
             .getInstance(mActivity)
             .registerReceiver(broadcastReceiver, IntentFilter("refresh"))
 
-        val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "11")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Home")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
-        FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val view = binding.root
 
@@ -72,7 +65,9 @@ class HomeFragment : Fragment() {
         view.home_refresh_layout
             .setColorSchemeResources(R.color.color_accent, R.color.color_primary)
         view.home_refresh_layout
-            .setOnRefreshListener { getHomePage() }
+            .setOnRefreshListener {
+                getHomePage()
+            }
 
         initAppBar(view)
         return view
@@ -89,6 +84,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun getHomePage() {
+        mActivity.showBottomBar()
 
         //displays banner if not connected
         if (!isOnline(context)) {
@@ -115,7 +111,7 @@ class HomeFragment : Fragment() {
         var loaded = 0
 
         val studentLife = MainActivity.studentLifeInstance
-        OAuth2NetworkManager(mActivity).getAccessToken {
+        mActivity.mNetworkManager.getAccessToken {
             val sp = sharedPreferences
             val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
             val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
@@ -203,9 +199,9 @@ class HomeFragment : Fragment() {
                             venues.add(1442)
                             venues.add(636)
                         } else {
-                            list?.forEach({
+                            list?.forEach {
                                 it.id?.let { it1 -> venues.add(it1) }
-                            })
+                            }
 
                         }
                         diningCellInfo.venues = venues
@@ -272,7 +268,6 @@ class HomeFragment : Fragment() {
 
                 studentLife.getLaundryPref(bearerToken).subscribe({ preferences ->
                     mActivity.runOnUiThread {
-                        val venues = mutableListOf<Int>()
                         val laundryCell = HomeCell()
                         laundryCell.type = "laundry"
                         val laundryCellInfo = HomeCellInfo()
@@ -418,7 +413,7 @@ class HomeFragment : Fragment() {
         this.setTitle(getString(R.string.home))
         mActivity.toolbar.visibility = View.GONE
         val initials = sharedPreferences.getString(getString(R.string.initials), null)
-        if (initials != null && initials.isNotEmpty()) {
+        if (!initials.isNullOrEmpty()) {
             binding.initials.text = initials
         } else {
             binding.profileBackground.setImageDrawable(
@@ -452,20 +447,4 @@ class HomeFragment : Fragment() {
             //TODO: Account Settings
         }
     }
-
-    /**
-     * Show a SnackBar message right below the app bar
-     */
-    @Suppress("DEPRECATION")
-    private fun displaySnack(view: View, text: String) {
-        (view as ViewGroup).showSneakerToast(message = text, doOnRetry = { }, sneakerColor = R.color.sneakerBlurColorOverlay)
-    }
-
-    enum class Cells {
-        POLLS, NEWS, DINING, CALENDAR, LAUNDRY, POSTS
-    }
-
-
-
-
 }

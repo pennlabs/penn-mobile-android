@@ -8,14 +8,12 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.Build
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.browser.customtabs.CustomTabsServiceConnection
@@ -25,10 +23,12 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.FragmentTransaction
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.pennapps.labs.pennmobile.*
 import com.pennapps.labs.pennmobile.DiningFragment.Companion.getMenus
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
@@ -39,7 +39,6 @@ import com.pennapps.labs.pennmobile.classes.HomeCell
 import com.pennapps.labs.pennmobile.classes.PollCell
 import com.pennapps.labs.pennmobile.components.sneaker.Utils.convertToDp
 import com.pennapps.labs.pennmobile.utils.Utils
-import com.squareup.picasso.Picasso
 import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.home_base_card.view.*
@@ -49,6 +48,7 @@ import kotlinx.android.synthetic.main.home_base_card.view.home_card_title
 import kotlinx.android.synthetic.main.poll_card.view.*
 import kotlinx.android.synthetic.main.home_news_card.view.*
 import kotlinx.android.synthetic.main.home_post_card.view.*
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -166,7 +166,6 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         holder.itemView.home_card_rv.adapter = GsrReservationsAdapter(ArrayList(reservations))
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun bindDiningCell(holder: ViewHolder, cell: HomeCell) {
         holder.itemView.home_card_title.text = "Favorites"
         holder.itemView.home_card_subtitle.text = "DINING HALLS"
@@ -203,22 +202,22 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun bindNewsCell(holder: ViewHolder, cell: HomeCell) {
         val article = cell.info?.article
         holder.itemView.home_news_title.text = article?.title
         holder.itemView.home_news_subtitle.text = article?.subtitle
         holder.itemView.home_news_timestamp.text = article?.timestamp?.trim()
 
-        Picasso.get()
-            .load(article?.imageUrl)
-            .fit()
+        Glide.with(mContext).load(article?.imageUrl)
+            .fitCenter()
             .centerCrop()
             .into(holder.itemView.home_news_iv)
 
         /** Adds dynamically generated accent color from the fetched image to the news card */
         var accentColor: Int =  getColor(mContext, R.color.black)
         GlobalScope.launch(Dispatchers.Default) {
-            val bitmap = Picasso.get().load(article?.imageUrl).get()
+            val bitmap = Glide.with(mContext).load(article?.imageUrl).submit().get().toBitmap()
 
             // Create palette from bitmap
             fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
@@ -244,6 +243,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
                 holder.itemView.blurView
                     .setOverlayColor(ColorUtils.setAlphaComponent(accentColor, 150))
             }
+
         }
 
         /** Logic for the more info button on the news card */
@@ -364,6 +364,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         holder.itemView.home_card_rv.adapter = HomeGsrBuildingAdapter(ArrayList(buildings))
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun bindPostCell(holder: ViewHolder, cell: HomeCell) {
         val info = cell.info
         val post = cell.info?.post
@@ -375,15 +376,14 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
                 post?.expireDate?.substring(5, 7) + " / " +
                 post?.expireDate?.substring(8, 10)
         holder.itemView.home_post_timestamp.text = time
-        Picasso.get()
-            .load(post?.imageUrl)
-            .fit()
+        Glide.with(mContext).load(post?.imageUrl)
+            .fitCenter()
             .centerCrop()
             .into(holder.itemView.home_post_iv)
         /** Adds dynamically generated accent color from the fetched image to the news card */
         var accentColor: Int =  getColor(mContext, R.color.black)
         GlobalScope.launch(Dispatchers.Default) {
-            val bitmap = Picasso.get().load(post?.imageUrl).get()
+            val bitmap = Glide.with(mContext).load(post?.imageUrl).submit().get().toBitmap()
             // Create palette from bitmap
             fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
             val vibrantSwatch: Palette.Swatch? = createPaletteSync(bitmap).darkVibrantSwatch
@@ -446,7 +446,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         holder.itemView.home_post_source?.text = info?.source
         holder.itemView.home_post_timestamp?.text = info?.timestamp
         if (info?.imageUrl != null) {
-            Picasso.get().load(info.imageUrl).fit().centerCrop().into(holder.itemView.home_post_iv)
+            Glide.with(mContext).load(info.imageUrl).fitCenter().centerCrop().into(holder.itemView.home_post_iv)
         }
 
         // For now, we only use Feature cards for Spring Fling so we show the Fling Fragment
@@ -486,7 +486,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
                 } }
                 val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
                 val idHash = Utils.getSha256Hash(deviceID)
-                OAuth2NetworkManager(mActivity).getAccessToken {
+                mActivity.mNetworkManager.getAccessToken {
                     val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
                     val bearerToken = "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
 

@@ -1,9 +1,11 @@
 package com.pennapps.labs.pennmobile.api
 
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.provider.Settings
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+
 import com.pennapps.labs.pennmobile.BuildConfig
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
@@ -80,6 +82,7 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
 
                 override fun failure(error: RetrofitError) {
 
+                    FirebaseCrashlytics.getInstance().recordException(error)
                     Log.e("Accounts", "Error refreshing access token $error")
 
                     if (error.response != null && error.response.status == 400) {

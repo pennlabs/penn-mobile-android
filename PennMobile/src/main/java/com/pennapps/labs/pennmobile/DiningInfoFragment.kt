@@ -1,8 +1,6 @@
 package com.pennapps.labs.pennmobile
 
-import android.content.Context
 import android.graphics.Color
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -112,13 +110,6 @@ class DiningInfoFragment : Fragment() {
         }
         return vertical
     }
-
-    private val isNetworkAvailable: Boolean
-        get() {
-            val connectivityManager = mActivity.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val activeNetworkInfo = connectivityManager.activeNetworkInfo
-            return activeNetworkInfo != null && activeNetworkInfo.isConnected
-        }
 
     override fun onDestroyView() {
         setHasOptionsMenu(false)

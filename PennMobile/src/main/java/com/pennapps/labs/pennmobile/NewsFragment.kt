@@ -139,16 +139,10 @@ class NewsFragment : ListFragment() {
         mActivity.closeKeyboard()
         setHasOptionsMenu(true)
 
-        val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "5")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "News")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
-        FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity)
-
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentNewsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -215,18 +209,18 @@ class NewsFragment : ListFragment() {
 
     override fun onResume() {
         super.onResume()
-        val mActivity : MainActivity? = activity as MainActivity
-        mActivity?.removeTabs()
-        mActivity?.setTitle(R.string.news)
+        val mActivity : MainActivity = activity as MainActivity
+        mActivity.removeTabs()
+        mActivity.setTitle(R.string.news)
         val initials = sharedPreferences.getString(getString(R.string.initials), null)
-        if (initials != null && initials.isNotEmpty()) {
+        if (!initials.isNullOrEmpty()) {
             binding.initials.text = initials
         } else {
             binding.profileBackground.setImageDrawable(
                     resources.getDrawable
                     (R.drawable.ic_guest_avatar, context?.theme))
         }
-        mActivity?.setSelectedTab(MainActivity.MORE)
+        mActivity.setSelectedTab(MainActivity.MORE)
     }
 
     override fun onDestroyView() {

@@ -60,7 +60,7 @@ class RegistrationsAdapter(private val listener: OnItemClickListener):
             subscribedSwitch.isChecked = !registration.cancelled
             notifyClosedSwitch.isChecked = (registration.closeNotification
                     && !registration.cancelled)
-            if (!registration.lastNotificationSentAt.isNullOrEmpty()) {
+            if (registration.lastNotificationSentAt.isNotEmpty()) {
                 lastNotified.text = formatDate(registration.lastNotificationSentAt)
             }
 
