@@ -139,13 +139,7 @@ class NewsFragment : ListFragment() {
         mActivity.closeKeyboard()
         setHasOptionsMenu(true)
 
-        val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "5")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "News")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
-        FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity)
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {

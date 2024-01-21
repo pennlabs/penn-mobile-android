@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.HomeAdapter
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.classes.HomeCell
@@ -31,7 +30,6 @@ import kotlinx.android.synthetic.main.include_main.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import java.util.*
 import kotlin.collections.ArrayList
-
 
 class HomeFragment : Fragment() {
 
@@ -51,11 +49,6 @@ class HomeFragment : Fragment() {
             .getInstance(mActivity)
             .registerReceiver(broadcastReceiver, IntentFilter("refresh"))
 
-        val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "11")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Home")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
-        FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
     }
 
     override fun onCreateView(
@@ -72,7 +65,9 @@ class HomeFragment : Fragment() {
         view.home_refresh_layout
             .setColorSchemeResources(R.color.color_accent, R.color.color_primary)
         view.home_refresh_layout
-            .setOnRefreshListener { getHomePage() }
+            .setOnRefreshListener {
+                getHomePage()
+            }
 
         initAppBar(view)
         return view

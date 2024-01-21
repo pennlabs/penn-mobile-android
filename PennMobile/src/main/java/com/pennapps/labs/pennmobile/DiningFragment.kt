@@ -39,12 +39,6 @@ class DiningFragment : Fragment() {
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()
         setHasOptionsMenu(true)
-
-        val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "1")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Dining")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
-        FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
