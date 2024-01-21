@@ -12,6 +12,9 @@ import com.pennapps.labs.pennmobile.adapters.SublettingPagerAdapter
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import kotlinx.android.synthetic.main.fragment_dining_holder.view.appbar_home_holder
 import com.google.android.material.tabs.TabLayoutMediator
+import com.pennapps.labs.pennmobile.adapters.DiningPagerAdapter
+import com.pennapps.labs.pennmobile.databinding.FragmentDiningHolderBinding
+import com.pennapps.labs.pennmobile.databinding.FragmentSublettingBinding
 
 
 /**
