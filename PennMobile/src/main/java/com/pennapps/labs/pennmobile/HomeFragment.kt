@@ -20,7 +20,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.HomeAdapter
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.classes.HomepageViewModel
@@ -33,7 +32,6 @@ import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
-
 
 class HomeFragment : Fragment() {
 
@@ -53,13 +51,6 @@ class HomeFragment : Fragment() {
         LocalBroadcastManager
             .getInstance(mActivity)
             .registerReceiver(broadcastReceiver, IntentFilter("refresh"))
-
-        val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "11")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Home")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
-        FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle)
-
     }
 
     override fun onCreateView(

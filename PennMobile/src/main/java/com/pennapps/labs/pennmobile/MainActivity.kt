@@ -30,6 +30,7 @@ import androidx.preference.PreferenceManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.pennapps.labs.pennmobile.adapters.MainPagerAdapter
@@ -52,12 +53,14 @@ import retrofit.client.OkClient
 import retrofit.converter.GsonConverter
 import java.util.concurrent.TimeUnit
 
+
 class MainActivity : AppCompatActivity() {
     private var tabShowed = false
     private lateinit var fragmentManager: FragmentManager
     private lateinit var mSharedPrefs: SharedPreferences
 
     val tokenMutex = Mutex()
+    private lateinit var mFirebaseAnalytics: FirebaseAnalytics
     val mNetworkManager by lazy { OAuth2NetworkManager(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,6 +92,9 @@ class MainActivity : AppCompatActivity() {
         onExpandableBottomNavigationItemSelected()
         showBottomBar()
         supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mFirebaseAnalytics.logEvent("MainActivityStart", null)
 
         // Show HomeFragment if logged in, otherwise show LoginFragment
         val pennKey = mSharedPrefs.getString(getString(R.string.pennkey), null)
