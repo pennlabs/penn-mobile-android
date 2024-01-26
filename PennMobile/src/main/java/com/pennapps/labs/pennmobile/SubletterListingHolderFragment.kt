@@ -41,7 +41,4 @@ class SubletterListingHolderFragment : Fragment() {
     }
 
 
-    private fun initAppBar(view: View) {
-        (view.appbar_home_holder.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
-    }
 }
