@@ -85,7 +85,8 @@ class MainActivity : AppCompatActivity() {
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
         val mainPagerAdapter = MainPagerAdapter(fragmentManager, lifecycle)
-        main_view_pager?.adapter = mainPagerAdapter
+        main_view_pager.setSaveEnabled(false);
+        main_view_pager.adapter = mainPagerAdapter
         main_view_pager.isUserInputEnabled = false
         main_view_pager.offscreenPageLimit = 5
         onExpandableBottomNavigationItemSelected()
@@ -141,10 +142,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         main_view_pager.visibility = View.VISIBLE
-        val mainPagerAdapter = MainPagerAdapter(fragmentManager, lifecycle)
-        main_view_pager?.adapter = mainPagerAdapter
-        main_view_pager.isUserInputEnabled = false
-        main_view_pager.offscreenPageLimit = 5
         expandable_bottom_bar.visibility = View.VISIBLE
         setTab(HOME_ID)
     }
@@ -327,12 +324,8 @@ class MainActivity : AppCompatActivity() {
                     // gets laundry preferences (used only for testing)
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Int?>?>() {}.type, LaundryPrefSerializer())
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<FlingEvent?>?>() {}.type, FlingEventSerializer())
-                    // gets fitness
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Gym?>?>() {}.type, GymSerializer())
                     // gets gsr reservations
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<GSRReservation?>?>() {}.type, GsrReservationSerializer())
-                    // gets homepage
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<HomeCell?>?>() {}.type, HomePageSerializer())
                     // gets user
                     gsonBuilder.registerTypeAdapter(Account::class.java, UserSerializer())
                     // gets posts

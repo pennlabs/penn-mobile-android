@@ -24,10 +24,6 @@ class MoreFragment : Fragment() {
         super.onCreate(savedInstanceState)
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.more_frame, PreferenceFragment())
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            .commit()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -35,6 +31,14 @@ class MoreFragment : Fragment() {
 
         initAppBar(view)
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        childFragmentManager.beginTransaction()
+            .replace(R.id.more_frame, PreferenceFragment())
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .commit()
     }
 
     private fun initAppBar(view: View) {

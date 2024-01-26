@@ -19,7 +19,6 @@ class DiningPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle?
     override fun getItemCount(): Int {
         return COUNT
     }
-
     override fun getItemId(position: Int): Long {
         if (position == HOME_POSITION) {
             return HOME_POSITION.toLong()

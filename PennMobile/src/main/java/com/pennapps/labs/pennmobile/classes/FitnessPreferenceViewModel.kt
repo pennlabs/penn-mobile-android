@@ -11,8 +11,8 @@ import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
 
-class FitnessPreferenceViewModel(private val activity: Activity,
-    private val studentLife: StudentLife, private val roomList: List<FitnessRoom>) : FitnessAdapterDataModel {
+class FitnessPreferenceViewModel(private val studentLife: StudentLife,
+                                 private val roomList: List<FitnessRoom>) : FitnessAdapterDataModel {
 
     private val roomTot = roomList.size
 
@@ -90,8 +90,8 @@ class FitnessPreferenceViewModel(private val activity: Activity,
     }
 
     fun updateRemotePreferences(mActivity : MainActivity) {
-        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-        val context = activity.applicationContext
+        val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
+        val context = mActivity.applicationContext
 
         mActivity.mNetworkManager.getAccessToken {
 

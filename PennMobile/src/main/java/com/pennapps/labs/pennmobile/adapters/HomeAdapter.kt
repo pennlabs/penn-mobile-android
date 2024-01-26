@@ -25,6 +25,7 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.lifecycleScope
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,14 +34,18 @@ import com.pennapps.labs.pennmobile.*
 import com.pennapps.labs.pennmobile.DiningFragment.Companion.getMenus
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
+import com.pennapps.labs.pennmobile.classes.CalendarCell
 import com.pennapps.labs.pennmobile.classes.CalendarEvent
+import com.pennapps.labs.pennmobile.classes.DiningCell
 import com.pennapps.labs.pennmobile.classes.DiningHall
-import com.pennapps.labs.pennmobile.classes.HomeCell
+import com.pennapps.labs.pennmobile.classes.HomepageDataModel
+import com.pennapps.labs.pennmobile.classes.LaundryCell
+import com.pennapps.labs.pennmobile.classes.NewsCell
 import com.pennapps.labs.pennmobile.classes.PollCell
+import com.pennapps.labs.pennmobile.classes.PostCell
 import com.pennapps.labs.pennmobile.components.sneaker.Utils.convertToDp
 import com.pennapps.labs.pennmobile.utils.Utils
 import eightbitlab.com.blurview.RenderScriptBlur
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.home_base_card.view.*
 import kotlinx.android.synthetic.main.home_base_card.view.home_card_rv
 import kotlinx.android.synthetic.main.home_base_card.view.home_card_subtitle
@@ -48,9 +53,7 @@ import kotlinx.android.synthetic.main.home_base_card.view.home_card_title
 import kotlinx.android.synthetic.main.poll_card.view.*
 import kotlinx.android.synthetic.main.home_news_card.view.*
 import kotlinx.android.synthetic.main.home_post_card.view.*
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
@@ -58,7 +61,7 @@ import retrofit.client.Response
 import rx.Observable
 
 
-class HomeAdapter(private var cells: ArrayList<HomeCell>) :
+class HomeAdapter(private val dataModel: HomepageDataModel) :
     RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
 
     private lateinit var mContext: Context
@@ -113,23 +116,21 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val cell = cells[position]
+        val cell = dataModel.getCell(position)
         when (cell.type) {
-            "reservations" -> bindHomeReservationsCell(holder, cell)
-            "dining" -> bindDiningCell(holder, cell)
-            "calendar" -> bindCalendarCell(holder, cell)
-            "news" -> bindNewsCell(holder, cell)
-            "laundry" -> bindLaundryCell(holder, cell)
-            "gsr_booking" -> bindGsrBookingCell(holder, cell)
-            "post" -> bindPostCell(holder, cell)
-            "feature" -> bindFeatureCell(holder, cell)
-            "poll" -> bindPollCell(holder, cell, position)
+            "dining" -> bindDiningCell(holder, cell as DiningCell)
+            "calendar" -> bindCalendarCell(holder, cell as CalendarCell)
+            "news" -> bindNewsCell(holder, cell as NewsCell)
+            "laundry" -> bindLaundryCell(holder, cell as LaundryCell)
+            "post" -> bindPostCell(holder, cell as PostCell)
+            "poll" -> bindPollCell(holder, cell as PollCell, position)
+            "none" -> Log.i("HomeAdapter", "Empty cell at position $position")
             else -> Log.i("HomeAdapter", "Unsupported type of data at position $position")
         }
     }
 
     override fun getItemCount(): Int {
-        return cells.size
+        return dataModel.getSize()
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -137,11 +138,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
     }
 
     override fun getItemViewType(position: Int): Int {
-        val cell = cells[position]
-        if (cell.info?.isTest == true) {
-            Log.i("HomeAdapter", "Test Portal post")
-            return NOT_SUPPORTED
-        }
+        val cell = dataModel.getCell(position)
         return when (cell.type) {
             "reservations" -> RESERVATIONS
             "dining" -> DINING
@@ -156,23 +153,13 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         }
     }
 
-    private fun bindHomeReservationsCell(holder: ViewHolder, cell: HomeCell) {
-        val reservations = cell.reservations ?: ArrayList()
-        holder.itemView.home_card_title.text = "Upcoming Reservations"
-        holder.itemView.home_card_subtitle.text = "GSR RESERVATIONS"
-
-        holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
-            LinearLayoutManager.VERTICAL, false)
-        holder.itemView.home_card_rv.adapter = GsrReservationsAdapter(ArrayList(reservations))
-    }
-
-    private fun bindDiningCell(holder: ViewHolder, cell: HomeCell) {
+    private fun bindDiningCell(holder: ViewHolder, cell: DiningCell) {
         holder.itemView.home_card_title.text = "Favorites"
         holder.itemView.home_card_subtitle.text = "DINING HALLS"
         holder.itemView.dining_prefs_btn.visibility = View.VISIBLE
         holder.itemView.dining_prefs_btn.setOnClickListener {
             mActivity.supportFragmentManager.beginTransaction()
-                .replace(R.id.content_frame, DiningSettingsFragment())
+                .replace(R.id.content_frame, DiningSettingsFragment(dataModel))
                 .addToBackStack(null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()
@@ -188,7 +175,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             .subscribe { diningHalls ->
                 mActivity.runOnUiThread {
                     val favorites: ArrayList<DiningHall> = arrayListOf()
-                    val favoritesIdList: List<Int>? = cell.info?.venues
+                    val favoritesIdList: List<Int>? = cell.venues
                     diningHalls.forEach {
                         if (favoritesIdList?.contains(it.id) == true) {
                             favorites.add(it)
@@ -202,9 +189,8 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
             }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    private fun bindNewsCell(holder: ViewHolder, cell: HomeCell) {
-        val article = cell.info?.article
+    private fun bindNewsCell(holder: ViewHolder, cell: NewsCell) {
+        val article = cell.article
         holder.itemView.home_news_title.text = article?.title
         holder.itemView.home_news_subtitle.text = article?.subtitle
         holder.itemView.home_news_timestamp.text = article?.timestamp?.trim()
@@ -216,7 +202,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
 
         /** Adds dynamically generated accent color from the fetched image to the news card */
         var accentColor: Int =  getColor(mContext, R.color.black)
-        GlobalScope.launch(Dispatchers.Default) {
+        mActivity.lifecycleScope.launch(Dispatchers.Default) {
             val bitmap = Glide.with(mContext).load(article?.imageUrl).submit().get().toBitmap()
 
             // Create palette from bitmap
@@ -242,7 +228,11 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
                     bitmap)
                 holder.itemView.blurView
                     .setOverlayColor(ColorUtils.setAlphaComponent(accentColor, 150))
+
+                // tell model that the news blur view has been loaded
+                dataModel.notifyNewsBlurLoaded()
             }
+
 
         }
 
@@ -303,7 +293,7 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         }
     }
 
-    private fun bindCalendarCell(holder: ViewHolder, cell: HomeCell) {
+    private fun bindCalendarCell(holder: ViewHolder, cell: CalendarCell) {
         val events = cell.events ?: ArrayList()
 
         var i = events.size - 1
@@ -325,13 +315,8 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         holder.itemView.home_card_rv.adapter = UniversityEventAdapter(eventList)
     }
 
-    private fun bindCoursesCell(holder: ViewHolder, cell: HomeCell) {
-        holder.itemView.home_card_title.text = "Today's schedule"
-        holder.itemView.home_card_subtitle.text = "COURSE SCHEDULE"
-    }
-
-    private fun bindLaundryCell(holder: ViewHolder, cell: HomeCell) {
-        val roomID = cell.info?.roomId ?: 0
+    private fun bindLaundryCell(holder: ViewHolder, cell: LaundryCell) {
+        val roomID = cell.roomId
         holder.itemView.home_card_subtitle.text = "LAUNDRY"
         holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
             LinearLayoutManager.VERTICAL, false)
@@ -353,37 +338,24 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         }, { throwable -> mActivity.runOnUiThread { throwable.printStackTrace() } })
     }
 
-    private fun bindGsrBookingCell(holder: ViewHolder, cell: HomeCell) {
-        val buildings = cell.buildings ?: ArrayList()
-
-        holder.itemView.home_card_title.text = "Book a GSR"
-        holder.itemView.home_card_subtitle.text = "GROUP STUDY ROOMS"
-
-        holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
-            LinearLayoutManager.VERTICAL, false)
-        holder.itemView.home_card_rv.adapter = HomeGsrBuildingAdapter(ArrayList(buildings))
-    }
-
-    @OptIn(DelicateCoroutinesApi::class)
-    private fun bindPostCell(holder: ViewHolder, cell: HomeCell) {
-        val info = cell.info
-        val post = cell.info?.post
-        holder.itemView.home_post_title.text = post?.title
-        holder.itemView.home_post_subtitle.text = post?.subtitle
+    private fun bindPostCell(holder: ViewHolder, cell: PostCell) {
+        val post = cell.post
+        holder.itemView.home_post_title.text = post.title
+        holder.itemView.home_post_subtitle.text = post.subtitle
         holder.itemView.home_post_source.text = "Penn Labs" //post?.clubCode?.capitalize()
-        val time = post?.startDate?.substring(5, 7) + " / " +
-                post?.startDate?.substring(8, 10) + " - " +
-                post?.expireDate?.substring(5, 7) + " / " +
-                post?.expireDate?.substring(8, 10)
+        val time = post.startDate?.substring(5, 7) + " / " +
+                post.startDate?.substring(8, 10) + " - " +
+                post.expireDate?.substring(5, 7) + " / " +
+                post.expireDate?.substring(8, 10)
         holder.itemView.home_post_timestamp.text = time
-        Glide.with(mContext).load(post?.imageUrl)
+        Glide.with(mContext).load(post.imageUrl)
             .fitCenter()
             .centerCrop()
             .into(holder.itemView.home_post_iv)
         /** Adds dynamically generated accent color from the fetched image to the news card */
         var accentColor: Int =  getColor(mContext, R.color.black)
-        GlobalScope.launch(Dispatchers.Default) {
-            val bitmap = Glide.with(mContext).load(post?.imageUrl).submit().get().toBitmap()
+        mActivity.lifecycleScope.launch(Dispatchers.Default) {
+            val bitmap = Glide.with(mContext).load(post.imageUrl).submit().get().toBitmap()
             // Create palette from bitmap
             fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
             val vibrantSwatch: Palette.Swatch? = createPaletteSync(bitmap).darkVibrantSwatch
@@ -403,6 +375,9 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
                 holder.itemView.post_card_container.background = bitmapDrawable
                 holder.itemView.postBlurView
                     .setOverlayColor(ColorUtils.setAlphaComponent(accentColor, 150))
+
+                // tell dataModel that hte post blur view is done loading
+                dataModel.notifyPostBlurLoaded()
             }
         }
         /** Sets up blur view on post card */
@@ -438,25 +413,8 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
         }
     }
 
-    // Returns an announcement for a Penn Mobile feature, such as Spring Fling
-    private fun bindFeatureCell(holder: ViewHolder, cell: HomeCell) {
-        val info = cell.info
-        holder.itemView.home_post_title?.text = info?.title
-        holder.itemView.home_post_subtitle?.text = info?.description
-        holder.itemView.home_post_source?.text = info?.source
-        holder.itemView.home_post_timestamp?.text = info?.timestamp
-        if (info?.imageUrl != null) {
-            Glide.with(mContext).load(info.imageUrl).fitCenter().centerCrop().into(holder.itemView.home_post_iv)
-        }
-
-        // For now, we only use Feature cards for Spring Fling so we show the Fling Fragment
-        holder.itemView.home_post_card.setOnClickListener {
-            mActivity.fragmentTransact(FlingFragment(), false)
-        }
-    }
-
-    private fun bindPollCell(holder: ViewHolder, cell: HomeCell, position: Int) {
-        val poll = (cell as PollCell).poll
+    private fun bindPollCell(holder: ViewHolder, cell: PollCell, position: Int) {
+        val poll = cell.poll
         holder.itemView.home_card_title?.text = poll.question
         holder.itemView.home_card_subtitle_2?.text = "${poll.totalVotes} Votes"
         if(poll.clubCode != null) {
@@ -513,7 +471,6 @@ class HomeAdapter(private var cells: ArrayList<HomeCell>) :
     }
 
     // Chrome custom tabs to launch news site
-
     internal inner class NewsCustomTabsServiceConnection : CustomTabsServiceConnection() {
 
         override fun onCustomTabsServiceConnected(name: ComponentName, client: CustomTabsClient) {

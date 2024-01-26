@@ -95,7 +95,7 @@ class PottruckFragment : Fragment() {
                 }
                 val sortedRooms = fitnessRooms.sortedBy {it.roomName}
 
-                dataModel = FitnessPreferenceViewModel(mActivity, mStudentLife, sortedRooms)
+                dataModel = FitnessPreferenceViewModel( mStudentLife, sortedRooms)
 
 
                 mActivity.runOnUiThread {

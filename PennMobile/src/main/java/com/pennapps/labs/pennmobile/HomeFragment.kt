@@ -13,23 +13,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pennapps.labs.pennmobile.adapters.HomeAdapter
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
-import com.pennapps.labs.pennmobile.classes.HomeCell
-import com.pennapps.labs.pennmobile.classes.HomeCellInfo
-import com.pennapps.labs.pennmobile.classes.PollCell
+import com.pennapps.labs.pennmobile.classes.HomepageViewModel
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentHomeBinding
 import com.pennapps.labs.pennmobile.utils.Utils
-import com.pennapps.labs.pennmobile.utils.Utils.getSha256Hash
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.include_main.*
 import kotlinx.android.synthetic.main.loading_panel.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.collections.ArrayList
 
 class HomeFragment : Fragment() {
 
@@ -39,6 +41,7 @@ class HomeFragment : Fragment() {
     private var _binding : FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
+    private val homepageViewModel : HomepageViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -48,7 +51,6 @@ class HomeFragment : Fragment() {
         LocalBroadcastManager
             .getInstance(mActivity)
             .registerReceiver(broadcastReceiver, IntentFilter("refresh"))
-
     }
 
     override fun onCreateView(
@@ -80,12 +82,56 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        /* Mildly suspicious idea to hide the RecyclerView until blurviews (for news and posts) are
+        done processing. Processing the blurviews is slow and makes the app looks sloppy. Ideally
+        this is replaced by something less hacky (such as using a ListView instead) though perhaps 
+        it is simpler to just remove the blur altogether.
+
+        This takes advantage of a RecyclerView idiosyncracy: when a RecyclerView resides inside a
+        nested scrollview, all of the elements are inflated:
+        https://stackoverflow.com/questions/44453846/recyclerview-inside-nestedscrollview-causes-recyclerview-to-inflate-all-elements
+        https://www.reddit.com/r/androiddev/comments/d8gi9v/recyclerview_inside_nestedscrollview_causes/
+        
+        This is can be used to figure out when the blurviews are finished processing.
+
+        Since when the adapter is set in getHomePage, onBindViewHolder() is called for each cell.
+        Thus, for the news and post cells which use blur, when the blur is finished processing, 
+        the adapter notifies homepageViewModel. When both blurs are processed, the blurViewsLoaded 
+        liveData in the ViewModel is toggled to true which HomeFragment observes.
+
+        If in the future, the homepage is stuck on loading forever, this might be why. To remove 
+        this functionality and  stop waiting for the blur views to finish, just remove the observer 
+        below and change getHomePage() so that when HomeAdapter is set, homeCellsRv.visibility is
+        set to View.VISIBLE instead of View.INVISIBLE and hide loadingPanel
+        */
+        homepageViewModel.resetBlurViews()
+        homepageViewModel.blurViewsLoaded.observe(viewLifecycleOwner) { loaded ->
+            if (loaded) {
+                binding.homeCellsRv.visibility = View.VISIBLE
+                loadingPanel?.visibility = View.GONE
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                homepageViewModel.updateState.collect { updateState ->
+                    updateState.positions.firstOrNull()?.let { pos ->
+                        if (binding.homeCellsRv.adapter != null) {
+                            mActivity.runOnUiThread {
+                                binding.homeCellsRv.adapter!!.notifyItemChanged(pos)
+                            }
+                            homepageViewModel.updatedPosition(pos)
+                        }
+                    }
+                }
+            }
+        }
+
         getHomePage()
     }
 
-    private fun getHomePage() {
-        mActivity.showBottomBar()
-
+    private fun getOnline() : Boolean {
         //displays banner if not connected
         if (!isOnline(context)) {
             binding.internetConnectionHome.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
@@ -94,312 +140,54 @@ class HomeFragment : Fragment() {
             binding.internetConnectionHome.visibility = View.VISIBLE
             binding.homeRefreshLayout.isRefreshing = false
             loadingPanel?.visibility = View.GONE
+            return false
+        }
+
+        binding.internetConnectionHome.visibility = View.GONE
+        binding.homeCellsRv.setPadding(0, 0, 0, 0)
+        return true
+    }
+
+    private fun getHomePage() {
+        mActivity.showBottomBar()
+
+
+        if (!getOnline()) {
             return
-        } else {
-            binding.internetConnectionHome.visibility = View.GONE
-            binding.homeCellsRv.setPadding(0, 0, 0, 0)
         }
-
-        // get API data
-        val homepageCells = mutableListOf<HomeCell>()
-
-        for (i in 1..7) {
-            homepageCells.add(HomeCell())
-        }
-
-        // number of cells loaded
-        var loaded = 0
 
         val studentLife = MainActivity.studentLifeInstance
         mActivity.mNetworkManager.getAccessToken {
             val sp = sharedPreferences
             val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
             val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
-            Log.i("HomeFragment", bearerToken)
-            if (bearerToken != "Bearer ") {
-                val totalCells = 6
 
-                val idHash = getSha256Hash(deviceID)
-                studentLife.browsePolls(bearerToken, idHash).subscribe({ poll ->
-                    if (poll.size > 0) {
+            lifecycleScope.launch(Dispatchers.Default) {
+                // set adapter if it is null
+                if (binding.homeCellsRv.adapter == null) {
+                    homepageViewModel.populateHomePageCells(studentLife, bearerToken, deviceID) {
                         mActivity.runOnUiThread {
-                            val pollCell = PollCell(poll[0])
-                            pollCell.poll.options.forEach { pollCell.poll.totalVotes += it.voteCount }
-                            homepageCells[0] = pollCell
-                        }
-                    }
-
-                    if (++loaded == totalCells) {
-                        mActivity.runOnUiThread {
-                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
-                            loadingPanel?.visibility = View.GONE
+                            binding.homeCellsRv.adapter = HomeAdapter(homepageViewModel)
+                            binding.homeCellsRv.visibility = View.INVISIBLE
                             binding.internetConnectionHome.visibility = View.GONE
                             binding.homeRefreshLayout.isRefreshing = false
                         }
                     }
-
-                    Log.i("HomeFragment", "polls success $loaded")
-
-                }, { throwable ->
-                    Log.e("Poll", "Error retrieving polls", throwable)
-
-                    if (++loaded >= totalCells) {
-                        mActivity.runOnUiThread {
-                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
-                            loadingPanel?.visibility = View.GONE
-                            binding.internetConnectionHome.visibility = View.GONE
-                            binding.homeRefreshLayout.isRefreshing = false
-                        }
-                    }
-
-                    Log.i("HomeFragment", "polls $loaded")
-                })
-
-                studentLife.news.subscribe({ article ->
-                    mActivity.runOnUiThread {
-                        val newsCell = HomeCell()
-                        newsCell.info = HomeCellInfo()
-                        newsCell.info?.article = article
-                        newsCell.type = "news"
-                        homepageCells[3] = newsCell
-
-                        if (++loaded >= totalCells) {
-                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
-                            loadingPanel?.visibility = View.GONE
-                            binding.internetConnectionHome.visibility = View.GONE
-                            binding.homeRefreshLayout.isRefreshing = false
-                        }
-                        Log.i("HomeFragment", "news $loaded")
-                    }
-                }, { throwable ->
-                    mActivity.runOnUiThread {
-                        Log.e("Home", "Could not load news", throwable)
-                        throwable.printStackTrace()
-
-                        if (++loaded >= totalCells) {
-                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
-                            loadingPanel?.visibility = View.GONE
-                            binding.internetConnectionHome.visibility = View.GONE
-                            binding.homeRefreshLayout.isRefreshing = false
-                        }
-                        Log.i("HomeFragment", "news $loaded")
-
-                    }
-                })
-
-                studentLife.getDiningPreferences(bearerToken).subscribe({ preferences ->
-                    mActivity.runOnUiThread {
-                        val list = preferences.preferences
-                        val venues = mutableListOf<Int>()
-                        val diningCell = HomeCell()
-                        diningCell.type = "dining"
-                        val diningCellInfo = HomeCellInfo()
-                        if (list?.isEmpty() == true) {
-                            venues.add(593)
-                            venues.add(1442)
-                            venues.add(636)
-                        } else {
-                            list?.forEach {
-                                it.id?.let { it1 -> venues.add(it1) }
-                            }
-
-                        }
-                        diningCellInfo.venues = venues
-                        diningCell.info = diningCellInfo
-                        homepageCells[4] = diningCell
-
-                        if (++loaded >= totalCells) {
-                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
-                            loadingPanel?.visibility = View.GONE
-                            binding.internetConnectionHome.visibility = View.GONE
-                            binding.homeRefreshLayout.isRefreshing = false
-                        }
-
-                        Log.i("HomeFragment", "dining $loaded")
-                    }
-                }, { throwable ->
-                    mActivity.runOnUiThread {
-                        Log.e("Home", "Could not load Dining", throwable)
-                        throwable.printStackTrace()
-
-                        if (++loaded >= totalCells) {
-                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
-                            loadingPanel?.visibility = View.GONE
-                            binding.internetConnectionHome.visibility = View.GONE
-                            binding.homeRefreshLayout.isRefreshing = false
-                        }
-                        Log.i("HomeFragment", "dining $loaded")
-                    }
-                })
-
-                studentLife.calendar.subscribe({ events ->
-                    mActivity.runOnUiThread {
-                        val calendar = HomeCell()
-                        calendar.type = "calendar"
-                        calendar.events = events
-                        homepageCells[1] = calendar
-                        val gsrBookingCell = HomeCell()
-                        gsrBookingCell.type = "gsr_booking"
-                        gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "Weigle")
-                        homepageCells[5] = gsrBookingCell
-
-                        if (++loaded >= totalCells) {
-                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
-                            loadingPanel?.visibility = View.GONE
-                            binding.internetConnectionHome.visibility = View.GONE
-                            binding.homeRefreshLayout.isRefreshing = false
-                        }
-                        Log.i("HomeFragment", "calendar $loaded")
-                    }
-                }, { throwable ->
-                    mActivity.runOnUiThread {
-                        Log.e("Home", "Could not load calendar", throwable)
-                        throwable.printStackTrace()
-
-                        if (++loaded >= totalCells) {
-                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
-                            loadingPanel?.visibility = View.GONE
-                            binding.internetConnectionHome.visibility = View.GONE
-                            binding.homeRefreshLayout.isRefreshing = false
-                        }
-                        Log.i("HomeFragment", "calendar $loaded")
-                    }
-                })
-
-                studentLife.getLaundryPref(bearerToken).subscribe({ preferences ->
-                    mActivity.runOnUiThread {
-                        val laundryCell = HomeCell()
-                        laundryCell.type = "laundry"
-                        val laundryCellInfo = HomeCellInfo()
-                        if (preferences?.isEmpty() == false) {
-                            laundryCellInfo.roomId = preferences[0]
-                        }
-                        laundryCell.info = laundryCellInfo
-                        homepageCells[6] = laundryCell
-
-                        if (++loaded >= totalCells) {
-                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
-                            loadingPanel?.visibility = View.GONE
-                            binding.internetConnectionHome.visibility = View.GONE
-                            binding.homeRefreshLayout.isRefreshing = false
-                        }
-                        Log.i("HomeFragment", "laundry $loaded")
-                    }
-                }, { throwable ->
-                    mActivity.runOnUiThread {
-                        Log.e("Home", "Could not load laundry", throwable)
-                        throwable.printStackTrace()
-
-                        if (++loaded >= totalCells) {
-                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
-                            loadingPanel?.visibility = View.GONE
-                            binding.internetConnectionHome.visibility = View.GONE
-                            binding.homeRefreshLayout.isRefreshing = false
-                        }
-                        Log.i("HomeFragment", "laundry $loaded")
-                    }
-                })
-
-                studentLife.validPostsList(bearerToken).subscribe({ post ->
-                    if (post.size >= 1) { //there exists a post
-                        mActivity.runOnUiThread {
-                            val postCell = HomeCell()
-                            postCell.info = HomeCellInfo()
-                            postCell.type = "post"
-                            postCell.info?.post = post[0]
-                            homepageCells[2] = postCell
-                        }
-                    }
-
-                    if (++loaded >= totalCells) {
-                        binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
-                        loadingPanel?.visibility = View.GONE
-                        binding.internetConnectionHome.visibility = View.GONE
-                        binding.homeRefreshLayout.isRefreshing = false
-                    }
-                    Log.i("HomeFragment", "posts $loaded")
-
-                }, { throwable ->
-                    mActivity.runOnUiThread {
-                        Log.e("Home", "Could not load posts", throwable)
-                        throwable.printStackTrace()
-
-                        if (++loaded >= totalCells) {
-                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
-                            loadingPanel?.visibility = View.GONE
-                            binding.internetConnectionHome.visibility = View.GONE
-                            binding.homeRefreshLayout.isRefreshing = false
-                        }
-                        Log.i("HomeFragment", "posts $loaded")
-                    }
-
-                })
-            } else {
-                val totalCells = 2
-
-                studentLife.calendar.subscribe({ events ->
-                    mActivity.runOnUiThread {
-                        val calendar = HomeCell()
-                        calendar.type = "calendar"
-                        calendar.events = events
-                        homepageCells.add(0, calendar)
-
-                        if (++loaded >= totalCells) {
-                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
-                            loadingPanel?.visibility = View.GONE
-                            binding.internetConnectionHome.visibility = View.GONE
-                            binding.homeRefreshLayout.isRefreshing = false
-                        }
-                    }
-                }, { throwable ->
-                    mActivity.runOnUiThread {
-                        Log.e("Home", "Could not load Home page", throwable)
-                        throwable.printStackTrace()
-
-                        if (++loaded >= totalCells) {
-                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
-                            loadingPanel?.visibility = View.GONE
-                            binding.internetConnectionHome.visibility = View.GONE
-                            binding.homeRefreshLayout.isRefreshing = false
-                        }
-                    }
-                })
-
-                studentLife.news.subscribe({ article ->
-                    mActivity.runOnUiThread {
-                        val newsCell = HomeCell()
-                        newsCell.info = HomeCellInfo()
-                        newsCell.info?.article = article
-                        newsCell.type = "news"
-                        homepageCells.add(homepageCells.size, newsCell)
-                        val gsrBookingCell = HomeCell()
-                        gsrBookingCell.type = "gsr_booking"
-                        gsrBookingCell.buildings = arrayListOf("Huntsman Hall", "Weigle")
-                        homepageCells.add(homepageCells.size, gsrBookingCell)
-
-                        if (++loaded >= totalCells) {
-                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
-                            loadingPanel?.visibility = View.GONE
-                            binding.internetConnectionHome.visibility = View.GONE
-                            binding.homeRefreshLayout.isRefreshing = false
-                        }
-                    }
-                }, { throwable ->
-                    mActivity.runOnUiThread {
-                        Log.e("Home", "Could not load Home page", throwable)
-                        throwable.printStackTrace()
-
-                        if (++loaded >= totalCells) {
-                            binding.homeCellsRv.adapter = HomeAdapter(ArrayList(homepageCells))
-                            loadingPanel?.visibility = View.GONE
-                            binding.internetConnectionHome.visibility = View.GONE
-                            binding.homeRefreshLayout.isRefreshing = false
-                        }
-                    }
-                })
+                } else { // otherwise, call updateHomePageCells which only updates the cells that are changed
+                    homepageViewModel.updateHomePageCells(studentLife, bearerToken, deviceID, { pos ->
+                       mActivity.runOnUiThread {
+                           binding.homeCellsRv.adapter!!.notifyItemChanged(pos)
+                       }
+                    }, {
+                       mActivity.runOnUiThread {
+                           binding.homeRefreshLayout.isRefreshing = false
+                       }
+                    })
+                }
             }
         }
     }
+
 
     private val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
