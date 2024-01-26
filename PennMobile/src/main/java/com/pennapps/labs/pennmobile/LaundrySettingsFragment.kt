@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.RelativeLayout
@@ -40,7 +41,7 @@ class LaundrySettingsFragment : Fragment() {
         mActivity = activity as MainActivity
         mContext = mActivity
         mActivity.closeKeyboard()
-        setHasOptionsMenu(true)
+        //setHasOptionsMenu(true)
         mActivity.toolbar.visibility = View.VISIBLE
         mActivity.hideBottomBar()
     }
@@ -136,11 +137,6 @@ class LaundrySettingsFragment : Fragment() {
                 })
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        mActivity.onBackPressed()
-        return true
-    }
-
     override fun onResume() {
         super.onResume()
         mActivity.removeTabs()
@@ -151,6 +147,7 @@ class LaundrySettingsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        mActivity.toolbar.visibility = View.GONE
         _binding = null
     }
 }

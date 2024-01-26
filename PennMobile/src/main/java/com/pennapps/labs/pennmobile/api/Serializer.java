@@ -1,8 +1,5 @@
 package com.pennapps.labs.pennmobile.api;
 
-
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
@@ -18,8 +15,6 @@ import com.pennapps.labs.pennmobile.classes.FlingEvent;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.GSRReservation;
 import com.pennapps.labs.pennmobile.classes.Gym;
-import com.pennapps.labs.pennmobile.classes.HomeCell;
-import com.pennapps.labs.pennmobile.classes.HomeCellInfo;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
@@ -213,54 +208,6 @@ public class Serializer {
             JsonElement content = json.getAsJsonObject().get("events");
             return new Gson().fromJson(content, new TypeToken<List<FlingEvent>>() {
             }.getType());
-        }
-    }
-
-    // home page custom deserializer, depends on type of cell
-    public static class HomePageSerializer implements JsonDeserializer<List<HomeCell>> {
-        @Override
-        public List<HomeCell> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-                throws JsonParseException {
-            JsonArray cellJsonArr = je.getAsJsonObject().get("cells").getAsJsonArray();
-            ArrayList<HomeCell> cells = new ArrayList<>();
-
-            for (JsonElement cell : cellJsonArr) {
-                JsonObject cellObj = cell.getAsJsonObject();
-                String cellType = cellObj.get("type").getAsString();
-                JsonElement info = cellObj.get("info");
-                HomeCell newCell = new HomeCell();
-                newCell.setType(cellType);
-                if (cellType.equals("reservations")) {
-                    ArrayList<GSRReservation> reservations = new Gson().fromJson(info, new TypeToken<List<GSRReservation>>() {
-                    }.getType());
-                    newCell.setReservations(reservations);
-                } else if (cellType.equals("calendar")) {
-                    JsonElement calendar = info.getAsJsonObject().get("calendar");
-                    ArrayList<CalendarEvent> events = new Gson().fromJson(calendar, new TypeToken<List<CalendarEvent>>() {
-                    }.getType());
-                    newCell.setEvents(events);
-                } else if (cellType.equals("news") | cellType.equals("dining")
-                        | cellType.equals("laundry") | cellType.equals("courses") | cellType.equals("post")
-                        | cellType.equals("feature")) {
-                    HomeCellInfo infoObj = new Gson().fromJson(info, new TypeToken<HomeCellInfo>() {
-                    }.getType());
-                    newCell.setInfo(infoObj);
-                }
-                cells.add(newCell);
-            }
-
-            return cells;
-        }
-    }
-
-    // for FITNESS!
-    public static class GymSerializer implements JsonDeserializer<List<Gym>> {
-
-        @Override
-        public List<Gym> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-                throws JsonParseException {
-            JsonElement content = je.getAsJsonObject().get("schedule");
-            return new Gson().fromJson(content, new TypeToken<List<Gym>>() {}.getType());
         }
     }
 

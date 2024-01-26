@@ -113,7 +113,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
         val aboutFeaturePref: Preference? = findPreference("pref_about_feature")
         aboutFeaturePref?.setOnPreferenceClickListener {
             mActivity.supportFragmentManager.beginTransaction()
-                .replace(R.id.more_frame, AboutFragment())
+                .replace(R.id.content_frame, AboutFragment())
                 .addToBackStack(null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()

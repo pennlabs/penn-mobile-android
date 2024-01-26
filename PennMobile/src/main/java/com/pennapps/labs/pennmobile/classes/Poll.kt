@@ -47,6 +47,13 @@ class Poll {
     @Expose
     var isVisible : Boolean = false
 
+    override fun equals(other: Any?): Boolean {
+        return other is Poll && this.id == other.id && this.totalVotes == other.totalVotes
+                && this.question == other.question && this.options.size == other.options.size
+                && this.options.containsAll(other.options) && other.options.containsAll(this.options)
+    }
+
+
     //@Expose
     //var homeAdapter : HomeAdapter? = null
 
@@ -70,6 +77,21 @@ class Poll {
             }
         }}
         //gui?.notifyDataSetChanged()
+    }
+
+    override fun hashCode(): Int {
+        var result = id ?: 0
+        result = 31 * result + (clubCode?.hashCode() ?: 0)
+        result = 31 * result + (question?.hashCode() ?: 0)
+        result = 31 * result + (createdDate?.hashCode() ?: 0)
+        result = 31 * result + (startDate?.hashCode() ?: 0)
+        result = 31 * result + (expireDate?.hashCode() ?: 0)
+        result = 31 * result + multiselect.hashCode()
+        result = 31 * result + (clubComment?.hashCode() ?: 0)
+        result = 31 * result + options.hashCode()
+        result = 31 * result + totalVotes
+        result = 31 * result + isVisible.hashCode()
+        return result
     }
 
     // Device id + poll id -> hash -> id

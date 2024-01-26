@@ -45,8 +45,8 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
         private const val DINING_DOLLARS_PREDICTIONS = 2
         private const val DINING_SWIPES_PREDICTIONS = 3
 
-        const val START_DAY_OF_SEMESTER = "2024-01-19"
-        private const val DAYS_IN_SEMESTER = 113f
+        const val START_DAY_OF_SEMESTER = "2024-01-18"
+        private const val DAYS_IN_SEMESTER = 117f
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
