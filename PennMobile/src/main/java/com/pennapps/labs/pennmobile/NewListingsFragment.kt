@@ -48,6 +48,9 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
     private var description: String?  = null
     private lateinit var amenities: List<AmenitiesItem>
 
+    private lateinit var mActivity: MainActivity
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,9 +111,22 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
                            endDate : String, beds: Int?, baths: Int?, amenities: List<AmenitiesItem>,
                            description: String?) {
 
-        Sublet newSublet =
+        val newSublet = Sublet(
+                endDate = endDate,
+                amenities = amenities,
+                baths = baths,
+                address = address,
+                maxPrice = price,//fix
+                expiresAt = " ",
+                minPrice = 0, // fix
+                description = description,
+                title = title,
+                beds = beds,
+                externalLink = " ", // fix
+                startDate = startDate
+        )
 
-        //dataModel.postSublet(mActivity, )
+        dataModel.postSublet(mActivity, newSublet)
     }
 
 

@@ -9,6 +9,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.pennapps.labs.pennmobile.adapters.SubletterPagerAdapter
+import com.pennapps.labs.pennmobile.api.StudentLife
+import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 
 // TODO: Rename parameter arguments, choose names that match
 
@@ -22,11 +24,15 @@ class SubletterFragment : Fragment() {
     lateinit var subletterPagerAdapter: SubletterPagerAdapter
     private lateinit var mActivity: MainActivity
     private lateinit var viewPager: ViewPager2
+    private lateinit var mStudentLife : StudentLife
+    private lateinit var dataModel : SublettingViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()
+        mStudentLife = MainActivity.studentLifeInstance
+        dataModel = SublettingViewModel(mActivity, mStudentLife)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -34,7 +40,7 @@ class SubletterFragment : Fragment() {
         // Inflate the layout for this fragment
         val rootView = inflater.inflate(R.layout.fragment_subletter_view, container, false)
         viewPager = rootView.findViewById(R.id.subletter_view_pager)
-        subletterPagerAdapter = SubletterPagerAdapter(this)
+        subletterPagerAdapter = SubletterPagerAdapter(this, dataModel)
         viewPager.adapter = subletterPagerAdapter
 
         val tabLayout: TabLayout = rootView.findViewById(R.id.subletter_tab_layout)

@@ -5,10 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentSubletterDraftListingsBinding
 import com.pennapps.labs.pennmobile.databinding.FragmentSubletterPostedListingsBinding
 
-class SubletterDraftListingsFragment : Fragment() {
+class SubletterDraftListingsFragment(private val dataModel: SublettingViewModel) : Fragment() {
     private var _binding: FragmentSubletterDraftListingsBinding? = null
     private val binding get() = _binding!!
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,13 +28,15 @@ class SubletterDraftListingsFragment : Fragment() {
 
     private fun navigateCreateNewListing() {
         val mainActivity = activity as MainActivity
-        val fragment = NewListingsFragment()
+       val fragment = NewListingsFragment(dataModel)
 
         val fragmentManager = mainActivity.supportFragmentManager
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment, "NEW_LISTING_FRAGMENT")
                 .addToBackStack(null)
                 .commitAllowingStateLoss()
+
+
 
     }
 }
