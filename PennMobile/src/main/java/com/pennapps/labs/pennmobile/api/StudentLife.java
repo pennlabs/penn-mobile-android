@@ -221,7 +221,6 @@ public interface StudentLife {
     @POST("/sublet/properties/")
     void createSublet(
             @Header("Authorization") String bearerToken,
-            @Body Sublet sublet
-    );
+            @Body Sublet sublet);
 
 }

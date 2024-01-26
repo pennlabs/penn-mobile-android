@@ -11,10 +11,13 @@ import androidx.fragment.app.Fragment
 import com.google.gson.annotations.SerializedName
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.AmenitiesItem
+import com.pennapps.labs.pennmobile.classes.FitnessPreferenceViewModel
+import com.pennapps.labs.pennmobile.classes.Sublet
+import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentNewListingsBinding
 import com.pennapps.labs.pennmobile.databinding.FragmentSubletterPostedListingsBinding
 
-class NewListingsFragment : Fragment() {
+class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment() {
     private var _binding: FragmentNewListingsBinding? = null
     private val binding get() = _binding!!
 
@@ -57,6 +60,7 @@ class NewListingsFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         _binding = FragmentNewListingsBinding.inflate(inflater, container, false)
         val view = binding.root
+        super.onViewCreated(view, savedInstanceState)
 
         titleEt = binding.listingNameInput
         priceEt = binding.priceInput
@@ -104,6 +108,9 @@ class NewListingsFragment : Fragment() {
                            endDate : String, beds: Int?, baths: Int?, amenities: List<AmenitiesItem>,
                            description: String?) {
 
+        Sublet newSublet =
+
+        //dataModel.postSublet(mActivity, )
     }
 
 
