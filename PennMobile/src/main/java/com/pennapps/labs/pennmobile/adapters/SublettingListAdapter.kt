@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,10 @@ import com.pennapps.labs.pennmobile.classes.SublettingModel
 class SublettingListAdapter(var ctx: android.content.Context?, var sublettingList: ArrayList<SublettingModel>):
         RecyclerView.Adapter<SublettingListAdapter.SublettingCardViewHolder>() {
 
+    private lateinit var context: Context
+
     class SublettingCardViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+
         var listingImage = itemView.findViewById<ImageView>(R.id.subletting_cardview_image)
         var listingTitle = itemView.findViewById<TextView>(R.id.subletting_cardview_title)
         var listingPrice = itemView.findViewById<TextView>(R.id.subletting_cardview_price)
