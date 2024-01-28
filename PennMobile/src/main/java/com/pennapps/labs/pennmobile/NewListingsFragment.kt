@@ -150,12 +150,17 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
         }
 
 
+        val dateRegex = Regex("""^(0[1-9]|1[0-2])/(0[1-9]|[1-2][0-9]|3[0-1])/\d{2}$""")
+
         binding.postButton.setOnClickListener{
             if (titleEt.text.toString().matches("".toRegex())
                     || priceEt.text.toString().matches("".toRegex())
                     || startEt.text.toString().matches("".toRegex())
                     || endEt.text.toString().matches("".toRegex())) {
-                Toast.makeText(activity, "Please fill in all required fields before booking",
+                Toast.makeText(activity, "Please fill in all required fields",
+                        Toast.LENGTH_LONG).show()
+            } else if (!startEt.text.toString().matches(dateRegex) || !endEt.text.toString().matches(dateRegex)) {
+                Toast.makeText(activity, "Please follow formatting instructions for date",
                         Toast.LENGTH_LONG).show()
             } else {
                 title = titleEt.text.toString()
