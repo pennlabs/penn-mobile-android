@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class Sublet(@SerializedName("end_date")
                   val endDate: String = "",
                   @SerializedName("amenities")
-                  val amenities: List<AmenitiesItem>??,
+                  val amenities: List<String>?,
                   @SerializedName("baths")
                   val baths: Int? = 0,
                   @SerializedName("address")

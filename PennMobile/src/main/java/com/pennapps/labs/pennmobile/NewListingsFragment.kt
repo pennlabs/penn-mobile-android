@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
@@ -31,9 +32,30 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
     internal lateinit var zipCodeEt : EditText
     internal lateinit var startEt : EditText
     internal lateinit var endEt : EditText
-    internal lateinit var bedsEt : Spinner
-    internal lateinit var bathsEt : Spinner
+    internal lateinit var bedsSpinner : Spinner
+    internal lateinit var bathsSpinner : Spinner
     internal lateinit var descriptionEt : EditText
+    internal lateinit var bathroomCheck : CheckBox
+    internal lateinit var laundryCheck : CheckBox
+    internal lateinit var gymCheck : CheckBox
+    internal lateinit var wifiCheck : CheckBox
+    internal lateinit var furnishedCheck : CheckBox
+    internal lateinit var closetCheck : CheckBox
+    internal lateinit var utilitiesCheck : CheckBox
+    internal lateinit var poolCheck : CheckBox
+    internal lateinit var loungeCheck : CheckBox
+    internal lateinit var parkingCheck : CheckBox
+    internal lateinit var patioCheck : CheckBox
+    internal lateinit var kitchenCheck : CheckBox
+    internal lateinit var dogCheck : CheckBox
+    internal lateinit var catCheck : CheckBox
+
+
+
+
+
+
+
 
     //Sublet variables
     private lateinit var title : String
@@ -55,7 +77,7 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mStudentLife = MainActivity.studentLifeInstance
-        val mActivity : MainActivity = activity as MainActivity
+        mActivity = activity as MainActivity
         mActivity.hideBottomBar()
     }
 
@@ -72,9 +94,25 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
         zipCodeEt = binding.postalCodeInput
         startEt = binding.startDateInput
         endEt = binding.endDateInput
-        bedsEt = binding.bedInput
-        bathsEt = binding.bathInput
+        bedsSpinner = binding.bedInput
+        bathsSpinner = binding.bathInput
         descriptionEt = binding.descriptionInput
+        bathroomCheck = binding.bathroomCheck
+        laundryCheck = binding.laundryCheck
+        gymCheck = binding.gymCheck
+        wifiCheck = binding.wifiCheck
+        furnishedCheck = binding.furnishedCheck
+        closetCheck = binding.closetCheck
+        utilitiesCheck = binding.utilitiesCheck
+        poolCheck = binding.poolCheck
+        loungeCheck = binding.loungeCheck
+        parkingCheck = binding.parkingCheck
+        patioCheck = binding.patioCheck
+        kitchenCheck = binding.kitchenCheck
+        dogCheck = binding.dogCheck
+        catCheck = binding.catCheck
+
+
 
         binding.postButton.setOnClickListener{
             if (titleEt.text.toString().matches("".toRegex())
@@ -93,13 +131,32 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
                 }
                 startDate = startEt.text.toString()
                 endDate = endEt.text.toString()
-                //do beds, baths
+
+                beds = bedsSpinner.selectedItemPosition + 1
+                baths = bathsSpinner.selectedItemPosition + 1
+
+                val amenitiesList = mutableListOf<String>()
+                if(bathroomCheck.isChecked) { amenitiesList.add("Private Bathroom") }
+                if(laundryCheck.isChecked) { amenitiesList.add("In-Unit Laundry") }
+                if(gymCheck.isChecked) { amenitiesList.add("Gym") }
+                if(wifiCheck.isChecked) { amenitiesList.add("Wifi") }
+                if(furnishedCheck.isChecked) { amenitiesList.add("Furnished") }
+                if(closetCheck.isChecked) { amenitiesList.add("Walk-in Closet") }
+                if(utilitiesCheck.isChecked) { amenitiesList.add("Utilities Included") }
+                if(poolCheck.isChecked) { amenitiesList.add("Swimming Pool") }
+                if(loungeCheck.isChecked) { amenitiesList.add("Resident Lounge") }
+                if(parkingCheck.isChecked) { amenitiesList.add("Parking") }
+                if(patioCheck.isChecked) { amenitiesList.add("Patio") }
+                if(kitchenCheck.isChecked) { amenitiesList.add("Kitchen") }
+                if(dogCheck.isChecked) { amenitiesList.add("Dog-Friendly") }
+                if(catCheck.isChecked) { amenitiesList.add("Cat-Friendly") }
+
                 description = descriptionEt.text.toString()
                 if (description.equals("")) {
                     description = null;
                 }
                 postSublet(title, Integer.parseInt(price), streetAddress, startDate, endDate, beds,
-                        baths, amenities, description)
+                        baths, amenitiesList, description)
 
             }
 
@@ -108,7 +165,7 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
     }
 
     private fun postSublet(title : String, price : Int, address : String?, startDate: String,
-                           endDate : String, beds: Int?, baths: Int?, amenities: List<AmenitiesItem>,
+                           endDate : String, beds: Int?, baths: Int?, amenities: List<String>,
                            description: String?) {
 
         val newSublet = Sublet(
@@ -122,7 +179,7 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
                 description = description,
                 title = title,
                 beds = beds,
-                externalLink = " ", // fix
+                externalLink = "test.com", // fix
                 startDate = startDate
         )
 
