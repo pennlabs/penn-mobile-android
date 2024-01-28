@@ -113,6 +113,42 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
         catCheck = binding.catCheck
 
 
+        binding.draftButton.setOnClickListener{
+            /*
+            {
+                "title": "Sublet1",
+                "address": "3465 Sansom Street",
+                "beds": 10,
+                "baths": 2,
+                "description": "Test sublet 1",
+                "external_link": "https://pennlabs.org/",
+                "min_price": 10,
+                "max_price": 500,
+                "expires_at": "3000-02-01T10:48:02-05:00",
+                "start_date": "3000-04-09",
+                "end_date": "3000-08-07"
+            }
+
+             */
+
+
+            val newSublet = Sublet(
+                    endDate = "3000-08-07",
+                    baths = 2,
+                    address = "3465 Sansom Street",
+                    maxPrice = 500,//fix
+                    expiresAt = "3000-02-01T10:48:02-05:00",
+                    minPrice = 10, // fix
+                    description = description,
+                    title = "Sublet1",
+                    beds = 10,
+                    externalLink = "https://pennlabs.org/", // fix
+                    startDate = "3000-04-09"
+            )
+            dataModel.postSublet(mActivity, newSublet)
+
+        }
+
 
         binding.postButton.setOnClickListener{
             if (titleEt.text.toString().matches("".toRegex())
@@ -165,22 +201,21 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
     }
 
     private fun postSublet(title : String, price : Int, address : String?, startDate: String,
-                           endDate : String, beds: Int?, baths: Int?, amenities: List<String>,
+                           endDate : String, beds: Int?, baths: Int?, amenities: List<String>?,
                            description: String?) {
 
         val newSublet = Sublet(
-                endDate = endDate,
-                amenities = amenities,
+                endDate = "2023-12-05",
                 baths = baths,
                 address = address,
                 maxPrice = price,//fix
-                expiresAt = " ",
+                expiresAt = "3000-02-01T10:48:02-05:00",
                 minPrice = 0, // fix
                 description = description,
                 title = title,
                 beds = beds,
-                externalLink = "test.com", // fix
-                startDate = startDate
+                externalLink = "https://pennlabs.org/", // fix
+                startDate = "2023-04-04"
         )
 
         dataModel.postSublet(mActivity, newSublet)

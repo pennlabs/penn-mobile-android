@@ -218,10 +218,11 @@ public interface StudentLife {
             @Body FitnessRequest rooms,
             Callback<Response> callback);
 
+    @Headers({"Content-Type: application/json"})
     @POST("/sublet/properties/")
     void createSublet(
             @Header("Authorization") String bearerToken,
             @Body Sublet sublet,
-            Callback<Response> callback);
+            Callback<Sublet> callback);
 
 }
