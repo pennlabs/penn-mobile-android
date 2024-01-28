@@ -141,6 +141,10 @@ class MainActivity : AppCompatActivity() {
                 fragmentManager.beginTransaction().remove(fragment).commit()
             }
         }
+        val mainPagerAdapter = MainPagerAdapter(fragmentManager, lifecycle)
+        main_view_pager?.adapter = mainPagerAdapter
+        main_view_pager.isUserInputEnabled = false
+        main_view_pager.offscreenPageLimit = 5
         main_view_pager.visibility = View.VISIBLE
         expandable_bottom_bar.visibility = View.VISIBLE
         setTab(HOME_ID)
