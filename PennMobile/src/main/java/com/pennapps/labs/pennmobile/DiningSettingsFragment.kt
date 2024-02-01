@@ -14,6 +14,7 @@ import com.pennapps.labs.pennmobile.classes.DiningRequest
 import com.pennapps.labs.pennmobile.classes.HomepageDataModel
 import com.pennapps.labs.pennmobile.databinding.FragmentDiningPreferencesBinding
 import kotlinx.android.synthetic.main.include_main.toolbar
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
@@ -87,7 +88,11 @@ class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
                 .subscribe({ diningHalls ->
                     mActivity.runOnUiThread {
                         halls = diningHalls
-                        binding.diningHallRv.adapter = DiningSettingsAdapter(diningHalls)
+                        try {
+                            binding.diningHallRv.adapter = DiningSettingsAdapter(diningHalls)
+                        } catch (e: Exception) {
+                            FirebaseCrashlytics.getInstance().recordException(e)
+                        }
                     }
                 }, {
                     Log.e("DiningSettings", "error fetching dining halls")

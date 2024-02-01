@@ -3,13 +3,12 @@ package com.pennapps.labs.pennmobile
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
-import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.adapters.LaundrySettingsAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple
@@ -123,7 +122,11 @@ class LaundrySettingsFragment : Fragment() {
                         }
 
                         val mAdapter = LaundrySettingsAdapter(mContext, hashMap, hallList)
-                        binding.laundryBuildingExpandableList.setAdapter(mAdapter)
+                        try {
+                            binding.laundryBuildingExpandableList.setAdapter(mAdapter)
+                        } catch (e: Exception) {
+                            FirebaseCrashlytics.getInstance().recordException(e)
+                        }
 
                         loadingPanel?.visibility = View.GONE
                         no_results?.visibility = View.GONE

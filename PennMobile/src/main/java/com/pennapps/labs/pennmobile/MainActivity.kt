@@ -84,11 +84,7 @@ class MainActivity : AppCompatActivity() {
 
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
-        val mainPagerAdapter = MainPagerAdapter(fragmentManager, lifecycle)
-        main_view_pager.setSaveEnabled(false);
-        main_view_pager.adapter = mainPagerAdapter
-        main_view_pager.isUserInputEnabled = false
-        main_view_pager.offscreenPageLimit = 5
+
         onExpandableBottomNavigationItemSelected()
         showBottomBar()
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -142,6 +138,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         val mainPagerAdapter = MainPagerAdapter(fragmentManager, lifecycle)
+        main_view_pager.setSaveEnabled(false);
         main_view_pager?.adapter = mainPagerAdapter
         main_view_pager.isUserInputEnabled = false
         main_view_pager.offscreenPageLimit = 5
