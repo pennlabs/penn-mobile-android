@@ -208,23 +208,34 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
     private fun postSublet(title : String, price : Int, address : String?, startDate: String,
                            endDate : String, beds: Int?, baths: Int?, amenities: List<String>?,
                            description: String?) {
+        val convertedEnd = convertToYYYYMMDD(endDate)
+        val convertedStart = convertToYYYYMMDD(startDate)
+
 
         val newSublet = Sublet(
-                endDate = "2023-12-05",
+                endDate = convertedEnd,
                 baths = baths,
                 address = address,
                 maxPrice = price,//fix
-                expiresAt = "3000-02-01T10:48:02-05:00",
+                expiresAt = "3000-02-01T10:48:02-05:00", //?
                 minPrice = 0, // fix
                 description = description,
                 title = title,
                 beds = beds,
                 externalLink = "https://pennlabs.org/", // fix
-                startDate = "2023-04-04"
+                startDate = convertedStart
         )
 
         dataModel.postSublet(mActivity, newSublet)
     }
 
+    private fun convertToYYYYMMDD(mmddyy: String): String {
+        val components = mmddyy.split("/")
+        val month = components[0].toInt()
+        val day = components[1].toInt()
+        val year = components[2].toInt() + 2000
+
+        return String.format("%04d-%02d-%02d", year, month, day)
+    }
 
 }
