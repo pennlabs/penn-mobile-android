@@ -13,7 +13,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.adapters.DiningAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
@@ -143,12 +143,21 @@ class DiningFragment : Fragment() {
                     mActivity.runOnUiThread {
                         getMenus(diningHalls)
                         val adapter = DiningAdapter(diningHalls)
-                        binding.diningHallsRecyclerView.adapter = adapter
                         loadingPanel?.visibility = View.GONE
                         if (diningHalls.size > 0) {
                             no_results?.visibility = View.GONE
                         }
-                        binding.diningSwiperefresh.isRefreshing = false
+
+                        // Log non-fatal error to crashyltics if null
+                        // this error should not really be happening
+                        // it is *possible* but be rare: ideally network stuff
+                        // is decoupled with UI updates
+                        try {
+                            binding.diningHallsRecyclerView.adapter = adapter
+                            binding.diningSwiperefresh.isRefreshing = false
+                        } catch (e: Exception) {
+                            FirebaseCrashlytics.getInstance().recordException(e)
+                        }
                         view?.let {displaySnack("Just Updated")}
                     }
                 }, {
