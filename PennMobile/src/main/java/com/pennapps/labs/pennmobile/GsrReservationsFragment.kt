@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.adapters.GsrReservationsAdapter
 import com.pennapps.labs.pennmobile.databinding.FragmentGsrReservationsBinding
 
@@ -96,22 +96,30 @@ class GsrReservationsFragment : Fragment() {
                     binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList(reservations))
                     loadingPanel?.visibility = View.GONE
 
-                    if (reservations.size > 0) {
-                        binding.gsrNoReservations.visibility = View.GONE
-                    } else {
-                        binding.gsrNoReservations.visibility = View.VISIBLE
+                    try {
+                        if (reservations.size > 0) {
+                            binding.gsrNoReservations.visibility = View.GONE
+                        } else {
+                            binding.gsrNoReservations.visibility = View.VISIBLE
+                        }
+                        // stop refreshing
+                        binding.gsrReservationsRefreshLayout.isRefreshing = false
+                    } catch (e: Exception) {
+                        FirebaseCrashlytics.getInstance().recordException(e)
                     }
-                    // stop refreshing
-                    binding.gsrReservationsRefreshLayout.isRefreshing = false
                 }
             }, { throwable ->
                 mActivity.runOnUiThread {
                     Log.e("GsrReservationsFragment", "Error getting reservations", throwable)
-                    binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList())
                     throwable.printStackTrace()
                     loadingPanel?.visibility = View.GONE
-                    binding.gsrNoReservations.visibility = View.VISIBLE
-                    binding.gsrReservationsRefreshLayout.isRefreshing = false
+                    try {
+                        binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList())
+                        binding.gsrNoReservations.visibility = View.VISIBLE
+                        binding.gsrReservationsRefreshLayout.isRefreshing = false
+                    } catch (e: Exception) {
+                        FirebaseCrashlytics.getInstance().recordException(e)
+                    }
                 }
             })
         }
