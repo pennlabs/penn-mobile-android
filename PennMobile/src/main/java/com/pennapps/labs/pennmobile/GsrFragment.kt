@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -64,16 +65,17 @@ class GsrFragment : Fragment() {
 
     private var populatedDropDownGSR = false
 
-    private var bearerToken = ""
     private var isWharton = false
     private var sortByTime = false
 
     private lateinit var mActivity: MainActivity
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mStudentLife = MainActivity.studentLifeInstance
         mActivity = activity as MainActivity
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity)
         mActivity.closeKeyboard()
 
         // set default GSR selection date + time to the current date and time
@@ -196,8 +198,7 @@ class GsrFragment : Fragment() {
 
     private fun updateStatus() {
         mActivity.mNetworkManager.getAccessToken {
-            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-            bearerToken = sp.getString(getString(R.string.access_token), "").toString()
+            val bearerToken = sharedPreferences.getString(getString(R.string.access_token), "").toString()
 
             if (bearerToken.isEmpty()) {
                 Toast.makeText(activity, "You are not logged in!", Toast.LENGTH_LONG).show()
@@ -234,8 +235,7 @@ class GsrFragment : Fragment() {
         val location = mapGSR(gsrLocation)
         val gid = mapGID(gsrLocation)
         mActivity.mNetworkManager.getAccessToken {
-            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-            bearerToken = sp.getString(getString(R.string.access_token), "").toString()
+            val bearerToken = sharedPreferences.getString(getString(R.string.access_token), "").toString()
 
             if (location.isEmpty() || bearerToken.isEmpty()) {
                 showNoResults()
@@ -276,8 +276,7 @@ class GsrFragment : Fragment() {
 
 
         mActivity.mNetworkManager.getAccessToken {
-            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-            bearerToken = sp.getString(getString(R.string.access_token), "").toString()
+            val bearerToken = sharedPreferences.getString(getString(R.string.access_token), "").toString()
 
             Log.i("GsrFragment", "Bearer Token: $bearerToken")
             Log.i("GsrFragment", "Wharton Status: $isWharton")
