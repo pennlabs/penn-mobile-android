@@ -10,6 +10,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.adapters.LaundryRoomAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.LaundryRoom
@@ -190,20 +191,27 @@ class LaundryFragment : Fragment() {
                             roomsData = roomsDataResult
                             laundryRooms = laundryRoomsResult
                             mAdapter = LaundryRoomAdapter(mContext, laundryRooms, roomsData, false)
-                            binding.favoriteLaundryList.adapter = mAdapter
+                            try {
+                                binding.favoriteLaundryList.adapter = mAdapter
+                                binding.laundryHelpText.visibility = View.INVISIBLE
+                                binding.laundryMachineRefresh.isRefreshing = false
+                            } catch (e: Exception) {
+                                FirebaseCrashlytics.getInstance().recordException(e)
+                            }
                             no_results?.visibility = View.GONE
                             loadingPanel?.visibility = View.GONE
-                            binding.laundryHelpText.visibility = View.INVISIBLE
-                            binding.laundryMachineRefresh.isRefreshing = false
-
                         }
                     }
                 }, {
                     mActivity.runOnUiThread {
+                        try {
+                            binding.laundryHelpText.visibility = View.GONE
+                            binding.laundryMachineRefresh.isRefreshing = false
+                        } catch (e: Exception) {
+                            FirebaseCrashlytics.getInstance().recordException(e)
+                        }
                         loadingPanel?.visibility = View.GONE
                         no_results?.visibility = View.VISIBLE
-                        binding.laundryHelpText.visibility = View.GONE
-                        binding.laundryMachineRefresh.isRefreshing = false
                         Log.e("Laundry", "Error getting laundry data: " + it.stackTrace)
                     }
                 })
@@ -224,8 +232,12 @@ class LaundryFragment : Fragment() {
                     mActivity.runOnUiThread {
                         loadingPanel?.visibility = View.GONE
                         no_results?.visibility = View.VISIBLE
-                        binding.laundryHelpText.visibility = View.GONE
-                        binding.laundryMachineRefresh.isRefreshing = false
+                        try {
+                            binding.laundryHelpText.visibility = View.GONE
+                            binding.laundryMachineRefresh.isRefreshing = false
+                        } catch (e: Exception) {
+                            FirebaseCrashlytics.getInstance().recordException(e)
+                        }
                     }
                 })
     }
