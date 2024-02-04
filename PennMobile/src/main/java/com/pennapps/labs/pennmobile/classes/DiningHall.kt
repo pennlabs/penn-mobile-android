@@ -177,16 +177,15 @@ open class DiningHall : Parcelable {
             dest.writeString(name)
         }
 
-        companion object {
-            val CREATOR: Parcelable.Creator<Menu?> = object : Parcelable.Creator<Menu?> {
-                override fun createFromParcel(`in`: Parcel): Menu? {
-                    return Menu(`in`)
-                }
-
-                override fun newArray(size: Int): Array<Menu?> {
-                    return arrayOfNulls(size)
-                }
+        companion object CREATOR : Parcelable.Creator<Menu?> {
+            override fun createFromParcel(`in`: Parcel): Menu? {
+                return Menu(`in`)
             }
+
+            override fun newArray(size: Int): Array<Menu?> {
+                return arrayOfNulls(size)
+            }
+
         }
 
     }
