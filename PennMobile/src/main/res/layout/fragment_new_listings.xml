@@ -216,18 +216,43 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/apartment_input" />
 
-            <TextView
-                android:id="@+id/date_text"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/date_text_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_marginStart="26sp"
-                android:layout_marginTop="15sp"
-                android:fontFamily="@font/sf_pro_display_regular"
-                android:text="@string/date"
-                android:textSize="16sp"
-                android:textStyle="bold"
+                android:layout_marginEnd="26sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/postal_code_input" />
+                app:layout_constraintTop_toBottomOf="@id/postal_code_input">
+
+                <TextView
+                    android:id="@+id/start_date_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10sp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/sf_pro_display_regular"
+                    android:text="Start Date"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/postal_code_input" />
+
+                <TextView
+                    android:id="@+id/end_date_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10sp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/sf_pro_display_regular"
+                    android:text="End Date"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/postal_code_input" />
+            </LinearLayout>
+
 
             <LinearLayout
                 android:id="@+id/date_layout"
@@ -237,31 +262,31 @@
                 android:layout_marginStart="26sp"
                 android:layout_marginEnd="26sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/date_text">
+                app:layout_constraintTop_toBottomOf="@id/date_text_layout">
 
                 <EditText
                     android:id="@+id/start_date_input"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10sp"
-                    android:hint="@string/start"
+                    android:layout_weight="1"
+                    android:hint="mm/dd/yy"
                     android:inputType="date"
                     android:textColorHint="#8A8A8D"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/date_text" />
+                    app:layout_constraintTop_toBottomOf="@id/date_text_layout" />
 
                 <EditText
                     android:id="@+id/end_date_input"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10sp"
-                    android:hint="@string/end"
+                    android:layout_weight="1"
+                    android:hint="mm/dd/yy"
                     android:inputType="date"
                     android:textColorHint="#8A8A8D"
                     app:layout_constraintStart_toEndOf="@id/start_date_input"
-                    app:layout_constraintTop_toBottomOf="@id/date_text" />
+                    app:layout_constraintTop_toBottomOf="@id/date_text_layout" />
 
             </LinearLayout>
 
@@ -507,7 +532,7 @@
                 android:layout_marginStart="10sp"
                 android:fontFamily="@font/sf_pro_display_regular"
                 android:shadowColor="@color/black"
-                android:text="@string/wifi"
+                android:text="Patio"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/parking_check"
                 app:layout_constraintTop_toBottomOf="@id/pool_check" />

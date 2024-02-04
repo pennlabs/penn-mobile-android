@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class Sublet(@SerializedName("end_date")
                   val endDate: String = "",
                   @SerializedName("amenities")
-                  val amenities: List<AmenitiesItem>??,
+                  val amenities: List<String>? = null,
                   @SerializedName("baths")
                   val baths: Int? = 0,
                   @SerializedName("address")
@@ -25,4 +25,11 @@ data class Sublet(@SerializedName("end_date")
                   @SerializedName("external_link")
                   val externalLink: String = "",
                   @SerializedName("start_date")
-                  val startDate: String = "")
+                  val startDate: String = "",
+                  @SerializedName("id")
+                  val id: Int? = null,
+                  @SerializedName("subletter")
+                  val subletter: String? = null,
+                  @SerializedName("created_at")
+                  val createdAt: String? = null,
+        )

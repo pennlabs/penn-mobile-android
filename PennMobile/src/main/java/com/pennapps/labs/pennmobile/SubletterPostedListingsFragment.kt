@@ -6,9 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentSubletterPostedListingsBinding
 
-class SubletterPostedListingsFragment : Fragment() {
+class SubletterPostedListingsFragment(private val dataModel: SublettingViewModel) : Fragment() {
     private var _binding: FragmentSubletterPostedListingsBinding? = null
     private val binding get() = _binding!!
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +29,8 @@ class SubletterPostedListingsFragment : Fragment() {
 
     private fun navigateCreateNewListing() {
         val mainActivity = context as MainActivity
-        val fragment = NewListingsFragment()
+
+        val fragment = NewListingsFragment(dataModel)
 
         val fragmentManager = mainActivity.supportFragmentManager
         fragmentManager.beginTransaction()
@@ -36,6 +38,8 @@ class SubletterPostedListingsFragment : Fragment() {
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
                 .commitAllowingStateLoss()
+
+
 
     }
 

@@ -11,6 +11,8 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.pennapps.labs.pennmobile.adapters.SubletterPagerAdapter
 import com.pennapps.labs.pennmobile.adapters.SublettingPagerAdapter
+import com.pennapps.labs.pennmobile.api.StudentLife
+import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import kotlinx.android.synthetic.main.fragment_dining_holder.view.appbar_home_holder
 
@@ -18,12 +20,19 @@ class SubletterHolderFragment : Fragment() {
     lateinit var subletterPagerAdapter: SubletterPagerAdapter
     private lateinit var mActivity: MainActivity
     private lateinit var viewPager: ViewPager2
+    private lateinit var mStudentLife : StudentLife
+    private lateinit var dataModel : SublettingViewModel
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()
+        mStudentLife = MainActivity.studentLifeInstance
+        dataModel = SublettingViewModel(mActivity, mStudentLife)
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -31,7 +40,7 @@ class SubletterHolderFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_subletting, container, false)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        subletterPagerAdapter = SubletterPagerAdapter(this)
+        subletterPagerAdapter = SubletterPagerAdapter(this, dataModel)
         viewPager = view.findViewById(R.id.viewPager2)
         viewPager.adapter = subletterPagerAdapter
 
