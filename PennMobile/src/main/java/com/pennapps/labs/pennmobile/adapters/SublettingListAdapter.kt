@@ -6,14 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
+import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.SublesseeDetailsFragment
 import com.pennapps.labs.pennmobile.classes.SublettingModel
 
-class SublettingListAdapter(var ctx: android.content.Context?, var sublettingList: ArrayList<SublettingModel>):
+class SublettingListAdapter(var sublettingList: ArrayList<SublettingModel>):
         RecyclerView.Adapter<SublettingListAdapter.SublettingCardViewHolder>() {
 
-    private lateinit var context: Context
+    private lateinit var mContext: Context
+    private lateinit var mActivity: MainActivity
 
     class SublettingCardViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
@@ -23,14 +27,27 @@ class SublettingListAdapter(var ctx: android.content.Context?, var sublettingLis
         var listingRooms = itemView.findViewById<TextView>(R.id.subletting_cardview_rooms)
         var listingDates = itemView.findViewById<TextView>(R.id.subletting_cardview_dates)
 
+        /* init {
+            itemView.setOnClickListener {
+                mActivity.supportFragmentManager.beginTransaction()
+                        .replace(itemView.id, SubletteeFragment())
+                        .addToBackStack(null)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .commit()
+            }
+        } */
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SublettingCardViewHolder {
         val newView = LayoutInflater.from(parent.context).inflate(R.layout.subletting_cardview, parent, false)
+        mContext = parent.context
+        mActivity = mContext as MainActivity
         return SublettingCardViewHolder(newView)
     }
 
     override fun onBindViewHolder(holder: SublettingCardViewHolder, position: Int) {
+
         var mSublettingCard: SublettingModel = sublettingList[position]
         holder.listingImage.setImageResource(mSublettingCard.listingImage!!)
         holder.listingTitle.text = mSublettingCard.listingTitle
@@ -45,6 +62,14 @@ class SublettingListAdapter(var ctx: android.content.Context?, var sublettingLis
         val rooms = mSublettingCard.numberBeds.toString() + " bd | " +
                 mSublettingCard.numberBath.toString() + " ba"
         holder.listingRooms.text = rooms
+
+        holder.itemView.setOnClickListener {
+            mActivity.supportFragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, SublesseeDetailsFragment())
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .addToBackStack(null)
+                    .commit()
+        }
     }
 
     override fun getItemCount(): Int {

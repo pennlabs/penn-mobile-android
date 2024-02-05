@@ -40,7 +40,6 @@ class SubletteeMarketplace : Fragment() {
 
     //api manager
     private lateinit var mStudentLife: StudentLife
-
     private lateinit var mActivity: MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,7 +71,7 @@ class SubletteeMarketplace : Fragment() {
         sublettingRecyclerView.setHasFixedSize(true)
         sublettingList = setUpData()
 
-        myAdapter = SublettingListAdapter(context, sublettingList)
+        myAdapter = SublettingListAdapter(sublettingList)
         sublettingRecyclerView.adapter = myAdapter
     }
 
