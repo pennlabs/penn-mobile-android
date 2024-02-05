@@ -93,10 +93,10 @@ class GsrReservationsFragment : Fragment() {
             val token = sp.getString(getString(R.string.access_token), "")
             labs.getGsrReservations("Bearer $token").subscribe({ reservations ->
                 mActivity.runOnUiThread {
-                    binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList(reservations))
                     loadingPanel?.visibility = View.GONE
 
                     try {
+                        binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList(reservations))
                         if (reservations.size > 0) {
                             binding.gsrNoReservations.visibility = View.GONE
                         } else {
