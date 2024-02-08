@@ -96,25 +96,26 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
     }
 
     /**
-     * Updates each homepage cell. If a cell changes, then update is called with the index of the
-     * cell that was changed (created with the intention to play nice with RecyclerView and is used
-     * in conjunction with NotifyItemChanged().
+     * Returns a list of updated cell positions.
      */
     @Synchronized
-    fun updateHomePageCells(studentLife: StudentLife, bearerToken: String, deviceID: String,
-                              update: (Int) -> Unit, callback: () -> Unit) {
+    fun updateHomePageCells(studentLife: StudentLife, bearerToken: String,
+                            deviceID: String) : List<Int> {
         val prevList = homepageCells.toList()
-        populateHomePageCells(studentLife, bearerToken, deviceID) {
-            for (i in 0 until NUM_CELLS) {
-                if (prevList[i] != homepageCells[i]) {
-                    update(i)
-                    Log.i("CellUpdates", "updated index ${i}")
-                } else {
-                    Log.i("CellUpdates", "saved an update at index ${i}")
-                }
+        populateHomePageCells(studentLife, bearerToken, deviceID)
+
+        val updatedIndices = mutableListOf<Int>()
+
+        for (i in 0 until NUM_CELLS) {
+            if (prevList[i] != homepageCells[i]) {
+                updatedIndices.add(i);
+                Log.i("CellUpdates", "updated index ${i}")
+            } else {
+                Log.i("CellUpdates", "saved an update at index ${i}")
             }
-            callback.invoke()
         }
+
+        return updatedIndices
     }
 
     /**
@@ -122,8 +123,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
      * This function requires a correct (non-expired) bearerToken!!
      */
     @Synchronized
-    fun populateHomePageCells(studentLife: StudentLife, bearerToken: String, deviceID: String,
-                              callback: () -> Unit) {
+    fun populateHomePageCells(studentLife: StudentLife, bearerToken: String, deviceID: String) {
         val isLoggedIn = bearerToken != "Bearer "
 
         if (isLoggedIn) {
@@ -143,7 +143,6 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
             getNews(studentLife, latch)
             latch.await()
         }
-        callback.invoke()
     }
 
     /**
