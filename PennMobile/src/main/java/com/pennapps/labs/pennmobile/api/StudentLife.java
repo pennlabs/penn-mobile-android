@@ -216,4 +216,9 @@ public interface StudentLife {
             @Body Sublet sublet,
             Callback<Sublet> callback);
 
+    @Headers({"Content-Type: application/json"})
+    @GET("/sublet/properties/")
+    Observable<List<Sublet>> getPostedSublets(
+            @Header("Authorization") String bearerToken);
+
 }

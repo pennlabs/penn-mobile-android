@@ -2,14 +2,17 @@ package com.pennapps.labs.pennmobile.classes
 
 import android.app.Activity
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.adapters.GsrReservationsAdapter
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import retrofit.ResponseCallback
 import com.pennapps.labs.pennmobile.classes.Sublet
+import kotlinx.android.synthetic.main.loading_panel.loadingPanel
 import retrofit.RetrofitError
 import retrofit.client.Response
 import retrofit.Callback
@@ -44,6 +47,22 @@ class SublettingViewModel (private val activity: Activity, private val studentLi
                         }
 
                     })
+
+
+            studentLife.getPostedSublets(bearerToken).subscribe({ sublets ->
+                mActivity.runOnUiThread {
+                    //return sublets
+
+                }
+            }, { throwable ->
+                mActivity.runOnUiThread {
+                    Log.e(
+                        "Posted Sublet Fragment",
+                        "Could not load Posted Sublets",
+                        throwable
+                    )
+                }
+            })
         }
 
 

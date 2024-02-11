@@ -10,8 +10,9 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.pennapps.labs.pennmobile.adapters.SublettingListAdapter
+import com.pennapps.labs.pennmobile.adapters.PostedSubletsListAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
+import com.pennapps.labs.pennmobile.classes.Sublet
 import com.pennapps.labs.pennmobile.classes.SublettingModel
 import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentSubletterPostedListingsBinding
@@ -24,8 +25,8 @@ class SubletterPostedListingsFragment(private val dataModel: SublettingViewModel
     //recyclerview adapters and layout manager
     lateinit var sublettingRecyclerView: RecyclerView
     lateinit var newLayoutManager: GridLayoutManager
-    lateinit var sublettingList: ArrayList<SublettingModel>
-    lateinit var myAdapter: SublettingListAdapter
+    lateinit var sublettingList: ArrayList<Sublet>
+    lateinit var myAdapter: PostedSubletsListAdapter
 
     //api manager
     private lateinit var mStudentLife: StudentLife
@@ -63,34 +64,10 @@ class SubletterPostedListingsFragment(private val dataModel: SublettingViewModel
         if (sublettingList.isNotEmpty()) {
             binding.postedNoListingsText.visibility = View.GONE;
 
-            /*
-            // Update the ConstraintSet to constrain addlistingbutton below sublettingRecyclerView
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(binding.root)
 
-            constraintSet.connect(
-                    binding.postedAddListingButton.id,
-                    ConstraintSet.TOP,
-                    binding.listingsRefreshLayout.id,
-                    ConstraintSet.BOTTOM,
-                    16 // You can adjust the margin as needed
-            )
-
-            // Constrain the bottom of sublettingRecyclerView to the top of addlistingbutton
-            constraintSet.connect(
-                    binding.listingsRefreshLayout.id,
-                    ConstraintSet.BOTTOM,
-                    binding.postedAddListingButton.id,
-                    ConstraintSet.TOP,
-                    16 // You can adjust the margin as needed
-            )
-
-            constraintSet.applyTo(binding.root)
-
-             */
         }
 
-        myAdapter = SublettingListAdapter(context, sublettingList)
+        myAdapter = PostedSubletsListAdapter(sublettingList)
         sublettingRecyclerView.adapter = myAdapter
 
     }
@@ -109,9 +86,9 @@ class SubletterPostedListingsFragment(private val dataModel: SublettingViewModel
                 .commitAllowingStateLoss()
     }
 
-    private fun setUpData(): ArrayList<SublettingModel> {
+    private fun setUpData(): ArrayList<Sublet> {
 
-        var sublettingList = ArrayList<SublettingModel>()
+        var sublettingList = ArrayList<Sublet>()
 
         val sublettingImages = intArrayOf(
                 R.drawable.dining_gourmet_grocer,
@@ -137,14 +114,6 @@ class SubletterPostedListingsFragment(private val dataModel: SublettingViewModel
                 400
         )
 
-        val sublettingNegotiablePrices = arrayOf(
-                true,
-                false,
-                true,
-                true,
-                false
-        )
-
         val sublettingBedrooms = arrayOf(
                 2,
                 3,
@@ -162,9 +131,9 @@ class SubletterPostedListingsFragment(private val dataModel: SublettingViewModel
         )
 
         for (i in sublettingImages.indices)
-            sublettingList.add(SublettingModel(sublettingImages[i], sublettingNames[i],
-                    sublettingPrices[i], sublettingNegotiablePrices[i], sublettingBedrooms[i],
-                    sublettingBathrooms[i], 2, 2))
+            sublettingList.add(Sublet(title = sublettingNames[i],
+                    minPrice = sublettingPrices[i], beds = sublettingBedrooms[i],
+                    baths = sublettingBathrooms[i]))
 
         return sublettingList
 

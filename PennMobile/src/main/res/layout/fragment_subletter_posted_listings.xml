@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <ImageView
         android:id="@+id/posted_house_image"
         android:layout_width="wrap_content"
@@ -12,7 +13,7 @@
         android:layout_marginTop="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/posted_add_listing_button"
         app:srcCompat="@drawable/subletting_house" />
 
     <TextView
@@ -37,7 +38,7 @@
         android:radius="30sp"
         android:text="@string/add_listing"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -48,9 +49,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/posted_add_listing_button"
+        app:layout_constraintTop_toBottomOf="@id/posted_add_listing_button"
         app:layout_constraintVertical_bias="1.0">
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/posted_sublets_list"
@@ -58,7 +59,8 @@
             android:layout_height="0dp"
             android:scrollbars="none"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toBottomOf="parent"/>
+
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
