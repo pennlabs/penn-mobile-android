@@ -130,5 +130,8 @@ class GsrReservationsFragment : Fragment() {
             getReservations()
         }
     }
-
+    override fun onDestroy() {
+        super.onDestroy()
+        LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(broadcastReceiver);
+    }
 }

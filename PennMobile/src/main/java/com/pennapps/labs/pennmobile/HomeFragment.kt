@@ -1,13 +1,8 @@
 package com.pennapps.labs.pennmobile
 
 import android.content.*
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +12,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pennapps.labs.pennmobile.adapters.HomeAdapter
@@ -47,10 +41,6 @@ class HomeFragment : Fragment() {
 
         mActivity = activity as MainActivity
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity)
-
-        LocalBroadcastManager
-            .getInstance(mActivity)
-            .registerReceiver(broadcastReceiver, IntentFilter("refresh"))
     }
 
     override fun onCreateView(
@@ -185,13 +175,6 @@ class HomeFragment : Fragment() {
                     })
                 }
             }
-        }
-    }
-
-
-    private val broadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            getHomePage()
         }
     }
 
