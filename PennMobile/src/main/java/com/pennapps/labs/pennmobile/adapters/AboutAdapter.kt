@@ -41,6 +41,7 @@ class AboutAdapter(private var members: ArrayList<String>)
             "Trini Feng" -> R.drawable.trini
             "Vedha Avali" -> R.drawable.vedha
             "Aaron Mei" -> R.drawable.aaron
+            "Baron Ping-Yeh Hsieh" -> R.drawable.baron
             else -> null
         }
         if (imageId != null) holder.view.person_iv?.setImageResource(imageId)
