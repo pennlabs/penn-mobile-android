@@ -81,4 +81,9 @@ class SupportFragment : ListFragment() {
         mActivity.hideBottomBar()
         mActivity.setSelectedTab(MainActivity.MORE)
     }
+
+    override fun onDestroyView() {
+        mActivity.toolbar.setNavigationOnClickListener(null)
+        super.onDestroyView()
+    }
 }
