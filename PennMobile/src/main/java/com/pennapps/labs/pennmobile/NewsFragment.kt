@@ -21,7 +21,6 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import androidx.preference.PreferenceManager
-import com.pennapps.labs.pennmobile.adapters.HomeAdapter
 import com.pennapps.labs.pennmobile.databinding.FragmentNewsBinding
 import java.util.ArrayList
 
