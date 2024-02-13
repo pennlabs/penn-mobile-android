@@ -374,6 +374,7 @@ fun isOnline(context: Context?): Boolean {
     return false
 }
 
+
 /** Shows an error sneaker given a view group with an optional retry function */
 fun ViewGroup.showSneakerToast(message: String, doOnRetry: (() -> Unit)?, sneakerColor: Int) {
     val sneaker = Sneaker.with(this)
