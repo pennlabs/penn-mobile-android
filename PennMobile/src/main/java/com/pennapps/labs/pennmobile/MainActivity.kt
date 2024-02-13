@@ -138,7 +138,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         val mainPagerAdapter = MainPagerAdapter(fragmentManager, lifecycle)
-        main_view_pager.setSaveEnabled(false);
+        main_view_pager.isSaveEnabled = false;
         main_view_pager?.adapter = mainPagerAdapter
         main_view_pager.isUserInputEnabled = false
         main_view_pager.offscreenPageLimit = 5

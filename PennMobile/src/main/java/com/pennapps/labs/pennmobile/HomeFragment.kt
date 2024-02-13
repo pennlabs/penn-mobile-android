@@ -31,6 +31,7 @@ import kotlinx.android.synthetic.main.include_main.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class HomeFragment : Fragment() {
@@ -165,24 +166,21 @@ class HomeFragment : Fragment() {
             lifecycleScope.launch(Dispatchers.Default) {
                 // set adapter if it is null
                 if (binding.homeCellsRv.adapter == null) {
-                    homepageViewModel.populateHomePageCells(studentLife, bearerToken, deviceID) {
-                        mActivity.runOnUiThread {
-                            binding.homeCellsRv.adapter = HomeAdapter(homepageViewModel)
-                            binding.homeCellsRv.visibility = View.INVISIBLE
-                            binding.internetConnectionHome.visibility = View.GONE
-                            binding.homeRefreshLayout.isRefreshing = false
-                        }
+                    homepageViewModel.populateHomePageCells(studentLife, bearerToken, deviceID)
+                    withContext(Dispatchers.Main) {
+                        binding.homeCellsRv.adapter = HomeAdapter(homepageViewModel)
+                        binding.homeCellsRv.visibility = View.INVISIBLE
+                        binding.internetConnectionHome.visibility = View.GONE
+                        binding.homeRefreshLayout.isRefreshing = false
                     }
                 } else { // otherwise, call updateHomePageCells which only updates the cells that are changed
-                    homepageViewModel.updateHomePageCells(studentLife, bearerToken, deviceID, { pos ->
-                       mActivity.runOnUiThread {
-                           binding.homeCellsRv.adapter!!.notifyItemChanged(pos)
-                       }
-                    }, {
-                       mActivity.runOnUiThread {
-                           binding.homeRefreshLayout.isRefreshing = false
-                       }
-                    })
+                    val updatedIndices = homepageViewModel.updateHomePageCells(studentLife, bearerToken, deviceID)
+                    withContext(Dispatchers.Main) {
+                        updatedIndices.forEach { pos ->
+                            binding.homeCellsRv.adapter!!.notifyItemChanged(pos)
+                        }
+                        binding.homeRefreshLayout.isRefreshing = false
+                    }
                 }
             }
         }
