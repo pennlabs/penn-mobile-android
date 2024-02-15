@@ -41,6 +41,7 @@ class AboutAdapter(private var members: ArrayList<String>)
             "Trini Feng" -> R.drawable.trini
             "Vedha Avali" -> R.drawable.vedha
             "Aaron Mei" -> R.drawable.aaron
+            "Joe MacDougall" -> R.drawable.joe
             "Baron Ping-Yeh Hsieh" -> R.drawable.baron
             else -> null
         }

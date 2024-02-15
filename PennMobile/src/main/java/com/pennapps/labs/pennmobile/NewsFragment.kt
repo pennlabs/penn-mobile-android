@@ -21,7 +21,6 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import androidx.preference.PreferenceManager
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.databinding.FragmentNewsBinding
 import java.util.ArrayList
 
@@ -40,6 +39,8 @@ class NewsFragment : ListFragment() {
     private var builder: CustomTabsIntent.Builder? = null
     private var isCustomTabsSupported: Boolean = false
     private lateinit var sharedPreferences: SharedPreferences
+
+    private var connection: NewsCustomTabsServiceConnection? = null
 
     private var _binding : FragmentNewsBinding? = null
     private val binding get() = _binding!!
@@ -112,7 +113,7 @@ class NewsFragment : ListFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val connection = NewsCustomTabsServiceConnection()
+        connection = NewsCustomTabsServiceConnection()
         context?.let { context ->
             isCustomTabsSupported = isChromeCustomTabsSupported(context)
         }
@@ -127,7 +128,7 @@ class NewsFragment : ListFragment() {
                     androidx.appcompat.R.anim.abc_popup_enter,
                     androidx.appcompat.R.anim.abc_popup_exit)
             CustomTabsClient.bindCustomTabsService(context,
-                    CUSTOM_TAB_PACKAGE_NAME, connection)
+                    CUSTOM_TAB_PACKAGE_NAME, connection!!)
         }
 
         addNews()
@@ -228,5 +229,9 @@ class NewsFragment : ListFragment() {
         mActivity.removeTabs()
         super.onDestroyView()
         _binding = null
+        connection?.let {
+            context?.unbindService(connection!!)
+        }
+
     }
 }
