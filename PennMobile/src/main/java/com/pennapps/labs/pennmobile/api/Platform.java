@@ -15,24 +15,6 @@ public interface Platform {
     String campusExpressBaseUrl = "https://prod.campusexpress.upenn.edu/api/v1";
 
     @FormUrlEncoded
-    @POST("/accounts/token/")
-    void getAccessToken(
-            @Field("code") String authCode,
-            @Field("grant_type") String grantType,
-            @Field("client_id") String clientID,
-            @Field("redirect_uri") String redirectURI,
-            @Field("code_verifier") String codeVerifier,
-            Callback<AccessTokenResponse> callback);
-
-    @FormUrlEncoded
-    @POST("/accounts/token/")
-    void refreshAccessToken(
-            @Field("refresh_token") String refreshToken,
-            @Field("grant_type") String grantType,
-            @Field("client_id") String clientID,
-            Callback<AccessTokenResponse> callback);
-
-    @FormUrlEncoded
     @POST("/accounts/introspect/")
     void getUser(
             @Header("Authorization") String authorizationHeader,
