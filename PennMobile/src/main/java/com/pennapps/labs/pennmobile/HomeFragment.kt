@@ -77,6 +77,7 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.i("test sublet", "destroyed")
         _binding = null
     }
 

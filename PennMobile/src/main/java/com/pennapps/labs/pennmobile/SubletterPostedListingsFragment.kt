@@ -59,7 +59,8 @@ class SubletterPostedListingsFragment(private val dataModel: SublettingViewModel
         sublettingRecyclerView.layoutManager = newLayoutManager
 
         //delete  later, Trini's fake data testing
-        sublettingRecyclerView.setHasFixedSize(true)
+        //sublettingRecyclerView.setHasFixedSize(false)
+        /*
         sublettingList = setUpData()
         if (sublettingList.isNotEmpty()) {
             binding.postedNoListingsText.visibility = View.GONE;
@@ -67,7 +68,14 @@ class SubletterPostedListingsFragment(private val dataModel: SublettingViewModel
 
         }
 
-        myAdapter = PostedSubletsListAdapter(sublettingList)
+        */
+
+        dataModel.getPostedSublets(mActivity)
+        myAdapter = PostedSubletsListAdapter(dataModel)
+        dataModel.postedSubletsList.observe(viewLifecycleOwner, { sublets ->
+            sublettingList = sublets
+            myAdapter.notifyDataSetChanged()
+        })
         sublettingRecyclerView.adapter = myAdapter
 
     }
@@ -86,6 +94,7 @@ class SubletterPostedListingsFragment(private val dataModel: SublettingViewModel
                 .commitAllowingStateLoss()
     }
 
+    //Previously used function to temporarily populate data
     private fun setUpData(): ArrayList<Sublet> {
 
         var sublettingList = ArrayList<Sublet>()

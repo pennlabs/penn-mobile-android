@@ -13,9 +13,13 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.SublesseeDetailsFragment
 import com.pennapps.labs.pennmobile.classes.Sublet
 import com.pennapps.labs.pennmobile.classes.SublettingModel
+import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 
-class PostedSubletsListAdapter(var sublettingList: ArrayList<Sublet>):
+class PostedSubletsListAdapter(private val dataModel: SublettingViewModel):
         RecyclerView.Adapter<PostedSubletsListAdapter.SublettingCardViewHolder>() {
+
+    //get datamodel - this has instance of datamodel where it can access data from.
+    //fragment will say when to update
 
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
@@ -49,7 +53,7 @@ class PostedSubletsListAdapter(var sublettingList: ArrayList<Sublet>):
 
     override fun onBindViewHolder(holder: SublettingCardViewHolder, position: Int) {
 
-        var mSublettingCard: Sublet = sublettingList[position]
+        var mSublettingCard: Sublet = dataModel.getSublet(position) // dataModel.getSblet(position)
         //holder.listingImage.setImageResource(mSublettingCard.listingImage!!)
         holder.listingTitle.text = mSublettingCard.title
 
@@ -76,7 +80,9 @@ class PostedSubletsListAdapter(var sublettingList: ArrayList<Sublet>):
         }
     }
 
+
     override fun getItemCount(): Int {
-        return sublettingList.size
+        return dataModel.postedSubletsList.value?.size ?: 0
     }
+
 }
