@@ -1,22 +1,22 @@
-package com.pennapps.labs.pennmobile
+package com.pennapps.labs.pennmobile.Subletting
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.pennapps.labs.pennmobile.MainActivity
+import com.pennapps.labs.pennmobile.NewListingsFragment
+import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.adapters.PostedSubletsListAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.Sublet
-import com.pennapps.labs.pennmobile.classes.SublettingModel
 import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentSubletterPostedListingsBinding
-import kotlinx.android.synthetic.main.fragment_subletter_posted_listings.listings_refresh_layout
 
 class SubletterPostedListingsFragment(private val dataModel: SublettingViewModel) : Fragment() {
     private var _binding: FragmentSubletterPostedListingsBinding? = null
@@ -100,11 +100,11 @@ class SubletterPostedListingsFragment(private val dataModel: SublettingViewModel
         var sublettingList = ArrayList<Sublet>()
 
         val sublettingImages = intArrayOf(
-                R.drawable.dining_gourmet_grocer,
-                R.drawable.dining_hillel,
-                R.drawable.dining_mcclelland,
-                R.drawable.dining_kceh,
-                R.drawable.dining_commons
+            R.drawable.dining_gourmet_grocer,
+            R.drawable.dining_hillel,
+            R.drawable.dining_mcclelland,
+            R.drawable.dining_kceh,
+            R.drawable.dining_commons
         )
 
         val sublettingNames = arrayOf(

@@ -2,9 +2,8 @@ package com.pennapps.labs.pennmobile.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.pennapps.labs.pennmobile.SubletterDraftListingsFragment
-import com.pennapps.labs.pennmobile.SubletterPostedListingsFragment
-import com.pennapps.labs.pennmobile.api.StudentLife
+import com.pennapps.labs.pennmobile.Subletting.SubletterDraftListingsFragment
+import com.pennapps.labs.pennmobile.Subletting.SubletterPostedListingsFragment
 import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 
 class SubletterPagerAdapter(fragment: Fragment, private val dataModel: SublettingViewModel) : FragmentStateAdapter(fragment) {
