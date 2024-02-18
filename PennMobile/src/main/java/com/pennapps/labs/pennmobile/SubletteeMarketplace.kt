@@ -78,7 +78,7 @@ class SubletteeMarketplace : Fragment() {
     //function to put in fake data- will get rid of once I get backend data in
     private fun setUpData(): ArrayList<SublettingModel> {
 
-        var sublettingList = ArrayList<SublettingModel>()
+        sublettingList = ArrayList<SublettingModel>()
 
         val sublettingImages = intArrayOf(
                 R.drawable.dining_gourmet_grocer,

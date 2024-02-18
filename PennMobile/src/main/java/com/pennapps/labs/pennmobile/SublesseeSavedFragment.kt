@@ -7,21 +7,25 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.FragmentTransaction
-import com.google.firebase.analytics.FirebaseAnalytics
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayoutMediator
+import com.pennapps.labs.pennmobile.adapters.SublesseeSavedPagerAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.databinding.FragmentGsrBinding
-import com.pennapps.labs.pennmobile.databinding.FragmentSubletteeViewBinding
-import org.joda.time.DateTime
+import com.pennapps.labs.pennmobile.databinding.FragmentSublesseeInterestFormBinding
+import com.pennapps.labs.pennmobile.databinding.FragmentSublesseeSavedBinding
 
-class SubletteeFragment : Fragment() {
+class SublesseeSavedFragment : Fragment() {
 
     //create binding
-    private var _binding : FragmentSubletteeViewBinding? = null
+    private var _binding : FragmentSublesseeSavedBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var sublesseeSavedPagerAdapter: SublesseeSavedPagerAdapter
+    private lateinit var viewPager: ViewPager2
+    private lateinit var toMarketplaceButton: Button
 
     //api manager
     private lateinit var mStudentLife: StudentLife
-
     private lateinit var mActivity: MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,27 +35,31 @@ class SubletteeFragment : Fragment() {
         mActivity.closeKeyboard()
 
         val bundle = Bundle()
-
-        //edit this later for firebase
-        /* bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "0")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "GSR")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "App Feature")
-        FirebaseAnalytics.getInstance(mActivity).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle) */
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        _binding = FragmentSubletteeViewBinding.inflate(inflater, container, false)
+        _binding = FragmentSublesseeSavedBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        sublesseeSavedPagerAdapter = SublesseeSavedPagerAdapter(this)
+        viewPager = binding.sublesseeSavedViewPager
+        viewPager.adapter = sublesseeSavedPagerAdapter
+        val tabLayout = binding.sublesseeSavedTabLayout
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            if (position == 0) {
+                tab.text = "Saved"
+            }
+            else {
+                tab.text = "Applied"
+            }
+        }.attach()
 
-        val marketplaceButton: Button = view.findViewById(R.id.sublettee_enter_subletting_button)
+        toMarketplaceButton = binding.sublesseeSavedToMarketplaceButton
 
-        marketplaceButton.setOnClickListener {
-            //load new fragment, which will hold the subletting marketplace in whole
+        toMarketplaceButton.setOnClickListener {
             mActivity.supportFragmentManager.beginTransaction()
                     .replace(((view as ViewGroup).parent as View).id, SubletteeMarketplace())
                     .addToBackStack(null)
@@ -59,5 +67,4 @@ class SubletteeFragment : Fragment() {
                     .commit()
         }
     }
-
 }
