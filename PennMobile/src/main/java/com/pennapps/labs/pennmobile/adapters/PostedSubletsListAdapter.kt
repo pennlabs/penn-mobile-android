@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.SublesseeDetailsFragment
+import com.pennapps.labs.pennmobile.Subletting.SubletDetailsFragment
+import com.pennapps.labs.pennmobile.Subletting.SubletDetailsHolderFragment
 import com.pennapps.labs.pennmobile.classes.Sublet
 import com.pennapps.labs.pennmobile.classes.SublettingModel
 import com.pennapps.labs.pennmobile.classes.SublettingViewModel
@@ -32,15 +34,6 @@ class PostedSubletsListAdapter(private val dataModel: SublettingViewModel):
         var listingRooms = itemView.findViewById<TextView>(R.id.subletting_cardview_rooms)
         var listingDates = itemView.findViewById<TextView>(R.id.subletting_cardview_dates)
 
-        /* init {
-            itemView.setOnClickListener {
-                mActivity.supportFragmentManager.beginTransaction()
-                        .replace(itemView.id, SubletteeFragment())
-                        .addToBackStack(null)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .commit()
-            }
-        } */
 
     }
 
@@ -73,7 +66,7 @@ class PostedSubletsListAdapter(private val dataModel: SublettingViewModel):
 
         holder.itemView.setOnClickListener {
             mActivity.supportFragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, SublesseeDetailsFragment())
+                    .replace(R.id.content_frame, SubletDetailsHolderFragment(dataModel))
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit()

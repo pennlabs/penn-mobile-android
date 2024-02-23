@@ -58,17 +58,6 @@ class SubletterPostedListingsFragment(private val dataModel: SublettingViewModel
         newLayoutManager = GridLayoutManager(context, 2, LinearLayoutManager.VERTICAL, false)
         sublettingRecyclerView.layoutManager = newLayoutManager
 
-        //delete  later, Trini's fake data testing
-        //sublettingRecyclerView.setHasFixedSize(false)
-        /*
-        sublettingList = setUpData()
-        if (sublettingList.isNotEmpty()) {
-            binding.postedNoListingsText.visibility = View.GONE;
-
-
-        }
-
-        */
 
         dataModel.getPostedSublets(mActivity)
         myAdapter = PostedSubletsListAdapter(dataModel)
@@ -92,61 +81,6 @@ class SubletterPostedListingsFragment(private val dataModel: SublettingViewModel
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
                 .commitAllowingStateLoss()
-    }
-
-    //Previously used function to temporarily populate data
-    private fun setUpData(): ArrayList<Sublet> {
-
-        var sublettingList = ArrayList<Sublet>()
-
-        val sublettingImages = intArrayOf(
-            R.drawable.dining_gourmet_grocer,
-            R.drawable.dining_hillel,
-            R.drawable.dining_mcclelland,
-            R.drawable.dining_kceh,
-            R.drawable.dining_commons
-        )
-
-        val sublettingNames = arrayOf(
-                "The Radian",
-                "The Chestnut",
-                "Axis",
-                "The Radian",
-                "The Speakeasy"
-        )
-
-        val sublettingPrices = intArrayOf(
-                900,
-                1000,
-                1200,
-                500,
-                400
-        )
-
-        val sublettingBedrooms = arrayOf(
-                2,
-                3,
-                1,
-                4,
-                10
-        )
-
-        val sublettingBathrooms = arrayOf(
-                10,
-                5,
-                0,
-                1,
-                3
-        )
-
-        for (i in sublettingImages.indices)
-            sublettingList.add(Sublet(title = sublettingNames[i],
-                    minPrice = sublettingPrices[i], beds = sublettingBedrooms[i],
-                    baths = sublettingBathrooms[i]))
-
-        return sublettingList
-
-
     }
 
 }

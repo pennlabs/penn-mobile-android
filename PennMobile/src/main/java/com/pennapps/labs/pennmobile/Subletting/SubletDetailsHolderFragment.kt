@@ -36,11 +36,11 @@ class SubletDetailsHolderFragment(private val dataModel: SublettingViewModel) : 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_sublet_details, container, false)
+        return inflater.inflate(R.layout.fragment_subletter_listing, container, false)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         subletDetailsPagerAdapter = SubletDetailsPagerAdapter(this, dataModel)
-        viewPager = view.findViewById(R.id.viewPager2)
+        viewPager = view.findViewById(R.id.listing_view_pager)
         viewPager.adapter = subletDetailsPagerAdapter
 
 
