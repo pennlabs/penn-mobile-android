@@ -20,6 +20,7 @@ import com.pennapps.labs.pennmobile.classes.LaundryRequest;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
+import com.pennapps.labs.pennmobile.classes.Offer;
 import com.pennapps.labs.pennmobile.classes.Poll;
 import com.pennapps.labs.pennmobile.classes.Post;
 import com.pennapps.labs.pennmobile.classes.SaveAccountResponse;
@@ -216,9 +217,18 @@ public interface StudentLife {
             @Body Sublet sublet,
             Callback<Sublet> callback);
 
+
+    //this has to include userid as queryparam
     @Headers({"Content-Type: application/json"})
     @GET("/sublet/properties/")
     Observable<List<Sublet>> getPostedSublets(
             @Header("Authorization") String bearerToken);
+
+    @Headers({"Content-Type: application/json"})
+    @GET("/sublet/properties/{sublet_id}/offers/")
+    Observable<List<Offer>> getSubletOffers(
+            @Header("Authorization") String bearerToken,
+            @Path("sublet_id") int id
+    );
 
 }

@@ -66,7 +66,7 @@ class PostedSubletsListAdapter(private val dataModel: SublettingViewModel):
 
         holder.itemView.setOnClickListener {
             mActivity.supportFragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, SubletDetailsHolderFragment(dataModel))
+                    .replace(R.id.content_frame, SubletDetailsHolderFragment(dataModel, position))
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit()

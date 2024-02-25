@@ -17,7 +17,7 @@ import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import kotlinx.android.synthetic.main.fragment_dining_holder.view.appbar_home_holder
 
 //Pulls existing datamodel from previous
-class SubletDetailsHolderFragment(private val dataModel: SublettingViewModel) : Fragment() {
+class SubletDetailsHolderFragment(private val dataModel: SublettingViewModel, private val subletNumber: Int) : Fragment() {
     lateinit var subletDetailsPagerAdapter: SubletDetailsPagerAdapter
     private lateinit var mActivity: MainActivity
     private lateinit var viewPager: ViewPager2
@@ -39,7 +39,7 @@ class SubletDetailsHolderFragment(private val dataModel: SublettingViewModel) : 
         return inflater.inflate(R.layout.fragment_subletter_listing, container, false)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        subletDetailsPagerAdapter = SubletDetailsPagerAdapter(this, dataModel)
+        subletDetailsPagerAdapter = SubletDetailsPagerAdapter(this, dataModel, subletNumber)
         viewPager = view.findViewById(R.id.listing_view_pager)
         viewPager.adapter = subletDetailsPagerAdapter
 

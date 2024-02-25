@@ -5,10 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.pennapps.labs.pennmobile.classes.Sublet
 import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentSubletDetailsBinding
 
-class SubletDetailsFragment(private val dataModel: SublettingViewModel) : Fragment() {
+class SubletDetailsFragment(private val dataModel: SublettingViewModel, private val subletNumber: Int) : Fragment() {
     private var _binding: FragmentSubletDetailsBinding? = null
     private val binding get() = _binding!!
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,6 +20,16 @@ class SubletDetailsFragment(private val dataModel: SublettingViewModel) : Fragme
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         _binding = FragmentSubletDetailsBinding.inflate(inflater, container, false)
+
+        val sublet : Sublet = dataModel.getSublet(subletNumber)
+        binding.titleText.text = sublet.title
+        binding.priceText.text = sublet.minPrice.toString()
+        binding.addressText.text = sublet.address
+        binding.datesText.text = sublet.startDate + " to " + sublet.endDate
+        binding.descriptionText.text = sublet.description
+
+
+
 
         return binding.root
     }

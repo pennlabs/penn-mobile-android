@@ -27,4 +27,12 @@
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/candidates_text" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/offer_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/candidates_description_text"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
