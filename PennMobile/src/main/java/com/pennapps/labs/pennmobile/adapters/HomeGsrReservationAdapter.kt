@@ -32,6 +32,11 @@ class HomeGsrReservationAdapter (reservations: List<GSRReservation>) : RecyclerV
 
     private lateinit var itemImage: ImageView
     private lateinit var itemLocation: TextView
+
+    //private lateinit var itemName: TextView
+    private lateinit var itemStatus: TextView
+    private lateinit var itemHours: TextView
+
     private lateinit var itemButton: Button
     private lateinit var itemDate: TextView
 

@@ -108,9 +108,9 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
             POLL -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.poll_card, parent, false))
             }
-            GSR_BOOKING -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.gsr_reservation, parent, false))
-            }
+            //GSR_BOOKING -> {
+                //ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.gsr_reservation, parent, false))
+            //}
             NOT_SUPPORTED -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.empty_view, parent, false))
             }
@@ -479,19 +479,20 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
 
     private fun bindGSRCell(holder: ViewHolder, cell: GSRCell) {
         //TODO: finish this :(
-        ////holder.itemView.home_card_title.text = "Reservations"
-        ////holder.itemView.home_card_subtitle.text = "Group Study Rooms"
+        holder.itemView.home_card_title.text = "Reservations"
+        holder.itemView.home_card_subtitle.text = "Group Study Rooms"
         //TODO: button on click
         val reservations = cell.reservations
-        ////holder.itemView.home_card_subtitle.text = "test"
         //holder.itemView.home_card_rv.adapter = HomeGsrBuildingAdapter(reservations)
-//        if(reservations.isNotEmpty()){
-//            val res = reservations[0];
-//            holder.itemView.home_card_subtitle.text = res.name;
+        if(reservations.isNotEmpty()){
+            val res = reservations[0];
+            holder.itemView.home_card_subtitle.text = res.name;
 //
-//        }
-        ////holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
-                ////LinearLayoutManager.VERTICAL, false)
+        }
+
+
+        holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
+                LinearLayoutManager.VERTICAL, false)
         ////holder.itemView.home_card_rv.adapter = HomeGsrReservationAdapter(reservations)
 
     }
