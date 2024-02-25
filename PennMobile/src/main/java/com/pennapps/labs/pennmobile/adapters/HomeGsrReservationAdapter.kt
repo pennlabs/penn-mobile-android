@@ -35,7 +35,7 @@ class HomeGsrReservationAdapter (reservations: List<GSRReservation>) : RecyclerV
     private var activeReservations: List<GSRReservation> = reservations
 
     private lateinit var itemImage: ImageView
-    private lateinit var itemLocation: TextView
+    //private lateinit var itemLocation: TextView
 
     private lateinit var itemName: TextView
     private lateinit var itemStatus: TextView
@@ -58,7 +58,6 @@ class HomeGsrReservationAdapter (reservations: List<GSRReservation>) : RecyclerV
 
 
 
-        TODO("Not yet implemented")
     }
 
     override fun getItemCount(): Int {
@@ -77,7 +76,6 @@ class HomeGsrReservationAdapter (reservations: List<GSRReservation>) : RecyclerV
     inner class ViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         init {
-            TODO("Put shit here and look at dining card adapter")
             itemImage = itemView.item_gsr_image
             itemName = itemView.item_gsr_name
             itemStatus = itemView.item_gsr_status

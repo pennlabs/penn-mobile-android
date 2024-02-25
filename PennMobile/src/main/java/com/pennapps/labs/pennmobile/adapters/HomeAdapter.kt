@@ -484,16 +484,16 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         //TODO: button on click
         val reservations = cell.reservations
         //holder.itemView.home_card_rv.adapter = HomeGsrBuildingAdapter(reservations)
-        if(reservations.isNotEmpty()){
+        if(reservations.isNotEmpty()) {
             val res = reservations[0];
-            holder.itemView.home_card_subtitle.text = res.name;
+            //holder.itemView.home_card_subtitle.text = res.name;
 //
         }
 
-
         holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
-                LinearLayoutManager.VERTICAL, false)
+                    LinearLayoutManager.VERTICAL, false)
         holder.itemView.home_card_rv.adapter = HomeGsrReservationAdapter(reservations)
+
 
     }
 
