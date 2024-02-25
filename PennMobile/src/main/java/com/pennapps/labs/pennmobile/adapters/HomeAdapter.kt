@@ -43,6 +43,8 @@ import com.pennapps.labs.pennmobile.classes.LaundryCell
 import com.pennapps.labs.pennmobile.classes.NewsCell
 import com.pennapps.labs.pennmobile.classes.PollCell
 import com.pennapps.labs.pennmobile.classes.PostCell
+import com.pennapps.labs.pennmobile.classes.GSRCell
+import com.pennapps.labs.pennmobile.classes.GSRReservation
 import com.pennapps.labs.pennmobile.components.sneaker.Utils.convertToDp
 import com.pennapps.labs.pennmobile.utils.Utils
 import eightbitlab.com.blurview.RenderScriptBlur
@@ -106,15 +108,19 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
             POLL -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.poll_card, parent, false))
             }
+            GSR_BOOKING -> {
+                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_gsr_building, parent, false))
+            }
             NOT_SUPPORTED -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.empty_view, parent, false))
             }
+            //TODO: GSR CARD HERRRREEEEE (GSR_BOOKING)
             else -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
             }
         }
     }
-
+//TODO: BIND GSR CELL
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val cell = dataModel.getCell(position)
         when (cell.type) {
@@ -124,6 +130,7 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
             "laundry" -> bindLaundryCell(holder, cell as LaundryCell)
             "post" -> bindPostCell(holder, cell as PostCell)
             "poll" -> bindPollCell(holder, cell as PollCell, position)
+            "gsr_booking" -> bindGSRCell(holder, cell as GSRCell)
             "none" -> Log.i("HomeAdapter", "Empty cell at position $position")
             else -> Log.i("HomeAdapter", "Unsupported type of data at position $position")
         }
@@ -469,6 +476,59 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
             holder.itemView.vote_btn?.setOnClickListener {}
         }
     }
+
+    private fun bindGSRCell(holder: ViewHolder, cell: GSRCell) {
+        //TODO: finish this :(
+        holder.itemView.home_card_title.text = "Reservations"
+        holder.itemView.home_card_subtitle.text = "Group Study Rooms"
+        //TODO: button on click
+        val reservations = cell.reservations
+        holder.itemView.home_card_subtitle.text = "test";
+        //holder.itemView.home_card_rv.adapter = HomeGsrBuildingAdapter(reservations)
+//        if(reservations.isNotEmpty()){
+//            val res = reservations[0];
+//            holder.itemView.home_card_subtitle.text = res.name;
+//
+//        }
+        holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
+                LinearLayoutManager.VERTICAL, false)
+        holder.itemView.home_card_rv.adapter = HomeGsrReservationAdapter(reservations)
+
+    }
+
+//    holder.itemView.home_card_title.text = "Favorites"
+//    holder.itemView.home_card_subtitle.text = "DINING HALLS"
+//    holder.itemView.dining_prefs_btn.visibility = View.VISIBLE
+//    holder.itemView.dining_prefs_btn.setOnClickListener {
+//        mActivity.supportFragmentManager.beginTransaction()
+//                .replace(R.id.content_frame, DiningSettingsFragment(dataModel))
+//                .addToBackStack(null)
+//                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+//                .commit()
+//    }
+//
+//    mStudentLife.venues()
+//    .flatMap { venues -> Observable.from(venues) }
+//    .flatMap { venue ->
+//        val hall = DiningFragment.createHall(venue)
+//        Observable.just(hall)
+//    }
+//    .toList()
+//    .subscribe { diningHalls ->
+//        mActivity.runOnUiThread {
+//            val favorites: ArrayList<DiningHall> = arrayListOf()
+//            val favoritesIdList: List<Int>? = cell.venues
+//            diningHalls.forEach {
+//                if (favoritesIdList?.contains(it.id) == true) {
+//                    favorites.add(it)
+//                }
+//            }
+//            getMenus(favorites)
+//            holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
+//                    LinearLayoutManager.VERTICAL, false)
+//            holder.itemView.home_card_rv.adapter = DiningCardAdapter(favorites)
+//        }
+//    }
 
     // Chrome custom tabs to launch news site
     internal inner class NewsCustomTabsServiceConnection : CustomTabsServiceConnection() {
