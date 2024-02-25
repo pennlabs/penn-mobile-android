@@ -21,6 +21,10 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRReservation
 import kotlinx.android.synthetic.main.dining_list_item.view.*
+import kotlinx.android.synthetic.main.gsr_list_item.view.item_gsr_hours
+import kotlinx.android.synthetic.main.gsr_list_item.view.item_gsr_image
+import kotlinx.android.synthetic.main.gsr_list_item.view.item_gsr_name
+import kotlinx.android.synthetic.main.gsr_list_item.view.item_gsr_status
 import kotlinx.android.synthetic.main.gsr_reservation.view.gsr_reservation_cancel_btn
 import kotlinx.android.synthetic.main.gsr_reservation.view.gsr_reservation_date_tv
 import kotlinx.android.synthetic.main.gsr_reservation.view.gsr_reservation_iv
@@ -33,12 +37,12 @@ class HomeGsrReservationAdapter (reservations: List<GSRReservation>) : RecyclerV
     private lateinit var itemImage: ImageView
     private lateinit var itemLocation: TextView
 
-    //private lateinit var itemName: TextView
+    private lateinit var itemName: TextView
     private lateinit var itemStatus: TextView
     private lateinit var itemHours: TextView
 
-    private lateinit var itemButton: Button
-    private lateinit var itemDate: TextView
+   // private lateinit var itemButton: Button
+    //private lateinit var itemDate: TextView
 
     //TODO("Image and text views")
 
@@ -50,7 +54,9 @@ class HomeGsrReservationAdapter (reservations: List<GSRReservation>) : RecyclerV
         val currentReservation = activeReservations[position]
         //get image
         //get name
-        itemLocation.text = currentReservation.name
+        itemName.text = currentReservation.name
+
+
 
         TODO("Not yet implemented")
     }
@@ -64,7 +70,7 @@ class HomeGsrReservationAdapter (reservations: List<GSRReservation>) : RecyclerV
         mActivity = mContext as MainActivity
         mStudentLife = MainActivity.studentLifeInstance
 
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.gsr_reservation, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.gsr_list_item, parent, false)
         //view?.dining_progress?.visibility = GONE
         return ViewHolder(view)
     }
@@ -72,10 +78,16 @@ class HomeGsrReservationAdapter (reservations: List<GSRReservation>) : RecyclerV
 
         init {
             TODO("Put shit here and look at dining card adapter")
-            itemImage = itemView.gsr_reservation_iv
-            itemLocation = itemView.gsr_reservation_location_tv
-            itemButton = itemView.gsr_reservation_cancel_btn
-            itemDate = itemView.gsr_reservation_date_tv
+            itemImage = itemView.item_gsr_image
+            itemName = itemView.item_gsr_name
+            itemStatus = itemView.item_gsr_status
+            itemHours = itemView.item_gsr_hours
+
+
+//            itemImage = itemView.gsr_reservation_iv
+//            itemLocation = itemView.gsr_reservation_location_tv
+//            itemButton = itemView.gsr_reservation_cancel_btn
+//            itemDate = itemView.gsr_reservation_date_tv
         }
 
     }

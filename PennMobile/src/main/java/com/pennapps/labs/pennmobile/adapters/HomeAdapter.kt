@@ -493,7 +493,7 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
 
         holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
                 LinearLayoutManager.VERTICAL, false)
-        ////holder.itemView.home_card_rv.adapter = HomeGsrReservationAdapter(reservations)
+        holder.itemView.home_card_rv.adapter = HomeGsrReservationAdapter(reservations)
 
     }
 
