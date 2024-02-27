@@ -484,52 +484,12 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         //TODO: button on click
         val reservations = cell.reservations
         //holder.itemView.home_card_rv.adapter = HomeGsrBuildingAdapter(reservations)
-        if(reservations.isNotEmpty()) {
-            val res = reservations[0];
-            //holder.itemView.home_card_subtitle.text = res.name;
-//
-        }
-
         holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
-                    LinearLayoutManager.VERTICAL, false)
+                LinearLayoutManager.VERTICAL, false)
         holder.itemView.home_card_rv.adapter = HomeGsrReservationAdapter(reservations)
-
-
     }
 
-//    holder.itemView.home_card_title.text = "Favorites"
-//    holder.itemView.home_card_subtitle.text = "DINING HALLS"
-//    holder.itemView.dining_prefs_btn.visibility = View.VISIBLE
-//    holder.itemView.dining_prefs_btn.setOnClickListener {
-//        mActivity.supportFragmentManager.beginTransaction()
-//                .replace(R.id.content_frame, DiningSettingsFragment(dataModel))
-//                .addToBackStack(null)
-//                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-//                .commit()
-//    }
-//
-//    mStudentLife.venues()
-//    .flatMap { venues -> Observable.from(venues) }
-//    .flatMap { venue ->
-//        val hall = DiningFragment.createHall(venue)
-//        Observable.just(hall)
-//    }
-//    .toList()
-//    .subscribe { diningHalls ->
-//        mActivity.runOnUiThread {
-//            val favorites: ArrayList<DiningHall> = arrayListOf()
-//            val favoritesIdList: List<Int>? = cell.venues
-//            diningHalls.forEach {
-//                if (favoritesIdList?.contains(it.id) == true) {
-//                    favorites.add(it)
-//                }
-//            }
-//            getMenus(favorites)
-//            holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
-//                    LinearLayoutManager.VERTICAL, false)
-//            holder.itemView.home_card_rv.adapter = DiningCardAdapter(favorites)
-//        }
-//    }
+
 
     // Chrome custom tabs to launch news site
     internal inner class NewsCustomTabsServiceConnection : CustomTabsServiceConnection() {

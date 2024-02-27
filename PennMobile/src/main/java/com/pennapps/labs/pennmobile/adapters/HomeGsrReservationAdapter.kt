@@ -20,6 +20,7 @@ import com.pennapps.labs.pennmobile.MenuFragment
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRReservation
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.dining_list_item.view.*
 import kotlinx.android.synthetic.main.gsr_list_item.view.item_gsr_hours
 import kotlinx.android.synthetic.main.gsr_list_item.view.item_gsr_image
@@ -29,6 +30,8 @@ import kotlinx.android.synthetic.main.gsr_reservation.view.gsr_reservation_cance
 import kotlinx.android.synthetic.main.gsr_reservation.view.gsr_reservation_date_tv
 import kotlinx.android.synthetic.main.gsr_reservation.view.gsr_reservation_iv
 import kotlinx.android.synthetic.main.gsr_reservation.view.gsr_reservation_location_tv
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
 import rx.android.schedulers.AndroidSchedulers
 
 class HomeGsrReservationAdapter (reservations: List<GSRReservation>) : RecyclerView.Adapter<HomeGsrReservationAdapter.ViewHolder>() {
@@ -54,9 +57,21 @@ class HomeGsrReservationAdapter (reservations: List<GSRReservation>) : RecyclerV
         val currentReservation = activeReservations[position]
         //get image
         //get name
-        itemName.text = currentReservation.name
+        val location = currentReservation.name
+        val formatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ")
+        val from = formatter.parseDateTime(currentReservation.fromDate)
+        val to = formatter.parseDateTime(currentReservation.toDate)
+        val day = from.toString("EEEE, MMMM d")
+        val fromHour = from.toString("h:mm a")
+        val toHour = to.toString("h:mm a")
 
+        val imageUrl = currentReservation.info?.get("thumbnail") ?: "https://s3.us-east-2.amazonaws.com/labs.api/dining/MBA+Cafe.jpg"
+        Picasso.get().load(imageUrl).fit().centerCrop().into(holder.itemView.item_gsr_image)
 
+        holder.itemView.item_gsr_name.text = location
+        holder.itemView.item_gsr_hours.text = day + "\n" + fromHour + "-" + toHour
+
+        //cancel button
 
     }
 
