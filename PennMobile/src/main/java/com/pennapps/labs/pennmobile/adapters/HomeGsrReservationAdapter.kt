@@ -71,8 +71,6 @@ class HomeGsrReservationAdapter (reservations: List<GSRReservation>) : RecyclerV
         holder.itemView.item_gsr_name.text = location
         holder.itemView.item_gsr_hours.text = day + "\n" + fromHour + "-" + toHour
 
-        //cancel button
-
     }
 
     override fun getItemCount(): Int {
