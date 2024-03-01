@@ -29,6 +29,14 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
 
     @Synchronized
     fun getAccessToken(function: () -> Unit) {
+        // if guest mode, then just do network request dangerously(TEMPORARY FIX, PLEASE DO SOMETHING
+        // ABOUT THIS IN FUTURE)
+        val guestMode = sp.getBoolean(mActivity.getString(R.string.guest_mode), false)
+        if (guestMode) {
+            function.invoke()
+            return
+        }
+
         mActivity.lifecycleScope.launch {
             val tokenMutex = mActivity.tokenMutex
             tokenMutex.lock()

@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile
 import android.content.*
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -153,10 +154,12 @@ class HomeFragment : Fragment() {
             val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
             val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
 
+            val isLoggedIn = !sp.getBoolean(mActivity.getString(R.string.guest_mode), false)
+
             lifecycleScope.launch(Dispatchers.Default) {
                 // set adapter if it is null
                 if (binding.homeCellsRv.adapter == null) {
-                    homepageViewModel.populateHomePageCells(studentLife, bearerToken, deviceID)
+                    homepageViewModel.populateHomePageCells(studentLife, isLoggedIn, bearerToken, deviceID)
                     withContext(Dispatchers.Main) {
                         binding.homeCellsRv.adapter = HomeAdapter(homepageViewModel)
                         binding.homeCellsRv.visibility = View.INVISIBLE
@@ -164,7 +167,8 @@ class HomeFragment : Fragment() {
                         binding.homeRefreshLayout.isRefreshing = false
                     }
                 } else { // otherwise, call updateHomePageCells which only updates the cells that are changed
-                    val updatedIndices = homepageViewModel.updateHomePageCells(studentLife, bearerToken, deviceID)
+                    val updatedIndices = homepageViewModel.updateHomePageCells(studentLife, isLoggedIn,
+                        bearerToken, deviceID)
                     withContext(Dispatchers.Main) {
                         updatedIndices.forEach { pos ->
                             binding.homeCellsRv.adapter!!.notifyItemChanged(pos)
