@@ -5,7 +5,6 @@ import android.provider.Settings
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-
 import com.pennapps.labs.pennmobile.BuildConfig
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
