@@ -104,10 +104,10 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
      * Returns a list of updated cell positions.
      */
     @Synchronized
-    fun updateHomePageCells(studentLife: StudentLife, bearerToken: String,
+    fun updateHomePageCells(studentLife: StudentLife, isLoggedIn: Boolean, bearerToken: String,
                             deviceID: String) : List<Int> {
         val prevList = homepageCells.toList()
-        populateHomePageCells(studentLife, bearerToken, deviceID)
+        populateHomePageCells(studentLife, isLoggedIn, bearerToken, deviceID)
 
         val updatedIndices = mutableListOf<Int>()
 
@@ -128,9 +128,8 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
      * This function requires a correct (non-expired) bearerToken!!
      */
     @Synchronized
-    fun populateHomePageCells(studentLife: StudentLife, bearerToken: String, deviceID: String) {
-        val isLoggedIn = bearerToken != "Bearer "
-
+    fun populateHomePageCells(studentLife: StudentLife,
+                              isLoggedIn: Boolean, bearerToken: String, deviceID: String) {
         if (isLoggedIn) {
             val latch = CountDownLatch(NUM_CELLS_LOGGED_IN)
             getPolls(studentLife, bearerToken, deviceID, latch)
