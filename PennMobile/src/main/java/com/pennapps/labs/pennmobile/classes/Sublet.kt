@@ -10,12 +10,10 @@ data class Sublet(@SerializedName("end_date")
                   val baths: Int? = 0,
                   @SerializedName("address")
                   val address: String? = "",
-                  @SerializedName("max_price")
-                  val maxPrice: Int = 0,
+                  @SerializedName("price")
+                  val price: Int = 0,
                   @SerializedName("expires_at")
                   val expiresAt: String = "",
-                  @SerializedName("min_price")
-                  val minPrice: Int = 0,
                   @SerializedName("description")
                   val description: String? = "",
                   @SerializedName("title")

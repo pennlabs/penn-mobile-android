@@ -50,14 +50,8 @@ class PostedSubletsListAdapter(private val dataModel: SublettingViewModel):
         //holder.listingImage.setImageResource(mSublettingCard.listingImage!!)
         holder.listingTitle.text = mSublettingCard.title
 
-        //price, adding negotiable if price is negotiable
-        var price = "$" + mSublettingCard.minPrice.toString()
-        /*
-        if (mSublettingCard.isNegotiable == true) {
-            price += " (negotiable)"
-        }
+        var price = "$" + mSublettingCard.price.toString()
 
-         */
         holder.listingPrice.text = price
 
         val rooms = mSublettingCard.beds.toString() + " bd | " +

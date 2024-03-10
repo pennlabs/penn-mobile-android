@@ -113,43 +113,6 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
         catCheck = binding.catCheck
 
 
-        binding.draftButton.setOnClickListener{
-            /*
-            {
-                "title": "Sublet1",
-                "address": "3465 Sansom Street",
-                "beds": 10,
-                "baths": 2,
-                "description": "Test sublet 1",
-                "external_link": "https://pennlabs.org/",
-                "min_price": 10,
-                "max_price": 500,
-                "expires_at": "3000-02-01T10:48:02-05:00",
-                "start_date": "3000-04-09",
-                "end_date": "3000-08-07"
-            }
-
-             */
-
-
-            val newSublet = Sublet(
-                    endDate = "3000-08-07",
-                    baths = 2,
-                    address = "3465 Sansom Street",
-                    maxPrice = 500,//fix
-                    expiresAt = "3000-02-01T10:48:02-05:00",
-                    minPrice = 10, // fix
-                    description = description,
-                    title = "Sublet1",
-                    beds = 10,
-                    externalLink = "https://pennlabs.org/", // fix
-                    startDate = "3000-04-09"
-            )
-            dataModel.postSublet(mActivity, newSublet)
-
-        }
-
-
         val dateRegex = Regex("""^(0[1-9]|1[0-2])/(0[1-9]|[1-2][0-9]|3[0-1])/\d{2}$""")
 
         binding.postButton.setOnClickListener{
@@ -216,9 +179,8 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
                 endDate = convertedEnd,
                 baths = baths,
                 address = address,
-                maxPrice = price,//fix
+                price = price,//fix
                 expiresAt = "3000-02-01T10:48:02-05:00", //?
-                minPrice = 0, // fix
                 description = description,
                 title = title,
                 beds = beds,

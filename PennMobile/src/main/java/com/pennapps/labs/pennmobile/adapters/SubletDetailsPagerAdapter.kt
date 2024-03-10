@@ -13,7 +13,7 @@ class SubletDetailsPagerAdapter(fragment: Fragment, private val dataModel: Suble
         return if (position == 0) {
             SubletDetailsFragment(dataModel, subletNumber)
         } else {
-            SubletCandidatesFragment(dataModel, subletNumber)
+            SubletCandidatesFragment(subletNumber)
         }
     }
 
