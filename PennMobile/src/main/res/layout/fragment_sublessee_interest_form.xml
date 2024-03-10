@@ -1,13 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SublesseeInterestForm">
+    android:layout_marginStart="16dp">
 
     <TextView
+        android:id="@+id/sublessee_interest_form_intro"
+        style="@style/title_fragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="interest form" />
+        android:layout_height="wrap_content"
+        android:text="Send Interest"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</FrameLayout>
+    <EditText
+        android:id="@+id/sublessee_interest_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingBottom="10dp"
+        android:inputType="phone"
+        android:text="Phone Number"
+        android:textSize="20sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sublessee_interest_form_intro" />
+
+    <TextView
+        android:id="@+id/sublessee_interest_date_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sublessee_interest_phone" />
+
+    <EditText
+        android:id="@+id/sublessee_interest_start_date"
+        android:layout_width="167dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="date"
+        android:text="Start Date"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sublessee_interest_date_text" />
+
+    <EditText
+        android:id="@+id/sublessee_interest_end_date"
+        android:layout_width="167dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="date"
+        android:text="End Date"
+        app:layout_constraintLeft_toRightOf="@id/sublessee_interest_start_date"
+        app:layout_constraintTop_toBottomOf="@id/sublessee_interest_date_text" />
+
+    <CheckBox
+        android:id="@+id/sublessee_interest_date_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:text="Dates Flexible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sublessee_interest_start_date"/>
+
+    <EditText
+        android:id="@+id/sublessee_interest_proposed_rent"
+        android:layout_width="167dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="number"
+        android:text="Proposed Rent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sublessee_interest_date_checkbox" />
+
+    <TextView
+        android:id="@+id/sublessee_interest_message_heading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:paddingBottom="10dp"
+        android:text="Message (optional)"
+        android:textSize="20sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sublessee_interest_proposed_rent" />
+
+    <EditText
+        android:id="@+id/sublessee_interest_message_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="Message"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sublessee_interest_message_heading" />
+
+    <Button
+        android:id="@+id/sublessee_interest_send_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send"
+        android:backgroundTint="@color/aqua"
+        android:layout_marginBottom="90dp"
+        app:layout_constraintTop_toBottomOf="@id/sublessee_interest_message_text"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center_horizontal" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
