@@ -34,6 +34,7 @@ import java.util.List;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
@@ -230,5 +231,13 @@ public interface StudentLife {
             @Header("Authorization") String bearerToken,
             @Path("sublet_id") int id
     );
+
+    @Headers({"Content-Type: application/json"})
+    @DELETE("/sublet/properties/{sublet_id}")
+    void deleteSublet(
+            @Header("Authorization") String bearerToken,
+            @Path("sublet_id") int id);
+
+
 
 }

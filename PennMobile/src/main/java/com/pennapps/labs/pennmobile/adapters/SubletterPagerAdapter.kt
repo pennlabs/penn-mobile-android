@@ -11,7 +11,7 @@ class SubletterPagerAdapter(fragment: Fragment, private val dataModel: Sublettin
     override fun getItemCount(): Int = 2
     override fun createFragment(position: Int): Fragment {
         return if (position == 0) {
-            SubletterPostedListingsFragment(dataModel)
+            SubletterPostedListingsFragment()
         } else {
             SubletterDraftListingsFragment(dataModel)
         }

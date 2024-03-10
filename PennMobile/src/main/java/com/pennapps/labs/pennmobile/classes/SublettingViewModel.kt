@@ -86,6 +86,37 @@ class SublettingViewModel (private val activity: Activity, private val studentLi
         }
     }
 
+    /*
+    fun deleteSublet(mActivity: MainActivity, id: Int) {
+        val context = activity.applicationContext
+        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+
+
+        OAuth2NetworkManager(mActivity).getAccessToken {
+
+            val bearerToken =
+                "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
+
+
+            studentLife.deleteSublet(bearerToken, id).subscribe({ sublets ->
+                mActivity.runOnUiThread {
+                    postedSubletsList.value = sublets as ArrayList<Sublet>
+                }
+            }, { throwable ->
+                mActivity.runOnUiThread {
+                    Log.e(
+                        "Posted Sublet Fragment",
+                        "Could not load Posted Sublets",
+                        throwable
+                    )
+                }
+            })
+        }
+    }
+
+     */
+
+
     fun getSublet(position : Int) : Sublet {
         return postedSubletsList.value?.get(position) ?: Sublet() // Provide a default value if needed
     }

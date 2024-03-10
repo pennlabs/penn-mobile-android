@@ -18,7 +18,7 @@ import com.pennapps.labs.pennmobile.classes.Sublet
 import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentSubletterPostedListingsBinding
 
-class SubletterPostedListingsFragment(private val dataModel: SublettingViewModel) : Fragment() {
+class SubletterPostedListingsFragment() : Fragment() {
     private var _binding: FragmentSubletterPostedListingsBinding? = null
     private val binding get() = _binding!!
 
@@ -27,6 +27,7 @@ class SubletterPostedListingsFragment(private val dataModel: SublettingViewModel
     lateinit var newLayoutManager: GridLayoutManager
     lateinit var sublettingList: ArrayList<Sublet>
     lateinit var myAdapter: PostedSubletsListAdapter
+    lateinit var dataModel: SublettingViewModel
 
     //api manager
     private lateinit var mStudentLife: StudentLife
@@ -38,6 +39,7 @@ class SubletterPostedListingsFragment(private val dataModel: SublettingViewModel
         mStudentLife = MainActivity.studentLifeInstance
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()
+        dataModel = SublettingViewModel(mActivity, mStudentLife)
 
         val bundle = Bundle()
     }

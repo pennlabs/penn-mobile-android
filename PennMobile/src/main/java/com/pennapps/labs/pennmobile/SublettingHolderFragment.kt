@@ -45,8 +45,13 @@ class SublettingFragment : Fragment() {
         viewPager.adapter = sublettingPagerAdapter
         val tabLayout : TabLayout = view.findViewById(R.id.subletting_tab_layout)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = "OBJECT ${(position + 1)}"
+            if(position == 0) {
+                tab.text = "Subletter"
+            } else {
+                tab.text = "Sublessee"
+            }
         }.attach()
+
 
     }
 
