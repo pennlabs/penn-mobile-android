@@ -29,7 +29,7 @@ class SublesseeDetailsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        container?.removeAllViews()
+        //container?.removeAllViews()
         // Inflate the layout for this fragment
         _binding = FragmentSublesseeDetailsBinding.inflate(inflater, container, false)
         return binding.root

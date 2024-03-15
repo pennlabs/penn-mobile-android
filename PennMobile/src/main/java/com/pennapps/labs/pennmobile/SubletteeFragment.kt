@@ -9,6 +9,8 @@ import android.widget.Button
 import androidx.fragment.app.FragmentTransaction
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.api.StudentLife
+import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
+import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentGsrBinding
 import com.pennapps.labs.pennmobile.databinding.FragmentSubletteeViewBinding
 import org.joda.time.DateTime
@@ -23,6 +25,7 @@ class SubletteeFragment : Fragment() {
     private lateinit var mStudentLife: StudentLife
 
     private lateinit var mActivity: MainActivity
+    //private lateinit var dataModel : SublesseeViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

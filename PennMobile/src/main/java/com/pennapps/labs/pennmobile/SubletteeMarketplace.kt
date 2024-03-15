@@ -1,19 +1,25 @@
 package com.pennapps.labs.pennmobile
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.adapters.SublettingListAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
+import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
 import com.pennapps.labs.pennmobile.classes.SublettingModel
 import com.pennapps.labs.pennmobile.databinding.FragmentSubletteeMarketplaceBinding
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 /**
@@ -38,6 +44,8 @@ class SubletteeMarketplace : Fragment() {
     lateinit var sublettingList: ArrayList<SublettingModel>
     lateinit var myAdapter: SublettingListAdapter
 
+    private lateinit var dataModel: SublesseeViewModel
+
     //api manager
     private lateinit var mStudentLife: StudentLife
     private lateinit var mActivity: MainActivity
@@ -48,12 +56,14 @@ class SubletteeMarketplace : Fragment() {
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()
 
+        dataModel = SublesseeViewModel(mActivity, mStudentLife)
+
         val bundle = Bundle()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        container?.removeAllViews()
+        //container?.removeAllViews()
         _binding = FragmentSubletteeMarketplaceBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -71,7 +81,10 @@ class SubletteeMarketplace : Fragment() {
         sublettingRecyclerView.setHasFixedSize(true)
         sublettingList = setUpData()
 
-        myAdapter = SublettingListAdapter(sublettingList)
+        dataModel.listSublets(mActivity)
+        //Log.i("sublets initialized", actualSublets[0].title)
+
+        myAdapter = SublettingListAdapter(sublettingList, dataModel)
         sublettingRecyclerView.adapter = myAdapter
     }
 
