@@ -277,4 +277,5 @@
     <string name="bed"># Bed</string>
     <string name="calendar_icon">calendar icon</string>
     <string name="title">Title</string>
+    <string name="details">Details</string>
 </resources>

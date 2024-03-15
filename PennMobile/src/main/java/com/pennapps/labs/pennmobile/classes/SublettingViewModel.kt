@@ -4,6 +4,7 @@ import android.app.Activity
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
@@ -18,6 +19,12 @@ import retrofit.client.Response
 import retrofit.Callback
 
 class SublettingViewModel (private val activity: Activity, private val studentLife: StudentLife) {
+
+    //store posted sublets
+    //this updates live data - fragment observes, rv cals
+
+    var postedSubletsList = MutableLiveData<ArrayList<Sublet>>()
+
 
     fun postSublet(mActivity : MainActivity, sublet : Sublet) {
 
@@ -47,12 +54,25 @@ class SublettingViewModel (private val activity: Activity, private val studentLi
                         }
 
                     })
+        }
+
+
+    }
+
+    fun getPostedSublets(mActivity : MainActivity) {
+        val context = activity.applicationContext
+        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+
+
+        OAuth2NetworkManager(mActivity).getAccessToken {
+
+            val bearerToken =
+                "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
 
             studentLife.getPostedSublets(bearerToken).subscribe({ sublets ->
                 mActivity.runOnUiThread {
-                    //return sublets
-
+                    postedSubletsList.value = sublets as ArrayList<Sublet>
                 }
             }, { throwable ->
                 mActivity.runOnUiThread {
@@ -64,8 +84,41 @@ class SublettingViewModel (private val activity: Activity, private val studentLi
                 }
             })
         }
+    }
+
+    /*
+    fun deleteSublet(mActivity: MainActivity, id: Int) {
+        val context = activity.applicationContext
+        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
 
 
+        OAuth2NetworkManager(mActivity).getAccessToken {
+
+            val bearerToken =
+                "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
+
+
+            studentLife.deleteSublet(bearerToken, id).subscribe({ sublets ->
+                mActivity.runOnUiThread {
+                    postedSubletsList.value = sublets as ArrayList<Sublet>
+                }
+            }, { throwable ->
+                mActivity.runOnUiThread {
+                    Log.e(
+                        "Posted Sublet Fragment",
+                        "Could not load Posted Sublets",
+                        throwable
+                    )
+                }
+            })
+        }
+    }
+
+     */
+
+
+    fun getSublet(position : Int) : Sublet {
+        return postedSubletsList.value?.get(position) ?: Sublet() // Provide a default value if needed
     }
 
 

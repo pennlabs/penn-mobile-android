@@ -11,11 +11,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.SublesseeDetailsFragment
+import com.pennapps.labs.pennmobile.Subletting.SubletDetailsFragment
+import com.pennapps.labs.pennmobile.Subletting.SubletDetailsHolderFragment
 import com.pennapps.labs.pennmobile.classes.Sublet
 import com.pennapps.labs.pennmobile.classes.SublettingModel
+import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 
-class PostedSubletsListAdapter(var sublettingList: ArrayList<Sublet>):
+class PostedSubletsListAdapter(private val dataModel: SublettingViewModel):
         RecyclerView.Adapter<PostedSubletsListAdapter.SublettingCardViewHolder>() {
+
+    //get datamodel - this has instance of datamodel where it can access data from.
+    //fragment will say when to update
 
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
@@ -28,15 +34,6 @@ class PostedSubletsListAdapter(var sublettingList: ArrayList<Sublet>):
         var listingRooms = itemView.findViewById<TextView>(R.id.subletting_cardview_rooms)
         var listingDates = itemView.findViewById<TextView>(R.id.subletting_cardview_dates)
 
-        /* init {
-            itemView.setOnClickListener {
-                mActivity.supportFragmentManager.beginTransaction()
-                        .replace(itemView.id, SubletteeFragment())
-                        .addToBackStack(null)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .commit()
-            }
-        } */
 
     }
 
@@ -49,18 +46,12 @@ class PostedSubletsListAdapter(var sublettingList: ArrayList<Sublet>):
 
     override fun onBindViewHolder(holder: SublettingCardViewHolder, position: Int) {
 
-        var mSublettingCard: Sublet = sublettingList[position]
+        var mSublettingCard: Sublet = dataModel.getSublet(position) // dataModel.getSblet(position)
         //holder.listingImage.setImageResource(mSublettingCard.listingImage!!)
         holder.listingTitle.text = mSublettingCard.title
 
-        //price, adding negotiable if price is negotiable
-        var price = "$" + mSublettingCard.minPrice.toString()
-        /*
-        if (mSublettingCard.isNegotiable == true) {
-            price += " (negotiable)"
-        }
+        var price = "$" + mSublettingCard.price.toString()
 
-         */
         holder.listingPrice.text = price
 
         val rooms = mSublettingCard.beds.toString() + " bd | " +
@@ -69,14 +60,16 @@ class PostedSubletsListAdapter(var sublettingList: ArrayList<Sublet>):
 
         holder.itemView.setOnClickListener {
             mActivity.supportFragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, SublesseeDetailsFragment())
+                    .replace(R.id.content_frame, SubletDetailsHolderFragment(dataModel, position))
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit()
         }
     }
 
+
     override fun getItemCount(): Int {
-        return sublettingList.size
+        return dataModel.postedSubletsList.value?.size ?: 0
     }
+
 }
