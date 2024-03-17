@@ -52,33 +52,14 @@ class SublettingListAdapter(var sublettingList: ArrayList<SublettingModel>, var 
 
     override fun onBindViewHolder(holder: SublettingCardViewHolder, position: Int) {
 
-        /* var actualSublettingCard: Sublet = actualSublets[position]
-        holder.listingTitle.text = actualSublettingCard.title */
+        val actualSublet = dataModel.getSublet(position)
 
-        dataModel.listSublets(mActivity)
-
-        val actualSublets = dataModel.getSublettingList()
-
-        Log.i("actual sublets", actualSublets.size.toString())
-
-        for (s in actualSublets) {
-            holder.listingTitle.text = s.title
-        }
-
-        /** var mSublettingCard: SublettingModel = sublettingList[position]
-        holder.listingImage.setImageResource(mSublettingCard.listingImage!!)
-        holder.listingTitle.text = mSublettingCard.listingTitle
-
-        //price, adding negotiable if price is negotiable
-        var price = "$" + mSublettingCard.listingPrice.toString()
-        if (mSublettingCard.isNegotiable == true) {
-            price += " (negotiable)"
-        }
+        holder.listingTitle.text = actualSublet.title
+        var price = "$" + actualSublet.price.toString()
         holder.listingPrice.text = price
-
-        val rooms = mSublettingCard.numberBeds.toString() + " bd | " +
-                mSublettingCard.numberBath.toString() + " ba"
-        holder.listingRooms.text = rooms */
+        val rooms = actualSublet.beds.toString() + " bd | " +
+                actualSublet.baths.toString() + " ba"
+        holder.listingRooms.text = rooms
 
         holder.itemView.setOnClickListener {
             mActivity.supportFragmentManager.beginTransaction()

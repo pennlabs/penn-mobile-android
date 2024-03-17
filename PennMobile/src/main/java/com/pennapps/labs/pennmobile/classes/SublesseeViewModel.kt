@@ -4,6 +4,7 @@ import android.app.Activity
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
@@ -20,10 +21,14 @@ import java.util.concurrent.CountDownLatch
 
 class SublesseeViewModel(private val activity: Activity, private val studentLife: StudentLife) {
 
-    private var sublettingList = ArrayList<Sublet>()
+    var sublettingList = MutableLiveData<ArrayList<Sublet>>()
 
-    fun getSublettingList(): ArrayList<Sublet> {
-        return sublettingList
+    fun getSublet(position : Int) : Sublet {
+        return sublettingList.value?.get(position) ?: Sublet() // Provide a default value if needed
+    }
+
+    fun getSublettingList(): ArrayList<Sublet>? {
+        return sublettingList.value
     }
 
     fun listSublets(mActivity: MainActivity) {
@@ -46,17 +51,20 @@ class SublesseeViewModel(private val activity: Activity, private val studentLife
                             fitnessRoomsList.add(fitnessRoom)
                         }
                     } */
-            studentLife.getSublets(bearerToken)
-                    .subscribe { sublets ->
-                        for (sublet in sublets) {
-                            Log.i("Sublet${sublet.id}", "${sublet.title}")
-                            sublettingList.add(sublet)
-                        }
-                        Log.i("Sublets not initializing", sublets.size.toString())
-                        Log.i("Sublets not initializing", sublettingList.size.toString())
-                        //sublettingList = sublets as ArrayList<Sublet>
-                    }
+            studentLife.getPostedSublets(bearerToken).subscribe({ sublets ->
+                mActivity.runOnUiThread {
+                    sublettingList.value = sublets as ArrayList<Sublet>
+                }
+            }, { throwable ->
+                mActivity.runOnUiThread {
+                    Log.e(
+                            "Sublessee Marketplace",
+                            "Could not load Posted Sublets",
+                            throwable
+                    )
+                }
+            })
         }
-        Log.i("sublets", sublettingList.size.toString())
+        Log.i("sublets", getSublettingList()?.size.toString())
     }
 }
