@@ -138,7 +138,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         val mainPagerAdapter = MainPagerAdapter(fragmentManager, lifecycle)
-        main_view_pager.setSaveEnabled(false);
+        main_view_pager.isSaveEnabled = false;
         main_view_pager?.adapter = mainPagerAdapter
         main_view_pager.isUserInputEnabled = false
         main_view_pager.offscreenPageLimit = 5
@@ -373,6 +373,7 @@ fun isOnline(context: Context?): Boolean {
     }
     return false
 }
+
 
 /** Shows an error sneaker given a view group with an optional retry function */
 fun ViewGroup.showSneakerToast(message: String, doOnRetry: (() -> Unit)?, sneakerColor: Int) {

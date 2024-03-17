@@ -1,13 +1,8 @@
 package com.pennapps.labs.pennmobile
 
 import android.content.*
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +12,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pennapps.labs.pennmobile.adapters.HomeAdapter
@@ -31,6 +25,7 @@ import kotlinx.android.synthetic.main.include_main.*
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class HomeFragment : Fragment() {
@@ -47,10 +42,6 @@ class HomeFragment : Fragment() {
 
         mActivity = activity as MainActivity
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity)
-
-        LocalBroadcastManager
-            .getInstance(mActivity)
-            .registerReceiver(broadcastReceiver, IntentFilter("refresh"))
     }
 
     override fun onCreateView(
@@ -163,36 +154,29 @@ class HomeFragment : Fragment() {
             val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
             val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
 
+            val isLoggedIn = !sp.getBoolean(mActivity.getString(R.string.guest_mode), false)
+
             lifecycleScope.launch(Dispatchers.Default) {
                 // set adapter if it is null
                 if (binding.homeCellsRv.adapter == null) {
-                    homepageViewModel.populateHomePageCells(studentLife, bearerToken, deviceID) {
-                        mActivity.runOnUiThread {
-                            binding.homeCellsRv.adapter = HomeAdapter(homepageViewModel)
-                            binding.homeCellsRv.visibility = View.INVISIBLE
-                            binding.internetConnectionHome.visibility = View.GONE
-                            binding.homeRefreshLayout.isRefreshing = false
-                        }
+                    homepageViewModel.populateHomePageCells(studentLife, isLoggedIn, bearerToken, deviceID)
+                    withContext(Dispatchers.Main) {
+                        binding.homeCellsRv.adapter = HomeAdapter(homepageViewModel)
+                        binding.homeCellsRv.visibility = View.INVISIBLE
+                        binding.internetConnectionHome.visibility = View.GONE
+                        binding.homeRefreshLayout.isRefreshing = false
                     }
                 } else { // otherwise, call updateHomePageCells which only updates the cells that are changed
-                    homepageViewModel.updateHomePageCells(studentLife, bearerToken, deviceID, { pos ->
-                       mActivity.runOnUiThread {
-                           binding.homeCellsRv.adapter!!.notifyItemChanged(pos)
-                       }
-                    }, {
-                       mActivity.runOnUiThread {
-                           binding.homeRefreshLayout.isRefreshing = false
-                       }
-                    })
+                    val updatedIndices = homepageViewModel.updateHomePageCells(studentLife, isLoggedIn,
+                        bearerToken, deviceID)
+                    withContext(Dispatchers.Main) {
+                        updatedIndices.forEach { pos ->
+                            binding.homeCellsRv.adapter!!.notifyItemChanged(pos)
+                        }
+                        binding.homeRefreshLayout.isRefreshing = false
+                    }
                 }
             }
-        }
-    }
-
-
-    private val broadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            getHomePage()
         }
     }
 

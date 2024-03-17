@@ -22,6 +22,7 @@ import java.util.concurrent.CountDownLatch
  * for generating HomeCell content and also tells HomeFragment when the blur views (for news and
  * posts) have finished loaded.
  */
+
 class HomepageViewModel : HomepageDataModel, ViewModel() {
     companion object {
         private const val NUM_CELLS = 6
@@ -36,6 +37,10 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         private const val POST_POS = 3
         private const val DINING_POS = 4
         private const val LAUNDRY_POS = 5
+
+        private const val TAG = "HomepageVM"
+        private const val UPDATE_TAG = "CellUpdate"
+        private const val BLUR_TAG = "HomeBlurViewStatus"
     }
 
     private val homepageCells = mutableListOf<HomeCell>()
@@ -96,25 +101,26 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
     }
 
     /**
-     * Updates each homepage cell. If a cell changes, then update is called with the index of the
-     * cell that was changed (created with the intention to play nice with RecyclerView and is used
-     * in conjunction with NotifyItemChanged().
+     * Returns a list of updated cell positions.
      */
     @Synchronized
-    fun updateHomePageCells(studentLife: StudentLife, bearerToken: String, deviceID: String,
-                              update: (Int) -> Unit, callback: () -> Unit) {
+    fun updateHomePageCells(studentLife: StudentLife, isLoggedIn: Boolean, bearerToken: String,
+                            deviceID: String) : List<Int> {
         val prevList = homepageCells.toList()
-        populateHomePageCells(studentLife, bearerToken, deviceID) {
-            for (i in 0 until NUM_CELLS) {
-                if (prevList[i] != homepageCells[i]) {
-                    update(i)
-                    Log.i("CellUpdates", "updated index ${i}")
-                } else {
-                    Log.i("CellUpdates", "saved an update at index ${i}")
-                }
+        populateHomePageCells(studentLife, isLoggedIn, bearerToken, deviceID)
+
+        val updatedIndices = mutableListOf<Int>()
+
+        for (i in 0 until NUM_CELLS) {
+            if (prevList[i] != homepageCells[i]) {
+                updatedIndices.add(i);
+                Log.i(UPDATE_TAG, "updated index ${i}")
+            } else {
+                Log.i(UPDATE_TAG, "saved an update at index ${i}")
             }
-            callback.invoke()
         }
+
+        return updatedIndices
     }
 
     /**
@@ -122,10 +128,8 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
      * This function requires a correct (non-expired) bearerToken!!
      */
     @Synchronized
-    fun populateHomePageCells(studentLife: StudentLife, bearerToken: String, deviceID: String,
-                              callback: () -> Unit) {
-        val isLoggedIn = bearerToken != "Bearer "
-
+    fun populateHomePageCells(studentLife: StudentLife,
+                              isLoggedIn: Boolean, bearerToken: String, deviceID: String) {
         if (isLoggedIn) {
             val latch = CountDownLatch(NUM_CELLS_LOGGED_IN)
             getPolls(studentLife, bearerToken, deviceID, latch)
@@ -143,7 +147,6 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
             getNews(studentLife, latch)
             latch.await()
         }
-        callback.invoke()
     }
 
     /**
@@ -178,11 +181,11 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
                 addCell(pollCell, POLL_POS)
             }
 
-            Log.i("HomepageViewModel", "Loaded polls") 
+            Log.i(TAG, "Loaded polls")
 
             latch.countDown()
         }, { throwable ->
-            Log.i("HomepageViewModel", "Could not load polls")
+            Log.i(TAG, "Could not load polls")
             throwable.printStackTrace()
             latch.countDown()
         })
@@ -193,11 +196,11 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
             val newsCell = NewsCell(article)
             addCell(newsCell, NEWS_POS)
 
-            Log.i("HomepageViewModel", "Loaded news") 
+            Log.i(TAG, "Loaded news")
 
             latch.countDown()
         }, { throwable ->
-            Log.i("HomepageViewModel", "Could not load news")
+            Log.i(TAG, "Could not load news")
             throwable.printStackTrace()
             latch.countDown()
         })
@@ -207,12 +210,12 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         studentLife.calendar.subscribe({ events ->
             val calendarCell = CalendarCell(events)
 
-            Log.i("HomepageViewModel", "Loaded calendar")
+            Log.i(TAG, "Loaded calendar")
 
             addCell(calendarCell, CALENDAR_POS)
             latch.countDown()
         }, { throwable ->
-            Log.i("HomepageViewModel", "Could not load calendar")
+            Log.i(TAG, "Could not load calendar")
             throwable.printStackTrace()
             latch.countDown()
         })
@@ -222,13 +225,13 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         studentLife.getLaundryPref(bearerToken).subscribe({ preferences ->
             val laundryCell = if (preferences.isNullOrEmpty()) LaundryCell(0) else LaundryCell(preferences[0])
 
-            Log.i("HomepageViewModel", "Loaded laundry")
+            Log.i(TAG, "Loaded laundry")
 
             addCell(laundryCell, LAUNDRY_POS)
             latch.countDown()
         }, { throwable ->
             setNewsBlurView(true)
-            Log.i("HomepageViewModel", "Could not load laundry")
+            Log.i(TAG, "Could not load laundry")
             throwable.printStackTrace()
             latch.countDown()
         })
@@ -244,11 +247,11 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
                 setPostBlurView(true)
             }
 
-            Log.i("HomepageViewModel", "Loaded posts")
+            Log.i(TAG, "Loaded posts")
 
             latch.countDown()
         }, { throwable ->
-            Log.i("HomepageViewModel", "Could not load posts")
+            Log.i(TAG, "Could not load posts")
             setPostBlurView(true)
             throwable.printStackTrace()
             latch.countDown()
@@ -272,11 +275,11 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
             val diningCell = DiningCell(venues)
             addCell(diningCell, DINING_POS)
 
-            Log.i("HomepageViewModel", "Loaded dining")
+            Log.i(TAG, "Loaded dining")
 
             latch.countDown()
         }, { throwable ->
-            Log.i("HomepageViewModel", "Could not load dining")
+            Log.i(TAG, "Could not load dining")
             throwable.printStackTrace()
             latch.countDown()
         })
@@ -300,9 +303,9 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
     private fun updateBlurViewStatus() = runBlocking {
         postBlurMutex.lock()
         newsBlurMutex.lock()
-        Log.i("HomeBlurViewLoadStatus", "Called updateBlurViewStatus")
-        Log.i("HomeBlurViewLoadStatus", "News: $newsBlurViewLoaded")
-        Log.i("HomeBlurViewLoadStatus", "Posts: $postBlurViewLoaded")
+        Log.i(BLUR_TAG, "Called updateBlurViewStatus")
+        Log.i(BLUR_TAG, "News: $newsBlurViewLoaded")
+        Log.i(BLUR_TAG, "Posts: $postBlurViewLoaded")
         if (newsBlurViewLoaded && postBlurViewLoaded) {
             _blurViewsLoaded.postValue(true)
         } else {

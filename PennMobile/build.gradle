@@ -39,6 +39,8 @@ android {
 }
 
 dependencies {
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:3.0-alpha-1'
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation(platform("com.google.firebase:firebase-bom:31.5.0"))
 

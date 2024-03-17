@@ -15,7 +15,6 @@ import com.pennapps.labs.pennmobile.classes.GSR;
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.GSRReservation;
-import com.pennapps.labs.pennmobile.classes.Gym;
 import com.pennapps.labs.pennmobile.classes.LaundryRequest;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
