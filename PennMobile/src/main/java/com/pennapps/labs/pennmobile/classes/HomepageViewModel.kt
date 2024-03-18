@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pennapps.labs.pennmobile.PennMobileApp
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.utils.Utils.getSha256Hash
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -16,6 +16,7 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pennapps.labs.pennmobile.adapters.HomeAdapter
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.HomepageViewModel
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentHomeBinding
@@ -32,6 +33,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var mActivity: MainActivity
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var mStudentLife: StudentLife
 
     private var _binding : FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -42,6 +44,12 @@ class HomeFragment : Fragment() {
 
         mActivity = activity as MainActivity
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val networkContainer = (context.applicationContext as PennMobileApp).networkContainer
+        mStudentLife = networkContainer.pennMobileAPI
     }
 
     override fun onCreateView(
@@ -147,7 +155,6 @@ class HomeFragment : Fragment() {
             return
         }
 
-        val studentLife = MainActivity.studentLifeInstance
         mActivity.mNetworkManager.getAccessToken {
             val sp = sharedPreferences
             val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
@@ -158,7 +165,7 @@ class HomeFragment : Fragment() {
             lifecycleScope.launch(Dispatchers.Default) {
                 // set adapter if it is null
                 if (binding.homeCellsRv.adapter == null) {
-                    homepageViewModel.populateHomePageCells(studentLife, isLoggedIn, bearerToken, deviceID)
+                    homepageViewModel.populateHomePageCells(mStudentLife, isLoggedIn, bearerToken, deviceID)
                     withContext(Dispatchers.Main) {
                         binding.homeCellsRv.adapter = HomeAdapter(homepageViewModel)
                         binding.homeCellsRv.visibility = View.INVISIBLE
@@ -166,7 +173,7 @@ class HomeFragment : Fragment() {
                         binding.homeRefreshLayout.isRefreshing = false
                     }
                 } else { // otherwise, call updateHomePageCells which only updates the cells that are changed
-                    val updatedIndices = homepageViewModel.updateHomePageCells(studentLife, isLoggedIn,
+                    val updatedIndices = homepageViewModel.updateHomePageCells(mStudentLife, isLoggedIn,
                         bearerToken, deviceID)
                     withContext(Dispatchers.Main) {
                         updatedIndices.forEach { pos ->
