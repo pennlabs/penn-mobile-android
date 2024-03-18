@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.api
 
+import StudentLife2
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.pennapps.labs.pennmobile.classes.Contact
@@ -14,15 +15,15 @@ import com.pennapps.labs.pennmobile.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple
 import com.pennapps.labs.pennmobile.classes.LaundryUsage
 import com.pennapps.labs.pennmobile.classes.Post
-import com.squareup.okhttp.OkHttpClient
-import retrofit.RestAdapter
-import retrofit.client.OkClient
-import retrofit.converter.GsonConverter
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 class NetworkContainer {
-    val pennMobileAPI: StudentLife
-    private val endpoint : String = "https://pennmobile.org/api"
+    val pennMobileAPI: StudentLife2
+    private val endpoint : String = "https://pennmobile.org/api/"
     init {
         val gsonBuilder = GsonBuilder()
         gsonBuilder.registerTypeAdapter(
@@ -72,17 +73,20 @@ class NetworkContainer {
             object : TypeToken<MutableList<Post?>?>() {}.type,
             PostsSerializer()
         )
-        val gson = gsonBuilder.create()
-        val okHttpClient = OkHttpClient()
-        okHttpClient.setConnectTimeout(35, TimeUnit.SECONDS) // Connection timeout
-        okHttpClient.setReadTimeout(35, TimeUnit.SECONDS)    // Read timeout
-        okHttpClient.setWriteTimeout(35, TimeUnit.SECONDS)   // Write timeout
-        val restAdapter = RestAdapter.Builder()
-            .setConverter(GsonConverter(gson))
-            .setClient(OkClient(okHttpClient))
-            .setEndpoint(endpoint)
+        val gson = GsonBuilder().create()
+        val okHttpClient = OkHttpClient.Builder()
+            .connectTimeout(35, TimeUnit.SECONDS)
+            .readTimeout(35, TimeUnit.SECONDS)
+            .writeTimeout(35, TimeUnit.SECONDS)
             .build()
-        pennMobileAPI = restAdapter.create(StudentLife::class.java)
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl(endpoint)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .build()
+        pennMobileAPI = retrofit.create(StudentLife2::class.java)
     }
 
 }

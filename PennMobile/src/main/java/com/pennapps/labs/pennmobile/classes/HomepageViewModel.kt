@@ -1,12 +1,11 @@
 package com.pennapps.labs.pennmobile.classes
 
+import StudentLife2
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pennapps.labs.pennmobile.PennMobileApp
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.utils.Utils.getSha256Hash
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -105,7 +104,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
      * Returns a list of updated cell positions.
      */
     @Synchronized
-    fun updateHomePageCells(studentLife: StudentLife, isLoggedIn: Boolean, bearerToken: String,
+    fun updateHomePageCells(studentLife: StudentLife2, isLoggedIn: Boolean, bearerToken: String,
                             deviceID: String) : List<Int> {
         val prevList = homepageCells.toList()
         populateHomePageCells(studentLife, isLoggedIn, bearerToken, deviceID)
@@ -129,7 +128,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
      * This function requires a correct (non-expired) bearerToken!!
      */
     @Synchronized
-    fun populateHomePageCells(studentLife: StudentLife,
+    fun populateHomePageCells(studentLife: StudentLife2,
                               isLoggedIn: Boolean, bearerToken: String, deviceID: String) {
         if (isLoggedIn) {
             val latch = CountDownLatch(NUM_CELLS_LOGGED_IN)
@@ -172,11 +171,11 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         }
     }
 
-    private fun getPolls(studentLife: StudentLife, bearerToken: String, deviceID: String,
+    private fun getPolls(studentLife: StudentLife2, bearerToken: String, deviceID: String,
     latch: CountDownLatch) {
         val idHash = getSha256Hash(deviceID)
         studentLife.browsePolls(bearerToken, idHash).subscribe({ poll ->
-            if (poll.size > 0) {
+            if (poll.isNotEmpty()) {
                 val pollCell = PollCell(poll[0])
                 pollCell.poll.options.forEach { pollCell.poll.totalVotes += it.voteCount }
                 addCell(pollCell, POLL_POS)
@@ -192,8 +191,8 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         })
     }
 
-    private fun getNews(studentLife: StudentLife, latch: CountDownLatch) {
-        studentLife.news.subscribe({ article ->
+    private fun getNews(studentLife: StudentLife2, latch: CountDownLatch) {
+        studentLife.getNews().subscribe({ article ->
             val newsCell = NewsCell(article)
             addCell(newsCell, NEWS_POS)
 
@@ -207,8 +206,8 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         })
     }
 
-    private fun getCalendar(studentLife: StudentLife, latch: CountDownLatch) {
-        studentLife.calendar.subscribe({ events ->
+    private fun getCalendar(studentLife: StudentLife2, latch: CountDownLatch) {
+        studentLife.getCalendar().subscribe({ events ->
             val calendarCell = CalendarCell(events)
 
             Log.i(TAG, "Loaded calendar")
@@ -222,7 +221,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         })
     }
 
-    private fun getLaundry(studentLife: StudentLife, bearerToken: String, latch: CountDownLatch) {
+    private fun getLaundry(studentLife: StudentLife2, bearerToken: String, latch: CountDownLatch) {
         studentLife.getLaundryPref(bearerToken).subscribe({ preferences ->
             val laundryCell = if (preferences.isNullOrEmpty()) LaundryCell(0) else LaundryCell(preferences[0])
 
@@ -238,7 +237,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         })
     }
 
-    private fun getPosts(studentLife: StudentLife, bearerToken: String, latch: CountDownLatch) {
+    private fun getPosts(studentLife: StudentLife2, bearerToken: String, latch: CountDownLatch) {
         studentLife.validPostsList(bearerToken).subscribe({ post ->
             if (post.size >= 1) { //there exists a post
                 val postCell = PostCell(post[0])
@@ -259,7 +258,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         })
     }
 
-    private fun getDiningPrefs(studentLife: StudentLife, bearerToken: String, latch: CountDownLatch) {
+    private fun getDiningPrefs(studentLife: StudentLife2, bearerToken: String, latch: CountDownLatch) {
         studentLife.getDiningPreferences(bearerToken).subscribe({ preferences ->
             val list = preferences.preferences
             val venues = mutableListOf<Int>()

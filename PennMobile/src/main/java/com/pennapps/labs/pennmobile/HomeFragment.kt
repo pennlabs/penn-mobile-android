@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile
 
+import StudentLife2
 import android.content.*
 import android.os.Bundle
 import android.os.Handler
@@ -33,7 +34,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var mActivity: MainActivity
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var mStudentLife: StudentLife
+    private lateinit var mStudentLife: StudentLife2
 
     private var _binding : FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -84,23 +85,23 @@ class HomeFragment : Fragment() {
 
         /* Mildly suspicious idea to hide the RecyclerView until blurviews (for news and posts) are
         done processing. Processing the blurviews is slow and makes the app looks sloppy. Ideally
-        this is replaced by something less hacky (such as using a ListView instead) though perhaps 
+        this is replaced by something less hacky (such as using a ListView instead) though perhaps
         it is simpler to just remove the blur altogether.
 
         This takes advantage of a RecyclerView idiosyncracy: when a RecyclerView resides inside a
         nested scrollview, all of the elements are inflated:
         https://stackoverflow.com/questions/44453846/recyclerview-inside-nestedscrollview-causes-recyclerview-to-inflate-all-elements
         https://www.reddit.com/r/androiddev/comments/d8gi9v/recyclerview_inside_nestedscrollview_causes/
-        
+
         This is can be used to figure out when the blurviews are finished processing.
 
         Since when the adapter is set in getHomePage, onBindViewHolder() is called for each cell.
-        Thus, for the news and post cells which use blur, when the blur is finished processing, 
-        the adapter notifies homepageViewModel. When both blurs are processed, the blurViewsLoaded 
+        Thus, for the news and post cells which use blur, when the blur is finished processing,
+        the adapter notifies homepageViewModel. When both blurs are processed, the blurViewsLoaded
         liveData in the ViewModel is toggled to true which HomeFragment observes.
 
-        If in the future, the homepage is stuck on loading forever, this might be why. To remove 
-        this functionality and  stop waiting for the blur views to finish, just remove the observer 
+        If in the future, the homepage is stuck on loading forever, this might be why. To remove
+        this functionality and  stop waiting for the blur views to finish, just remove the observer
         below and change getHomePage() so that when HomeAdapter is set, homeCellsRv.visibility is
         set to View.VISIBLE instead of View.INVISIBLE and hide loadingPanel
         */
@@ -155,6 +156,7 @@ class HomeFragment : Fragment() {
             return
         }
 
+        //val studentLife = MainActivity.studentLifeInstance
         val studentLife = mStudentLife
         mActivity.mNetworkManager.getAccessToken {
             val sp = sharedPreferences
