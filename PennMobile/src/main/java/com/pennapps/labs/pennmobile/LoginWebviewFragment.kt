@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile
 
+import StudentLife
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.security.keystore.KeyGenParameterSpec
@@ -17,16 +18,18 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Platform.platformBaseUrl
 import com.pennapps.labs.pennmobile.classes.AccessTokenResponse
 import com.pennapps.labs.pennmobile.classes.Account
 import com.pennapps.labs.pennmobile.classes.GetUserResponse
 import org.apache.commons.lang3.RandomStringUtils
-import retrofit.Callback
 import retrofit.RetrofitError
-import retrofit.client.Response
+import retrofit.Callback as Callback2
+import retrofit.client.Response as Response2
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.nio.charset.Charset
 import java.security.MessageDigest
 import java.util.*
@@ -160,12 +163,14 @@ class LoginWebviewFragment : Fragment() {
     private fun initiateAuthentication(authCode: String) {
         mStudentLife.getAccessToken(authCode,
 
-            "authorization_code", clientID, redirectUri, codeVerifier,
-            object : Callback<AccessTokenResponse> {
-
-                override fun success(t: AccessTokenResponse?, response: Response?) {
-                    if (response?.status == 200) {
-
+            "authorization_code", clientID, redirectUri, codeVerifier)
+            .enqueue(object : Callback<AccessTokenResponse> {
+                override fun onResponse(
+                    call: Call<AccessTokenResponse>,
+                    response: Response<AccessTokenResponse>
+                ) {
+                    if (response.code() == 200) {
+                        val t = response.body()
                         FirebaseAnalytics.getInstance(mActivity).logEvent("LoginEvent", null)
 
                         val accessToken = t?.accessToken
@@ -183,9 +188,9 @@ class LoginWebviewFragment : Fragment() {
                     }
                 }
 
-                override fun failure(error: RetrofitError) {
-                    FirebaseCrashlytics.getInstance().recordException(error)
-                    Log.e("Accounts", "Error fetching access token $error", error)
+                override fun onFailure(call: Call<AccessTokenResponse>, t: Throwable) {
+                    FirebaseCrashlytics.getInstance().recordException(t)
+                    Log.e("Accounts", "Error fetching access token $t", t)
                     Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
                     mActivity.startLoginFragment()
                 }
@@ -194,9 +199,9 @@ class LoginWebviewFragment : Fragment() {
 
     private fun getUser(accessToken: String?) {
         mPlatform?.getUser("Bearer $accessToken", accessToken,
-                object : Callback<GetUserResponse> {
+                object : Callback2<GetUserResponse> {
 
-                    override fun success(t: GetUserResponse?, response: Response?) {
+                    override fun success(t: GetUserResponse?, response: Response2?) {
                         val user = t?.user
                         val editor = sp.edit()
                         editor.putString(getString(R.string.first_name), user?.firstName)

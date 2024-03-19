@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.adapters
 
+import StudentLife
 import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
@@ -33,7 +34,6 @@ import com.bumptech.glide.Glide
 import com.pennapps.labs.pennmobile.*
 import com.pennapps.labs.pennmobile.DiningFragment.Companion.getMenus
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.CalendarCell
 import com.pennapps.labs.pennmobile.classes.CalendarEvent
 import com.pennapps.labs.pennmobile.classes.DiningCell
@@ -46,6 +46,7 @@ import com.pennapps.labs.pennmobile.classes.PostCell
 import com.pennapps.labs.pennmobile.components.sneaker.Utils.convertToDp
 import com.pennapps.labs.pennmobile.utils.Utils
 import eightbitlab.com.blurview.RenderScriptBlur
+import io.reactivex.Observable
 import kotlinx.android.synthetic.main.home_base_card.view.*
 import kotlinx.android.synthetic.main.home_base_card.view.home_card_rv
 import kotlinx.android.synthetic.main.home_base_card.view.home_card_subtitle
@@ -55,10 +56,10 @@ import kotlinx.android.synthetic.main.home_news_card.view.*
 import kotlinx.android.synthetic.main.home_post_card.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit.ResponseCallback
-import retrofit.RetrofitError
-import retrofit.client.Response
-import rx.Observable
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class HomeAdapter(private val dataModel: HomepageDataModel) :
@@ -166,7 +167,7 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         }
 
         mStudentLife.venues()
-            .flatMap { venues -> Observable.from(venues) }
+            .flatMap { venues -> Observable.fromIterable(venues) }
             .flatMap { venue ->
                 val hall = DiningFragment.createHall(venue)
                 Observable.just(hall)
@@ -451,14 +452,17 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
                     mStudentLife.createPollVote(
                         bearerToken,
                         idHash,
-                        selectedOptions,
-                        object : ResponseCallback() {
-                            override fun success(response: Response?) {
+                        selectedOptions)
+                        .enqueue(object: Callback<ResponseBody> {
+                            override fun onResponse(
+                                call: Call<ResponseBody>,
+                                response: Response<ResponseBody>
+                            ) {
                                 Log.i("HomeAdapter", "Successfully voted for poll!")
                             }
 
-                            override fun failure(error: RetrofitError?) {
-                                Log.e("HomeAdapter", "Error voting for poll", error)
+                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                                Log.e("HomeAdapter", "Error voting for poll", t)
                             }
 
                         })

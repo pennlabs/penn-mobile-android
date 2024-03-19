@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile
 
+import StudentLife
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -10,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.adapters.LaundrySettingsAdapter
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple
 import com.pennapps.labs.pennmobile.databinding.FragmentLaundrySettingsBinding
 import kotlinx.android.synthetic.main.include_main.*

@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile
 
+import StudentLife
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.VenueInterval
 import org.joda.time.format.DateTimeFormat

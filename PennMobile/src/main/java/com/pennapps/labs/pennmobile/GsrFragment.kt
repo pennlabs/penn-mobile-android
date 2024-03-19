@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile
 
+import StudentLife
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.SharedPreferences
@@ -13,9 +14,7 @@ import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.preference.PreferenceManager
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.GsrBuildingAdapter
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRContainer
 import com.pennapps.labs.pennmobile.classes.GSRRoom
 import com.pennapps.labs.pennmobile.classes.GSRSlot

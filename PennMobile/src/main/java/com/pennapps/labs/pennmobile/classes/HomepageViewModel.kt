@@ -1,11 +1,11 @@
 package com.pennapps.labs.pennmobile.classes
 
+import StudentLife
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.utils.Utils.getSha256Hash
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -114,9 +114,9 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         for (i in 0 until NUM_CELLS) {
             if (prevList[i] != homepageCells[i]) {
                 updatedIndices.add(i);
-                Log.i(UPDATE_TAG, "updated index ${i}")
+                Log.i(UPDATE_TAG, "updated index $i")
             } else {
-                Log.i(UPDATE_TAG, "saved an update at index ${i}")
+                Log.i(UPDATE_TAG, "saved an update at index $i")
             }
         }
 
@@ -175,7 +175,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
     latch: CountDownLatch) {
         val idHash = getSha256Hash(deviceID)
         studentLife.browsePolls(bearerToken, idHash).subscribe({ poll ->
-            if (poll.size > 0) {
+            if (poll.isNotEmpty()) {
                 val pollCell = PollCell(poll[0])
                 pollCell.poll.options.forEach { pollCell.poll.totalVotes += it.voteCount }
                 addCell(pollCell, POLL_POS)
@@ -192,7 +192,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
     }
 
     private fun getNews(studentLife: StudentLife, latch: CountDownLatch) {
-        studentLife.news.subscribe({ article ->
+        studentLife.getNews().subscribe({ article ->
             val newsCell = NewsCell(article)
             addCell(newsCell, NEWS_POS)
 
@@ -207,7 +207,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
     }
 
     private fun getCalendar(studentLife: StudentLife, latch: CountDownLatch) {
-        studentLife.calendar.subscribe({ events ->
+        studentLife.getCalendar().subscribe({ events ->
             val calendarCell = CalendarCell(events)
 
             Log.i(TAG, "Loaded calendar")

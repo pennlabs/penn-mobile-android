@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.adapters
 
+import StudentLife
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -17,10 +18,9 @@ import com.bumptech.glide.Glide
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.MenuFragment
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.dining_list_item.view.*
-import rx.android.schedulers.AndroidSchedulers
 
 
 class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<DiningCardAdapter.ViewHolder>() {
@@ -59,7 +59,7 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
 
         // Load the menu for each dining hall
         if (currentHall.isResidential) {
-            mStudentLife.daily_menu(currentHall.id)
+            mStudentLife.dailyMenu(currentHall.id)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ newDiningHall ->
                         currentHall.sortMeals(newDiningHall.menus)

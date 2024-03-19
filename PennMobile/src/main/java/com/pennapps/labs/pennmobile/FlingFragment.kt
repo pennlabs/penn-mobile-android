@@ -53,7 +53,7 @@ class FlingFragment : Fragment() {
         _binding = FragmentFlingBinding.inflate(inflater, container, false)
         val view = binding.root
         val labs = MainActivity.studentLifeInstance
-        labs.flingEvents.subscribe({ flingEvents ->
+        labs.getFlingEvents().subscribe({ flingEvents ->
             activity?.runOnUiThread {
                 binding.flingFragmentRecyclerview.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 binding.flingFragmentRecyclerview.adapter = FlingRecyclerViewAdapter(context, flingEvents)

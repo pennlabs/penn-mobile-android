@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile
 
+import StudentLife
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -12,7 +13,6 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.adapters.LaundryRoomAdapter
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.classes.LaundryUsage
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
