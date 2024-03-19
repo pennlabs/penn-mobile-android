@@ -5,6 +5,7 @@ import com.pennapps.labs.pennmobile.classes.CalendarEvent
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.DiningPreferences
 import com.pennapps.labs.pennmobile.classes.DiningRequest
+import com.pennapps.labs.pennmobile.classes.FitnessPreferences
 import com.pennapps.labs.pennmobile.classes.FitnessRequest
 import com.pennapps.labs.pennmobile.classes.FitnessRoom
 import com.pennapps.labs.pennmobile.classes.FitnessRoomUsage
@@ -165,7 +166,7 @@ interface StudentLife {
     ): Observable<FitnessRoomUsage>
 
     @GET("penndata/fitness/preferences")
-    fun getFitnessPreferences(@Header("Authorization") bearerToken: String): Observable<List<Int>>
+    fun getFitnessPreferences(@Header("Authorization") bearerToken: String): Observable<FitnessPreferences>
 
     @POST("penndata/fitness/preferences/")
     fun sendFitnessPref(

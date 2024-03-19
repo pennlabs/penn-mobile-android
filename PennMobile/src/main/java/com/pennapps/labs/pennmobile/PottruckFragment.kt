@@ -107,8 +107,9 @@ class PottruckFragment : Fragment() {
                             "Bearer " + sp.getString(context.getString(R.string.access_token), "")
                                 .toString()
 
-                        mStudentLife.getFitnessPreferences(bearerToken).subscribe({ favorites ->
+                        mStudentLife.getFitnessPreferences(bearerToken).subscribe({ preferences ->
                             mActivity.runOnUiThread {
+                                val favorites = preferences.rooms!!
                                 for (roomId in favorites) {
                                     dataModel.addId(roomId)
                                 }
