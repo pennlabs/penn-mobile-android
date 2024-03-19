@@ -48,7 +48,6 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
     private val cellMutex = Mutex()
 
     data class ItemUpdateEvents(val positions : List<Int> = emptyList())
-
     
     private val _updateState = MutableStateFlow(ItemUpdateEvents())
     val updateState: StateFlow<ItemUpdateEvents> = _updateState.asStateFlow()

@@ -10,6 +10,7 @@ import android.view.*
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.adapters.LaundryRoomAdapter
@@ -18,6 +19,7 @@ import com.pennapps.labs.pennmobile.classes.LaundryUsage
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentLaundryBinding
 import com.pennapps.labs.pennmobile.utils.Utils
+import com.pennapps.labs.pennmobile.viewmodels.LaundryViewModel
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.loading_panel.view.*
 import kotlinx.android.synthetic.main.no_results.*
@@ -48,6 +50,7 @@ class LaundryFragment : Fragment() {
     private var _binding : FragmentLaundryBinding? = null
     private val binding get() = _binding!!
 
+    private val laundryViewModel : LaundryViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -84,6 +87,8 @@ class LaundryFragment : Fragment() {
             binding.favoriteLaundryList.adapter = mAdapter
         }
 
+        laundryViewModel.getFavorites(mStudentLife, "Bearer 2bNbpzI2ffxxBVMK7Ha6bWVTmpOlMj")
+
         return view
     }
 
@@ -105,7 +110,6 @@ class LaundryFragment : Fragment() {
             }
         }
         mActivity.setTitle(R.string.laundry)
-        mActivity.setSelectedTab(MainActivity.LAUNDRY)
         loadingPanel?.visibility = View.VISIBLE
         updateRooms()
     }

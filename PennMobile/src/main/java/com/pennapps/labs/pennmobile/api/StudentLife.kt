@@ -28,6 +28,7 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
 import io.reactivex.Observable
+import retrofit2.Response
 
 interface StudentLife {
     @FormUrlEncoded
@@ -63,8 +64,14 @@ interface StudentLife {
     @GET("laundry/halls/ids")
     fun laundryRooms(): Observable<List<LaundryRoomSimple>>
 
+    @GET("laundry/halls/ids")
+    suspend fun laundryRooms2(): Response<List<LaundryRoomSimple>>
+
     @GET("laundry/hall/{id}")
     fun room(@Path("id") id: Int): Observable<LaundryRoom>
+
+    @GET("laundry/hall/{id}")
+    suspend fun room2(@Path("id") id: Int): Response<LaundryRoom>
 
     @GET("gsr/locations")
     fun location(): Observable<List<GSRLocation>>
@@ -93,6 +100,9 @@ interface StudentLife {
 
     @GET("laundry/usage/{id}")
     fun usage(@Path("id") id: Int): Observable<LaundryUsage>
+
+    @GET("laundry/usage/{id}")
+    suspend fun usage2(@Path("id") id: Int): Response<LaundryUsage>
 
     @GET("events/fling")
     fun getFlingEvents(): Observable<List<FlingEvent>>
@@ -124,6 +134,9 @@ interface StudentLife {
 
     @GET("laundry/preferences")
     fun getLaundryPref(@Header("Authorization") bearerToken: String): Observable<LaundryPreferences>
+
+    @GET("laundry/preferences")
+    suspend fun getLaundryPref2(@Header("Authorization") bearerToken: String): Response<LaundryPreferences>
 
     @POST("laundry/preferences/")
     fun sendLaundryPref(
