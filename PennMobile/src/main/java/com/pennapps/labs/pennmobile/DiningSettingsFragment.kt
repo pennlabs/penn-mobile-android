@@ -16,9 +16,10 @@ import com.pennapps.labs.pennmobile.databinding.FragmentDiningPreferencesBinding
 import kotlinx.android.synthetic.main.include_main.toolbar
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import io.reactivex.Observable
-import retrofit.ResponseCallback
-import retrofit.RetrofitError
-import retrofit.client.Response
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
@@ -132,15 +133,18 @@ class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
         mActivity.mNetworkManager.getAccessToken {
             val bearerToken =
                 "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
-            mStudentLife.sendDiningPref(bearerToken, DiningRequest(favoriteDiningHalls),
-                object : ResponseCallback() {
-                    override fun success(response: Response) {
+            mStudentLife.sendDiningPref(bearerToken, DiningRequest(favoriteDiningHalls))
+                .enqueue(object: Callback<ResponseBody> {
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
                         Log.i("Dining", "Dining preferences saved")
                         mActivity.onBackPressed()
                     }
 
-                    override fun failure(error: RetrofitError) {
-                        Log.e("Dining", "Error saving dining preferences: $error")
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        Log.e("Dining", "Error saving dining preferences: $t")
                         Toast.makeText(
                             mActivity,
                             "Error saving dining preferences",

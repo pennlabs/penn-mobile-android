@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile.classes
 
 import StudentLife
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -223,7 +224,8 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
 
     private fun getLaundry(studentLife: StudentLife, bearerToken: String, latch: CountDownLatch) {
         studentLife.getLaundryPref(bearerToken).subscribe({ preferences ->
-            val laundryCell = if (preferences.isNullOrEmpty()) LaundryCell(0) else LaundryCell(preferences[0])
+            val rooms = preferences.rooms
+            val laundryCell = if (rooms.isNullOrEmpty()) LaundryCell(0) else LaundryCell(rooms[0])
 
             Log.i(TAG, "Loaded laundry")
 

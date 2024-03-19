@@ -13,6 +13,7 @@ import com.pennapps.labs.pennmobile.classes.GSR
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult
 import com.pennapps.labs.pennmobile.classes.GSRLocation
 import com.pennapps.labs.pennmobile.classes.GSRReservation
+import com.pennapps.labs.pennmobile.classes.LaundryPreferences
 import com.pennapps.labs.pennmobile.classes.LaundryRequest
 import com.pennapps.labs.pennmobile.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple
@@ -26,7 +27,6 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
 import io.reactivex.Observable
-import retrofit.ResponseCallback
 
 interface StudentLife {
     @FormUrlEncoded
@@ -122,7 +122,7 @@ interface StudentLife {
     ): Call<SaveAccountResponse>
 
     @GET("laundry/preferences")
-    fun getLaundryPref(@Header("Authorization") bearerToken: String): Observable<List<Int>>
+    fun getLaundryPref(@Header("Authorization") bearerToken: String): Observable<LaundryPreferences>
 
     @POST("laundry/preferences/")
     fun sendLaundryPref(
@@ -133,8 +133,7 @@ interface StudentLife {
     @POST("dining/preferences/")
     fun sendDiningPref(
         @Header("Authorization") bearerToken: String,
-        @Body body: DiningRequest,
-        param: ResponseCallback
+        @Body body: DiningRequest
     ): Call<ResponseBody>
 
     @GET("portal/posts/browse/")
