@@ -14,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.adapters.LaundryRoomAdapter
+import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.classes.LaundryUsage
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
@@ -32,7 +33,7 @@ class LaundryFragment : Fragment() {
     private lateinit var mStudentLife: StudentLife
     private lateinit var mContext: Context
 
-    private var sp: SharedPreferences? = null
+    private lateinit var sharedPreferences: SharedPreferences
 
     // list of favorite laundry rooms
     private var laundryRooms = ArrayList<LaundryRoom>()
@@ -54,6 +55,7 @@ class LaundryFragment : Fragment() {
         mStudentLife = MainActivity.studentLifeInstance
         mActivity = activity as MainActivity
         mContext = mActivity
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -64,7 +66,7 @@ class LaundryFragment : Fragment() {
 
         binding.favoriteLaundryList.layoutManager = LinearLayoutManager(mContext)
         binding.laundryMachineRefresh.setOnRefreshListener {
-            laundryViewModel.getFavorites(mStudentLife, "Bearer eEc79lTYqHBuUHssUzTYXiImyMG6U9")
+            updateMachines()
         }
         binding.laundryMachineRefresh.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
 
@@ -79,13 +81,12 @@ class LaundryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mActivity.removeTabs()
-        numRooms = sp?.getInt(mContext.getString(R.string.num_rooms_pref), 100) ?: 0
-
         mActivity.setTitle(R.string.laundry)
-        loadingPanel?.visibility = View.VISIBLE
 
         mAdapter = LaundryRoomAdapter(mContext, laundryRooms, roomsData, false)
         binding.favoriteLaundryList.adapter = mAdapter
+
+        loadingPanel?.visibility = View.VISIBLE
 
         laundryViewModel.favoriteRooms.observe(viewLifecycleOwner) { favorites ->
             binding.laundryMachineRefresh.isRefreshing = false
@@ -104,7 +105,33 @@ class LaundryFragment : Fragment() {
             binding.laundryHelpText.visibility = View.INVISIBLE
         }
 
-        laundryViewModel.getFavorites(mStudentLife, "Bearer eEc79lTYqHBuUHssUzTYXiImyMG6U9")
+        updateMachines()
+    }
+
+    private fun getOnline() : Boolean {
+        //displays banner if not connected
+        if (!isOnline(context)) {
+            binding.internetConnectionLaundry.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
+            binding.internetConnectionMessageLaundry.text = getString(R.string.internet_error)
+            binding.internetConnectionLaundry.visibility = View.VISIBLE
+            binding.laundryHelpText.visibility = View.INVISIBLE
+            binding.laundryMachineRefresh.isRefreshing = false
+            loadingPanel?.visibility = View.GONE
+            return false
+        }
+
+        binding.internetConnectionLaundry.visibility = View.GONE
+        return true
+    }
+    private fun updateMachines() {
+        if (!getOnline()) {
+            return
+        }
+        mActivity.mNetworkManager.getAccessToken {
+            val bearerToken = "Bearer " + sharedPreferences
+                .getString(getString(R.string.access_token), "").toString()
+            laundryViewModel.getFavorites(mStudentLife, bearerToken)
+        }
     }
 
     private fun initAppBar() {
