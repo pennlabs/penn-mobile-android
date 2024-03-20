@@ -18,7 +18,7 @@ class LaundryViewModel : ViewModel() {
     private var loadedRooms = false
 
     private var hasPreferences = false
-    private val _favoriteRooms = MutableLiveData<LaundryRoomFavorites>()
+    private val _favoriteRooms = MutableLiveData(LaundryRoomFavorites())
 
     val favoriteRooms : LiveData<LaundryRoomFavorites>
         get() = _favoriteRooms

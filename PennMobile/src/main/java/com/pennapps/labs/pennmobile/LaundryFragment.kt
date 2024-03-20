@@ -37,7 +37,7 @@ class LaundryFragment : Fragment() {
     // list of favorite laundry rooms
     private var laundryRooms = ArrayList<LaundryRoom>()
     // data for laundry room usage
-    private var roomsData: List<LaundryUsage> = ArrayList()
+    private var roomsData: ArrayList<LaundryUsage> = ArrayList()
 
     private var laundryRoomsResult = ArrayList<LaundryRoom>()
     private var roomsDataResult: MutableList<LaundryUsage> = ArrayList()
@@ -76,7 +76,9 @@ class LaundryFragment : Fragment() {
         }
 
         binding.favoriteLaundryList.layoutManager = LinearLayoutManager(mContext)
-        binding.laundryMachineRefresh.setOnRefreshListener { updateRooms() }
+        binding.laundryMachineRefresh.setOnRefreshListener {
+            laundryViewModel.getFavorites(mStudentLife, "Bearer frEnhz2PW8VkIUA4XX0sUy61N6Yc41")
+        }
         binding.laundryMachineRefresh.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
 
         // no rooms chosen
@@ -109,7 +111,24 @@ class LaundryFragment : Fragment() {
         }
         mActivity.setTitle(R.string.laundry)
         loadingPanel?.visibility = View.VISIBLE
-        updateRooms()
+
+        laundryViewModel.favoriteRooms.observe(viewLifecycleOwner) { favorites ->
+            laundryRooms.clear()
+            roomsData.clear()
+
+            laundryRooms.addAll(favorites.favoriteRooms)
+            roomsData.addAll(favorites.roomsData)
+
+            mAdapter = LaundryRoomAdapter(mContext, laundryRooms, roomsData, false)
+            binding.favoriteLaundryList.adapter = mAdapter
+
+            loadingPanel?.visibility = View.GONE
+        }
+
+        //Log.i("Laundry Test", "sup bitch, I'm alive")
+        laundryViewModel.getFavorites(mStudentLife, "Bearer frEnhz2PW8VkIUA4XX0sUy61N6Yc41")
+
+        //updateRooms()
     }
 
     private fun initAppBar() {
@@ -190,7 +209,7 @@ class LaundryFragment : Fragment() {
 
                         // update UI
                         mActivity.runOnUiThread {
-                            roomsData = roomsDataResult
+                            roomsData = roomsDataResult as ArrayList<LaundryUsage>
                             laundryRooms = laundryRoomsResult
                             mAdapter = LaundryRoomAdapter(mContext, laundryRooms, roomsData, false)
                             try {
