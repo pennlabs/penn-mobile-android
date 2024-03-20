@@ -113,6 +113,8 @@ class LaundryFragment : Fragment() {
         loadingPanel?.visibility = View.VISIBLE
 
         laundryViewModel.favoriteRooms.observe(viewLifecycleOwner) { favorites ->
+            binding.laundryMachineRefresh.isRefreshing = false
+
             laundryRooms.clear()
             roomsData.clear()
 
@@ -123,12 +125,10 @@ class LaundryFragment : Fragment() {
             binding.favoriteLaundryList.adapter = mAdapter
 
             loadingPanel?.visibility = View.GONE
+            binding.laundryHelpText.visibility = View.INVISIBLE
         }
 
-        //Log.i("Laundry Test", "sup bitch, I'm alive")
         laundryViewModel.getFavorites(mStudentLife, "Bearer frEnhz2PW8VkIUA4XX0sUy61N6Yc41")
-
-        //updateRooms()
     }
 
     private fun initAppBar() {
