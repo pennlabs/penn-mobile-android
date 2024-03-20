@@ -87,8 +87,6 @@ class LaundryFragment : Fragment() {
             binding.favoriteLaundryList.adapter = mAdapter
         }
 
-        laundryViewModel.getFavorites(mStudentLife, "Bearer 2bNbpzI2ffxxBVMK7Ha6bWVTmpOlMj")
-
         return view
     }
 
