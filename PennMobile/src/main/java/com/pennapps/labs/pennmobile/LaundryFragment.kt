@@ -5,16 +5,13 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.preference.PreferenceManager
-import android.util.Log
 import android.view.*
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.adapters.LaundryRoomAdapter
-import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.classes.LaundryUsage
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
@@ -22,8 +19,6 @@ import com.pennapps.labs.pennmobile.databinding.FragmentLaundryBinding
 import com.pennapps.labs.pennmobile.utils.Utils
 import com.pennapps.labs.pennmobile.viewmodels.LaundryViewModel
 import kotlinx.android.synthetic.main.loading_panel.*
-import kotlinx.android.synthetic.main.loading_panel.view.*
-import kotlinx.android.synthetic.main.no_results.*
 import java.util.*
 
 class LaundryFragment : Fragment() {
@@ -39,16 +34,13 @@ class LaundryFragment : Fragment() {
     private var laundryRooms = ArrayList<LaundryRoom>()
     // data for laundry room usage
     private var roomsData: ArrayList<LaundryUsage> = ArrayList()
-    private val maxRooms = 3
 
     private var mAdapter: LaundryRoomAdapter? = null
-
-    private var numRooms: Int = 0
 
     private var _binding : FragmentLaundryBinding? = null
     private val binding get() = _binding!!
 
-    private val laundryViewModel : LaundryViewModel by viewModels()
+    private val laundryViewModel : LaundryViewModel by activityViewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -97,7 +89,7 @@ class LaundryFragment : Fragment() {
             laundryRooms.addAll(favorites.favoriteRooms)
             roomsData.addAll(favorites.roomsData)
 
-            for (pos in 0 until maxRooms) {
+            for (pos in 0 until LaundryViewModel.maxNumRooms) {
                 mAdapter!!.notifyItemChanged(pos)
             }
 

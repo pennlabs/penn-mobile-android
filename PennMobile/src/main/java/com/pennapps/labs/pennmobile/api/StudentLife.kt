@@ -139,10 +139,10 @@ interface StudentLife {
     suspend fun getLaundryPref2(@Header("Authorization") bearerToken: String): Response<LaundryPreferences>
 
     @POST("laundry/preferences/")
-    fun sendLaundryPref(
+    suspend fun sendLaundryPref(
         @Header("Authorization") bearerToken: String,
         @Body rooms: LaundryRequest
-    ): Call<ResponseBody>
+    ): Response<ResponseBody>
 
     @POST("dining/preferences/")
     fun sendDiningPref(
