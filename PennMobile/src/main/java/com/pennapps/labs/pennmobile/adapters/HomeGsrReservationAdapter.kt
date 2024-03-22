@@ -64,6 +64,10 @@ class HomeGsrReservationAdapter (reservations: List<GSRReservation>) : RecyclerV
         holder.itemView.item_gsr_location.text = location
         holder.itemView.item_gsr_date.text = day + "\n" + fromHour + "-" + toHour
 
+        holder.itemView.setOnClickListener {
+            mActivity.setTab(MainActivity.GSR_ID)
+        }
+
     }
 
     override fun getItemCount(): Int {
