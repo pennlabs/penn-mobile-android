@@ -131,74 +131,6 @@ public class Serializer {
         }
     }
 
-    // gets laundry room
-    public static class LaundryRoomSerializer implements JsonDeserializer<LaundryRoom> {
-        @Override
-        public LaundryRoom deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-                throws JsonParseException {
-            JsonElement content = je.getAsJsonObject();
-            return new Gson().fromJson(content, new TypeToken<LaundryRoom>() {
-            }.getType());
-        }
-    }
-
-    // gets laundry room list
-    public static class LaundryRoomListSerializer implements JsonDeserializer<List<LaundryRoomSimple>> {
-        @Override
-        public List<LaundryRoomSimple> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-                throws JsonParseException {
-            JsonElement content = je.getAsJsonArray();
-            return new Gson().fromJson(content, new TypeToken<List<LaundryRoomSimple>>() {
-            }.getType());
-        }
-    }
-
-    // gets gsr locations
-    public static class GsrLocationSerializer implements JsonDeserializer<List<GSRLocation>> {
-        @Override
-        public List<GSRLocation> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-                throws JsonParseException {
-            JsonArray jsonLocations = je.getAsJsonArray();
-            List<GSRLocation> locations = new ArrayList<GSRLocation>();
-            for (int i = 0; i < jsonLocations.size(); i++) {
-                GSRLocation location = new GSRLocation();
-                JsonObject jsonLocation = jsonLocations.get(i).getAsJsonObject();
-
-                location.id = jsonLocation.get("lid").getAsString();
-                location.gid = jsonLocation.get("gid").getAsInt();
-                location.name = jsonLocation.get("name").getAsString();
-                location.kind = jsonLocation.get("kind").getAsString();
-                locations.add(location);
-            }
-            return locations;
-        }
-    }
-  
-    // gets laundry usage
-    public static class LaundryUsageSerializer implements JsonDeserializer<LaundryUsage> {
-        @Override
-        public LaundryUsage deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-                throws JsonParseException {
-            JsonElement content = je.getAsJsonObject();
-            return new Gson().fromJson(content, new TypeToken<LaundryUsage>() {
-            }.getType());
-        }
-    }
-
-    // gets laundry pref data from server
-    public static class LaundryPrefSerializer implements JsonDeserializer<List<Integer>> {
-        @Override
-        public List<Integer> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-            throws JsonParseException {
-            JsonElement content = je.getAsJsonObject().get("rooms");
-            if (content == null) {
-                content = je.getAsJsonObject().get("preferences");
-            }
-            return new Gson().fromJson(content, new TypeToken<List<Integer>>() {
-            }.getType());
-        }
-    }
-
     // fling events
     public static class FlingEventSerializer implements  JsonDeserializer<List<FlingEvent>> {
 
@@ -211,41 +143,4 @@ public class Serializer {
         }
     }
 
-    // for GSR Reservations
-    /*public static class GsrReservationSerializer implements JsonDeserializer<List<GSRReservation>> {
-
-        @Override
-        public List<GSRReservation> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-                throws JsonParseException {
-            JsonArray content = je.getAsJsonArray();
-            List<GSRReservation> reservationList = new ArrayList<>();
-            for (JsonElement jsonElement: content) {
-                GSRReservation reservation = new GSRReservation();
-                JsonObject jsonReservation = jsonElement.getAsJsonObject();
-                reservation.booking_id = jsonReservation.get("booking_id").getAsString();
-                reservation.name = jsonReservation.get("room_name").getAsString();
-                reservation.fromDate = jsonReservation.get("start").getAsString();
-                reservation.toDate = jsonReservation.get("end").getAsString();
-                JsonObject jsonInfo = jsonReservation.get("gsr").getAsJsonObject();
-                reservation.gid = jsonInfo.get("gid").getAsString();
-                Map<String, String> info = new HashMap<>();
-                String thumbnail = jsonInfo.get("image_url").getAsString();
-                info.put("thumbnail", thumbnail);
-                reservation.info = info;
-                reservationList.add(reservation);
-            }
-            return reservationList;
-        }
-    }*/
-
-    // for custom posts
-    public static class PostsSerializer implements JsonDeserializer<List<Post>> {
-
-        @Override
-        public List<Post> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-                throws JsonParseException {
-            JsonElement content = je.getAsJsonArray();
-            return new Gson().fromJson(content, new TypeToken<List<Post>>() {}.getType());
-        }
-    }
 }

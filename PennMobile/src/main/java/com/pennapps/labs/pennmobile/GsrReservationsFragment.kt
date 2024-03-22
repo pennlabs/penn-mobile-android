@@ -115,21 +115,6 @@ class GsrReservationsFragment : Fragment() {
                    }
                 }
             }
-            /*labs.getGsrReservations("Bearer $token").subscribe({ reservations ->
-                mActivity.runOnUiThread {
-                    loadingPanel?.visibility = View.GONE
-
-                    Log.i("Fleegle", "fleegle")
-                    try {
-                        Log.i("Fleegle", "${reservations.size}")
-                    } catch (e: Exception) {
-                        FirebaseCrashlytics.getInstance().recordException(e)
-                    }
-                }
-            }, { throwable ->
-                mActivity.runOnUiThread {
-                }
-            })*/
         }
     }
 

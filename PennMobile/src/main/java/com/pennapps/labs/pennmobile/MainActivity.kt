@@ -319,12 +319,9 @@ class MainActivity : AppCompatActivity() {
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Contact?>?>() {}.type, DataSerializer<Any?>())
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Venue?>?>() {}.type, VenueSerializer())
                     gsonBuilder.registerTypeAdapter(DiningHall::class.java, MenuSerializer())
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<GSRLocation?>?>() {}.type, GsrLocationSerializer())
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<FlingEvent?>?>() {}.type, FlingEventSerializer())
                     // gets user
                     gsonBuilder.registerTypeAdapter(Account::class.java, UserSerializer())
-                    // gets posts
-                    gsonBuilder.registerTypeAdapter(object:  TypeToken<MutableList<Post?>?>() {}.type, PostsSerializer())
 
                     val gson = GsonBuilder().create()
                     val okHttpClient = OkHttpClient1.Builder()
