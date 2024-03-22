@@ -1,13 +1,20 @@
 package com.pennapps.labs.pennmobile
 
+import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.google.gson.annotations.SerializedName
 import com.pennapps.labs.pennmobile.api.StudentLife
@@ -17,6 +24,7 @@ import com.pennapps.labs.pennmobile.classes.Sublet
 import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentNewListingsBinding
 import com.pennapps.labs.pennmobile.databinding.FragmentSubletterPostedListingsBinding
+import java.io.IOException
 
 class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment() {
     private var _binding: FragmentNewListingsBinding? = null
@@ -49,6 +57,7 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
     internal lateinit var kitchenCheck : CheckBox
     internal lateinit var dogCheck : CheckBox
     internal lateinit var catCheck : CheckBox
+    internal lateinit var imageView: ImageView
 
 
 
@@ -69,6 +78,8 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
     private var baths : Int? = null
     private var description: String?  = null
     private lateinit var amenities: List<AmenitiesItem>
+
+    private var image: String? = null
 
     private lateinit var mActivity: MainActivity
 
@@ -111,6 +122,22 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
         kitchenCheck = binding.kitchenCheck
         dogCheck = binding.dogCheck
         catCheck = binding.catCheck
+        imageView = binding.mainImage
+
+
+        val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            // Callback is invoked after the user selects a media item or closes the
+            // photo picker.
+            if (uri != null) {
+                Log.d("PhotoPicker", "Selected URI: $uri")
+            } else {
+                Log.d("PhotoPicker", "No media selected")
+            }
+        }
+
+        imageView.setOnClickListener{
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }
 
 
         val dateRegex = Regex("""^(0[1-9]|1[0-2])/(0[1-9]|[1-2][0-9]|3[0-1])/\d{2}$""")
@@ -200,5 +227,7 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
 
         return String.format("%04d-%02d-%02d", year, month, day)
     }
+
+
 
 }

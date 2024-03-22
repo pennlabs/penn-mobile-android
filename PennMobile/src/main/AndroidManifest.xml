@@ -43,6 +43,8 @@
         <uses-library
             android:name="com.google.android.maps"
             android:required="false" />
+
+
     </application>
     <uses-feature
         android:glEsVersion="0x00020000"
