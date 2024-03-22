@@ -74,7 +74,7 @@ class LaundryViewModel : ViewModel() {
                 }
             }
             val addUsage = CoroutineScope(context).launch {
-                val usageResponse = studentLife.usage2(roomId)
+                val usageResponse = studentLife.usage(roomId)
                 addUsageSuccess = if (usageResponse.isSuccessful) {
                     usages.add(usageResponse.body()!!)
                     true
@@ -118,7 +118,7 @@ class LaundryViewModel : ViewModel() {
            return
         }
         CoroutineScope(Dispatchers.IO).launch {
-            val roomsResponse = studentLife.laundryRooms2()
+            val roomsResponse = studentLife.laundryRooms()
             if (roomsResponse.isSuccessful) {
                 val rooms = roomsResponse.body()!!
                 laundryRooms.clear()

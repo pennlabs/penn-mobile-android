@@ -1,5 +1,7 @@
 package com.pennapps.labs.pennmobile.api;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
@@ -37,15 +39,6 @@ import java.util.Map;
  * Wrapper class for Gson Serializers
  */
 public class Serializer {
-
-    public static class UserSerializer implements JsonDeserializer<Account> {
-        @Override
-        public Account deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-                throws JsonParseException {
-            JsonElement content = je.getAsJsonObject();
-            return new Gson().fromJson(content, Account.class);
-        }
-    }
 
     public static class DataSerializer<T> implements JsonDeserializer<T> {
         @Override

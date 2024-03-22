@@ -62,10 +62,7 @@ interface StudentLife {
     fun getDiningPreferences(@Header("Authorization") bearerToken: String): Observable<DiningPreferences>
 
     @GET("laundry/halls/ids")
-    fun laundryRooms(): Observable<List<LaundryRoomSimple>>
-
-    @GET("laundry/halls/ids")
-    suspend fun laundryRooms2(): Response<List<LaundryRoomSimple>>
+    suspend fun laundryRooms(): Response<List<LaundryRoomSimple>>
 
     @GET("laundry/hall/{id}")
     fun room(@Path("id") id: Int): Observable<LaundryRoom>
@@ -99,10 +96,7 @@ interface StudentLife {
     ): Call<GSRBookingResult>
 
     @GET("laundry/usage/{id}")
-    fun usage(@Path("id") id: Int): Observable<LaundryUsage>
-
-    @GET("laundry/usage/{id}")
-    suspend fun usage2(@Path("id") id: Int): Response<LaundryUsage>
+    suspend fun usage(@Path("id") id: Int): Response<LaundryUsage>
 
     @GET("events/fling")
     fun getFlingEvents(): Observable<List<FlingEvent>>
@@ -114,10 +108,7 @@ interface StudentLife {
     fun getCalendar(): Observable<List<CalendarEvent>>
 
     @GET("gsr/reservations")
-    fun getGsrReservations(@Header("Authorization") bearerToken: String): Observable<List<GSRReservation>>
-
-    @GET("gsr/reservations")
-    suspend fun getGsrReservations2(@Header("Authorization") bearerToken: String): Response<List<GSRReservation>>
+    suspend fun getGsrReservations(@Header("Authorization") bearerToken: String): Response<List<GSRReservation>>
 
     @FormUrlEncoded
     @POST("gsr/cancel/")

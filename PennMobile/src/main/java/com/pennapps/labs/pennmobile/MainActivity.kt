@@ -317,10 +317,7 @@ class MainActivity : AppCompatActivity() {
                 if (mStudentLife == null) {
                     val gsonBuilder = GsonBuilder()
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Contact?>?>() {}.type, DataSerializer<Any?>())
-                    gsonBuilder.registerTypeAdapter(DiningHall::class.java, MenuSerializer())
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<FlingEvent?>?>() {}.type, FlingEventSerializer())
-                    // gets user
-                    gsonBuilder.registerTypeAdapter(Account::class.java, UserSerializer())
 
                     val gson = GsonBuilder().create()
                     val okHttpClient = OkHttpClient1.Builder()

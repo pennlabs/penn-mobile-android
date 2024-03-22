@@ -85,7 +85,7 @@ class GsrReservationsFragment : Fragment() {
             val token = sp.getString(getString(R.string.access_token), "")
 
             CoroutineScope(Dispatchers.IO).launch {
-                val response = labs.getGsrReservations2("Bearer $token")
+                val response = labs.getGsrReservations("Bearer $token")
                 if (response.isSuccessful) {
                     val reservations = response.body()!!
                     withContext(Dispatchers.Main) {
