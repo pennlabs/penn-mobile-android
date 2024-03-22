@@ -218,8 +218,6 @@ public interface StudentLife {
             @Body Sublet sublet,
             Callback<Sublet> callback);
 
-
-    //this has to include userid as queryparam
     @Headers({"Content-Type: application/json"})
     @GET("/sublet/properties/")
     Observable<List<Sublet>> getPostedSublets(
@@ -238,7 +236,6 @@ public interface StudentLife {
             @Header("Authorization") String bearerToken,
             @Path("sublet_id") int id,
             Callback<Sublet> callback);
-
 
 
 }

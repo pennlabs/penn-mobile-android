@@ -37,9 +37,9 @@ class SubletDetailsFragment(private val dataModel: SublettingViewModel, private 
         binding.datesText.text = sublet.startDate + " to " + sublet.endDate
         binding.descriptionText.text = sublet.description
 
-        binding.availableButton.setOnClickListener{
+        /* binding.availableButton.setOnClickListener{
             dataModel.deleteSublet(mActivity, subletNumber)
-        }
+        } */
 
 
 

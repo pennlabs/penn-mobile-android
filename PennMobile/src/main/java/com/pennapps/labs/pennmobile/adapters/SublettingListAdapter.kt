@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,13 +12,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.SublesseeDetailsFragment
+import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
+import com.pennapps.labs.pennmobile.classes.Sublet
 import com.pennapps.labs.pennmobile.classes.SublettingModel
 
-class SublettingListAdapter(var sublettingList: ArrayList<SublettingModel>):
+class SublettingListAdapter(var sublettingList: ArrayList<SublettingModel>, var dataModel: SublesseeViewModel):
         RecyclerView.Adapter<SublettingListAdapter.SublettingCardViewHolder>() {
 
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
+    //private lateinit var actualSublets: ArrayList<Sublet>
 
     class SublettingCardViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
@@ -48,19 +52,13 @@ class SublettingListAdapter(var sublettingList: ArrayList<SublettingModel>):
 
     override fun onBindViewHolder(holder: SublettingCardViewHolder, position: Int) {
 
-        var mSublettingCard: SublettingModel = sublettingList[position]
-        holder.listingImage.setImageResource(mSublettingCard.listingImage!!)
-        holder.listingTitle.text = mSublettingCard.listingTitle
+        val actualSublet = dataModel.getSublet(position)
 
-        //price, adding negotiable if price is negotiable
-        var price = "$" + mSublettingCard.listingPrice.toString()
-        if (mSublettingCard.isNegotiable == true) {
-            price += " (negotiable)"
-        }
+        holder.listingTitle.text = actualSublet.title
+        var price = "$" + actualSublet.price.toString()
         holder.listingPrice.text = price
-
-        val rooms = mSublettingCard.numberBeds.toString() + " bd | " +
-                mSublettingCard.numberBath.toString() + " ba"
+        val rooms = actualSublet.beds.toString() + " bd | " +
+                actualSublet.baths.toString() + " ba"
         holder.listingRooms.text = rooms
 
         holder.itemView.setOnClickListener {

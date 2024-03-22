@@ -1,19 +1,27 @@
 package com.pennapps.labs.pennmobile
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.pennapps.labs.pennmobile.adapters.PostedSubletsListAdapter
 import com.pennapps.labs.pennmobile.adapters.SublettingListAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
+import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
+import com.pennapps.labs.pennmobile.classes.Sublet
 import com.pennapps.labs.pennmobile.classes.SublettingModel
 import com.pennapps.labs.pennmobile.databinding.FragmentSubletteeMarketplaceBinding
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 /**
@@ -35,8 +43,11 @@ class SubletteeMarketplace : Fragment() {
     //recyclerview adapters and layout manager
     lateinit var sublettingRecyclerView: RecyclerView
     lateinit var newLayoutManager: GridLayoutManager
-    lateinit var sublettingList: ArrayList<SublettingModel>
+    lateinit var sublettingList: ArrayList<Sublet>
+    lateinit var sublettingListTest: ArrayList<SublettingModel>
     lateinit var myAdapter: SublettingListAdapter
+
+    private lateinit var dataModel: SublesseeViewModel
 
     //api manager
     private lateinit var mStudentLife: StudentLife
@@ -48,12 +59,14 @@ class SubletteeMarketplace : Fragment() {
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()
 
+        dataModel = SublesseeViewModel(mActivity, mStudentLife)
+
         val bundle = Bundle()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        container?.removeAllViews()
+        //container?.removeAllViews()
         _binding = FragmentSubletteeMarketplaceBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -69,16 +82,22 @@ class SubletteeMarketplace : Fragment() {
 
         //delete for later, testing
         sublettingRecyclerView.setHasFixedSize(true)
-        sublettingList = setUpData()
+        sublettingListTest = setUpData()
 
-        myAdapter = SublettingListAdapter(sublettingList)
+        dataModel.listSublets(mActivity)
+        myAdapter = SublettingListAdapter(sublettingListTest, dataModel)
+        dataModel.sublettingList.observe(viewLifecycleOwner) { sublets ->
+            sublettingList = sublets
+            myAdapter.notifyDataSetChanged()
+        }
+
         sublettingRecyclerView.adapter = myAdapter
     }
 
     //function to put in fake data- will get rid of once I get backend data in
     private fun setUpData(): ArrayList<SublettingModel> {
 
-        sublettingList = ArrayList<SublettingModel>()
+        sublettingListTest = ArrayList<SublettingModel>()
 
         val sublettingImages = intArrayOf(
                 R.drawable.dining_gourmet_grocer,
@@ -129,11 +148,11 @@ class SubletteeMarketplace : Fragment() {
         )
 
         for (i in sublettingImages.indices)
-            sublettingList.add(SublettingModel(sublettingImages[i], sublettingNames[i],
+            sublettingListTest.add(SublettingModel(sublettingImages[i], sublettingNames[i],
                     sublettingPrices[i], sublettingNegotiablePrices[i], sublettingBedrooms[i],
                     sublettingBathrooms[i], 2, 2))
 
-        return sublettingList
+        return sublettingListTest
 
 
     }
