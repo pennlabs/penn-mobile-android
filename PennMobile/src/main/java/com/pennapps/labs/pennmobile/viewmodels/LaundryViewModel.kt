@@ -69,7 +69,7 @@ class LaundryViewModel : ViewModel() {
                     rooms.add(room)
                     true
                 } else {
-                    Log.i("Laundry Test", "fuck2")
+                    Log.i("Laundry", "Failed to get room data")
                     false
                 }
             }
@@ -79,7 +79,7 @@ class LaundryViewModel : ViewModel() {
                     usages.add(usageResponse.body()!!)
                     true
                 } else {
-                    Log.i("Laundry Test", "fuck3")
+                    Log.i("Laundry", "Failed to get usage data")
                     false
                 }
             }
@@ -107,7 +107,7 @@ class LaundryViewModel : ViewModel() {
                    favoriteIdList.add(room)
                }
             } else {
-               Log.i("Laundry Test", "fuck")
+               Log.i("Laundry", "Failed to get preferences")
             }
             populateFavorites(coroutineContext, studentLife, favoriteIdList)
         }
@@ -159,10 +159,8 @@ class LaundryViewModel : ViewModel() {
                     laundryHalls.add(hallName)
                     laundryRooms[hallName] = roomList
                 }
-
-                Log.i("Laundry Test", "yay")
             } else {
-                Log.i("Laundry Test", "Yeah riperoni")
+                Log.i("Laundry", "Failed to get laundry rooms")
             }
 
             _loadedRooms.postValue(true)
