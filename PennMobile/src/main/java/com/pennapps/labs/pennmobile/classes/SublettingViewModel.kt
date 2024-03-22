@@ -86,7 +86,7 @@ class SublettingViewModel (private val activity: Activity, private val studentLi
         }
     }
 
-    /*
+
     fun deleteSublet(mActivity: MainActivity, id: Int) {
         val context = activity.applicationContext
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
@@ -98,23 +98,20 @@ class SublettingViewModel (private val activity: Activity, private val studentLi
                 "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
 
-            studentLife.deleteSublet(bearerToken, id).subscribe({ sublets ->
-                mActivity.runOnUiThread {
-                    postedSubletsList.value = sublets as ArrayList<Sublet>
+            studentLife.deleteSublet(bearerToken, id, object : Callback<Sublet> {
+                override fun success(t: Sublet?, response: Response?) {
+                    Log.i("Subletting View Model", "sublet deleted")
                 }
-            }, { throwable ->
-                mActivity.runOnUiThread {
-                    Log.e(
-                        "Posted Sublet Fragment",
-                        "Could not load Posted Sublets",
-                        throwable
-                    )
+
+                override fun failure(error: RetrofitError?) {
+                    Log.e("Subletting View Model", "Error deleting sublet $error", error)
+                    Toast.makeText(activity, "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
                 }
             })
         }
     }
 
-     */
+
 
 
     fun getSublet(position : Int) : Sublet {

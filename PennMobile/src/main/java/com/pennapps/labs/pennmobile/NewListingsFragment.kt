@@ -184,6 +184,7 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
                 description = description,
                 title = title,
                 beds = beds,
+                amenities = amenities,
                 externalLink = "https://pennlabs.org/", // fix
                 startDate = convertedStart
         )

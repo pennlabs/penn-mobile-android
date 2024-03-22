@@ -236,7 +236,8 @@ public interface StudentLife {
     @DELETE("/sublet/properties/{sublet_id}")
     void deleteSublet(
             @Header("Authorization") String bearerToken,
-            @Path("sublet_id") int id);
+            @Path("sublet_id") int id,
+            Callback<Sublet> callback);
 
 
 
