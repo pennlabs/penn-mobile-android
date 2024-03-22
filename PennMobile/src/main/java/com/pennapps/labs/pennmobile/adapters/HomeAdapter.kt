@@ -108,19 +108,17 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
             POLL -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.poll_card, parent, false))
             }
-            //GSR_BOOKING -> {
-                //ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.gsr_reservation, parent, false))
-            //}
+            GSR_BOOKING -> {
+                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
+            }
             NOT_SUPPORTED -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.empty_view, parent, false))
             }
-            //TODO: GSR CARD HERRRREEEEE (GSR_BOOKING)
             else -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
             }
         }
     }
-//TODO: BIND GSR CELL
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val cell = dataModel.getCell(position)
         when (cell.type) {

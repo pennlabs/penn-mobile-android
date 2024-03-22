@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.pennapps.labs.pennmobile.GsrReservationsFragment
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.MenuFragment
 import com.pennapps.labs.pennmobile.R
@@ -22,10 +23,9 @@ import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRReservation
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.dining_list_item.view.*
-import kotlinx.android.synthetic.main.gsr_list_item.view.item_gsr_hours
+import kotlinx.android.synthetic.main.gsr_list_item.view.item_gsr_date
 import kotlinx.android.synthetic.main.gsr_list_item.view.item_gsr_image
-import kotlinx.android.synthetic.main.gsr_list_item.view.item_gsr_name
-import kotlinx.android.synthetic.main.gsr_list_item.view.item_gsr_status
+import kotlinx.android.synthetic.main.gsr_list_item.view.item_gsr_location
 import kotlinx.android.synthetic.main.gsr_reservation.view.gsr_reservation_cancel_btn
 import kotlinx.android.synthetic.main.gsr_reservation.view.gsr_reservation_date_tv
 import kotlinx.android.synthetic.main.gsr_reservation.view.gsr_reservation_iv
@@ -38,14 +38,9 @@ class HomeGsrReservationAdapter (reservations: List<GSRReservation>) : RecyclerV
     private var activeReservations: List<GSRReservation> = reservations
 
     private lateinit var itemImage: ImageView
-    //private lateinit var itemLocation: TextView
+    private lateinit var itemLocation: TextView
+    private lateinit var itemDate: TextView
 
-    private lateinit var itemName: TextView
-    private lateinit var itemStatus: TextView
-    private lateinit var itemHours: TextView
-
-   // private lateinit var itemButton: Button
-    //private lateinit var itemDate: TextView
 
     //TODO("Image and text views")
 
@@ -55,8 +50,6 @@ class HomeGsrReservationAdapter (reservations: List<GSRReservation>) : RecyclerV
     private lateinit var mStudentLife: StudentLife
     override fun onBindViewHolder(holder: HomeGsrReservationAdapter.ViewHolder, position: Int) {
         val currentReservation = activeReservations[position]
-        //get image
-        //get name
         val location = currentReservation.name
         val formatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ")
         val from = formatter.parseDateTime(currentReservation.fromDate)
@@ -68,8 +61,8 @@ class HomeGsrReservationAdapter (reservations: List<GSRReservation>) : RecyclerV
         val imageUrl = currentReservation.info?.get("thumbnail") ?: "https://s3.us-east-2.amazonaws.com/labs.api/dining/MBA+Cafe.jpg"
         Picasso.get().load(imageUrl).fit().centerCrop().into(holder.itemView.item_gsr_image)
 
-        holder.itemView.item_gsr_name.text = location
-        holder.itemView.item_gsr_hours.text = day + "\n" + fromHour + "-" + toHour
+        holder.itemView.item_gsr_location.text = location
+        holder.itemView.item_gsr_date.text = day + "\n" + fromHour + "-" + toHour
 
     }
 
@@ -90,15 +83,9 @@ class HomeGsrReservationAdapter (reservations: List<GSRReservation>) : RecyclerV
 
         init {
             itemImage = itemView.item_gsr_image
-            itemName = itemView.item_gsr_name
-            itemStatus = itemView.item_gsr_status
-            itemHours = itemView.item_gsr_hours
+            itemLocation = itemView.item_gsr_location
+            itemDate = itemView.item_gsr_date
 
-
-//            itemImage = itemView.gsr_reservation_iv
-//            itemLocation = itemView.gsr_reservation_location_tv
-//            itemButton = itemView.gsr_reservation_cancel_btn
-//            itemDate = itemView.gsr_reservation_date_tv
         }
 
     }

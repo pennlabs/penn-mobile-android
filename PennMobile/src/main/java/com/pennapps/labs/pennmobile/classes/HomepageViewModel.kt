@@ -294,7 +294,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
     private fun getGSRReservations(studentLife: StudentLife, bearerToken: String, latch: CountDownLatch) {
         studentLife.getGsrReservations(bearerToken).subscribe({ reservationsList ->
             if (reservationsList.isEmpty()) {
-                //Womp-womp no reservations
+                addCell(HomeCell(), GSR_POS)
 
             } else {
                 val gsrCell = GSRCell(reservationsList)
