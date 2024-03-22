@@ -39,17 +39,17 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
     override fun onBindViewHolder(holder: GsrReservationViewHolder, position: Int) {
         val reservation = reservations[position]
 
-        val roomName = reservation.name
+        val roomName = reservation.gsr!!.name
 
         val formatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ")
-        val from = formatter.parseDateTime(reservation.fromDate)
-        val to = formatter.parseDateTime(reservation.toDate)
+        val from = formatter.parseDateTime(reservation.start)
+        val to = formatter.parseDateTime(reservation.end)
         val day = from.toString("EEEE, MMMM d")
         val fromHour = from.toString("h:mm a")
         val toHour = to.toString("h:mm a")
 
         // huntsman reservation responses don't have an image url so we set it here
-        val imageUrl = reservation.info?.get("thumbnail") ?: "https://s3.us-east-2.amazonaws.com/labs.api/dining/MBA+Cafe.jpg"
+        val imageUrl = reservation.gsr?.image_url?: "https://s3.us-east-2.amazonaws.com/labs.api/dining/MBA+Cafe.jpg"
         Picasso.get().load(imageUrl).fit().centerCrop().into(holder.itemView.gsr_reservation_iv)
 
         holder.itemView.gsr_reservation_location_tv.text = roomName
@@ -67,10 +67,7 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                 (mContext as MainActivity).mNetworkManager.getAccessToken {
 
                     val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
-                    val sessionID = if (reservation.info == null) sp.getString(
-                        mContext.getString(R.string.huntsmanGSR_SessionID),
-                        ""
-                    ) else null
+                    val sessionID = ""
 
                     val labs = MainActivity.studentLifeInstance
                     val bearerToken =

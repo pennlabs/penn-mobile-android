@@ -116,6 +116,9 @@ interface StudentLife {
     @GET("gsr/reservations")
     fun getGsrReservations(@Header("Authorization") bearerToken: String): Observable<List<GSRReservation>>
 
+    @GET("gsr/reservations")
+    suspend fun getGsrReservations2(@Header("Authorization") bearerToken: String): Response<List<GSRReservation>>
+
     @FormUrlEncoded
     @POST("gsr/cancel/")
     fun cancelReservation(

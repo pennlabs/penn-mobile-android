@@ -15,7 +15,6 @@ class Venue {
     var venueType: String? = null
     var extras: ArrayList<String>? = null
 
-    //@SerializedName("dateHours")
     var hours: List<VenueInterval> = ArrayList()
 
     /**

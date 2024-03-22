@@ -212,7 +212,7 @@ public class Serializer {
     }
 
     // for GSR Reservations
-    public static class GsrReservationSerializer implements JsonDeserializer<List<GSRReservation>> {
+    /*public static class GsrReservationSerializer implements JsonDeserializer<List<GSRReservation>> {
 
         @Override
         public List<GSRReservation> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
@@ -236,7 +236,7 @@ public class Serializer {
             }
             return reservationList;
         }
-    }
+    }*/
 
     // for custom posts
     public static class PostsSerializer implements JsonDeserializer<List<Post>> {
