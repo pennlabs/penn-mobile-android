@@ -167,7 +167,8 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         }
 
         mStudentLife.venues()
-            .flatMap { venues -> Observable.fromIterable(venues) }
+            .flatMap { venues ->
+                Observable.fromIterable(venues) }
             .flatMap { venue ->
                 val hall = DiningFragment.createHall(venue)
                 Observable.just(hall)

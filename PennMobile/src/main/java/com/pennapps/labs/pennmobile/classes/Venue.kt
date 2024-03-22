@@ -1,5 +1,8 @@
 package com.pennapps.labs.pennmobile.classes
 
+import android.util.Log
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import org.joda.time.DateTime
 import org.joda.time.Interval
 import org.joda.time.format.DateTimeFormat
@@ -10,11 +13,18 @@ import java.util.*
  * Class for Dining Venues from Business Services API
  */
 class Venue {
+    @SerializedName("id")
+    @Expose
     var id = 0
-    var name: String? = null
-    var venueType: String? = null
-    var extras: ArrayList<String>? = null
 
+    @SerializedName("name")
+    @Expose
+    var name: String? = null
+
+    var venueType: String? = null
+
+    @SerializedName("days")
+    @Expose
     var hours: List<VenueInterval> = ArrayList()
 
     /**
@@ -52,9 +62,5 @@ class Venue {
 
     fun allHours(): List<VenueInterval> {
         return hours
-    }
-
-    fun getExtras(): List<String>? {
-        return extras
     }
 }

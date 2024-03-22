@@ -1,6 +1,8 @@
 package com.pennapps.labs.pennmobile.classes
 
 import android.util.Log
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import org.joda.time.DateTime
 import org.joda.time.IllegalInstantException
 import org.joda.time.Interval
@@ -13,9 +15,13 @@ import java.util.*
  * Created by Adel on 7/13/15.
  */
 class VenueInterval {
+
+    @SerializedName("date")
+    @Expose
     var date: String? = null
 
-    //@SerializedName("meal")
+    @SerializedName("dayparts")
+    @Expose
     var meals: List<MealInterval> = arrayListOf()
 
     /**
@@ -33,8 +39,14 @@ class VenueInterval {
         }
 
     class MealInterval {
-        var open: String? = null
-        var close: String? = null
+        @SerializedName("starttime")
+        @Expose
+        var starttime: String? = null
+        @SerializedName("endtime")
+        @Expose
+        var endtime: String? = null
+        @SerializedName("label")
+        @Expose
         var type: String? = null
 
         /**
@@ -45,6 +57,13 @@ class VenueInterval {
          * @return Time interval in which meal is open represented as a Joda Interval
          */
         fun getInterval(date: String?): Interval {
+            var open = if (starttime.isNullOrEmpty()) {
+                ""
+            } else starttime!!.substring(11)
+            var close = if (endtime.isNullOrEmpty()) {
+                ""
+            } else endtime!!.substring(11)
+
             var openTime = "$date $open"
             var closeTime = "$date $close"
             // Avoid midnight hour confusion as API returns both 00:00 and 24:00
