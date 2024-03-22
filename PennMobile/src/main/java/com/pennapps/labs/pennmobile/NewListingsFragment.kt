@@ -1,30 +1,27 @@
 package com.pennapps.labs.pennmobile
 
-import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import com.google.gson.annotations.SerializedName
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.AmenitiesItem
-import com.pennapps.labs.pennmobile.classes.FitnessPreferenceViewModel
 import com.pennapps.labs.pennmobile.classes.Sublet
 import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentNewListingsBinding
-import com.pennapps.labs.pennmobile.databinding.FragmentSubletterPostedListingsBinding
 import java.io.IOException
+
 
 class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment() {
     private var _binding: FragmentNewListingsBinding? = null
@@ -58,6 +55,10 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
     internal lateinit var dogCheck : CheckBox
     internal lateinit var catCheck : CheckBox
     internal lateinit var imageView: ImageView
+    internal lateinit var imageIcon: ImageView
+    internal lateinit var imageText: TextView
+
+
 
 
 
@@ -123,6 +124,8 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
         dogCheck = binding.dogCheck
         catCheck = binding.catCheck
         imageView = binding.mainImage
+        imageIcon = binding.mainImageIcon
+        imageText = binding.addPhotosText
 
 
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -130,6 +133,19 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
             // photo picker.
             if (uri != null) {
                 Log.d("PhotoPicker", "Selected URI: $uri")
+                try {
+                    // Load the selected image into the ImageView
+                    val inputStream = context?.contentResolver?.openInputStream(uri)
+                    val bitmap = BitmapFactory.decodeStream(inputStream)
+                    imageView.setImageBitmap(bitmap)
+                    imageIcon.visibility = View.GONE
+                    imageText.visibility = View.GONE
+
+                    inputStream?.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    Toast.makeText(context, "Failed to load image", Toast.LENGTH_SHORT).show()
+                }
             } else {
                 Log.d("PhotoPicker", "No media selected")
             }
