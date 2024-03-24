@@ -10,11 +10,12 @@
         <item name="android:textColorSecondary">@color/color_toolbar_text</item>
         <item name="android:fontFamily">@font/sf_pro_display_regular</item>
         <item name="android:windowBackground">@color/windowBackground</item>
-        <item name="android:colorEdgeEffect"
-              tools:targetApi="lollipop">@color/overScrollColor</item>
+        <item name="android:colorEdgeEffect" tools:targetApi="lollipop">@color/overScrollColor
+        </item>
         <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">true</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-        <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent
+        </item>
     </style>
 
     <style name="DarkModeApi29" tools:targetApi="29">
@@ -233,13 +234,14 @@
         <attr name="tab_bg_color" format="color" />
         <attr name="max_tab_count" format="integer" />
         <attr name="selected_tab_text_color" format="color" />
-        <attr name="more_icon_resource" format="integer"/>
+        <attr name="more_icon_resource" format="integer" />
     </declare-styleable>
 
     <style name="fontBottomBar">
         <item name="android:fontFamily">@font/sf_pro_display_medium</item>
         <item name="android:textColor">@color/floating_bottom_bar_selected</item>
     </style>
+
     <style name="ExpandableBottomBar">
         <item name="exb_backgroundColor">#FFF</item>
         <item name="exb_backgroundCornerRadius">0dp</item>
@@ -274,9 +276,9 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.AppBarOverlay.Light" parent="ThemeOverlay.AppCompat.Light"/>
+    <style name="AppTheme.AppBarOverlay.Light" parent="ThemeOverlay.AppCompat.Light" />
 
     <color name="windowBackground">#FFFFFF</color>
     <color name="overScrollColor">#9BAACC</color>
@@ -369,6 +371,16 @@
         <item name="android:windowMinWidthMajor">100%</item>
         <item name="android:windowMinWidthMinor">100%</item>
 
+    </style>
+
+    <style name="Widget.Pennmobileandroid.AppWidget.Container" parent="android:Widget">
+        <item name="android:id">@android:id/background</item>
+        <item name="android:background">?android:attr/colorBackground</item>
+    </style>
+
+    <style name="Widget.Pennmobileandroid.AppWidget.InnerView" parent="android:Widget">
+        <item name="android:background">?android:attr/colorBackground</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 
 
