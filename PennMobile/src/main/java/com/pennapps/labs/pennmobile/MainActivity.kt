@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile
 
+import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -84,6 +85,8 @@ class MainActivity : AppCompatActivity() {
 
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
+
+
 
         onExpandableBottomNavigationItemSelected()
         showBottomBar()
