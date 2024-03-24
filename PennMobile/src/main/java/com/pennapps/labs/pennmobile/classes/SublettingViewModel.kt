@@ -9,6 +9,7 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
+import okhttp3.MultipartBody
 import retrofit.RetrofitError
 import retrofit.client.Response
 import retrofit.Callback
@@ -21,7 +22,7 @@ class SublettingViewModel (private val activity: Activity, private val studentLi
     var postedSubletsList = MutableLiveData<ArrayList<Sublet>>()
 
 
-    fun postSublet(mActivity : MainActivity, sublet : Sublet) {
+    fun postSublet(mActivity : MainActivity, sublet : Sublet, callback: (Sublet?) -> Unit) {
 
         val context = activity.applicationContext
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
@@ -37,6 +38,7 @@ class SublettingViewModel (private val activity: Activity, private val studentLi
                     object : Callback<Sublet> {
                         override fun success(t: Sublet?, response: Response?) {
                             Log.i("Subletting View Model", "sublet posted")
+                            callback(sublet)
                         }
 
                         override fun failure(error: RetrofitError?) {
@@ -49,6 +51,38 @@ class SublettingViewModel (private val activity: Activity, private val studentLi
                         }
 
                     })
+        }
+
+
+    }
+
+    fun postImage(mActivity : MainActivity, subletID : Int, sublet : MultipartBody.Part, image : MultipartBody.Part) {
+        val context = activity.applicationContext
+        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+
+
+        OAuth2NetworkManager(mActivity).getAccessToken {
+
+            val bearerToken =
+                "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
+
+            studentLife.createImage(bearerToken, subletID, sublet, image, object : Callback<Sublet> {
+                override fun success(t: Sublet?, response: Response?) {
+                    Log.i("Subletting View Model", "sublet image posted")
+                }
+
+                override fun failure(error: RetrofitError?) {
+                    Log.e("Subletting View Model", "Error posting sublet iamge " +
+                            "$error", error
+                    )
+                    Toast.makeText(activity, "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
+
+
+                }
+
+            })
+
+
         }
 
 

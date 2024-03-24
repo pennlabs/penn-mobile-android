@@ -31,6 +31,7 @@ import com.pennapps.labs.pennmobile.classes.WhartonStatus;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.MultipartBody;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
@@ -41,9 +42,11 @@ import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Headers;
 import retrofit.http.POST;
+import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
+
 
 /**
  * Created by Julius.
@@ -219,6 +222,16 @@ public interface StudentLife {
             Callback<Sublet> callback);
 
     @Headers({"Content-Type: application/json"})
+    @POST("/sublet/properties/{sublet_id}/images/")
+    void createImage(
+            @Header("Authorization") String bearerToken,
+            @Path("sublet_id") int id,
+            @Part("sublet") MultipartBody.Part sublet,
+            @Part("image") MultipartBody.Part partFile,
+            Callback<Sublet> callback
+    );
+
+    @Headers({"Content-Type: application/json"})
     @GET("/sublet/properties/")
     Observable<List<Sublet>> getPostedSublets(
             @Header("Authorization") String bearerToken);
@@ -236,6 +249,8 @@ public interface StudentLife {
             @Header("Authorization") String bearerToken,
             @Path("sublet_id") int id,
             Callback<Sublet> callback);
+
+
 
 
 }

@@ -17,9 +17,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.AmenitiesItem
+import com.pennapps.labs.pennmobile.classes.MultipartUtil
 import com.pennapps.labs.pennmobile.classes.Sublet
 import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentNewListingsBinding
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 
 
@@ -81,6 +85,7 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
     private lateinit var amenities: List<AmenitiesItem>
 
     private var image: String? = null
+    var multipartImage: MultipartBody.Part? = null
 
     private lateinit var mActivity: MainActivity
 
@@ -137,9 +142,13 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
                     // Load the selected image into the ImageView
                     val inputStream = context?.contentResolver?.openInputStream(uri)
                     val bitmap = BitmapFactory.decodeStream(inputStream)
+                    image = bitmap.toString()
                     imageView.setImageBitmap(bitmap)
                     imageIcon.visibility = View.GONE
                     imageText.visibility = View.GONE
+                    multipartImage = MultipartUtil.createPartFromBitmap(bitmap)
+
+
 
                     inputStream?.close()
                 } catch (e: IOException) {
@@ -202,6 +211,7 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
                 if (description.equals("")) {
                     description = null;
                 }
+
                 postSublet(title, Integer.parseInt(price), streetAddress, startDate, endDate, beds,
                         baths, amenitiesList, description)
 
@@ -216,6 +226,7 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
                            description: String?) {
         val convertedEnd = convertToYYYYMMDD(endDate)
         val convertedStart = convertToYYYYMMDD(startDate)
+        var subletId = -1
 
 
         val newSublet = Sublet(
@@ -232,7 +243,23 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
                 startDate = convertedStart
         )
 
-        dataModel.postSublet(mActivity, newSublet)
+        dataModel.postSublet(mActivity, newSublet) { postedSublet ->
+            if (postedSublet != null) {
+                Log.i("MainActivity", "Posted sublet ID: ${postedSublet.id}")
+                subletId = postedSublet.id!!
+            } else {
+                // Handle failure to post sublet
+                Log.e("MainActivity", "Failed to post sublet")
+            }
+        }
+
+        val subletPart = MultipartUtil.createSubletPart(subletId)
+
+
+
+
+
+
     }
 
     private fun convertToYYYYMMDD(mmddyy: String): String {
