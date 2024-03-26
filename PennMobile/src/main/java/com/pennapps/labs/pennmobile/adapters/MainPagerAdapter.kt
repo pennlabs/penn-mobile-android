@@ -18,7 +18,7 @@ class MainPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle?) 
             GSR_POSITION-> GsrTabbedFragment()
             LAUNDRY_POSITION-> LaundryFragment()
             MORE_POSITION-> MoreFragment()
-            else -> HomeFragment()
+            else -> Fragment()
         }
     }
 
