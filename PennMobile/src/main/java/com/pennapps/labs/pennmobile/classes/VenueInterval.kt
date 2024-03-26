@@ -97,10 +97,10 @@ class VenueInterval {
 
         fun getFormattedHour(hours: String): String {
             try {
-                var newHours = hours.substring(0, 5)
-                val hour = hours.substring(0, 2).toInt()
+                var newHours = hours.substring(11, 16)
+                val hour = hours.substring(11, 13).toInt()
                 if (hour > 12) {
-                    newHours = "" + (hour - 12) + hours.substring(2, 5)
+                    newHours = "" + (hour - 12) + hours.substring(13, 16)
                 }
                 newHours += if (hour >= 12) {
                     "pm"

@@ -3,6 +3,8 @@ package com.pennapps.labs.pennmobile
 import StudentLife
 import android.graphics.Color
 import android.os.Bundle
+import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -103,6 +105,15 @@ class DiningInfoFragment : Fragment() {
             layparamtimes.setMargins(0, 10, 0, 0)
             val mealInt = TextView(mActivity)
             val hoursString = meal.starttime?.let { meal.getFormattedHour(it) } + " - " + meal.endtime?.let { meal.getFormattedHour(it) }
+            if (TextUtils.isEmpty(meal.starttime)) {
+                Log.d("startmsg", "start time is null")
+            }
+            else {
+                Log.d("startmsg", "There is a start time")
+                Log.d("startmsg", meal.starttime.toString())
+                Log.d("startmsg", meal.starttime?.let { meal.getFormattedHour(it) }.toString())
+            }
+            Log.d("hoursmsg", hoursString)
             mealInt.text = hoursString
             mealInt.id = vertical.last().id + 1
             menuParent.addView(mealInt, layparamtimes)

@@ -17,7 +17,6 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.adapters.DiningHallWidgetAdapter
 import com.pennapps.labs.pennmobile.api.DiningRequest
 import com.pennapps.labs.pennmobile.api.Serializer
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.Account
 import com.pennapps.labs.pennmobile.classes.Contact
 import com.pennapps.labs.pennmobile.classes.DiningHall
@@ -53,6 +52,7 @@ class DiningHallWidget : AppWidgetProvider() {
                 flags += Intent.FLAG_ACTIVITY_NEW_TASK
                 flags += Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
+            mainActivityIntent.putExtra("Widget_Tab_Switch", 2)
             val serviceIntent = Intent(context, DiningHallWidgetAdapter::class.java)
             // PendingIntent is for foreign applications like appwidgets and notifs, which is foreign to the main application
             val pendingIntent : PendingIntent = PendingIntent.getActivity(context, appWidgetId, mainActivityIntent, PendingIntent.FLAG_IMMUTABLE)
