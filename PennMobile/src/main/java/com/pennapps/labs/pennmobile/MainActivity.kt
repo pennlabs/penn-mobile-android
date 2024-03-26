@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile
 
+import StudentLife
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.SharedPreferences
@@ -39,7 +40,6 @@ import com.pennapps.labs.pennmobile.api.CampusExpress
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Serializer.*
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.*
 import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
 import com.pennapps.labs.pennmobile.utils.Utils
@@ -52,7 +52,11 @@ import retrofit.RestAdapter
 import retrofit.android.AndroidLog
 import retrofit.client.OkClient
 import retrofit.converter.GsonConverter
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import okhttp3.OkHttpClient as OkHttpClient1
 
 
 class MainActivity : AppCompatActivity() {
@@ -86,8 +90,6 @@ class MainActivity : AppCompatActivity() {
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
-
-
         onExpandableBottomNavigationItemSelected()
         showBottomBar()
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -98,10 +100,17 @@ class MainActivity : AppCompatActivity() {
         // Show HomeFragment if logged in, otherwise show LoginFragment
         val pennKey = mSharedPrefs.getString(getString(R.string.pennkey), null)
         val guestMode = mSharedPrefs.getBoolean(getString(R.string.guest_mode), false)
+        var diningWidgetBroadCast = 0
         if (pennKey == null && !guestMode) {
             startLoginFragment()
         } else {
             startHomeFragment()
+        }
+        if (intent != null) {
+            diningWidgetBroadCast = intent.getIntExtra("Widget_Tab_Switch", -1)
+        }
+        if (diningWidgetBroadCast != -1) {
+            setTab(DINING_ID)
         }
     }
 
@@ -271,6 +280,7 @@ class MainActivity : AppCompatActivity() {
 
         val HOME_ID = R.id.nav_home
         val GSR_ID = R.id.nav_gsr
+        val DINING_ID = R.id.nav_dining
 
         private var mStudentLife: StudentLife? = null
         private var mPlatform: Platform? = null
@@ -316,35 +326,23 @@ class MainActivity : AppCompatActivity() {
                 if (mStudentLife == null) {
                     val gsonBuilder = GsonBuilder()
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Contact?>?>() {}.type, DataSerializer<Any?>())
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Venue?>?>() {}.type, VenueSerializer())
-                    gsonBuilder.registerTypeAdapter(DiningHall::class.java, MenuSerializer())
-                    // gets room
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<LaundryRoom?>() {}.type, LaundryRoomSerializer())
-                    // gets laundry room list
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<LaundryRoomSimple?>?>() {}.type, LaundryRoomListSerializer())
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<GSRLocation?>?>() {}.type, GsrLocationSerializer())
-                    // gets laundry usage
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<LaundryUsage?>() {}.type, LaundryUsageSerializer())
-                    // gets laundry preferences (used only for testing)
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Int?>?>() {}.type, LaundryPrefSerializer())
                     gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<FlingEvent?>?>() {}.type, FlingEventSerializer())
-                    // gets gsr reservations
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<GSRReservation?>?>() {}.type, GsrReservationSerializer())
-                    // gets user
-                    gsonBuilder.registerTypeAdapter(Account::class.java, UserSerializer())
-                    // gets posts
-                    gsonBuilder.registerTypeAdapter(object:  TypeToken<MutableList<Post?>?>() {}.type, PostsSerializer())
-                    val gson = gsonBuilder.create()
-                    val okHttpClient = OkHttpClient()
-                    okHttpClient.setConnectTimeout(35, TimeUnit.SECONDS) // Connection timeout
-                    okHttpClient.setReadTimeout(35, TimeUnit.SECONDS)    // Read timeout
-                    okHttpClient.setWriteTimeout(35, TimeUnit.SECONDS)   // Write timeout
-                    val restAdapter = RestAdapter.Builder()
-                            .setConverter(GsonConverter(gson))
-                            .setClient(OkClient(okHttpClient))
-                            .setEndpoint("https://pennmobile.org/api")
-                            .build()
-                    mStudentLife = restAdapter.create(StudentLife::class.java)
+
+                    val gson = GsonBuilder().create()
+                    val okHttpClient = OkHttpClient1.Builder()
+                        .connectTimeout(35, TimeUnit.SECONDS)
+                        .readTimeout(35, TimeUnit.SECONDS)
+                        .writeTimeout(35, TimeUnit.SECONDS)
+                        .build()
+
+                    val retrofit = Retrofit.Builder()
+                        .baseUrl("https://pennmobile.org/api/")
+                        .client(okHttpClient)
+                        .addConverterFactory(GsonConverterFactory.create(gson))
+                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                        .build()
+
+                    mStudentLife = retrofit.create(StudentLife::class.java)
                 }
                 return mStudentLife!!
             }

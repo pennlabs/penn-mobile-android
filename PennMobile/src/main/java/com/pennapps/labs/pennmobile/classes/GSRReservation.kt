@@ -9,32 +9,28 @@ class GSRReservation {
     @JvmField
     var booking_id: String? = null
 
-    @SerializedName("name")
+    @SerializedName("gsr")
     @Expose
     @JvmField
-    var name: String? = null
+    var gsr: GSR2? = null
 
-    @SerializedName("fromDate")
+    @SerializedName("room_id")
     @Expose
     @JvmField
-    var fromDate: String? = null
+    var room_id: Int? = null
 
-    @SerializedName("toDate")
+    @SerializedName("room_name")
     @Expose
     @JvmField
-    var toDate: String? = null
+    var room_name: String? = null
 
-    @SerializedName("gid")
+    @SerializedName("start")
     @Expose
     @JvmField
-    var gid: String? = null
+    var start: String? = null
 
-    @SerializedName("lid")
-    @Expose
-    var lid: String? = null
-
-    @SerializedName("info")
+    @SerializedName("end")
     @Expose
     @JvmField
-    var info: Map<String, String>? = null
+    var end: String? = null
 }

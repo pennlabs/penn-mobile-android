@@ -10,6 +10,6 @@ import retrofit2.http.GET;
 
 // This is for widget dining data network request)
 public interface DiningRequest {
-    @GET("/dining/venues")
+    @GET("dining/venues")
     Observable<List<Venue>> venues();
 }

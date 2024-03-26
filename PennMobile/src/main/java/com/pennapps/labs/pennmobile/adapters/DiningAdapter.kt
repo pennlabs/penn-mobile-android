@@ -1,5 +1,7 @@
 package com.pennapps.labs.pennmobile.adapters
 
+import StudentLife
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,11 +18,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.MenuFragment
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.squareup.picasso.Picasso
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.dining_list_item.view.*
-import rx.android.schedulers.AndroidSchedulers
 import java.util.*
 
 class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Adapter<DiningAdapter.DiningViewHolder>() {
@@ -40,6 +41,7 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
         return DiningViewHolder(view)
     }
 
+    @SuppressLint("CheckResult")
     override fun onBindViewHolder(holder: DiningViewHolder, position: Int) {
         if (position < diningHalls.size) {
             val diningHall = diningHalls[position]
@@ -71,7 +73,7 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
             // Load the menu for each dining hall
             if (diningHall.isResidential && !loaded[position]) {
                 holder.progressBar?.visibility = View.VISIBLE
-                mStudentLife.daily_menu(diningHall.id)
+                mStudentLife.dailyMenu(diningHall.id)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ newDiningHall ->
                             diningHall.sortMeals(newDiningHall.menus)

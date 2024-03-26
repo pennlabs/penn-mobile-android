@@ -1,5 +1,7 @@
 package com.pennapps.labs.pennmobile
 
+import StudentLife
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,7 +21,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.pennapps.labs.pennmobile.adapters.FitnessAdapter
 import com.pennapps.labs.pennmobile.adapters.FitnessHeaderAdapter
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.FitnessPreferenceViewModel
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentPottruckBinding
@@ -88,7 +89,7 @@ class PottruckFragment : Fragment() {
         //displays banner if not connected
         if (!getConnected()) return
 
-        mStudentLife.fitnessRooms
+        mStudentLife.getFitnessRooms()
             .subscribe({ fitnessRooms ->
                 for (room in fitnessRooms) {
                     Log.i("Fitness Room${room.roomId}", "${room.roomName}")
@@ -106,8 +107,9 @@ class PottruckFragment : Fragment() {
                             "Bearer " + sp.getString(context.getString(R.string.access_token), "")
                                 .toString()
 
-                        mStudentLife.getFitnessPreferences(bearerToken).subscribe({ favorites ->
+                        mStudentLife.getFitnessPreferences(bearerToken).subscribe({ preferences ->
                             mActivity.runOnUiThread {
+                                val favorites = preferences.rooms!!
                                 for (roomId in favorites) {
                                     dataModel.addId(roomId)
                                 }
@@ -157,6 +159,9 @@ class PottruckFragment : Fragment() {
         fitnessPref.setOnClickListener {
             dataModel.savePreferences()
             val prefDialog = FitnessPreferencesFragment(dataModel, object: CloseListener{
+                // since everything is re-ordered (things get removed/added), there is no good way
+                // to only notify certain parts that changed
+                @SuppressLint("NotifyDataSetChanged")
                 override fun updateAdapters() {
                     favoritesAdapter.notifyDataSetChanged()
                     otherAdapter.notifyDataSetChanged()

@@ -15,13 +15,14 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.gsr_reservation.view.*
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
-import retrofit.ResponseCallback
-import retrofit.RetrofitError
-import retrofit.client.Response
 import android.content.Intent
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.widget.Toast.LENGTH_SHORT
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>)
@@ -38,17 +39,17 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
     override fun onBindViewHolder(holder: GsrReservationViewHolder, position: Int) {
         val reservation = reservations[position]
 
-        val roomName = reservation.name
+        val roomName = reservation.gsr!!.name
 
         val formatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ")
-        val from = formatter.parseDateTime(reservation.fromDate)
-        val to = formatter.parseDateTime(reservation.toDate)
+        val from = formatter.parseDateTime(reservation.start)
+        val to = formatter.parseDateTime(reservation.end)
         val day = from.toString("EEEE, MMMM d")
         val fromHour = from.toString("h:mm a")
         val toHour = to.toString("h:mm a")
 
         // huntsman reservation responses don't have an image url so we set it here
-        val imageUrl = reservation.info?.get("thumbnail") ?: "https://s3.us-east-2.amazonaws.com/labs.api/dining/MBA+Cafe.jpg"
+        val imageUrl = reservation.gsr?.image_url?: "https://s3.us-east-2.amazonaws.com/labs.api/dining/MBA+Cafe.jpg"
         Picasso.get().load(imageUrl).fit().centerCrop().into(holder.itemView.gsr_reservation_iv)
 
         holder.itemView.gsr_reservation_location_tv.text = roomName
@@ -66,10 +67,7 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                 (mContext as MainActivity).mNetworkManager.getAccessToken {
 
                     val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
-                    val sessionID = if (reservation.info == null) sp.getString(
-                        mContext.getString(R.string.huntsmanGSR_SessionID),
-                        ""
-                    ) else null
+                    val sessionID = ""
 
                     val labs = MainActivity.studentLifeInstance
                     val bearerToken =
@@ -78,9 +76,12 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                         bearerToken,
                         null,
                         bookingID,
-                        sessionID,
-                        object : ResponseCallback() {
-                            override fun success(response: Response) {
+                        sessionID)
+                        .enqueue(object: Callback<ResponseBody> {
+                            override fun onResponse(
+                                call: Call<ResponseBody>,
+                                response: Response<ResponseBody>
+                            ) {
                                 if (reservations.size > position) {
                                     reservations.removeAt(position)
                                 }
@@ -95,11 +96,11 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                                 }
                             }
 
-                            override fun failure(error: RetrofitError) {
+                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                                 Log.e(
                                     "GsrReservationsAdapter",
                                     "Error canceling gsr reservation",
-                                    error
+                                    t
                                 )
                                 Toast.makeText(
                                     mContext,
@@ -107,6 +108,7 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                                     LENGTH_SHORT
                                 ).show()
                             }
+
                         })
                 }
             }

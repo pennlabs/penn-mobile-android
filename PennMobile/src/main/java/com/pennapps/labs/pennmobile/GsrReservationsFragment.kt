@@ -18,6 +18,10 @@ import com.pennapps.labs.pennmobile.adapters.GsrReservationsAdapter
 import com.pennapps.labs.pennmobile.databinding.FragmentGsrReservationsBinding
 
 import kotlinx.android.synthetic.main.loading_panel.loadingPanel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class GsrReservationsFragment : Fragment() {
 
@@ -25,7 +29,6 @@ class GsrReservationsFragment : Fragment() {
 
     private var _binding : FragmentGsrReservationsBinding? = null
     private val binding get() = _binding!!
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +49,6 @@ class GsrReservationsFragment : Fragment() {
         binding.gsrReservationsRefreshLayout.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
         binding.gsrReservationsRefreshLayout.setOnRefreshListener { getReservations() }
 
-        getReservations()
-
         return view
     }
 
@@ -58,16 +59,7 @@ class GsrReservationsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (!isOnline(context)) {
-            binding.internetConnectionGSRReservations.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-            binding.internetConnectionMessageGsrReservations.text = "Not Connected to Internet"
-            binding.internetConnectionGSRReservations.visibility = View.VISIBLE
-            binding.gsrReservationsRefreshLayout.isRefreshing = false
-            loadingPanel?.visibility = View.GONE
-            binding.gsrNoReservations.visibility = View.VISIBLE
-        } else {
-            binding.internetConnectionGSRReservations.visibility = View.GONE
-        }
+        getReservations()
     }
 
     private fun getReservations() {
@@ -91,37 +83,38 @@ class GsrReservationsFragment : Fragment() {
             val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
             val email = sp.getString(getString(R.string.email_address), "")
             val token = sp.getString(getString(R.string.access_token), "")
-            labs.getGsrReservations("Bearer $token").subscribe({ reservations ->
-                mActivity.runOnUiThread {
-                    loadingPanel?.visibility = View.GONE
 
-                    try {
+            CoroutineScope(Dispatchers.IO).launch {
+                val response = labs.getGsrReservations("Bearer $token")
+                if (response.isSuccessful) {
+                    val reservations = response.body()!!
+                    withContext(Dispatchers.Main) {
+                        loadingPanel?.visibility = View.GONE
                         binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList(reservations))
-                        if (reservations.size > 0) {
-                            binding.gsrNoReservations.visibility = View.GONE
-                        } else {
-                            binding.gsrNoReservations.visibility = View.VISIBLE
+                        withContext(Dispatchers.Main) {
+                            if (reservations.size > 0) {
+                                binding.gsrNoReservations.visibility = View.GONE
+                            } else {
+                                binding.gsrNoReservations.visibility = View.VISIBLE
+                            }
+                            // stop refreshing
+                            binding.gsrReservationsRefreshLayout.isRefreshing = false
                         }
-                        // stop refreshing
-                        binding.gsrReservationsRefreshLayout.isRefreshing = false
-                    } catch (e: Exception) {
-                        FirebaseCrashlytics.getInstance().recordException(e)
                     }
+                } else {
+                   withContext(Dispatchers.Main) {
+                       Log.e("GsrReservationsFragment", "Error getting reservations")
+                       loadingPanel?.visibility = View.GONE
+                       try {
+                           binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList())
+                           binding.gsrNoReservations.visibility = View.VISIBLE
+                           binding.gsrReservationsRefreshLayout.isRefreshing = false
+                       } catch (e: Exception) {
+                           FirebaseCrashlytics.getInstance().recordException(e)
+                       }
+                   }
                 }
-            }, { throwable ->
-                mActivity.runOnUiThread {
-                    Log.e("GsrReservationsFragment", "Error getting reservations", throwable)
-                    throwable.printStackTrace()
-                    loadingPanel?.visibility = View.GONE
-                    try {
-                        binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList())
-                        binding.gsrNoReservations.visibility = View.VISIBLE
-                        binding.gsrReservationsRefreshLayout.isRefreshing = false
-                    } catch (e: Exception) {
-                        FirebaseCrashlytics.getInstance().recordException(e)
-                    }
-                }
-            })
+            }
         }
     }
 

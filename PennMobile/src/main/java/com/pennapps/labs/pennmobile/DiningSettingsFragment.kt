@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile
 
+import StudentLife
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -8,18 +9,18 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pennapps.labs.pennmobile.adapters.DiningSettingsAdapter
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.DiningRequest
 import com.pennapps.labs.pennmobile.classes.HomepageDataModel
 import com.pennapps.labs.pennmobile.databinding.FragmentDiningPreferencesBinding
 import kotlinx.android.synthetic.main.include_main.toolbar
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import io.reactivex.Observable
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-import retrofit.ResponseCallback
-import retrofit.RetrofitError
-import retrofit.client.Response
-import rx.Observable
 
 class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
     private lateinit var mActivity: MainActivity
@@ -79,7 +80,7 @@ class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
         // Map each item in the list of venues to a Venue Observable, then map each Venue to a DiningHall Observable
         originalPreferences = dataModel.getDiningHallPrefs()
         mStudentLife.venues()
-                .flatMap { venues -> Observable.from(venues) }
+                .flatMap { venues -> Observable.fromIterable(venues) }
                 .flatMap { venue ->
                     val hall = DiningFragment.createHall(venue)
                     Observable.just(hall)
@@ -132,15 +133,18 @@ class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
         mActivity.mNetworkManager.getAccessToken {
             val bearerToken =
                 "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
-            mStudentLife.sendDiningPref(bearerToken, DiningRequest(favoriteDiningHalls),
-                object : ResponseCallback() {
-                    override fun success(response: Response) {
+            mStudentLife.sendDiningPref(bearerToken, DiningRequest(favoriteDiningHalls))
+                .enqueue(object: Callback<ResponseBody> {
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
                         Log.i("Dining", "Dining preferences saved")
                         mActivity.onBackPressed()
                     }
 
-                    override fun failure(error: RetrofitError) {
-                        Log.e("Dining", "Error saving dining preferences: $error")
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        Log.e("Dining", "Error saving dining preferences: $t")
                         Toast.makeText(
                             mActivity,
                             "Error saving dining preferences",

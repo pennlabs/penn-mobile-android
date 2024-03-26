@@ -10,9 +10,9 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.AccessTokenResponse
 import kotlinx.coroutines.launch
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.*
 
 class OAuth2NetworkManager(private var mActivity: MainActivity) {
@@ -67,11 +67,14 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
         val clientID = BuildConfig.PLATFORM_CLIENT_ID
 
         mStudentLife.refreshAccessToken(refreshToken,
-            "refresh_token", clientID,
-            object : Callback<AccessTokenResponse> {
-
-                override fun success(t: AccessTokenResponse?, response: Response?) {
-                    if (response?.status == 200) {
+            "refresh_token", clientID)
+            .enqueue(object: Callback<AccessTokenResponse> {
+                override fun onResponse(
+                    call: Call<AccessTokenResponse>,
+                    response: Response<AccessTokenResponse>
+                ) {
+                    if (response.isSuccessful && response.code() == 200) {
+                        val t = response.body()
                         val editor = sp.edit()
                         editor.putString(mActivity.getString(R.string.access_token), t?.accessToken)
                         editor.putString(mActivity.getString(R.string.refresh_token), t?.refreshToken)
@@ -84,18 +87,22 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
                         unlockMutex.invoke()
                         function.invoke()
                         Log.i("Accounts", "Reloaded Homepage")
+                    } else if (response.errorBody() != null && response.code() == 400) {
+                        FirebaseCrashlytics.getInstance().log(response.errorBody().toString())
+                        Log.e("Accounts", "Error refreshing access token ${response.errorBody()}")
+                        mActivity.startLoginFragment()
+                        unlockMutex.invoke()
+                    } else {
+                        FirebaseCrashlytics.getInstance().log(response.errorBody().toString())
+                        Log.e("Accounts", "Error refreshing access token ${response.errorBody()}")
+                        unlockMutex.invoke()
                     }
                 }
 
-                override fun failure(error: RetrofitError) {
-
-                    FirebaseCrashlytics.getInstance().recordException(error)
-                    Log.e("Accounts", "Error refreshing access token $error")
-
-                    if (error.response != null && error.response.status == 400) {
-                        mActivity.startLoginFragment()
-                        unlockMutex.invoke()
-                    }
+                override fun onFailure(call: Call<AccessTokenResponse>, t: Throwable) {
+                    FirebaseCrashlytics.getInstance().recordException(t)
+                    Log.e("Accounts", "Error refreshing access token $t")
+                    unlockMutex.invoke()
                 }
             })
     }

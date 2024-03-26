@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.adapters
 
+import StudentLife
 import android.app.Activity
 import android.content.Context
 import android.graphics.Color
@@ -30,7 +31,6 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.FitnessAdapterDataModel
 import com.pennapps.labs.pennmobile.classes.FitnessRoom
 import com.pennapps.labs.pennmobile.classes.FitnessRoomUsage

@@ -1,5 +1,7 @@
 package com.pennapps.labs.pennmobile
 
+import StudentLife
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -15,13 +17,12 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.adapters.DiningAdapter
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.Venue
 import com.pennapps.labs.pennmobile.databinding.FragmentDiningBinding
+import io.reactivex.Observable
 import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.no_results.*
-import rx.Observable
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -130,44 +131,44 @@ class DiningFragment : Fragment() {
         } else {
             binding.internetConnectionDining.visibility = View.GONE
         }
-        
+
         // Map each item in the list of venues to a Venue Observable, then map each Venue to a DiningHall Observable
         mStudentLife.venues()
-                .flatMap { venues -> Observable.from(venues) }
-                .flatMap { venue ->
-                    val hall = createHall(venue)
-                    Observable.just(hall)
-                }
-                .toList()
-                .subscribe({ diningHalls ->
-                    mActivity.runOnUiThread {
-                        getMenus(diningHalls)
-                        val adapter = DiningAdapter(diningHalls)
-                        loadingPanel?.visibility = View.GONE
-                        if (diningHalls.size > 0) {
-                            no_results?.visibility = View.GONE
-                        }
+            .flatMap { venues -> Observable.fromIterable(venues)}
+            .flatMap { venue ->
+                val hall = createHall(venue)
+                Observable.just(hall)
+            }
+            .toList()
+            .subscribe({ diningHalls ->
+                mActivity.runOnUiThread {
+                    getMenus(diningHalls)
+                    val adapter = DiningAdapter(diningHalls)
+                    loadingPanel?.visibility = View.GONE
+                    if (diningHalls.size > 0) {
+                        no_results?.visibility = View.GONE
+                    }
 
-                        // Log non-fatal error to crashyltics if null
-                        // this error should not really be happening
-                        // it is *possible* but be rare: ideally network stuff
-                        // is decoupled with UI updates
-                        try {
-                            binding.diningHallsRecyclerView.adapter = adapter
-                            binding.diningSwiperefresh.isRefreshing = false
-                        } catch (e: Exception) {
-                            FirebaseCrashlytics.getInstance().recordException(e)
-                        }
-                        view?.let {displaySnack("Just Updated")}
-                    }
-                }, {
-                    Log.e("DiningFragment", "Error getting dining halls", it)
-                    mActivity.runOnUiThread {
-                        Log.e("Dining", "Could not load Dining page", it)
-                        loadingPanel?.visibility = View.GONE
+                    // Log non-fatal error to crashyltics if null
+                    // this error should not really be happening
+                    // it is *possible* but be rare: ideally network stuff
+                    // is decoupled with UI updates
+                    try {
+                        binding.diningHallsRecyclerView.adapter = adapter
                         binding.diningSwiperefresh.isRefreshing = false
+                    } catch (e: Exception) {
+                        FirebaseCrashlytics.getInstance().recordException(e)
                     }
-                })
+                    view?.let {displaySnack("Just Updated")}
+                }
+            }, {
+                Log.e("DiningFragment", "Error getting dining halls", it)
+                mActivity.runOnUiThread {
+                    Log.e("Dining", "Could not load Dining page", it)
+                    loadingPanel?.visibility = View.GONE
+                    binding.diningSwiperefresh.isRefreshing = false
+                }
+            })
     }
 
     override fun onResume() {
@@ -200,6 +201,7 @@ class DiningFragment : Fragment() {
 
     companion object {
         // Gets the dining hall menus
+        @SuppressLint("CheckResult")
         fun getMenus(venues: MutableList<DiningHall>) {
             val idVenueMap = mutableMapOf<Int, DiningHall>()
             venues.forEach { idVenueMap[it.id] = it }
