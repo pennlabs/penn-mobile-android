@@ -487,6 +487,12 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         holder.itemView.home_gsr_button?.text = "Book a Room"
         holder.itemView.home_gsr_button?.setOnClickListener {
             mActivity.setTab(MainActivity.GSR_ID)
+            for (fragment in mActivity.supportFragmentManager.fragments) {
+                if(fragment is GsrTabbedFragment) {
+                    Log.i("GSR TEST", fragment.toString())
+                    fragment.viewPager.currentItem = 0
+                }
+            }
         }
         holder.itemView.home_gsr_rv?.adapter = HomeGsrReservationAdapter(reservations)
     }
