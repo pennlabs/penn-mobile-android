@@ -49,7 +49,6 @@
         style="@style/HallName"
         android:layout_width="0dp"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="4dp"
         android:ellipsize="marquee"
         android:fontFamily="@font/sf_pro_display_medium"
@@ -58,8 +57,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/item_gsr_image_cardview"
         app:layout_constraintTop_toTopOf="@+id/item_gsr_image_cardview"
-        tools:text="1920 Commons"
-        />
+        tools:text="[Me] Room 000" />
 
     <TextView
         android:id="@+id/item_gsr_date"
@@ -67,10 +65,8 @@
         android:layout_width="0dp"
         android:layout_height="22dp"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
         app:autoSizeMaxTextSize="13sp"
         app:autoSizeMinTextSize="9sp"
         app:autoSizeStepGranularity="2sp"
@@ -78,8 +74,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/item_gsr_image_cardview"
         app:layout_constraintTop_toBottomOf="@+id/item_gsr_location"
-        tools:text="Closes at 9:00PM"
-        />
+        tools:text="Friday, Month Day, Time" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gsr_loading_guideline"

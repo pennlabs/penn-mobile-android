@@ -14,8 +14,10 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.pennapps.labs.pennmobile.GsrReservationsFragment
+import com.pennapps.labs.pennmobile.GsrTabbedFragment
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.MenuFragment
 import com.pennapps.labs.pennmobile.R
@@ -42,9 +44,6 @@ class HomeGsrReservationAdapter (reservations: List<GSRReservation>) : RecyclerV
     private lateinit var itemDate: TextView
 
 
-    //TODO("Image and text views")
-
-
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
@@ -65,7 +64,16 @@ class HomeGsrReservationAdapter (reservations: List<GSRReservation>) : RecyclerV
         holder.itemView.item_gsr_date.text = day + "\n" + fromHour + "-" + toHour
 
         holder.itemView.setOnClickListener {
+            //Moves to GSR Booking Tab
             mActivity.setTab(MainActivity.GSR_ID)
+
+            //Changes tab to "My Reservations" tab (from "Book a Room" tab)
+            for (fragment in mActivity.supportFragmentManager.fragments) {
+                if(fragment is GsrTabbedFragment) {
+                    Log.i("GSR TEST", fragment.toString())
+                    fragment.viewPager.currentItem = 1
+                }
+            }
         }
 
     }
@@ -80,7 +88,6 @@ class HomeGsrReservationAdapter (reservations: List<GSRReservation>) : RecyclerV
         mStudentLife = MainActivity.studentLifeInstance
 
         val view = LayoutInflater.from(parent.context).inflate(R.layout.gsr_list_item, parent, false)
-        //view?.dining_progress?.visibility = GONE
         return ViewHolder(view)
     }
     inner class ViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView) {
