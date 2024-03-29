@@ -72,6 +72,9 @@ public interface StudentLife {
             @Field("client_id") String clientID,
             Callback<AccessTokenResponse> callback);
 
+    @GET("/accounts/me/")
+    Account getAccount();
+
     @GET("/dining/venues")
     Observable<List<Venue>> venues();
 
@@ -234,7 +237,8 @@ public interface StudentLife {
     @Headers({"Content-Type: application/json"})
     @GET("/sublet/properties/")
     Observable<List<Sublet>> getPostedSublets(
-            @Header("Authorization") String bearerToken);
+            @Header("Authorization") String bearerToken,
+            @Query("subletter") boolean subletter);
 
     @Headers({"Content-Type: application/json"})
     @GET("/sublet/properties/{sublet_id}/offers/")

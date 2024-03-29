@@ -99,7 +99,7 @@ class SublettingViewModel (private val activity: Activity, private val studentLi
                 "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
 
-            studentLife.getPostedSublets(bearerToken).subscribe({ sublets ->
+            studentLife.getPostedSublets(bearerToken, true).subscribe({ sublets ->
                 mActivity.runOnUiThread {
                     postedSubletsList.value = sublets as ArrayList<Sublet>
                 }
