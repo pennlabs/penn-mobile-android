@@ -35,7 +35,8 @@ class SubletDetailsFragment(private val dataModel: SublettingViewModel, private 
         binding.priceText.text = sublet.price.toString()
         binding.addressText.text = sublet.address
         binding.datesText.text = sublet.startDate + " to " + sublet.endDate
-        binding.descriptionText.text = sublet.description
+        binding.descriptionText.text = sublet.description ?: "None"
+        binding.amenitiesText.text = sublet.amenities?.joinToString(", ") ?: "No amenities available"
 
         binding.availableButton.setOnClickListener{
             dataModel.deleteSublet(mActivity, subletNumber)
