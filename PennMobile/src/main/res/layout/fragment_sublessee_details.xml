@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/white"
+    android:clickable="true"
     tools:context=".SublesseeDetailsFragment">
 
     <TextView
@@ -15,18 +17,6 @@
         android:text="@string/title"
         android:textSize="26sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/edit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="26sp"
-        android:fontFamily="@font/sf_pro_display_bold"
-        android:text="Edit"
-        android:textColor="@color/pennmobile_blue"
-        app:layout_constraintBottom_toBottomOf="@id/title_text"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView

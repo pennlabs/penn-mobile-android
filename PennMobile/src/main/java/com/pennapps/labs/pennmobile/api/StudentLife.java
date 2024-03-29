@@ -220,4 +220,10 @@ public interface StudentLife {
     Observable<List<Sublet>> getPostedSublets(
             @Header("Authorization") String bearerToken);
 
+    @Headers({"Content-Type: application/json"})
+    @GET("/sublet/properties/{id}")
+    Observable<Sublet> getSubletById(
+            @Header("Authorization") String bearerToken,
+            @Path("id") String id);
+
 }

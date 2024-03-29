@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentTransaction
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
@@ -17,43 +19,35 @@ import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
 import com.pennapps.labs.pennmobile.classes.Sublet
 import com.pennapps.labs.pennmobile.classes.SublettingModel
 
-class SublettingListAdapter(var sublettingList: ArrayList<SublettingModel>, var dataModel: SublesseeViewModel):
-        RecyclerView.Adapter<SublettingListAdapter.SublettingCardViewHolder>() {
+class SublesseeSavedAdapter(var dataModel: SublesseeViewModel, var propertiesList: List<String>):
+        RecyclerView.Adapter<SublesseeSavedAdapter.SublesseeSavedItemViewHolder>() {
 
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
-    //private lateinit var actualSublets: ArrayList<Sublet>
 
-    class SublettingCardViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
-        var listingImage = itemView.findViewById<ImageView>(R.id.subletting_cardview_image)
-        var listingTitle = itemView.findViewById<TextView>(R.id.subletting_cardview_title)
-        var listingPrice = itemView.findViewById<TextView>(R.id.subletting_cardview_price)
-        var listingRooms = itemView.findViewById<TextView>(R.id.subletting_cardview_rooms)
-        var listingDates = itemView.findViewById<TextView>(R.id.subletting_cardview_dates)
+    class SublesseeSavedItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
-        /* init {
-            itemView.setOnClickListener {
-                mActivity.supportFragmentManager.beginTransaction()
-                        .replace(itemView.id, SubletteeFragment())
-                        .addToBackStack(null)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .commit()
-            }
-        } */
+        var listingImage = itemView.findViewById<ImageView>(R.id.subletting_saved_image)
+        var listingTitle = itemView.findViewById<TextView>(R.id.subletting_saved_title)
+        var listingPrice = itemView.findViewById<TextView>(R.id.subletting_saved_price)
+        var listingRooms = itemView.findViewById<TextView>(R.id.subletting_saved_rooms)
+        var listingDates = itemView.findViewById<TextView>(R.id.subletting_saved_dates)
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SublettingCardViewHolder {
-        val newView = LayoutInflater.from(parent.context).inflate(R.layout.subletting_cardview, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SublesseeSavedItemViewHolder {
+        val newView = LayoutInflater.from(parent.context).inflate(R.layout.subletting_saved_listview, parent, false)
         mContext = parent.context
         mActivity = mContext as MainActivity
-        return SublettingCardViewHolder(newView)
+
+        return SublesseeSavedItemViewHolder(newView)
     }
 
-    override fun onBindViewHolder(holder: SublettingCardViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SublesseeSavedItemViewHolder, position: Int) {
 
-        val actualSublet = dataModel.getSublet(position)
+        val subletId = propertiesList[position]
+        /* val actualSublet = dataModel.getSubletById(subletId, mActivity)
 
         holder.listingTitle.text = actualSublet.title
         var price = "$" + actualSublet.price.toString()
@@ -66,7 +60,11 @@ class SublettingListAdapter(var sublettingList: ArrayList<SublettingModel>, var 
             append(actualSublet.startDate)
             append(" - ")
             append(actualSublet.endDate)
-        }
+        } */
+
+        holder.listingTitle.text = subletId
+
+
 
         holder.itemView.setOnClickListener {
             mActivity.supportFragmentManager.beginTransaction()
@@ -78,10 +76,6 @@ class SublettingListAdapter(var sublettingList: ArrayList<SublettingModel>, var 
     }
 
     override fun getItemCount(): Int {
-        if (dataModel.getSublettingList() == null) {
-            return 0
-        } else {
-            return dataModel.getSublettingList()!!.size
-        }
+        return propertiesList.size
     }
 }

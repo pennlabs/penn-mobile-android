@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/subletting_saved_listview_item"
+    android:layout_width="match_parent"
+    android:layout_height="175dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="5dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/subletting_saved_item_layout">
+
+        <ImageView
+            android:id="@+id/subletting_saved_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/subletting_saved_open"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/gilroy_bold"
+            android:textColor="@color/green"
+            android:text="OPEN"
+            android:textSize="14dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            app:layout_constraintTop_toTopOf="@id/subletting_saved_image"
+            app:layout_constraintStart_toEndOf="@id/subletting_saved_image" />
+
+        <TextView
+            android:id="@+id/subletting_saved_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/gilroy_bold"
+            android:text="Title"
+            android:textSize="20dp"
+            android:layout_marginStart="10dp"
+            app:layout_constraintTop_toBottomOf="@id/subletting_saved_open"
+            app:layout_constraintStart_toEndOf="@id/subletting_saved_image" />
+
+        <TextView
+            android:id="@+id/subletting_saved_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/gilroy_light"
+            android:text="Price (negotiable)"
+            android:textSize="14dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"
+            app:layout_constraintTop_toBottomOf="@id/subletting_saved_title"
+            app:layout_constraintStart_toEndOf="@id/subletting_saved_image" />
+
+        <TextView
+            android:id="@+id/subletting_saved_rooms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/gilroy_light"
+            android:text="num bd | num ba"
+            android:textSize="14dp"
+            android:layout_marginStart="10dp"
+            app:layout_constraintTop_toBottomOf="@id/subletting_saved_price"
+            app:layout_constraintStart_toEndOf="@id/subletting_saved_image" />
+
+        <TextView
+            android:id="@+id/subletting_saved_dates"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/gilroy_light"
+            android:text="Start - End Date"
+            android:textSize="14dp"
+            android:textStyle="italic"
+            android:layout_marginStart="10dp"
+            app:layout_constraintTop_toBottomOf="@id/subletting_saved_rooms"
+            app:layout_constraintStart_toEndOf="@id/subletting_saved_image" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

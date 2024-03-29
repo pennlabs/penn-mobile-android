@@ -6,8 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -39,6 +42,9 @@ class SubletteeMarketplace : Fragment() {
 
     private lateinit var sortByAdapter: ArrayAdapter<String>
     private lateinit var sortBySpinner: Spinner
+
+    //buttons for saved
+    lateinit var savedButton: ImageButton
 
     //recyclerview adapters and layout manager
     lateinit var sublettingRecyclerView: RecyclerView
@@ -92,6 +98,15 @@ class SubletteeMarketplace : Fragment() {
         }
 
         sublettingRecyclerView.adapter = myAdapter
+
+        savedButton = binding.subletteeMarketplaceSaved
+        savedButton.setOnClickListener {
+            mActivity.supportFragmentManager.beginTransaction()
+                    .replace(((view as ViewGroup).parent as View).id, SublesseeSavedFragment())
+                    .addToBackStack(null)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .commit()
+        }
     }
 
     //function to put in fake data- will get rid of once I get backend data in

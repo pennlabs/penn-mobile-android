@@ -22,9 +22,45 @@ import java.util.concurrent.CountDownLatch
 class SublesseeViewModel(private val activity: Activity, private val studentLife: StudentLife) {
 
     var sublettingList = MutableLiveData<ArrayList<Sublet>>()
+    var savedSublets = MutableLiveData<ArrayList<Sublet>>()
 
     fun getSublet(position : Int) : Sublet {
         return sublettingList.value?.get(position) ?: Sublet() // Provide a default value if needed
+    }
+
+    fun getSubletById(id: String, mActivity: MainActivity): Sublet {
+        val context = activity.applicationContext
+        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+
+        /* OAuth2NetworkManager(mActivity).getAccessToken {
+
+            val bearerToken =
+                    "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
+
+            studentLife.getSubletById(bearerToken, id).subscribe({ sublet ->
+                mActivity.runOnUiThread {
+                    if (savedSublets.value == null) {
+                        savedSublets.value = ArrayList<Sublet>()
+                    }
+                    savedSublets.value?.add(sublet)
+                    Log.i("saved sublets", savedSublets.value?.size.toString())
+                }
+            }, { throwable ->
+                mActivity.runOnUiThread {
+                    Log.e(
+                            "Sublessee Saved",
+                            "Could not load saved Sublets",
+                            throwable
+                    )
+                }
+            })
+        } */
+        for (sublet in getSublettingList()!!) {
+            if (id == sublet.id.toString()) {
+                return sublet
+            }
+        }
+        return Sublet()
     }
 
     fun getSublettingList(): ArrayList<Sublet>? {
@@ -66,5 +102,20 @@ class SublesseeViewModel(private val activity: Activity, private val studentLife
             })
         }
         Log.i("sublets", getSublettingList()?.size.toString())
+    }
+
+    fun getSavedSublets(): ArrayList<Sublet>? {
+        return savedSublets.value
+    }
+
+    fun getSavedSublet(position : Int) : Sublet {
+        return savedSublets.value?.get(position) ?: Sublet() // Provide a default value if needed
+    }
+
+    fun addSavedSublet(s: Sublet) {
+        if (savedSublets.value == null) {
+            savedSublets.value = ArrayList<Sublet>()
+        }
+        savedSublets.value!!.add(s)
     }
 }

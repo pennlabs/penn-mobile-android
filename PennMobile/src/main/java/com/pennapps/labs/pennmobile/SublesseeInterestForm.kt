@@ -9,10 +9,11 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import com.pennapps.labs.pennmobile.api.StudentLife
+import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentSublesseeInterestFormBinding
 import com.pennapps.labs.pennmobile.databinding.FragmentSubletteeViewBinding
 
-class SublesseeInterestForm : Fragment() {
+class SublesseeInterestForm (): Fragment() {
 
     //create binding
     private var _binding : FragmentSublesseeInterestFormBinding? = null
