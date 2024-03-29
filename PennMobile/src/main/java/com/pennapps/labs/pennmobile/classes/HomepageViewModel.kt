@@ -26,7 +26,7 @@ import java.util.concurrent.CountDownLatch
 class HomepageViewModel : HomepageDataModel, ViewModel() {
     //TODO: NESTED VIEW MODEL FOR GSR BOOKINGS
     companion object {
-        private const val NUM_CELLS = 7 //CHANGED
+        private const val NUM_CELLS = 7
         private const val NUM_CELLS_LOGGED_IN = NUM_CELLS
         private const val NUM_CELLS_GUEST = 2
 
@@ -38,7 +38,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         private const val POST_POS = 3
         private const val DINING_POS = 4
         private const val LAUNDRY_POS = 5
-        private const val GSR_POS = 6 //CHANGED
+        private const val GSR_POS = 6
 
         private const val TAG = "HomepageVM"
         private const val UPDATE_TAG = "CellUpdate"
@@ -102,7 +102,6 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
 
     }
 
-    //TODO: UPDATE HOME PAGE CELLS WITH GSR CELL
     /**
      * Returns a list of updated cell positions.
      */
@@ -142,7 +141,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
             getLaundry(studentLife, bearerToken, latch)
             getPosts(studentLife, bearerToken, latch)
             getDiningPrefs(studentLife, bearerToken, latch)
-            getGSRReservations(studentLife, bearerToken, latch) //CHANGED
+            getGSRReservations(studentLife, bearerToken, latch)
             // waits until all of the network calls are processed
             latch.await()
         } else {
@@ -163,7 +162,6 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         addCell(HomeCell(), LAUNDRY_POS)
         addCell(HomeCell(), POST_POS)
         addCell(HomeCell(), DINING_POS)
-        //TODO: DONT NEED THIS :)
 
         setPostBlurView(true)
     }
