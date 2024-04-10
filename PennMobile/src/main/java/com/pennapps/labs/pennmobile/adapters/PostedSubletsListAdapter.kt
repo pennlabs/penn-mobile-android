@@ -8,6 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.SublesseeDetailsFragment
@@ -48,6 +50,13 @@ class PostedSubletsListAdapter(private val dataModel: SublettingViewModel):
 
         var mSublettingCard: Sublet = dataModel.getSublet(position) // dataModel.getSblet(position)
         //holder.listingImage.setImageResource(mSublettingCard.listingImage!!)
+
+        Glide.with(mContext) // Use mContext here instead of context
+            .load(mSublettingCard.images?.get(0)?.imageUrl) // Access the first image URL from the list
+            .centerCrop() // optional - adjust as needed
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .into(holder.listingImage)
+
         holder.listingTitle.text = mSublettingCard.title
 
         var price = "$" + mSublettingCard.price.toString()

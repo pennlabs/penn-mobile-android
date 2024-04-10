@@ -30,4 +30,13 @@ data class Sublet(@SerializedName("end_date")
                   val subletter: String? = null,
                   @SerializedName("created_at")
                   val createdAt: String? = null,
+                  @SerializedName("images")
+                  val images: List<SubletImage>? = null
         )
+
+data class SubletImage(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("image_url")
+    val imageUrl: String
+)
