@@ -51,11 +51,11 @@ class PostedSubletsListAdapter(private val dataModel: SublettingViewModel):
         var mSublettingCard: Sublet = dataModel.getSublet(position) // dataModel.getSblet(position)
         //holder.listingImage.setImageResource(mSublettingCard.listingImage!!)
 
-        Glide.with(mContext) // Use mContext here instead of context
+        /* Glide.with(mContext) // Use mContext here instead of context
             .load(mSublettingCard.images?.get(0)?.imageUrl) // Access the first image URL from the list
             .centerCrop() // optional - adjust as needed
             .transition(DrawableTransitionOptions.withCrossFade())
-            .into(holder.listingImage)
+            .into(holder.listingImage) */
 
         holder.listingTitle.text = mSublettingCard.title
 

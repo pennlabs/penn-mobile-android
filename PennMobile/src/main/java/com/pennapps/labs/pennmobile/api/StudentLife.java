@@ -253,15 +253,9 @@ public interface StudentLife {
             @Path("sublet_id") int id,
             Callback<Sublet> callback);
 
-
-
-
-
-
     @Headers({"Content-Type: application/json"})
-    @GET("/sublet/properties/{id}")
-    Observable<Sublet> getSubletById(
-            @Header("Authorization") String bearerToken,
-            @Path("id") String id);
+    @GET("/sublet/properties/")
+    Observable<List<Sublet>> getSublets(
+            @Header("Authorization") String bearerToken);
 
 }

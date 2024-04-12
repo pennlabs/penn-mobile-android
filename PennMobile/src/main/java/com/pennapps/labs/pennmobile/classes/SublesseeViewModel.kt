@@ -28,7 +28,7 @@ class SublesseeViewModel(private val activity: Activity, private val studentLife
         return sublettingList.value?.get(position) ?: Sublet() // Provide a default value if needed
     }
 
-    fun getSubletById(id: String, mActivity: MainActivity): Sublet {
+    /* fun getSubletById(id: String, mActivity: MainActivity): Sublet {
         val context = activity.applicationContext
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
 
@@ -61,7 +61,7 @@ class SublesseeViewModel(private val activity: Activity, private val studentLife
             }
         }
         return Sublet()
-    }
+    } */
 
     fun getSublettingList(): ArrayList<Sublet>? {
         return sublettingList.value
@@ -80,15 +80,7 @@ class SublesseeViewModel(private val activity: Activity, private val studentLife
             val bearerToken =
                     "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
-            /* studentLife.fitnessRooms
-                    .subscribe { fitnessRooms ->
-                        for (fitnessRoom in fitnessRooms) {
-                            Log.i("fitness room", "${fitnessRoom.roomId}")
-                            fitnessRoomsList.add(fitnessRoom)
-                        }
-                    } */
-            /*
-            studentLife.getPostedSublets(bearerToken).subscribe({ sublets ->
+            studentLife.getSublets(bearerToken).subscribe({ sublets ->
                 mActivity.runOnUiThread {
                     sublettingList.value = sublets as ArrayList<Sublet>
                 }
@@ -101,8 +93,6 @@ class SublesseeViewModel(private val activity: Activity, private val studentLife
                     )
                 }
             })
-
-             */
         }
         Log.i("sublets", getSublettingList()?.size.toString())
     }

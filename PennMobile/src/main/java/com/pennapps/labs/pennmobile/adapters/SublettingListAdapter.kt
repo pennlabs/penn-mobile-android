@@ -22,6 +22,7 @@ class SublettingListAdapter(var sublettingList: ArrayList<SublettingModel>, var 
 
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
+    //private lateinit var dataModel: SublesseeViewModel
     //private lateinit var actualSublets: ArrayList<Sublet>
 
     class SublettingCardViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
