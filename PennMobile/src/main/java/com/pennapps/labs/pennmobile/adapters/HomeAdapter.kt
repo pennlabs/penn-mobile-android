@@ -43,6 +43,7 @@ import com.pennapps.labs.pennmobile.classes.LaundryCell
 import com.pennapps.labs.pennmobile.classes.NewsCell
 import com.pennapps.labs.pennmobile.classes.PollCell
 import com.pennapps.labs.pennmobile.classes.PostCell
+import com.pennapps.labs.pennmobile.classes.GSRCell
 import com.pennapps.labs.pennmobile.components.sneaker.Utils.convertToDp
 import com.pennapps.labs.pennmobile.utils.Utils
 import eightbitlab.com.blurview.RenderScriptBlur
@@ -50,6 +51,10 @@ import kotlinx.android.synthetic.main.home_base_card.view.*
 import kotlinx.android.synthetic.main.home_base_card.view.home_card_rv
 import kotlinx.android.synthetic.main.home_base_card.view.home_card_subtitle
 import kotlinx.android.synthetic.main.home_base_card.view.home_card_title
+import kotlinx.android.synthetic.main.home_gsr_card.view.home_gsr_button
+import kotlinx.android.synthetic.main.home_gsr_card.view.home_gsr_rv
+import kotlinx.android.synthetic.main.home_gsr_card.view.home_gsr_subtitle
+import kotlinx.android.synthetic.main.home_gsr_card.view.home_gsr_title
 import kotlinx.android.synthetic.main.poll_card.view.*
 import kotlinx.android.synthetic.main.home_news_card.view.*
 import kotlinx.android.synthetic.main.home_post_card.view.*
@@ -106,6 +111,9 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
             POLL -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.poll_card, parent, false))
             }
+            GSR_BOOKING -> {
+                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_gsr_card, parent, false))
+            }
             NOT_SUPPORTED -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.empty_view, parent, false))
             }
@@ -114,7 +122,6 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
             }
         }
     }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val cell = dataModel.getCell(position)
         when (cell.type) {
@@ -124,6 +131,7 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
             "laundry" -> bindLaundryCell(holder, cell as LaundryCell)
             "post" -> bindPostCell(holder, cell as PostCell)
             "poll" -> bindPollCell(holder, cell as PollCell, position)
+            "gsr_booking" -> bindGSRCell(holder, cell as GSRCell)
             "none" -> Log.i("HomeAdapter", "Empty cell at position $position")
             else -> Log.i("HomeAdapter", "Unsupported type of data at position $position")
         }
@@ -469,6 +477,26 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
             holder.itemView.vote_btn?.setOnClickListener {}
         }
     }
+
+    private fun bindGSRCell(holder: ViewHolder, cell: GSRCell) {
+        holder.itemView.home_gsr_title?.text = "Reservations"
+        holder.itemView.home_gsr_subtitle?.text = "Group Study Rooms"
+        val reservations = cell.reservations
+        holder.itemView.home_gsr_rv?.layoutManager = LinearLayoutManager(mContext,
+                LinearLayoutManager.VERTICAL, false)
+        holder.itemView.home_gsr_button?.text = "Book a Room"
+        holder.itemView.home_gsr_button?.setOnClickListener {
+            mActivity.setTab(MainActivity.GSR_ID)
+            for (fragment in mActivity.supportFragmentManager.fragments) {
+                if(fragment is GsrTabbedFragment) {
+                    fragment.viewPager.currentItem = 0
+                }
+            }
+        }
+        holder.itemView.home_gsr_rv?.adapter = HomeGsrReservationAdapter(reservations)
+    }
+
+
 
     // Chrome custom tabs to launch news site
     internal inner class NewsCustomTabsServiceConnection : CustomTabsServiceConnection() {
