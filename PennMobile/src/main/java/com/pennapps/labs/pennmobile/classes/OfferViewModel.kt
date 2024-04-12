@@ -23,7 +23,7 @@ class OfferViewModel (private val activity: Activity, private val studentLife: S
                 "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
 
-            /* studentLife.getSubletOffers(bearerToken, id).subscribe({ offers ->
+            studentLife.getSubletOffers(bearerToken, id).subscribe({ offers ->
                 mActivity.runOnUiThread {
                     offersList.value = offers as ArrayList<Offer>
                 }
@@ -35,7 +35,7 @@ class OfferViewModel (private val activity: Activity, private val studentLife: S
                         throwable
                     )
                 }
-            }) */
+            })
         }
     }
 

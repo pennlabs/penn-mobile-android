@@ -49,8 +49,8 @@ internal open class ExpandableItemViewController(
     ) {
         setAccessibilityDelegate(itemView, object : AccessibilityDelegateCompat() {
             override fun onInitializeAccessibilityNodeInfo(
-                    host: View?,
-                    info: AccessibilityNodeInfoCompat?
+                host: View,
+                info: AccessibilityNodeInfoCompat
             ) {
                 info?.setTraversalAfter(prev?.itemView)
                 info?.setTraversalBefore(next?.itemView)

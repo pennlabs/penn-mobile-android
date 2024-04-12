@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.Sublet
@@ -35,11 +37,19 @@ class SubletDetailsFragment(private val dataModel: SublettingViewModel, private 
         binding.priceText.text = sublet.price.toString()
         binding.addressText.text = sublet.address
         binding.datesText.text = sublet.startDate + " to " + sublet.endDate
-        binding.descriptionText.text = sublet.description
+        binding.descriptionText.text = sublet.description ?: "None"
+        binding.amenitiesText.text = sublet.amenities?.joinToString(", ") ?: "No amenities available"
+        context?.let {
+            Glide.with(it)
+                .load(sublet.images?.get(0)?.imageUrl)
+                .centerCrop() // optional - adjust as needed
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(binding.subletImage)
+        }
 
-        /* binding.availableButton.setOnClickListener{
+        binding.availableButton.setOnClickListener{
             dataModel.deleteSublet(mActivity, subletNumber)
-        } */
+        }
 
 
 

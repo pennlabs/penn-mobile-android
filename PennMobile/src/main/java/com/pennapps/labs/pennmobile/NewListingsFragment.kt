@@ -1,22 +1,31 @@
 package com.pennapps.labs.pennmobile
 
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import com.google.gson.annotations.SerializedName
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.AmenitiesItem
-import com.pennapps.labs.pennmobile.classes.FitnessPreferenceViewModel
+import com.pennapps.labs.pennmobile.classes.MultipartUtil
 import com.pennapps.labs.pennmobile.classes.Sublet
 import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentNewListingsBinding
-import com.pennapps.labs.pennmobile.databinding.FragmentSubletterPostedListingsBinding
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.IOException
+
 
 class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment() {
     private var _binding: FragmentNewListingsBinding? = null
@@ -49,6 +58,11 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
     internal lateinit var kitchenCheck : CheckBox
     internal lateinit var dogCheck : CheckBox
     internal lateinit var catCheck : CheckBox
+    internal lateinit var imageView: ImageView
+    internal lateinit var imageIcon: ImageView
+    internal lateinit var imageText: TextView
+
+
 
 
 
@@ -69,6 +83,9 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
     private var baths : Int? = null
     private var description: String?  = null
     private lateinit var amenities: List<AmenitiesItem>
+
+    private var image: String? = null
+    var multipartImage: MultipartBody.Part? = null
 
     private lateinit var mActivity: MainActivity
 
@@ -111,6 +128,41 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
         kitchenCheck = binding.kitchenCheck
         dogCheck = binding.dogCheck
         catCheck = binding.catCheck
+        imageView = binding.mainImage
+        imageIcon = binding.mainImageIcon
+        imageText = binding.addPhotosText
+
+
+        val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            // Callback is invoked after the user selects a media item or closes the
+            // photo picker.
+            if (uri != null) {
+                Log.d("PhotoPicker", "Selected URI: $uri")
+                try {
+                    // Load the selected image into the ImageView
+                    val inputStream = context?.contentResolver?.openInputStream(uri)
+                    val bitmap = BitmapFactory.decodeStream(inputStream)
+                    image = bitmap.toString()
+                    imageView.setImageBitmap(bitmap)
+                    imageIcon.visibility = View.GONE
+                    imageText.visibility = View.GONE
+                    multipartImage = MultipartUtil.createPartFromBitmap(bitmap)
+
+
+
+                    inputStream?.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    Toast.makeText(context, "Failed to load image", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Log.d("PhotoPicker", "No media selected")
+            }
+        }
+
+        imageView.setOnClickListener{
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }
 
 
         val dateRegex = Regex("""^(0[1-9]|1[0-2])/(0[1-9]|[1-2][0-9]|3[0-1])/\d{2}$""")
@@ -159,6 +211,7 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
                 if (description.equals("")) {
                     description = null;
                 }
+
                 postSublet(title, Integer.parseInt(price), streetAddress, startDate, endDate, beds,
                         baths, amenitiesList, description)
 
@@ -173,6 +226,7 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
                            description: String?) {
         val convertedEnd = convertToYYYYMMDD(endDate)
         val convertedStart = convertToYYYYMMDD(startDate)
+        var subletId = -1
 
 
         val newSublet = Sublet(
@@ -184,11 +238,28 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
                 description = description,
                 title = title,
                 beds = beds,
+                amenities = amenities,
                 externalLink = "https://pennlabs.org/", // fix
                 startDate = convertedStart
         )
 
-        dataModel.postSublet(mActivity, newSublet)
+        dataModel.postSublet(mActivity, newSublet) { postedSublet ->
+            if (postedSublet != null) {
+                Log.i("MainActivity", "Posted sublet ID: ${postedSublet.id}")
+                subletId = postedSublet.id!!
+            } else {
+                // Handle failure to post sublet
+                Log.e("MainActivity", "Failed to post sublet")
+            }
+        }
+
+        val subletPart = MultipartUtil.createSubletPart(subletId)
+
+
+
+
+
+
     }
 
     private fun convertToYYYYMMDD(mmddyy: String): String {
@@ -199,5 +270,7 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
 
         return String.format("%04d-%02d-%02d", year, month, day)
     }
+
+
 
 }

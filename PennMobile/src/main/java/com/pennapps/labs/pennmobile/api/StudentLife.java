@@ -19,6 +19,7 @@ import com.pennapps.labs.pennmobile.classes.LaundryRequest;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
 import com.pennapps.labs.pennmobile.classes.LaundryUsage;
+import com.pennapps.labs.pennmobile.classes.Offer;
 import com.pennapps.labs.pennmobile.classes.Poll;
 import com.pennapps.labs.pennmobile.classes.Post;
 import com.pennapps.labs.pennmobile.classes.SaveAccountResponse;
@@ -29,18 +30,22 @@ import com.pennapps.labs.pennmobile.classes.WhartonStatus;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.MultipartBody;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Headers;
 import retrofit.http.POST;
+import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
+
 
 /**
  * Created by Julius.
@@ -65,6 +70,9 @@ public interface StudentLife {
             @Field("grant_type") String grantType,
             @Field("client_id") String clientID,
             Callback<AccessTokenResponse> callback);
+
+    @GET("/accounts/me/")
+    Account getAccount();
 
     @GET("/dining/venues")
     Observable<List<Venue>> venues();
@@ -216,9 +224,39 @@ public interface StudentLife {
             Callback<Sublet> callback);
 
     @Headers({"Content-Type: application/json"})
+    @POST("/sublet/properties/{sublet_id}/images/")
+    void createImage(
+            @Header("Authorization") String bearerToken,
+            @Path("sublet_id") int id,
+            @Part("sublet") MultipartBody.Part sublet,
+            @Part("image") MultipartBody.Part partFile,
+            Callback<Sublet> callback
+    );
+
+    @Headers({"Content-Type: application/json"})
     @GET("/sublet/properties/")
     Observable<List<Sublet>> getPostedSublets(
-            @Header("Authorization") String bearerToken);
+            @Header("Authorization") String bearerToken,
+            @Query("subletter") boolean subletter);
+
+    @Headers({"Content-Type: application/json"})
+    @GET("/sublet/properties/{sublet_id}/offers/")
+    Observable<List<Offer>> getSubletOffers(
+            @Header("Authorization") String bearerToken,
+            @Path("sublet_id") int id
+    );
+
+    @Headers({"Content-Type: application/json"})
+    @DELETE("/sublet/properties/{sublet_id}")
+    void deleteSublet(
+            @Header("Authorization") String bearerToken,
+            @Path("sublet_id") int id,
+            Callback<Sublet> callback);
+
+
+
+
+
 
     @Headers({"Content-Type: application/json"})
     @GET("/sublet/properties/{id}")

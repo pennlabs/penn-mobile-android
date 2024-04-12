@@ -87,6 +87,7 @@ class SublesseeViewModel(private val activity: Activity, private val studentLife
                             fitnessRoomsList.add(fitnessRoom)
                         }
                     } */
+            /*
             studentLife.getPostedSublets(bearerToken).subscribe({ sublets ->
                 mActivity.runOnUiThread {
                     sublettingList.value = sublets as ArrayList<Sublet>
@@ -100,6 +101,8 @@ class SublesseeViewModel(private val activity: Activity, private val studentLife
                     )
                 }
             })
+
+             */
         }
         Log.i("sublets", getSublettingList()?.size.toString())
     }
