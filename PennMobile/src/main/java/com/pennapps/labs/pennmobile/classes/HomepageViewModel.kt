@@ -25,7 +25,7 @@ import java.util.concurrent.CountDownLatch
 
 class HomepageViewModel : HomepageDataModel, ViewModel() {
     companion object {
-        private const val NUM_CELLS = 6
+        private const val NUM_CELLS = 7
         private const val NUM_CELLS_LOGGED_IN = NUM_CELLS
         private const val NUM_CELLS_GUEST = 2
 
@@ -37,6 +37,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         private const val POST_POS = 3
         private const val DINING_POS = 4
         private const val LAUNDRY_POS = 5
+        private const val GSR_POS = 6
 
         private const val TAG = "HomepageVM"
         private const val UPDATE_TAG = "CellUpdate"
@@ -138,6 +139,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
             getLaundry(studentLife, bearerToken, latch)
             getPosts(studentLife, bearerToken, latch)
             getDiningPrefs(studentLife, bearerToken, latch)
+            getGSRReservations(studentLife, bearerToken, latch)
             // waits until all of the network calls are processed
             latch.await()
         } else {
@@ -280,6 +282,25 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
             latch.countDown()
         }, { throwable ->
             Log.i(TAG, "Could not load dining")
+            throwable.printStackTrace()
+            latch.countDown()
+        })
+    }
+
+    private fun getGSRReservations(studentLife: StudentLife, bearerToken: String, latch: CountDownLatch) {
+        studentLife.getGsrReservations(bearerToken).subscribe({ reservationsList ->
+            if (reservationsList.isEmpty()) {
+                addCell(HomeCell(), GSR_POS)
+
+            } else {
+                val gsrCell = GSRCell(reservationsList)
+                Log.i(TAG, "Loaded GSR Reservations")
+                addCell(gsrCell, GSR_POS)
+            }
+            latch.countDown()
+        },{
+            throwable ->
+            Log.i(TAG, "Could not load GSR reservations")
             throwable.printStackTrace()
             latch.countDown()
         })
