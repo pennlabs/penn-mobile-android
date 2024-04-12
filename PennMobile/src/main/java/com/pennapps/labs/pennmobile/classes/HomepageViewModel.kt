@@ -24,7 +24,6 @@ import java.util.concurrent.CountDownLatch
  */
 
 class HomepageViewModel : HomepageDataModel, ViewModel() {
-    //TODO: NESTED VIEW MODEL FOR GSR BOOKINGS
     companion object {
         private const val NUM_CELLS = 7
         private const val NUM_CELLS_LOGGED_IN = NUM_CELLS

@@ -64,13 +64,12 @@ class HomeGsrReservationAdapter (reservations: List<GSRReservation>) : RecyclerV
         holder.itemView.item_gsr_date.text = day + "\n" + fromHour + "-" + toHour
 
         holder.itemView.setOnClickListener {
-            //Moves to GSR Booking Tab
+            // Moves to GSR Booking Tab
             mActivity.setTab(MainActivity.GSR_ID)
 
-            //Changes tab to "My Reservations" tab (from "Book a Room" tab)
+            // Changes tab to "My Reservations" tab (from "Book a Room" tab)
             for (fragment in mActivity.supportFragmentManager.fragments) {
                 if(fragment is GsrTabbedFragment) {
-                    Log.i("GSR TEST", fragment.toString())
                     fragment.viewPager.currentItem = 1
                 }
             }

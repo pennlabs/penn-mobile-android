@@ -41,7 +41,7 @@ class GSRReservation {
     override fun equals(other: Any?): Boolean {
         return other is GSRReservation && this.booking_id == other.booking_id && this.name == other.name
                 && this.fromDate == other.fromDate && this.toDate == other.toDate && this.gid == other.gid
-                && this.lid == other.lid //maybe toss in info here
+                && this.lid == other.lid
     }
 
     override fun hashCode(): Int {

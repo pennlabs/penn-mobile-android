@@ -489,7 +489,6 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
             mActivity.setTab(MainActivity.GSR_ID)
             for (fragment in mActivity.supportFragmentManager.fragments) {
                 if(fragment is GsrTabbedFragment) {
-                    Log.i("GSR TEST", fragment.toString())
                     fragment.viewPager.currentItem = 0
                 }
             }
