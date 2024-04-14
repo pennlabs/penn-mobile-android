@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile
 
+import StudentLife_rf2
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -52,7 +53,11 @@ import retrofit.android.AndroidLog
 import retrofit.client.OkClient
 import retrofit.converter.GsonConverter
 import java.util.concurrent.TimeUnit
-
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
+import okhttp3.OkHttpClient as OkHttpClient1
 
 class MainActivity : AppCompatActivity() {
     private var tabShowed = false
@@ -270,6 +275,7 @@ class MainActivity : AppCompatActivity() {
         val GSR_ID = R.id.nav_gsr
 
         private var mStudentLife: StudentLife? = null
+        private var mStudentLife_rf2: StudentLife_rf2? = null
         private var mPlatform: Platform? = null
         private var mCampusExpress: CampusExpress? = null
 
@@ -306,6 +312,29 @@ class MainActivity : AppCompatActivity() {
                 }
                 return mPlatform!!
             }
+
+        val studentLifeInstanceRf2: StudentLife_rf2
+            get() {
+                if (mStudentLife_rf2 == null) {
+                    val okHttpClient = OkHttpClient1.Builder()
+                        .connectTimeout(35, TimeUnit.SECONDS)
+                        .readTimeout(35, TimeUnit.SECONDS)
+                        .writeTimeout(35, TimeUnit.SECONDS)
+                        .build()
+
+                    val retrofit = Retrofit.Builder()
+                        .baseUrl("https://pennmobile.org/api/")
+                        .client(okHttpClient)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                        .build()
+
+                    mStudentLife_rf2 = retrofit.create(StudentLife_rf2::class.java)
+                }
+                return mStudentLife_rf2!!
+            }
+
 
         @JvmStatic
         val studentLifeInstance: StudentLife

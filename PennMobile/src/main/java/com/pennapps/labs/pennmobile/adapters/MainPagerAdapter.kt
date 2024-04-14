@@ -8,6 +8,7 @@ import com.pennapps.labs.pennmobile.DiningHolderFragment
 import com.pennapps.labs.pennmobile.GsrTabbedFragment
 import com.pennapps.labs.pennmobile.HomeFragment
 import com.pennapps.labs.pennmobile.LaundryFragment
+import com.pennapps.labs.pennmobile.LaundryFragment2
 import com.pennapps.labs.pennmobile.more_fragments.MoreFragment
 
 class MainPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle?) : FragmentStateAdapter(fragmentManager, lifecycle!!) {
@@ -16,7 +17,7 @@ class MainPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle?) 
             HOME_POSITION-> HomeFragment()
             DINING_POSITION-> DiningHolderFragment()
             GSR_POSITION-> GsrTabbedFragment()
-            LAUNDRY_POSITION-> LaundryFragment()
+            LAUNDRY_POSITION-> LaundryFragment2()
             MORE_POSITION-> MoreFragment()
             else -> HomeFragment()
         }
