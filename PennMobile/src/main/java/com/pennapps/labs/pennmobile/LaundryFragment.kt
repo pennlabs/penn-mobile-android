@@ -61,8 +61,6 @@ class LaundryFragment : Fragment() {
         }
         binding.laundryMachineRefresh.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
 
-        // may not be safe. Perhaps move this to onViewCreated
-        updateMachines()
         return view
     }
 
@@ -98,6 +96,7 @@ class LaundryFragment : Fragment() {
             binding.laundryHelpText.visibility = View.INVISIBLE
         }
 
+        updateMachines()
     }
 
     private fun getOnline() : Boolean {

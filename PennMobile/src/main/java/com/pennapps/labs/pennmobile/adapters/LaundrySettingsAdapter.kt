@@ -75,7 +75,6 @@ class LaundrySettingsAdapter(
             val laundryRoom = dataModel.getRooms(laundryHallName)!![0]
             val roomId: Int = laundryRoom.id!!
             // set the Switch to the correct on or off
-            // CHANGE HERE
             buildingSwitch.isChecked = dataModel.isChecked(roomId)
 
             // add the switch to the list - to aid with disabling
