@@ -16,7 +16,7 @@ import com.pennapps.labs.pennmobile.viewmodels.LaundryViewModel
  * Created by Jackie on 2017-10-13.
  * Modified by Aaron on 2024-03-20.
  */
-class LaundrySettingsAdapter2(
+class LaundrySettingsAdapter(
     private val mContext: Context,
     private val dataModel: LaundryViewModel
 ) : BaseExpandableListAdapter() {
