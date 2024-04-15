@@ -4,7 +4,13 @@ plugins {
     id 'com.google.gms.google-services'
     id("com.google.firebase.crashlytics")
     id 'jacoco'
+    id 'checkstyle'
 }
+checkstyle {
+    toolVersion = "8.44"
+    configFile = rootProject.file("config/checkstyle.xml")
+}
+
 
 apply plugin: 'kotlin-android-extensions'
 apply plugin: "kotlin-android"
