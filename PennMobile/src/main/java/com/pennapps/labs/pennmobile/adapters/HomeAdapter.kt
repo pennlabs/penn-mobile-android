@@ -94,6 +94,8 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         private const val POST = 7
         private const val FEATURE = 8
         private const val POLL = 9
+
+        private const val DRAFT_NOTE = " (NOTE: THIS IS A DRAFT THAT USERS CANNOT SEE)"
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -356,7 +358,7 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         if (cell.post.status == Post.DRAFT) {
             holder.itemView.home_post_title.setTextColor(Color.parseColor("#ffb300"))
 
-            val draftSubtitle = post.subtitle + " (NOTE: THIS IS A DRAFT THAT USERS CANNOT SEE)"
+            val draftSubtitle = post.subtitle + DRAFT_NOTE
             holder.itemView.home_post_subtitle.text = draftSubtitle
         } else {
             holder.itemView.home_post_subtitle.text = post.subtitle
@@ -447,7 +449,7 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         // if the post is a draft, then change the color and add a note
         if (poll.status == Poll.DRAFT) {
             holder.itemView.home_card_title.setTextColor(Color.parseColor("#ffb300"))
-            val draftQuestion = poll.question + " (NOTE: THIS IS A DRAFT THAT USERS CANNOT SEE)"
+            val draftQuestion = poll.question + DRAFT_NOTE
             holder.itemView.home_card_title?.text = draftQuestion
         } else {
             holder.itemView.home_card_title?.text = poll.question
