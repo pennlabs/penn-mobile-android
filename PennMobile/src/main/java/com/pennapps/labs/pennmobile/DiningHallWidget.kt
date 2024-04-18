@@ -3,37 +3,21 @@ package com.pennapps.labs.pennmobile
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import com.squareup.picasso.Picasso
-import android.widget.RelativeLayout
 import android.widget.RemoteViews
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.pennapps.labs.pennmobile.DiningFragment
-import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.adapters.DiningHallWidgetAdapter
 import com.pennapps.labs.pennmobile.api.DiningRequest
 import com.pennapps.labs.pennmobile.api.Serializer
-import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.classes.Account
-import com.pennapps.labs.pennmobile.classes.Contact
 import com.pennapps.labs.pennmobile.classes.DiningHall
-import com.pennapps.labs.pennmobile.classes.FlingEvent
-import com.pennapps.labs.pennmobile.classes.GSRLocation
-import com.pennapps.labs.pennmobile.classes.GSRReservation
-import com.pennapps.labs.pennmobile.classes.LaundryRoom
-import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple
-import com.pennapps.labs.pennmobile.classes.LaundryUsage
-import com.pennapps.labs.pennmobile.classes.Post
 import com.pennapps.labs.pennmobile.classes.Venue
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.scalars.ScalarsConverterFactory
+import com.squareup.okhttp.OkHttpClient
+import retrofit.RestAdapter
+import retrofit.client.OkClient
+import retrofit.converter.GsonConverter
 import java.util.concurrent.TimeUnit
 
 /**
@@ -53,6 +37,7 @@ class DiningHallWidget : AppWidgetProvider() {
                 flags += Intent.FLAG_ACTIVITY_NEW_TASK
                 flags += Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
+            mainActivityIntent.putExtra("Widget_Tab_Switch", 2)
             val serviceIntent = Intent(context, DiningHallWidgetAdapter::class.java)
             // PendingIntent is for foreign applications like appwidgets and notifs, which is foreign to the main application
             val pendingIntent : PendingIntent = PendingIntent.getActivity(context, appWidgetId, mainActivityIntent, PendingIntent.FLAG_IMMUTABLE)
@@ -82,19 +67,25 @@ class DiningHallWidget : AppWidgetProvider() {
         val diningRequestInstance: DiningRequest
             get() {
                 if (mDiningRequest == null) {
-                    val okHttpClient: OkHttpClient = OkHttpClient.Builder()
-                        .connectTimeout(1, TimeUnit.MINUTES)
-                        .readTimeout(30, TimeUnit.SECONDS)
-                        .writeTimeout(15, TimeUnit.SECONDS)
+                    val gsonBuilder = GsonBuilder()
+                    gsonBuilder.registerTypeAdapter(DiningHall::class.java,
+                        Serializer.MenuSerializer()
+                    )
+                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Venue?>?>() {}.type,
+                        Serializer.VenueSerializer()
+                    )
+
+                    val gson = gsonBuilder.create()
+                    val okHttpClient = OkHttpClient()
+                    okHttpClient.setConnectTimeout(35, TimeUnit.SECONDS) // Connection timeout
+                    okHttpClient.setReadTimeout(35, TimeUnit.SECONDS)    // Read timeout
+                    okHttpClient.setWriteTimeout(35, TimeUnit.SECONDS)   // Write timeout
+                    val restAdapter = RestAdapter.Builder()
+                        .setConverter(GsonConverter(gson))
+                        .setClient(OkClient(okHttpClient))
+                        .setEndpoint("https://pennmobile.org/api")
                         .build()
-                    val retrofit = Retrofit.Builder()
-                        .client(okHttpClient)
-                        .addConverterFactory(ScalarsConverterFactory.create())
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                        .baseUrl("https://pennmobile.org/api/")
-                        .build()
-                    mDiningRequest = retrofit.create(DiningRequest::class.java)
+                    mDiningRequest = restAdapter.create(DiningRequest::class.java)
                 }
                 return mDiningRequest!!
             }

@@ -1,37 +1,37 @@
 package com.pennapps.labs.pennmobile.adapters
 
+import android.annotation.SuppressLint
 import android.appwidget.AppWidgetManager
-import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.os.SystemClock
-import android.view.View
-import android.widget.ImageView
-import android.widget.ProgressBar
+import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.preference.PreferenceManager
-import androidx.recyclerview.widget.RecyclerView
-import com.pennapps.labs.pennmobile.DiningFragment
 import com.pennapps.labs.pennmobile.DiningHallWidget
-import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.DiningRequest
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
-import com.squareup.picasso.Picasso
 import com.pennapps.labs.pennmobile.classes.Venue
-import io.reactivex.Observable
+import rx.Observable
+
+// For detailed documentation about app widgets using xml layout, check out this link below:
+// https://programmer.group/app-widgets-details-four-remoteviews-remoteviews-service-and-remoteviews-factory.html
 
 class DiningHallWidgetAdapter : RemoteViewsService(){
 
+    // Sole member function for remotesviewservice, used to return the remotesviewfactory that
+    // takes in context and intent as argument.
     override fun onGetViewFactory(p0: Intent): RemoteViewsFactory {
         return diningWidgetFactory(applicationContext, p0)
     }
+
+    /* The adapter equivalent for remoteviews. Considering that app widgets are in another
+    process compared to the main app, we can only use a RemotesViewFactory to connect the data
+    to our RemoteViews UI. Inner class for RemotesViewService.
+    */
     class diningWidgetFactory(private val context: Context, intent: Intent) : RemoteViewsFactory {
         private var mDiningRequest: DiningRequest? = null
         private lateinit var loaded: BooleanArray
@@ -39,24 +39,21 @@ class DiningHallWidgetAdapter : RemoteViewsService(){
         private var appWidgetId: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
         private var exampleData = arrayOf("Lauder\nCollege House", "1920\nCommons", "Hill\nHouse", "English\nHouse", "Falk\nKosher Dining", "McClelland\nExpress", "Houston\nMarket", "Quaker\nKitchen")
         private var exampleImage = intArrayOf(R.drawable.dining_nch, R.drawable.dining_commons, R.drawable.dining_hill_house, R.drawable.dining_kceh, R.drawable.dining_hillel, R.drawable.dining_mcclelland, R.drawable.dining_houston, R.drawable.dining_quaker)
-        private var openCondition = true
         private var dataSet: List<DiningHall> = emptyList()
 
         // Connection to data source
         override fun onCreate() {
-            getWidgetDiningHalls()
             //connect to data source
             val views = RemoteViews(context.packageName, R.layout.dining_hall_widget_item)
             mDiningRequest = DiningHallWidget.diningRequestInstance
-            loaded = BooleanArray(dataSet.size)
             val sp = PreferenceManager.getDefaultSharedPreferences(context)
+            getWidgetDiningHalls()
         }
 
         // The place where we fetch data from the source set new data and update collection widget accordingly
         override fun onDataSetChanged() {
             //refresh data -> Update data every 30 minutes
-            getWidgetDiningHalls()
-
+            //getWidgetDiningHalls()
         }
 
         override fun onDestroy() {
@@ -64,33 +61,45 @@ class DiningHallWidgetAdapter : RemoteViewsService(){
         }
 
         override fun getCount(): Int {
+            Log.d("msg", "${dataSet.size}")
             return dataSet.size
         }
 
         override fun getViewAt(position: Int): RemoteViews {
-            if (position >= getCount()) {
-                return loadingView
-            }
             val views = RemoteViews(context.packageName, R.layout.dining_hall_widget_item)
+            Log.d("msg", "position: ${position}, name: ${dataSet[position].name}")
             views.setTextViewText(R.id.appwidget_text, dataSet[position].name)
             views.setImageViewResource(R.id.diningBackground, dataSet[position].image)
-            views.setImageViewResource(R.id.imageView, R.drawable.splash_screen435)
+            if (dataSet[position].isOpen) {
+                Log.d("msg", "Open right now")
+                views.setImageViewResource(R.id.imageView, R.drawable.baseline_check_circle_24)
+                views.setInt(R.id.textView3, "setBackgroundColor", Color.parseColor("#6DB786"))
+                if (dataSet[position].openMeal() != "all" && dataSet[position].openMeal() != null) {
+                    val resources = context.resources
+                    var open_label : String = resources.getString(getOpenStatusLabel(dataSet[position].openMeal() ?: ""))
+                    views.setTextViewText(R.id.textView3, open_label)
+                }
+            }
+            else {
+                views.setImageViewResource(R.id.imageView, R.drawable.baseline_cancel_24)
+                views.setInt(R.id.textView3, "setBackgroundColor", Color.parseColor("#990000"))
+                if (dataSet[position].openTimes().isEmpty()) {
+                    views.setTextViewText(R.id.textView3, "Closed Today")
+                }
+                else {
+                    views.setTextViewText(R.id.textView3, "Closed")
+                }
+            }
             val extras = Bundle()
             extras.putInt("key_data", position)
             val fillInIntent = Intent()
             fillInIntent.putExtras(extras)
             views.setOnClickFillInIntent(R.id.widgetBackground, fillInIntent)
-            if(openCondition) {
-                views.setTextViewText(R.id.textView3, " Open ")
-                views.setInt(R.id.textView3, "setBackgroundColor", Color.parseColor("#6DB786"))
-                views.setImageViewResource(R.id.imageView, R.drawable.baseline_check_circle_24)
-            }
             return views
         }
 
-        override fun getLoadingView(): RemoteViews {
-            val views = RemoteViews(context.packageName, R.layout.dining_hall_widget)
-            return views
+        override fun getLoadingView(): RemoteViews? {
+            return null
         }
 
         override fun getViewTypeCount(): Int {
@@ -105,25 +114,35 @@ class DiningHallWidgetAdapter : RemoteViewsService(){
             return true
         }
 
+        @SuppressLint("CheckResult")
         private fun getWidgetDiningHalls() {
             if (mDiningRequest != null) {
                 mDiningRequest!!.venues()
-                    .flatMap { venues -> Observable.fromIterable(venues) }
+                    .flatMap { venues -> Observable.from(venues) }
                     .flatMap { venue ->
                         val hall = createHall(venue)
                         Observable.just(hall) }
                     .toList()
                     .subscribe {  diningHalls ->
                         dataSet = diningHalls
+                        Log.d("msg", "Request sent ${dataSet.size}")
                         //Update data set
                         val appWidgetManager: AppWidgetManager = AppWidgetManager.getInstance(context)
-                        val views = RemoteViews(context.packageName, R.layout.dining_hall_widget)
-                        appWidgetManager.updateAppWidget(appWidgetId,views)
                         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.stackview)
                         //notifyDataSetChanged
                         //notifyDataSetChanged
+                }
             }
+        }
 
+        private fun getOpenStatusLabel(openMeal: String): Int {
+            return when (openMeal) {
+                "Breakfast" -> R.string.dining_hall_breakfast
+                "Brunch" -> R.string.dining_hall_brunch
+                "Lunch" -> R.string.dining_hall_lunch
+                "Dinner" -> R.string.dining_hall_dinner
+                "Late Night" -> R.string.dining_hall_late_night
+                else -> R.string.dining_hall_open
             }
         }
 

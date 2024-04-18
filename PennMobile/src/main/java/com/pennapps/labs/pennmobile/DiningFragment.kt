@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -130,7 +131,7 @@ class DiningFragment : Fragment() {
         } else {
             binding.internetConnectionDining.visibility = View.GONE
         }
-        
+
         // Map each item in the list of venues to a Venue Observable, then map each Venue to a DiningHall Observable
         mStudentLife.venues()
                 .flatMap { venues -> Observable.from(venues) }

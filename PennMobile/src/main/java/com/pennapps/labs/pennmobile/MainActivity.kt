@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile
 
-import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -86,8 +85,6 @@ class MainActivity : AppCompatActivity() {
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
-
-
         onExpandableBottomNavigationItemSelected()
         showBottomBar()
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -98,10 +95,17 @@ class MainActivity : AppCompatActivity() {
         // Show HomeFragment if logged in, otherwise show LoginFragment
         val pennKey = mSharedPrefs.getString(getString(R.string.pennkey), null)
         val guestMode = mSharedPrefs.getBoolean(getString(R.string.guest_mode), false)
+        var diningWidgetBroadCast = 0
         if (pennKey == null && !guestMode) {
             startLoginFragment()
         } else {
             startHomeFragment()
+        }
+        if (intent != null) {
+            diningWidgetBroadCast = intent.getIntExtra("Widget_Tab_Switch", -1)
+        }
+        if (diningWidgetBroadCast != -1) {
+            setTab(DINING_ID)
         }
     }
 
@@ -271,6 +275,7 @@ class MainActivity : AppCompatActivity() {
 
         val HOME_ID = R.id.nav_home
         val GSR_ID = R.id.nav_gsr
+        val DINING_ID = R.id.nav_dining
 
         private var mStudentLife: StudentLife? = null
         private var mPlatform: Platform? = null
