@@ -25,6 +25,7 @@ class LaundrySettingsAdapter(
     init {
         dataModel.setToggled()
     }
+
     override fun getGroupCount(): Int {
         return dataModel.getGroupCount()
     }

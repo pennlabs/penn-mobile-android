@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.viewmodels
 
-import StudentLife_rf2
+import StudentLifeRf2
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -53,7 +53,7 @@ class LaundryViewModel : ViewModel() {
     }
 
     private suspend fun populateFavorites(context: CoroutineContext,
-                                          studentLife: StudentLife_rf2,
+                                          studentLife: StudentLifeRf2,
                                           favoriteIdList: List<Int>) {
         val rooms = ArrayList<LaundryRoom>()
         val usages = ArrayList<LaundryUsage>()
@@ -97,7 +97,7 @@ class LaundryViewModel : ViewModel() {
         replaceFavorites(rooms, usages)
         updateFavorites()
     }
-    fun getFavorites(studentLife: StudentLife_rf2, bearerToken : String) {
+    fun getFavorites(studentLife: StudentLifeRf2, bearerToken : String) {
         CoroutineScope(Dispatchers.IO).launch {
             val favoriteIdList : MutableList<Int> = mutableListOf()
             val response = studentLife.getLaundryPref2(bearerToken)
@@ -113,7 +113,7 @@ class LaundryViewModel : ViewModel() {
         }
     }
 
-    fun getHalls(studentLife: StudentLife_rf2) {
+    fun getHalls(studentLife: StudentLifeRf2) {
         if (_loadedRooms.value!!) {
             return
         }
@@ -170,6 +170,9 @@ class LaundryViewModel : ViewModel() {
         var diff = false
         runBlocking {
             favoritesMutex.withLock {
+                if (_favoriteRooms.value == null) {
+                    return@runBlocking
+                }
                 if (_favoriteRooms.value!!.favoriteRooms.size != curToggled.size) {
                     diff = true
                     return@runBlocking
@@ -185,7 +188,7 @@ class LaundryViewModel : ViewModel() {
         return diff
     }
 
-    private suspend fun sendPreferences(studentLife: StudentLife_rf2, bearerToken: String,
+    private suspend fun sendPreferences(studentLife: StudentLifeRf2, bearerToken: String,
                                         favoriteIdList: List<Int>) {
         val laundryRequest = LaundryRequest(favoriteIdList)
         val response = studentLife.sendLaundryPref(bearerToken, laundryRequest)
@@ -195,7 +198,7 @@ class LaundryViewModel : ViewModel() {
             Log.i("Laundry Preferences", "Error updating preferences")
         }
     }
-    fun setFavoritesFromToggled(studentLife: StudentLife_rf2, bearerToken: String) {
+    fun setFavoritesFromToggled(studentLife: StudentLifeRf2, bearerToken: String) {
         CoroutineScope(Dispatchers.IO).launch {
             // make a copy of the set
             val favoriteIdList = curToggled.toList()

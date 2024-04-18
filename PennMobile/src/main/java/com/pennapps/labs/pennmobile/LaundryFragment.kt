@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile
 
-import StudentLife_rf2
+import StudentLifeRf2
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -24,7 +24,7 @@ import java.util.*
 class LaundryFragment : Fragment() {
     private lateinit var mActivity: MainActivity
 
-    private lateinit var mStudentLife: StudentLife_rf2
+    private lateinit var mStudentLife: StudentLifeRf2
     private lateinit var mContext: Context
 
     private lateinit var sharedPreferences: SharedPreferences

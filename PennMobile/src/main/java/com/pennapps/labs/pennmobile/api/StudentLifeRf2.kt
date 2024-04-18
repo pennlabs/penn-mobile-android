@@ -4,10 +4,15 @@ import com.pennapps.labs.pennmobile.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple
 import com.pennapps.labs.pennmobile.classes.LaundryUsage
 import okhttp3.ResponseBody
-import retrofit2.http.*
 import io.reactivex.Observable
 import retrofit2.Response
-interface StudentLife_rf2 {
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.POST
+import retrofit2.http.Path
+
+interface StudentLifeRf2 {
     @GET("laundry/halls/ids")
     suspend fun laundryRooms(): Response<List<LaundryRoomSimple>>
 

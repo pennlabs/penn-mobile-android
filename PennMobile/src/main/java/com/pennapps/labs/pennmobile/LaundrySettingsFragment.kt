@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile
 
-import StudentLife_rf2
+import StudentLifeRf2
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.no_results.*
 class LaundrySettingsFragment : Fragment() {
 
     private lateinit var mActivity: MainActivity
-    private lateinit var mStudentLife: StudentLife_rf2
+    private lateinit var mStudentLife: StudentLifeRf2
     private lateinit var mContext: Context
 
     private var _binding : FragmentLaundrySettingsBinding? = null
@@ -63,7 +63,7 @@ class LaundrySettingsFragment : Fragment() {
         loadingPanel?.visibility = View.VISIBLE
 
         // if this value is already true, then simply attach adapter
-        if (laundryViewModel.loadedRooms.value!!) {
+        if (laundryViewModel.loadedRooms.value != null && laundryViewModel.loadedRooms.value!!) {
             attachAdapter()
             loadingPanel?.visibility = View.GONE
             no_results?.visibility = View.GONE
