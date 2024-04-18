@@ -5,6 +5,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -44,6 +45,8 @@ import com.pennapps.labs.pennmobile.classes.NewsCell
 import com.pennapps.labs.pennmobile.classes.PollCell
 import com.pennapps.labs.pennmobile.classes.PostCell
 import com.pennapps.labs.pennmobile.classes.GSRCell
+import com.pennapps.labs.pennmobile.classes.Poll
+import com.pennapps.labs.pennmobile.classes.Post
 import com.pennapps.labs.pennmobile.components.sneaker.Utils.convertToDp
 import com.pennapps.labs.pennmobile.utils.Utils
 import eightbitlab.com.blurview.RenderScriptBlur
@@ -348,8 +351,18 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
 
     private fun bindPostCell(holder: ViewHolder, cell: PostCell) {
         val post = cell.post
+
+        // if the post is a draft, then change the color and add a note
+        if (cell.post.status == Post.DRAFT) {
+            holder.itemView.home_post_title.setTextColor(Color.parseColor("#ffb300"))
+
+            val draftSubtitle = post.subtitle + " (NOTE: THIS IS A DRAFT THAT USERS CANNOT SEE)"
+            holder.itemView.home_post_subtitle.text = draftSubtitle
+        } else {
+            holder.itemView.home_post_subtitle.text = post.subtitle
+        }
+
         holder.itemView.home_post_title.text = post.title
-        holder.itemView.home_post_subtitle.text = post.subtitle
         holder.itemView.home_post_source.text = "Penn Labs" //post?.clubCode?.capitalize()
         val time = post.startDate?.substring(5, 7) + " / " +
                 post.startDate?.substring(8, 10) + " - " +
@@ -371,7 +384,14 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
             mActivity.runOnUiThread {
                 // Change all the components to match the accent color palette
                 vibrantSwatch?.titleTextColor?.let {
-                    holder.itemView.home_post_title.setTextColor(ColorUtils.setAlphaComponent(it, 150))
+                    if (cell.post.status != Post.DRAFT) {
+                        holder.itemView.home_post_title.setTextColor(
+                            ColorUtils.setAlphaComponent(
+                                it,
+                                150
+                            )
+                        )
+                    }
                     holder.itemView.home_post_subtitle.setTextColor(it)
                     holder.itemView.home_post_timestamp.setTextColor(it)
                     holder.itemView.home_post_source.setTextColor(it)
@@ -423,7 +443,16 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
 
     private fun bindPollCell(holder: ViewHolder, cell: PollCell, position: Int) {
         val poll = cell.poll
-        holder.itemView.home_card_title?.text = poll.question
+
+        // if the post is a draft, then change the color and add a note
+        if (poll.status == Poll.DRAFT) {
+            holder.itemView.home_card_title.setTextColor(Color.parseColor("#ffb300"))
+            val draftQuestion = poll.question + " (NOTE: THIS IS A DRAFT THAT USERS CANNOT SEE)"
+            holder.itemView.home_card_title?.text = draftQuestion
+        } else {
+            holder.itemView.home_card_title?.text = poll.question
+        }
+
         holder.itemView.home_card_subtitle_2?.text = "${poll.totalVotes} Votes"
         if(poll.clubCode != null) {
             holder.itemView.home_card_subtitle?.text = "POLL FROM ${poll.clubCode}"

@@ -8,6 +8,9 @@ import com.google.gson.annotations.SerializedName
  * Data model for custom posts on homepage
  */
 class Post {
+    companion object {
+        const val DRAFT = "DRAFT"
+    }
 
     @SerializedName("id")
     @Expose
@@ -45,7 +48,6 @@ class Post {
     @Expose
     internal val expireDate : String? = null
 
-
     @SerializedName("club_comment")
     @Expose
     internal val club_comment : String? = null
@@ -67,7 +69,6 @@ class Post {
                 clubCode + ""
     }
     override fun equals(other: Any?) : Boolean {
-        Log.i("CellUpdates", "fuck")
         // note: target_populations is not included because it's unused and structural
         return when (other) {
             is Post -> {
