@@ -29,9 +29,7 @@ class DiningHallWidget : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        // There may be multiple widgets active, so update all of them
         for (appWidgetId in appWidgetIds) {
-            // Appwidgets still uses intent between different layouts within itself (not foreign)
             val mainActivityIntent = Intent(context, MainActivity::class.java)
             mainActivityIntent.apply {
                 flags += Intent.FLAG_ACTIVITY_NEW_TASK
@@ -39,7 +37,6 @@ class DiningHallWidget : AppWidgetProvider() {
             }
             mainActivityIntent.putExtra("Widget_Tab_Switch", 2)
             val serviceIntent = Intent(context, DiningHallWidgetAdapter::class.java)
-            // PendingIntent is for foreign applications like appwidgets and notifs, which is foreign to the main application
             val pendingIntent : PendingIntent = PendingIntent.getActivity(context, appWidgetId, mainActivityIntent, PendingIntent.FLAG_IMMUTABLE)
             serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             serviceIntent.setData(Uri.parse(serviceIntent.toUri(Intent.URI_INTENT_SCHEME)))
@@ -48,20 +45,18 @@ class DiningHallWidget : AppWidgetProvider() {
             views.setEmptyView(R.id.stackview, R.id.emptyview)
             views.setPendingIntentTemplate(R.id.stackview, pendingIntent)
             views.setOnClickPendingIntent(R.id.emptyview, pendingIntent)
-            appWidgetManager.updateAppWidget(appWidgetId, views)
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.stackview)
+            appWidgetManager.updateAppWidget(appWidgetId, views)
         }
     }
 
     override fun onEnabled(context: Context) {
-        // Enter relevant functionality for when the first widget is created
     }
 
     override fun onDisabled(context: Context) {
-        // Enter relevant functionality for when the last widget is disabled
     }
+
     companion object {
-        const val DINING = 3
         private var mDiningRequest: DiningRequest? = null
         @JvmStatic
         val diningRequestInstance: DiningRequest
@@ -92,18 +87,4 @@ class DiningHallWidget : AppWidgetProvider() {
     }
 }
 
-internal fun updateAppWidget(
-    context: Context,
-    appWidgetManager: AppWidgetManager,
-    appWidgetId: Int
-) {
-    val widgetText = "Lauder\nCollege House"
-    // Construct the RemoteViews object
-    val views = RemoteViews(context.packageName, R.layout.dining_hall_widget)
-    views.setTextViewText(R.id.appwidget_text, widgetText)
-
-
-    // Instruct the widget manager to update the widget
-    appWidgetManager.updateAppWidget(appWidgetId, views)
-}
 

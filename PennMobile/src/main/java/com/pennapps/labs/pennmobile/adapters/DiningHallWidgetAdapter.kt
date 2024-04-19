@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.DiningHallWidget
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.DiningRequest
@@ -22,38 +21,25 @@ import rx.Observable
 
 class DiningHallWidgetAdapter : RemoteViewsService(){
 
-    // Sole member function for remotesviewservice, used to return the remotesviewfactory that
-    // takes in context and intent as argument.
     override fun onGetViewFactory(p0: Intent): RemoteViewsFactory {
         return diningWidgetFactory(applicationContext, p0)
     }
 
-    /* The adapter equivalent for remoteviews. Considering that app widgets are in another
-    process compared to the main app, we can only use a RemotesViewFactory to connect the data
-    to our RemoteViews UI. Inner class for RemotesViewService.
-    */
     class diningWidgetFactory(private val context: Context, intent: Intent) : RemoteViewsFactory {
         private var mDiningRequest: DiningRequest? = null
-        private lateinit var loaded: BooleanArray
-        private lateinit var sortBy: String
         private var appWidgetId: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
-        private var exampleData = arrayOf("Lauder\nCollege House", "1920\nCommons", "Hill\nHouse", "English\nHouse", "Falk\nKosher Dining", "McClelland\nExpress", "Houston\nMarket", "Quaker\nKitchen")
-        private var exampleImage = intArrayOf(R.drawable.dining_nch, R.drawable.dining_commons, R.drawable.dining_hill_house, R.drawable.dining_kceh, R.drawable.dining_hillel, R.drawable.dining_mcclelland, R.drawable.dining_houston, R.drawable.dining_quaker)
         private var dataSet: List<DiningHall> = emptyList()
 
         // Connection to data source
         override fun onCreate() {
             //connect to data source
-            val views = RemoteViews(context.packageName, R.layout.dining_hall_widget_item)
             mDiningRequest = DiningHallWidget.diningRequestInstance
-            val sp = PreferenceManager.getDefaultSharedPreferences(context)
             getWidgetDiningHalls()
         }
 
         // The place where we fetch data from the source set new data and update collection widget accordingly
         override fun onDataSetChanged() {
             //refresh data -> Update data every 30 minutes
-            //getWidgetDiningHalls()
         }
 
         override fun onDestroy() {
@@ -76,7 +62,7 @@ class DiningHallWidgetAdapter : RemoteViewsService(){
                 views.setInt(R.id.textView3, "setBackgroundColor", Color.parseColor("#6DB786"))
                 if (dataSet[position].openMeal() != "all" && dataSet[position].openMeal() != null) {
                     val resources = context.resources
-                    var open_label : String = resources.getString(getOpenStatusLabel(dataSet[position].openMeal() ?: ""))
+                    val open_label : String = resources.getString(getOpenStatusLabel(dataSet[position].openMeal() ?: ""))
                     views.setTextViewText(R.id.textView3, open_label)
                 }
             }
@@ -126,11 +112,8 @@ class DiningHallWidgetAdapter : RemoteViewsService(){
                     .subscribe {  diningHalls ->
                         dataSet = diningHalls
                         Log.d("msg", "Request sent ${dataSet.size}")
-                        //Update data set
                         val appWidgetManager: AppWidgetManager = AppWidgetManager.getInstance(context)
                         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.stackview)
-                        //notifyDataSetChanged
-                        //notifyDataSetChanged
                 }
             }
         }
@@ -169,7 +152,5 @@ class DiningHallWidgetAdapter : RemoteViewsService(){
                 }
             }
         }
-
-
     }
 }
