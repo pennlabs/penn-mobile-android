@@ -49,6 +49,7 @@ class DiningHallWidget : AppWidgetProvider() {
             views.setPendingIntentTemplate(R.id.stackview, pendingIntent)
             views.setOnClickPendingIntent(R.id.emptyview, pendingIntent)
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.stackview)
+            appWidgetManager.updateAppWidget(appWidgetId, null)
             appWidgetManager.updateAppWidget(appWidgetId, views)
             Log.d("updated_msg", "widget updated")
         }
