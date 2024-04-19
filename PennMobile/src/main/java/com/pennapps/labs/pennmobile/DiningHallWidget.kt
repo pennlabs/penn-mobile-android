@@ -60,7 +60,6 @@ class DiningHallWidget : AppWidgetProvider() {
         if (intent.action.equals(ACTION_AUTO_UPDATE))
         {
             Log.d("Updated_msg", "Received!")
-            val extras = intent.extras
             val appWidgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(
                 ComponentName(context, DiningHallWidget::class.java)
             )
