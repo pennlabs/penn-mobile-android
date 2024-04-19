@@ -7,6 +7,7 @@ import android.content.Intent
 import com.pennapps.labs.pennmobile.DiningHallWidget
 import java.util.Calendar
 
+// An AlarmManager for app widget testing (Shortens the update time)
 class AppWidgetAlarm (private val mContext: Context) {
     val ALARM_ID : Int = 0
     val INTERNAL_MILLIS : Int = 100000
@@ -37,6 +38,4 @@ class AppWidgetAlarm (private val mContext: Context) {
         }
         return false
     }
-
-
 }

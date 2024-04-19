@@ -3,15 +3,18 @@ package com.pennapps.labs.pennmobile
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.widget.RemoteViews
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.pennapps.labs.pennmobile.adapters.DiningHallWidgetAdapter
 import com.pennapps.labs.pennmobile.api.DiningRequest
 import com.pennapps.labs.pennmobile.api.Serializer
+import com.pennapps.labs.pennmobile.classes.AppWidgetAlarm
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.Venue
 import com.squareup.okhttp.OkHttpClient
@@ -47,17 +50,55 @@ class DiningHallWidget : AppWidgetProvider() {
             views.setOnClickPendingIntent(R.id.emptyview, pendingIntent)
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.stackview)
             appWidgetManager.updateAppWidget(appWidgetId, views)
+            Log.d("updated_msg", "widget updated")
+        }
+    }
+
+    override fun onReceive(context: Context, intent: Intent) {
+        super.onReceive(context, intent)
+        if (intent.action.equals(ACTION_AUTO_UPDATE))
+        {
+            Log.d("Updated_msg", "Received!")
+            val extras = intent.extras
+            val appWidgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(
+                ComponentName(context, DiningHallWidget::class.java)
+            )
+            if (appWidgetIds != null && appWidgetIds.isNotEmpty()) {
+                Log.d("Updated_msg", "Updated!")
+                this.onUpdate(context,AppWidgetManager.getInstance(context), appWidgetIds)
+            }
+            else if (appWidgetIds == null) {
+                Log.d("Updated_msg", "null.!")
+            }
+
         }
     }
 
     override fun onEnabled(context: Context) {
+        // Enter relevant functionality for when the first widget is created
+        Log.d("update_msg", "widget_enabled")
+        val appWidgetAlarm = AppWidgetAlarm(context.applicationContext)
+        appWidgetAlarm.startAlarm()
+        if (appWidgetAlarm.alarmUp()) {
+            Log.d("update_msg", "Alarm is up")
+        }
     }
 
     override fun onDisabled(context: Context) {
+        // Enter relevant functionality for when the last widget is disabled
+        Log.d("update_msg", "widget_disabled")
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        val diningWidgetComponentName = ComponentName(context.packageName, javaClass.name)
+        val appWidgetIds = appWidgetManager.getAppWidgetIds(diningWidgetComponentName)
+        if (appWidgetIds.size == 0) {
+            val appWidgetAlarm = AppWidgetAlarm(context.applicationContext)
+            appWidgetAlarm.stopAlarm()
+        }
     }
 
     companion object {
         private var mDiningRequest: DiningRequest? = null
+        val ACTION_AUTO_UPDATE = "AUTO_UPDATE"
         @JvmStatic
         val diningRequestInstance: DiningRequest
             get() {
