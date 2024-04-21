@@ -80,7 +80,6 @@ class LaundryFragment : Fragment() {
         loadingPanel?.visibility = View.VISIBLE
 
         laundryViewModel.favoriteRooms.observe(viewLifecycleOwner) { favorites ->
-            binding.laundryMachineRefresh.isRefreshing = false
 
             laundryRooms.clear()
             roomsData.clear()
@@ -123,6 +122,7 @@ class LaundryFragment : Fragment() {
                 .getString(getString(R.string.access_token), "").toString()
             laundryViewModel.getFavorites(mStudentLife, bearerToken)
         }
+        binding.laundryMachineRefresh.isRefreshing = false
     }
 
     private fun initAppBar() {
