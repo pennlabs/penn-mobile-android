@@ -75,7 +75,8 @@ class PostedSubletsListAdapter(private val dataModel: SublettingViewModel):
                     .addToBackStack(null)
                     .commit()
         }
-        holder.listingDates.text = mSublettingCard.startDate + " to " + mSublettingCard.endDate
+        holder.listingDates.setSingleLine(false);
+        holder.listingDates.text = mSublettingCard.startDate + " to \n" + mSublettingCard.endDate
     }
 
 
