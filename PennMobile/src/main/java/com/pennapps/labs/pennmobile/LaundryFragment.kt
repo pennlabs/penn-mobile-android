@@ -97,6 +97,8 @@ class LaundryFragment : Fragment() {
                 mAdapter!!.notifyItemChanged(pos)
             }
 
+            // should already be set to false by here but just in case
+            binding.laundryMachineRefresh.isRefreshing = false
             loadingPanel?.visibility = View.GONE
             binding.laundryHelpText.visibility = View.INVISIBLE
         }
