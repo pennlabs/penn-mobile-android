@@ -4,7 +4,6 @@ import com.pennapps.labs.pennmobile.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple
 import com.pennapps.labs.pennmobile.classes.LaundryUsage
 import okhttp3.ResponseBody
-import io.reactivex.Observable
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -17,18 +16,13 @@ interface StudentLifeRf2 {
     suspend fun laundryRooms(): Response<List<LaundryRoomSimple>>
 
     @GET("laundry/hall/{id}")
-    fun room(@Path("id") id: Int): Observable<LaundryRoom>
-
-    @GET("laundry/hall/{id}")
-    suspend fun room2(@Path("id") id: Int): Response<LaundryRoom>
+    suspend fun room(@Path("id") id: Int): Response<LaundryRoom>
 
     @GET("laundry/usage/{id}")
     suspend fun usage(@Path("id") id: Int): Response<LaundryUsage>
-    @GET("laundry/preferences")
-    fun getLaundryPref(@Header("Authorization") bearerToken: String): Observable<LaundryPreferences>
 
     @GET("laundry/preferences")
-    suspend fun getLaundryPref2(@Header("Authorization") bearerToken: String): Response<LaundryPreferences>
+    suspend fun getLaundryPref(@Header("Authorization") bearerToken: String): Response<LaundryPreferences>
 
     @POST("laundry/preferences/")
     suspend fun sendLaundryPref(

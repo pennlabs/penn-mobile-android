@@ -62,7 +62,7 @@ class LaundryViewModel : ViewModel() {
             var addRoomSuccess = false
             var addUsageSuccess = false
             val addRoom = CoroutineScope(context).launch {
-                val roomResponse = studentLife.room2(roomId)
+                val roomResponse = studentLife.room(roomId)
                 addRoomSuccess = if (roomResponse.isSuccessful) {
                     val room = roomResponse.body()!!
                     room.id = roomId
@@ -100,7 +100,7 @@ class LaundryViewModel : ViewModel() {
     fun getFavorites(studentLife: StudentLifeRf2, bearerToken : String) {
         CoroutineScope(Dispatchers.IO).launch {
             val favoriteIdList : MutableList<Int> = mutableListOf()
-            val response = studentLife.getLaundryPref2(bearerToken)
+            val response = studentLife.getLaundryPref(bearerToken)
             if (response.isSuccessful) {
                 val prefs = response.body()!!.rooms
                 for (room in prefs!!) {
