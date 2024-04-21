@@ -4,6 +4,9 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class Poll {
+    companion object {
+        const val DRAFT = "DRAFT"
+    }
 
     @SerializedName("id")
     @Expose
@@ -40,6 +43,10 @@ class Poll {
     @SerializedName("options")
     @Expose
     val options : List<PollOption> = ArrayList()
+
+    @SerializedName("status")
+    @Expose
+    internal val status : String? = null
 
     @Expose
     var totalVotes : Int = 0
