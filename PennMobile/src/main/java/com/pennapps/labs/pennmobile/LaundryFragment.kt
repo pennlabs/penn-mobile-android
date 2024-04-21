@@ -87,6 +87,12 @@ class LaundryFragment : Fragment() {
             laundryRooms.addAll(favorites.favoriteRooms)
             roomsData.addAll(favorites.roomsData)
 
+            // sort laundry rooms data by hall name
+            laundryRooms.sortWith { usage1, usage2 -> usage2.id - usage1.id }
+
+            // sort laundry rooms by name
+            roomsData.sortWith { room1, room2 -> room2.id - room1.id }
+
             for (pos in 0 until LaundryViewModel.maxNumRooms) {
                 mAdapter!!.notifyItemChanged(pos)
             }
@@ -121,8 +127,8 @@ class LaundryFragment : Fragment() {
             val bearerToken = "Bearer " + sharedPreferences
                 .getString(getString(R.string.access_token), "").toString()
             laundryViewModel.getFavorites(mStudentLife, bearerToken)
+            binding.laundryMachineRefresh.isRefreshing = false
         }
-        binding.laundryMachineRefresh.isRefreshing = false
     }
 
     private fun initAppBar() {
