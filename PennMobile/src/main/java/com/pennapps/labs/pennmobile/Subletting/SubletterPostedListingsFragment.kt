@@ -31,7 +31,6 @@ class SubletterPostedListingsFragment() : Fragment() {
 
     //api manager
     private lateinit var mStudentLife: StudentLife
-
     private lateinit var mActivity: MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,17 +39,12 @@ class SubletterPostedListingsFragment() : Fragment() {
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()
         dataModel = SublettingViewModel(mActivity, mStudentLife)
-
-        val bundle = Bundle()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         _binding = FragmentSubletterPostedListingsBinding.inflate(inflater, container, false)
-        binding.postedAddListingButton.setOnClickListener{
-            navigateCreateNewListing()
-        }
         return binding.root
     }
 
@@ -60,17 +54,33 @@ class SubletterPostedListingsFragment() : Fragment() {
         newLayoutManager = GridLayoutManager(context, 2, LinearLayoutManager.VERTICAL, false)
         sublettingRecyclerView.layoutManager = newLayoutManager
 
-
         dataModel.getPostedSublets(mActivity)
         myAdapter = PostedSubletsListAdapter(dataModel)
-        dataModel.postedSubletsList.observe(viewLifecycleOwner, { sublets ->
+        dataModel.postedSubletsList.observe(viewLifecycleOwner) { sublets ->
+            binding.listingsRefreshLayout.isRefreshing = false
+
             sublettingList = sublets
             myAdapter.notifyDataSetChanged()
-        })
+
+            if (sublets.size > 0) {
+                binding.postedHouseImage.visibility =  View.GONE
+                binding.postedNoListingsText.visibility =  View.GONE
+            } else {
+                binding.postedHouseImage.visibility =  View.VISIBLE
+                binding.postedNoListingsText.visibility =  View.VISIBLE
+            }
+        }
+
         sublettingRecyclerView.adapter = myAdapter
 
-    }
+        binding.listingsRefreshLayout.setOnRefreshListener {
+            dataModel.getPostedSublets(mActivity)
+        }
 
+        binding.postedAddListingButton.setOnClickListener{
+            navigateCreateNewListing()
+        }
+    }
 
     private fun navigateCreateNewListing() {
         val mainActivity = context as MainActivity
@@ -85,4 +95,8 @@ class SubletterPostedListingsFragment() : Fragment() {
                 .commitAllowingStateLoss()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 }

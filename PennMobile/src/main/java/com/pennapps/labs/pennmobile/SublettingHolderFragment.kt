@@ -51,17 +51,5 @@ class SublettingFragment : Fragment() {
                 tab.text = "Sublessee"
             }
         }.attach()
-
-
     }
-
-
-    private fun initAppBar(view: View) {
-        (view.appbar_home_holder.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
-    }
-
-
-
-
-
 }
