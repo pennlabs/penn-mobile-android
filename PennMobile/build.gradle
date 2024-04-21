@@ -21,10 +21,10 @@ android {
         }
         release {}
     }
+    compileSdk 34
     buildFeatures {
         viewBinding true
     }
-    compileSdkVersion 33
     defaultConfig {
         minSdkVersion 26
         targetSdkVersion 33
