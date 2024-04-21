@@ -81,9 +81,6 @@ public interface StudentLife {
             @Header("Authorization") String bearerToken
     );
 
-    @GET("/laundry/halls/ids")
-    Observable<List<LaundryRoomSimple>> laundryRooms();
-
     @GET("/laundry/hall/{id}")
     Observable<LaundryRoom> room(
             @Path("id") int id);
@@ -114,10 +111,6 @@ public interface StudentLife {
             @Field("id") int id,
             @Field("room_name") String roomName,
             Callback<GSRBookingResult> callback);
-
-    @GET("/laundry/usage/{id}")
-    Observable<LaundryUsage> usage(
-            @Path("id") int id);
 
     @GET("/events/fling")
     Observable<List<FlingEvent>> getFlingEvents();
@@ -154,12 +147,6 @@ public interface StudentLife {
     @GET("/laundry/preferences")
     Observable<List<Integer>> getLaundryPref(
             @Header("Authorization") String bearerToken);
-
-    @POST("/laundry/preferences/")
-    void sendLaundryPref(
-            @Header("Authorization") String bearerToken,
-            @Body LaundryRequest rooms,
-            Callback<Response> callback);
 
     @Headers({"Content-Type: application/json"})
     @POST("/dining/preferences/")

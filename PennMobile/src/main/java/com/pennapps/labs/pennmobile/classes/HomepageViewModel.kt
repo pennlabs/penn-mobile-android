@@ -98,7 +98,6 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
             setNewsBlurView(false)
             setPostBlurView(false)
         }
-
     }
 
     /**
@@ -114,7 +113,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
 
         for (i in 0 until NUM_CELLS) {
             if (prevList[i] != homepageCells[i]) {
-                updatedIndices.add(i);
+                updatedIndices.add(i)
                 Log.i(UPDATE_TAG, "updated index ${i}")
             } else {
                 Log.i(UPDATE_TAG, "saved an update at index ${i}")

@@ -142,17 +142,6 @@ public class Serializer {
         }
     }
 
-    // gets laundry room list
-    public static class LaundryRoomListSerializer implements JsonDeserializer<List<LaundryRoomSimple>> {
-        @Override
-        public List<LaundryRoomSimple> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-                throws JsonParseException {
-            JsonElement content = je.getAsJsonArray();
-            return new Gson().fromJson(content, new TypeToken<List<LaundryRoomSimple>>() {
-            }.getType());
-        }
-    }
-
     // gets gsr locations
     public static class GsrLocationSerializer implements JsonDeserializer<List<GSRLocation>> {
         @Override
@@ -171,17 +160,6 @@ public class Serializer {
                 locations.add(location);
             }
             return locations;
-        }
-    }
-  
-    // gets laundry usage
-    public static class LaundryUsageSerializer implements JsonDeserializer<LaundryUsage> {
-        @Override
-        public LaundryUsage deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-                throws JsonParseException {
-            JsonElement content = je.getAsJsonObject();
-            return new Gson().fromJson(content, new TypeToken<LaundryUsage>() {
-            }.getType());
         }
     }
 
