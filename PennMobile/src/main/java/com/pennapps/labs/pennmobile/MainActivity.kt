@@ -95,12 +95,18 @@ class MainActivity : AppCompatActivity() {
         // Show HomeFragment if logged in, otherwise show LoginFragment
         val pennKey = mSharedPrefs.getString(getString(R.string.pennkey), null)
         val guestMode = mSharedPrefs.getBoolean(getString(R.string.guest_mode), false)
-        var diningWidgetBroadCast = 0
         if (pennKey == null && !guestMode) {
             startLoginFragment()
         } else {
             startHomeFragment()
         }
+
+        diningWidgetIntentSetup()
+
+    }
+
+    private fun diningWidgetIntentSetup() {
+        var diningWidgetBroadCast = 0
         if (intent != null) {
             diningWidgetBroadCast = intent.getIntExtra("Widget_Tab_Switch", -1)
         }
