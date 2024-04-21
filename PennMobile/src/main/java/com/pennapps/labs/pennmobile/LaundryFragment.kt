@@ -88,10 +88,8 @@ class LaundryFragment : Fragment() {
             roomsData.addAll(favorites.roomsData)
 
             // sort laundry rooms data by hall name
-            laundryRooms.sortWith { usage1, usage2 -> usage2.id - usage1.id }
-
-            // sort laundry rooms by name
-            roomsData.sortWith { room1, room2 -> room2.id - room1.id }
+            roomsData.sortWith { usage1, usage2 -> usage2.id - usage1.id }
+            laundryRooms.sortWith { room1, room2 -> room2.id - room1.id }
 
             for (pos in 0 until LaundryViewModel.maxNumRooms) {
                 mAdapter!!.notifyItemChanged(pos)
