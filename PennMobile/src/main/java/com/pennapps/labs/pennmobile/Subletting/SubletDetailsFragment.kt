@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.pennapps.labs.pennmobile.MainActivity
+import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.Sublet
 import com.pennapps.labs.pennmobile.classes.SublettingViewModel
@@ -51,9 +53,26 @@ class SubletDetailsFragment(private val dataModel: SublettingViewModel, private 
             dataModel.deleteSublet(mActivity, subletNumber)
         }
 
+        binding.editText.setOnClickListener(){
+            navigateEditListing()
+        }
+
 
 
 
         return binding.root
+    }
+
+    private fun navigateEditListing() {
+        val mainActivity = context as MainActivity
+
+        val fragment = SubletEditFragment(dataModel, subletNumber)
+
+        val fragmentManager = mainActivity.supportFragmentManager
+        fragmentManager.beginTransaction()
+            .replace(R.id.content_frame, fragment, "NEW_LISTING_FRAGMENT")
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .addToBackStack(null)
+            .commitAllowingStateLoss()
     }
 }

@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.pennapps.labs.pennmobile.MainActivity
-import com.pennapps.labs.pennmobile.NewListingsFragment
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentSubletterDraftListingsBinding

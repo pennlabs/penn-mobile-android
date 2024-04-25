@@ -140,6 +140,40 @@ class SublettingViewModel (private val activity: Activity, private val studentLi
         }
     }
 
+    fun editSublet(mActivity : MainActivity, sublet : Sublet, id: Int, callback: (Sublet?) -> Unit) {
+
+        val context = activity.applicationContext
+        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+
+
+        OAuth2NetworkManager(mActivity).getAccessToken {
+
+            val bearerToken =
+                "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
+
+
+            studentLife.editSublet(bearerToken, id, sublet,
+                object : Callback<Sublet> {
+                    override fun success(t: Sublet?, response: Response?) {
+                        Log.i("Subletting View Model", "sublet edited")
+                        callback(sublet)
+                    }
+
+                    override fun failure(error: RetrofitError?) {
+                        Log.e("Subletting View Model", "Error editing sublet " +
+                                "$error", error
+                        )
+                        Toast.makeText(activity, "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
+
+
+                    }
+
+                })
+        }
+
+
+    }
+
 
 
 

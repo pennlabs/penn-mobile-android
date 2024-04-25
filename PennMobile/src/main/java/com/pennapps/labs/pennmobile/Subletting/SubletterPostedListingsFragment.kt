@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
-import com.pennapps.labs.pennmobile.NewListingsFragment
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.adapters.PostedSubletsListAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
