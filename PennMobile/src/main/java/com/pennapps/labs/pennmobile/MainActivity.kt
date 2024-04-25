@@ -100,9 +100,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             startHomeFragment()
         }
-
         diningWidgetIntentSetup()
-
     }
 
     private fun diningWidgetIntentSetup() {
