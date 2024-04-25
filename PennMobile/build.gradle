@@ -27,7 +27,7 @@ android {
     }
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 33
+        targetSdkVersion 34
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         buildConfigField ("String", "PLATFORM_REDIRECT_URI", getPlatformRedirectUri())
