@@ -35,6 +35,15 @@ class DiningHallWidget : AppWidgetProvider() {
                 flags += Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
 
+            // The value we put in the Widget_Tab_Switch Extra is 1 (originally tried to implement
+            // global variable but it involves singleton class), and as long as the
+            // value of the Extra is not -1 (getIntExtra declared to have default value -1 in MainActivity)
+            // we set the tab as the dining tab (so users could access the dining tab when they
+            // click on any of the widget). Extra could be further utilized for clicking
+            // on individual items on the widget to access their info in the app (future feature
+            // to be implemented).
+            mainActivityIntent.putExtra("Widget_Tab_Switch", 1)
+
             // Set up intent for adapter and pendingIntent to allow users to access the app when
             // clicking on the items on the widget.
             val serviceIntent = Intent(context, DiningHallWidgetAdapter::class.java)
@@ -50,15 +59,6 @@ class DiningHallWidget : AppWidgetProvider() {
             // setData, onGetViewFactory is called only once for multiple widgets and send
             // the same intent to all of them.
             serviceIntent.setData(Uri.parse(serviceIntent.toUri(Intent.URI_INTENT_SCHEME)))
-
-            // The value we put in the Widget_Tab_Switch Extra is 1 (originally tried to implement
-            // global variable but it involves singleton class), and as long as the
-            // value of the Extra is not -1 (getIntExtra declared to have default value -1 in MainActivity)
-            // we set the tab as the dining tab (so users could access the dining tab when they
-            // click on any of the widget). Extra could be further utilized for clicking
-            // on individual items on the widget to access their info in the app (future feature
-            // to be implemented).
-            mainActivityIntent.putExtra("Widget_Tab_Switch", 1)
 
             // Setting up the widget remoteViews
             val views = RemoteViews(context.packageName, R.layout.dining_hall_widget)
