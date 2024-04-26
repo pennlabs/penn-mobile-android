@@ -148,6 +148,16 @@ def mainSrc = "$project.projectDir/src/main/java"
 
 // Task declaration
 
+task checkstyleReport(type: Checkstyle) {
+    source 'src/main/java'
+    include '**/*.java'
+    exclude '**/gen/**'
+    classpath = files()
+    configFile = rootProject.file("config/checkstyle.xml")
+}
+
+
+
 task jacocoTestReport(type: JacocoReport) {
     // Runs only after the dependencies are executed
     dependsOn = ['testDebugUnitTest', 'createDebugCoverageReport']

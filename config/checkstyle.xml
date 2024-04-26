@@ -1,70 +1,109 @@
+<?xml version="1.0"?>
 <!DOCTYPE module PUBLIC
     "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
-    "https://checkstyle.org/dtds/configuration_1_3.dtd">
+    "http://checkstyle.sourceforge.net/dtds/configuration_1_3.dtd">
 
 <module name="Checker">
-    <property name="charset" value="UTF-8"/>
+    <module name="FileTabCharacter" />
+
     <module name="TreeWalker">
-        <module name="JavadocType"/>
-        <module name="JavadocMethod"/>
-        <module name="JavadocVariable"/>
-        <module name="NewlineAtEndOfFile"/>
-        <module name="FileTabCharacter">
-            <property name="eachLine" value="true"/>
+        <!-- Imports -->
+        <module name="RedundantImport" />
+        <module name="UnusedImports" />
+        <module name="AvoidStarImport" />
+
+        <!-- General Code -->
+        <module name="EmptyBlock" />
+        <module name="EmptyCatchBlock" />
+        <module name="EqualsAvoidNull" />
+        <module name="StringLiteralEquality" />
+        <module name="CovariantEquals" />
+        <module name="DefaultComesLast" />
+        <module name="DeclarationOrder" />
+        <module name="ExplicitInitialization" />
+        <module name="FallThrough" />
+        <module name="IllegalInstantiation" />
+        <module name="InnerAssignment" />
+        <module name="MissingSwitchDefault" />
+        <module name="SimplifyBooleanExpression" />
+        <module name="SimplifyBooleanReturn" />
+        <module name="StringLiteralEquality" />
+        <module name="SuperClone" />
+        <module name="SuperFinalize" />
+
+        <!-- Naming -->
+        <module name="PackageName">
+            <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$" />
         </module>
-        <module name="Indentation">
-            <property name="basicOffset" value="4"/>
-            <property name="caseIndent" value="4"/>
-            <property name="throwsIndent" value="4"/>
-            <property name="lineWrappingIndentation" value="4"/>
+        <module name="TypeNameCheck">
+            <property name="format" value="^[A-Z][a-zA-Z0-9]*$" />
+            <property name="tokens" value="CLASS_DEF,INTERFACE_DEF" />
         </module>
-        <module name="LineLength">
-            <property name="max" value="100"/>
-            <property name="ignorePattern" value="^package.*|^import.*|^.*\{[^}]*$"/>
+        <module name="ConstantNameCheck">
+            <property name="format" value="^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$" />
+            <property name="applyToPublic" value="true" />
+            <property name="applyToProtected" value="true" />
+            <property name="applyToPackage" value="true" />
+            <property name="applyToPrivate" value="true" />
         </module>
-        <module name="RegexpSingleline">
-            <property name="format" value="true"/>
-            <property name="message" value="At least 2 spaces required after comma"/>
-            <property name="regexp" value=",&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;"/>
-            <property name="ignoreComments" value="true"/>
+        <module name="StaticVariableNameCheck">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$" />
+            <property name="applyToPublic" value="true" />
+            <property name="applyToProtected" value="true" />
+            <property name="applyToPackage" value="true" />
+            <property name="applyToPrivate" value="true" />
         </module>
-        <module name="ImportOrder"/>
-        <module name="JavadocStyle"/>
-        <module name="ModifierOrder"/>
-        <module name="OuterTypeFilename"/>
-        <module name="RedundantImport"/>
-        <module name="EmptyBlock"/>
-        <module name="EmptyBlockCheck"/>
-        <module name="CatchParameterName"/>
-        <module name="FinalParameters"/>
-        <module name="ParameterNumber"/>
-        <module name="MethodLength"/>
-        <module name="FileLength"/>
-        <module name="ClassDataAbstractionCoupling"/>
-        <module name="VisibilityModifier"/>
-        <module name="DesignForExtension"/>
-        <module name="AvoidStarImport"/>
-        <module name="MultipleVariableDeclarations"/>
-        <module name="ArrayTypeStyle"/>
-        <module name="ArrayTrailingComma"/>
-        <module name="AvoidEscapedUnicodeCharacters"/>
-        <module name="IllegalInstantiation"/>
-        <module name="AvoidInlineConditionals"/>
-        <module name="AvoidNestedBlocks"/>
-        <module name="AvoidStaticImport"/>
-        <module name="AvoidThrowingNewInstanceOfSameException"/>
-        <module name="DesignForExtension"/>
-        <module name="EqualsHashCode"/>
-        <module name="ExplicitInitialization"/>
-        <module name="MissingSwitchDefault"/>
-        <module name="NeedBraces"/>
-        <module name="NoClone"/>
-        <module name="OneTopLevelClass"/>
-        <module name="SuperClone"/>
-        <module name="UnnecessaryParentheses"/>
-        <module name="UnnecessarySemicolon"/>
-        <module name="UseBlocks"/>
-        <module name="WhitespaceAfter"/>
-        <module name="WhitespaceAround"/>
+        <module name="MemberNameCheck">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$" />
+            <property name="applyToPublic" value="true" />
+            <property name="applyToProtected" value="true" />
+            <property name="applyToPackage" value="true" />
+            <property name="applyToPrivate" value="true" />
+        </module>
+        <module name="MethodNameCheck">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$" />
+        </module>
+        <module name="ParameterNameCheck">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$" />
+        </module>
+<!--        <module name="LocalVariableNameCheck">-->
+<!--            <property name="format" value="^[a-z][a-zA-Z0-9]*$" />-->
+<!--            <property name="tokens" value="VARIABLE_DEF,PARAMETER_DEF" />-->
+<!--        </module>-->
+
+        <!-- Whitespace -->
+        <module name="GenericWhitespace" />
+        <module name="EmptyForInitializerPad" />
+        <module name="EmptyForIteratorPad" />
+        <module name="MethodParamPad" />
+        <module name="NoWhitespaceAfter" />
+        <module name="NoWhitespaceBefore" />
+        <module name="OperatorWrap" />
+        <module name="ParenPad" />
+        <module name="TypecastParenPad" />
+        <module name="WhitespaceAfter" />
+        <module name="WhitespaceAround" />
+
+        <!-- Modifiers -->
+        <module name="ModifierOrder" />
+        <module name="RedundantModifier" />
+
+        <!-- Block Checks -->
+        <module name="EmptyLineSeparator">
+            <property name="tokens" value="IMPORT, CLASS_DEF, INTERFACE_DEF, ENUM_DEF, INSTANCE_INIT, STATIC_INIT, CTOR_DEF, VARIABLE_DEF, METHOD_DEF" />
+        </module>
+        <module name="LeftCurly" />
+        <module name="RightCurly" />
+        <module name="NeedBraces" />
+        <module name="AvoidNestedBlocks" />
+
+        <!-- Misc -->
+        <module name="ArrayTypeStyle" />
+        <module name="FinalParameters" />
+        <module name="TodoComment" />
+        <module name="UpperEll" />
+
+        <!-- Android -->
+        <module name="OuterTypeFilename" />
     </module>
 </module>
