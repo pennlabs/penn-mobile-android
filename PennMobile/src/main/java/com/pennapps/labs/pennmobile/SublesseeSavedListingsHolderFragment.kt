@@ -51,6 +51,7 @@ class SublesseeSavedListingsHolderFragment (): Fragment() {
 
         dataModel = SublesseeViewModel(mActivity, mStudentLife)
         dataModel.listSublets(mActivity)
+        dataModel.getFavoriteSublets(mActivity)
 
         val bundle = Bundle()
     }
@@ -68,11 +69,11 @@ class SublesseeSavedListingsHolderFragment (): Fragment() {
         sublettingRecyclerView.layoutManager = newLayoutManager
         swipeRefreshLayout = binding.sublesseeSavedRefreshLayout
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity)
+        /* sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity)
         val savedProperties = sharedPreferences.getStringSet("sublet_saved", HashSet<String>())
-        propertiesList = savedProperties!!.toList()
+        propertiesList = savedProperties!!.toList() */
 
-        myAdapter = SublesseeSavedAdapter(dataModel, propertiesList)
+        myAdapter = SublesseeSavedAdapter(dataModel)
         dataModel.savedSublets.observe(viewLifecycleOwner) { sublets ->
             sublettingList = sublets
             Log.i("sublet saved", sublettingList.size.toString())
@@ -84,5 +85,10 @@ class SublesseeSavedListingsHolderFragment (): Fragment() {
         swipeRefreshLayout.setOnRefreshListener {
 
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

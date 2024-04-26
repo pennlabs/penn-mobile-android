@@ -24,6 +24,7 @@ import com.pennapps.labs.pennmobile.classes.Poll;
 import com.pennapps.labs.pennmobile.classes.Post;
 import com.pennapps.labs.pennmobile.classes.SaveAccountResponse;
 import com.pennapps.labs.pennmobile.classes.Sublet;
+import com.pennapps.labs.pennmobile.classes.SubletRequest;
 import com.pennapps.labs.pennmobile.classes.Venue;
 import com.pennapps.labs.pennmobile.classes.WhartonStatus;
 
@@ -256,6 +257,19 @@ public interface StudentLife {
     @Headers({"Content-Type: application/json"})
     @GET("/sublet/properties/")
     Observable<List<Sublet>> getSublets(
+            @Header("Authorization") String bearerToken);
+
+    @Headers({"Content-Type: application/json"})
+    @POST("/sublet/properties/{sublet_id}/favorites")
+    void addFavoriteSublet(
+            @Header("Authorization") String bearerToken,
+            @Body SubletRequest sublets,
+            @Path("sublet_id") int id,
+            Callback<Sublet> callback);
+
+    @Headers({"Content-Type: application/json"})
+    @GET("/sublet/favorites")
+    Observable<List<Integer>> getSubletFavorites(
             @Header("Authorization") String bearerToken);
 
 }

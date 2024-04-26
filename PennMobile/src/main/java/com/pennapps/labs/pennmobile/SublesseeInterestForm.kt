@@ -54,4 +54,9 @@ class SublesseeInterestForm (): Fragment() {
                     .commit()
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 }

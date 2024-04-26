@@ -15,7 +15,7 @@ import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentSublesseeInterestFormBinding
 import com.pennapps.labs.pennmobile.databinding.FragmentSublesseeSavedBinding
 
-class SublesseeSavedFragment : Fragment() {
+class SublesseeSavedFragment() : Fragment() {
 
     //create binding
     private var _binding : FragmentSublesseeSavedBinding? = null
@@ -67,5 +67,10 @@ class SublesseeSavedFragment : Fragment() {
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

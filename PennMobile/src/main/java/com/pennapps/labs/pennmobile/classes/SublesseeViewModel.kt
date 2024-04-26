@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import retrofit.Callback
+import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
 import java.util.concurrent.CountDownLatch
@@ -23,9 +24,14 @@ class SublesseeViewModel(private val activity: Activity, private val studentLife
 
     var sublettingList = MutableLiveData<ArrayList<Sublet>>()
     var savedSublets = MutableLiveData<ArrayList<Sublet>>()
+    var savedSubletIds = hashSetOf<Int>()
 
     fun getSublet(position : Int) : Sublet {
         return sublettingList.value?.get(position) ?: Sublet() // Provide a default value if needed
+    }
+
+    fun getSavedSublet(position : Int) : Sublet {
+        return savedSublets.value?.get(position) ?: Sublet() // Provide a default value if needed
     }
 
     /* fun getSubletById(id: String, mActivity: MainActivity): Sublet {
@@ -67,14 +73,15 @@ class SublesseeViewModel(private val activity: Activity, private val studentLife
         return sublettingList.value
     }
 
+    fun getSavedSubletsList(): ArrayList<Sublet>? {
+        return savedSublets.value
+    }
+
     fun listSublets(mActivity: MainActivity) {
 
         val context = activity.applicationContext
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-        //var sublettingList = ArrayList<Sublet>()
-        //var fitnessRoomsList = ArrayList<FitnessRoom>()
 
-        //for bearer token- not necessary when listing the sublets
         OAuth2NetworkManager(mActivity).getAccessToken {
 
             val bearerToken =
@@ -97,18 +104,63 @@ class SublesseeViewModel(private val activity: Activity, private val studentLife
         Log.i("sublets", getSublettingList()?.size.toString())
     }
 
-    fun getSavedSublets(): ArrayList<Sublet>? {
+    /* fun getSavedSublets(): ArrayList<Sublet>? {
         return savedSublets.value
     }
 
     fun getSavedSublet(position : Int) : Sublet {
         return savedSublets.value?.get(position) ?: Sublet() // Provide a default value if needed
+    } */
+
+    fun addSavedSublet(mActivity: MainActivity, id: Int) {
+        val context = activity.applicationContext
+        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+
+        savedSubletIds.add(id)
+
+        OAuth2NetworkManager(mActivity).getAccessToken {
+
+            val bearerToken =
+                    "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
+
+
+            studentLife.addFavoriteSublet(bearerToken, SubletRequest(ArrayList(savedSubletIds)), id, object : Callback<Sublet> {
+                override fun success(t: Sublet?, response: Response?) {
+                    Log.i("Sublessee View Model", "sublet added")
+                }
+
+                override fun failure(error: RetrofitError?) {
+                    Log.e("Sublessee View Model", "Error favoriting sublet $error", error)
+                    Toast.makeText(activity, "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
+                }
+            })
+        }
     }
 
-    fun addSavedSublet(s: Sublet) {
-        if (savedSublets.value == null) {
-            savedSublets.value = ArrayList<Sublet>()
+    fun getFavoriteSublets(mActivity: MainActivity) {
+
+        val context = activity.applicationContext
+        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+
+        OAuth2NetworkManager(mActivity).getAccessToken {
+
+            val bearerToken =
+                    "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
+
+            studentLife.getSubletFavorites(bearerToken).subscribe({ sublets ->
+                mActivity.runOnUiThread {
+                    savedSublets.value = sublets as ArrayList<Sublet>
+                }
+            }, { throwable ->
+                mActivity.runOnUiThread {
+                    Log.e(
+                            "Sublessee Marketplace",
+                            "Could not load saved Sublets",
+                            throwable
+                    )
+                }
+            })
         }
-        savedSublets.value!!.add(s)
+        Log.i("sublets", getSavedSubletsList()?.size.toString())
     }
 }

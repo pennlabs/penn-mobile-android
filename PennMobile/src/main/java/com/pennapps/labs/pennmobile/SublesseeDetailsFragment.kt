@@ -86,7 +86,7 @@ class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position:
         interestedButton = binding.interestedSubletButton
 
         saveButton.setOnClickListener {
-            saveButton.text = "Saved"
+            /* saveButton.text = "Saved"
             var savedProperties = sharedPreferences.getStringSet("sublet_saved", HashSet<String>())!!.toSet()
             var newSavedProperties = HashSet<String>()
             newSavedProperties.addAll(savedProperties)
@@ -97,7 +97,8 @@ class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position:
                 apply()
             }
 
-            dataModel.addSavedSublet(sublet)
+            dataModel.addSavedSublet(sublet) */
+            dataModel.addSavedSublet(mActivity, sublet.id!!)
             Toast.makeText(context, "This property has been saved", Toast.LENGTH_LONG).show()
             mActivity.supportFragmentManager.beginTransaction()
                     .replace(((view as ViewGroup).parent as View).id, SublesseeSavedFragment())
@@ -113,5 +114,10 @@ class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position:
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

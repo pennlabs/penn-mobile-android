@@ -19,7 +19,8 @@ import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
 import com.pennapps.labs.pennmobile.classes.Sublet
 import com.pennapps.labs.pennmobile.classes.SublettingModel
 
-class SublesseeSavedAdapter(var dataModel: SublesseeViewModel, var propertiesList: List<String>):
+//for the listview for the saved sublets
+class SublesseeSavedAdapter(var dataModel: SublesseeViewModel):
         RecyclerView.Adapter<SublesseeSavedAdapter.SublesseeSavedItemViewHolder>() {
 
     private lateinit var mContext: Context
@@ -46,8 +47,7 @@ class SublesseeSavedAdapter(var dataModel: SublesseeViewModel, var propertiesLis
 
     override fun onBindViewHolder(holder: SublesseeSavedItemViewHolder, position: Int) {
 
-        val subletId = propertiesList[position]
-        /* val actualSublet = dataModel.getSubletById(subletId, mActivity)
+        val actualSublet = dataModel.getSavedSublet(position)
 
         holder.listingTitle.text = actualSublet.title
         var price = "$" + actualSublet.price.toString()
@@ -60,11 +60,7 @@ class SublesseeSavedAdapter(var dataModel: SublesseeViewModel, var propertiesLis
             append(actualSublet.startDate)
             append(" - ")
             append(actualSublet.endDate)
-        } */
-
-        holder.listingTitle.text = subletId
-
-
+        }
 
         holder.itemView.setOnClickListener {
             mActivity.supportFragmentManager.beginTransaction()
@@ -76,6 +72,10 @@ class SublesseeSavedAdapter(var dataModel: SublesseeViewModel, var propertiesLis
     }
 
     override fun getItemCount(): Int {
-        return propertiesList.size
+        if (dataModel.getSavedSubletsList() == null) {
+            return 0
+        } else {
+            return dataModel.getSavedSubletsList()!!.size
+        }
     }
 }

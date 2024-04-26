@@ -8,14 +8,14 @@ import com.pennapps.labs.pennmobile.SublesseeSavedListingsHolderFragment
 import com.pennapps.labs.pennmobile.SubletteeFragment
 import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
 
-//import com.pennapps.labs.pennmobile.SubletterFragment
-
 class SublesseeSavedPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
     override fun getItemCount(): Int = 2
     override fun createFragment(position: Int): Fragment {
         return if (position == 0) {
+            //actual saved listings
             SublesseeSavedListingsHolderFragment()
         } else {
+            //applied, offers
             SublesseeAppliedListingsHolder()
         }
     }
