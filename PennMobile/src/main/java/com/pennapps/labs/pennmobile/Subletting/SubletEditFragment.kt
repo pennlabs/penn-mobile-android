@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile
+package com.pennapps.labs.pennmobile.Subletting
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -15,25 +15,25 @@ import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.AmenitiesItem
 import com.pennapps.labs.pennmobile.classes.MultipartUtil
 import com.pennapps.labs.pennmobile.classes.Sublet
 import com.pennapps.labs.pennmobile.classes.SublettingViewModel
-import com.pennapps.labs.pennmobile.databinding.FragmentNewListingsBinding
-import okhttp3.MediaType.Companion.toMediaType
+import com.pennapps.labs.pennmobile.databinding.FragmentSubletterEditListingBinding
+import com.pennapps.labs.pennmobile.databinding.FragmentSubletterNewListingBinding
 import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 
-
-class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment() {
-    private var _binding: FragmentNewListingsBinding? = null
+class SubletEditFragment (private val dataModel: SublettingViewModel, private val subletNumber: Int) : Fragment() {
+    private var _binding: FragmentSubletterEditListingBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var mStudentLife: StudentLife
 
-    //Binding
     internal lateinit var titleEt : EditText
     internal lateinit var priceEt : EditText
     internal lateinit var streetAddressEt : EditText
@@ -61,15 +61,6 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
     internal lateinit var imageView: ImageView
     internal lateinit var imageIcon: ImageView
     internal lateinit var imageText: TextView
-
-
-
-
-
-
-
-
-
 
     //Sublet variables
     private lateinit var title : String
@@ -100,7 +91,7 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        _binding = FragmentNewListingsBinding.inflate(inflater, container, false)
+        _binding = FragmentSubletterEditListingBinding.inflate(inflater, container, false)
         val view = binding.root
         super.onViewCreated(view, savedInstanceState)
 
@@ -131,6 +122,52 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
         imageView = binding.mainImage
         imageIcon = binding.mainImageIcon
         imageText = binding.addPhotosText
+
+        val sublet : Sublet = dataModel.getSublet(subletNumber)
+        titleEt.setText(sublet.title)
+        priceEt.setText(sublet.price.toString())
+
+        if (sublet.address != null) {
+            val addressComponents = sublet.address.split(", ")
+            streetAddressEt.setText(addressComponents.getOrElse(0) { "" })
+            apartmentEt.setText(addressComponents.getOrElse(1) { "" })
+            zipCodeEt.setText(addressComponents.getOrElse(2) { "" })
+        }
+
+        startEt.setText(sublet.startDate)
+        endEt.setText(sublet.endDate)
+        descriptionEt.setText(sublet.description)
+
+
+        context?.let {
+            Glide.with(it)
+                .load(sublet.images?.get(0)?.imageUrl)
+                .centerCrop() // optional - adjust as needed
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(binding.mainImage)
+        }
+
+        val amenitiesList = sublet.amenities ?: emptyList()
+
+        for (amenity in amenitiesList) {
+            when (amenity) {
+                "Private Bathroom" -> bathroomCheck.isChecked = true
+                "In-unit Laundry" -> laundryCheck.isChecked = true
+                "In-Unit Laundry" -> laundryCheck.isChecked = true
+                "Gym" -> gymCheck.isChecked = true
+                "Wifi" -> wifiCheck.isChecked = true
+                "Furnished" -> furnishedCheck.isChecked = true
+                "Walk-in Closet" -> closetCheck.isChecked = true
+                "Utilities Included" -> utilitiesCheck.isChecked = true
+                "Swimming Pool" -> poolCheck.isChecked = true
+                "Resident Lounge" -> loungeCheck.isChecked = true
+                "Parking" -> parkingCheck.isChecked = true
+                "Patio" -> patioCheck.isChecked = true
+                "Kitchen" -> kitchenCheck.isChecked = true
+                "Dog-Friendly" -> dogCheck.isChecked = true
+                "Cat-Friendly" -> catCheck.isChecked = true
+            }
+        }
 
 
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -169,14 +206,14 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
 
         binding.postButton.setOnClickListener{
             if (titleEt.text.toString().matches("".toRegex())
-                    || priceEt.text.toString().matches("".toRegex())
-                    || startEt.text.toString().matches("".toRegex())
-                    || endEt.text.toString().matches("".toRegex())) {
+                || priceEt.text.toString().matches("".toRegex())
+                || startEt.text.toString().matches("".toRegex())
+                || endEt.text.toString().matches("".toRegex())) {
                 Toast.makeText(activity, "Please fill in all required fields",
-                        Toast.LENGTH_LONG).show()
+                    Toast.LENGTH_LONG).show()
             } else if (!startEt.text.toString().matches(dateRegex) || !endEt.text.toString().matches(dateRegex)) {
                 Toast.makeText(activity, "Please follow formatting instructions for date",
-                        Toast.LENGTH_LONG).show()
+                    Toast.LENGTH_LONG).show()
             } else {
                 title = titleEt.text.toString()
                 price = priceEt.text.toString()
@@ -212,8 +249,8 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
                     description = null;
                 }
 
-                postSublet(title, Integer.parseInt(price), streetAddress, startDate, endDate, beds,
-                        baths, amenitiesList, description)
+                editSublet(title, Integer.parseInt(price), streetAddress, startDate, endDate, beds,
+                    baths, amenitiesList, description)
 
             }
 
@@ -221,7 +258,7 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
         return view
     }
 
-    private fun postSublet(title : String, price : Int, address : String?, startDate: String,
+    private fun editSublet(title : String, price : Int, address : String?, startDate: String,
                            endDate : String, beds: Int?, baths: Int?, amenities: List<String>?,
                            description: String?) {
         val convertedEnd = convertToYYYYMMDD(endDate)
@@ -230,20 +267,20 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
 
 
         val newSublet = Sublet(
-                endDate = convertedEnd,
-                baths = baths,
-                address = address,
-                price = price,//fix
-                expiresAt = "3000-02-01T10:48:02-05:00", //?
-                description = description,
-                title = title,
-                beds = beds,
-                amenities = amenities,
-                externalLink = "https://pennlabs.org/", // fix
-                startDate = convertedStart
+            endDate = convertedEnd,
+            baths = baths,
+            address = address,
+            price = price,//fix
+            expiresAt = "3000-02-01T10:48:02-05:00", //?
+            description = description,
+            title = title,
+            beds = beds,
+            amenities = amenities,
+            externalLink = "https://pennlabs.org/", // fix
+            startDate = convertedStart
         )
 
-        dataModel.postSublet(mActivity, newSublet) { postedSublet ->
+        dataModel.editSublet(mActivity, newSublet, subletNumber) { postedSublet ->
             if (postedSublet != null) {
                 Log.i("MainActivity", "Posted sublet ID: ${postedSublet.id}")
                 subletId = postedSublet.id!!
@@ -253,8 +290,10 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
             }
         }
 
-        val subletPart = MultipartUtil.createSubletPart(subletId)
-
+        if (multipartImage != null) {
+            val subletPart = MultipartUtil.createSubletPart(subletId)
+            dataModel.postImage(mActivity, subletId,  subletPart, multipartImage!!)
+        }
 
 
 
@@ -270,6 +309,7 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
 
         return String.format("%04d-%02d-%02d", year, month, day)
     }
+
 
 
 

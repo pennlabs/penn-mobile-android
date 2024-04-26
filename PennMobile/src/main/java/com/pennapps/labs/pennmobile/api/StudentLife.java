@@ -42,6 +42,7 @@ import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Headers;
 import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -253,6 +254,15 @@ public interface StudentLife {
             @Header("Authorization") String bearerToken,
             @Path("sublet_id") int id,
             Callback<Sublet> callback);
+
+    @Headers({"Content-Type: application/json"})
+    @PUT("/sublet/properties/{sublet_id}")
+    void editSublet(
+            @Header("Authorization") String bearerToken,
+            @Path("sublet_id") int id,
+            @Body Sublet sublet,
+            Callback<Sublet> callback
+    );
 
     @Headers({"Content-Type: application/json"})
     @GET("/sublet/properties/")

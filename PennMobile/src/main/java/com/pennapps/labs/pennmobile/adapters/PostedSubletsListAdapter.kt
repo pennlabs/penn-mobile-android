@@ -29,14 +29,11 @@ class PostedSubletsListAdapter(private val dataModel: SublettingViewModel):
     private lateinit var mActivity: MainActivity
 
     class SublettingCardViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-
-        var listingImage = itemView.findViewById<ImageView>(R.id.subletting_cardview_image)
-        var listingTitle = itemView.findViewById<TextView>(R.id.subletting_cardview_title)
-        var listingPrice = itemView.findViewById<TextView>(R.id.subletting_cardview_price)
-        var listingRooms = itemView.findViewById<TextView>(R.id.subletting_cardview_rooms)
-        var listingDates = itemView.findViewById<TextView>(R.id.subletting_cardview_dates)
-
-
+        var listingImage: ImageView = itemView.findViewById(R.id.subletting_cardview_image)
+        var listingTitle: TextView = itemView.findViewById(R.id.subletting_cardview_title)
+        var listingPrice: TextView = itemView.findViewById(R.id.subletting_cardview_price)
+        var listingRooms: TextView = itemView.findViewById(R.id.subletting_cardview_rooms)
+        var listingDates: TextView = itemView.findViewById(R.id.subletting_cardview_dates)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SublettingCardViewHolder {
@@ -47,20 +44,17 @@ class PostedSubletsListAdapter(private val dataModel: SublettingViewModel):
     }
 
     override fun onBindViewHolder(holder: SublettingCardViewHolder, position: Int) {
+        val mSublettingCard: Sublet = dataModel.getSublet(position) // dataModel.getSublet(position)
 
-        var mSublettingCard: Sublet = dataModel.getSublet(position) // dataModel.getSblet(position)
-        //holder.listingImage.setImageResource(mSublettingCard.listingImage!!)
-
-        /* Glide.with(mContext) // Use mContext here instead of context
+        Glide.with(mContext) // Use mContext here instead of context
             .load(mSublettingCard.images?.get(0)?.imageUrl) // Access the first image URL from the list
             .centerCrop() // optional - adjust as needed
             .transition(DrawableTransitionOptions.withCrossFade())
-            .into(holder.listingImage) */
+            .into(holder.listingImage)
 
         holder.listingTitle.text = mSublettingCard.title
 
-        var price = "$" + mSublettingCard.price.toString()
-
+        val price = "$" + mSublettingCard.price.toString()
         holder.listingPrice.text = price
 
         val rooms = mSublettingCard.beds.toString() + " bd | " +
@@ -74,8 +68,10 @@ class PostedSubletsListAdapter(private val dataModel: SublettingViewModel):
                     .addToBackStack(null)
                     .commit()
         }
-    }
 
+        holder.listingDates.isSingleLine = false;
+        holder.listingDates.text = mSublettingCard.startDate + " to \n" + mSublettingCard.endDate
+    }
 
     override fun getItemCount(): Int {
         return dataModel.postedSubletsList.value?.size ?: 0

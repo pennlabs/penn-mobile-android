@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.adapters.SubletDetailsPagerAdapter
@@ -41,6 +43,16 @@ class SubletDetailsHolderFragment(private val dataModel: SublettingViewModel, pr
         subletDetailsPagerAdapter = SubletDetailsPagerAdapter(this, dataModel, subletNumber)
         viewPager = view.findViewById(R.id.listing_view_pager)
         viewPager.adapter = subletDetailsPagerAdapter
+        val tabLayout : TabLayout = view.findViewById(R.id.listing_tab_layout)
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            if(position == 0) {
+                tab.text = "Details"
+            } else {
+                tab.text = "Candidates"
+            }
+        }.attach()
+
+
 
 
     }
