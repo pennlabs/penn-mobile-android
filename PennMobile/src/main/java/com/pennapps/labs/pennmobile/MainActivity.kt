@@ -105,6 +105,16 @@ class MainActivity : AppCompatActivity() {
         } else {
             startHomeFragment()
         }
+
+        // Did diningWidgetIntentSetup not as separate function as for some reason when
+        // diningWidgetBroadcast out of onCreate setTab does not trigger.
+        var diningWidgetBroadCast = 0
+        if (intent != null) {
+            diningWidgetBroadCast = intent.getIntExtra("Widget_Tab_Switch", -1)
+        }
+        if (diningWidgetBroadCast != -1) {
+            setTab(DINING_ID)
+        }
     }
 
     private fun onExpandableBottomNavigationItemSelected() {
@@ -273,6 +283,7 @@ class MainActivity : AppCompatActivity() {
 
         val HOME_ID = R.id.nav_home
         val GSR_ID = R.id.nav_gsr
+        val DINING_ID = R.id.nav_dining
 
         private var mStudentLife: StudentLife? = null
         private var mStudentLifeRf2: StudentLifeRf2? = null
