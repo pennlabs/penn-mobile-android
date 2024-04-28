@@ -81,12 +81,16 @@ class LaundryFragment : Fragment() {
 
         laundryViewModel.favoriteRooms.observe(viewLifecycleOwner) { favorites ->
             binding.laundryMachineRefresh.isRefreshing = false
-
+            
             laundryRooms.clear()
             roomsData.clear()
 
             laundryRooms.addAll(favorites.favoriteRooms)
             roomsData.addAll(favorites.roomsData)
+
+            // sort laundry rooms data by hall name
+            roomsData.sortWith { usage1, usage2 -> usage2.id - usage1.id }
+            laundryRooms.sortWith { room1, room2 -> room2.id - room1.id }
 
             for (pos in 0 until LaundryViewModel.maxNumRooms) {
                 mAdapter!!.notifyItemChanged(pos)
