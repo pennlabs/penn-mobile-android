@@ -80,7 +80,8 @@ class LaundryFragment : Fragment() {
         loadingPanel?.visibility = View.VISIBLE
 
         laundryViewModel.favoriteRooms.observe(viewLifecycleOwner) { favorites ->
-
+            binding.laundryMachineRefresh.isRefreshing = false
+            
             laundryRooms.clear()
             roomsData.clear()
 
@@ -95,8 +96,6 @@ class LaundryFragment : Fragment() {
                 mAdapter!!.notifyItemChanged(pos)
             }
 
-            // should already be set to false by here but just in case
-            binding.laundryMachineRefresh.isRefreshing = false
             loadingPanel?.visibility = View.GONE
             binding.laundryHelpText.visibility = View.INVISIBLE
         }
@@ -127,7 +126,6 @@ class LaundryFragment : Fragment() {
             val bearerToken = "Bearer " + sharedPreferences
                 .getString(getString(R.string.access_token), "").toString()
             laundryViewModel.getFavorites(mStudentLife, bearerToken)
-            binding.laundryMachineRefresh.isRefreshing = false
         }
     }
 
