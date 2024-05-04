@@ -1,14 +1,5 @@
 package com.pennapps.labs.pennmobile.classes
 
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.pennapps.labs.pennmobile.api.Serializer
-import org.joda.time.Interval
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Test
-
 // Unit tests
 class HomePageSerializerTest {
     /*

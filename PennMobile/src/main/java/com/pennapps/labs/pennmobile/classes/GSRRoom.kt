@@ -8,9 +8,7 @@ import com.google.gson.annotations.SerializedName
  */
 
 class GSRRoom {
-
-    //getters
-
+    // getters
 
     @SerializedName("capacity")
     @Expose
@@ -20,11 +18,9 @@ class GSRRoom {
     @Expose
     var gid: Int? = null
 
-
     @SerializedName("lid")
     @Expose
     var lid: String? = null
-
 
     @SerializedName("room_name")
     @Expose
@@ -37,7 +33,6 @@ class GSRRoom {
     @SerializedName("thumbnail")
     @Expose
     var thumbnail: String? = null
-
 
     @SerializedName("availability")
     @Expose

@@ -27,22 +27,27 @@ class LaundryViewModel : ViewModel() {
     private val laundryHalls: ArrayList<String> = ArrayList()
 
     private val _loadedRooms = MutableLiveData(false)
-    val loadedRooms : LiveData<Boolean>
+    val loadedRooms: LiveData<Boolean>
         get() = _loadedRooms
 
     private val _favoriteRooms = MutableLiveData(LaundryRoomFavorites())
 
-    private val curToggled : MutableSet<Int> = HashSet()
+    private val curToggled: MutableSet<Int> = HashSet()
 
-    val favoriteRooms : LiveData<LaundryRoomFavorites>
+    val favoriteRooms: LiveData<LaundryRoomFavorites>
         get() = _favoriteRooms
 
     private val favoritesMutex = Mutex()
+
     private fun updateFavorites() {
         // kinda clown, but rebind so the observer can observe a change
         _favoriteRooms.postValue(_favoriteRooms.value)
     }
-    private suspend fun replaceFavorites(rooms: List<LaundryRoom>, usages: List<LaundryUsage>) {
+
+    private suspend fun replaceFavorites(
+        rooms: List<LaundryRoom>,
+        usages: List<LaundryUsage>,
+    ) {
         favoritesMutex.withLock {
             _favoriteRooms.value?.favoriteRooms?.clear()
             _favoriteRooms.value?.roomsData?.clear()
@@ -52,37 +57,43 @@ class LaundryViewModel : ViewModel() {
         }
     }
 
-    private suspend fun populateFavorites(context: CoroutineContext,
-                                          studentLife: StudentLifeRf2,
-                                          favoriteIdList: List<Int>) {
+    private suspend fun populateFavorites(
+        context: CoroutineContext,
+        studentLife: StudentLifeRf2,
+        favoriteIdList: List<Int>,
+    ) {
         val rooms = ArrayList<LaundryRoom>()
         val usages = ArrayList<LaundryUsage>()
 
         for (roomId in favoriteIdList) {
             var addRoomSuccess = false
             var addUsageSuccess = false
-            val addRoom = CoroutineScope(context).launch {
-                val roomResponse = studentLife.room(roomId)
-                addRoomSuccess = if (roomResponse.isSuccessful) {
-                    val room = roomResponse.body()!!
-                    room.id = roomId
-                    rooms.add(room)
-                    true
-                } else {
-                    Log.i("Laundry", "Failed to get room data")
-                    false
+            val addRoom =
+                CoroutineScope(context).launch {
+                    val roomResponse = studentLife.room(roomId)
+                    addRoomSuccess =
+                        if (roomResponse.isSuccessful) {
+                            val room = roomResponse.body()!!
+                            room.id = roomId
+                            rooms.add(room)
+                            true
+                        } else {
+                            Log.i("Laundry", "Failed to get room data")
+                            false
+                        }
                 }
-            }
-            val addUsage = CoroutineScope(context).launch {
-                val usageResponse = studentLife.usage(roomId)
-                addUsageSuccess = if (usageResponse.isSuccessful) {
-                    usages.add(usageResponse.body()!!)
-                    true
-                } else {
-                    Log.i("Laundry", "Failed to get usage data")
-                    false
+            val addUsage =
+                CoroutineScope(context).launch {
+                    val usageResponse = studentLife.usage(roomId)
+                    addUsageSuccess =
+                        if (usageResponse.isSuccessful) {
+                            usages.add(usageResponse.body()!!)
+                            true
+                        } else {
+                            Log.i("Laundry", "Failed to get usage data")
+                            false
+                        }
                 }
-            }
 
             addRoom.join()
             addUsage.join()
@@ -97,9 +108,13 @@ class LaundryViewModel : ViewModel() {
         replaceFavorites(rooms, usages)
         updateFavorites()
     }
-    fun getFavorites(studentLife: StudentLifeRf2, bearerToken : String) {
+
+    fun getFavorites(
+        studentLife: StudentLifeRf2,
+        bearerToken: String,
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
-            val favoriteIdList : MutableList<Int> = mutableListOf()
+            val favoriteIdList: MutableList<Int> = mutableListOf()
             val response = studentLife.getLaundryPref(bearerToken)
             if (response.isSuccessful) {
                 val prefs = response.body()!!.rooms
@@ -128,7 +143,6 @@ class LaundryViewModel : ViewModel() {
                 var i = 0
                 // go through all the rooms
                 while (i < numRooms) {
-
                     // new list for the rooms in the hall
                     var roomList: MutableList<LaundryRoomSimple> = ArrayList()
 
@@ -166,7 +180,8 @@ class LaundryViewModel : ViewModel() {
             _loadedRooms.postValue(true)
         }
     }
-    fun existsDiff() : Boolean {
+
+    fun existsDiff(): Boolean {
         var diff = false
         runBlocking {
             favoritesMutex.withLock {
@@ -188,8 +203,11 @@ class LaundryViewModel : ViewModel() {
         return diff
     }
 
-    private suspend fun sendPreferences(studentLife: StudentLifeRf2, bearerToken: String,
-                                        favoriteIdList: List<Int>) {
+    private suspend fun sendPreferences(
+        studentLife: StudentLifeRf2,
+        bearerToken: String,
+        favoriteIdList: List<Int>,
+    ) {
         val laundryRequest = LaundryRequest(favoriteIdList)
         val response = studentLife.sendLaundryPref(bearerToken, laundryRequest)
         if (response.isSuccessful) {
@@ -198,7 +216,11 @@ class LaundryViewModel : ViewModel() {
             Log.i("Laundry Preferences", "Error updating preferences")
         }
     }
-    fun setFavoritesFromToggled(studentLife: StudentLifeRf2, bearerToken: String) {
+
+    fun setFavoritesFromToggled(
+        studentLife: StudentLifeRf2,
+        bearerToken: String,
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
             // make a copy of the set
             val favoriteIdList = curToggled.toList()
@@ -221,33 +243,42 @@ class LaundryViewModel : ViewModel() {
     }
 
     // returns true if there is a change state
-    fun toggle(roomId: Int) : Boolean {
+    fun toggle(roomId: Int): Boolean {
         val origState = curToggled.size >= maxNumRooms
         if (curToggled.contains(roomId)) {
             curToggled.remove(roomId)
-
         } else {
             curToggled.add(roomId)
         }
         return (curToggled.size >= maxNumRooms).xor(origState)
     }
-    fun getGroupCount() : Int {
+
+    fun getGroupCount(): Int {
         return laundryHalls.size
     }
+
     fun getChildrenCount(i: Int): Int {
         return laundryRooms[laundryHalls[i]]!!.size
     }
+
     fun getGroup(i: Int): Any {
         return laundryHalls[i]
     }
-    fun getChild(i: Int, i1: Int): Any {
+
+    fun getChild(
+        i: Int,
+        i1: Int,
+    ): Any {
         return laundryRooms[laundryHalls[i]]!![i1]
     }
+
     fun getRooms(hallName: String): List<LaundryRoomSimple>? {
         return laundryRooms[hallName]
     }
-    fun isChecked(roomId: Int) : Boolean {
+
+    fun isChecked(roomId: Int): Boolean {
         return curToggled.contains(roomId)
     }
+
     fun isFull() = (curToggled.size >= maxNumRooms)
 }

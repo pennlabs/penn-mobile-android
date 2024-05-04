@@ -26,7 +26,7 @@ class DiningHallWidget : AppWidgetProvider() {
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
-        appWidgetIds: IntArray
+        appWidgetIds: IntArray,
     ) {
         for (appWidgetId in appWidgetIds) {
             val mainActivityIntent = Intent(context, MainActivity::class.java)
@@ -47,12 +47,13 @@ class DiningHallWidget : AppWidgetProvider() {
             // Set up intent for adapter and pendingIntent to allow users to access the app when
             // clicking on the items on the widget.
             val serviceIntent = Intent(context, DiningHallWidgetAdapter::class.java)
-            val pendingIntent: PendingIntent = PendingIntent.getActivity(
-                context,
-                appWidgetId,
-                mainActivityIntent,
-                PendingIntent.FLAG_IMMUTABLE
-            )
+            val pendingIntent: PendingIntent =
+                PendingIntent.getActivity(
+                    context,
+                    appWidgetId,
+                    mainActivityIntent,
+                    PendingIntent.FLAG_IMMUTABLE,
+                )
             serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
 
             // setData allows the system to distinguish between different service intents. Without
@@ -100,25 +101,24 @@ class DiningHallWidget : AppWidgetProvider() {
                     // Venue data specifically in our widget.
                     gsonBuilder.registerTypeAdapter(
                         object : TypeToken<MutableList<Venue?>?>() {}.type,
-                        Serializer.VenueSerializer()
+                        Serializer.VenueSerializer(),
                     )
 
                     val gson = gsonBuilder.create()
                     val okHttpClient = OkHttpClient()
                     okHttpClient.setConnectTimeout(35, TimeUnit.SECONDS) // Connection timeout
-                    okHttpClient.setReadTimeout(35, TimeUnit.SECONDS)    // Read timeout
-                    okHttpClient.setWriteTimeout(35, TimeUnit.SECONDS)   // Write timeout
+                    okHttpClient.setReadTimeout(35, TimeUnit.SECONDS) // Read timeout
+                    okHttpClient.setWriteTimeout(35, TimeUnit.SECONDS) // Write timeout
 
-                    val restAdapter = RestAdapter.Builder()
-                        .setConverter(GsonConverter(gson))
-                        .setClient(OkClient(okHttpClient))
-                        .setEndpoint("https://pennmobile.org/api")
-                        .build()
+                    val restAdapter =
+                        RestAdapter.Builder()
+                            .setConverter(GsonConverter(gson))
+                            .setClient(OkClient(okHttpClient))
+                            .setEndpoint("https://pennmobile.org/api")
+                            .build()
                     mDiningRequest = restAdapter.create(DiningRequest::class.java)
                 }
                 return mDiningRequest!!
             }
     }
 }
-
-

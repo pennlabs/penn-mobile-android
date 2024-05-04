@@ -7,9 +7,11 @@ class AccessTokenResponse {
     @SerializedName("expires_in")
     @Expose
     var expiresIn: String? = null
+
     @SerializedName("access_token")
     @Expose
     var accessToken: String? = null
+
     @SerializedName("refresh_token")
     @Expose
     var refreshToken: String? = null

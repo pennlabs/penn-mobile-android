@@ -27,21 +27,21 @@ import com.pennapps.labs.pennmobile.utils.Utils
 import kotlinx.android.synthetic.main.fragment_home.internetConnectionHome
 
 class PottruckFragment : Fragment() {
-    private lateinit var mActivity : MainActivity
-    private lateinit var mStudentLife : StudentLife
+    private lateinit var mActivity: MainActivity
+    private lateinit var mStudentLife: StudentLife
 
     private lateinit var mView: View
-    private lateinit var swipeRefresh : SwipeRefreshLayout
-    private lateinit var recyclerView : RecyclerView
-    private lateinit var loadingPanel : View
+    private lateinit var swipeRefresh: SwipeRefreshLayout
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var loadingPanel: View
 
-    private lateinit var dataModel : FitnessPreferenceViewModel
-    private lateinit var favoritesAdapter : FitnessAdapter
-    private lateinit var otherAdapter : FitnessAdapter
-    private lateinit var favoriteHeaderAdapter : FitnessHeaderAdapter
-    private lateinit var otherHeaderAdapter : FitnessHeaderAdapter
+    private lateinit var dataModel: FitnessPreferenceViewModel
+    private lateinit var favoritesAdapter: FitnessAdapter
+    private lateinit var otherAdapter: FitnessAdapter
+    private lateinit var favoriteHeaderAdapter: FitnessHeaderAdapter
+    private lateinit var otherHeaderAdapter: FitnessHeaderAdapter
 
-    private var _binding : FragmentPottruckBinding? = null
+    private var _binding: FragmentPottruckBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +53,7 @@ class PottruckFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         mActivity.hideBottomBar()
         _binding = FragmentPottruckBinding.inflate(inflater, container, false)
@@ -65,7 +65,10 @@ class PottruckFragment : Fragment() {
         _binding = null
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         mView = view
 
@@ -85,7 +88,7 @@ class PottruckFragment : Fragment() {
     }
 
     private fun getFitnessRooms() {
-        //displays banner if not connected
+        // displays banner if not connected
         if (!getConnected()) return
 
         mStudentLife.fitnessRooms
@@ -93,18 +96,18 @@ class PottruckFragment : Fragment() {
                 for (room in fitnessRooms) {
                     Log.i("Fitness Room${room.roomId}", "${room.roomName}")
                 }
-                val sortedRooms = fitnessRooms.sortedBy {it.roomName}
+                val sortedRooms = fitnessRooms.sortedBy { it.roomName }
 
-                dataModel = FitnessPreferenceViewModel( mStudentLife, sortedRooms)
-
+                dataModel = FitnessPreferenceViewModel(mStudentLife, sortedRooms)
 
                 mActivity.runOnUiThread {
                     mActivity.mNetworkManager.getAccessToken {
                         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
                         val context = mActivity.applicationContext
                         val bearerToken =
-                            "Bearer " + sp.getString(context.getString(R.string.access_token), "")
-                                .toString()
+                            "Bearer " +
+                                sp.getString(context.getString(R.string.access_token), "")
+                                    .toString()
 
                         mStudentLife.getFitnessPreferences(bearerToken).subscribe({ favorites ->
                             mActivity.runOnUiThread {
@@ -122,7 +125,7 @@ class PottruckFragment : Fragment() {
                                 Log.e(
                                     "Pottruck Fragment",
                                     "Could not load Fitness Preferences",
-                                    throwable
+                                    throwable,
                                 )
                             }
                         })
@@ -145,23 +148,32 @@ class PottruckFragment : Fragment() {
         favoriteHeaderAdapter = FitnessHeaderAdapter("Favorites")
         otherHeaderAdapter = FitnessHeaderAdapter("Other Facilities")
 
-        val concatAdapter = ConcatAdapter(favoriteHeaderAdapter, favoritesAdapter,
-            otherHeaderAdapter, otherAdapter)
+        val concatAdapter =
+            ConcatAdapter(
+                favoriteHeaderAdapter,
+                favoritesAdapter,
+                otherHeaderAdapter,
+                otherAdapter,
+            )
 
         recyclerView.adapter = concatAdapter
         loadingPanel.visibility = View.GONE
         swipeRefresh.isRefreshing = false
 
         // set click listener for favorites button
-        val fitnessPref : ImageView = binding.fitnessPreferences
+        val fitnessPref: ImageView = binding.fitnessPreferences
         fitnessPref.setOnClickListener {
             dataModel.savePreferences()
-            val prefDialog = FitnessPreferencesFragment(dataModel, object: CloseListener{
-                override fun updateAdapters() {
-                    favoritesAdapter.notifyDataSetChanged()
-                    otherAdapter.notifyDataSetChanged()
-                }
-            })
+            val prefDialog =
+                FitnessPreferencesFragment(
+                    dataModel,
+                    object : CloseListener {
+                        override fun updateAdapters() {
+                            favoritesAdapter.notifyDataSetChanged()
+                            otherAdapter.notifyDataSetChanged()
+                        }
+                    },
+                )
             prefDialog.show(mActivity.supportFragmentManager, "Fitness Preferences Dialog")
         }
     }
@@ -171,9 +183,9 @@ class PottruckFragment : Fragment() {
      * @return true if connected to internet and false otherwise
      */
     private fun getConnected(): Boolean {
-        //displays banner if not connected
-        val connectionToolbar : Toolbar = binding.toolbarFitnessConnection
-        val connectionMessage : TextView = binding.textFitnessConnectionMessage
+        // displays banner if not connected
+        val connectionToolbar: Toolbar = binding.toolbarFitnessConnection
+        val connectionMessage: TextView = binding.textFitnessConnectionMessage
 
         if (!isOnline(context)) {
             connectionToolbar.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.darkRedBackground))
@@ -193,9 +205,9 @@ class PottruckFragment : Fragment() {
      * fills in the textViews for the title/date
      */
     private fun initAppBar() {
-        val appBarLayout : AppBarLayout = binding.appbarHomeHolder
-        val titleView : TextView = binding.titleView
-        val dateView : TextView = binding.dateView
+        val appBarLayout: AppBarLayout = binding.appbarHomeHolder
+        val titleView: TextView = binding.titleView
+        val dateView: TextView = binding.dateView
 
         (appBarLayout.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
 

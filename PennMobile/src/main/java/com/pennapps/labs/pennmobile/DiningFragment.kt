@@ -27,7 +27,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class DiningFragment : Fragment() {
-
     private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
 
@@ -50,13 +49,13 @@ class DiningFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentDiningBinding.inflate(inflater, container, false)
         val v = binding.root
         binding.diningSwiperefresh.setColorSchemeResources(
             R.color.color_accent,
-            R.color.color_primary
+            R.color.color_primary,
         )
         binding.diningHallsRecyclerView.layoutManager =
             LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false)
@@ -70,13 +69,18 @@ class DiningFragment : Fragment() {
         _binding = null
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         getDiningHalls()
     }
 
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    override fun onCreateOptionsMenu(
+        menu: Menu,
+        inflater: MenuInflater,
+    ) {
         inflater.inflate(R.menu.dining_sort, menu)
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
         // sort the dining halls in the user-specified order
@@ -96,7 +100,7 @@ class DiningFragment : Fragment() {
         val diningInfoFragment = fragmentManager?.findFragmentByTag("DINING_INFO_FRAGMENT")
         menu.setGroupVisible(
             R.id.action_sort_by,
-            diningInfoFragment == null || !diningInfoFragment.isVisible
+            diningInfoFragment == null || !diningInfoFragment.isVisible,
         )
     }
 
@@ -139,8 +143,7 @@ class DiningFragment : Fragment() {
     }
 
     private fun getDiningHalls() {
-
-        //displays banner if not connected
+        // displays banner if not connected
         if (!isOnline(context)) {
             binding.internetConnectionDining.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
             binding.internetConnectionMessageDining.text = "Not Connected to Internet"
@@ -195,7 +198,6 @@ class DiningFragment : Fragment() {
         mActivity.setSelectedTab(MainActivity.DINING)
     }
 
-
     /**
      * Shows SnackBar message right below the app bar
      */
@@ -236,7 +238,6 @@ class DiningFragment : Fragment() {
             }, { throwable ->
                 Log.e("DiningFragment", "Error getting Menus", throwable)
             })
-
         }
 
         // Takes a venue then adds an image and modifies venue name if name is too long
@@ -248,7 +249,7 @@ class DiningFragment : Fragment() {
                     venue.isResidential,
                     venue.getHours(),
                     venue,
-                    R.drawable.dining_commons
+                    R.drawable.dining_commons,
                 )
 
                 636 -> return DiningHall(
@@ -257,7 +258,7 @@ class DiningFragment : Fragment() {
                     venue.isResidential,
                     venue.getHours(),
                     venue,
-                    R.drawable.dining_hill_house
+                    R.drawable.dining_hill_house,
                 )
 
                 637 -> return DiningHall(
@@ -266,7 +267,7 @@ class DiningFragment : Fragment() {
                     venue.isResidential,
                     venue.getHours(),
                     venue,
-                    R.drawable.dining_kceh
+                    R.drawable.dining_kceh,
                 )
 
                 638 -> return DiningHall(
@@ -275,7 +276,7 @@ class DiningFragment : Fragment() {
                     venue.isResidential,
                     venue.getHours(),
                     venue,
-                    R.drawable.dining_hillel
+                    R.drawable.dining_hillel,
                 )
 
                 639 -> return DiningHall(
@@ -284,7 +285,7 @@ class DiningFragment : Fragment() {
                     venue.isResidential,
                     venue.getHours(),
                     venue,
-                    R.drawable.dining_houston
+                    R.drawable.dining_houston,
                 )
 
                 640 -> return DiningHall(
@@ -293,7 +294,7 @@ class DiningFragment : Fragment() {
                     venue.isResidential,
                     venue.getHours(),
                     venue,
-                    R.drawable.dining_marks
+                    R.drawable.dining_marks,
                 )
 
                 641 -> return DiningHall(
@@ -302,7 +303,7 @@ class DiningFragment : Fragment() {
                     venue.isResidential,
                     venue.getHours(),
                     venue,
-                    R.drawable.dining_accenture
+                    R.drawable.dining_accenture,
                 )
 
                 642 -> return DiningHall(
@@ -311,7 +312,7 @@ class DiningFragment : Fragment() {
                     venue.isResidential,
                     venue.getHours(),
                     venue,
-                    R.drawable.dining_joes_cafe
+                    R.drawable.dining_joes_cafe,
                 )
 
                 1442 -> return DiningHall(
@@ -320,7 +321,7 @@ class DiningFragment : Fragment() {
                     venue.isResidential,
                     venue.getHours(),
                     venue,
-                    R.drawable.dining_nch
+                    R.drawable.dining_nch,
                 )
 
                 747 -> return DiningHall(
@@ -329,7 +330,7 @@ class DiningFragment : Fragment() {
                     venue.isResidential,
                     venue.getHours(),
                     venue,
-                    R.drawable.dining_mcclelland
+                    R.drawable.dining_mcclelland,
                 )
 
                 1057 -> return DiningHall(
@@ -338,7 +339,7 @@ class DiningFragment : Fragment() {
                     venue.isResidential,
                     venue.getHours(),
                     venue,
-                    R.drawable.dining_gourmet_grocer
+                    R.drawable.dining_gourmet_grocer,
                 )
 
                 1058 -> return DiningHall(
@@ -347,7 +348,7 @@ class DiningFragment : Fragment() {
                     venue.isResidential,
                     venue.getHours(),
                     venue,
-                    R.drawable.dining_tortas
+                    R.drawable.dining_tortas,
                 )
 
                 1163 -> return DiningHall(
@@ -356,7 +357,7 @@ class DiningFragment : Fragment() {
                     venue.isResidential,
                     venue.getHours(),
                     venue,
-                    R.drawable.dining_commons
+                    R.drawable.dining_commons,
                 )
 
                 1731 -> return DiningHall(
@@ -365,7 +366,7 @@ class DiningFragment : Fragment() {
                     venue.isResidential,
                     venue.getHours(),
                     venue,
-                    R.drawable.dining_nch
+                    R.drawable.dining_nch,
                 )
 
                 1732 -> return DiningHall(
@@ -374,7 +375,7 @@ class DiningFragment : Fragment() {
                     venue.isResidential,
                     venue.getHours(),
                     venue,
-                    R.drawable.dining_mba_cafe
+                    R.drawable.dining_mba_cafe,
                 )
 
                 1733 -> return DiningHall(
@@ -383,7 +384,7 @@ class DiningFragment : Fragment() {
                     venue.isResidential,
                     venue.getHours(),
                     venue,
-                    R.drawable.dining_pret_a_manger
+                    R.drawable.dining_pret_a_manger,
                 )
 
                 else -> return DiningHall(
@@ -392,7 +393,7 @@ class DiningFragment : Fragment() {
                     venue.isResidential,
                     venue.getHours(),
                     venue,
-                    R.drawable.dining_commons
+                    R.drawable.dining_commons,
                 )
             }
         }

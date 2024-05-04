@@ -22,7 +22,6 @@ open class DiningHall : Parcelable {
     var image: Int
         private set
 
-
     @SerializedName("tblDayPart")
     var menus: MutableList<Menu> = ArrayList()
 
@@ -60,7 +59,10 @@ open class DiningHall : Parcelable {
         return 0
     }
 
-    override fun writeToParcel(dest: Parcel, flags: Int) {
+    override fun writeToParcel(
+        dest: Parcel,
+        flags: Int,
+    ) {
         dest.writeBooleanArray(booleanArrayOf(isResidential))
         dest.writeMap(openHours as Map<*, *>?)
         dest.writeList(menus as List<*>?)
@@ -82,15 +84,16 @@ open class DiningHall : Parcelable {
         val mergedList: MutableList<Interval> = ArrayList(originalList.size)
         var currentInterval: Interval? = null
         for (i in originalList.indices) {
-            currentInterval = if (currentInterval == null) {
-                originalList[i]
-            } else if (currentInterval.end >= originalList[i]!!.start) {
-                val newEndTime = if (currentInterval.end > originalList[i]!!.end) currentInterval.end else originalList[i]!!.end
-                Interval(currentInterval.start, newEndTime)
-            } else {
-                mergedList.add(currentInterval)
-                null
-            }
+            currentInterval =
+                if (currentInterval == null) {
+                    originalList[i]
+                } else if (currentInterval.end >= originalList[i]!!.start) {
+                    val newEndTime = if (currentInterval.end > originalList[i]!!.end) currentInterval.end else originalList[i]!!.end
+                    Interval(currentInterval.start, newEndTime)
+                } else {
+                    mergedList.add(currentInterval)
+                    null
+                }
         }
         if (currentInterval != null) {
             mergedList.add(currentInterval)
@@ -101,7 +104,7 @@ open class DiningHall : Parcelable {
     // Takes the ordered time intervals of the dining hall and formats them for displaying to the user
     // e.g. 8 - 11 | 12 - 3 | 6 - 9
     fun openTimes(): String {
-        //val list = if (isResidential) orderedHours() else orderedMergedHours()
+        // val list = if (isResidential) orderedHours() else orderedMergedHours()
         val list = orderedHours()
         val builder = StringBuilder()
         for (i in list.indices) {
@@ -173,7 +176,10 @@ open class DiningHall : Parcelable {
             return 0
         }
 
-        override fun writeToParcel(dest: Parcel, flags: Int) {
+        override fun writeToParcel(
+            dest: Parcel,
+            flags: Int,
+        ) {
             dest.writeString(name)
         }
 
@@ -185,9 +191,7 @@ open class DiningHall : Parcelable {
             override fun newArray(size: Int): Array<Menu?> {
                 return arrayOfNulls(size)
             }
-
         }
-
     }
 
     class DiningVenue {

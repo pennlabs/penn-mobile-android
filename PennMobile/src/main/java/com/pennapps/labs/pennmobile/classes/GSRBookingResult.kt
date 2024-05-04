@@ -27,5 +27,4 @@ class GSRBookingResult {
     fun getError(): String? {
         return error
     }
-
 }

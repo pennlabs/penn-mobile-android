@@ -1,27 +1,30 @@
 package com.pennapps.labs.pennmobile
 
 import android.os.Bundle
-import com.google.android.material.tabs.TabLayout
-import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentGsrTabsBinding
 import com.pennapps.labs.pennmobile.utils.Utils
 
 class GsrTabbedFragment : Fragment() {
-    private lateinit var mActivity : MainActivity
+    private lateinit var mActivity: MainActivity
     lateinit var viewPager: ViewPager
     lateinit var tabLayout: TabLayout
 
-    private var _binding : FragmentGsrTabsBinding? = null
+    private var _binding: FragmentGsrTabsBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentGsrTabsBinding.inflate(inflater, container, false)
         val view = binding.root
@@ -37,7 +40,10 @@ class GsrTabbedFragment : Fragment() {
         _binding = null
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         val fragmentAdapter = activity?.supportFragmentManager?.let { GsrPagerAdapter(it) }
@@ -45,7 +51,7 @@ class GsrTabbedFragment : Fragment() {
         viewPager.adapter = fragmentAdapter
         tabLayout = binding.gsrTabLayout
         tabLayout.setupWithViewPager(viewPager)
-        //displays banner if not connected
+        // displays banner if not connected
         if (!isOnline(context)) {
             binding.internetConnectionGSR.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
             binding.internetConnectionMessageGsr.text = "Not Connected to Internet"
@@ -54,7 +60,6 @@ class GsrTabbedFragment : Fragment() {
             binding.internetConnectionGSR.visibility = View.GONE
         }
     }
-
 
     private fun initAppBar() {
         (binding.appbarHome.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()

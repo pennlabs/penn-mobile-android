@@ -11,66 +11,74 @@ import java.util.concurrent.TimeUnit
 
 private const val BASE_URL = "https://penncoursealert.com"
 
-var okHttpClient: OkHttpClient = OkHttpClient.Builder()
-    .connectTimeout(1, TimeUnit.MINUTES)
-    .readTimeout(30, TimeUnit.SECONDS)
-    .writeTimeout(15, TimeUnit.SECONDS)
-    .build()
+var okHttpClient: OkHttpClient =
+    OkHttpClient.Builder()
+        .connectTimeout(1, TimeUnit.MINUTES)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(15, TimeUnit.SECONDS)
+        .build()
 
-private val retrofit = Retrofit.Builder()
-    .client(okHttpClient)
-    .addConverterFactory(ScalarsConverterFactory.create())
-    .addConverterFactory(GsonConverterFactory.create())
-    .baseUrl(BASE_URL)
-    .build()
+private val retrofit =
+    Retrofit.Builder()
+        .client(okHttpClient)
+        .addConverterFactory(ScalarsConverterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create())
+        .baseUrl(BASE_URL)
+        .build()
 
 interface PennCourseAlertApiService {
     @GET("/api/alert/registrations/")
-    fun getAllRegistrations(@Header("Authorization") token: String):
-            Call<List<PennCourseAlertRegistration>>
+    fun getAllRegistrations(
+        @Header("Authorization") token: String,
+    ): Call<List<PennCourseAlertRegistration>>
 
     @POST("/api/alert/registrations/")
     fun createRegistration(
         @Body registration: PCARegistrationBody,
-        @Header("Authorization") token: String
-    ):
-            Call<String>
+        @Header("Authorization") token: String,
+    ): Call<String>
 
     @GET("/api/alert/registrations/{id}/")
-    fun getRegistrationById(@Path("id") id: String, @Header("Authorization") token: String):
-            Call<PennCourseAlertRegistration>
+    fun getRegistrationById(
+        @Path("id") id: String,
+        @Header("Authorization") token: String,
+    ): Call<PennCourseAlertRegistration>
 
     @PUT("/api/alert/registrations/{id}/")
     fun updateRegistrationById(
         @Path("id") id: String,
         @Body updateRegistrationBody: PennCourseAlertUpdateBody,
-        @Header("Authorization") token: String
-    ):
-            Call<String>
+        @Header("Authorization") token: String,
+    ): Call<String>
 
     @GET("/api/base/{semester}/courses/")
-    fun getCourses(@Path("semester") semester: String):
-            Call<List<Course>>
+    fun getCourses(
+        @Path("semester") semester: String,
+    ): Call<List<Course>>
 
     @GET("/api/base/{semester}/search/courses/")
     fun getCourses(
         @Path("semester") semester: String,
         @Query("search") search: String,
-        @Query("type") type: String
-    ):
-            Call<List<Course>>
+        @Query("type") type: String,
+    ): Call<List<Course>>
 
     @GET("/api/base/{semester}/search/sections/")
-    fun getSections(@Path("semester") semester: String, @Query("search") search: String):
-            Call<List<Section>>
+    fun getSections(
+        @Path("semester") semester: String,
+        @Query("search") search: String,
+    ): Call<List<Section>>
 
     @PATCH("/accounts/me")
-    fun updateInfo(@Body profile: Profile, @Header("Authorization") token: String):
-            Call<String>
+    fun updateInfo(
+        @Body profile: Profile,
+        @Header("Authorization") token: String,
+    ): Call<String>
 
     @GET("/accounts/me")
-    fun retrieveUser(@Header("Authorization") token: String):
-            Call<UserInfo>
+    fun retrieveUser(
+        @Header("Authorization") token: String,
+    ): Call<UserInfo>
 }
 
 object PennCourseAlertApi {

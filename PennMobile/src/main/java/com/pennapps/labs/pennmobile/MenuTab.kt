@@ -11,7 +11,6 @@ import com.pennapps.labs.pennmobile.adapters.MenuAdapter
 import java.util.*
 
 class MenuTab : Fragment() {
-
     var meal: String? = null
     var stationInfo = HashMap<String, List<String>?>() // {station name: foods}
     private lateinit var stations: ArrayList<String>
@@ -28,9 +27,13 @@ class MenuTab : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
         val v = inflater.inflate(R.layout.fragment_menu_tab, container, false)
-        val elv : ExpandableListView = v.findViewById(R.id.station_list)
+        val elv: ExpandableListView = v.findViewById(R.id.station_list)
         elv.setFooterDividersEnabled(true)
         elv.addFooterView(View(elv.context))
         elv.setAdapter(activity?.let { MenuAdapter(it, stations, stationInfo) })

@@ -8,15 +8,18 @@ import com.google.gson.annotations.SerializedName
  */
 
 class LaundryRoomSimple {
-
     @SerializedName("name")
     @Expose
-    @JvmField var name: String? = null
+    @JvmField
+    var name: String? = null
+
     @SerializedName("hall_id")
     @Expose
-    @JvmField var id: Int? = null
+    @JvmField
+    var id: Int? = null
+
     @SerializedName("location")
     @Expose
-    @JvmField var location: String? = null
-
+    @JvmField
+    var location: String? = null
 }

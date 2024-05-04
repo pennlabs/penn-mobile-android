@@ -30,10 +30,8 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
-
 class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>) :
-        RecyclerView.Adapter<DiningInsightsCardAdapter.ViewHolder>() {
-
+    RecyclerView.Adapter<DiningInsightsCardAdapter.ViewHolder>() {
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
 
@@ -49,7 +47,10 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
         private const val DAYS_IN_SEMESTER = 117f
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): ViewHolder {
         mContext = parent.context
         mActivity = mContext as MainActivity
 
@@ -75,7 +76,10 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
         }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: ViewHolder,
+        position: Int,
+    ) {
         val cell = cells[position]
         when (cell.type) {
             "dining_balance" -> bindDiningBalanceCells(holder, cell)
@@ -105,25 +109,38 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
         }
     }
 
-    private fun bindDollarsSpentReservationsCell(holder: ViewHolder, cell: DiningInsightCell) {
+    private fun bindDollarsSpentReservationsCell(
+        holder: ViewHolder,
+        cell: DiningInsightCell,
+    ) {
         // Populate dining dollars spent card
-
     }
-    private fun bindDiningDollarsPredictions(holder: ViewHolder, cell: DiningInsightCell) {
+
+    private fun bindDiningDollarsPredictions(
+        holder: ViewHolder,
+        cell: DiningInsightCell,
+    ) {
         val v = holder.view
         val tvPredictionsTitle = (v.findViewById<View>(R.id.predictions_title) as TextView)
         tvPredictionsTitle.text = mContext.getString(R.string.dining_dollars_predictions)
         bindPredictions(holder, cell, DINING_DOLLARS_PREDICTIONS)
     }
 
-    private fun bindDiningSwipesPredictions(holder: ViewHolder, cell: DiningInsightCell) {
+    private fun bindDiningSwipesPredictions(
+        holder: ViewHolder,
+        cell: DiningInsightCell,
+    ) {
         val v = holder.view
         val tvPredictionsTitle = (v.findViewById<View>(R.id.predictions_title) as TextView)
         tvPredictionsTitle.text = mContext.getString(R.string.dining_swipes_predictions)
         bindPredictions(holder, cell, DINING_SWIPES_PREDICTIONS)
     }
 
-    private fun bindPredictions(holder: ViewHolder, cell: DiningInsightCell, typeId: Int) {
+    private fun bindPredictions(
+        holder: ViewHolder,
+        cell: DiningInsightCell,
+        typeId: Int,
+    ) {
         // Populate dining dollars predictions card
         if (cell.diningBalancesList == null) {
             return
@@ -134,9 +151,9 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
         val diningBalances = cell.diningBalancesList?.diningBalancesList
         diningBalances?.forEach {
             it.date?.let { it1 -> dates.add(it1) }
-            if(typeId == DINING_DOLLARS_PREDICTIONS) {
+            if (typeId == DINING_DOLLARS_PREDICTIONS) {
                 it.diningDollars?.let { it1 -> amounts.add(it1.toFloat()) }
-            } else if(typeId == DINING_SWIPES_PREDICTIONS) {
+            } else if (typeId == DINING_SWIPES_PREDICTIONS) {
                 it.regularVisits?.let { it1 -> amounts.add(it1.toFloat()) }
             }
         }
@@ -148,7 +165,7 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
         predictionChart.axisRight.setDrawGridLines(false)
         predictionChart.axisLeft.setDrawGridLines(false)
         predictionChart.xAxis.setDrawGridLines(false)
-        val endOfTermLine = LimitLine(DAYS_IN_SEMESTER,"End of Term")
+        val endOfTermLine = LimitLine(DAYS_IN_SEMESTER, "End of Term")
         endOfTermLine.lineColor = mContext.getColor(R.color.red)
         endOfTermLine.lineWidth = 3f
         endOfTermLine.labelPosition = LimitLine.LimitLabelPosition.LEFT_TOP
@@ -192,30 +209,36 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
         predictionChart.marker = markerView
 
         // Set an event listener to display marker content
-        predictionChart.setOnChartValueSelectedListener(object :
+        predictionChart.setOnChartValueSelectedListener(
+            object :
                 OnChartValueSelectedListener {
-            override fun onValueSelected(e: Entry?, h: Highlight?) {
-                if (e != null) {
-                    if (h != null) {
-                        markerView.setGraphType(typeId)
-                        markerView.refreshContent(e, h)
+                override fun onValueSelected(
+                    e: Entry?,
+                    h: Highlight?,
+                ) {
+                    if (e != null) {
+                        if (h != null) {
+                            markerView.setGraphType(typeId)
+                            markerView.refreshContent(e, h)
+                        }
+                        predictionChart.invalidate()
                     }
-                    predictionChart.invalidate()
                 }
-            }
 
-            override fun onNothingSelected() {
-                // Hide the marker when nothing is selected
-                predictionChart.marker = null
-            }
-        })
+                override fun onNothingSelected() {
+                    // Hide the marker when nothing is selected
+                    predictionChart.marker = null
+                }
+            },
+        )
         // Don't think this is necessary, add just in case
         predictionChart.invalidate()
-
-
     }
 
-    private fun bindDiningBalanceCells(holder: ViewHolder, cell: DiningInsightCell) {
+    private fun bindDiningBalanceCells(
+        holder: ViewHolder,
+        cell: DiningInsightCell,
+    ) {
         val v = holder.view
         val diningBalances = cell.diningBalances
         val diningDollars = "$" + (diningBalances?.diningDollars ?: "0.00")
@@ -229,26 +252,31 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
         tvGuestSwipesAmount.text = guestSwipes.toString()
     }
 
-    private fun getPredictionSlope(amounts: List<Float>) : Float {
-        return if(amounts.size <= 1) {
+    private fun getPredictionSlope(amounts: List<Float>): Float {
+        return if (amounts.size <= 1) {
             0f
         } else {
             (amounts[amounts.size - 1] - amounts[0]) / (amounts.size - 1)
         }
     }
 
-    private fun setData(amounts: List<Float>, diningDollarsGraph: LineChart, holder: ViewHolder, typeId: Int) {
+    private fun setData(
+        amounts: List<Float>,
+        diningDollarsGraph: LineChart,
+        holder: ViewHolder,
+        typeId: Int,
+    ) {
         val values: ArrayList<Entry> = ArrayList()
         amounts.forEachIndexed { index, amount ->
             values.add(Entry(index.toFloat(), amount))
         }
-        if(values.size == 0) {
+        if (values.size == 0) {
             return
         }
         val predictionValues: ArrayList<Entry> = ArrayList()
         val slope = getPredictionSlope(amounts)
         val b = if (amounts.isNotEmpty()) amounts[0] else 0f
-        for(i in values.size..DAYS_IN_SEMESTER.toInt()) {
+        for (i in values.size..DAYS_IN_SEMESTER.toInt()) {
             predictionValues.add(Entry(i.toFloat(), slope * i + b))
         }
         val actualValues: LineDataSet
@@ -265,12 +293,12 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
             actualValues.setDrawCircles(false)
             actualValues.setDrawFilled(false)
             actualValues.setDrawHighlightIndicators(false)
-            if(typeId == DINING_DOLLARS_PREDICTIONS) {
+            if (typeId == DINING_DOLLARS_PREDICTIONS) {
                 actualValues.color = mContext.getColor(R.color.diningGreen)
-            } else if(typeId == DINING_SWIPES_PREDICTIONS) {
+            } else if (typeId == DINING_SWIPES_PREDICTIONS) {
                 actualValues.color = mContext.getColor(R.color.diningBlue)
             }
-            actualValues.lineWidth = 4f //line size
+            actualValues.lineWidth = 4f // line size
             val predictionSet = LineDataSet(predictionValues, "Predictions")
             predictionSet.setDrawValues(false)
             predictionSet.setDrawCircles(false)
@@ -289,24 +317,24 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
             val tvExpiredOrExtra = (v.findViewById<View>(R.id.extraAmount) as TextView)
             val tvExtra = (v.findViewById<View>(R.id.extra) as TextView)
             val tvExtraNote = (v.findViewById<View>(R.id.extraNote) as TextView)
-            if(values[values.size - 1].y <= 0) {
+            if (values[values.size - 1].y <= 0) {
                 val expiredDate = getExpired(values)
                 tvExpiredOrExtra.text = expiredDate
-                if(typeId == DINING_DOLLARS_PREDICTIONS) {
+                if (typeId == DINING_DOLLARS_PREDICTIONS) {
                     tvExtra.text = mContext.getString(R.string.out_of_dining_dollars)
                     tvExtraNote.text = mContext.getString(R.string.out_of_dining_dollars_message)
-                } else if(typeId == DINING_SWIPES_PREDICTIONS) {
+                } else if (typeId == DINING_SWIPES_PREDICTIONS) {
                     tvExtra.text = mContext.getString(R.string.out_of_dining_swipes)
                     tvExtraNote.text = mContext.getString(R.string.out_of_dining_swipes_message)
                 }
             } else {
-                if(predictionValues.size != 0 && predictionValues[predictionValues.size - 1].y < 0) {
+                if (predictionValues.size != 0 && predictionValues[predictionValues.size - 1].y < 0) {
                     val predictedExpiredDate = getPredictedExpired(values.size, predictionValues)
                     tvExpiredOrExtra.text = predictedExpiredDate
-                    if(typeId == DINING_DOLLARS_PREDICTIONS) {
+                    if (typeId == DINING_DOLLARS_PREDICTIONS) {
                         tvExtra.text = mContext.getString(R.string.out_of_dining_dollars)
                         tvExtraNote.text = mContext.getString(R.string.out_of_dining_dollars_prediction_message)
-                    } else if(typeId == DINING_SWIPES_PREDICTIONS) {
+                    } else if (typeId == DINING_SWIPES_PREDICTIONS) {
                         tvExtra.text = mContext.getString(R.string.out_of_dining_swipes)
                         tvExtraNote.text = mContext.getString(R.string.out_of_dining_swipes_prediction_message)
                     }
@@ -316,28 +344,30 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
                         extraAmount = predictionValues[predictionValues.size - 1].y
                     }
                     tvExtra.text = mContext.getString(R.string.extra_balance)
-                    if(typeId == DINING_DOLLARS_PREDICTIONS) {
+                    if (typeId == DINING_DOLLARS_PREDICTIONS) {
                         tvExtraNote.text = mContext.getString(R.string.extra_dining_dollars_message)
-                        tvExpiredOrExtra.text = buildString {
-        append(mContext.getString(R.string.money))
-        append(String.format("%.2f", extraAmount))
-    }
-                    } else if(typeId == DINING_SWIPES_PREDICTIONS) {
+                        tvExpiredOrExtra.text =
+                            buildString {
+                                append(mContext.getString(R.string.money))
+                                append(String.format("%.2f", extraAmount))
+                            }
+                    } else if (typeId == DINING_SWIPES_PREDICTIONS) {
                         tvExtraNote.text = mContext.getString(R.string.extra_dining_swipes_message)
-                        tvExpiredOrExtra.text = buildString {
-        append(extraAmount.toInt().toString())
-        append(" ")
-        append(mContext.getString(R.string.dining_swipes))
-    }
+                        tvExpiredOrExtra.text =
+                            buildString {
+                                append(extraAmount.toInt().toString())
+                                append(" ")
+                                append(mContext.getString(R.string.dining_swipes))
+                            }
                     }
                 }
             }
         }
     }
 
-    private fun getExpired(actualValues: ArrayList<Entry>) : String{
+    private fun getExpired(actualValues: ArrayList<Entry>): String  {
         var i = 0
-        run breaking@ {
+        run breaking@{
             actualValues.forEachIndexed { index, value ->
                 if (value.y <= 0) {
                     i = index
@@ -346,12 +376,14 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
             }
         }
         return Utils.addDaysToDateMMMdd(START_DAY_OF_SEMESTER, i)
-
     }
 
-    private fun getPredictedExpired(actualValuesSize: Int, predictedValues: ArrayList<Entry>) : String{
+    private fun getPredictedExpired(
+        actualValuesSize: Int,
+        predictedValues: ArrayList<Entry>,
+    ): String  {
         var i = 0
-        run breaking@ {
+        run breaking@{
             predictedValues.forEachIndexed { index, predictedValue ->
                 if (predictedValue.y <= 0) {
                     i = index
@@ -360,30 +392,34 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
             }
         }
         return Utils.addDaysToDateMMMdd(START_DAY_OF_SEMESTER, actualValuesSize + i)
-
     }
 
     class ClaimsXAxisValueFormatter(var datesList: List<String>) :
         ValueFormatter() {
-        override fun getAxisLabel(value: Float, axis: AxisBase): String {
+        override fun getAxisLabel(
+            value: Float,
+            axis: AxisBase,
+        ): String {
             val daysFromStart = value.roundToInt()
             val sdf = SimpleDateFormat("MMM. dd")
             val date = Utils.addDaysToDate(START_DAY_OF_SEMESTER, daysFromStart)
             return sdf.format(
                 Date(
                     Utils.getDateInMilliSeconds(
-                        date, "yyyy-MM-dd"
-                    )
-                )
+                        date,
+                        "yyyy-MM-dd",
+                    ),
+                ),
             )
         }
-
-
     }
 
     class Utils {
         companion object {
-            fun addDaysToDate(startDate: String, daysFromStart: Int): String {
+            fun addDaysToDate(
+                startDate: String,
+                daysFromStart: Int,
+            ): String {
                 val sdf = SimpleDateFormat("yyyy-MM-dd")
                 val cal = Calendar.getInstance()
                 try {
@@ -395,7 +431,10 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
                 return sdf.format(cal.time)
             }
 
-            fun addDaysToDateMMMdd(startDate: String, daysFromStart: Int): String {
+            fun addDaysToDateMMMdd(
+                startDate: String,
+                daysFromStart: Int,
+            ): String {
                 val sdf = SimpleDateFormat("yyyy-MM-dd")
                 val mmmDD = SimpleDateFormat("MMM. dd")
                 val cal = Calendar.getInstance()
@@ -408,7 +447,10 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
                 return mmmDD.format(cal.time)
             }
 
-            fun getDateInMilliSeconds(givenDateString: String?, format: String): Long {
+            fun getDateInMilliSeconds(
+                givenDateString: String?,
+                format: String,
+            ): Long {
                 val sdf = SimpleDateFormat(format, Locale.US)
                 var timeInMilliseconds: Long = 1
                 try {
@@ -423,5 +465,4 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
             }
         }
     }
-
 }

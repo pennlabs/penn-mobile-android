@@ -23,7 +23,6 @@ import java.util.*
  * Created by Davies Lumumba Spring 2021
  */
 class PreferenceFragment : PreferenceFragmentCompat() {
-
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
 
@@ -32,7 +31,10 @@ class PreferenceFragment : PreferenceFragmentCompat() {
         mContext = context
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         listView.isVerticalScrollBarEnabled = false
         mActivity = mContext as MainActivity
@@ -41,10 +43,11 @@ class PreferenceFragment : PreferenceFragmentCompat() {
         val editor = sp.edit()
 
         val editProfilePref: Preference? = findPreference("pref_account_edit")
-        editProfilePref?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            showEditProfileDialog()
-            true
-        }
+        editProfilePref?.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                showEditProfileDialog()
+                true
+            }
 
         val userLoginPref: Preference? = findPreference("pref_account_login_logout")
         val pennKey = sp.getString(getString(R.string.pennkey), null)
@@ -61,34 +64,35 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             editProfilePref?.parent?.removePreference(editProfilePref)
             editProfilePref?.shouldDisableView = true
         }
-        userLoginPref?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            if (pennKey != null) {
-                val dialog = AlertDialog.Builder(context).create()
-                dialog.setTitle("Log out")
-                dialog.setMessage("Are you sure you want to log out?")
-                dialog.setButton("Logout") { dialog, _ ->
-                    CookieManager.getInstance().removeAllCookie()
-                    editor.remove(getString(R.string.penn_password))
-                    editor.remove(getString(R.string.penn_user))
-                    editor.remove(getString(R.string.first_name))
-                    editor.remove(getString(R.string.last_name))
-                    editor.remove(getString(R.string.email_address))
-                    editor.remove(getString(R.string.pennkey))
-                    editor.remove(getString(R.string.accountID))
-                    editor.remove(getString(R.string.access_token))
-                    editor.remove(getString(R.string.guest_mode))
-                    editor.remove(getString(R.string.initials))
-                    editor.apply()
-                    dialog.cancel()
+        userLoginPref?.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                if (pennKey != null) {
+                    val dialog = AlertDialog.Builder(context).create()
+                    dialog.setTitle("Log out")
+                    dialog.setMessage("Are you sure you want to log out?")
+                    dialog.setButton("Logout") { dialog, _ ->
+                        CookieManager.getInstance().removeAllCookie()
+                        editor.remove(getString(R.string.penn_password))
+                        editor.remove(getString(R.string.penn_user))
+                        editor.remove(getString(R.string.first_name))
+                        editor.remove(getString(R.string.last_name))
+                        editor.remove(getString(R.string.email_address))
+                        editor.remove(getString(R.string.pennkey))
+                        editor.remove(getString(R.string.accountID))
+                        editor.remove(getString(R.string.access_token))
+                        editor.remove(getString(R.string.guest_mode))
+                        editor.remove(getString(R.string.initials))
+                        editor.apply()
+                        dialog.cancel()
+                        mActivity.startLoginFragment()
+                    }
+                    // dialog.setButton(2,"Cancel") { dialog, _ -> dialog.cancel() }
+                    dialog.show()
+                } else {
                     mActivity.startLoginFragment()
                 }
-                //dialog.setButton(2,"Cancel") { dialog, _ -> dialog.cancel() }
-                dialog.show()
-            } else {
-                mActivity.startLoginFragment()
+                true
             }
-            true
-        }
 
         val newsFeaturePref: Preference? = findPreference("pref_news_feature")
         newsFeaturePref?.setOnPreferenceClickListener {
@@ -129,7 +133,6 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                 .commit()
             return@setOnPreferenceClickListener true
         }
-
 
         val pennLabsPref: Preference? = findPreference("pref_labs_link")
         pennLabsPref?.setOnPreferenceClickListener {
@@ -172,10 +175,12 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             openLink(PennPortal)
             return@setOnPreferenceClickListener true
         }
-
     }
 
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+    override fun onCreatePreferences(
+        savedInstanceState: Bundle?,
+        rootKey: String?,
+    ) {
         setPreferencesFromResource(R.xml.settings, rootKey)
     }
 
@@ -187,7 +192,6 @@ class PreferenceFragment : PreferenceFragmentCompat() {
 
     @SuppressLint("RestrictedApi")
     private fun showEditProfileDialog() {
-
         val sharedPreference = PreferenceManager.getDefaultSharedPreferences(activity)
         val editor = sharedPreference.edit()
 
@@ -201,7 +205,8 @@ class PreferenceFragment : PreferenceFragmentCompat() {
         text.add(sharedPreference.getString(getString(R.string.last_name), null))
         text.add(sharedPreference.getString(getString(R.string.email_address), null))
 
-        val alert: CustomAlertDialogue.Builder = CustomAlertDialogue.Builder(activity)
+        val alert: CustomAlertDialogue.Builder =
+            CustomAlertDialogue.Builder(activity)
                 .setStyle(CustomAlertDialogue.Style.INPUT)
                 .setTitle("Contact Info")
                 .setMessage("This information is used when booking GSRs and when displaying your name on the app.")
@@ -219,8 +224,10 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                         editor.putString(getString(R.string.initials), initials.capitalize())
                         editor.apply()
                         (activity?.window?.decorView as ViewGroup).showSneakerToast(
-                                "Profile details updated successfully.", null,
-                                R.color.sneakerBlurColorOverlay)
+                            "Profile details updated successfully.",
+                            null,
+                            R.color.sneakerBlurColorOverlay,
+                        )
                         val userLoginPref: Preference? = findPreference("pref_account_login_logout")
                         userLoginPref?.summary = "You are currently signed in as ${
                             sharedPreference.getString(getString(R.string.first_name), null)
@@ -228,8 +235,10 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                         activity?.findViewById<TextView>(R.id.initials)?.text = initials
                     } else {
                         (activity?.window?.decorView as ViewGroup).showSneakerToast(
-                                "Complete required fields to update your profile information.", { showEditProfileDialog() },
-                                R.color.sneakerWarningOverlay)
+                            "Complete required fields to update your profile information.",
+                            { showEditProfileDialog() },
+                            R.color.sneakerWarningOverlay,
+                        )
                     }
                     dialog.dismiss()
                 }
@@ -241,8 +250,6 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                 .setDecorView(activity?.window?.decorView)
                 .build()
         alert.show()
-
-
     }
 
     companion object {

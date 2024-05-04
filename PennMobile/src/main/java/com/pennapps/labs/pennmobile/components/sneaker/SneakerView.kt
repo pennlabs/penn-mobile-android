@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
-import com.pennapps.labs.pennmobile.components.sneaker.Utils.customView
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.components.sneaker.Utils.customView
 
 internal class SneakerView(context: Context?) : LinearLayout(context) {
     init {
@@ -20,11 +20,14 @@ internal class SneakerView(context: Context?) : LinearLayout(context) {
 
     private val DEFAULT_VALUE = -100000
 
-
-    fun setIcon(icon: Drawable?, iconSize: Int, colorFilter: Int) {
+    fun setIcon(
+        icon: Drawable?,
+        iconSize: Int,
+        colorFilter: Int,
+    ) {
         icon?.let {
             val ivIcon =
-                    AppCompatImageView(context)
+                AppCompatImageView(context)
             ivIcon.layoutParams = LayoutParams(iconSize, iconSize)
             ivIcon.setImageDrawable(it)
             ivIcon.isClickable = false
@@ -33,7 +36,13 @@ internal class SneakerView(context: Context?) : LinearLayout(context) {
         }
     }
 
-    fun setTextContent(title: String, titleColor: Int, description: String, messageColor: Int, typeface: Typeface?) {
+    fun setTextContent(
+        title: String,
+        titleColor: Int,
+        description: String,
+        messageColor: Int,
+        typeface: Typeface?,
+    ) {
         // Title and description
         val textLayout = LinearLayout(context)
         val textLayoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -75,14 +84,20 @@ internal class SneakerView(context: Context?) : LinearLayout(context) {
         addView(textLayout)
     }
 
-    fun setBackground(color: Int, cornerRadius: Int) {
-        if (cornerRadius == DEFAULT_VALUE) setBackgroundColor(color)
-        else background = customView(context, color, cornerRadius)
+    fun setBackground(
+        color: Int,
+        cornerRadius: Int,
+    ) {
+        if (cornerRadius == DEFAULT_VALUE) {
+            setBackgroundColor(color)
+        } else {
+            background = customView(context, color, cornerRadius)
+        }
     }
 
     fun setCustomView(view: View) {
         addView(view, 0)
-        with (view){
+        with(view) {
             val layoutParams = this.layoutParams
             (layoutParams as LayoutParams).gravity = Gravity.BOTTOM
             this.layoutParams = layoutParams

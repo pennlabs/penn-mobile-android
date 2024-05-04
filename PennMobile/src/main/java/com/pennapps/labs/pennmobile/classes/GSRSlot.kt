@@ -7,9 +7,8 @@ import com.google.gson.annotations.SerializedName
  * Created by MikeD on 10/14/2018.
  */
 
-//class that represents an available session for a given GSR room
+// class that represents an available session for a given GSR room
 class GSRSlot {
-
     @SerializedName("available")
     @Expose
     var isAvailable: Boolean = true

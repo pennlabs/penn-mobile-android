@@ -47,9 +47,8 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
     private val homepageCells = mutableListOf<HomeCell>()
     private val cellMutex = Mutex()
 
-    data class ItemUpdateEvents(val positions : List<Int> = emptyList())
+    data class ItemUpdateEvents(val positions: List<Int> = emptyList())
 
-    
     private val _updateState = MutableStateFlow(ItemUpdateEvents())
     val updateState: StateFlow<ItemUpdateEvents> = _updateState.asStateFlow()
 
@@ -104,8 +103,12 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
      * Returns a list of updated cell positions.
      */
     @Synchronized
-    fun updateHomePageCells(studentLife: StudentLife, isLoggedIn: Boolean, bearerToken: String,
-                            deviceID: String) : List<Int> {
+    fun updateHomePageCells(
+        studentLife: StudentLife,
+        isLoggedIn: Boolean,
+        bearerToken: String,
+        deviceID: String,
+    ): List<Int> {
         val prevList = homepageCells.toList()
         populateHomePageCells(studentLife, isLoggedIn, bearerToken, deviceID)
 
@@ -114,9 +117,9 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         for (i in 0 until NUM_CELLS) {
             if (prevList[i] != homepageCells[i]) {
                 updatedIndices.add(i)
-                Log.i(UPDATE_TAG, "updated index ${i}")
+                Log.i(UPDATE_TAG, "updated index $i")
             } else {
-                Log.i(UPDATE_TAG, "saved an update at index ${i}")
+                Log.i(UPDATE_TAG, "saved an update at index $i")
             }
         }
 
@@ -128,8 +131,12 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
      * This function requires a correct (non-expired) bearerToken!!
      */
     @Synchronized
-    fun populateHomePageCells(studentLife: StudentLife,
-                              isLoggedIn: Boolean, bearerToken: String, deviceID: String) {
+    fun populateHomePageCells(
+        studentLife: StudentLife,
+        isLoggedIn: Boolean,
+        bearerToken: String,
+        deviceID: String,
+    ) {
         if (isLoggedIn) {
             val latch = CountDownLatch(NUM_CELLS_LOGGED_IN)
             getPolls(studentLife, bearerToken, deviceID, latch)
@@ -166,14 +173,21 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
     /**
      * Updates the cell at position pos.
      */
-    private fun addCell(cell: HomeCell, pos: Int) = runBlocking {
+    private fun addCell(
+        cell: HomeCell,
+        pos: Int,
+    ) = runBlocking {
         cellMutex.withLock {
             homepageCells[pos] = cell
         }
     }
 
-    private fun getPolls(studentLife: StudentLife, bearerToken: String, deviceID: String,
-    latch: CountDownLatch) {
+    private fun getPolls(
+        studentLife: StudentLife,
+        bearerToken: String,
+        deviceID: String,
+        latch: CountDownLatch,
+    ) {
         val idHash = getSha256Hash(deviceID)
         studentLife.browsePolls(bearerToken, idHash).subscribe({ poll ->
             if (poll.size > 0) {
@@ -192,7 +206,10 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         })
     }
 
-    private fun getNews(studentLife: StudentLife, latch: CountDownLatch) {
+    private fun getNews(
+        studentLife: StudentLife,
+        latch: CountDownLatch,
+    ) {
         studentLife.news.subscribe({ article ->
             val newsCell = NewsCell(article)
             addCell(newsCell, NEWS_POS)
@@ -207,7 +224,10 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         })
     }
 
-    private fun getCalendar(studentLife: StudentLife, latch: CountDownLatch) {
+    private fun getCalendar(
+        studentLife: StudentLife,
+        latch: CountDownLatch,
+    ) {
         studentLife.calendar.subscribe({ events ->
             val calendarCell = CalendarCell(events)
 
@@ -222,7 +242,11 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         })
     }
 
-    private fun getLaundry(studentLife: StudentLife, bearerToken: String, latch: CountDownLatch) {
+    private fun getLaundry(
+        studentLife: StudentLife,
+        bearerToken: String,
+        latch: CountDownLatch,
+    ) {
         studentLife.getLaundryPref(bearerToken).subscribe({ preferences ->
             val laundryCell = if (preferences.isNullOrEmpty()) LaundryCell(0) else LaundryCell(preferences[0])
 
@@ -238,9 +262,13 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         })
     }
 
-    private fun getPosts(studentLife: StudentLife, bearerToken: String, latch: CountDownLatch) {
+    private fun getPosts(
+        studentLife: StudentLife,
+        bearerToken: String,
+        latch: CountDownLatch,
+    ) {
         studentLife.validPostsList(bearerToken).subscribe({ post ->
-            if (post.size >= 1) { //there exists a post
+            if (post.size >= 1) { // there exists a post
                 val postCell = PostCell(post[0])
 
                 addCell(postCell, POST_POS)
@@ -259,7 +287,11 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         })
     }
 
-    private fun getDiningPrefs(studentLife: StudentLife, bearerToken: String, latch: CountDownLatch) {
+    private fun getDiningPrefs(
+        studentLife: StudentLife,
+        bearerToken: String,
+        latch: CountDownLatch,
+    ) {
         studentLife.getDiningPreferences(bearerToken).subscribe({ preferences ->
             val list = preferences.preferences
             val venues = mutableListOf<Int>()
@@ -286,55 +318,60 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         })
     }
 
-    private fun getGSRReservations(studentLife: StudentLife, bearerToken: String, latch: CountDownLatch) {
+    private fun getGSRReservations(
+        studentLife: StudentLife,
+        bearerToken: String,
+        latch: CountDownLatch,
+    ) {
         studentLife.getGsrReservations(bearerToken).subscribe({ reservationsList ->
             if (reservationsList.isEmpty()) {
                 addCell(HomeCell(), GSR_POS)
-
             } else {
                 val gsrCell = GSRCell(reservationsList)
                 Log.i(TAG, "Loaded GSR Reservations")
                 addCell(gsrCell, GSR_POS)
             }
             latch.countDown()
-        },{
-            throwable ->
+        }, {
+                throwable ->
             Log.i(TAG, "Could not load GSR reservations")
             throwable.printStackTrace()
             latch.countDown()
         })
     }
 
-    private fun setPostBlurView(status: Boolean) = runBlocking {
-        postBlurMutex.withLock {
-            postBlurViewLoaded = status
+    private fun setPostBlurView(status: Boolean) =
+        runBlocking {
+            postBlurMutex.withLock {
+                postBlurViewLoaded = status
+            }
         }
-    }
 
-    private fun setNewsBlurView(status: Boolean) = runBlocking {
-        newsBlurMutex.withLock {
-           newsBlurViewLoaded = status
+    private fun setNewsBlurView(status: Boolean) =
+        runBlocking {
+            newsBlurMutex.withLock {
+                newsBlurViewLoaded = status
+            }
         }
-    }
 
     /**
      * Updates blurViewsLoaded based on the states of postBlurView and newsBlurView
      */
-    private fun updateBlurViewStatus() = runBlocking {
-        postBlurMutex.lock()
-        newsBlurMutex.lock()
-        Log.i(BLUR_TAG, "Called updateBlurViewStatus")
-        Log.i(BLUR_TAG, "News: $newsBlurViewLoaded")
-        Log.i(BLUR_TAG, "Posts: $postBlurViewLoaded")
-        if (newsBlurViewLoaded && postBlurViewLoaded) {
-            _blurViewsLoaded.postValue(true)
-        } else {
-            _blurViewsLoaded.postValue(false)
+    private fun updateBlurViewStatus() =
+        runBlocking {
+            postBlurMutex.lock()
+            newsBlurMutex.lock()
+            Log.i(BLUR_TAG, "Called updateBlurViewStatus")
+            Log.i(BLUR_TAG, "News: $newsBlurViewLoaded")
+            Log.i(BLUR_TAG, "Posts: $postBlurViewLoaded")
+            if (newsBlurViewLoaded && postBlurViewLoaded) {
+                _blurViewsLoaded.postValue(true)
+            } else {
+                _blurViewsLoaded.postValue(false)
+            }
+            postBlurMutex.unlock()
+            newsBlurMutex.unlock()
         }
-        postBlurMutex.unlock()
-        newsBlurMutex.unlock()
-    }
-
 
     /**
      * Allows adapter to tell the ViewModel that the post blur view is processed
@@ -369,8 +406,8 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
      * Updates the dining hall preferences. Used from the
      * dining pref cell on the homepage
      */
-    override fun updateDining(venues : List<Int>) {
-        addCell(DiningCell(venues), DINING_POS) 
+    override fun updateDining(venues: List<Int>) {
+        addCell(DiningCell(venues), DINING_POS)
         updatePosition(DINING_POS)
     }
 
@@ -378,7 +415,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
      * Gets the dining hall preferences as a list. Used by the dining preferences
      * cell on the homepage
      */
-    override fun getDiningHallPrefs() : List<Int> {
+    override fun getDiningHallPrefs(): List<Int> {
         // if empty, return an empty list
         val diningCell = homepageCells[DINING_POS]
         if (diningCell.type != "dining") {

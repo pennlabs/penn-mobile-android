@@ -14,16 +14,21 @@ import kotlinx.android.synthetic.main.poll_list_item.view.*
 import kotlin.math.abs
 import kotlin.math.round
 
-
-class PollOptionAdapter(private var pollOptions: ArrayList<PollOption>, private var poll: Poll) : RecyclerView.Adapter<PollOptionAdapter.ViewHolder>(){
+class PollOptionAdapter(private var pollOptions: ArrayList<PollOption>, private var poll: Poll) : RecyclerView.Adapter<PollOptionAdapter.ViewHolder>() {
     private lateinit var mContext: Context
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): ViewHolder {
         mContext = parent.context
         return ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.poll_list_item, parent, false))
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: ViewHolder,
+        position: Int,
+    ) {
         val pollOption = pollOptions[position]
         bindPollOption(holder, pollOption)
     }
@@ -40,11 +45,14 @@ class PollOptionAdapter(private var pollOptions: ArrayList<PollOption>, private 
         return 0
     }
 
-    private fun bindPollOption(holder: ViewHolder, pollOption: PollOption) {
+    private fun bindPollOption(
+        holder: ViewHolder,
+        pollOption: PollOption,
+    ) {
         holder.itemView.tv_option?.text = pollOption.choice
 
-        var startX : Float? = null
-        var startY : Float? = null
+        var startX: Float? = null
+        var startY: Float? = null
         holder.itemView.seek_bar?.setOnTouchListener { v, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -60,8 +68,9 @@ class PollOptionAdapter(private var pollOptions: ArrayList<PollOption>, private 
                     }
                 }
             }
-            true }
-        if(pollOption.selected) {
+            true
+        }
+        if (pollOption.selected) {
             holder.itemView.tv_option?.setTextColor(mContext.resources.getColor(R.color.color_secondary))
             holder.itemView.tv_percent?.setTextColor(mContext.resources.getColor(R.color.color_secondary))
             holder.itemView.tv_votes?.setTextColor(mContext.resources.getColor(R.color.color_secondary))
@@ -74,7 +83,7 @@ class PollOptionAdapter(private var pollOptions: ArrayList<PollOption>, private 
             holder.itemView.seek_bar?.progressDrawable = mContext.getDrawable(R.drawable.poll_track)
             holder.itemView.card_view?.foreground = null
         }
-        if(poll.isVisible) {
+        if (poll.isVisible) {
             holder.itemView.tv_votes?.text = "${pollOption.voteCount}"
             val votePercent = (pollOption.voteCount.div(poll.totalVotes.toDouble())) * 100
             holder.itemView.tv_percent?.text = String.format("%.2f%%", votePercent)
@@ -83,13 +92,18 @@ class PollOptionAdapter(private var pollOptions: ArrayList<PollOption>, private 
         }
     }
 
-    private fun isAClick(startX: Float, endX: Float, startY: Float, endY: Float): Boolean {
+    private fun isAClick(
+        startX: Float,
+        endX: Float,
+        startY: Float,
+        endY: Float,
+    ): Boolean {
         val differenceX = abs(startX - endX)
         val differenceY = abs(startY - endY)
         return !(differenceX > CLICK_ACTION_THRESHOLD /* =5 */ || differenceY > CLICK_ACTION_THRESHOLD)
     }
 
     companion object {
-        private const val CLICK_ACTION_THRESHOLD : Int = 200
+        private const val CLICK_ACTION_THRESHOLD: Int = 200
     }
 }

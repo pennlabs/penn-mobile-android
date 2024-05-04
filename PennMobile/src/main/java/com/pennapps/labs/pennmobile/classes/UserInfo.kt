@@ -10,5 +10,5 @@ data class UserInfo(
     @SerializedName("first_name")
     val firstName: String = "",
     @SerializedName("username")
-    val username: String = ""
+    val username: String = "",
 )

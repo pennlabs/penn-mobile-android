@@ -17,7 +17,6 @@ import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 
 class MoreFragment : Fragment() {
-
     private lateinit var mActivity: MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,14 +25,21 @@ class MoreFragment : Fragment() {
         mActivity.closeKeyboard()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_more, container, false)
 
         initAppBar(view)
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         childFragmentManager.beginTransaction()
             .replace(R.id.more_frame, PreferenceFragment())
@@ -44,24 +50,28 @@ class MoreFragment : Fragment() {
     private fun initAppBar(view: View) {
         view.date_view.text = Utils.getCurrentSystemTime()
         // Appbar behavior init
-        (view.appbar_home.layoutParams
-                as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
-
+        (
+            view.appbar_home.layoutParams
+                as CoordinatorLayout.LayoutParams
+        ).behavior = ToolbarBehavior()
     }
 
     override fun onResume() {
-        val initials = PreferenceManager.getDefaultSharedPreferences(mActivity)
+        val initials =
+            PreferenceManager.getDefaultSharedPreferences(mActivity)
                 .getString(getString(R.string.initials), null)
         if (initials != null && initials.isNotEmpty()) {
             this.initials.text = initials
         } else {
             this.profile_background.setImageDrawable(
-                    ResourcesCompat.getDrawable(resources,
-                            R.drawable.ic_guest_avatar, context?.theme)
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_guest_avatar,
+                    context?.theme,
+                ),
             )
         }
         mActivity.setSelectedTab(MainActivity.MORE)
         super.onResume()
     }
-
 }

@@ -7,6 +7,7 @@ class CampusExpressAccessTokenResponse {
     @SerializedName("expires_in")
     @Expose
     var expiresIn: Long? = null
+
     @SerializedName("access_token")
     @Expose
     var accessToken: String? = null

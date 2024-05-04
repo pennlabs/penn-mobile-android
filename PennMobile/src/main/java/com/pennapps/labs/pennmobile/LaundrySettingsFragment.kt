@@ -17,16 +17,16 @@ import kotlinx.android.synthetic.main.loading_panel.*
 import kotlinx.android.synthetic.main.no_results.*
 
 class LaundrySettingsFragment : Fragment() {
-
     private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLifeRf2
     private lateinit var mContext: Context
 
-    private var _binding : FragmentLaundrySettingsBinding? = null
+    private var _binding: FragmentLaundrySettingsBinding? = null
     private val binding get() = _binding!!
 
-    private val laundryViewModel : LaundryViewModel by activityViewModels()
+    private val laundryViewModel: LaundryViewModel by activityViewModels()
     private lateinit var sharedPreferences: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mStudentLife = MainActivity.studentLifeInstanceRf2
@@ -40,7 +40,11 @@ class LaundrySettingsFragment : Fragment() {
         mActivity.hideBottomBar()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
         _binding = FragmentLaundrySettingsBinding.inflate(inflater, container, false)
         val view = binding.root
 
@@ -58,7 +62,11 @@ class LaundrySettingsFragment : Fragment() {
             FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         loadingPanel?.visibility = View.VISIBLE
 
@@ -91,8 +99,10 @@ class LaundrySettingsFragment : Fragment() {
         super.onDestroyView()
         if (laundryViewModel.existsDiff()) {
             mActivity.mNetworkManager.getAccessToken {
-                val bearerToken = "Bearer " + sharedPreferences
-                    .getString(getString(R.string.access_token), "").toString()
+                val bearerToken =
+                    "Bearer " +
+                        sharedPreferences
+                            .getString(getString(R.string.access_token), "").toString()
                 laundryViewModel.setFavoritesFromToggled(mStudentLife, bearerToken)
             }
         }

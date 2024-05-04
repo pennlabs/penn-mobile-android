@@ -6,12 +6,10 @@ import com.pennapps.labs.pennmobile.R
 import java.util.*
 
 class CampusExpressNetworkManager(private var mActivity: MainActivity) {
-
     private val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
     val editor = sp?.edit()
 
-
-    fun getAccessToken() : String? {
+    fun getAccessToken(): String? {
         val expiresIn = sp.getLong(mActivity.getString(R.string.campus_token_expires_in), 0L)
         if (expiresIn != 0L) {
             val calendar = Calendar.getInstance()

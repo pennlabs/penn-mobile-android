@@ -8,19 +8,22 @@ import com.google.gson.annotations.SerializedName
  */
 
 class MachineList {
-
     @SerializedName("offline")
     @Expose
     val offline: Int? = null
+
     @SerializedName("open")
     @Expose
     val open: Int? = null
+
     @SerializedName("out_of_order")
     @Expose
     val outOfOrder: Int? = null
+
     @SerializedName("running")
     @Expose
     val running: Int? = null
+
     @SerializedName("time_remaining")
     @Expose
     val timeRemaining: List<Int>? = null

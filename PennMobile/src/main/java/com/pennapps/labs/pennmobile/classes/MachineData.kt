@@ -2,7 +2,6 @@ package com.pennapps.labs.pennmobile.classes
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-
 import java.util.ArrayList
 import java.util.Collections
 
@@ -14,81 +13,107 @@ class MachineData {
     @SerializedName("0")
     @Expose
     private var _0: Double = 0.0
+
     @SerializedName("1")
     @Expose
     private var _1: Double = 0.0
+
     @SerializedName("2")
     @Expose
     private var _2: Double = 0.0
+
     @SerializedName("3")
     @Expose
     private var _3: Double = 0.0
+
     @SerializedName("4")
     @Expose
     private var _4: Double = 0.0
+
     @SerializedName("5")
     @Expose
     private var _5: Double = 0.0
+
     @SerializedName("6")
     @Expose
     private var _6: Double = 0.0
+
     @SerializedName("7")
     @Expose
     private var _7: Double = 0.0
+
     @SerializedName("8")
     @Expose
     private var _8: Double = 0.0
+
     @SerializedName("9")
     @Expose
     private var _9: Double = 0.0
+
     @SerializedName("10")
     @Expose
     private var _10: Double = 0.0
+
     @SerializedName("11")
     @Expose
     private var _11: Double = 0.0
+
     @SerializedName("12")
     @Expose
     private var _12: Double = 0.0
+
     @SerializedName("13")
     @Expose
     private var _13: Double = 0.0
+
     @SerializedName("14")
     @Expose
     private var _14: Double = 0.0
+
     @SerializedName("15")
     @Expose
     private var _15: Double = 0.0
+
     @SerializedName("16")
     @Expose
     private var _16: Double = 0.0
+
     @SerializedName("17")
     @Expose
     private var _17: Double = 0.0
+
     @SerializedName("18")
     @Expose
     private var _18: Double = 0.0
+
     @SerializedName("19")
     @Expose
     private var _19: Double = 0.0
+
     @SerializedName("20")
     @Expose
     private var _20: Double = 0.0
+
     @SerializedName("21")
     @Expose
     private var _21: Double = 0.0
+
     @SerializedName("22")
     @Expose
     private var _22: Double = 0.0
+
     @SerializedName("23")
     @Expose
     private var _23: Double = 0.0
+
     @SerializedName("24")
     @Expose
     private var _24: Double = 0.0
+
     @SerializedName("25")
     @Expose
     private var _25: Double = 0.0
+
     @SerializedName("26")
     @Expose
     private var _26: Double = 0.0

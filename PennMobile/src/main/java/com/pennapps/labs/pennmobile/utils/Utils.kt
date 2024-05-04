@@ -8,12 +8,12 @@ import java.util.*
 
 /** Created by Davies Lumumba on 8/12/20. */
 object Utils {
-
     /** Get current formatted system time */
     @JvmStatic
     fun getCurrentSystemTime(): String {
         return SimpleDateFormat("EEEE, MMM d", Locale.getDefault()).format(
-            Date()).toUpperCase(Locale.getDefault())
+            Date(),
+        ).toUpperCase(Locale.getDefault())
     }
 
     /**
@@ -24,7 +24,10 @@ object Utils {
      * @return dimension in pixels
      */
     @JvmStatic
-    fun dpToPixel(context: Context, dp: Float): Int {
+    fun dpToPixel(
+        context: Context,
+        dp: Float,
+    ): Int {
         val resources = context.resources
         val metrics = resources.displayMetrics
         return try {
@@ -33,7 +36,8 @@ object Utils {
             TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 dp,
-                metrics).toInt()
+                metrics,
+            ).toInt()
         }
     }
 
@@ -51,14 +55,16 @@ object Utils {
 
     /** Get color from id.  */
     @JvmStatic
-    fun getColor(context: Context, color: Int): Int {
+    fun getColor(
+        context: Context,
+        color: Int,
+    ): Int {
         val tv = TypedValue()
         context.theme.resolveAttribute(color, tv, true)
         return tv.data
     }
 
     fun getSha256Hash(codeVerifier: String): String {
-
         // Hash the code verifier
         val md = MessageDigest.getInstance("SHA-256")
         val byteArr = md.digest(codeVerifier.toByteArray())

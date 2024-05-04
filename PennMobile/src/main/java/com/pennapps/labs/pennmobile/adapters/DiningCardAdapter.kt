@@ -3,9 +3,6 @@ package com.pennapps.labs.pennmobile.adapters
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.FragmentTransaction
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -13,6 +10,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.MenuFragment
@@ -22,9 +22,7 @@ import com.pennapps.labs.pennmobile.classes.DiningHall
 import kotlinx.android.synthetic.main.dining_list_item.view.*
 import rx.android.schedulers.AndroidSchedulers
 
-
 class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<DiningCardAdapter.ViewHolder>() {
-
     private var favoriteHalls: ArrayList<DiningHall> = halls
     private lateinit var itemImage: ImageView
     private lateinit var itemName: TextView
@@ -35,7 +33,10 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
     private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: ViewHolder,
+        position: Int,
+    ) {
         val currentHall = favoriteHalls[position]
         Glide.with(mContext).load(currentHall.image).fitCenter().centerCrop().into(itemImage)
         itemName.text = currentHall.name
@@ -56,17 +57,16 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
             }
         }
 
-
         // Load the menu for each dining hall
         if (currentHall.isResidential) {
             mStudentLife.daily_menu(currentHall.id)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ newDiningHall ->
-                        currentHall.sortMeals(newDiningHall.menus)
-                    }, {
-                        Log.e("DiningCard", "Error loading menus", it)
-                        Toast.makeText(mContext, "Error loading menus", Toast.LENGTH_SHORT).show()
-                    })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ newDiningHall ->
+                    currentHall.sortMeals(newDiningHall.menus)
+                }, {
+                    Log.e("DiningCard", "Error loading menus", it)
+                    Toast.makeText(mContext, "Error loading menus", Toast.LENGTH_SHORT).show()
+                })
         }
 
         holder.itemView.setOnClickListener {
@@ -78,10 +78,10 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
 
             val fragmentManager = mActivity.supportFragmentManager
             fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, fragment, "DINING_INFO_FRAGMENT")
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .addToBackStack(null)
-                    .commitAllowingStateLoss()
+                .replace(R.id.content_frame, fragment, "DINING_INFO_FRAGMENT")
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .addToBackStack(null)
+                .commitAllowingStateLoss()
         }
     }
 
@@ -89,7 +89,10 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
         return favoriteHalls.size
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): ViewHolder {
         mContext = parent.context
         mActivity = mContext as MainActivity
         mStudentLife = MainActivity.studentLifeInstance
@@ -111,14 +114,12 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
         }
     }
 
-    inner class ViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView) {
-
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         init {
             itemImage = itemView.item_dining_image
             itemName = itemView.item_dining_name
             itemStatus = itemView.item_dining_status
             itemHours = itemView.item_dining_hours
         }
-
     }
 }

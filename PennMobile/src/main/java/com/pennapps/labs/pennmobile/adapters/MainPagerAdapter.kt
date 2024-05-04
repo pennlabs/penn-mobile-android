@@ -12,12 +12,12 @@ import com.pennapps.labs.pennmobile.more_fragments.MoreFragment
 
 class MainPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle?) : FragmentStateAdapter(fragmentManager, lifecycle!!) {
     override fun createFragment(position: Int): Fragment {
-        return when(position) {
-            HOME_POSITION-> HomeFragment()
-            DINING_POSITION-> DiningHolderFragment()
-            GSR_POSITION-> GsrTabbedFragment()
-            LAUNDRY_POSITION-> LaundryFragment()
-            MORE_POSITION-> MoreFragment()
+        return when (position) {
+            HOME_POSITION -> HomeFragment()
+            DINING_POSITION -> DiningHolderFragment()
+            GSR_POSITION -> GsrTabbedFragment()
+            LAUNDRY_POSITION -> LaundryFragment()
+            MORE_POSITION -> MoreFragment()
             else -> HomeFragment()
         }
     }

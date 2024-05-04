@@ -5,5 +5,5 @@ package com.pennapps.labs.pennmobile.classes
  * every cell inherits from
  */
 open class HomeCell {
-    var type : String = "none"
+    var type: String = "none"
 }

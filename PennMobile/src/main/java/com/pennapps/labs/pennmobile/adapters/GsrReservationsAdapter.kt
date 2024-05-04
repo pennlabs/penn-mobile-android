@@ -1,13 +1,17 @@
 package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
-import androidx.preference.PreferenceManager
-import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.RecyclerView
+import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
+import androidx.appcompat.app.AlertDialog
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.GSRReservation
@@ -18,24 +22,24 @@ import org.joda.time.format.DateTimeFormatter
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
-import android.content.Intent
-import android.util.Log
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import android.widget.Toast.LENGTH_SHORT
 
-
-class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>)
-    : RecyclerView.Adapter<GsrReservationsAdapter.GsrReservationViewHolder>() {
-
+class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>) :
+    RecyclerView.Adapter<GsrReservationsAdapter.GsrReservationViewHolder>() {
     private lateinit var mContext: Context
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GsrReservationViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): GsrReservationViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.gsr_reservation, parent, false)
         mContext = parent.context
         return GsrReservationViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: GsrReservationViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: GsrReservationViewHolder,
+        position: Int,
+    ) {
         val reservation = reservations[position]
 
         val roomName = reservation.name
@@ -64,12 +68,16 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                 val bookingID = reservation.booking_id
 
                 (mContext as MainActivity).mNetworkManager.getAccessToken {
-
                     val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
-                    val sessionID = if (reservation.info == null) sp.getString(
-                        mContext.getString(R.string.huntsmanGSR_SessionID),
-                        ""
-                    ) else null
+                    val sessionID =
+                        if (reservation.info == null) {
+                            sp.getString(
+                                mContext.getString(R.string.huntsmanGSR_SessionID),
+                                "",
+                            )
+                        } else {
+                            null
+                        }
 
                     val labs = MainActivity.studentLifeInstance
                     val bearerToken =
@@ -99,15 +107,16 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                                 Log.e(
                                     "GsrReservationsAdapter",
                                     "Error canceling gsr reservation",
-                                    error
+                                    error,
                                 )
                                 Toast.makeText(
                                     mContext,
                                     "Error deleting your GSR reservation.",
-                                    LENGTH_SHORT
+                                    LENGTH_SHORT,
                                 ).show()
                             }
-                        })
+                        },
+                    )
                 }
             }
 

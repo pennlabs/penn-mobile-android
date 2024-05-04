@@ -46,5 +46,5 @@ data class PennCourseAlertRegistration(
     @SerializedName("user")
     val user: String = "",
     @SerializedName("section_status")
-    val sectionStatus: String = ""
+    val sectionStatus: String = "",
 )

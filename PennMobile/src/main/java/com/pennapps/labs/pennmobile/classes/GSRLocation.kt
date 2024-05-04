@@ -8,22 +8,23 @@ import com.google.gson.annotations.SerializedName
  */
 
 class GSRLocation {
-
     @SerializedName("name")
     @Expose
-    @JvmField var name: String? = null
+    @JvmField
+    var name: String? = null
 
     @SerializedName("lid")
     @Expose
-    @JvmField var id: String? = null
+    @JvmField
+    var id: String? = null
 
     @SerializedName("gid")
     @Expose
-    @JvmField var gid: Int = 0
+    @JvmField
+    var gid: Int = 0
 
     @SerializedName("kind")
     @Expose
-    @JvmField var kind: String? = null
-
-
+    @JvmField
+    var kind: String? = null
 }

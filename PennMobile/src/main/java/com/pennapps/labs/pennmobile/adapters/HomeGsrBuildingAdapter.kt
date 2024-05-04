@@ -1,31 +1,36 @@
 package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.GsrTabbedFragment
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import kotlinx.android.synthetic.main.home_gsr_building.view.*
 
-class HomeGsrBuildingAdapter(private var buildings: ArrayList<String>)
-    : RecyclerView.Adapter<HomeGsrBuildingAdapter.HomeGsrBuildingViewHolder>() {
-
+class HomeGsrBuildingAdapter(private var buildings: ArrayList<String>) :
+    RecyclerView.Adapter<HomeGsrBuildingAdapter.HomeGsrBuildingViewHolder>() {
     private lateinit var mContext: Context
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeGsrBuildingViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): HomeGsrBuildingViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.home_gsr_building, parent, false)
         mContext = parent.context
         return HomeGsrBuildingViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: HomeGsrBuildingViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: HomeGsrBuildingViewHolder,
+        position: Int,
+    ) {
         val building = buildings[position]
 
         holder.itemView.home_gsr_building_tv.text = building
@@ -38,7 +43,6 @@ class HomeGsrBuildingAdapter(private var buildings: ArrayList<String>)
         holder.itemView.setOnClickListener {
             fragmentTransact(GsrTabbedFragment(), false)
         }
-
     }
 
     override fun getItemCount(): Int {
@@ -49,7 +53,10 @@ class HomeGsrBuildingAdapter(private var buildings: ArrayList<String>)
         val view = itemView
     }
 
-    private fun fragmentTransact(fragment: Fragment?, popBackStack: Boolean) {
+    private fun fragmentTransact(
+        fragment: Fragment?,
+        popBackStack: Boolean,
+    ) {
         if (fragment != null) {
             if (mContext is FragmentActivity) {
                 try {
@@ -62,7 +69,6 @@ class HomeGsrBuildingAdapter(private var buildings: ArrayList<String>)
                 } catch (e: IllegalStateException) {
                     Log.e("HomeAdapter", e.toString())
                 }
-
             }
         }
     }

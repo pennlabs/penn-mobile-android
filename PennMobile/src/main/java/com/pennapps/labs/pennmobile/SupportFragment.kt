@@ -10,7 +10,6 @@ import kotlinx.android.synthetic.main.include_main.*
 import java.util.*
 
 class SupportFragment : ListFragment() {
-
     private lateinit var mActivity: MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,8 +38,11 @@ class SupportFragment : ListFragment() {
         super.onActivityCreated(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_support, container, false)
         setHasOptionsMenu(false)
         mActivity.toolbar.visibility = View.VISIBLE
@@ -49,7 +51,10 @@ class SupportFragment : ListFragment() {
         return view
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    override fun onCreateOptionsMenu(
+        menu: Menu,
+        inflater: MenuInflater,
+    ) {
         mActivity.menuInflater.inflate(R.menu.phone_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -60,10 +65,10 @@ class SupportFragment : ListFragment() {
                 val frag = SaveContactsFragment()
                 val fragmentManager = mActivity.supportFragmentManager
                 fragmentManager.beginTransaction()
-                        .replace(R.id.save_contacts_fragment, frag, "SAVE_CONTACTS_FRAGMENT")
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .addToBackStack(null)
-                        .commitAllowingStateLoss()
+                    .replace(R.id.save_contacts_fragment, frag, "SAVE_CONTACTS_FRAGMENT")
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .addToBackStack(null)
+                    .commitAllowingStateLoss()
             }
         }
         return true

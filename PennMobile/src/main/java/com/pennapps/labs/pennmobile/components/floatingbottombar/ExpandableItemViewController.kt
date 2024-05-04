@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
@@ -33,30 +32,32 @@ import com.pennapps.labs.pennmobile.components.floatingbottombar.utils.DrawableH
 import com.pennapps.labs.pennmobile.components.floatingbottombar.utils.createChain
 
 internal open class ExpandableItemViewController(
-        internal val menuItem: ExpandableBottomBarMenuItem,
-        private val itemView: View,
-        private val textView: TextView,
-        private val iconView: ImageView,
-        private val backgroundCornerRadius: Float,
-        private val backgroundOpacity: Float,
-        private val imageView: ImageView,
-        private val highlight: ImageView
+    internal val menuItem: ExpandableBottomBarMenuItem,
+    private val itemView: View,
+    private val textView: TextView,
+    private val iconView: ImageView,
+    private val backgroundCornerRadius: Float,
+    private val backgroundOpacity: Float,
+    private val imageView: ImageView,
+    private val highlight: ImageView,
 ) {
-
     fun setAccessibleWith(
-            prev: ExpandableItemViewController?,
-            next: ExpandableItemViewController?
+        prev: ExpandableItemViewController?,
+        next: ExpandableItemViewController?,
     ) {
-        setAccessibilityDelegate(itemView, object : AccessibilityDelegateCompat() {
-            override fun onInitializeAccessibilityNodeInfo(
+        setAccessibilityDelegate(
+            itemView,
+            object : AccessibilityDelegateCompat() {
+                override fun onInitializeAccessibilityNodeInfo(
                     host: View?,
-                    info: AccessibilityNodeInfoCompat?
-            ) {
-                info?.setTraversalAfter(prev?.itemView)
-                info?.setTraversalBefore(next?.itemView)
-                super.onInitializeAccessibilityNodeInfo(host, info)
-            }
-        })
+                    info: AccessibilityNodeInfoCompat?,
+                ) {
+                    info?.setTraversalAfter(prev?.itemView)
+                    info?.setTraversalBefore(next?.itemView)
+                    super.onInitializeAccessibilityNodeInfo(host, info)
+                }
+            },
+        )
     }
 
     fun deselect() {
@@ -76,28 +77,27 @@ internal open class ExpandableItemViewController(
         itemView.isSelected = true
         imageView.visibility = View.VISIBLE
         highlight.visibility = View.VISIBLE
-        //itemView.background = createHighlightedMenuShape()
+        // itemView.background = createHighlightedMenuShape()
     }
 
     @VisibleForTesting
     internal open fun createHighlightedMenuShape(): Drawable {
         return DrawableHelper.createShapeDrawable(
-                menuItem.activeColor,
-                backgroundCornerRadius,
-                backgroundOpacity
+            menuItem.activeColor,
+            backgroundCornerRadius,
+            backgroundOpacity,
         )
     }
 
     fun attachTo(
-            parent: ConstraintLayout,
-            previousIconId: Int,
-            nextIconId: Int,
-            menuItemHorizontalMarginLeft: Int,
-            menuItemHorizontalMarginRight: Int,
-            menuItemVerticalMarginTop: Int,
-            menuItemVerticalMarginBottom: Int
+        parent: ConstraintLayout,
+        previousIconId: Int,
+        nextIconId: Int,
+        menuItemHorizontalMarginLeft: Int,
+        menuItemHorizontalMarginRight: Int,
+        menuItemVerticalMarginTop: Int,
+        menuItemVerticalMarginBottom: Int,
     ) {
-
         textView.setTextAppearance(R.style.fontBottomBar)
         val activity = parent.context as Activity
         val displayMetrics = DisplayMetrics()
@@ -106,14 +106,17 @@ internal open class ExpandableItemViewController(
         var width = displayMetrics.widthPixels
         var height = displayMetrics.heightPixels
 
-        val lp = ConstraintLayout.LayoutParams(
+        val lp =
+            ConstraintLayout.LayoutParams(
                 ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
-                ConstraintLayout.LayoutParams.MATCH_PARENT
-        )
+                ConstraintLayout.LayoutParams.MATCH_PARENT,
+            )
 
         lp.setMargins(
-                menuItemHorizontalMarginLeft, menuItemVerticalMarginTop,
-                menuItemHorizontalMarginRight, menuItemVerticalMarginBottom
+            menuItemHorizontalMarginLeft,
+            menuItemVerticalMarginTop,
+            menuItemHorizontalMarginRight,
+            menuItemVerticalMarginBottom,
         )
 
         parent.addView(itemView, lp)
@@ -142,7 +145,6 @@ internal open class ExpandableItemViewController(
     }
 
     class Builder(private val menuItem: ExpandableBottomBarMenuItem) {
-
         @Px
         private var itemVerticalPadding: Int = 0
 
@@ -160,8 +162,8 @@ internal open class ExpandableItemViewController(
         private lateinit var onItemClickListener: (View) -> Unit
 
         fun itemMargins(
-                @Px itemHorizontalPadding: Int,
-                @Px itemVerticalPadding: Int
+            @Px itemHorizontalPadding: Int,
+            @Px itemVerticalPadding: Int,
         ): Builder {
             this.itemVerticalPadding = itemVerticalPadding
             this.itemHorizontalPadding = itemHorizontalPadding
@@ -169,8 +171,8 @@ internal open class ExpandableItemViewController(
         }
 
         fun itemBackground(
-                backgroundCornerRadius: Float,
-                @FloatRange(from = 0.0, to = 1.0) backgroundOpacity: Float
+            backgroundCornerRadius: Float,
+            @FloatRange(from = 0.0, to = 1.0) backgroundOpacity: Float,
         ): Builder {
             this.backgroundCornerRadius = backgroundCornerRadius
             this.backgroundOpacity = backgroundOpacity
@@ -188,79 +190,87 @@ internal open class ExpandableItemViewController(
         }
 
         fun build(context: Context): ExpandableItemViewController {
-            val itemView = LinearLayout(context).apply {
-                id = menuItem.itemId
-                orientation = LinearLayout.VERTICAL
-                setPadding(
+            val itemView =
+                LinearLayout(context).apply {
+                    id = menuItem.itemId
+                    orientation = LinearLayout.VERTICAL
+                    setPadding(
                         itemHorizontalPadding,
                         itemVerticalPadding,
                         itemHorizontalPadding,
-                        itemVerticalPadding
-                )
-                contentDescription = context.resources.getString(
-                        R.string.accessibility_item_description,
-                        menuItem.text
-                )
-                isFocusable = true
-                gravity = Gravity.BOTTOM
-            }
-
-
-            val iconView = AppCompatImageView(context).apply {
-                setImageDrawable(
-                        DrawableHelper.createDrawable(
-                                context,
-                                menuItem.iconId,
-                                backgroundColorSelector
+                        itemVerticalPadding,
+                    )
+                    contentDescription =
+                        context.resources.getString(
+                            R.string.accessibility_item_description,
+                            menuItem.text,
                         )
-                )
-            }
+                    isFocusable = true
+                    gravity = Gravity.BOTTOM
+                }
 
-            val textView = MaterialTextView(context).apply {
-                val rawText = SpannableString(menuItem.text)
-                rawText.setSpan(
+            val iconView =
+                AppCompatImageView(context).apply {
+                    setImageDrawable(
+                        DrawableHelper.createDrawable(
+                            context,
+                            menuItem.iconId,
+                            backgroundColorSelector,
+                        ),
+                    )
+                }
+
+            val textView =
+                MaterialTextView(context).apply {
+                    val rawText = SpannableString(menuItem.text)
+                    rawText.setSpan(
                         StyleSpan(Typeface.NORMAL),
                         0,
                         rawText.length,
-                        Spannable.SPAN_PARAGRAPH
-                )
-                text = rawText
-                gravity = Gravity.CENTER
-                visibility = View.INVISIBLE
-                textSize = 11.5F
-                setTextColor(backgroundColorSelector)
-            }
+                        Spannable.SPAN_PARAGRAPH,
+                    )
+                    text = rawText
+                    gravity = Gravity.CENTER
+                    visibility = View.INVISIBLE
+                    textSize = 11.5F
+                    setTextColor(backgroundColorSelector)
+                }
 
-            val itemLayoutParams = LinearLayout.LayoutParams(
+            val itemLayoutParams =
+                LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                gravity = Gravity.CENTER
-                setMargins(0, 0, 0, 0)
-            }
-
-            val textLayoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                gravity = Gravity.CENTER
-                setMargins(0, 24, 0, 12)
-            }
+                ).apply {
+                    gravity = Gravity.CENTER
+                    setMargins(0, 0, 0, 0)
+                }
 
-            val indicatorLayoutParams = LinearLayout.LayoutParams(
+            val textLayoutParams =
+                LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                ).apply {
+                    gravity = Gravity.CENTER
+                    setMargins(0, 24, 0, 12)
+                }
+
+            val indicatorLayoutParams =
+                LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                gravity = Gravity.CENTER
-                setMargins(0, 0, 0, 0)
-            }
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                ).apply {
+                    gravity = Gravity.CENTER
+                    setMargins(0, 0, 0, 0)
+                }
 
-            val imageView = ImageView(context).apply {
-                val indicator = ContextCompat
-                        .getDrawable(context, R.drawable.ic_bottom_bar_indicator)
-                setImageDrawable(indicator)
-                visibility = View.GONE
-            }
+            val imageView =
+                ImageView(context).apply {
+                    val indicator =
+                        ContextCompat
+                            .getDrawable(context, R.drawable.ic_bottom_bar_indicator)
+                    setImageDrawable(indicator)
+                    visibility = View.GONE
+                }
 
             with(itemView) {
                 addView(iconView, itemLayoutParams)
@@ -269,32 +279,41 @@ internal open class ExpandableItemViewController(
                 setOnClickListener(onItemClickListener)
             }
 
-            val highlight = ImageView(context).apply {
-                val indicator = ContextCompat
-                        .getDrawable(context, R.drawable.ic_bottom_bar_highlight)
-                setImageDrawable(indicator)
-                visibility = View.GONE
-            }
+            val highlight =
+                ImageView(context).apply {
+                    val indicator =
+                        ContextCompat
+                            .getDrawable(context, R.drawable.ic_bottom_bar_highlight)
+                    setImageDrawable(indicator)
+                    visibility = View.GONE
+                }
 
-            val highlightLayoutParams = FrameLayout.LayoutParams(
+            val highlightLayoutParams =
+                FrameLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT,
-                    Gravity.BOTTOM
-            ).apply {
-                setMargins(0, 0, 0, 0)
-            }
+                    Gravity.BOTTOM,
+                ).apply {
+                    setMargins(0, 0, 0, 0)
+                }
 
-            val frameView = FrameLayout(context).apply {
-                id = menuItem.itemId
-                isFocusable = true
-                addView(itemView)
-                addView(highlight, highlightLayoutParams)
-            }
+            val frameView =
+                FrameLayout(context).apply {
+                    id = menuItem.itemId
+                    isFocusable = true
+                    addView(itemView)
+                    addView(highlight, highlightLayoutParams)
+                }
 
             return ExpandableItemViewController(
-                    menuItem,
-                    frameView, textView, iconView,
-                    backgroundCornerRadius, backgroundOpacity, imageView, highlight
+                menuItem,
+                frameView,
+                textView,
+                iconView,
+                backgroundCornerRadius,
+                backgroundOpacity,
+                imageView,
+                highlight,
             )
         }
     }

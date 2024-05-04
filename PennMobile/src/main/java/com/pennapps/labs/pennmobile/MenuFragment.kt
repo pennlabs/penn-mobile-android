@@ -13,15 +13,13 @@ import kotlinx.android.synthetic.main.include_main.*
 import org.apache.commons.lang3.StringUtils
 
 class MenuFragment : Fragment() {
-
     private var mDiningHall: DiningHall? = null
     private lateinit var mActivity: MainActivity
     private var pageAdapter: PagerAdapter? = null
 
     inner class TabAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
-
-        //for each meal: {name of station: arraylist of foods at the station}
-        var foods : ArrayList<HashMap<String, ArrayList<String>>> = ArrayList()
+        // for each meal: {name of station: arraylist of foods at the station}
+        var foods: ArrayList<HashMap<String, ArrayList<String>>> = ArrayList()
 
         var headers: ArrayList<String> = ArrayList()
         var name: String? = null
@@ -81,7 +79,6 @@ class MenuFragment : Fragment() {
         override fun getCount(): Int {
             return foods.size
         }
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,19 +90,25 @@ class MenuFragment : Fragment() {
         mActivity.hideBottomBar()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
         val v = inflater.inflate(R.layout.fragment_menu, container, false)
         pageAdapter = TabAdapter(mActivity.supportFragmentManager)
         (pageAdapter as TabAdapter).addTabs(mDiningHall)
-        val pager : ViewPager = v.findViewById(R.id.menu_pager)
+        val pager: ViewPager = v.findViewById(R.id.menu_pager)
         pager.adapter = pageAdapter
         v.setBackgroundColor(Color.WHITE)
         mActivity.addTabs(pageAdapter as TabAdapter, pager, true)
         return v
     }
 
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    override fun onCreateOptionsMenu(
+        menu: Menu,
+        inflater: MenuInflater,
+    ) {
         inflater.inflate(R.menu.dining, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }

@@ -1,16 +1,13 @@
 package com.pennapps.labs.pennmobile.classes
 
-import org.junit.Assert.assertTrue
-import org.junit.Assert.assertFalse
+import org.joda.time.Interval
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
-import org.joda.time.Interval
-
 // Unit tests
 class GymHoursTest {
-
     @Before
     fun setup() {
         print("Setting up Unit tests")
@@ -28,5 +25,4 @@ class GymHoursTest {
         val interval = gymHours.interval
         assertEquals(interval, Interval(0, 0))
     }
-
 }

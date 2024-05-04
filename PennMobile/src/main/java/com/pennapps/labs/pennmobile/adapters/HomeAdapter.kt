@@ -9,7 +9,6 @@ import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import androidx.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +27,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.lifecycleScope
 import androidx.palette.graphics.Palette
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -39,14 +39,14 @@ import com.pennapps.labs.pennmobile.classes.CalendarCell
 import com.pennapps.labs.pennmobile.classes.CalendarEvent
 import com.pennapps.labs.pennmobile.classes.DiningCell
 import com.pennapps.labs.pennmobile.classes.DiningHall
+import com.pennapps.labs.pennmobile.classes.GSRCell
 import com.pennapps.labs.pennmobile.classes.HomepageDataModel
 import com.pennapps.labs.pennmobile.classes.LaundryCell
 import com.pennapps.labs.pennmobile.classes.NewsCell
-import com.pennapps.labs.pennmobile.classes.PollCell
-import com.pennapps.labs.pennmobile.classes.PostCell
-import com.pennapps.labs.pennmobile.classes.GSRCell
 import com.pennapps.labs.pennmobile.classes.Poll
+import com.pennapps.labs.pennmobile.classes.PollCell
 import com.pennapps.labs.pennmobile.classes.Post
+import com.pennapps.labs.pennmobile.classes.PostCell
 import com.pennapps.labs.pennmobile.components.sneaker.Utils.convertToDp
 import com.pennapps.labs.pennmobile.utils.Utils
 import eightbitlab.com.blurview.RenderScriptBlur
@@ -58,9 +58,9 @@ import kotlinx.android.synthetic.main.home_gsr_card.view.home_gsr_button
 import kotlinx.android.synthetic.main.home_gsr_card.view.home_gsr_rv
 import kotlinx.android.synthetic.main.home_gsr_card.view.home_gsr_subtitle
 import kotlinx.android.synthetic.main.home_gsr_card.view.home_gsr_title
-import kotlinx.android.synthetic.main.poll_card.view.*
 import kotlinx.android.synthetic.main.home_news_card.view.*
 import kotlinx.android.synthetic.main.home_post_card.view.*
+import kotlinx.android.synthetic.main.poll_card.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit.ResponseCallback
@@ -68,10 +68,8 @@ import retrofit.RetrofitError
 import retrofit.client.Response
 import rx.Observable
 
-
 class HomeAdapter(private val dataModel: HomepageDataModel) :
     RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
-
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
@@ -99,7 +97,10 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         private const val DRAFT_COLOR = "#ffb300"
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): ViewHolder {
         mContext = parent.context
         mStudentLife = MainActivity.studentLifeInstance
         mActivity = mContext as MainActivity
@@ -128,7 +129,11 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
             }
         }
     }
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+    override fun onBindViewHolder(
+        holder: ViewHolder,
+        position: Int,
+    ) {
         val cell = dataModel.getCell(position)
         when (cell.type) {
             "dining" -> bindDiningCell(holder, cell as DiningCell)
@@ -167,7 +172,10 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         }
     }
 
-    private fun bindDiningCell(holder: ViewHolder, cell: DiningCell) {
+    private fun bindDiningCell(
+        holder: ViewHolder,
+        cell: DiningCell,
+    ) {
         holder.itemView.home_card_title.text = "Favorites"
         holder.itemView.home_card_subtitle.text = "DINING HALLS"
         holder.itemView.dining_prefs_btn.visibility = View.VISIBLE
@@ -196,14 +204,21 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
                         }
                     }
                     getMenus(favorites)
-                    holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
-                        LinearLayoutManager.VERTICAL, false)
+                    holder.itemView.home_card_rv.layoutManager =
+                        LinearLayoutManager(
+                            mContext,
+                            LinearLayoutManager.VERTICAL,
+                            false,
+                        )
                     holder.itemView.home_card_rv.adapter = DiningCardAdapter(favorites)
                 }
             }
     }
 
-    private fun bindNewsCell(holder: ViewHolder, cell: NewsCell) {
+    private fun bindNewsCell(
+        holder: ViewHolder,
+        cell: NewsCell,
+    ) {
         val article = cell.article
         holder.itemView.home_news_title.text = article?.title
         holder.itemView.home_news_subtitle.text = article?.subtitle
@@ -215,7 +230,7 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
             .into(holder.itemView.home_news_iv)
 
         /** Adds dynamically generated accent color from the fetched image to the news card */
-        var accentColor: Int =  getColor(mContext, R.color.black)
+        var accentColor: Int = getColor(mContext, R.color.black)
         mActivity.lifecycleScope.launch(Dispatchers.Default) {
             val bitmap = Glide.with(mContext).load(article?.imageUrl).submit().get().toBitmap()
 
@@ -227,8 +242,10 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
             mActivity.runOnUiThread {
                 // Change all the components to match the accent color palette
                 vibrantSwatch?.titleTextColor?.let {
-                    DrawableCompat.setTint(DrawableCompat.wrap(holder.itemView.news_card_logo.drawable),
-                        ColorUtils.setAlphaComponent(it, 150))
+                    DrawableCompat.setTint(
+                        DrawableCompat.wrap(holder.itemView.news_card_logo.drawable),
+                        ColorUtils.setAlphaComponent(it, 150),
+                    )
                     DrawableCompat.setTint(DrawableCompat.wrap(holder.itemView.news_info_icon.drawable), it)
                     DrawableCompat.setTint(DrawableCompat.wrap(holder.itemView.dot_divider.drawable), it)
                     holder.itemView.button.setTextColor(ColorUtils.setAlphaComponent(it, 150))
@@ -237,17 +254,17 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
                     holder.itemView.home_news_subtitle.setTextColor(it)
                     holder.itemView.home_news_timestamp.setTextColor(it)
                 }
-                holder.itemView.news_card_container.background = BitmapDrawable(
-                    holder.view.resources,
-                    bitmap)
+                holder.itemView.news_card_container.background =
+                    BitmapDrawable(
+                        holder.view.resources,
+                        bitmap,
+                    )
                 holder.itemView.blurView
                     .setOverlayColor(ColorUtils.setAlphaComponent(accentColor, 150))
 
                 // tell model that the news blur view has been loaded
                 dataModel.notifyNewsBlurLoaded()
             }
-
-
         }
 
         /** Logic for the more info button on the news card */
@@ -276,7 +293,6 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
             .setHasFixedTransformationMatrix(true)
 
         holder.itemView.button.setOnClickListener {
-
             val url = article?.articleUrl
 
             val connection = NewsCustomTabsServiceConnection()
@@ -287,17 +303,25 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
             builder?.setStartAnimations(
                 mContext,
                 androidx.appcompat.R.anim.abc_popup_enter,
-                androidx.appcompat.R.anim.abc_popup_exit)
+                androidx.appcompat.R.anim.abc_popup_exit,
+            )
             CustomTabsClient.bindCustomTabsService(
                 mContext,
-                NewsFragment.CUSTOM_TAB_PACKAGE_NAME, connection)
+                NewsFragment.CUSTOM_TAB_PACKAGE_NAME,
+                connection,
+            )
 
             if (mContext.isChromeCustomTabsSupported()) {
                 share?.putExtra(Intent.EXTRA_TEXT, url)
                 builder?.addMenuItem(
-                    "Share", PendingIntent.getActivity(
-                        mContext, 0,
-                        share, PendingIntent.FLAG_CANCEL_CURRENT))
+                    "Share",
+                    PendingIntent.getActivity(
+                        mContext,
+                        0,
+                        share,
+                        PendingIntent.FLAG_CANCEL_CURRENT,
+                    ),
+                )
                 customTabsIntent = builder?.build()
                 customTabsIntent?.launchUrl(mActivity, Uri.parse(url))
             } else {
@@ -307,7 +331,10 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         }
     }
 
-    private fun bindCalendarCell(holder: ViewHolder, cell: CalendarCell) {
+    private fun bindCalendarCell(
+        holder: ViewHolder,
+        cell: CalendarCell,
+    ) {
         val events = cell.events ?: ArrayList()
 
         var i = events.size - 1
@@ -323,19 +350,30 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         holder.itemView.home_card_title.text = "Upcoming Events"
         holder.itemView.home_card_subtitle.text = "UNIVERSITY NOTIFICATIONS"
 
-        holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
-            LinearLayoutManager.VERTICAL, false)
+        holder.itemView.home_card_rv.layoutManager =
+            LinearLayoutManager(
+                mContext,
+                LinearLayoutManager.VERTICAL,
+                false,
+            )
 
         holder.itemView.home_card_rv.adapter = UniversityEventAdapter(eventList)
     }
 
-    private fun bindLaundryCell(holder: ViewHolder, cell: LaundryCell) {
+    private fun bindLaundryCell(
+        holder: ViewHolder,
+        cell: LaundryCell,
+    ) {
         val roomID = cell.roomId
         holder.itemView.home_card_subtitle.text = "LAUNDRY"
-        holder.itemView.home_card_rv.layoutManager = LinearLayoutManager(mContext,
-            LinearLayoutManager.VERTICAL, false)
+        holder.itemView.home_card_rv.layoutManager =
+            LinearLayoutManager(
+                mContext,
+                LinearLayoutManager.VERTICAL,
+                false,
+            )
 
-        val params : ConstraintLayout.LayoutParams =
+        val params: ConstraintLayout.LayoutParams =
             holder.itemView.home_card_rv.layoutParams as ConstraintLayout.LayoutParams
         params.setMargins(0, 0, 0, 0)
         params.marginStart = 0
@@ -348,11 +386,13 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
                 val rooms = arrayListOf(room)
                 holder.itemView.home_card_rv.adapter = LaundryRoomAdapter(mContext, rooms, null, true)
             }
-
         }, { throwable -> mActivity.runOnUiThread { throwable.printStackTrace() } })
     }
 
-    private fun bindPostCell(holder: ViewHolder, cell: PostCell) {
+    private fun bindPostCell(
+        holder: ViewHolder,
+        cell: PostCell,
+    ) {
         val post = cell.post
 
         // if the post is a draft, then change the color and add a note
@@ -366,8 +406,9 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         }
 
         holder.itemView.home_post_title.text = post.title
-        holder.itemView.home_post_source.text = "Penn Labs" //post?.clubCode?.capitalize()
-        val time = post.startDate?.substring(5, 7) + " / " +
+        holder.itemView.home_post_source.text = "Penn Labs" // post?.clubCode?.capitalize()
+        val time =
+            post.startDate?.substring(5, 7) + " / " +
                 post.startDate?.substring(8, 10) + " - " +
                 post.expireDate?.substring(5, 7) + " / " +
                 post.expireDate?.substring(8, 10)
@@ -377,9 +418,10 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
             .centerCrop()
             .into(holder.itemView.home_post_iv)
         /** Adds dynamically generated accent color from the fetched image to the news card */
-        var accentColor: Int =  getColor(mContext, R.color.black)
+        var accentColor: Int = getColor(mContext, R.color.black)
         mActivity.lifecycleScope.launch(Dispatchers.Default) {
             val bitmap = Glide.with(mContext).load(post.imageUrl).submit().get().toBitmap()
+
             // Create palette from bitmap
             fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
             val vibrantSwatch: Palette.Swatch? = createPaletteSync(bitmap).darkVibrantSwatch
@@ -391,17 +433,19 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
                         holder.itemView.home_post_title.setTextColor(
                             ColorUtils.setAlphaComponent(
                                 it,
-                                150
-                            )
+                                150,
+                            ),
                         )
                     }
                     holder.itemView.home_post_subtitle.setTextColor(it)
                     holder.itemView.home_post_timestamp.setTextColor(it)
                     holder.itemView.home_post_source.setTextColor(it)
                 }
-                val bitmapDrawable = BitmapDrawable(
-                    holder.view.resources,
-                    bitmap)
+                val bitmapDrawable =
+                    BitmapDrawable(
+                        holder.view.resources,
+                        bitmap,
+                    )
 
                 holder.itemView.post_card_container.background = bitmapDrawable
                 holder.itemView.postBlurView
@@ -425,16 +469,28 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
             share = Intent(Intent.ACTION_SEND)
             share?.type = "text/plain"
             builder?.setToolbarColor(0x3E50B4)
-            builder?.setStartAnimations(mContext,
+            builder?.setStartAnimations(
+                mContext,
                 androidx.appcompat.R.anim.abc_popup_enter,
-                androidx.appcompat.R.anim.abc_popup_exit)
-            CustomTabsClient.bindCustomTabsService(mContext,
-                NewsFragment.CUSTOM_TAB_PACKAGE_NAME, connection)
+                androidx.appcompat.R.anim.abc_popup_exit,
+            )
+            CustomTabsClient.bindCustomTabsService(
+                mContext,
+                NewsFragment.CUSTOM_TAB_PACKAGE_NAME,
+                connection,
+            )
 
             if (mContext.isChromeCustomTabsSupported()) {
                 share?.putExtra(Intent.EXTRA_TEXT, url)
-                builder?.addMenuItem("Share", PendingIntent.getActivity(mContext, 0,
-                    share, PendingIntent.FLAG_CANCEL_CURRENT))
+                builder?.addMenuItem(
+                    "Share",
+                    PendingIntent.getActivity(
+                        mContext,
+                        0,
+                        share,
+                        PendingIntent.FLAG_CANCEL_CURRENT,
+                    ),
+                )
                 customTabsIntent = builder?.build()
                 customTabsIntent?.launchUrl(mActivity, Uri.parse(url))
             } else {
@@ -444,7 +500,11 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         }
     }
 
-    private fun bindPollCell(holder: ViewHolder, cell: PollCell, position: Int) {
+    private fun bindPollCell(
+        holder: ViewHolder,
+        cell: PollCell,
+        position: Int,
+    ) {
         val poll = cell.poll
 
         // if the post is a draft, then change the color and add a note
@@ -457,12 +517,12 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         }
 
         holder.itemView.home_card_subtitle_2?.text = "${poll.totalVotes} Votes"
-        if(poll.clubCode != null) {
+        if (poll.clubCode != null) {
             holder.itemView.home_card_subtitle?.text = "POLL FROM ${poll.clubCode}"
         }
         holder.itemView.home_card_rv?.layoutManager = LinearLayoutManager(mContext)
         holder.itemView.home_card_rv?.adapter = PollOptionAdapter(ArrayList(poll.options), poll)
-        if(!poll.isVisible) {
+        if (!poll.isVisible) {
             holder.itemView.vote_btn?.setOnClickListener {
                 var isSelected = false
                 poll.options.forEach { isSelected = isSelected || it.selected }
@@ -470,7 +530,7 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
                     Toast.makeText(
                         mActivity,
                         "Need to select an option to vote",
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_SHORT,
                     ).show()
                     return@setOnClickListener
                 }
@@ -479,9 +539,11 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
                 holder.itemView.vote_btn?.isClickable = false
                 notifyItemChanged(position)
                 val selectedOptions = ArrayList<Int>()
-                poll.options.forEach { if (it.id != null && it.selected) {
-                    selectedOptions.add(it.id)
-                } }
+                poll.options.forEach {
+                    if (it.id != null && it.selected) {
+                        selectedOptions.add(it.id)
+                    }
+                }
                 val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
                 val idHash = Utils.getSha256Hash(deviceID)
                 mActivity.mNetworkManager.getAccessToken {
@@ -500,8 +562,8 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
                             override fun failure(error: RetrofitError?) {
                                 Log.e("HomeAdapter", "Error voting for poll", error)
                             }
-
-                        })
+                        },
+                    )
                 }
             }
         } else {
@@ -510,17 +572,24 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         }
     }
 
-    private fun bindGSRCell(holder: ViewHolder, cell: GSRCell) {
+    private fun bindGSRCell(
+        holder: ViewHolder,
+        cell: GSRCell,
+    ) {
         holder.itemView.home_gsr_title?.text = "Reservations"
         holder.itemView.home_gsr_subtitle?.text = "Group Study Rooms"
         val reservations = cell.reservations
-        holder.itemView.home_gsr_rv?.layoutManager = LinearLayoutManager(mContext,
-                LinearLayoutManager.VERTICAL, false)
+        holder.itemView.home_gsr_rv?.layoutManager =
+            LinearLayoutManager(
+                mContext,
+                LinearLayoutManager.VERTICAL,
+                false,
+            )
         holder.itemView.home_gsr_button?.text = "Book a Room"
         holder.itemView.home_gsr_button?.setOnClickListener {
             mActivity.setTab(MainActivity.GSR_ID)
             for (fragment in mActivity.supportFragmentManager.fragments) {
-                if(fragment is GsrTabbedFragment) {
+                if (fragment is GsrTabbedFragment) {
                     fragment.viewPager.currentItem = 0
                 }
             }
@@ -528,12 +597,12 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         holder.itemView.home_gsr_rv?.adapter = HomeGsrReservationAdapter(reservations)
     }
 
-
-
     // Chrome custom tabs to launch news site
     internal inner class NewsCustomTabsServiceConnection : CustomTabsServiceConnection() {
-
-        override fun onCustomTabsServiceConnected(name: ComponentName, client: CustomTabsClient) {
+        override fun onCustomTabsServiceConnected(
+            name: ComponentName,
+            client: CustomTabsClient,
+        ) {
             mCustomTabsClient = client
             mCustomTabsClient?.warmup(0)
             session = mCustomTabsClient?.newSession(null)
@@ -553,5 +622,4 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         val resolveInfos = this.packageManager.queryIntentServices(serviceIntent, 0)
         return resolveInfos.isNotEmpty()
     }
-
 }
