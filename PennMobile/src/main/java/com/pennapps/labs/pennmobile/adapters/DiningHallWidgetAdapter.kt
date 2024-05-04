@@ -19,7 +19,7 @@ import rx.Observable
 
 class DiningHallWidgetAdapter : RemoteViewsService() {
     override fun onGetViewFactory(p0: Intent): RemoteViewsFactory {
-        return diningWidgetFactory(applicationContext, p0)
+        return DiningWidgetFactory(applicationContext, p0)
     }
 
     // The appwidget RemoteViewsFactory updates the data on the appwidget by:
@@ -28,7 +28,7 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
     // 3. In onCreate, the function getWidgetDiningHalls is called
     // 4. getWidgetDiningHall makes a network request to update diningHall data and calls notifyAppWidgetViewDataChanged, which then calls
     //      getViewAt() and updates the UI of the widget).
-    class diningWidgetFactory(private val context: Context, intent: Intent) : RemoteViewsFactory {
+    class DiningWidgetFactory(private val context: Context, intent: Intent) : RemoteViewsFactory {
         private var mDiningRequest: DiningRequest? = null
         private var appWidgetId: Int =
             intent.getIntExtra(
@@ -71,9 +71,9 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
 
                 if (dataSet[position].openMeal() != "all" && dataSet[position].openMeal() != null) {
                     val resources = context.resources
-                    val open_label: String =
+                    val openLabel: String =
                         resources.getString(getOpenStatusLabel(dataSet[position].openMeal() ?: ""))
-                    views.setTextViewText(R.id.open_status_label, open_label)
+                    views.setTextViewText(R.id.open_status_label, openLabel)
                 }
             } else {
                 views.setImageViewResource(R.id.imageView, R.drawable.baseline_cancel_24)

@@ -18,7 +18,7 @@ internal class SneakerView(context: Context?) : LinearLayout(context) {
         layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
     }
 
-    private val DEFAULT_VALUE = -100000
+    private val defaultValue = -100000
 
     fun setIcon(
         icon: Drawable?,
@@ -31,7 +31,7 @@ internal class SneakerView(context: Context?) : LinearLayout(context) {
             ivIcon.layoutParams = LayoutParams(iconSize, iconSize)
             ivIcon.setImageDrawable(it)
             ivIcon.isClickable = false
-            if (colorFilter != DEFAULT_VALUE) ivIcon.setColorFilter(colorFilter)
+            if (colorFilter != defaultValue) ivIcon.setColorFilter(colorFilter)
             addView(ivIcon, 0)
         }
     }
@@ -60,7 +60,7 @@ internal class SneakerView(context: Context?) : LinearLayout(context) {
             tvTitle.isClickable = false
 
             tvTitle.setPadding(46, if (description.isNotEmpty()) 26 else 0, 26, 0) // Top padding only if there is message
-            if (titleColor != DEFAULT_VALUE) tvTitle.setTextColor(titleColor)
+            if (titleColor != defaultValue) tvTitle.setTextColor(titleColor)
             if (typeface != null) tvTitle.typeface = typeface
 
             textLayout.addView(tvTitle)
@@ -76,7 +76,7 @@ internal class SneakerView(context: Context?) : LinearLayout(context) {
             tvMessage.isClickable = false
 
             tvMessage.setPadding(46, 0, 26, if (title.isNotEmpty()) 26 else 0) // Top padding only if there is message
-            if (messageColor != DEFAULT_VALUE) tvMessage.setTextColor(messageColor)
+            if (messageColor != defaultValue) tvMessage.setTextColor(messageColor)
             if (typeface != null) tvMessage.typeface = typeface
 
             textLayout.addView(tvMessage)
@@ -88,7 +88,7 @@ internal class SneakerView(context: Context?) : LinearLayout(context) {
         color: Int,
         cornerRadius: Int,
     ) {
-        if (cornerRadius == DEFAULT_VALUE) {
+        if (cornerRadius == defaultValue) {
             setBackgroundColor(color)
         } else {
             background = customView(context, color, cornerRadius)

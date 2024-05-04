@@ -30,24 +30,24 @@ import com.pennapps.labs.pennmobile.components.sneaker.intf.OnSneakerDismissList
  * Modified for PennMobile by Davies Lumumba on 7/25/2020
  * */
 class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObserver {
-    private val DEFAULT_VALUE = -100000
+    private val defaultValue = -100000
     private var mIconDrawable: Drawable? = null
-    private var mBackgroundColor = DEFAULT_VALUE
-    private var mHeight = DEFAULT_VALUE
-    private var mIconColorFilterColor = DEFAULT_VALUE
+    private var mBackgroundColor = defaultValue
+    private var mHeight = defaultValue
+    private var mIconColorFilterColor = defaultValue
     private var mIconSize = 24
     private var mTitle = ""
     private var mMessage = ""
-    private var mTitleColor = DEFAULT_VALUE
-    private var mMessageColor = DEFAULT_VALUE
+    private var mTitleColor = defaultValue
+    private var mMessageColor = defaultValue
     private var mAutoHide = true
     private var mDuration = 3000
     private var mIsCircular = false
     private var mListener: OnSneakerClickListener? = null
     private var mDismissListener: OnSneakerDismissListener? = null
     private var mTypeFace: Typeface? = null
-    private var mCornerRadius = DEFAULT_VALUE
-    private var mMargin = DEFAULT_VALUE
+    private var mCornerRadius = defaultValue
+    private var mMargin = defaultValue
     private var targetView: ViewGroup? = null
     private var isActivity: Boolean = false
     private val sneakerView by lazy { SneakerView(context) }
@@ -187,7 +187,7 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
     fun setIcon(
         @DrawableRes icon: Int,
     ): Sneaker {
-        setIcon(icon, DEFAULT_VALUE, false)
+        setIcon(icon, defaultValue, false)
         return this
     }
 
@@ -198,7 +198,7 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
      * @return
      */
     fun setIcon(icon: Drawable): Sneaker {
-        setIcon(icon, DEFAULT_VALUE, false)
+        setIcon(icon, defaultValue, false)
         return this
     }
 
@@ -213,7 +213,7 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
         @DrawableRes icon: Int,
         isCircular: Boolean,
     ): Sneaker {
-        setIcon(icon, DEFAULT_VALUE, isCircular)
+        setIcon(icon, defaultValue, isCircular)
         return this
     }
 
@@ -228,7 +228,7 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
         icon: Drawable,
         isCircular: Boolean,
     ): Sneaker {
-        setIcon(icon, DEFAULT_VALUE, isCircular)
+        setIcon(icon, defaultValue, isCircular)
         return this
     }
 
@@ -302,7 +302,7 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
      * @param radius Corner radius.
      */
     fun setCornerRadius(radius: Int): Sneaker {
-        setCornerRadius(radius, DEFAULT_VALUE)
+        setCornerRadius(radius, defaultValue)
         return this
     }
 
@@ -453,7 +453,7 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT,
                 )
-            if (mMargin != DEFAULT_VALUE) {
+            if (mMargin != defaultValue) {
                 val margin = Utils.convertToDp(context, mMargin.toFloat())
                 layoutParams.setMargins(margin, margin, margin, margin)
             }

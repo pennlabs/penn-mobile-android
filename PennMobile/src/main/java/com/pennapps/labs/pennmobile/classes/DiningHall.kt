@@ -196,7 +196,7 @@ open class DiningHall : Parcelable {
 
     class DiningVenue {
         @SerializedName("venue_id")
-        var venue_id: Int = -1
+        var venueId: Int = -1
     }
 
     /**

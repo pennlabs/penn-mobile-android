@@ -15,7 +15,10 @@ import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import org.joda.time.format.ISODateTimeFormat
 
-class FlingRecyclerViewAdapter(private val context: Context?, private val sampleData: List<FlingEvent>) : RecyclerView.Adapter<FlingRecyclerViewAdapter.ViewHolder>() {
+class FlingRecyclerViewAdapter(
+    private val context: Context?,
+    private val sampleData: List<FlingEvent>,
+) : RecyclerView.Adapter<FlingRecyclerViewAdapter.ViewHolder>() {
     private val timeFormatter: DateTimeFormatter = ISODateTimeFormat.dateTimeNoMillis()
 
     override fun getItemCount(): Int {
@@ -38,14 +41,14 @@ class FlingRecyclerViewAdapter(private val context: Context?, private val sample
             val flingEvent = sampleData[position]
             val picasso = Picasso.get()
             picasso.isLoggingEnabled = true
-            if (holder.flingview_image != null) picasso.load(flingEvent.imageUrl).into(holder.flingview_image)
-            holder.flingview_name?.text = flingEvent.name
-            holder.flingview_description?.text = flingEvent.description
+            if (holder.flingviewImage != null) picasso.load(flingEvent.imageUrl).into(holder.flingviewImage)
+            holder.flingviewName?.text = flingEvent.name
+            holder.flingviewDescription?.text = flingEvent.description
             val startTime = timeFormatter.parseDateTime(flingEvent.startTime)
             val endTime = timeFormatter.parseDateTime(flingEvent.endTime)
             val dtfStart = DateTimeFormat.forPattern("h:mm")
             val dtfEnd = DateTimeFormat.forPattern("h:mm a")
-            holder.flingview_time?.text =
+            holder.flingviewTime?.text =
                 String.format(
                     context?.resources?.getString(R.string.fling_event_time).toString(),
                     dtfStart.print(startTime),
@@ -55,9 +58,9 @@ class FlingRecyclerViewAdapter(private val context: Context?, private val sample
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        internal var flingview_image: ImageView? = view.flingview_image
-        internal var flingview_name: TextView? = view.flingview_name
-        internal var flingview_description: TextView? = view.flingview_description
-        internal var flingview_time: TextView? = view.flingview_time
+        internal var flingviewImage: ImageView? = view.flingview_image
+        internal var flingviewName: TextView? = view.flingview_name
+        internal var flingviewDescription: TextView? = view.flingview_description
+        internal var flingviewTime: TextView? = view.flingview_time
     }
 }

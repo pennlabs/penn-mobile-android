@@ -41,7 +41,7 @@ class SaveContactsFragment : ListFragment() {
             ActivityCompat.requestPermissions(
                 mActivity,
                 arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS),
-                permission_read,
+                PERMISSION_READ,
             )
         }
     }
@@ -78,7 +78,7 @@ class SaveContactsFragment : ListFragment() {
                 ActivityCompat.requestPermissions(
                     mActivity,
                     arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS),
-                    permission_read,
+                    PERMISSION_READ,
                 )
             } else {
                 loadCurrent()
@@ -146,7 +146,7 @@ class SaveContactsFragment : ListFragment() {
         grantResults: IntArray,
     ) {
         when (requestCode) {
-            permission_read -> {
+            PERMISSION_READ -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     loadCurrent()
                     addContacts()
@@ -185,6 +185,6 @@ class SaveContactsFragment : ListFragment() {
     }
 
     companion object {
-        const val permission_read = 123
+        const val PERMISSION_READ = 123
     }
 }

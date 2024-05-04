@@ -131,7 +131,7 @@ public interface StudentLife {
     void cancelReservation(
             @Header("Authorization") String bearerToken,
             @Header("X-Device-ID") String deviceID,
-            @Field("booking_id") String bookingID,
+            @Field("bookingId") String bookingID,
             @Field("sessionid") String sessionID,
             Callback<Response> callback);
 

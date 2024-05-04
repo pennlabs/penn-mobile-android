@@ -23,7 +23,12 @@ import com.pennapps.labs.pennmobile.classes.MachineDetail
 import com.pennapps.labs.pennmobile.showSneakerToast
 import kotlinx.android.synthetic.main.laundry_dryer_item.view.*
 
-class LaundryMachineAdapter(var context: Context, var mMachineDetails: List<MachineDetail>, machineType: String, roomName: String) : RecyclerView.Adapter<LaundryMachineAdapter.CustomViewHolder>() {
+class LaundryMachineAdapter(
+    var context: Context,
+    var mMachineDetails: List<MachineDetail>,
+    machineType: String,
+    roomName: String,
+) : RecyclerView.Adapter<LaundryMachineAdapter.CustomViewHolder>() {
     private var mRoomName: String
     private var mMachineType: String
 

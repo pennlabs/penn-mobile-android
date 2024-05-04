@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile.more_fragments
+package com.pennapps.labs.pennmobile.morefragments
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -136,43 +136,43 @@ class PreferenceFragment : PreferenceFragmentCompat() {
 
         val pennLabsPref: Preference? = findPreference("pref_labs_link")
         pennLabsPref?.setOnPreferenceClickListener {
-            openLink(PennLabs)
+            openLink(PENNLABS)
             return@setOnPreferenceClickListener true
         }
 
         val feedbackPref: Preference? = findPreference("pref_feedback_link")
         feedbackPref?.setOnPreferenceClickListener {
-            openLink(Feedback)
+            openLink(FEEDBACK)
             return@setOnPreferenceClickListener true
         }
 
         val pennHomepagePref: Preference? = findPreference("pref_penn_link")
         pennHomepagePref?.setOnPreferenceClickListener {
-            openLink(PennHomepage)
+            openLink(PENN_HOMEPAGE)
             return@setOnPreferenceClickListener true
         }
 
         val pennCampusExpressPref: Preference? = findPreference("pref_campus_express_link")
         pennCampusExpressPref?.setOnPreferenceClickListener {
-            openLink(CampusExpress)
+            openLink(CAMPUS_EXPRESS)
             return@setOnPreferenceClickListener true
         }
 
         val pennCanvasPref: Preference? = findPreference("pref_canvas_link")
         pennCanvasPref?.setOnPreferenceClickListener {
-            openLink(Canvas)
+            openLink(CANVAS)
             return@setOnPreferenceClickListener true
         }
 
         val pathAtPennPref: Preference? = findPreference("pref_path_at_penn_link")
         pathAtPennPref?.setOnPreferenceClickListener {
-            openLink(PathAtPenn)
+            openLink(PATH_AT_PENN)
             return@setOnPreferenceClickListener true
         }
 
         val pennPortalPref: Preference? = findPreference("pref_penn_portal_link")
         pennPortalPref?.setOnPreferenceClickListener {
-            openLink(PennPortal)
+            openLink(PENN_PORTAL)
             return@setOnPreferenceClickListener true
         }
     }
@@ -253,12 +253,12 @@ class PreferenceFragment : PreferenceFragmentCompat() {
     }
 
     companion object {
-        private const val PennLabs = "https://pennlabs.org"
-        private const val Feedback = "https://airtable.com/appFRa4NQvNMEbWsA/shrn4VbSQa8QDj8OG"
-        private const val PennHomepage = "https://www.upenn.edu"
-        private const val CampusExpress = "https://prod.campusexpress.upenn.edu"
-        private const val Canvas = "https://canvas.upenn.edu"
-        private const val PathAtPenn = "https://path.at.upenn.edu/"
-        private const val PennPortal = "https://portal.apps.upenn.edu/penn_portal"
+        private const val PENNLABS = "https://pennlabs.org"
+        private const val FEEDBACK = "https://airtable.com/appFRa4NQvNMEbWsA/shrn4VbSQa8QDj8OG"
+        private const val PENN_HOMEPAGE = "https://www.upenn.edu"
+        private const val CAMPUS_EXPRESS = "https://prod.campusexpress.upenn.edu"
+        private const val CANVAS = "https://canvas.upenn.edu"
+        private const val PATH_AT_PENN = "https://path.at.upenn.edu/"
+        private const val PENN_PORTAL = "https://portal.apps.upenn.edu/penn_portal"
     }
 }

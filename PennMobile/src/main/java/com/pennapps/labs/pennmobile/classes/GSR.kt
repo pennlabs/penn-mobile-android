@@ -3,15 +3,16 @@ package com.pennapps.labs.pennmobile.classes
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
+// class that keeps track of all the GSR rooms themselves
+
 /**
  * Created by Varun on 10/14/2018.
  */
 
-// class that keeps track of all the GSR rooms themselves
 class GSR {
     @SerializedName("location_id")
     @Expose
-    var location_id: Int? = null
+    var locationId: Int? = null
 
     @SerializedName("date")
     @Expose

@@ -103,7 +103,7 @@ class PennCourseAlertViewModel : ViewModel() {
     }
 
     fun retrieveRegistrations() {
-        var _response = ""
+        var internalResponse = ""
         PennCourseAlertApi.retrofitService.getAllRegistrations(bearerToken)
             .enqueue(
                 object : Callback<List<PennCourseAlertRegistration>> {
@@ -111,8 +111,8 @@ class PennCourseAlertViewModel : ViewModel() {
                         call: Call<List<PennCourseAlertRegistration>>,
                         t: Throwable,
                     ) {
-                        _response = "Failure: " + t.message
-                        Log.i(TAG, "$_response")
+                        internalResponse = "Failure: " + t.message
+                        Log.i(TAG, "$internalResponse")
                     }
 
                     override fun onResponse(
@@ -183,7 +183,7 @@ class PennCourseAlertViewModel : ViewModel() {
     }
 
     fun cancelRegistration(id: String) {
-        var _response = ""
+        var internalResponse = ""
         Log.i(TAG, "Id is: $id")
         val updateBody =
             PennCourseAlertUpdateBody(
@@ -200,23 +200,23 @@ class PennCourseAlertViewModel : ViewModel() {
                         call: Call<String>,
                         response: Response<String>,
                     ) {
-                        _response = response.code().toString() + "canceled successfully"
-                        Log.i(TAG, _response)
+                        internalResponse = response.code().toString() + "canceled successfully"
+                        Log.i(TAG, internalResponse)
                     }
 
                     override fun onFailure(
                         call: Call<String>,
                         t: Throwable,
                     ) {
-                        _response = "Failure: " + t.message
-                        Log.i(TAG, _response)
+                        internalResponse = "Failure: " + t.message
+                        Log.i(TAG, internalResponse)
                     }
                 },
             )
     }
 
     fun resubscribeToRegistration(id: String) {
-        var _response = ""
+        var internalResponse = ""
         Log.i(TAG, "Id is: $id")
         val updateBody =
             PennCourseAlertUpdateBody(
@@ -232,16 +232,16 @@ class PennCourseAlertViewModel : ViewModel() {
                         call: Call<String>,
                         response: Response<String>,
                     ) {
-                        _response = response.code().toString() + "resubscribed successfully"
-                        Log.i(TAG, _response)
+                        internalResponse = response.code().toString() + "resubscribed successfully"
+                        Log.i(TAG, internalResponse)
                     }
 
                     override fun onFailure(
                         call: Call<String>,
                         t: Throwable,
                     ) {
-                        _response = "Failure: " + t.message
-                        Log.i(TAG, _response)
+                        internalResponse = "Failure: " + t.message
+                        Log.i(TAG, internalResponse)
                     }
                 },
             )
@@ -251,7 +251,7 @@ class PennCourseAlertViewModel : ViewModel() {
         id: String,
         notifyWhenClosed: Boolean,
     ) {
-        var _response = ""
+        var internalResponse = ""
         Log.i(TAG, "Id is: $id")
 
         val updateBody = PennCourseAlertUpdateBody(closeNotifications = notifyWhenClosed)
@@ -263,23 +263,23 @@ class PennCourseAlertViewModel : ViewModel() {
                         call: Call<String>,
                         response: Response<String>,
                     ) {
-                        _response = response.code().toString() + " - " + response.body().toString()
-                        Log.i(TAG, _response)
+                        internalResponse = response.code().toString() + " - " + response.body().toString()
+                        Log.i(TAG, internalResponse)
                     }
 
                     override fun onFailure(
                         call: Call<String>,
                         t: Throwable,
                     ) {
-                        _response = "Failure: " + t.message
-                        Log.i(TAG, _response)
+                        internalResponse = "Failure: " + t.message
+                        Log.i(TAG, internalResponse)
                     }
                 },
             )
     }
 
     private fun deleteRegistration(id: String) {
-        var _response = ""
+        var internalResponse = ""
         Log.i(TAG, "Id is: $id")
         val updateBody =
             PennCourseAlertUpdateBody(
@@ -296,23 +296,23 @@ class PennCourseAlertViewModel : ViewModel() {
                         call: Call<String>,
                         response: Response<String>,
                     ) {
-                        _response = response.code().toString()
-                        Log.i(TAG, _response)
+                        internalResponse = response.code().toString()
+                        Log.i(TAG, internalResponse)
                     }
 
                     override fun onFailure(
                         call: Call<String>,
                         t: Throwable,
                     ) {
-                        _response = "Failure: " + t.message
-                        Log.i(TAG, _response)
+                        internalResponse = "Failure: " + t.message
+                        Log.i(TAG, internalResponse)
                     }
                 },
             )
     }
 
     fun getRegistrationById(id: String) {
-        var _response = ""
+        var internalResponse = ""
         PennCourseAlertApi.retrofitService.getRegistrationById(id, bearerToken)
             .enqueue(
                 object : Callback<PennCourseAlertRegistration> {
@@ -327,8 +327,8 @@ class PennCourseAlertViewModel : ViewModel() {
                         call: Call<PennCourseAlertRegistration>,
                         t: Throwable,
                     ) {
-                        _response = "Failure: " + t.message
-                        Log.i(TAG, _response)
+                        internalResponse = "Failure: " + t.message
+                        Log.i(TAG, internalResponse)
                     }
                 },
             )
@@ -346,7 +346,7 @@ class PennCourseAlertViewModel : ViewModel() {
         email: String,
         phone: String,
     ) {
-        var _response = ""
+        var internalResponse = ""
         val profile = Profile(true, phone = phone, email = email)
         PennCourseAlertApi.retrofitService.updateInfo(profile, bearerToken)
             .enqueue(
@@ -355,23 +355,23 @@ class PennCourseAlertViewModel : ViewModel() {
                         call: Call<String>,
                         response: Response<String>,
                     ) {
-                        _response = response.code().toString() ?: ""
-                        Log.i(TAG, "User info updated successfully: $_response")
+                        internalResponse = response.code().toString() ?: ""
+                        Log.i(TAG, "User info updated successfully: $internalResponse")
                     }
 
                     override fun onFailure(
                         call: Call<String>,
                         t: Throwable,
                     ) {
-                        _response = "Failure: " + t.message
-                        Log.i(TAG, _response)
+                        internalResponse = "Failure: " + t.message
+                        Log.i(TAG, internalResponse)
                     }
                 },
             )
     }
 
     fun getUserInfo() {
-        var _response = ""
+        var internalResponse = ""
         PennCourseAlertApi.retrofitService.retrieveUser(bearerToken)
             .enqueue(
                 object : Callback<UserInfo> {
@@ -379,8 +379,8 @@ class PennCourseAlertViewModel : ViewModel() {
                         call: Call<UserInfo>,
                         response: Response<UserInfo>,
                     ) {
-                        _response = response.code().toString() ?: ""
-                        Log.i(TAG, _response)
+                        internalResponse = response.code().toString() ?: ""
+                        Log.i(TAG, internalResponse)
                         _userInfo.value = response.body()
                     }
 
@@ -388,8 +388,8 @@ class PennCourseAlertViewModel : ViewModel() {
                         call: Call<UserInfo>,
                         t: Throwable,
                     ) {
-                        _response = "Failure: " + t.message
-                        Log.i(TAG, _response)
+                        internalResponse = "Failure: " + t.message
+                        Log.i(TAG, internalResponse)
                     }
                 },
             )

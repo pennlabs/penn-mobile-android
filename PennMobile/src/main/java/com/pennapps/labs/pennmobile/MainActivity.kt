@@ -254,7 +254,7 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isEmpty() || grantResults[0] == PackageManager.PERMISSION_DENIED) {
-            if (requestCode == SaveContactsFragment.permission_read) {
+            if (requestCode == SaveContactsFragment.PERMISSION_READ) {
                 showErrorToast(R.string.ask_contacts_fail)
             }
             return

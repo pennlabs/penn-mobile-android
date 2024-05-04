@@ -28,7 +28,7 @@ class GSRRoom {
 
     @SerializedName("id")
     @Expose
-    var room_id: Int? = null
+    var roomId: Int? = null
 
     @SerializedName("thumbnail")
     @Expose

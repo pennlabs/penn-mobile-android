@@ -127,9 +127,7 @@ class GsrFragment : Fragment() {
         gsrRoomListLayoutManager.orientation = LinearLayoutManager.VERTICAL
         binding.gsrRoomsList.layoutManager = (gsrRoomListLayoutManager)
 
-        /**
-         * On Click functions for buttons
-         */
+        // On Click functions for buttons
 
         // set start time button
         selectTimeButton.setOnClickListener {
@@ -429,7 +427,7 @@ class GsrFragment : Fragment() {
                 // note that end uses ending slot to account for 30+ min booking times
                 val end = endingSlot.endTime ?: ""
                 val gsrName = gsrRoom.name ?: ""
-                val gsrRoomId = gsrRoom.room_id ?: 0
+                val gsrRoomId = gsrRoom.roomId ?: 0
                 insertGSRSlot(
                     gsrName,
                     "$stringStartTime-$stringEndTime",

@@ -110,7 +110,9 @@ class ToolbarBehavior : CoordinatorLayout.Behavior<AppBarLayout>() {
                 toolbar.requestLayout()
 
                 // --- translate up drawer icon
-                var translate: Float = (toolbarOriginalHeight - toolbar.layoutParams.height) / (toolbarOriginalHeight - toolbarCollapsedHeight)
+                var translate: Float =
+                    (toolbarOriginalHeight - toolbar.layoutParams.height) /
+                        (toolbarOriginalHeight - toolbarCollapsedHeight)
                 translate *= toolbarOriginalHeight
                 date.translationY = -translate
                 profile?.translationY = -translate
@@ -147,7 +149,9 @@ class ToolbarBehavior : CoordinatorLayout.Behavior<AppBarLayout>() {
                 toolbar.requestLayout()
 
                 // --- translate down  drawer icon
-                var translate: Float = (toolbarOriginalHeight - toolbar.layoutParams.height) / (toolbarOriginalHeight - toolbarCollapsedHeight)
+                var translate: Float =
+                    (toolbarOriginalHeight - toolbar.layoutParams.height) /
+                        (toolbarOriginalHeight - toolbarCollapsedHeight)
                 translate *= toolbarOriginalHeight
                 date.translationY = -translate
                 profile?.translationY = -translate

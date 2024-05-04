@@ -20,7 +20,7 @@ import kotlin.coroutines.CoroutineContext
 
 class LaundryViewModel : ViewModel() {
     companion object {
-        const val maxNumRooms = 3
+        const val MAX_NUM_ROOMS = 3
     }
 
     private val laundryRooms: HashMap<String, List<LaundryRoomSimple>> = HashMap()
@@ -244,13 +244,13 @@ class LaundryViewModel : ViewModel() {
 
     // returns true if there is a change state
     fun toggle(roomId: Int): Boolean {
-        val origState = curToggled.size >= maxNumRooms
+        val origState = curToggled.size >= MAX_NUM_ROOMS
         if (curToggled.contains(roomId)) {
             curToggled.remove(roomId)
         } else {
             curToggled.add(roomId)
         }
-        return (curToggled.size >= maxNumRooms).xor(origState)
+        return (curToggled.size >= MAX_NUM_ROOMS).xor(origState)
     }
 
     fun getGroupCount(): Int {
@@ -280,5 +280,5 @@ class LaundryViewModel : ViewModel() {
         return curToggled.contains(roomId)
     }
 
-    fun isFull() = (curToggled.size >= maxNumRooms)
+    fun isFull() = (curToggled.size >= MAX_NUM_ROOMS)
 }

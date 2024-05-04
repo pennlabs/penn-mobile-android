@@ -229,7 +229,7 @@ class DiningFragment : Fragment() {
             val studentLife = MainActivity.studentLifeInstance
             studentLife.getMenus(formatted).subscribe({ menus ->
                 menus.forEach { menu ->
-                    val id = menu.venue?.venue_id
+                    val id = menu.venue?.venueId
                     val diningHall = idVenueMap[id]
                     val diningHallMenus = diningHall?.menus ?: mutableListOf()
                     diningHallMenus.add(menu)

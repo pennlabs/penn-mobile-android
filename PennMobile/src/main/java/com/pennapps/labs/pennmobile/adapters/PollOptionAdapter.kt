@@ -14,7 +14,10 @@ import kotlinx.android.synthetic.main.poll_list_item.view.*
 import kotlin.math.abs
 import kotlin.math.round
 
-class PollOptionAdapter(private var pollOptions: ArrayList<PollOption>, private var poll: Poll) : RecyclerView.Adapter<PollOptionAdapter.ViewHolder>() {
+class PollOptionAdapter(
+    private var pollOptions: ArrayList<PollOption>,
+    private var poll: Poll,
+) : RecyclerView.Adapter<PollOptionAdapter.ViewHolder>() {
     private lateinit var mContext: Context
 
     override fun onCreateViewHolder(
@@ -100,7 +103,7 @@ class PollOptionAdapter(private var pollOptions: ArrayList<PollOption>, private 
     ): Boolean {
         val differenceX = abs(startX - endX)
         val differenceY = abs(startY - endY)
-        return !(differenceX > CLICK_ACTION_THRESHOLD /* =5 */ || differenceY > CLICK_ACTION_THRESHOLD)
+        return !(differenceX > CLICK_ACTION_THRESHOLD || differenceY > CLICK_ACTION_THRESHOLD) // =5
     }
 
     companion object {
