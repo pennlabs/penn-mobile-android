@@ -6,7 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.R
-import kotlinx.android.synthetic.main.team_member.view.*
+import kotlinx.android.synthetic.main.team_member.view.name_tv
+import kotlinx.android.synthetic.main.team_member.view.person_iv
 
 class AboutAdapter(private var members: ArrayList<String>) :
     RecyclerView.Adapter<AboutAdapter.TeamViewHolder>() {

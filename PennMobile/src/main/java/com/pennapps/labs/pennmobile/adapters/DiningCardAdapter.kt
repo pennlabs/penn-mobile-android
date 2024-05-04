@@ -19,7 +19,11 @@ import com.pennapps.labs.pennmobile.MenuFragment
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
-import kotlinx.android.synthetic.main.dining_list_item.view.*
+import kotlinx.android.synthetic.main.dining_list_item.view.dining_progress
+import kotlinx.android.synthetic.main.dining_list_item.view.item_dining_hours
+import kotlinx.android.synthetic.main.dining_list_item.view.item_dining_image
+import kotlinx.android.synthetic.main.dining_list_item.view.item_dining_name
+import kotlinx.android.synthetic.main.dining_list_item.view.item_dining_status
 import rx.android.schedulers.AndroidSchedulers
 
 class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<DiningCardAdapter.ViewHolder>() {
