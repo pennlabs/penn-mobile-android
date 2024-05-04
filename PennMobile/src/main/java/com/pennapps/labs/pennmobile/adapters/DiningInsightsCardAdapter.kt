@@ -365,7 +365,7 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
         }
     }
 
-    private fun getExpired(actualValues: ArrayList<Entry>): String  {
+    private fun getExpired(actualValues: ArrayList<Entry>): String {
         var i = 0
         run breaking@{
             actualValues.forEachIndexed { index, value ->
@@ -381,7 +381,7 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
     private fun getPredictedExpired(
         actualValuesSize: Int,
         predictedValues: ArrayList<Entry>,
-    ): String  {
+    ): String {
         var i = 0
         run breaking@{
             predictedValues.forEachIndexed { index, predictedValue ->

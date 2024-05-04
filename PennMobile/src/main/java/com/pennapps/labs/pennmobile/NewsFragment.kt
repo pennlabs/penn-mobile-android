@@ -79,16 +79,16 @@ class NewsFragment : ListFragment() {
             mCustomTabsClient = client
             mCustomTabsClient?.warmup(0)
             session = mCustomTabsClient?.newSession(null)
-            val URLs = ArrayList<String>()
+            val urls = ArrayList<String>()
             val titles = ArrayList<String>()
-            URLs.add("http://www.thedp.com/")
-            URLs.add("http://www.34st.com/")
-            URLs.add("https://www.underthebutton.com/")
+            urls.add("http://www.thedp.com/")
+            urls.add("http://www.34st.com/")
+            urls.add("https://www.underthebutton.com/")
             titles.add("The Daily Pennsylvanian")
             titles.add("34th Street")
             titles.add("Under the Button")
             val urlList = ArrayList<Bundle>()
-            for (i in URLs.indices) {
+            for (i in urls.indices) {
                 val bundle = Bundle()
                 bundle.putParcelable(
                     CustomTabsService.KEY_URL,
@@ -99,13 +99,13 @@ class NewsFragment : ListFragment() {
                             parcel: Parcel,
                             i: Int,
                         ) {
-                            parcel.writeString(URLs[i])
+                            parcel.writeString(urls[i])
                         }
                     },
                 )
                 urlList.add(bundle)
             }
-            session?.mayLaunchUrl(Uri.parse(URLs[0]), null, urlList)
+            session?.mayLaunchUrl(Uri.parse(urls[0]), null, urlList)
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
@@ -116,8 +116,8 @@ class NewsFragment : ListFragment() {
     }
 
     private fun isChromeCustomTabsSupported(context: Context): Boolean {
-        val SERVICE_ACTION = "android.support.customtabs.action.CustomTabsService"
-        val serviceIntent = Intent(SERVICE_ACTION)
+        val serviceAction = "android.support.customtabs.action.CustomTabsService"
+        val serviceIntent = Intent(serviceAction)
         serviceIntent.setPackage("com.android.chrome")
         val resolveInfos = context.packageManager.queryIntentServices(serviceIntent, 0)
         return resolveInfos.isNotEmpty()
@@ -181,7 +181,9 @@ class NewsFragment : ListFragment() {
 
         val dpDescription = "The Daily Pennsylvanian is the independent student newspaper of the University of Pennsylvania."
         val thirtyFourDescription = "34th Street Magazine is the DP's arts and entertainment weekly magazine."
-        val utbDescription = "Under The Button is Penn's 24/7 news and entertainment blog, known for its signature humor, gossip and snarky features."
+        val utbDescription =
+            "Under The Button is Penn's 24/7 news and entertainment blog, known " +
+                "for its signature humor, gossip and snarky features."
         val dp =
             NewsSite(
                 "The Daily Pennsylvanian",
@@ -204,7 +206,9 @@ class NewsFragment : ListFragment() {
                 R.drawable.utb,
             )
 
-        if (Build.VERSION.SDK_INT > 28 && (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) {
+        if (Build.VERSION.SDK_INT > 28 &&
+            (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+        ) {
             thirtyFour =
                 NewsSite(
                     "34th Street",

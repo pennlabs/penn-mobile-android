@@ -82,7 +82,7 @@ class Poll {
                     }
                     it.selected = false
                 }
-            } 
+            }
         }
         // gui?.notifyDataSetChanged()
     }
