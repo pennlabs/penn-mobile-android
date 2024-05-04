@@ -50,11 +50,11 @@ class Post {
 
     @SerializedName("club_comment")
     @Expose
-    internal val club_comment: String? = null
+    internal val clubComment: String? = null
 
     @SerializedName("admin_comment")
     @Expose
-    internal val admin_comment: String? = null
+    internal val adminComment: String? = null
 
     @SerializedName("status")
     @Expose
@@ -62,7 +62,7 @@ class Post {
 
     @SerializedName("target_populations")
     @Expose
-    internal val target_populations: List<Int>? = null
+    internal val targetPopulations: List<Int>? = null
 
     override fun toString(): String {
         return id.toString() + ", " +
@@ -70,7 +70,7 @@ class Post {
     }
 
     override fun equals(other: Any?): Boolean {
-        // note: target_populations is not included because it's unused and structural
+        // note: targetPopulations is not included because it's unused and structural
         return when (other) {
             is Post -> {
                 this.id == other.id &&
@@ -82,10 +82,10 @@ class Post {
                     this.createdDate == other.createdDate &&
                     this.startDate == other.startDate &&
                     this.expireDate == other.expireDate &&
-                    this.club_comment == other.club_comment &&
-                    this.admin_comment == other.admin_comment &&
+                    this.clubComment == other.clubComment &&
+                    this.adminComment == other.adminComment &&
                     this.status == other.status &&
-                    this.target_populations == other.target_populations
+                    this.targetPopulations == other.targetPopulations
             }
             else -> false
         }
@@ -103,10 +103,10 @@ class Post {
         val createdDateHash = createdDate.hashCode().toString()
         val startDateHash = startDate.hashCode().toString()
         val expireDateHash = expireDate.hashCode().toString()
-        val clubCommentHash = club_comment.hashCode().toString()
-        val adminCommentHash = admin_comment.hashCode().toString()
+        val clubCommentHash = clubComment.hashCode().toString()
+        val adminCommentHash = adminComment.hashCode().toString()
         val statusHash = status.hashCode().toString()
-        val targetPopulationsHash = target_populations.hashCode().toString()
+        val targetPopulationsHash = targetPopulations.hashCode().toString()
 
         return (
             idHash + clubCodeHash + titleHash +

@@ -3,7 +3,6 @@ package com.pennapps.labs.pennmobile.classes
 import org.joda.time.DateTime
 import org.joda.time.Interval
 import org.joda.time.format.DateTimeFormat
-import java.util.*
 
 /**
  * Created by Adel on 12/16/14.
