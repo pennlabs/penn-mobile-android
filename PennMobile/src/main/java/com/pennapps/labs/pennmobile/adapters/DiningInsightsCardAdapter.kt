@@ -21,12 +21,15 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
-import com.pennapps.labs.pennmobile.*
+import com.pennapps.labs.pennmobile.MainActivity
+import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.DiningInsightCell
 import com.pennapps.labs.pennmobile.classes.DiningMarkerView
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 

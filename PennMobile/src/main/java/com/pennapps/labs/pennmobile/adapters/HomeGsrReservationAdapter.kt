@@ -13,7 +13,6 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRReservation
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.dining_list_item.view.*
 import kotlinx.android.synthetic.main.gsr_list_item.view.item_gsr_date
 import kotlinx.android.synthetic.main.gsr_list_item.view.item_gsr_image
 import kotlinx.android.synthetic.main.gsr_list_item.view.item_gsr_location

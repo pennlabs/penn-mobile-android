@@ -16,7 +16,10 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.GSRReservation
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.gsr_reservation.view.*
+import kotlinx.android.synthetic.main.gsr_reservation.view.gsr_reservation_cancel_btn
+import kotlinx.android.synthetic.main.gsr_reservation.view.gsr_reservation_date_tv
+import kotlinx.android.synthetic.main.gsr_reservation.view.gsr_reservation_iv
+import kotlinx.android.synthetic.main.gsr_reservation.view.gsr_reservation_location_tv
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import retrofit.ResponseCallback

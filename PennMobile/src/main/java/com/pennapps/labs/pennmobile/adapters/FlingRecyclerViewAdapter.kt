@@ -10,7 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.FlingEvent
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fling_performance_item.view.*
+import kotlinx.android.synthetic.main.fling_performance_item.view.flingview_description
+import kotlinx.android.synthetic.main.fling_performance_item.view.flingview_image
+import kotlinx.android.synthetic.main.fling_performance_item.view.flingview_name
+import kotlinx.android.synthetic.main.fling_performance_item.view.flingview_time
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import org.joda.time.format.ISODateTimeFormat

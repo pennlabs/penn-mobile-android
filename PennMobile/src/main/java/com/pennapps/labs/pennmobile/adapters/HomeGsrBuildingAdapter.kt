@@ -12,7 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.GsrTabbedFragment
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import kotlinx.android.synthetic.main.home_gsr_building.view.*
+import kotlinx.android.synthetic.main.home_gsr_building.view.home_gsr_building_iv
+import kotlinx.android.synthetic.main.home_gsr_building.view.home_gsr_building_tv
 
 class HomeGsrBuildingAdapter(private var buildings: ArrayList<String>) :
     RecyclerView.Adapter<HomeGsrBuildingAdapter.HomeGsrBuildingViewHolder>() {

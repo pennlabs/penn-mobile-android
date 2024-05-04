@@ -10,7 +10,8 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.DiningHall
-import kotlinx.android.synthetic.main.laundry_settings_child_item.view.*
+import kotlinx.android.synthetic.main.laundry_settings_child_item.view.laundry_favorite_switch
+import kotlinx.android.synthetic.main.laundry_settings_child_item.view.laundry_room_name
 
 class DiningSettingsAdapter(private var diningHalls: List<DiningHall>) :
     RecyclerView.Adapter<DiningSettingsAdapter.DiningSettingsViewHolder>() {

@@ -9,7 +9,6 @@ import com.pennapps.labs.pennmobile.GsrBuildingHolder
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.GSRContainer
 import org.joda.time.DateTime
-import java.util.*
 
 class GsrBuildingAdapter(
     internal var context: Context,
