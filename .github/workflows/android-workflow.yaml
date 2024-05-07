@@ -175,8 +175,8 @@ jobs:
             ktlint --reporter=plain > ktlint_errors.txt
           continue-on-error: true
 
-        - name: Display ktlint errors
-          if: ${{ failure() }}
+        - name: Check for ktlint errors
+          if: steps.run_ktlint.outcome == 'failure'
           run: cat ktlint_errors.txt
     
   # Publish to Firebase App Distribution
