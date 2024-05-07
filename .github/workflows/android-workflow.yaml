@@ -149,6 +149,7 @@ jobs:
         with:
           name: reports
           path: PennMobile/build/reports
+          
   ktlint-check:
       name: Check Kotlin Code Style
       runs-on: ubuntu-latest
@@ -170,10 +171,12 @@ jobs:
   
         - name: Run ktlint
           run: |
-            ktlint --reporter=plain > ktlint_errors.txt || true
-  
+            set -o pipefail
+            ktlint --reporter=plain > ktlint_errors.txt
+          continue-on-error: true
+
         - name: Display ktlint errors
-          if: failure()
+          if: ${{ failure() }}
           run: cat ktlint_errors.txt
     
   # Publish to Firebase App Distribution
