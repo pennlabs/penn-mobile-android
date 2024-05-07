@@ -42,7 +42,7 @@ class PottruckFragment : Fragment() {
     private lateinit var otherHeaderAdapter: FitnessHeaderAdapter
 
     private var _binding: FragmentPottruckBinding? = null
-    val binding get() = _binding!!
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.TypedValue
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
+import java.util.Base64
 import java.util.Date
 import java.util.Locale
 
