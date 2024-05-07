@@ -13,8 +13,10 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.utils.Utils
-import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.fragment_home.view.*
+import kotlinx.android.synthetic.main.fragment_home.initials
+import kotlinx.android.synthetic.main.fragment_home.profile_background
+import kotlinx.android.synthetic.main.fragment_home.view.appbar_home
+import kotlinx.android.synthetic.main.fragment_home.view.date_view
 
 class MoreFragment : Fragment() {
     private lateinit var mActivity: MainActivity

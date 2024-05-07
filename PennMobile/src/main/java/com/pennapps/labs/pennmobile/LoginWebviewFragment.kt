@@ -9,7 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.ViewGroup
-import android.webkit.*
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -29,7 +32,8 @@ import retrofit.RetrofitError
 import retrofit.client.Response
 import java.nio.charset.Charset
 import java.security.MessageDigest
-import java.util.*
+import java.util.Base64
+import java.util.Calendar
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey

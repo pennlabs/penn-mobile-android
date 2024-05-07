@@ -14,10 +14,15 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
-import com.pennapps.labs.pennmobile.*
+import com.pennapps.labs.pennmobile.AboutFragment
+import com.pennapps.labs.pennmobile.MainActivity
+import com.pennapps.labs.pennmobile.NewsFragment
+import com.pennapps.labs.pennmobile.PottruckFragment
+import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.SupportFragment
 import com.pennapps.labs.pennmobile.components.dialog.CustomAlertDialogue
-import kotlinx.android.synthetic.main.include_main.*
-import java.util.*
+import com.pennapps.labs.pennmobile.showSneakerToast
+import kotlinx.android.synthetic.main.include_main.toolbar
 
 /**
  * Created by Davies Lumumba Spring 2021

@@ -4,7 +4,9 @@ import StudentLifeRf2
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.preference.PreferenceManager
@@ -12,9 +14,9 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.adapters.LaundrySettingsAdapter
 import com.pennapps.labs.pennmobile.databinding.FragmentLaundrySettingsBinding
 import com.pennapps.labs.pennmobile.viewmodels.LaundryViewModel
-import kotlinx.android.synthetic.main.include_main.*
-import kotlinx.android.synthetic.main.loading_panel.*
-import kotlinx.android.synthetic.main.no_results.*
+import kotlinx.android.synthetic.main.include_main.toolbar
+import kotlinx.android.synthetic.main.loading_panel.loadingPanel
+import kotlinx.android.synthetic.main.no_results.no_results
 
 class LaundrySettingsFragment : Fragment() {
     private lateinit var mActivity: MainActivity

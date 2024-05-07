@@ -1,12 +1,25 @@
 package com.pennapps.labs.pennmobile.api
 
-import com.pennapps.labs.pennmobile.classes.*
+import com.pennapps.labs.pennmobile.classes.Course
+import com.pennapps.labs.pennmobile.classes.PCARegistrationBody
+import com.pennapps.labs.pennmobile.classes.PennCourseAlertRegistration
+import com.pennapps.labs.pennmobile.classes.PennCourseAlertUpdateBody
+import com.pennapps.labs.pennmobile.classes.Profile
+import com.pennapps.labs.pennmobile.classes.Section
+import com.pennapps.labs.pennmobile.classes.UserInfo
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.PATCH
+import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
+import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
 private const val BASE_URL = "https://penncoursealert.com"

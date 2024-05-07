@@ -9,7 +9,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.CalendarEvent
-import kotlinx.android.synthetic.main.university_event.view.*
+import kotlinx.android.synthetic.main.university_event.view.event_month
+import kotlinx.android.synthetic.main.university_event.view.event_name_tv
 
 class UniversityEventAdapter(private var events: ArrayList<CalendarEvent>) :
     RecyclerView.Adapter<UniversityEventAdapter.UniversityEventViewHolder>() {

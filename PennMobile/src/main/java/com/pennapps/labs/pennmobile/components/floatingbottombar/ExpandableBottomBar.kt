@@ -9,7 +9,9 @@ import android.transition.TransitionManager
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
-import androidx.annotation.*
+import androidx.annotation.ColorInt
+import androidx.annotation.FloatRange
+import androidx.annotation.IdRes
 import androidx.annotation.IntRange
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet

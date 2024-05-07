@@ -7,7 +7,10 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.Contact
-import kotlinx.android.synthetic.main.phone_save_list_item.view.*
+import kotlinx.android.synthetic.main.phone_save_list_item.view.phone_save_checkbox
+import kotlinx.android.synthetic.main.phone_save_list_item.view.support_name
+import kotlinx.android.synthetic.main.phone_save_list_item.view.support_phone
+import kotlinx.android.synthetic.main.phone_save_list_item.view.support_phone_icon
 
 class PhoneSaveAdapter(context: Context, contacts: List<Contact?>, s: MutableList<Contact>, size: Int) : ArrayAdapter<Contact?>(
     context,

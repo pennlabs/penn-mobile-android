@@ -1,13 +1,17 @@
 package com.pennapps.labs.pennmobile
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.ListFragment
 import com.pennapps.labs.pennmobile.adapters.SupportAdapter
 import com.pennapps.labs.pennmobile.classes.Contact
-import kotlinx.android.synthetic.main.include_main.*
-import java.util.*
+import kotlinx.android.synthetic.main.include_main.toolbar
 
 class SupportFragment : ListFragment() {
     private lateinit var mActivity: MainActivity

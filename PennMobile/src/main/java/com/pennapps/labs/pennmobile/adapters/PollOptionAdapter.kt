@@ -10,7 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.Poll
 import com.pennapps.labs.pennmobile.classes.PollOption
-import kotlinx.android.synthetic.main.poll_list_item.view.*
+import kotlinx.android.synthetic.main.poll_list_item.view.card_view
+import kotlinx.android.synthetic.main.poll_list_item.view.seek_bar
+import kotlinx.android.synthetic.main.poll_list_item.view.tv_option
+import kotlinx.android.synthetic.main.poll_list_item.view.tv_percent
+import kotlinx.android.synthetic.main.poll_list_item.view.tv_votes
 import kotlin.math.abs
 import kotlin.math.round
 

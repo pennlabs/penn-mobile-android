@@ -5,7 +5,6 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import org.joda.time.DateTime
 import org.joda.time.Interval
-import java.util.*
 
 open class DiningHall : Parcelable {
     var id: Int

@@ -38,14 +38,25 @@ import com.pennapps.labs.pennmobile.adapters.MainPagerAdapter
 import com.pennapps.labs.pennmobile.api.CampusExpress
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.Platform
-import com.pennapps.labs.pennmobile.api.Serializer.*
+import com.pennapps.labs.pennmobile.api.Serializer
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.classes.*
+import com.pennapps.labs.pennmobile.classes.Account
+import com.pennapps.labs.pennmobile.classes.Contact
+import com.pennapps.labs.pennmobile.classes.DiningHall
+import com.pennapps.labs.pennmobile.classes.FlingEvent
+import com.pennapps.labs.pennmobile.classes.GSRLocation
+import com.pennapps.labs.pennmobile.classes.GSRReservation
+import com.pennapps.labs.pennmobile.classes.LaundryRoom
+import com.pennapps.labs.pennmobile.classes.Post
+import com.pennapps.labs.pennmobile.classes.Venue
 import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
 import com.pennapps.labs.pennmobile.utils.Utils
 import eightbitlab.com.blurview.RenderScriptBlur
-import kotlinx.android.synthetic.main.custom_sneaker_view.view.*
-import kotlinx.android.synthetic.main.include_main.*
+import kotlinx.android.synthetic.main.custom_sneaker_view.view.blurView
+import kotlinx.android.synthetic.main.include_main.appbar
+import kotlinx.android.synthetic.main.include_main.content_frame
+import kotlinx.android.synthetic.main.include_main.expandable_bottom_bar
+import kotlinx.android.synthetic.main.include_main.main_view_pager
 import kotlinx.coroutines.sync.Mutex
 import okhttp3.OkHttpClient
 import retrofit.RestAdapter
@@ -366,21 +377,51 @@ class MainActivity : AppCompatActivity() {
             get() {
                 if (mStudentLife == null) {
                     val gsonBuilder = GsonBuilder()
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Contact?>?>() {}.type, DataSerializer<Any?>())
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Venue?>?>() {}.type, VenueSerializer())
-                    gsonBuilder.registerTypeAdapter(DiningHall::class.java, MenuSerializer())
+                    gsonBuilder.registerTypeAdapter(
+                        object : TypeToken<MutableList<Contact?>?>() {}.type,
+                        Serializer.DataSerializer<Any?>(),
+                    )
+                    gsonBuilder.registerTypeAdapter(
+                        object : TypeToken<MutableList<Venue?>?>() {}.type,
+                        Serializer.VenueSerializer(),
+                    )
+                    gsonBuilder.registerTypeAdapter(
+                        DiningHall::class.java,
+                        Serializer.MenuSerializer(),
+                    )
                     // gets room
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<LaundryRoom?>() {}.type, LaundryRoomSerializer())
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<GSRLocation?>?>() {}.type, GsrLocationSerializer())
+                    gsonBuilder.registerTypeAdapter(
+                        object : TypeToken<LaundryRoom?>() {}.type,
+                        Serializer.LaundryRoomSerializer(),
+                    )
+                    gsonBuilder.registerTypeAdapter(
+                        object : TypeToken<MutableList<GSRLocation?>?>() {}.type,
+                        Serializer.GsrLocationSerializer(),
+                    )
                     // gets laundry preferences (used only for testing)
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Int?>?>() {}.type, LaundryPrefSerializer())
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<FlingEvent?>?>() {}.type, FlingEventSerializer())
+                    gsonBuilder.registerTypeAdapter(
+                        object : TypeToken<MutableList<Int?>?>() {}.type,
+                        Serializer.LaundryPrefSerializer(),
+                    )
+                    gsonBuilder.registerTypeAdapter(
+                        object : TypeToken<MutableList<FlingEvent?>?>() {}.type,
+                        Serializer.FlingEventSerializer(),
+                    )
                     // gets gsr reservations
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<GSRReservation?>?>() {}.type, GsrReservationSerializer())
+                    gsonBuilder.registerTypeAdapter(
+                        object : TypeToken<MutableList<GSRReservation?>?>() {}.type,
+                        Serializer.GsrReservationSerializer(),
+                    )
                     // gets user
-                    gsonBuilder.registerTypeAdapter(Account::class.java, UserSerializer())
+                    gsonBuilder.registerTypeAdapter(
+                        Account::class.java,
+                        Serializer.UserSerializer(),
+                    )
                     // gets posts
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Post?>?>() {}.type, PostsSerializer())
+                    gsonBuilder.registerTypeAdapter(
+                        object : TypeToken<MutableList<Post?>?>() {}.type,
+                        Serializer.PostsSerializer(),
+                    )
                     val gson = gsonBuilder.create()
                     val okHttpClient = SquareOkHttpClient()
                     okHttpClient.setConnectTimeout(35, TimeUnit.SECONDS) // Connection timeout

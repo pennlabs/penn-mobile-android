@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.ExpandableListView
 import androidx.fragment.app.Fragment
 import com.pennapps.labs.pennmobile.adapters.MenuAdapter
-import java.util.*
 
 class MenuTab : Fragment() {
     var meal: String? = null

@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
-import java.util.*
+import java.util.Calendar
 
 class OAuth2NetworkManager(private var mActivity: MainActivity) {
     private var mStudentLife = MainActivity.studentLifeInstance

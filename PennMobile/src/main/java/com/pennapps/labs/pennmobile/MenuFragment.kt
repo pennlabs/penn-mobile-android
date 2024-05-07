@@ -2,14 +2,19 @@ package com.pennapps.labs.pennmobile
 
 import android.graphics.Color
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.pennapps.labs.pennmobile.classes.DiningHall
-import kotlinx.android.synthetic.main.include_main.*
+import kotlinx.android.synthetic.main.include_main.toolbar
 import org.apache.commons.lang3.StringUtils
 
 class MenuFragment : Fragment() {

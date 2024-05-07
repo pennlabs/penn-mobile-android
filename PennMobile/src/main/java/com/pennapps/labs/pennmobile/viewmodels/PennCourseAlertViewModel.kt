@@ -6,7 +6,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.pennapps.labs.pennmobile.api.PennCourseAlertApi
-import com.pennapps.labs.pennmobile.classes.*
+import com.pennapps.labs.pennmobile.classes.Course
+import com.pennapps.labs.pennmobile.classes.PCARegistrationBody
+import com.pennapps.labs.pennmobile.classes.PennCourseAlertRegistration
+import com.pennapps.labs.pennmobile.classes.PennCourseAlertUpdateBody
+import com.pennapps.labs.pennmobile.classes.Profile
+import com.pennapps.labs.pennmobile.classes.Section
+import com.pennapps.labs.pennmobile.classes.UserInfo
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

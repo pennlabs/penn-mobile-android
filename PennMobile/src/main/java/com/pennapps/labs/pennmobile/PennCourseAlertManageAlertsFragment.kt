@@ -21,7 +21,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.pennapps.labs.pennmobile.adapters.RegistrationsAdapter
 import com.pennapps.labs.pennmobile.viewmodels.PennCourseAlertViewModel
-import kotlinx.android.synthetic.main.pca_registration_list_item.*
+import kotlinx.android.synthetic.main.pca_registration_list_item.notify_closed_switch
+import kotlinx.android.synthetic.main.pca_registration_list_item.subscribed_switch
 
 class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnItemClickListener {
     private val viewModel: PennCourseAlertViewModel by activityViewModels()

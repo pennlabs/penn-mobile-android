@@ -4,7 +4,9 @@ import StudentLifeRf2
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -18,8 +20,7 @@ import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentLaundryBinding
 import com.pennapps.labs.pennmobile.utils.Utils
 import com.pennapps.labs.pennmobile.viewmodels.LaundryViewModel
-import kotlinx.android.synthetic.main.loading_panel.*
-import java.util.*
+import kotlinx.android.synthetic.main.loading_panel.loadingPanel
 
 class LaundryFragment : Fragment() {
     private lateinit var mActivity: MainActivity

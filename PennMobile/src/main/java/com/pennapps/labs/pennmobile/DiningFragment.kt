@@ -20,8 +20,8 @@ import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.Venue
 import com.pennapps.labs.pennmobile.databinding.FragmentDiningBinding
-import kotlinx.android.synthetic.main.loading_panel.*
-import kotlinx.android.synthetic.main.no_results.*
+import kotlinx.android.synthetic.main.loading_panel.loadingPanel
+import kotlinx.android.synthetic.main.no_results.no_results
 import rx.Observable
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

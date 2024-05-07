@@ -3,7 +3,8 @@ package com.pennapps.labs.pennmobile.api
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 class CampusExpressNetworkManager(private var mActivity: MainActivity) {
     private val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)

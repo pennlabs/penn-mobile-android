@@ -11,7 +11,10 @@ import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.CompoundButton
+import android.widget.ImageView
+import android.widget.Switch
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
@@ -21,7 +24,9 @@ import com.pennapps.labs.pennmobile.LaundryBroadcastReceiver
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.MachineDetail
 import com.pennapps.labs.pennmobile.showSneakerToast
-import kotlinx.android.synthetic.main.laundry_dryer_item.view.*
+import kotlinx.android.synthetic.main.laundry_dryer_item.view.bell_notification_icon
+import kotlinx.android.synthetic.main.laundry_dryer_item.view.laundry_machine_image_view
+import kotlinx.android.synthetic.main.laundry_dryer_item.view.min_left_time
 
 class LaundryMachineAdapter(
     var context: Context,

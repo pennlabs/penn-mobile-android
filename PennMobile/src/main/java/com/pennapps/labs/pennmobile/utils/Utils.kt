@@ -4,7 +4,8 @@ import android.content.Context
 import android.util.TypedValue
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 /** Created by Davies Lumumba on 8/12/20. */
 object Utils {

@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile
 
-import android.content.*
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -20,13 +20,17 @@ import com.pennapps.labs.pennmobile.classes.HomepageViewModel
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentHomeBinding
 import com.pennapps.labs.pennmobile.utils.Utils
-import kotlinx.android.synthetic.main.fragment_home.view.*
-import kotlinx.android.synthetic.main.include_main.*
-import kotlinx.android.synthetic.main.loading_panel.*
+import kotlinx.android.synthetic.main.fragment_home.view.appbar_home
+import kotlinx.android.synthetic.main.fragment_home.view.date_view
+import kotlinx.android.synthetic.main.fragment_home.view.home_cells_rv
+import kotlinx.android.synthetic.main.fragment_home.view.home_refresh_layout
+import kotlinx.android.synthetic.main.fragment_home.view.profile
+import kotlinx.android.synthetic.main.include_main.toolbar
+import kotlinx.android.synthetic.main.loading_panel.loadingPanel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.Locale
 
 class HomeFragment : Fragment() {
     private lateinit var mActivity: MainActivity

@@ -4,7 +4,11 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.gsr_room.view.*
+import kotlinx.android.synthetic.main.gsr_room.view.gsr_end_time
+import kotlinx.android.synthetic.main.gsr_room.view.gsr_id
+import kotlinx.android.synthetic.main.gsr_room.view.gsr_room
+import kotlinx.android.synthetic.main.gsr_room.view.gsr_start_time
+import kotlinx.android.synthetic.main.gsr_room.view.locationId
 
 class GsrRoomHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     internal var gsrRoom: LinearLayout = itemView.gsr_room

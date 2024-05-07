@@ -8,8 +8,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.Spinner
+import android.widget.Switch
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +27,8 @@ import com.pennapps.labs.pennmobile.classes.GSRSlot
 import com.pennapps.labs.pennmobile.databinding.FragmentGsrBinding
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 import kotlin.collections.ArrayList
 
 class GsrFragment : Fragment() {

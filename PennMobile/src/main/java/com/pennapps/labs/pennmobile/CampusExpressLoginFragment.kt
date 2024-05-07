@@ -25,7 +25,8 @@ import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
 import java.security.MessageDigest
-import java.util.*
+import java.util.Base64
+import java.util.Date
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -165,7 +166,7 @@ class CampusExpressLoginFragment : Fragment() {
                         }
                         if (expiresIn != null) {
                             val currentDate = Date()
-                            currentDate.time = currentDate.time + (expiresIn * 1000)
+                            currentDate.time += (expiresIn * 1000)
                             val expiresAt = currentDate.time
                             editor.putLong(mActivity.getString(R.string.campus_token_expires_in), expiresAt)
                         }
