@@ -149,7 +149,33 @@ jobs:
         with:
           name: reports
           path: PennMobile/build/reports
+  ktlint-check:
+      name: Check Kotlin Code Style
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
   
+        - name: Setup JDK 17
+          uses: actions/setup-java@v3
+          with:
+            java-version: '17'
+            distribution: 'temurin'
+  
+        - name: Install ktlint
+          run: |
+            curl -sSLO https://github.com/pinterest/ktlint/releases/download/0.42.1/ktlint
+            chmod a+x ktlint
+            sudo mv ktlint /usr/local/bin/
+  
+        - name: Run ktlint
+          run: |
+            ktlint --reporter=plain > ktlint_errors.txt || true
+  
+        - name: Display ktlint errors
+          if: failure()
+          run: cat ktlint_errors.txt
+    
   # Publish to Firebase App Distribution
   # https://github.com/wzieba/Firebase-Distribution-Github-Action
   deploy-firebase:
