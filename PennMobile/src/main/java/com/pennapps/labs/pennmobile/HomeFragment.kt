@@ -37,7 +37,7 @@ class HomeFragment : Fragment() {
     private lateinit var sharedPreferences: SharedPreferences
 
     private var _binding: FragmentHomeBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     private val homepageViewModel: HomepageViewModel by viewModels()
 

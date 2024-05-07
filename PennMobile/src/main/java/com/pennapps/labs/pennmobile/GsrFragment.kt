@@ -42,7 +42,7 @@ class GsrFragment : Fragment() {
     lateinit var sortingSwitch: Switch
 
     private var _binding: FragmentGsrBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     // api manager
     private lateinit var mStudentLife: StudentLife

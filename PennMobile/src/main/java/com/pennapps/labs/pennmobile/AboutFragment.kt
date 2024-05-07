@@ -27,7 +27,7 @@ class AboutFragment : Fragment() {
     private lateinit var sharedPreferences: SharedPreferences
 
     private var _binding: FragmentAboutBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

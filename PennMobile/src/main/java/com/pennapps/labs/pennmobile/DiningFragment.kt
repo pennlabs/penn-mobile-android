@@ -31,7 +31,7 @@ class DiningFragment : Fragment() {
     private lateinit var mStudentLife: StudentLife
 
     private var _binding: FragmentDiningBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

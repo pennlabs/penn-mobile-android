@@ -39,7 +39,7 @@ class LaundryFragment : Fragment() {
     private var mAdapter: LaundryRoomAdapter? = null
 
     private var _binding: FragmentLaundryBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     private val laundryViewModel: LaundryViewModel by activityViewModels()
 

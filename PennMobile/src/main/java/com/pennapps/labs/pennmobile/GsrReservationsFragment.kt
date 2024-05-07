@@ -22,7 +22,7 @@ class GsrReservationsFragment : Fragment() {
     private lateinit var mActivity: MainActivity
 
     private var _binding: FragmentGsrReservationsBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

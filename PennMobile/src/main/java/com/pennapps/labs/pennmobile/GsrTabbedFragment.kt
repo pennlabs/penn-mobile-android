@@ -18,7 +18,7 @@ class GsrTabbedFragment : Fragment() {
     lateinit var tabLayout: TabLayout
 
     private var _binding: FragmentGsrTabsBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,

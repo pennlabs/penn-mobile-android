@@ -24,7 +24,7 @@ class LaundrySettingsFragment : Fragment() {
     private lateinit var mContext: Context
 
     private var _binding: FragmentLaundrySettingsBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     private val laundryViewModel: LaundryViewModel by activityViewModels()
     private lateinit var sharedPreferences: SharedPreferences

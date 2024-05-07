@@ -21,7 +21,7 @@ import retrofit.client.Response
 
 class BookGsrFragment : Fragment() {
     private var _binding: GsrDetailsBookBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     private lateinit var mActivity: MainActivity
 

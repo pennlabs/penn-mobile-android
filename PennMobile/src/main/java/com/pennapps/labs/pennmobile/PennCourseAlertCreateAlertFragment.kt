@@ -38,7 +38,7 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
     private lateinit var mActivity: MainActivity
 
     private var _binding: FragmentPennCourseAlertCreateAlertBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,

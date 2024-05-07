@@ -45,7 +45,7 @@ class NewsFragment : ListFragment() {
     private var connection: NewsCustomTabsServiceConnection? = null
 
     private var _binding: FragmentNewsBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     internal inner class CustomListAdapter(
         @get:JvmName("getContext_") private val context: Context,

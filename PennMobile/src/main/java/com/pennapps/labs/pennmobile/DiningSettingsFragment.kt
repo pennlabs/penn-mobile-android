@@ -32,7 +32,7 @@ class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
     private val dataModel: HomepageDataModel = dataModel
 
     private var _binding: FragmentDiningPreferencesBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     private lateinit var originalPreferences: List<Int>
     private var savedNewPrefs = false

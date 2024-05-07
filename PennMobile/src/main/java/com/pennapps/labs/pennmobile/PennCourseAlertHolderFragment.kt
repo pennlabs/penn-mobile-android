@@ -19,7 +19,7 @@ class PennCourseAlertHolderFragment : Fragment() {
     private lateinit var tabLayout: TabLayout
 
     private var _binding: FragmentPennCourseAlertHolderBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
