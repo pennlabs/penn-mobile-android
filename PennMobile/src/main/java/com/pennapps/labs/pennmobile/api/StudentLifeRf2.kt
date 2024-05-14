@@ -16,17 +16,23 @@ interface StudentLifeRf2 {
     suspend fun laundryRooms(): Response<List<LaundryRoomSimple>>
 
     @GET("laundry/hall/{id}")
-    suspend fun room(@Path("id") id: Int): Response<LaundryRoom>
+    suspend fun room(
+        @Path("id") id: Int,
+    ): Response<LaundryRoom>
 
     @GET("laundry/usage/{id}")
-    suspend fun usage(@Path("id") id: Int): Response<LaundryUsage>
+    suspend fun usage(
+        @Path("id") id: Int,
+    ): Response<LaundryUsage>
 
     @GET("laundry/preferences")
-    suspend fun getLaundryPref(@Header("Authorization") bearerToken: String): Response<LaundryPreferences>
+    suspend fun getLaundryPref(
+        @Header("Authorization") bearerToken: String,
+    ): Response<LaundryPreferences>
 
     @POST("laundry/preferences/")
     suspend fun sendLaundryPref(
         @Header("Authorization") bearerToken: String,
-        @Body rooms: LaundryRequest
+        @Body rooms: LaundryRequest,
     ): Response<ResponseBody>
 }

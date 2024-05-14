@@ -19,9 +19,15 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.dining_list_item.view.*
+import kotlinx.android.synthetic.main.dining_list_item.view.dining_hall_menu_indicator
+import kotlinx.android.synthetic.main.dining_list_item.view.dining_list_item_layout
+import kotlinx.android.synthetic.main.dining_list_item.view.dining_progress
+import kotlinx.android.synthetic.main.dining_list_item.view.item_dining_hours
+import kotlinx.android.synthetic.main.dining_list_item.view.item_dining_image
+import kotlinx.android.synthetic.main.dining_list_item.view.item_dining_name
+import kotlinx.android.synthetic.main.dining_list_item.view.item_dining_status
 import rx.android.schedulers.AndroidSchedulers
-import java.util.*
+import java.util.Collections
 
 class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Adapter<DiningAdapter.DiningViewHolder>() {
     private lateinit var mStudentLife: StudentLife
@@ -29,7 +35,10 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
     private lateinit var sortBy: String
     private lateinit var context: Context
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiningViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): DiningViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.dining_list_item, parent, false)
         mStudentLife = MainActivity.studentLifeInstance
         loaded = BooleanArray(diningHalls.size)
@@ -40,7 +49,10 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
         return DiningViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: DiningViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: DiningViewHolder,
+        position: Int,
+    ) {
         if (position < diningHalls.size) {
             val diningHall = diningHalls[position]
 
@@ -72,16 +84,16 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
             if (diningHall.isResidential && !loaded[position]) {
                 holder.progressBar?.visibility = View.VISIBLE
                 mStudentLife.daily_menu(diningHall.id)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({ newDiningHall ->
-                            diningHall.sortMeals(newDiningHall.menus)
-                            holder.progressBar?.visibility = View.INVISIBLE
-                            holder.menuArrow?.visibility = View.VISIBLE
-                            loaded[position] = true
-                        }, {
-                            holder.progressBar?.visibility = View.VISIBLE
-                            holder.menuArrow?.visibility = View.GONE
-                        })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ newDiningHall ->
+                        diningHall.sortMeals(newDiningHall.menus)
+                        holder.progressBar?.visibility = View.INVISIBLE
+                        holder.menuArrow?.visibility = View.VISIBLE
+                        loaded[position] = true
+                    }, {
+                        holder.progressBar?.visibility = View.VISIBLE
+                        holder.menuArrow?.visibility = View.GONE
+                    })
             } else {
                 holder.progressBar?.visibility = View.GONE
                 holder.menuArrow?.visibility = View.VISIBLE
@@ -96,10 +108,10 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
 
                 val fragmentManager = mainActivity.supportFragmentManager
                 fragmentManager.beginTransaction()
-                        .replace(R.id.content_frame, fragment, "DINING_INFO_FRAGMENT")
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .addToBackStack(null)
-                        .commitAllowingStateLoss()
+                    .replace(R.id.content_frame, fragment, "DINING_INFO_FRAGMENT")
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .addToBackStack(null)
+                    .commitAllowingStateLoss()
             }
         }
     }
@@ -121,7 +133,10 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
     }
 
     private inner class MenuComparator : Comparator<DiningHall> {
-        override fun compare(diningHall: DiningHall, diningHall2: DiningHall): Int {
+        override fun compare(
+            diningHall: DiningHall,
+            diningHall2: DiningHall,
+        ): Int {
             when (sortBy) {
                 "OPEN" -> {
                     if (diningHall.isOpen && !diningHall2.isOpen) {
@@ -150,7 +165,6 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
     }
 
     class DiningViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
         val layout: ConstraintLayout? = view.dining_list_item_layout
         val hallNameTV: TextView? = view.item_dining_name
         val hallStatus: TextView? = view.item_dining_status

@@ -6,5 +6,6 @@ import com.google.gson.annotations.SerializedName
 class WhartonStatus {
     @SerializedName("is_wharton")
     @Expose
-    @JvmField var isWharton: Boolean = false;
+    @JvmField
+    var isWharton: Boolean = false
 }

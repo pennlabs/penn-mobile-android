@@ -11,7 +11,10 @@ import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.CompoundButton
+import android.widget.ImageView
+import android.widget.Switch
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
@@ -21,21 +24,36 @@ import com.pennapps.labs.pennmobile.LaundryBroadcastReceiver
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.MachineDetail
 import com.pennapps.labs.pennmobile.showSneakerToast
-import kotlinx.android.synthetic.main.laundry_dryer_item.view.*
+import kotlinx.android.synthetic.main.laundry_dryer_item.view.bell_notification_icon
+import kotlinx.android.synthetic.main.laundry_dryer_item.view.laundry_machine_image_view
+import kotlinx.android.synthetic.main.laundry_dryer_item.view.min_left_time
 
-class LaundryMachineAdapter(var context: Context, var mMachineDetails: List<MachineDetail>, machineType: String, roomName: String) : RecyclerView.Adapter<LaundryMachineAdapter.CustomViewHolder>() {
+class LaundryMachineAdapter(
+    var context: Context,
+    var mMachineDetails: List<MachineDetail>,
+    machineType: String,
+    roomName: String,
+) : RecyclerView.Adapter<LaundryMachineAdapter.CustomViewHolder>() {
     private var mRoomName: String
     private var mMachineType: String
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
-        val view: View = if (mMachineType == context.resources.getString(R.string.washer)) {
-            LayoutInflater.from(parent.context).inflate(R.layout.laundry_machine_item, parent, false)
-        } else {
-            LayoutInflater.from(parent.context).inflate(R.layout.laundry_dryer_item, parent, false)
-        }
+
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): CustomViewHolder {
+        val view: View =
+            if (mMachineType == context.resources.getString(R.string.washer)) {
+                LayoutInflater.from(parent.context).inflate(R.layout.laundry_machine_item, parent, false)
+            } else {
+                LayoutInflater.from(parent.context).inflate(R.layout.laundry_dryer_item, parent, false)
+            }
         return CustomViewHolder(view, context, mMachineDetails)
     }
 
-    override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: CustomViewHolder,
+        position: Int,
+    ) {
         val detail = mMachineDetails[position]
         holder.alarmSwitch.visibility = View.GONE
 
@@ -63,13 +81,15 @@ class LaundryMachineAdapter(var context: Context, var mMachineDetails: List<Mach
             }
             else -> {
                 if (mMachineType == context.getString(R.string.washer)) {
-                    //holder.machineView!!.setImageResource(R.drawable.ic_washer_in_use)
+                    // holder.machineView!!.setImageResource(R.drawable.ic_washer_in_use)
                     val animated = AnimatedVectorDrawableCompat.create(context, R.drawable.ic_washer_in_use)
-                    animated?.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
-                        override fun onAnimationEnd(drawable: Drawable?) {
-                            animated.start()
-                        }
-                    })
+                    animated?.registerAnimationCallback(
+                        object : Animatable2Compat.AnimationCallback() {
+                            override fun onAnimationEnd(drawable: Drawable?) {
+                                animated.start()
+                            }
+                        },
+                    )
                     holder.machineView!!.setImageDrawable(animated)
                     animated?.start()
                 } else {
@@ -92,23 +112,34 @@ class LaundryMachineAdapter(var context: Context, var mMachineDetails: List<Mach
         return mMachineDetails.size
     }
 
-    inner class CustomViewHolder(view: View, var context: Context, var machineDetails: List<MachineDetail>) : RecyclerView.ViewHolder(view) {
+    inner class CustomViewHolder(view: View, var context: Context, var machineDetails: List<MachineDetail>) : RecyclerView.ViewHolder(
+        view,
+    ) {
         var machineView: ImageView? = view.laundry_machine_image_view
         var timeTextView: TextView? = view.min_left_time
         var notificationBell: LottieAnimationView = view.bell_notification_icon
         var alarmSwitch: Switch = view.findViewById<View>(R.id.laundry_alarm_switch) as Switch
-
     }
 
     // adds alarm to machine
-    private fun setSwitchState(time: Int, holder: CustomViewHolder, machineId: Int) {
+    private fun setSwitchState(
+        time: Int,
+        holder: CustomViewHolder,
+        machineId: Int,
+    ) {
         val id = (mRoomName + mMachineType).hashCode() + machineId
         val intent = Intent(context, LaundryBroadcastReceiver::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         intent.putExtra(context.resources.getString(R.string.laundry_room_name), mRoomName)
         intent.putExtra(context.resources.getString(R.string.laundry_machine_type), mMachineType)
         intent.putExtra(context.resources.getString(R.string.laundry_machine_id), id)
-        val alarmIntent: PendingIntent? = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE)
+        val alarmIntent: PendingIntent? =
+            PendingIntent.getBroadcast(
+                context,
+                id,
+                intent,
+                PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE,
+            )
 
         // switch is off if no alarm
         if (alarmIntent != null) {
@@ -125,19 +156,35 @@ class LaundryMachineAdapter(var context: Context, var mMachineDetails: List<Mach
                 holder.notificationBell.visibility = View.VISIBLE
                 holder.notificationBell.playAnimation()
 
-                val alarmIntent1 = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+                val alarmIntent1 =
+                    PendingIntent.getBroadcast(
+                        context,
+                        id,
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+                    )
                 // for testing 10 second notification
-                //alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 10000, alarmIntent);
+                // alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 10000, alarmIntent);
                 alarmManager[AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + time * 60000] = alarmIntent1
 
                 val message = context.resources.getQuantityString(R.plurals.laundry_alarm_on, time, time)
-                (((context as Activity).window?.decorView as ViewGroup).showSneakerToast(
-                        message, null,
-                        R.color.sneakerBlurColorOverlay))
+                (
+                    ((context as Activity).window?.decorView as ViewGroup).showSneakerToast(
+                        message,
+                        null,
+                        R.color.sneakerBlurColorOverlay,
+                    )
+                )
             } else {
                 holder.notificationBell.visibility = View.INVISIBLE
                 // cancel alarm if exists
-                val alarmIntent1 = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE)
+                val alarmIntent1 =
+                    PendingIntent.getBroadcast(
+                        context,
+                        id,
+                        intent,
+                        PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE,
+                    )
                 if (alarmIntent1 != null) {
                     alarmManager.cancel(alarmIntent1)
                     alarmIntent1.cancel()
@@ -147,9 +194,13 @@ class LaundryMachineAdapter(var context: Context, var mMachineDetails: List<Mach
                 }
 
                 val message = context.resources.getString(R.string.laundry_alarm_off)
-                (((context as Activity).window?.decorView as ViewGroup).showSneakerToast(
-                        message, null,
-                        R.color.sneakerBlurColorOverlay))
+                (
+                    ((context as Activity).window?.decorView as ViewGroup).showSneakerToast(
+                        message,
+                        null,
+                        R.color.sneakerBlurColorOverlay,
+                    )
+                )
             }
         }
     }
@@ -170,7 +221,8 @@ class LaundryMachineAdapter(var context: Context, var mMachineDetails: List<Mach
                 detail.timeRemaining = OPEN_LABEL
             }
             if (status == context.resources.getString(R.string.status_out_of_order) ||
-                    status == context.resources.getString(R.string.status_not_online)) {
+                status == context.resources.getString(R.string.status_not_online)
+            ) {
                 detail.timeRemaining = NOT_AVAILABLE_LABEL
             }
         }

@@ -4,12 +4,14 @@ import StudentLifeRf2
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.preference.PreferenceManager
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pennapps.labs.pennmobile.adapters.LaundryRoomAdapter
 import com.pennapps.labs.pennmobile.classes.LaundryRoom
@@ -18,8 +20,7 @@ import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentLaundryBinding
 import com.pennapps.labs.pennmobile.utils.Utils
 import com.pennapps.labs.pennmobile.viewmodels.LaundryViewModel
-import kotlinx.android.synthetic.main.loading_panel.*
-import java.util.*
+import kotlinx.android.synthetic.main.loading_panel.loadingPanel
 
 class LaundryFragment : Fragment() {
     private lateinit var mActivity: MainActivity
@@ -31,15 +32,17 @@ class LaundryFragment : Fragment() {
 
     // list of favorite laundry rooms
     private var laundryRooms = ArrayList<LaundryRoom>()
+
     // data for laundry room usage
     private var roomsData: ArrayList<LaundryUsage> = ArrayList()
 
     private var mAdapter: LaundryRoomAdapter? = null
 
-    private var _binding : FragmentLaundryBinding? = null
-    private val binding get() = _binding!!
+    private var _binding: FragmentLaundryBinding? = null
+    val binding get() = _binding!!
 
-    private val laundryViewModel : LaundryViewModel by activityViewModels()
+    private val laundryViewModel: LaundryViewModel by activityViewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -49,7 +52,11 @@ class LaundryFragment : Fragment() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
         _binding = FragmentLaundryBinding.inflate(inflater, container, false)
         val view = binding.root
 
@@ -69,7 +76,10 @@ class LaundryFragment : Fragment() {
         _binding = null
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         mActivity.removeTabs()
         mActivity.setTitle(R.string.laundry)
@@ -81,7 +91,7 @@ class LaundryFragment : Fragment() {
 
         laundryViewModel.favoriteRooms.observe(viewLifecycleOwner) { favorites ->
             binding.laundryMachineRefresh.isRefreshing = false
-            
+
             laundryRooms.clear()
             roomsData.clear()
 
@@ -92,7 +102,7 @@ class LaundryFragment : Fragment() {
             roomsData.sortWith { usage1, usage2 -> usage2.id - usage1.id }
             laundryRooms.sortWith { room1, room2 -> room2.id - room1.id }
 
-            for (pos in 0 until LaundryViewModel.maxNumRooms) {
+            for (pos in 0 until LaundryViewModel.MAX_NUM_ROOMS) {
                 mAdapter!!.notifyItemChanged(pos)
             }
 
@@ -103,8 +113,8 @@ class LaundryFragment : Fragment() {
         updateMachines()
     }
 
-    private fun getOnline() : Boolean {
-        //displays banner if not connected
+    private fun getOnline(): Boolean {
+        // displays banner if not connected
         if (!isOnline(context)) {
             binding.internetConnectionLaundry.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
             binding.internetConnectionMessageLaundry.text = getString(R.string.internet_error)
@@ -118,13 +128,16 @@ class LaundryFragment : Fragment() {
         binding.internetConnectionLaundry.visibility = View.GONE
         return true
     }
+
     private fun updateMachines() {
         if (!getOnline()) {
             return
         }
         mActivity.mNetworkManager.getAccessToken {
-            val bearerToken = "Bearer " + sharedPreferences
-                .getString(getString(R.string.access_token), "").toString()
+            val bearerToken =
+                "Bearer " +
+                    sharedPreferences
+                        .getString(getString(R.string.access_token), "").toString()
             laundryViewModel.getFavorites(mStudentLife, bearerToken)
         }
     }

@@ -1,9 +1,9 @@
 package com.pennapps.labs.pennmobile.api
 
-import androidx.preference.PreferenceManager
 import android.provider.Settings
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
+import androidx.preference.PreferenceManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.BuildConfig
 import com.pennapps.labs.pennmobile.MainActivity
@@ -13,15 +13,14 @@ import kotlinx.coroutines.launch
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
-import java.util.*
+import java.util.Calendar
 
 class OAuth2NetworkManager(private var mActivity: MainActivity) {
-
     private var mStudentLife = MainActivity.studentLifeInstance
     private val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
     val editor = sp?.edit()
 
-    fun getDeviceId() : String {
+    fun getDeviceId(): String {
         val deviceID = Settings.Secure.getString(mActivity.contentResolver, Settings.Secure.ANDROID_ID) ?: "test"
         return deviceID
     }
@@ -45,7 +44,7 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
                 val currentTime = Calendar.getInstance().timeInMillis
                 if (currentTime >= expiresAt) { // if it has expired, refresh access token
                     Log.i("Accounts", "Expired")
-                    refreshAccessToken (function) {
+                    refreshAccessToken(function) {
                         tokenMutex.unlock()
                     }
                 } else {
@@ -54,7 +53,7 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
                     function.invoke()
                 }
             } else {
-                refreshAccessToken (function) {
+                refreshAccessToken(function) {
                     tokenMutex.unlock()
                 }
             }
@@ -62,15 +61,22 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
     }
 
     @Synchronized
-    private fun refreshAccessToken(function: () -> Unit, unlockMutex: () -> Unit) {
+    private fun refreshAccessToken(
+        function: () -> Unit,
+        unlockMutex: () -> Unit,
+    ) {
         val refreshToken = sp.getString(mActivity.getString(R.string.refresh_token), "")
         val clientID = BuildConfig.PLATFORM_CLIENT_ID
 
-        mStudentLife.refreshAccessToken(refreshToken,
-            "refresh_token", clientID,
+        mStudentLife.refreshAccessToken(
+            refreshToken,
+            "refresh_token",
+            clientID,
             object : Callback<AccessTokenResponse> {
-
-                override fun success(t: AccessTokenResponse?, response: Response?) {
+                override fun success(
+                    t: AccessTokenResponse?,
+                    response: Response?,
+                ) {
                     if (response?.status == 200) {
                         val editor = sp.edit()
                         editor.putString(mActivity.getString(R.string.access_token), t?.accessToken)
@@ -88,7 +94,6 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
                 }
 
                 override fun failure(error: RetrofitError) {
-
                     FirebaseCrashlytics.getInstance().recordException(error)
                     Log.e("Accounts", "Error refreshing access token $error")
 
@@ -97,6 +102,7 @@ class OAuth2NetworkManager(private var mActivity: MainActivity) {
                         unlockMutex.invoke()
                     }
                 }
-            })
+            },
+        )
     }
 }

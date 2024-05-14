@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile.adapters
 
-
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
@@ -19,9 +18,8 @@ import rx.Observable
 // https://programmer.group/app-widgets-details-four-remoteviews-remoteviews-service-and-remoteviews-factory.html
 
 class DiningHallWidgetAdapter : RemoteViewsService() {
-
     override fun onGetViewFactory(p0: Intent): RemoteViewsFactory {
-        return diningWidgetFactory(applicationContext, p0)
+        return DiningWidgetFactory(applicationContext, p0)
     }
 
     // The appwidget RemoteViewsFactory updates the data on the appwidget by:
@@ -30,17 +28,18 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
     // 3. In onCreate, the function getWidgetDiningHalls is called
     // 4. getWidgetDiningHall makes a network request to update diningHall data and calls notifyAppWidgetViewDataChanged, which then calls
     //      getViewAt() and updates the UI of the widget).
-    class diningWidgetFactory(private val context: Context, intent: Intent) : RemoteViewsFactory {
+    class DiningWidgetFactory(private val context: Context, intent: Intent) : RemoteViewsFactory {
         private var mDiningRequest: DiningRequest? = null
-        private var appWidgetId: Int = intent.getIntExtra(
-            AppWidgetManager.EXTRA_APPWIDGET_ID,
-            AppWidgetManager.INVALID_APPWIDGET_ID
-        )
+        private var appWidgetId: Int =
+            intent.getIntExtra(
+                AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID,
+            )
         private var dataSet: List<DiningHall> = emptyList()
 
         // Connection to data source
         override fun onCreate() {
-            //connect to data source
+            // connect to data source
             mDiningRequest = DiningHallWidget.diningRequestInstance
             getWidgetDiningHalls()
         }
@@ -52,7 +51,6 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
         // widget.
         override fun onDataSetChanged() {
         }
-
 
         override fun onDestroy() {
         }
@@ -73,11 +71,10 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
 
                 if (dataSet[position].openMeal() != "all" && dataSet[position].openMeal() != null) {
                     val resources = context.resources
-                    val open_label: String =
+                    val openLabel: String =
                         resources.getString(getOpenStatusLabel(dataSet[position].openMeal() ?: ""))
-                    views.setTextViewText(R.id.open_status_label, open_label)
+                    views.setTextViewText(R.id.open_status_label, openLabel)
                 }
-
             } else {
                 views.setImageViewResource(R.id.imageView, R.drawable.baseline_cancel_24)
                 views.setInt(R.id.open_status_label, "setBackgroundColor", Color.parseColor("#990000"))
@@ -87,7 +84,6 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
                 } else {
                     views.setTextViewText(R.id.open_status_label, "Closed")
                 }
-
             }
 
             // For future feature of clicking app widget item would direct to the respective dining
@@ -155,7 +151,7 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
                         venue.isResidential,
                         venue.getHours(),
                         venue,
-                        R.drawable.dining_commons
+                        R.drawable.dining_commons,
                     )
 
                     636 -> return DiningHall(
@@ -164,7 +160,7 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
                         venue.isResidential,
                         venue.getHours(),
                         venue,
-                        R.drawable.dining_hill_house
+                        R.drawable.dining_hill_house,
                     )
 
                     637 -> return DiningHall(
@@ -173,7 +169,7 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
                         venue.isResidential,
                         venue.getHours(),
                         venue,
-                        R.drawable.dining_kceh
+                        R.drawable.dining_kceh,
                     )
 
                     638 -> return DiningHall(
@@ -182,7 +178,7 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
                         venue.isResidential,
                         venue.getHours(),
                         venue,
-                        R.drawable.dining_hillel
+                        R.drawable.dining_hillel,
                     )
 
                     639 -> return DiningHall(
@@ -191,7 +187,7 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
                         venue.isResidential,
                         venue.getHours(),
                         venue,
-                        R.drawable.dining_houston
+                        R.drawable.dining_houston,
                     )
 
                     640 -> return DiningHall(
@@ -200,7 +196,7 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
                         venue.isResidential,
                         venue.getHours(),
                         venue,
-                        R.drawable.dining_marks
+                        R.drawable.dining_marks,
                     )
 
                     641 -> return DiningHall(
@@ -209,7 +205,7 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
                         venue.isResidential,
                         venue.getHours(),
                         venue,
-                        R.drawable.dining_accenture
+                        R.drawable.dining_accenture,
                     )
 
                     642 -> return DiningHall(
@@ -218,7 +214,7 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
                         venue.isResidential,
                         venue.getHours(),
                         venue,
-                        R.drawable.dining_joes_cafe
+                        R.drawable.dining_joes_cafe,
                     )
 
                     1442 -> return DiningHall(
@@ -227,7 +223,7 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
                         venue.isResidential,
                         venue.getHours(),
                         venue,
-                        R.drawable.dining_nch
+                        R.drawable.dining_nch,
                     )
 
                     747 -> return DiningHall(
@@ -236,7 +232,7 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
                         venue.isResidential,
                         venue.getHours(),
                         venue,
-                        R.drawable.dining_mcclelland
+                        R.drawable.dining_mcclelland,
                     )
 
                     1057 -> return DiningHall(
@@ -245,7 +241,7 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
                         venue.isResidential,
                         venue.getHours(),
                         venue,
-                        R.drawable.dining_gourmet_grocer
+                        R.drawable.dining_gourmet_grocer,
                     )
 
                     1058 -> return DiningHall(
@@ -254,7 +250,7 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
                         venue.isResidential,
                         venue.getHours(),
                         venue,
-                        R.drawable.dining_tortas
+                        R.drawable.dining_tortas,
                     )
 
                     1163 -> return DiningHall(
@@ -263,7 +259,7 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
                         venue.isResidential,
                         venue.getHours(),
                         venue,
-                        R.drawable.dining_commons
+                        R.drawable.dining_commons,
                     )
 
                     1731 -> return DiningHall(
@@ -272,7 +268,7 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
                         venue.isResidential,
                         venue.getHours(),
                         venue,
-                        R.drawable.dining_nch
+                        R.drawable.dining_nch,
                     )
 
                     1732 -> return DiningHall(
@@ -281,7 +277,7 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
                         venue.isResidential,
                         venue.getHours(),
                         venue,
-                        R.drawable.dining_mba_cafe
+                        R.drawable.dining_mba_cafe,
                     )
 
                     1733 -> return DiningHall(
@@ -290,7 +286,7 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
                         venue.isResidential,
                         venue.getHours(),
                         venue,
-                        R.drawable.dining_pret_a_manger
+                        R.drawable.dining_pret_a_manger,
                     )
 
                     else -> return DiningHall(
@@ -299,7 +295,7 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
                         venue.isResidential,
                         venue.getHours(),
                         venue,
-                        R.drawable.dining_commons
+                        R.drawable.dining_commons,
                     )
                 }
             }

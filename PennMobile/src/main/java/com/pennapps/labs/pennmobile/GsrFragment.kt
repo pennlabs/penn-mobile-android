@@ -5,15 +5,20 @@ import android.app.TimePickerDialog
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.Spinner
+import android.widget.Switch
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
-import com.google.firebase.analytics.FirebaseAnalytics
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.pennapps.labs.pennmobile.adapters.GsrBuildingAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRContainer
@@ -22,12 +27,11 @@ import com.pennapps.labs.pennmobile.classes.GSRSlot
 import com.pennapps.labs.pennmobile.databinding.FragmentGsrBinding
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 import kotlin.collections.ArrayList
 
-
 class GsrFragment : Fragment() {
-
     // ui components
     lateinit var selectDateButton: Button
     lateinit var selectTimeButton: Button
@@ -37,22 +41,22 @@ class GsrFragment : Fragment() {
     lateinit var noResultsPanel: LinearLayout
     lateinit var sortingSwitch: Switch
 
-    private var _binding : FragmentGsrBinding? = null
-    private val binding get() = _binding!!
+    private var _binding: FragmentGsrBinding? = null
+    val binding get() = _binding!!
 
     // api manager
     private lateinit var mStudentLife: StudentLife
 
-    //list that holds all GSR rooms
+    // list that holds all GSR rooms
     private val gsrHashMap = HashMap<String, String?>()
 
-    //list that holds all GSR rooms and their gids
+    // list that holds all GSR rooms and their gids
     private val gsrGIDHashMap = HashMap<String, Int>()
 
     // all the gsrs
     private var mGSRS = ArrayList<GSRContainer>()
 
-    private lateinit var selectedDateTime : DateTime
+    private lateinit var selectedDateTime: DateTime
 
     private val spinnerDateFormatter = DateTimeFormat.forPattern("M/d/yyyy")
     private val timeFormatter = DateTimeFormat.forPattern("h:mm a")
@@ -82,7 +86,11 @@ class GsrFragment : Fragment() {
         selectedDateTime = DateTime.now()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
         _binding = FragmentGsrBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -92,7 +100,10 @@ class GsrFragment : Fragment() {
         _binding = null
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         selectDateButton = binding.gsrSelectDate
         selectTimeButton = binding.gsrSelectTime
         gsrLocationDropDown = binding.gsrBuildingSelection
@@ -123,9 +134,7 @@ class GsrFragment : Fragment() {
         gsrRoomListLayoutManager.orientation = LinearLayoutManager.VERTICAL
         binding.gsrRoomsList.layoutManager = (gsrRoomListLayoutManager)
 
-        /**
-         * On Click functions for buttons
-         */
+        // On Click functions for buttons
 
         // set start time button
         selectTimeButton.setOnClickListener {
@@ -135,16 +144,29 @@ class GsrFragment : Fragment() {
             val mMinute = c.get(Calendar.MINUTE)
 
             // Launch Time Picker Dialog
-            val timePickerDialog = TimePickerDialog(activity,
+            val timePickerDialog =
+                TimePickerDialog(
+                    activity,
                     { _, hourOfDay, minute ->
 
                         // Update hour + minute
-                        selectedDateTime = DateTime(selectedDateTime.year, selectedDateTime.monthOfYear, selectedDateTime.dayOfMonth, hourOfDay, minute)
+                        selectedDateTime =
+                            DateTime(
+                                selectedDateTime.year,
+                                selectedDateTime.monthOfYear,
+                                selectedDateTime.dayOfMonth,
+                                hourOfDay,
+                                minute,
+                            )
 
                         // Display the selected time; use Joda to do the formatting work
                         selectTimeButton.text = selectedDateTime.toString(timeFormatter)
                         searchForGSR(false)
-                    }, mHour, mMinute, false)
+                    },
+                    mHour,
+                    mMinute,
+                    false,
+                )
             timePickerDialog.show()
         }
 
@@ -156,9 +178,11 @@ class GsrFragment : Fragment() {
             val mMonth = c.get(Calendar.MONTH)
             val mDay = c.get(Calendar.DAY_OF_MONTH)
 
-            val datePickerDialog = DatePickerDialog(mActivity,
-                     { _, year, monthOfYear, dayOfMonth ->
-                        //account for index starting at 0
+            val datePickerDialog =
+                DatePickerDialog(
+                    mActivity,
+                    { _, year, monthOfYear, dayOfMonth ->
+                        // account for index starting at 0
                         val entryMonth = monthOfYear + 1
 
                         // Update year + month + day
@@ -167,9 +191,13 @@ class GsrFragment : Fragment() {
                         // Display the selected date; use Joda to do the formatting work
                         selectDateButton.text = selectedDateTime.toString(spinnerDateFormatter)
                         searchForGSR(false)
-                    }, mYear, mMonth, mDay)
+                    },
+                    mYear,
+                    mMonth,
+                    mDay,
+                )
 
-            //set min and max choices for dates. Want to limit to week.
+            // set min and max choices for dates. Want to limit to week.
             val today = Date()
             c.time = today
             val minDate = c.time.time
@@ -183,7 +211,7 @@ class GsrFragment : Fragment() {
             datePickerDialog.show()
         }
 
-        sortingSwitch.setOnClickListener{
+        sortingSwitch.setOnClickListener {
             sortByTime = sortingSwitch.isChecked
             searchForGSR(false)
         }
@@ -204,14 +232,16 @@ class GsrFragment : Fragment() {
                 Toast.makeText(activity, "You are not logged in!", Toast.LENGTH_LONG).show()
             } else {
                 mStudentLife.isWharton(
-                    "Bearer $bearerToken"
+                    "Bearer $bearerToken",
                 )
-                    ?.subscribe({ status ->
-                        isWharton = status.isWharton
-                    }, {
-                        Log.e("GsrFragment", "Error getting Wharton status", it)
-                        isWharton = false
-                    }
+                    ?.subscribe(
+                        { status ->
+                            isWharton = status.isWharton
+                        },
+                        {
+                            Log.e("GsrFragment", "Error getting Wharton status", it)
+                            isWharton = false
+                        },
                     )
             }
         }
@@ -220,14 +250,14 @@ class GsrFragment : Fragment() {
     // Performs GSR search
     // Called when page loads and whenever user changes start/end time, date, or building
     fun searchForGSR(calledByRefreshLayout: Boolean) {
-        //displays banner if not connected
+        // displays banner if not connected
         if (!isOnline(context)) {
             binding.internetConnectionGSR.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
             binding.internetConnectionMessageGsr.setText("Not Connected to Internet")
             binding.internetConnectionGSR.visibility = View.VISIBLE
         } else {
             binding.internetConnectionGSR.visibility = View.GONE
-            if(!populatedDropDownGSR) {
+            if (!populatedDropDownGSR) {
                 populateDropDownGSR()
             }
         }
@@ -252,7 +282,7 @@ class GsrFragment : Fragment() {
                         Toast.makeText(
                             activity,
                             "You need to have a Wharton pennkey to access Wharton GSRs",
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_LONG,
                         ).show()
                     }
                 } else {
@@ -266,14 +296,16 @@ class GsrFragment : Fragment() {
     }
 
     // Performs GET request and fetches the rooms and availability
-    private fun getTimes(location: String, gId: Int) {
+    private fun getTimes(
+        location: String,
+        gId: Int,
+    ) {
         val adjustedDateString = selectedDateTime.toString(adjustedDateFormat)
         selectDateButton.isClickable = false
         selectTimeButton.isClickable = false
         gsrLocationDropDown.isEnabled = false
         durationDropDown.isEnabled = false
         sortingSwitch.isClickable = false
-
 
         mActivity.mNetworkManager.getAccessToken {
             val bearerToken = sharedPreferences.getString(getString(R.string.access_token), "").toString()
@@ -283,87 +315,98 @@ class GsrFragment : Fragment() {
 
             mStudentLife.gsrRoom(
                 "Bearer $bearerToken",
-                location, gId, adjustedDateString
+                location,
+                gId,
+                adjustedDateString,
             )
-                ?.subscribe({ gsr ->
-                    activity?.let { activity ->
-                        activity.runOnUiThread {
-                            val gsrRooms = gsr.rooms
-                            var timeSlotLengthZero = true
+                ?.subscribe(
+                    { gsr ->
+                        activity?.let { activity ->
+                            activity.runOnUiThread {
+                                val gsrRooms = gsr.rooms
+                                var timeSlotLengthZero = true
 
-                            if (gsrRooms == null) {
-                                // a certification error causes "room" field to remain null
-                                showNoResults()
-                            } else {
-                                for (i in gsrRooms.indices) {
-                                    val gsrRoom = gsrRooms[i]
-                                    val gsrTimeSlots = gsrRoom.slots
-                                    //checks if the time slots are ever nonzero
-                                    val size = gsrTimeSlots?.size ?: 0
-                                    if (size > 0) {
-                                        timeSlotLengthZero = false
-                                    }
-                                    if (gsrTimeSlots != null) {
-                                        filterInsertTimeSlots(gsrRoom, gsrTimeSlots, gId)
+                                if (gsrRooms == null) {
+                                    // a certification error causes "room" field to remain null
+                                    showNoResults()
+                                } else {
+                                    for (i in gsrRooms.indices) {
+                                        val gsrRoom = gsrRooms[i]
+                                        val gsrTimeSlots = gsrRoom.slots
+                                        // checks if the time slots are ever nonzero
+                                        val size = gsrTimeSlots?.size ?: 0
+                                        if (size > 0) {
+                                            timeSlotLengthZero = false
+                                        }
+                                        if (gsrTimeSlots != null) {
+                                            filterInsertTimeSlots(gsrRoom, gsrTimeSlots, gId)
+                                        }
                                     }
                                 }
+                                // remove loading icon
+                                loadingPanel.visibility = View.GONE
+                                noResultsPanel.visibility = View.GONE
+                                // stop refreshing
+                                binding.gsrRoomsList.visibility = View.VISIBLE
+                                binding.gsrRefreshLayout.isRefreshing = false
+
+                                if (timeSlotLengthZero) {
+                                    binding.gsrNoRooms.visibility = View.VISIBLE
+                                }
+
+                                binding.gsrRoomsList.adapter = (
+                                    context?.let {
+                                        GsrBuildingAdapter(
+                                            it,
+                                            mGSRS,
+                                            location,
+                                            (durationDropDown.selectedItemPosition + 1) * 30,
+                                            sortByTime,
+                                        )
+                                    }
+                                )
+
+                                mGSRS = ArrayList()
+                                selectDateButton.isClickable = true
+                                selectTimeButton.isClickable = true
+                                gsrLocationDropDown.isEnabled = true
+                                durationDropDown.isEnabled = true
+                                sortingSwitch.isClickable = true
                             }
-                            // remove loading icon
-                            loadingPanel.visibility = View.GONE
-                            noResultsPanel.visibility = View.GONE
-                            // stop refreshing
-                            binding.gsrRoomsList.visibility = View.VISIBLE
-                            binding.gsrRefreshLayout.isRefreshing = false
-
-                            if (timeSlotLengthZero) {
-                                binding.gsrNoRooms.visibility = View.VISIBLE
+                        }
+                    },
+                    {
+                        Log.e("GsrFragment", "Error getting gsr times", it)
+                        activity?.let { activity ->
+                            activity.runOnUiThread {
+                                showNoResults()
+                                selectDateButton.isClickable = true
+                                selectTimeButton.isClickable = true
+                                gsrLocationDropDown.isEnabled = true
+                                durationDropDown.isEnabled = true
+                                sortingSwitch.isClickable = true
                             }
-
-                            binding.gsrRoomsList.adapter = (context?.let {
-                                GsrBuildingAdapter(it, mGSRS, location, (durationDropDown.selectedItemPosition + 1) * 30, sortByTime)
-
-                            })
-
-                            mGSRS = ArrayList()
-                            selectDateButton.isClickable = true
-                            selectTimeButton.isClickable = true
-                            gsrLocationDropDown.isEnabled = true
-                            durationDropDown.isEnabled = true
-                            sortingSwitch.isClickable = true
-
                         }
-                    }
-                }, {
-                    Log.e("GsrFragment", "Error getting gsr times", it)
-           activity?.let { activity ->
-                        activity.runOnUiThread {
-                            showNoResults()
-                            selectDateButton.isClickable = true
-                            selectTimeButton.isClickable = true
-                            gsrLocationDropDown.isEnabled = true
-                            durationDropDown.isEnabled = true
-                            sortingSwitch.isClickable = true
-
-                        }
-                    }
-                }
+                    },
                 )
         }
     }
 
-    private fun filterInsertTimeSlots(gsrRoom: GSRRoom, timeSlots: Array<GSRSlot>, gid: Int) {
+    private fun filterInsertTimeSlots(
+        gsrRoom: GSRRoom,
+        timeSlots: Array<GSRSlot>,
+        gid: Int,
+    ) {
         val availableSlotsAfterSelectedTime = ArrayList<GSRSlot>()
 
         // Filter time slots so only available slots occurring after selected time are used
         for (pos in timeSlots.indices) {
             val currSlot = timeSlots[pos]
             if (currSlot.isAvailable) {
-
                 val startString = currSlot.startTime
                 val endString = currSlot.endTime
 
                 if (startString != null && endString != null) {
-
                     val endTime = gsrSlotFormatter.parseDateTime(endString)
                     if (endTime.isAfter(selectedDateTime)) {
                         availableSlotsAfterSelectedTime.add(currSlot)
@@ -388,26 +431,39 @@ class GsrFragment : Fragment() {
                 val stringStartTime = startTime.toString(timeFormatter)
                 val stringEndTime = endTime.toString(timeFormatter)
                 val start = startingSlot.startTime ?: ""
-                //note that end uses ending slot to account for 30+ min booking times
+                // note that end uses ending slot to account for 30+ min booking times
                 val end = endingSlot.endTime ?: ""
                 val gsrName = gsrRoom.name ?: ""
-                val gsrRoomId = gsrRoom.room_id ?: 0
-                insertGSRSlot(gsrName, "$stringStartTime-$stringEndTime",
-                        startTime, gsrRoomId.toString(), gid, gsrRoomId, start, end)
+                val gsrRoomId = gsrRoom.roomId ?: 0
+                insertGSRSlot(
+                    gsrName,
+                    "$stringStartTime-$stringEndTime",
+                    startTime,
+                    gsrRoomId.toString(),
+                    gid,
+                    gsrRoomId,
+                    start,
+                    end,
+                )
             }
         }
     }
 
     private fun populateDropDownGSR() {
         mStudentLife.location()
-                ?.subscribe({ locations ->
-                    activity?.let {activity ->
+            ?.subscribe(
+                { locations ->
+                    activity?.let { activity ->
                         populatedDropDownGSR = true
                         activity.runOnUiThread {
-                            //reset the drop down
+                            // reset the drop down
                             val emptyArray = arrayOfNulls<String>(0)
-                            val emptyAdapter = ArrayAdapter<String>(activity,
-                                    android.R.layout.simple_spinner_dropdown_item, emptyArray)
+                            val emptyAdapter =
+                                ArrayAdapter<String>(
+                                    activity,
+                                    android.R.layout.simple_spinner_dropdown_item,
+                                    emptyArray,
+                                )
                             gsrLocationDropDown.adapter = emptyAdapter
 
                             val numLocations = locations.size
@@ -416,8 +472,10 @@ class GsrFragment : Fragment() {
                             while (i < numLocations) {
                                 val locationName = locations[i]?.name ?: ""
                                 if (locationName.isEmpty()) {
-                                    Log.w("Empty location name",
-                                        locations[i].id ?: locations[i].gid.toString())
+                                    Log.w(
+                                        "Empty location name",
+                                        locations[i].id ?: locations[i].gid.toString(),
+                                    )
                                 }
                                 gsrHashMap[locationName] = locations[i].id
                                 gsrGIDHashMap[locationName] = locations[i].gid
@@ -429,18 +487,25 @@ class GsrFragment : Fragment() {
                             val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
                             gsrLocationDropDown.adapter = adapter
 
-                            durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman"
-                                || gsrLocationDropDown.selectedItem.toString() == "Academic Research")
-                                whartonDurationAdapter else if (gsrLocationDropDown.selectedItem.toString() == "Biomedical")
-                                biotechDurationAdapter else durationAdapter
+                            durationDropDown.adapter =
+                                if (gsrLocationDropDown.selectedItem.toString() == "Huntsman" ||
+                                    gsrLocationDropDown.selectedItem.toString() == "Academic Research"
+                                ) {
+                                    whartonDurationAdapter
+                                } else if (gsrLocationDropDown.selectedItem.toString() == "Biomedical") {
+                                    biotechDurationAdapter
+                                } else {
+                                    durationAdapter
+                                }
                             searchForGSR(false)
                         }
                     }
-                }, {
+                },
+                {
                     Log.e("Gsr Fragment", "Error getting gsr locations", it)
                     activity?.let { activity ->
                         activity.runOnUiThread {
-                            //hard coded in case runs into error
+                            // hard coded in case runs into error
                             gsrHashMap["VP Ground Floor"] = "1086"
                             gsrHashMap["Weigle"] = "1086"
                             gsrHashMap["Lippincott"] = "2587"
@@ -459,47 +524,73 @@ class GsrFragment : Fragment() {
                             val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
                             gsrLocationDropDown.adapter = adapter
 
-                            durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman"
-                                || gsrLocationDropDown.selectedItem.toString() == "Academic Research")
-                                whartonDurationAdapter else if (gsrLocationDropDown.selectedItem.toString() == "Biotech Commons")
-                                    biotechDurationAdapter else durationAdapter
+                            durationDropDown.adapter =
+                                if (gsrLocationDropDown.selectedItem.toString() == "Huntsman" ||
+                                    gsrLocationDropDown.selectedItem.toString() == "Academic Research"
+                                ) {
+                                    whartonDurationAdapter
+                                } else if (gsrLocationDropDown.selectedItem.toString() == "Biotech Commons") {
+                                    biotechDurationAdapter
+                                } else {
+                                    durationAdapter
+                                }
                             searchForGSR(false)
                         }
                     }
+                },
+            )
+        gsrLocationDropDown.onItemSelectedListener =
+            object : OnItemSelectedListener {
+                override fun onItemSelected(
+                    adapterView: AdapterView<*>,
+                    view: View?,
+                    i: Int,
+                    l: Long,
+                ) {
+                    // change possible durations depending on the location
+                    var durationPos = durationDropDown.selectedItemPosition
+                    if (durationPos >= 3 && (
+                            gsrLocationDropDown.selectedItem.toString() == "Huntsman" ||
+                                gsrLocationDropDown.selectedItem.toString() == "Academic Research"
+                        )
+                    ) {
+                        durationPos = 2
+                    } else if (durationPos > 3 && gsrLocationDropDown.selectedItem.toString() != "Biotech Commons") {
+                        durationPos = 3
+                    }
+                    durationDropDown.adapter =
+                        if (gsrLocationDropDown.selectedItem.toString() == "Huntsman" ||
+                            gsrLocationDropDown.selectedItem.toString() == "Academic Research"
+                        ) {
+                            whartonDurationAdapter
+                        } else if (gsrLocationDropDown.selectedItem.toString() == "Biotech Commons") {
+                            biotechDurationAdapter
+                        } else {
+                            durationAdapter
+                        }
+                    durationDropDown.setSelection(durationPos)
+                    searchForGSR(false)
                 }
-                )
-        gsrLocationDropDown.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(adapterView: AdapterView<*>, view: View?, i: Int, l: Long) {
-                // change possible durations depending on the location
-                var durationPos = durationDropDown.selectedItemPosition
-                if (durationPos >= 3 && (gsrLocationDropDown.selectedItem.toString() == "Huntsman"
-                            || gsrLocationDropDown.selectedItem.toString() == "Academic Research")) {
-                    durationPos = 2
-                } else if (durationPos > 3 && gsrLocationDropDown.selectedItem.toString() != "Biotech Commons") {
-                    durationPos = 3
+
+                override fun onNothingSelected(adapterView: AdapterView<*>) {
                 }
-                durationDropDown.adapter = if (gsrLocationDropDown.selectedItem.toString() == "Huntsman"
-                    || gsrLocationDropDown.selectedItem.toString() == "Academic Research")
-                    whartonDurationAdapter else if (gsrLocationDropDown.selectedItem.toString() == "Biotech Commons")
-                    biotechDurationAdapter else durationAdapter
-                durationDropDown.setSelection(durationPos)
-                searchForGSR(false)
             }
 
-            override fun onNothingSelected(adapterView: AdapterView<*>) {
+        durationDropDown.onItemSelectedListener =
+            object : OnItemSelectedListener {
+                override fun onItemSelected(
+                    p0: AdapterView<*>?,
+                    p1: View?,
+                    pos: Int,
+                    p3: Long,
+                ) {
+                    searchForGSR(false)
+                }
 
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+                    // Account did not change the duration
+                }
             }
-        }
-
-        durationDropDown.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
-                searchForGSR(false)
-            }
-
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-                // Account did not change the duration
-            }
-        }
     }
 
     private fun showNoResults() {
@@ -510,27 +601,34 @@ class GsrFragment : Fragment() {
         binding.gsrRefreshLayout.isRefreshing = false
     }
 
-    //takes the name of the gsr and returns an int for the corresponding code
+    // takes the name of the gsr and returns an int for the corresponding code
     fun mapGSR(name: String): String = gsrHashMap[name] ?: ""
 
-    //takes the name of the gsr and returns an int for the corresponding gid
+    // takes the name of the gsr and returns an int for the corresponding gid
     fun mapGID(name: String): Int = gsrGIDHashMap[name] ?: 0
 
-    //function that takes all available GSR sessions and populates mGSRs
-    fun insertGSRSlot(gsrName: String, GSRTimeRange: String, GSRStartTime: DateTime, GSRElementId: String, gid: Int, roomId: Int,
-    start: String, end: String) {
-
+    // function that takes all available GSR sessions and populates mGSRs
+    fun insertGSRSlot(
+        gsrName: String,
+        GSRTimeRange: String,
+        GSRStartTime: DateTime,
+        GSRElementId: String,
+        gid: Int,
+        roomId: Int,
+        start: String,
+        end: String,
+    ) {
         var encountered = false
 
         for (i in mGSRS.indices) {
             val currentGSR = mGSRS[i]
-            //if there is GSR, add the available session to the GSR Object
+            // if there is GSR, add the available session to the GSR Object
             if (currentGSR.gsrName == gsrName) {
                 currentGSR.addGSRSlot(GSRTimeRange, GSRStartTime, GSRElementId, start, end)
                 encountered = true
             }
         }
-        //can't find existing GSR. Create new object
+        // can't find existing GSR. Create new object
         if (!encountered) {
             val newGSRObject = GSRContainer(gsrName, GSRTimeRange, GSRStartTime, GSRElementId, gid, roomId, start, end)
             mGSRS.add(newGSRObject)

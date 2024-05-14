@@ -14,24 +14,27 @@ class RoundedBarChartRenderer constructor(
     chart: BarChart,
     animator: ChartAnimator,
     vpHandler: ViewPortHandler,
-    cornersDimen: Float
+    cornersDimen: Float,
 ) : BarChartRenderer(chart, animator, vpHandler) {
-    private val mCornersDimen : Float
+    private val mCornersDimen: Float
 
     init {
         mCornersDimen = cornersDimen
     }
 
-    override fun drawDataSet(c: Canvas, dataSet: IBarDataSet, index: Int) {
-
+    override fun drawDataSet(
+        c: Canvas,
+        dataSet: IBarDataSet,
+        index: Int,
+    ) {
         val trans: com.github.mikephil.charting.utils.Transformer =
             mChart.getTransformer(dataSet.getAxisDependency())
 
         mBarBorderPaint.setColor(dataSet.getBarBorderColor())
         mBarBorderPaint.setStrokeWidth(
             com.github.mikephil.charting.utils.Utils.convertDpToPixel(
-                dataSet.getBarBorderWidth()
-            )
+                dataSet.getBarBorderWidth(),
+            ),
         )
 
         val drawBorder: Boolean = dataSet.getBarBorderWidth() > 0f
@@ -57,7 +60,6 @@ class RoundedBarChartRenderer constructor(
         }
 
         for (j in 0 until buffer.size() step 4) {
-
             if (!mViewPortHandler.isInBoundsLeft(buffer.buffer.get(j + 2))) continue
 
             if (!mViewPortHandler.isInBoundsRight(buffer.buffer.get(j))) break
@@ -78,8 +80,8 @@ class RoundedBarChartRenderer constructor(
                         buffer.buffer.get(j + 1),
                         gradientColor.getStartColor(),
                         gradientColor.getEndColor(),
-                        android.graphics.Shader.TileMode.MIRROR
-                    )
+                        android.graphics.Shader.TileMode.MIRROR,
+                    ),
                 )
             }
 
@@ -92,26 +94,39 @@ class RoundedBarChartRenderer constructor(
                         buffer.buffer.get(j + 1),
                         dataSet.getGradientColor(j / 4).getStartColor(),
                         dataSet.getGradientColor(j / 4).getEndColor(),
-                        android.graphics.Shader.TileMode.MIRROR
-                    )
+                        android.graphics.Shader.TileMode.MIRROR,
+                    ),
                 )
             }
 
             c.drawRoundRect(
-                buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
-                buffer.buffer[j + 3], mCornersDimen, mCornersDimen, mRenderPaint
+                buffer.buffer[j],
+                buffer.buffer[j + 1],
+                buffer.buffer[j + 2],
+                buffer.buffer[j + 3],
+                mCornersDimen,
+                mCornersDimen,
+                mRenderPaint,
             )
 
             if (drawBorder) {
                 c.drawRoundRect(
-                    buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
-                    buffer.buffer[j + 3], mCornersDimen, mCornersDimen, mBarBorderPaint
+                    buffer.buffer[j],
+                    buffer.buffer[j + 1],
+                    buffer.buffer[j + 2],
+                    buffer.buffer[j + 3],
+                    mCornersDimen,
+                    mCornersDimen,
+                    mBarBorderPaint,
                 )
             }
         }
     }
 
-    override fun drawHighlighted(c: Canvas?, indices: Array<out Highlight>?) {
+    override fun drawHighlighted(
+        c: Canvas?,
+        indices: Array<out Highlight>?,
+    ) {
         val barData = mChart.barData
 
         for (high in indices!!) {

@@ -13,9 +13,11 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.DrawableCompat
 
 object DrawableHelper {
-    internal fun createShapeDrawable(@ColorInt activeColor: Int,
-                                     @FloatRange(from = 0.0) cornerRadius: Float,
-                                     @FloatRange(from = 0.0, to = 1.0) opacity: Float): Drawable {
+    internal fun createShapeDrawable(
+        @ColorInt activeColor: Int,
+        @FloatRange(from = 0.0) cornerRadius: Float,
+        @FloatRange(from = 0.0, to = 1.0) opacity: Float,
+    ): Drawable {
         val footerBackground = ShapeDrawable()
 
         val radii = FloatArray(81)
@@ -27,9 +29,11 @@ object DrawableHelper {
         return footerBackground
     }
 
-    internal fun createDrawable(context: Context,
-                                @DrawableRes menuItem: Int,
-                                stateList: ColorStateList): Drawable {
+    internal fun createDrawable(
+        context: Context,
+        @DrawableRes menuItem: Int,
+        stateList: ColorStateList,
+    ): Drawable {
         val iconDrawable = ContextCompat.getDrawable(context, menuItem)!!
         DrawableCompat.setTintList(iconDrawable, stateList)
         return iconDrawable

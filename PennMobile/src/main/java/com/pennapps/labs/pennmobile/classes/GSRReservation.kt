@@ -7,7 +7,7 @@ class GSRReservation {
     @SerializedName("booking_id")
     @Expose
     @JvmField
-    var booking_id: String? = null
+    var bookingId: String? = null
 
     @SerializedName("name")
     @Expose
@@ -39,13 +39,13 @@ class GSRReservation {
     var info: Map<String, String>? = null
 
     override fun equals(other: Any?): Boolean {
-        return other is GSRReservation && this.booking_id == other.booking_id && this.name == other.name
-                && this.fromDate == other.fromDate && this.toDate == other.toDate && this.gid == other.gid
-                && this.lid == other.lid
+        return other is GSRReservation && this.bookingId == other.bookingId && this.name == other.name &&
+            this.fromDate == other.fromDate && this.toDate == other.toDate && this.gid == other.gid &&
+            this.lid == other.lid
     }
 
     override fun hashCode(): Int {
-        var result = (booking_id?.hashCode() ?: 0)
+        var result = (bookingId?.hashCode() ?: 0)
         result = 31 * result + (name?.hashCode() ?: 0)
         result = 31 * result + (fromDate?.hashCode() ?: 0)
         result = 31 * result + (toDate?.hashCode() ?: 0)

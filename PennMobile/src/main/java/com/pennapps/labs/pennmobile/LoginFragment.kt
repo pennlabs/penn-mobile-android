@@ -15,11 +15,10 @@ import com.bumptech.glide.request.RequestListener
 import com.pennapps.labs.pennmobile.databinding.FragmentLoginBinding
 
 class LoginFragment : Fragment() {
-
     private lateinit var mActivity: MainActivity
 
-    private var _binding : FragmentLoginBinding? = null
-    private val binding get() = _binding!!
+    private var _binding: FragmentLoginBinding? = null
+    val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,29 +27,47 @@ class LoginFragment : Fragment() {
         mActivity.closeKeyboard()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         val v = binding.root
 
         val fragmentManager = mActivity.supportFragmentManager
         val gif = R.drawable.login_background
 
-        Glide.with(this).asGif().load(gif).listener(object : RequestListener<GifDrawable> {
-            override fun onLoadFailed(e: GlideException?, model: Any?, target: com.bumptech.glide.request.target.Target<GifDrawable>?, isFirstResource: Boolean): Boolean {
-                return false
-            }
-            override fun onResourceReady(resource: GifDrawable, model: Any, target: com.bumptech.glide.request.target.Target<GifDrawable>?, dataSource: DataSource, isFirstResource: Boolean): Boolean {
-                resource.setLoopCount(1)
-                return false
-            }
-        }).into(binding.backgroundIv)
+        Glide.with(this).asGif().load(gif).listener(
+            object : RequestListener<GifDrawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: com.bumptech.glide.request.target.Target<GifDrawable>?,
+                    isFirstResource: Boolean,
+                ): Boolean {
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: GifDrawable,
+                    model: Any,
+                    target: com.bumptech.glide.request.target.Target<GifDrawable>?,
+                    dataSource: DataSource,
+                    isFirstResource: Boolean,
+                ): Boolean {
+                    resource.setLoopCount(1)
+                    return false
+                }
+            },
+        ).into(binding.backgroundIv)
 
         binding.loginButton.setOnClickListener {
             val fragment = LoginWebviewFragment()
             fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, fragment)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .commit()
+                .replace(R.id.content_frame, fragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit()
         }
 
         binding.guestButton.setOnClickListener {

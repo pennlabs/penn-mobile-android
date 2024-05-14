@@ -18,7 +18,7 @@ import com.pennapps.labs.pennmobile.viewmodels.LaundryViewModel
  */
 class LaundrySettingsAdapter(
     private val mContext: Context,
-    private val dataModel: LaundryViewModel
+    private val dataModel: LaundryViewModel,
 ) : BaseExpandableListAdapter() {
     private val switches: MutableList<Switch> = ArrayList()
 
@@ -38,7 +38,10 @@ class LaundrySettingsAdapter(
         return dataModel.getGroup(i)
     }
 
-    override fun getChild(i: Int, i1: Int): Any {
+    override fun getChild(
+        i: Int,
+        i1: Int,
+    ): Any {
         return dataModel.getChild(i, i1)
     }
 
@@ -46,7 +49,10 @@ class LaundrySettingsAdapter(
         return i.toLong()
     }
 
-    override fun getChildId(i: Int, i1: Int): Long {
+    override fun getChildId(
+        i: Int,
+        i1: Int,
+    ): Long {
         return i1.toLong()
     }
 
@@ -55,15 +61,21 @@ class LaundrySettingsAdapter(
     }
 
     // view for the laundry buildings
-    override fun getGroupView(i: Int, b: Boolean, origView: View?, viewGroup: ViewGroup): View {
+    override fun getGroupView(
+        i: Int,
+        b: Boolean,
+        origView: View?,
+        viewGroup: ViewGroup,
+    ): View {
         val laundryHallName = getGroup(i) as String
-        val view : View = if (origView == null) {
-            val inflater =
-                mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            inflater.inflate(R.layout.laundry_settings_parent_item, null)
-        } else {
-            origView
-        }
+        val view: View =
+            if (origView == null) {
+                val inflater =
+                    mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                inflater.inflate(R.layout.laundry_settings_parent_item, null)
+            } else {
+                origView
+            }
         val textView = view.findViewById<TextView>(R.id.laundry_building_name)
         textView.text = laundryHallName
         val imageView = view.findViewById<ImageView>(R.id.laundry_building_dropdown)
@@ -88,7 +100,7 @@ class LaundrySettingsAdapter(
                 buildingSwitch.isEnabled = buildingSwitch.isChecked
             }
             buildingSwitch.setOnClickListener {
-                if(dataModel.toggle(roomId)) {
+                if (dataModel.toggle(roomId)) {
                     updateSwitches()
                 }
             }
@@ -105,21 +117,28 @@ class LaundrySettingsAdapter(
         return view
     }
 
-    override fun getChildView(i: Int, i1: Int, b: Boolean, origView: View?, viewGroup: ViewGroup): View {
+    override fun getChildView(
+        i: Int,
+        i1: Int,
+        b: Boolean,
+        origView: View?,
+        viewGroup: ViewGroup,
+    ): View {
         val laundryRoom = getChild(i, i1) as LaundryRoomSimple
-        val view : View = if (origView == null) {
-            val inflater =
-                mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            inflater.inflate(R.layout.laundry_settings_child_item, null)
-        } else {
-            origView
-        }
+        val view: View =
+            if (origView == null) {
+                val inflater =
+                    mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                inflater.inflate(R.layout.laundry_settings_child_item, null)
+            } else {
+                origView
+            }
         val textView = view.findViewById<TextView>(R.id.laundry_room_name)
         val name = laundryRoom.name
         textView.text = name
         val favoriteSwitch = view.findViewById<Switch>(R.id.laundry_favorite_switch)
 
-        val roomId : Int = laundryRoom.id!!
+        val roomId: Int = laundryRoom.id!!
 
         // set the Switch to the correct on or off
         favoriteSwitch.isChecked = dataModel.isChecked(roomId)
@@ -141,7 +160,10 @@ class LaundrySettingsAdapter(
         return view
     }
 
-    override fun isChildSelectable(i: Int, i1: Int): Boolean {
+    override fun isChildSelectable(
+        i: Int,
+        i1: Int,
+    ): Boolean {
         return false
     }
 

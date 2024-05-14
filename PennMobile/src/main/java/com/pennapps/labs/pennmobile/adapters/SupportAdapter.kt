@@ -9,14 +9,18 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.Contact
-import kotlinx.android.synthetic.main.support_list_item.view.*
+import kotlinx.android.synthetic.main.support_list_item.view.support_name
+import kotlinx.android.synthetic.main.support_list_item.view.support_phone
+import kotlinx.android.synthetic.main.support_list_item.view.support_phone_icon
 
 class SupportAdapter(context: Context, contacts: List<Contact?>) : ArrayAdapter<Contact?>(context, R.layout.support_list_item, contacts) {
-
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-
+    override fun getView(
+        position: Int,
+        convertView: View?,
+        parent: ViewGroup,
+    ): View {
         val currentPerson = getItem(position)
 
         val view = convertView ?: inflater.inflate(R.layout.support_list_item, parent, false)
@@ -48,5 +52,4 @@ class SupportAdapter(context: Context, contacts: List<Contact?>) : ArrayAdapter<
         }
         return view
     }
-
 }

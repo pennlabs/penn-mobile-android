@@ -10,80 +10,81 @@ class Poll {
 
     @SerializedName("id")
     @Expose
-    private val id : Int? = null
+    private val id: Int? = null
 
     @SerializedName("club_code")
     @Expose
-    val clubCode : String? = null
+    val clubCode: String? = null
 
     @SerializedName("question")
     @Expose
-    val question : String? = null
+    val question: String? = null
 
     @SerializedName("created_date")
     @Expose
-    private val createdDate : String? = null
+    private val createdDate: String? = null
 
     @SerializedName("start_date")
     @Expose
-    private val startDate : String? = null
+    private val startDate: String? = null
 
     @SerializedName("expire_date")
     @Expose
-    private val expireDate : String? = null
+    private val expireDate: String? = null
 
     @SerializedName("multiselect")
     @Expose
-    private val multiselect : Boolean = false
+    private val multiselect: Boolean = false
 
     @SerializedName("user_comment")
     @Expose
-    private val clubComment : String? = null
+    private val clubComment: String? = null
 
     @SerializedName("options")
     @Expose
-    val options : List<PollOption> = ArrayList()
+    val options: List<PollOption> = ArrayList()
 
     @SerializedName("status")
     @Expose
-    internal val status : String? = null
+    internal val status: String? = null
 
     @Expose
-    var totalVotes : Int = 0
+    var totalVotes: Int = 0
 
     @Expose
-    var isVisible : Boolean = false
+    var isVisible: Boolean = false
 
     override fun equals(other: Any?): Boolean {
-        return other is Poll && this.id == other.id && this.totalVotes == other.totalVotes
-                && this.question == other.question && this.options.size == other.options.size
-                && this.options.containsAll(other.options) && other.options.containsAll(this.options)
+        return other is Poll && this.id == other.id && this.totalVotes == other.totalVotes &&
+            this.question == other.question && this.options.size == other.options.size &&
+            this.options.containsAll(other.options) && other.options.containsAll(this.options)
     }
 
-
-    //@Expose
-    //var homeAdapter : HomeAdapter? = null
+    // @Expose
+    // var homeAdapter : HomeAdapter? = null
 
     fun selectOption(pollOption: PollOption) {
-        options.forEach { if(pollOption.id == it.id) {
-            if(it.selected) {
-                it.voteCount = it.voteCount - 1
-                totalVotes -= 1
-            } else {
-                it.voteCount = it.voteCount + 1
-                totalVotes += 1
-            }
-            it.selected = !it.selected
-        } else {
-            if(!multiselect) {
-                if(it.selected) {
+        options.forEach {
+            if (pollOption.id == it.id) {
+                if (it.selected) {
                     it.voteCount = it.voteCount - 1
                     totalVotes -= 1
+                } else {
+                    it.voteCount = it.voteCount + 1
+                    totalVotes += 1
                 }
-                it.selected = false
+                it.selected = !it.selected
+            } else {
+                if (!multiselect) {
+                    if (it.selected) {
+                        it.voteCount = it.voteCount - 1
+                        totalVotes -= 1
+                    }
+                    it.selected = false
+                }
             }
-        }}
-        //gui?.notifyDataSetChanged()
+        }
+        // gui?.notifyDataSetChanged()
     }
 
     override fun hashCode(): Int {
@@ -102,5 +103,4 @@ class Poll {
     }
 
     // Device id + poll id -> hash -> id
-
 }

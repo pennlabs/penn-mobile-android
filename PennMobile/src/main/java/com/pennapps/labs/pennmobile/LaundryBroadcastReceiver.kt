@@ -11,10 +11,12 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 
 class LaundryBroadcastReceiver : BroadcastReceiver() {
-
     private var notificationID = 0
 
-    override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(
+        context: Context,
+        intent: Intent,
+    ) {
         val roomName = intent.getStringExtra(context.resources.getString(R.string.laundry_room_name))
         val machineType = intent.getStringExtra(context.resources.getString(R.string.laundry_machine_type))
         val id = intent.getIntExtra(context.resources.getString(R.string.laundry_machine_id), -1)
@@ -39,7 +41,8 @@ class LaundryBroadcastReceiver : BroadcastReceiver() {
         channel.enableLights(true)
         channel.lightColor = ContextCompat.getColor(context, R.color.color_primary)
         notificationManager.createNotificationChannel(channel)
-        mBuilder = NotificationCompat.Builder(context, channel.id)
+        mBuilder =
+            NotificationCompat.Builder(context, channel.id)
                 .setSmallIcon(R.drawable.ic_bottom_nav_laundry_grey)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(builder)

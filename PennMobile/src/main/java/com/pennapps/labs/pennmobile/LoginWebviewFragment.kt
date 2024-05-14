@@ -9,7 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.ViewGroup
-import android.webkit.*
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -17,9 +20,9 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Platform.platformBaseUrl
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.AccessTokenResponse
 import com.pennapps.labs.pennmobile.classes.Account
 import com.pennapps.labs.pennmobile.classes.GetUserResponse
@@ -29,13 +32,13 @@ import retrofit.RetrofitError
 import retrofit.client.Response
 import java.nio.charset.Charset
 import java.security.MessageDigest
-import java.util.*
+import java.util.Base64
+import java.util.Calendar
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 
 class LoginWebviewFragment : Fragment() {
-
     lateinit var webView: WebView
     lateinit var headerLayout: LinearLayout
     lateinit var cancelButton: Button
@@ -50,8 +53,11 @@ class LoginWebviewFragment : Fragment() {
     lateinit var clientID: String
     lateinit var redirectUri: String
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
         return inflater.inflate(R.layout.fragment_login_webview, container, false)
     }
 
@@ -72,11 +78,14 @@ class LoginWebviewFragment : Fragment() {
         codeVerifier = RandomStringUtils.randomAlphanumeric(64)
         codeChallenge = getCodeChallenge(codeVerifier)
         platformAuthUrl = platformBaseUrl + "/accounts/authorize/?response_type=code&client_id=" +
-                clientID + "&redirect_uri=" + redirectUri + "&code_challenge_method=S256" +
-                "&code_challenge=" + codeChallenge + "&scope=read+introspection&state="
+            clientID + "&redirect_uri=" + redirectUri + "&code_challenge_method=S256" +
+            "&code_challenge=" + codeChallenge + "&scope=read+introspection&state="
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         webView = view.findViewById(R.id.webView)
         headerLayout = view.findViewById(R.id.linear_layout)
@@ -95,7 +104,10 @@ class LoginWebviewFragment : Fragment() {
 
     private fun encryptPassword(password: String) {
         val secretKey = createSecretKey() as SecretKey
-        val cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7)
+        val cipher =
+            Cipher.getInstance(
+                KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7,
+            )
         cipher.init(Cipher.ENCRYPT_MODE, secretKey)
 
         val encryptionIv = cipher.iv
@@ -103,7 +115,7 @@ class LoginWebviewFragment : Fragment() {
         val encryptedPasswordBytes = cipher.doFinal(passwordBytes)
         val encryptedPassword = Base64.getEncoder().encodeToString(encryptedPasswordBytes)
 
-        //save the encrypted password
+        // save the encrypted password
         val spEditor = sp.edit()
         spEditor.putString("penn_password", encryptedPassword)
         spEditor.apply()
@@ -119,23 +131,31 @@ class LoginWebviewFragment : Fragment() {
 
     private fun createSecretKey(): SecretKey? {
         val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore")
-        keyGenerator.init(KeyGenParameterSpec.Builder("Key", KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
+        keyGenerator.init(
+            KeyGenParameterSpec.Builder("Key", KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
                 .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
                 .setUserAuthenticationRequired(false)
                 .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
-                .build())
+                .build(),
+        )
         return keyGenerator.generateKey()
     }
 
     inner class MyWebViewClient : WebViewClient() {
-
-        override fun onReceivedHttpError(view: WebView?, request: WebResourceRequest?, errorResponse: WebResourceResponse?) {
+        override fun onReceivedHttpError(
+            view: WebView?,
+            request: WebResourceRequest?,
+            errorResponse: WebResourceResponse?,
+        ) {
             super.onReceivedHttpError(view, request, errorResponse)
             view?.visibility = INVISIBLE
             headerLayout.visibility = INVISIBLE
         }
 
-        override fun shouldOverrideUrlLoading(view: WebView?, url: String): Boolean {
+        override fun shouldOverrideUrlLoading(
+            view: WebView?,
+            url: String,
+        ): Boolean {
             if (url.contains("callback") && url.contains("?code=")) {
                 val urlArr = url.split("?code=").toTypedArray()
                 val authCode = urlArr[urlArr.size - 1]
@@ -158,14 +178,18 @@ class LoginWebviewFragment : Fragment() {
     }
 
     private fun initiateAuthentication(authCode: String) {
-        mStudentLife.getAccessToken(authCode,
-
-            "authorization_code", clientID, redirectUri, codeVerifier,
+        mStudentLife.getAccessToken(
+            authCode,
+            "authorization_code",
+            clientID,
+            redirectUri,
+            codeVerifier,
             object : Callback<AccessTokenResponse> {
-
-                override fun success(t: AccessTokenResponse?, response: Response?) {
+                override fun success(
+                    t: AccessTokenResponse?,
+                    response: Response?,
+                ) {
                     if (response?.status == 200) {
-
                         FirebaseAnalytics.getInstance(mActivity).logEvent("LoginEvent", null)
 
                         val accessToken = t?.accessToken
@@ -189,43 +213,48 @@ class LoginWebviewFragment : Fragment() {
                     Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
                     mActivity.startLoginFragment()
                 }
-            })
+            },
+        )
     }
 
     private fun getUser(accessToken: String?) {
-        mPlatform?.getUser("Bearer $accessToken", accessToken,
-                object : Callback<GetUserResponse> {
-
-                    override fun success(t: GetUserResponse?, response: Response?) {
-                        val user = t?.user
-                        val editor = sp.edit()
-                        editor.putString(getString(R.string.first_name), user?.firstName)
-                        editor.putString(getString(R.string.last_name), user?.lastName)
-                        var initials = ""
-                        try {
-                            initials = initials + user?.firstName?.first() + user?.lastName?.first()
-                            initials.capitalize()
-                        } catch (ignored: Exception) {
-                        }
-                        editor.putString(getString(R.string.initials), initials)
-                        editor.putString(getString(R.string.email_address), user?.email)
-                        editor.putString(getString(R.string.pennkey), user?.username)
-                        editor.apply()
-                        mActivity.startHomeFragment()
-                        // saveAccount(Account(user?.firstName, user?.lastName,
-                        //        user?.username, user?.pennid, user?.email, user?.affiliation), user?.username.toString(), accessToken)
+        mPlatform?.getUser(
+            "Bearer $accessToken",
+            accessToken,
+            object : Callback<GetUserResponse> {
+                override fun success(
+                    t: GetUserResponse?,
+                    response: Response?,
+                ) {
+                    val user = t?.user
+                    val editor = sp.edit()
+                    editor.putString(getString(R.string.first_name), user?.firstName)
+                    editor.putString(getString(R.string.last_name), user?.lastName)
+                    var initials = ""
+                    try {
+                        initials = initials + user?.firstName?.first() + user?.lastName?.first()
+                        initials.capitalize()
+                    } catch (ignored: Exception) {
                     }
+                    editor.putString(getString(R.string.initials), initials)
+                    editor.putString(getString(R.string.email_address), user?.email)
+                    editor.putString(getString(R.string.pennkey), user?.username)
+                    editor.apply()
+                    mActivity.startHomeFragment()
+                    // saveAccount(Account(user?.firstName, user?.lastName,
+                    //        user?.username, user?.pennid, user?.email, user?.affiliation), user?.username.toString(), accessToken)
+                }
 
-                    override fun failure(error: RetrofitError) {
-                        Log.e("Accounts", "Error getting user $error")
-                        Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
-                        mActivity.startLoginFragment()
-                    }
-                })
+                override fun failure(error: RetrofitError) {
+                    Log.e("Accounts", "Error getting user $error")
+                    Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
+                    mActivity.startLoginFragment()
+                }
+            },
+        )
     }
 
     private fun getCodeChallenge(codeVerifier: String): String {
-
         // Hash the code verifier
         val md = MessageDigest.getInstance("SHA-256")
         val byteArr = md.digest(codeVerifier.toByteArray())

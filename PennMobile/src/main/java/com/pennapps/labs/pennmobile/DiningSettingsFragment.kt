@@ -2,11 +2,17 @@ package com.pennapps.labs.pennmobile
 
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.adapters.DiningSettingsAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
@@ -14,8 +20,6 @@ import com.pennapps.labs.pennmobile.classes.DiningRequest
 import com.pennapps.labs.pennmobile.classes.HomepageDataModel
 import com.pennapps.labs.pennmobile.databinding.FragmentDiningPreferencesBinding
 import kotlinx.android.synthetic.main.include_main.toolbar
-import com.google.firebase.crashlytics.FirebaseCrashlytics
-
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
@@ -25,12 +29,12 @@ class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
     private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
     private lateinit var halls: List<DiningHall>
-    private val dataModel : HomepageDataModel = dataModel
+    private val dataModel: HomepageDataModel = dataModel
 
-    private var _binding : FragmentDiningPreferencesBinding? = null
-    private val binding get() = _binding!!
+    private var _binding: FragmentDiningPreferencesBinding? = null
+    val binding get() = _binding!!
 
-    private lateinit var originalPreferences : List<Int>
+    private lateinit var originalPreferences: List<Int>
     private var savedNewPrefs = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,19 +47,29 @@ class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
         mStudentLife = MainActivity.studentLifeInstance
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
         _binding = FragmentDiningPreferencesBinding.inflate(inflater, container, false)
         val v = binding.root
-        binding.diningHallRv.layoutManager = LinearLayoutManager(context,
-                LinearLayoutManager.VERTICAL, false)
+        binding.diningHallRv.layoutManager =
+            LinearLayoutManager(
+                context,
+                LinearLayoutManager.VERTICAL,
+                false,
+            )
         mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         mActivity.hideBottomBar()
         getDiningHalls()
         return v
     }
 
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    override fun onCreateOptionsMenu(
+        menu: Menu,
+        inflater: MenuInflater,
+    ) {
         inflater.inflate(R.menu.dining_preferences, menu)
     }
 
@@ -79,31 +93,31 @@ class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
         // Map each item in the list of venues to a Venue Observable, then map each Venue to a DiningHall Observable
         originalPreferences = dataModel.getDiningHallPrefs()
         mStudentLife.venues()
-                .flatMap { venues -> Observable.from(venues) }
-                .flatMap { venue ->
-                    val hall = DiningFragment.createHall(venue)
-                    Observable.just(hall)
-                }
-                .toList()
-                .subscribe({ diningHalls ->
-                    mActivity.runOnUiThread {
-                        halls = diningHalls
-                        try {
-                            binding.diningHallRv.adapter = DiningSettingsAdapter(diningHalls)
-                        } catch (e: Exception) {
-                            FirebaseCrashlytics.getInstance().recordException(e)
-                        }
+            .flatMap { venues -> Observable.from(venues) }
+            .flatMap { venue ->
+                val hall = DiningFragment.createHall(venue)
+                Observable.just(hall)
+            }
+            .toList()
+            .subscribe({ diningHalls ->
+                mActivity.runOnUiThread {
+                    halls = diningHalls
+                    try {
+                        binding.diningHallRv.adapter = DiningSettingsAdapter(diningHalls)
+                    } catch (e: Exception) {
+                        FirebaseCrashlytics.getInstance().recordException(e)
                     }
-                }, {
-                    Log.e("DiningSettings", "error fetching dining halls")
-                })
+                }
+            }, {
+                Log.e("DiningSettings", "error fetching dining halls")
+            })
     }
 
     override fun onDestroyView() {
         mActivity.toolbar.visibility = View.GONE
         if (!savedNewPrefs) restoreOriginal()
         _binding = null
-        super.onDestroyView() 
+        super.onDestroyView()
     }
 
     private fun restoreOriginal() {
@@ -126,13 +140,15 @@ class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
                 favoriteDiningHalls.add(hall.id)
             }
         }
-        
+
         dataModel.updateDining(favoriteDiningHalls)
 
         mActivity.mNetworkManager.getAccessToken {
             val bearerToken =
                 "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
-            mStudentLife.sendDiningPref(bearerToken, DiningRequest(favoriteDiningHalls),
+            mStudentLife.sendDiningPref(
+                bearerToken,
+                DiningRequest(favoriteDiningHalls),
                 object : ResponseCallback() {
                     override fun success(response: Response) {
                         Log.i("Dining", "Dining preferences saved")
@@ -144,12 +160,11 @@ class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
                         Toast.makeText(
                             mActivity,
                             "Error saving dining preferences",
-                            Toast.LENGTH_SHORT
+                            Toast.LENGTH_SHORT,
                         ).show()
                     }
-                })
+                },
+            )
         }
     }
-
-
 }

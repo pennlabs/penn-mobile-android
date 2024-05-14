@@ -14,20 +14,25 @@ interface CloseListener {
     fun updateAdapters()
 }
 
-class FitnessPreferencesFragment(private val dataModel: FitnessPreferenceViewModel,
-                                 private val listener: CloseListener) : DialogFragment() {
+class FitnessPreferencesFragment(
+    private val dataModel: FitnessPreferenceViewModel,
+    private val listener: CloseListener,
+) : DialogFragment() {
+    private lateinit var mActivity: MainActivity
 
-    private lateinit var mActivity : MainActivity
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         mActivity = activity as MainActivity
         return inflater.inflate(R.layout.fragment_fitness_preferences, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         val prefAdapter = FitnessPreferenceAdapter(dataModel)
@@ -35,13 +40,13 @@ class FitnessPreferencesFragment(private val dataModel: FitnessPreferenceViewMod
         val recyclerView: RecyclerView = view.findViewById(R.id.fitness_preference_recycler_view)
         recyclerView.adapter = prefAdapter
 
-        val cancelText : TextView = view.findViewById(R.id.fitness_fragment_pref_cancel)
+        val cancelText: TextView = view.findViewById(R.id.fitness_fragment_pref_cancel)
         cancelText.setOnClickListener {
             dataModel.restorePreferences()
             dialog?.dismiss()
         }
 
-        val saveText : TextView = view.findViewById(R.id.fitness_fragment_pref_save)
+        val saveText: TextView = view.findViewById(R.id.fitness_fragment_pref_save)
         saveText.setOnClickListener {
             dataModel.updatePositionMap()
             dataModel.updateRemotePreferences(mActivity)
@@ -61,5 +66,4 @@ class FitnessPreferencesFragment(private val dataModel: FitnessPreferenceViewMod
             dialog.window!!.setLayout(width, height)
         }
     }
-
 }

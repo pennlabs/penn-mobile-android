@@ -14,15 +14,13 @@ import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentFitnessHolderBinding
 import com.pennapps.labs.pennmobile.utils.Utils
 
+class FitnessHolderFragment : Fragment() {
+    private lateinit var mActivity: MainActivity
+    private lateinit var mView: View
+    private lateinit var pagerAdapter: FitnessPagerAdapter
 
-
-class FitnessHolderFragment: Fragment() {
-    private lateinit var mActivity : MainActivity
-    private lateinit var mView : View
-    private lateinit var pagerAdapter : FitnessPagerAdapter
-
-    private var _binding : FragmentFitnessHolderBinding? = null
-    private val binding get() = _binding!!
+    private var _binding: FragmentFitnessHolderBinding? = null
+    val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +30,7 @@ class FitnessHolderFragment: Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
         _binding = FragmentFitnessHolderBinding.inflate(inflater, container, false)
@@ -44,7 +42,10 @@ class FitnessHolderFragment: Fragment() {
         _binding = null
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         mView = view
         // initialize app bar and swipe refresh
@@ -62,15 +63,14 @@ class FitnessHolderFragment: Fragment() {
         }.attach()
     }
 
-
     /**
      * Initialize the app bar of the fragment and
      * fills in the textViews for the title/date
      */
     private fun initAppBar() {
-        val appBarLayout : AppBarLayout = binding.appbarHomeHolder
-        val titleView : TextView = binding.titleView
-        val dateView : TextView = binding.dateView
+        val appBarLayout: AppBarLayout = binding.appbarHomeHolder
+        val titleView: TextView = binding.titleView
+        val dateView: TextView = binding.dateView
 
         (appBarLayout.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
         titleView.text = getString(R.string.fitness)
