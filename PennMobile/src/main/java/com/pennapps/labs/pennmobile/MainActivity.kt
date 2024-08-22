@@ -51,7 +51,6 @@ import com.pennapps.labs.pennmobile.classes.Post
 import com.pennapps.labs.pennmobile.classes.Venue
 import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
 import com.pennapps.labs.pennmobile.utils.Utils
-import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.android.synthetic.main.custom_sneaker_view.view.blurView
 import kotlinx.android.synthetic.main.include_main.appbar
 import kotlinx.android.synthetic.main.include_main.content_frame
@@ -478,9 +477,7 @@ fun ViewGroup.showSneakerToast(
 
     view.blurView.setupWith(this)
         .setFrameClearDrawable(ColorDrawable(Color.TRANSPARENT))
-        .setBlurAlgorithm(RenderScriptBlur(this.context))
         .setBlurRadius(10f)
-        .setHasFixedTransformationMatrix(true)
         .setOverlayColor(resources.getColor(sneakerColor))
 
     val retryBtn = view.findViewById<TextView>(R.id.retryButton)

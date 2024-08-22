@@ -54,7 +54,6 @@ import com.pennapps.labs.pennmobile.classes.Post
 import com.pennapps.labs.pennmobile.classes.PostCell
 import com.pennapps.labs.pennmobile.components.sneaker.Utils.convertToDp
 import com.pennapps.labs.pennmobile.utils.Utils
-import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.android.synthetic.main.home_base_card.view.dining_prefs_btn
 import kotlinx.android.synthetic.main.home_base_card.view.home_card_rv
 import kotlinx.android.synthetic.main.home_base_card.view.home_card_subtitle
@@ -310,9 +309,7 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         /** Sets up blur view on news card */
         holder.itemView.blurView.setupWith(holder.itemView.news_card_container)
             .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))
-            .setBlurAlgorithm(RenderScriptBlur(mContext))
             .setBlurRadius(25f)
-            .setHasFixedTransformationMatrix(true)
 
         holder.itemView.button.setOnClickListener {
             val url = article?.articleUrl
@@ -480,9 +477,7 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         /** Sets up blur view on post card */
         holder.itemView.postBlurView.setupWith(holder.itemView.post_card_container)
             .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))
-            .setBlurAlgorithm(RenderScriptBlur(mContext))
             .setBlurRadius(25f)
-            .setHasFixedTransformationMatrix(true)
         /** Post clicking logic if there exists a URL **/
         val url = post?.postUrl ?: return
         holder.itemView.home_post_card.setOnClickListener {
