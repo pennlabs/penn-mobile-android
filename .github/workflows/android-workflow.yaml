@@ -39,7 +39,7 @@ jobs:
 
       # Run unit tests
       - name: Run Unit Tests
-        run: ./gradlew testDebugUnitTest
+        run: ./gradlew testDebugUnitTest --warning-mode all --stacktrace
   
   # If tests pass, generate and upload APK
   generate-apk:

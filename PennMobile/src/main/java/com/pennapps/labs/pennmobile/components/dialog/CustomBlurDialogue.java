@@ -58,9 +58,7 @@ public class CustomBlurDialogue extends BlurView {
 
         setupWith(rootView)
                 .setFrameClearDrawable(windowBackground)
-                .setBlurAlgorithm(new RenderScriptBlur(getContext()))
-                .setBlurRadius(radius)
-                .setHasFixedTransformationMatrix(true);
+                .setBlurRadius(radius);
     }
 
     /**
