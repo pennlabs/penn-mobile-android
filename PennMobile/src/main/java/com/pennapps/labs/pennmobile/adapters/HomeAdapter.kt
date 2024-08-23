@@ -128,25 +128,43 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
 
         return when (viewType) {
             NEWS -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_news_card, parent, false))
+                ViewHolder(
+                    LayoutInflater.from(mContext).inflate(R.layout.home_news_card, parent, false)
+                )
             }
+
             POST -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_post_card, parent, false))
+                ViewHolder(
+                    LayoutInflater.from(mContext).inflate(R.layout.home_post_card, parent, false)
+                )
             }
+
             FEATURE -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_post_card, parent, false))
+                ViewHolder(
+                    LayoutInflater.from(mContext).inflate(R.layout.home_post_card, parent, false)
+                )
             }
+
             POLL -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.poll_card, parent, false))
             }
+
             GSR_BOOKING -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_gsr_card, parent, false))
+                ViewHolder(
+                    LayoutInflater.from(mContext).inflate(R.layout.home_gsr_card, parent, false)
+                )
             }
+
             NOT_SUPPORTED -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.empty_view, parent, false))
+                ViewHolder(
+                    LayoutInflater.from(mContext).inflate(R.layout.empty_view, parent, false)
+                )
             }
+
             else -> {
-                ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false))
+                ViewHolder(
+                    LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false)
+                )
             }
         }
     }
@@ -270,11 +288,25 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
                         DrawableCompat.wrap(holder.itemView.news_card_logo.drawable),
                         ColorUtils.setAlphaComponent(it, 150),
                     )
-                    DrawableCompat.setTint(DrawableCompat.wrap(holder.itemView.news_info_icon.drawable), it)
-                    DrawableCompat.setTint(DrawableCompat.wrap(holder.itemView.dot_divider.drawable), it)
+                    DrawableCompat.setTint(
+                        DrawableCompat.wrap(holder.itemView.news_info_icon.drawable),
+                        it
+                    )
+                    DrawableCompat.setTint(
+                        DrawableCompat.wrap(holder.itemView.dot_divider.drawable),
+                        it
+                    )
                     holder.itemView.button.setTextColor(ColorUtils.setAlphaComponent(it, 150))
-                    DrawableCompat.setTint(DrawableCompat.wrap(holder.itemView.button.background), it)
-                    holder.itemView.home_news_title.setTextColor(ColorUtils.setAlphaComponent(it, 150))
+                    DrawableCompat.setTint(
+                        DrawableCompat.wrap(holder.itemView.button.background),
+                        it
+                    )
+                    holder.itemView.home_news_title.setTextColor(
+                        ColorUtils.setAlphaComponent(
+                            it,
+                            150
+                        )
+                    )
                     holder.itemView.home_news_subtitle.setTextColor(it)
                     holder.itemView.home_news_timestamp.setTextColor(it)
                 }
@@ -300,6 +332,7 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
                     holder.itemView.blurView
                         .setOverlayColor(ColorUtils.setAlphaComponent(accentColor, 250))
                 }
+
                 View.VISIBLE -> {
                     holder.itemView.home_news_subtitle.visibility = View.GONE
                     holder.itemView.home_news_title.setPadding(0, 0, 0, convertToDp(mContext, 8f))
@@ -407,7 +440,8 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
                 mActivity.runOnUiThread {
                     holder.itemView.home_card_title.text = room.name
                     val rooms = arrayListOf(room)
-                    holder.itemView.home_card_rv.adapter = LaundryRoomAdapter(mContext, rooms, null, true)
+                    holder.itemView.home_card_rv.adapter =
+                        LaundryRoomAdapter(mContext, rooms, null, true)
                 }
             }, { throwable -> mActivity.runOnUiThread { throwable.printStackTrace() } })
         } catch (e: Exception) {
@@ -435,9 +469,9 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         holder.itemView.home_post_source.text = "Penn Labs" // post?.clubCode?.capitalize()
         val time =
             post.startDate?.substring(5, 7) + " / " +
-                post.startDate?.substring(8, 10) + " - " +
-                post.expireDate?.substring(5, 7) + " / " +
-                post.expireDate?.substring(8, 10)
+                    post.startDate?.substring(8, 10) + " - " +
+                    post.expireDate?.substring(5, 7) + " / " +
+                    post.expireDate?.substring(8, 10)
         holder.itemView.home_post_timestamp.text = time
         Glide.with(mContext).load(post.imageUrl)
             .fitCenter()
@@ -572,7 +606,8 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
                 val idHash = Utils.getSha256Hash(deviceID)
                 mActivity.mNetworkManager.getAccessToken {
                     val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
-                    val bearerToken = "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
+                    val bearerToken =
+                        "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
 
                     try {
                         mStudentLife.createPollVote(
@@ -589,7 +624,7 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
                                 }
                             },
                         )
-                    } catch (e : Exception) {
+                    } catch (e: Exception) {
                         e.printStackTrace()
                     }
 

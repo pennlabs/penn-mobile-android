@@ -42,8 +42,10 @@ class FlingFragment : Fragment() {
                 mActivity.onBackPressed()
                 return true
             }
+
             R.id.fling_raffle -> {
-                val url = "https://docs.google.com/forms/d/e/1FAIpQLSexkehYfGgyAa7RagaCl8rze4KUKQSX9TbcvvA6iXp34TyHew/viewform"
+                val url =
+                    "https://docs.google.com/forms/d/e/1FAIpQLSexkehYfGgyAa7RagaCl8rze4KUKQSX9TbcvvA6iXp34TyHew/viewform"
                 val builder = Builder()
                 val customTabsIntent = builder.build()
                 customTabsIntent.launchUrl(mActivity, Uri.parse(url))
@@ -62,12 +64,24 @@ class FlingFragment : Fragment() {
         val view = binding.root
         val labs = MainActivity.studentLifeInstance
         try {
-            labs.flingEvents.subscribe({ flingEvents ->
-                activity?.runOnUiThread {
-                    binding.flingFragmentRecyclerview.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                    binding.flingFragmentRecyclerview.adapter = FlingRecyclerViewAdapter(context, flingEvents)
-                }
-            }, { activity?.runOnUiThread { Toast.makeText(activity, "Could not retrieve Spring Fling schedule", Toast.LENGTH_LONG).show() } })
+            labs.flingEvents.subscribe(
+                { flingEvents ->
+                    activity?.runOnUiThread {
+                        binding.flingFragmentRecyclerview.layoutManager =
+                            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                        binding.flingFragmentRecyclerview.adapter =
+                            FlingRecyclerViewAdapter(context, flingEvents)
+                    }
+                },
+                {
+                    activity?.runOnUiThread {
+                        Toast.makeText(
+                            activity,
+                            "Could not retrieve Spring Fling schedule",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                })
         } catch (e: Exception) {
             e.printStackTrace()
         }

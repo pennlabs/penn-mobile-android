@@ -115,7 +115,6 @@ class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
     }
 
     override fun onDestroyView() {
@@ -171,7 +170,7 @@ class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
                         }
                     },
                 )
-            } catch (e : Exception) {
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }

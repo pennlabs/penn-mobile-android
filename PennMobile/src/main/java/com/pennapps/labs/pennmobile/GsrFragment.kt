@@ -29,7 +29,6 @@ import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import java.util.Calendar
 import java.util.Date
-import kotlin.collections.ArrayList
 
 class GsrFragment : Fragment() {
     // ui components
@@ -113,9 +112,15 @@ class GsrFragment : Fragment() {
         sortingSwitch = binding.sortingSwitch
         sortByTime = sortingSwitch.isChecked
 
-        durationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m", "120m"))
-        whartonDurationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m"))
-        biotechDurationAdapter = ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m", "120m", "150m", "180m"))
+        durationAdapter =
+            ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m", "120m"))
+        whartonDurationAdapter =
+            ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m"))
+        biotechDurationAdapter = ArrayAdapter(
+            mActivity,
+            R.layout.gsr_spinner_item,
+            arrayOf("30m", "60m", "90m", "120m", "150m", "180m")
+        )
 
         // update user status by getting the bearer token and checking wharton status
         updateStatus()
@@ -186,7 +191,13 @@ class GsrFragment : Fragment() {
                         val entryMonth = monthOfYear + 1
 
                         // Update year + month + day
-                        selectedDateTime = DateTime(year, entryMonth, dayOfMonth, selectedDateTime.hourOfDay, selectedDateTime.minuteOfHour)
+                        selectedDateTime = DateTime(
+                            year,
+                            entryMonth,
+                            dayOfMonth,
+                            selectedDateTime.hourOfDay,
+                            selectedDateTime.minuteOfHour
+                        )
 
                         // Display the selected date; use Joda to do the formatting work
                         selectDateButton.text = selectedDateTime.toString(spinnerDateFormatter)
@@ -216,7 +227,10 @@ class GsrFragment : Fragment() {
             searchForGSR(false)
         }
         // handle swipe to refresh
-        binding.gsrRefreshLayout.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
+        binding.gsrRefreshLayout.setColorSchemeResources(
+            R.color.color_accent,
+            R.color.color_primary
+        )
         binding.gsrRefreshLayout.setOnRefreshListener {
             updateStatus()
             searchForGSR(true)
@@ -226,7 +240,8 @@ class GsrFragment : Fragment() {
 
     private fun updateStatus() {
         mActivity.mNetworkManager.getAccessToken {
-            val bearerToken = sharedPreferences.getString(getString(R.string.access_token), "").toString()
+            val bearerToken =
+                sharedPreferences.getString(getString(R.string.access_token), "").toString()
 
             if (bearerToken.isEmpty()) {
                 Toast.makeText(activity, "You are not logged in!", Toast.LENGTH_LONG).show()
@@ -269,7 +284,8 @@ class GsrFragment : Fragment() {
         val location = mapGSR(gsrLocation)
         val gid = mapGID(gsrLocation)
         mActivity.mNetworkManager.getAccessToken {
-            val bearerToken = sharedPreferences.getString(getString(R.string.access_token), "").toString()
+            val bearerToken =
+                sharedPreferences.getString(getString(R.string.access_token), "").toString()
 
             if (location.isEmpty() || bearerToken.isEmpty()) {
                 showNoResults()
@@ -312,7 +328,8 @@ class GsrFragment : Fragment() {
         sortingSwitch.isClickable = false
 
         mActivity.mNetworkManager.getAccessToken {
-            val bearerToken = sharedPreferences.getString(getString(R.string.access_token), "").toString()
+            val bearerToken =
+                sharedPreferences.getString(getString(R.string.access_token), "").toString()
 
             Log.i("GsrFragment", "Bearer Token: $bearerToken")
             Log.i("GsrFragment", "Wharton Status: $isWharton")
@@ -431,7 +448,8 @@ class GsrFragment : Fragment() {
             val startTime = gsrSlotFormatter.parseDateTime(startingSlot.startTime)
 
             // ending time and slot
-            val endingSlot = availableSlotsAfterSelectedTime[pos + durationDropDown.selectedItemPosition]
+            val endingSlot =
+                availableSlotsAfterSelectedTime[pos + durationDropDown.selectedItemPosition]
             val endTime = gsrSlotFormatter.parseDateTime(endingSlot.endTime)
 
             // if start time + duration = end time then these slots meet the duration requirement
@@ -493,7 +511,8 @@ class GsrFragment : Fragment() {
 
                                 val gsrs = gsrHashMap.keys.toList().toTypedArray()
 
-                                val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
+                                val adapter =
+                                    ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
                                 gsrLocationDropDown.adapter = adapter
 
                                 durationDropDown.adapter =
@@ -530,7 +549,8 @@ class GsrFragment : Fragment() {
                                 gsrHashMap["PCPSE Building"] = "4370"
                                 gsrGIDHashMap["PCPSE Building"] = 7426
                                 val gsrs = gsrHashMap.keys.toList().toTypedArray()
-                                val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
+                                val adapter =
+                                    ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
                                 gsrLocationDropDown.adapter = adapter
 
                                 durationDropDown.adapter =
@@ -642,7 +662,16 @@ class GsrFragment : Fragment() {
         }
         // can't find existing GSR. Create new object
         if (!encountered) {
-            val newGSRObject = GSRContainer(gsrName, GSRTimeRange, GSRStartTime, GSRElementId, gid, roomId, start, end)
+            val newGSRObject = GSRContainer(
+                gsrName,
+                GSRTimeRange,
+                GSRStartTime,
+                GSRElementId,
+                gid,
+                roomId,
+                start,
+                end
+            )
             mGSRS.add(newGSRObject)
         }
     }
