@@ -99,24 +99,28 @@ class FitnessPreferenceViewModel(
             val bearerToken =
                 "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
-            studentLife.sendFitnessPref(
-                bearerToken,
-                FitnessRequest(ArrayList(favoriteRooms)),
-                object : ResponseCallback() {
-                    override fun success(response: Response) {
-                        Log.i("Fitness Preference View Model", "fitness preferences saved")
-                    }
+            try {
+                studentLife.sendFitnessPref(
+                    bearerToken,
+                    FitnessRequest(ArrayList(favoriteRooms)),
+                    object : ResponseCallback() {
+                        override fun success(response: Response) {
+                            Log.i("Fitness Preference View Model", "fitness preferences saved")
+                        }
 
-                    override fun failure(error: RetrofitError) {
-                        Log.e(
-                            "Fitness Preference View Model",
-                            "Error saving fitness " +
-                                "preferences: $error",
-                            error,
-                        )
-                    }
-                },
-            )
+                        override fun failure(error: RetrofitError) {
+                            Log.e(
+                                "Fitness Preference View Model",
+                                "Error saving fitness " +
+                                        "preferences: $error",
+                                error,
+                            )
+                        }
+                    },
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 }

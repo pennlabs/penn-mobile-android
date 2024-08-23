@@ -83,17 +83,21 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
             // Load the menu for each dining hall
             if (diningHall.isResidential && !loaded[position]) {
                 holder.progressBar?.visibility = View.VISIBLE
-                mStudentLife.daily_menu(diningHall.id)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ newDiningHall ->
-                        diningHall.sortMeals(newDiningHall.menus)
-                        holder.progressBar?.visibility = View.INVISIBLE
-                        holder.menuArrow?.visibility = View.VISIBLE
-                        loaded[position] = true
-                    }, {
-                        holder.progressBar?.visibility = View.VISIBLE
-                        holder.menuArrow?.visibility = View.GONE
-                    })
+                try {
+                    mStudentLife.daily_menu(diningHall.id)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({ newDiningHall ->
+                            diningHall.sortMeals(newDiningHall.menus)
+                            holder.progressBar?.visibility = View.INVISIBLE
+                            holder.menuArrow?.visibility = View.VISIBLE
+                            loaded[position] = true
+                        }, {
+                            holder.progressBar?.visibility = View.VISIBLE
+                            holder.menuArrow?.visibility = View.GONE
+                        })
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             } else {
                 holder.progressBar?.visibility = View.GONE
                 holder.menuArrow?.visibility = View.VISIBLE

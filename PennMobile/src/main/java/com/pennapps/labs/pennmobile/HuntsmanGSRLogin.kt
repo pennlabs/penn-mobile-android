@@ -122,60 +122,64 @@ class HuntsmanGSRLogin : Fragment() {
         sessionID: String,
     ) {
         (activity as MainActivity).mNetworkManager.getAccessToken {
-            mStudentLife.bookGSR(
-                // Passing the values
-                bearerToken,
-                startTime,
-                endTime,
-                gid,
-                Integer.parseInt(gsrID),
-                roomName,
-                // Creating an anonymous callback
-                object : Callback<GSRBookingResult> {
-                    override fun success(
-                        result: GSRBookingResult?,
-                        response: Response?,
-                    ) {
-                        // Display the output as a toast
-                        if (result?.getResults() == true) {
-                            Toast.makeText(mActivity, "GSR successfully booked", Toast.LENGTH_LONG)
-                                .show()
-                        } else {
-                            Log.e("HuntsmanGSRLogin", "GSR booking failed: " + result?.getError())
-                            Toast.makeText(mActivity, "GSR booking failed", Toast.LENGTH_LONG)
-                                .show()
+            try {
+                mStudentLife.bookGSR(
+                    // Passing the values
+                    bearerToken,
+                    startTime,
+                    endTime,
+                    gid,
+                    Integer.parseInt(gsrID),
+                    roomName,
+                    // Creating an anonymous callback
+                    object : Callback<GSRBookingResult> {
+                        override fun success(
+                            result: GSRBookingResult?,
+                            response: Response?,
+                        ) {
+                            // Display the output as a toast
+                            if (result?.getResults() == true) {
+                                Toast.makeText(mActivity, "GSR successfully booked", Toast.LENGTH_LONG)
+                                    .show()
+                            } else {
+                                Log.e("HuntsmanGSRLogin", "GSR booking failed: " + result?.getError())
+                                Toast.makeText(mActivity, "GSR booking failed", Toast.LENGTH_LONG)
+                                    .show()
+                                val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
+                                val editor = sp.edit()
+                                editor.remove(getString(R.string.huntsmanGSR_SessionID))
+                                editor.apply()
+                            }
+                            // redirect user
+                            val gsrFragment = GsrTabbedFragment()
+                            val fragmentManager = mActivity.supportFragmentManager
+                            fragmentManager.beginTransaction()
+                                .replace(R.id.content_frame, gsrFragment)
+                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                .commit()
+                        }
+
+                        override fun failure(error: RetrofitError?) {
+                            // If any error occurred display the error as toast
+                            Log.e("HuntsmanGSRLogin", "GSR booking failed" + error.toString())
+                            Toast.makeText(mActivity, "GSR booking failed", Toast.LENGTH_LONG).show()
                             val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
                             val editor = sp.edit()
                             editor.remove(getString(R.string.huntsmanGSR_SessionID))
                             editor.apply()
+                            // redirect user
+                            val gsrFragment = GsrTabbedFragment()
+                            val fragmentManager = mActivity.supportFragmentManager
+                            fragmentManager.beginTransaction()
+                                .replace(R.id.content_frame, gsrFragment)
+                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                .commit()
                         }
-                        // redirect user
-                        val gsrFragment = GsrTabbedFragment()
-                        val fragmentManager = mActivity.supportFragmentManager
-                        fragmentManager.beginTransaction()
-                            .replace(R.id.content_frame, gsrFragment)
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .commit()
-                    }
-
-                    override fun failure(error: RetrofitError?) {
-                        // If any error occurred display the error as toast
-                        Log.e("HuntsmanGSRLogin", "GSR booking failed" + error.toString())
-                        Toast.makeText(mActivity, "GSR booking failed", Toast.LENGTH_LONG).show()
-                        val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
-                        val editor = sp.edit()
-                        editor.remove(getString(R.string.huntsmanGSR_SessionID))
-                        editor.apply()
-                        // redirect user
-                        val gsrFragment = GsrTabbedFragment()
-                        val fragmentManager = mActivity.supportFragmentManager
-                        fragmentManager.beginTransaction()
-                            .replace(R.id.content_frame, gsrFragment)
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .commit()
-                    }
-                },
-            )
+                    },
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 }

@@ -63,14 +63,18 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
 
         // Load the menu for each dining hall
         if (currentHall.isResidential) {
-            mStudentLife.daily_menu(currentHall.id)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ newDiningHall ->
-                    currentHall.sortMeals(newDiningHall.menus)
-                }, {
-                    Log.e("DiningCard", "Error loading menus", it)
-                    Toast.makeText(mContext, "Error loading menus", Toast.LENGTH_SHORT).show()
-                })
+            try {
+                mStudentLife.daily_menu(currentHall.id)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ newDiningHall ->
+                        currentHall.sortMeals(newDiningHall.menus)
+                    }, {
+                        Log.e("DiningCard", "Error loading menus", it)
+                        Toast.makeText(mContext, "Error loading menus", Toast.LENGTH_SHORT).show()
+                    })
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
 
         holder.itemView.setOnClickListener {

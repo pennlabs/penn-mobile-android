@@ -231,18 +231,22 @@ class GsrFragment : Fragment() {
             if (bearerToken.isEmpty()) {
                 Toast.makeText(activity, "You are not logged in!", Toast.LENGTH_LONG).show()
             } else {
-                mStudentLife.isWharton(
-                    "Bearer $bearerToken",
-                )
-                    ?.subscribe(
-                        { status ->
-                            isWharton = status.isWharton
-                        },
-                        {
-                            Log.e("GsrFragment", "Error getting Wharton status", it)
-                            isWharton = false
-                        },
+                try {
+                    mStudentLife.isWharton(
+                        "Bearer $bearerToken",
                     )
+                        ?.subscribe(
+                            { status ->
+                                isWharton = status.isWharton
+                            },
+                            {
+                                Log.e("GsrFragment", "Error getting Wharton status", it)
+                                isWharton = false
+                            },
+                        )
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
     }
@@ -313,82 +317,86 @@ class GsrFragment : Fragment() {
             Log.i("GsrFragment", "Bearer Token: $bearerToken")
             Log.i("GsrFragment", "Wharton Status: $isWharton")
 
-            mStudentLife.gsrRoom(
-                "Bearer $bearerToken",
-                location,
-                gId,
-                adjustedDateString,
-            )
-                ?.subscribe(
-                    { gsr ->
-                        activity?.let { activity ->
-                            activity.runOnUiThread {
-                                val gsrRooms = gsr.rooms
-                                var timeSlotLengthZero = true
-
-                                if (gsrRooms == null) {
-                                    // a certification error causes "room" field to remain null
-                                    showNoResults()
-                                } else {
-                                    for (i in gsrRooms.indices) {
-                                        val gsrRoom = gsrRooms[i]
-                                        val gsrTimeSlots = gsrRoom.slots
-                                        // checks if the time slots are ever nonzero
-                                        val size = gsrTimeSlots?.size ?: 0
-                                        if (size > 0) {
-                                            timeSlotLengthZero = false
-                                        }
-                                        if (gsrTimeSlots != null) {
-                                            filterInsertTimeSlots(gsrRoom, gsrTimeSlots, gId)
-                                        }
-                                    }
-                                }
-                                // remove loading icon
-                                loadingPanel.visibility = View.GONE
-                                noResultsPanel.visibility = View.GONE
-                                // stop refreshing
-                                binding.gsrRoomsList.visibility = View.VISIBLE
-                                binding.gsrRefreshLayout.isRefreshing = false
-
-                                if (timeSlotLengthZero) {
-                                    binding.gsrNoRooms.visibility = View.VISIBLE
-                                }
-
-                                binding.gsrRoomsList.adapter = (
-                                    context?.let {
-                                        GsrBuildingAdapter(
-                                            it,
-                                            mGSRS,
-                                            location,
-                                            (durationDropDown.selectedItemPosition + 1) * 30,
-                                            sortByTime,
-                                        )
-                                    }
-                                )
-
-                                mGSRS = ArrayList()
-                                selectDateButton.isClickable = true
-                                selectTimeButton.isClickable = true
-                                gsrLocationDropDown.isEnabled = true
-                                durationDropDown.isEnabled = true
-                                sortingSwitch.isClickable = true
-                            }
-                        }
-                    },
-                    {
-                        Log.e("GsrFragment", "Error getting gsr times", it)
-                        activity?.let { activity ->
-                            activity.runOnUiThread {
-                                showNoResults()
-                                selectDateButton.isClickable = true
-                                selectTimeButton.isClickable = true
-                                gsrLocationDropDown.isEnabled = true
-                                durationDropDown.isEnabled = true
-                                sortingSwitch.isClickable = true
-                            }
-                        }
-                    },
+            try {
+                mStudentLife.gsrRoom(
+                    "Bearer $bearerToken",
+                    location,
+                    gId,
+                    adjustedDateString,
                 )
+                    ?.subscribe(
+                        { gsr ->
+                            activity?.let { activity ->
+                                activity.runOnUiThread {
+                                    val gsrRooms = gsr.rooms
+                                    var timeSlotLengthZero = true
+
+                                    if (gsrRooms == null) {
+                                        // a certification error causes "room" field to remain null
+                                        showNoResults()
+                                    } else {
+                                        for (i in gsrRooms.indices) {
+                                            val gsrRoom = gsrRooms[i]
+                                            val gsrTimeSlots = gsrRoom.slots
+                                            // checks if the time slots are ever nonzero
+                                            val size = gsrTimeSlots?.size ?: 0
+                                            if (size > 0) {
+                                                timeSlotLengthZero = false
+                                            }
+                                            if (gsrTimeSlots != null) {
+                                                filterInsertTimeSlots(gsrRoom, gsrTimeSlots, gId)
+                                            }
+                                        }
+                                    }
+                                    // remove loading icon
+                                    loadingPanel.visibility = View.GONE
+                                    noResultsPanel.visibility = View.GONE
+                                    // stop refreshing
+                                    binding.gsrRoomsList.visibility = View.VISIBLE
+                                    binding.gsrRefreshLayout.isRefreshing = false
+
+                                    if (timeSlotLengthZero) {
+                                        binding.gsrNoRooms.visibility = View.VISIBLE
+                                    }
+
+                                    binding.gsrRoomsList.adapter = (
+                                            context?.let {
+                                                GsrBuildingAdapter(
+                                                    it,
+                                                    mGSRS,
+                                                    location,
+                                                    (durationDropDown.selectedItemPosition + 1) * 30,
+                                                    sortByTime,
+                                                )
+                                            }
+                                            )
+
+                                    mGSRS = ArrayList()
+                                    selectDateButton.isClickable = true
+                                    selectTimeButton.isClickable = true
+                                    gsrLocationDropDown.isEnabled = true
+                                    durationDropDown.isEnabled = true
+                                    sortingSwitch.isClickable = true
+                                }
+                            }
+                        },
+                        {
+                            Log.e("GsrFragment", "Error getting gsr times", it)
+                            activity?.let { activity ->
+                                activity.runOnUiThread {
+                                    showNoResults()
+                                    selectDateButton.isClickable = true
+                                    selectTimeButton.isClickable = true
+                                    gsrLocationDropDown.isEnabled = true
+                                    durationDropDown.isEnabled = true
+                                    sortingSwitch.isClickable = true
+                                }
+                            }
+                        },
+                    )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -450,95 +458,99 @@ class GsrFragment : Fragment() {
     }
 
     private fun populateDropDownGSR() {
-        mStudentLife.location()
-            ?.subscribe(
-                { locations ->
-                    activity?.let { activity ->
-                        populatedDropDownGSR = true
-                        activity.runOnUiThread {
-                            // reset the drop down
-                            val emptyArray = arrayOfNulls<String>(0)
-                            val emptyAdapter =
-                                ArrayAdapter<String>(
-                                    activity,
-                                    android.R.layout.simple_spinner_dropdown_item,
-                                    emptyArray,
-                                )
-                            gsrLocationDropDown.adapter = emptyAdapter
-
-                            val numLocations = locations.size
-                            var i = 0
-                            // go through all the rooms
-                            while (i < numLocations) {
-                                val locationName = locations[i]?.name ?: ""
-                                if (locationName.isEmpty()) {
-                                    Log.w(
-                                        "Empty location name",
-                                        locations[i].id ?: locations[i].gid.toString(),
+        try {
+            mStudentLife.location()
+                ?.subscribe(
+                    { locations ->
+                        activity?.let { activity ->
+                            populatedDropDownGSR = true
+                            activity.runOnUiThread {
+                                // reset the drop down
+                                val emptyArray = arrayOfNulls<String>(0)
+                                val emptyAdapter =
+                                    ArrayAdapter<String>(
+                                        activity,
+                                        android.R.layout.simple_spinner_dropdown_item,
+                                        emptyArray,
                                     )
+                                gsrLocationDropDown.adapter = emptyAdapter
+
+                                val numLocations = locations.size
+                                var i = 0
+                                // go through all the rooms
+                                while (i < numLocations) {
+                                    val locationName = locations[i]?.name ?: ""
+                                    if (locationName.isEmpty()) {
+                                        Log.w(
+                                            "Empty location name",
+                                            locations[i].id ?: locations[i].gid.toString(),
+                                        )
+                                    }
+                                    gsrHashMap[locationName] = locations[i].id
+                                    gsrGIDHashMap[locationName] = locations[i].gid
+                                    i++
                                 }
-                                gsrHashMap[locationName] = locations[i].id
-                                gsrGIDHashMap[locationName] = locations[i].gid
-                                i++
+
+                                val gsrs = gsrHashMap.keys.toList().toTypedArray()
+
+                                val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
+                                gsrLocationDropDown.adapter = adapter
+
+                                durationDropDown.adapter =
+                                    if (gsrLocationDropDown.selectedItem.toString() == "Huntsman" ||
+                                        gsrLocationDropDown.selectedItem.toString() == "Academic Research"
+                                    ) {
+                                        whartonDurationAdapter
+                                    } else if (gsrLocationDropDown.selectedItem.toString() == "Biomedical") {
+                                        biotechDurationAdapter
+                                    } else {
+                                        durationAdapter
+                                    }
+                                searchForGSR(false)
                             }
-
-                            val gsrs = gsrHashMap.keys.toList().toTypedArray()
-
-                            val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
-                            gsrLocationDropDown.adapter = adapter
-
-                            durationDropDown.adapter =
-                                if (gsrLocationDropDown.selectedItem.toString() == "Huntsman" ||
-                                    gsrLocationDropDown.selectedItem.toString() == "Academic Research"
-                                ) {
-                                    whartonDurationAdapter
-                                } else if (gsrLocationDropDown.selectedItem.toString() == "Biomedical") {
-                                    biotechDurationAdapter
-                                } else {
-                                    durationAdapter
-                                }
-                            searchForGSR(false)
                         }
-                    }
-                },
-                {
-                    Log.e("Gsr Fragment", "Error getting gsr locations", it)
-                    activity?.let { activity ->
-                        activity.runOnUiThread {
-                            // hard coded in case runs into error
-                            gsrHashMap["VP Ground Floor"] = "1086"
-                            gsrHashMap["Weigle"] = "1086"
-                            gsrHashMap["Lippincott"] = "2587"
-                            gsrHashMap["Edu Commons"] = "2495"
-                            gsrHashMap["Biotech Commons"] = "2683"
-                            gsrHashMap["Fisher"] = "2637"
-                            gsrHashMap["Levin Building"] = "1090"
-                            gsrHashMap["Museum Library"] = "2634"
-                            gsrHashMap["VP Seminar"] = "2636"
-                            gsrHashMap["VP Special Use"] = "2611"
-                            gsrHashMap["Huntsman Hall"] = "JMHH"
-                            gsrHashMap["Academic Research"] = "ARB"
-                            gsrHashMap["PCPSE Building"] = "4370"
-                            gsrGIDHashMap["PCPSE Building"] = 7426
-                            val gsrs = gsrHashMap.keys.toList().toTypedArray()
-                            val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
-                            gsrLocationDropDown.adapter = adapter
+                    },
+                    {
+                        Log.e("Gsr Fragment", "Error getting gsr locations", it)
+                        activity?.let { activity ->
+                            activity.runOnUiThread {
+                                // hard coded in case runs into error
+                                gsrHashMap["VP Ground Floor"] = "1086"
+                                gsrHashMap["Weigle"] = "1086"
+                                gsrHashMap["Lippincott"] = "2587"
+                                gsrHashMap["Edu Commons"] = "2495"
+                                gsrHashMap["Biotech Commons"] = "2683"
+                                gsrHashMap["Fisher"] = "2637"
+                                gsrHashMap["Levin Building"] = "1090"
+                                gsrHashMap["Museum Library"] = "2634"
+                                gsrHashMap["VP Seminar"] = "2636"
+                                gsrHashMap["VP Special Use"] = "2611"
+                                gsrHashMap["Huntsman Hall"] = "JMHH"
+                                gsrHashMap["Academic Research"] = "ARB"
+                                gsrHashMap["PCPSE Building"] = "4370"
+                                gsrGIDHashMap["PCPSE Building"] = 7426
+                                val gsrs = gsrHashMap.keys.toList().toTypedArray()
+                                val adapter = ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
+                                gsrLocationDropDown.adapter = adapter
 
-                            durationDropDown.adapter =
-                                if (gsrLocationDropDown.selectedItem.toString() == "Huntsman" ||
-                                    gsrLocationDropDown.selectedItem.toString() == "Academic Research"
-                                ) {
-                                    whartonDurationAdapter
-                                } else if (gsrLocationDropDown.selectedItem.toString() == "Biotech Commons") {
-                                    biotechDurationAdapter
-                                } else {
-                                    durationAdapter
-                                }
-                            searchForGSR(false)
+                                durationDropDown.adapter =
+                                    if (gsrLocationDropDown.selectedItem.toString() == "Huntsman" ||
+                                        gsrLocationDropDown.selectedItem.toString() == "Academic Research"
+                                    ) {
+                                        whartonDurationAdapter
+                                    } else if (gsrLocationDropDown.selectedItem.toString() == "Biotech Commons") {
+                                        biotechDurationAdapter
+                                    } else {
+                                        durationAdapter
+                                    }
+                                searchForGSR(false)
+                            }
                         }
-                    }
-                },
-            )
+                    },
+                )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         gsrLocationDropDown.onItemSelectedListener =
             object : OnItemSelectedListener {
                 override fun onItemSelected(
@@ -550,9 +562,9 @@ class GsrFragment : Fragment() {
                     // change possible durations depending on the location
                     var durationPos = durationDropDown.selectedItemPosition
                     if (durationPos >= 3 && (
-                            gsrLocationDropDown.selectedItem.toString() == "Huntsman" ||
-                                gsrLocationDropDown.selectedItem.toString() == "Academic Research"
-                        )
+                                gsrLocationDropDown.selectedItem.toString() == "Huntsman" ||
+                                        gsrLocationDropDown.selectedItem.toString() == "Academic Research"
+                                )
                     ) {
                         durationPos = 2
                     } else if (durationPos > 3 && gsrLocationDropDown.selectedItem.toString() != "Biotech Commons") {

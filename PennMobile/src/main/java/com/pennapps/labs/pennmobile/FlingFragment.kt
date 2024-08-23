@@ -61,12 +61,16 @@ class FlingFragment : Fragment() {
         _binding = FragmentFlingBinding.inflate(inflater, container, false)
         val view = binding.root
         val labs = MainActivity.studentLifeInstance
-        labs.flingEvents.subscribe({ flingEvents ->
-            activity?.runOnUiThread {
-                binding.flingFragmentRecyclerview.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                binding.flingFragmentRecyclerview.adapter = FlingRecyclerViewAdapter(context, flingEvents)
-            }
-        }, { activity?.runOnUiThread { Toast.makeText(activity, "Could not retrieve Spring Fling schedule", Toast.LENGTH_LONG).show() } })
+        try {
+            labs.flingEvents.subscribe({ flingEvents ->
+                activity?.runOnUiThread {
+                    binding.flingFragmentRecyclerview.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                    binding.flingFragmentRecyclerview.adapter = FlingRecyclerViewAdapter(context, flingEvents)
+                }
+            }, { activity?.runOnUiThread { Toast.makeText(activity, "Could not retrieve Spring Fling schedule", Toast.LENGTH_LONG).show() } })
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         return view
     }
 

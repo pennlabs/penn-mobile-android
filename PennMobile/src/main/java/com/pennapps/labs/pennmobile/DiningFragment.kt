@@ -153,42 +153,46 @@ class DiningFragment : Fragment() {
         }
 
         // Map each item in the list of venues to a Venue Observable, then map each Venue to a DiningHall Observable
-        mStudentLife.venues()
-            .flatMap { venues -> Observable.from(venues) }
-            .flatMap { venue ->
-                val hall = createHall(venue)
-                Observable.just(hall)
-            }
-            .toList()
-            .subscribe({ diningHalls ->
-                mActivity.runOnUiThread {
-                    getMenus(diningHalls)
-                    val adapter = DiningAdapter(diningHalls)
-                    loadingPanel?.visibility = View.GONE
-                    if (diningHalls.size > 0) {
-                        no_results?.visibility = View.GONE
-                    }
+        try {
+            mStudentLife.venues()
+                .flatMap { venues -> Observable.from(venues) }
+                .flatMap { venue ->
+                    val hall = createHall(venue)
+                    Observable.just(hall)
+                }
+                .toList()
+                .subscribe({ diningHalls ->
+                    mActivity.runOnUiThread {
+                        getMenus(diningHalls)
+                        val adapter = DiningAdapter(diningHalls)
+                        loadingPanel?.visibility = View.GONE
+                        if (diningHalls.size > 0) {
+                            no_results?.visibility = View.GONE
+                        }
 
-                    // Log non-fatal error to crashyltics if null
-                    // this error should not really be happening
-                    // it is *possible* but be rare: ideally network stuff
-                    // is decoupled with UI updates
-                    try {
-                        binding.diningHallsRecyclerView.adapter = adapter
-                        binding.diningSwiperefresh.isRefreshing = false
-                    } catch (e: Exception) {
-                        FirebaseCrashlytics.getInstance().recordException(e)
+                        // Log non-fatal error to crashyltics if null
+                        // this error should not really be happening
+                        // it is *possible* but be rare: ideally network stuff
+                        // is decoupled with UI updates
+                        try {
+                            binding.diningHallsRecyclerView.adapter = adapter
+                            binding.diningSwiperefresh.isRefreshing = false
+                        } catch (e: Exception) {
+                            FirebaseCrashlytics.getInstance().recordException(e)
+                        }
+                        view?.let { displaySnack("Just Updated") }
                     }
-                    view?.let { displaySnack("Just Updated") }
-                }
-            }, {
-                Log.e("DiningFragment", "Error getting dining halls", it)
-                mActivity.runOnUiThread {
-                    Log.e("Dining", "Could not load Dining page", it)
-                    loadingPanel?.visibility = View.GONE
-                    binding.diningSwiperefresh.isRefreshing = false
-                }
-            })
+                }, {
+                    Log.e("DiningFragment", "Error getting dining halls", it)
+                    mActivity.runOnUiThread {
+                        Log.e("Dining", "Could not load Dining page", it)
+                        loadingPanel?.visibility = View.GONE
+                        binding.diningSwiperefresh.isRefreshing = false
+                    }
+                })
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun onResume() {
@@ -221,23 +225,27 @@ class DiningFragment : Fragment() {
     companion object {
         // Gets the dining hall menus
         fun getMenus(venues: MutableList<DiningHall>) {
-            val idVenueMap = mutableMapOf<Int, DiningHall>()
-            venues.forEach { idVenueMap[it.id] = it }
-            val current = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-            val formatted = current.format(formatter)
-            val studentLife = MainActivity.studentLifeInstance
-            studentLife.getMenus(formatted).subscribe({ menus ->
-                menus.forEach { menu ->
-                    val id = menu.venue?.venueId
-                    val diningHall = idVenueMap[id]
-                    val diningHallMenus = diningHall?.menus ?: mutableListOf()
-                    diningHallMenus.add(menu)
-                    diningHall?.sortMeals(diningHallMenus)
-                }
-            }, { throwable ->
-                Log.e("DiningFragment", "Error getting Menus", throwable)
-            })
+            try {
+                val idVenueMap = mutableMapOf<Int, DiningHall>()
+                venues.forEach { idVenueMap[it.id] = it }
+                val current = LocalDateTime.now()
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                val formatted = current.format(formatter)
+                val studentLife = MainActivity.studentLifeInstance
+                studentLife.getMenus(formatted).subscribe({ menus ->
+                    menus.forEach { menu ->
+                        val id = menu.venue?.venueId
+                        val diningHall = idVenueMap[id]
+                        val diningHallMenus = diningHall?.menus ?: mutableListOf()
+                        diningHallMenus.add(menu)
+                        diningHall?.sortMeals(diningHallMenus)
+                    }
+                }, { throwable ->
+                    Log.e("DiningFragment", "Error getting Menus", throwable)
+                })
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
 
         // Takes a venue then adds an image and modifies venue name if name is too long

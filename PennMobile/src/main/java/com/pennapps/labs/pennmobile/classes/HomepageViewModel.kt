@@ -189,57 +189,69 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         latch: CountDownLatch,
     ) {
         val idHash = getSha256Hash(deviceID)
-        studentLife.browsePolls(bearerToken, idHash).subscribe({ poll ->
-            if (poll.size > 0) {
-                val pollCell = PollCell(poll[0])
-                pollCell.poll.options.forEach { pollCell.poll.totalVotes += it.voteCount }
-                addCell(pollCell, POLL_POS)
-            }
+        try {
+            studentLife.browsePolls(bearerToken, idHash).subscribe({ poll ->
+                if (poll.size > 0) {
+                    val pollCell = PollCell(poll[0])
+                    pollCell.poll.options.forEach { pollCell.poll.totalVotes += it.voteCount }
+                    addCell(pollCell, POLL_POS)
+                }
 
-            Log.i(TAG, "Loaded polls")
+                Log.i(TAG, "Loaded polls")
 
-            latch.countDown()
-        }, { throwable ->
-            Log.i(TAG, "Could not load polls")
-            throwable.printStackTrace()
-            latch.countDown()
-        })
+                latch.countDown()
+            }, { throwable ->
+                Log.i(TAG, "Could not load polls")
+                throwable.printStackTrace()
+                latch.countDown()
+            })
+        } catch (e : Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun getNews(
         studentLife: StudentLife,
         latch: CountDownLatch,
     ) {
-        studentLife.news.subscribe({ article ->
-            val newsCell = NewsCell(article)
-            addCell(newsCell, NEWS_POS)
+        try {
+            studentLife.news.subscribe({ article ->
+                val newsCell = NewsCell(article)
+                addCell(newsCell, NEWS_POS)
 
-            Log.i(TAG, "Loaded news")
+                Log.i(TAG, "Loaded news")
 
-            latch.countDown()
-        }, { throwable ->
-            Log.i(TAG, "Could not load news")
-            throwable.printStackTrace()
-            latch.countDown()
-        })
+                latch.countDown()
+            }, { throwable ->
+                Log.i(TAG, "Could not load news")
+                throwable.printStackTrace()
+                latch.countDown()
+            })
+        } catch (e : Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun getCalendar(
         studentLife: StudentLife,
         latch: CountDownLatch,
     ) {
-        studentLife.calendar.subscribe({ events ->
-            val calendarCell = CalendarCell(events)
+        try {
+            studentLife.calendar.subscribe({ events ->
+                val calendarCell = CalendarCell(events)
 
-            Log.i(TAG, "Loaded calendar")
+                Log.i(TAG, "Loaded calendar")
 
-            addCell(calendarCell, CALENDAR_POS)
-            latch.countDown()
-        }, { throwable ->
-            Log.i(TAG, "Could not load calendar")
-            throwable.printStackTrace()
-            latch.countDown()
-        })
+                addCell(calendarCell, CALENDAR_POS)
+                latch.countDown()
+            }, { throwable ->
+                Log.i(TAG, "Could not load calendar")
+                throwable.printStackTrace()
+                latch.countDown()
+            })
+        } catch (e : Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun getLaundry(
@@ -247,19 +259,23 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         bearerToken: String,
         latch: CountDownLatch,
     ) {
-        studentLife.getLaundryPref(bearerToken).subscribe({ preferences ->
-            val laundryCell = if (preferences.isNullOrEmpty()) LaundryCell(0) else LaundryCell(preferences[0])
+        try {
+            studentLife.getLaundryPref(bearerToken).subscribe({ preferences ->
+                val laundryCell = if (preferences.isNullOrEmpty()) LaundryCell(0) else LaundryCell(preferences[0])
 
-            Log.i(TAG, "Loaded laundry")
+                Log.i(TAG, "Loaded laundry")
 
-            addCell(laundryCell, LAUNDRY_POS)
-            latch.countDown()
-        }, { throwable ->
-            setNewsBlurView(true)
-            Log.i(TAG, "Could not load laundry")
-            throwable.printStackTrace()
-            latch.countDown()
-        })
+                addCell(laundryCell, LAUNDRY_POS)
+                latch.countDown()
+            }, { throwable ->
+                setNewsBlurView(true)
+                Log.i(TAG, "Could not load laundry")
+                throwable.printStackTrace()
+                latch.countDown()
+            })
+        } catch (e : Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun getPosts(
@@ -267,24 +283,28 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         bearerToken: String,
         latch: CountDownLatch,
     ) {
-        studentLife.validPostsList(bearerToken).subscribe({ post ->
-            if (post.size >= 1) { // there exists a post
-                val postCell = PostCell(post[0])
+        try {
+            studentLife.validPostsList(bearerToken).subscribe({ post ->
+                if (post.size >= 1) { // there exists a post
+                    val postCell = PostCell(post[0])
 
-                addCell(postCell, POST_POS)
-            } else {
+                    addCell(postCell, POST_POS)
+                } else {
+                    setPostBlurView(true)
+                }
+
+                Log.i(TAG, "Loaded posts")
+
+                latch.countDown()
+            }, { throwable ->
+                Log.i(TAG, "Could not load posts")
                 setPostBlurView(true)
-            }
-
-            Log.i(TAG, "Loaded posts")
-
-            latch.countDown()
-        }, { throwable ->
-            Log.i(TAG, "Could not load posts")
-            setPostBlurView(true)
-            throwable.printStackTrace()
-            latch.countDown()
-        })
+                throwable.printStackTrace()
+                latch.countDown()
+            })
+        } catch (e : Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun getDiningPrefs(
@@ -292,30 +312,34 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         bearerToken: String,
         latch: CountDownLatch,
     ) {
-        studentLife.getDiningPreferences(bearerToken).subscribe({ preferences ->
-            val list = preferences.preferences
-            val venues = mutableListOf<Int>()
-            if (list?.isEmpty() == true) {
-                venues.add(593)
-                venues.add(1442)
-                venues.add(636)
-            } else {
-                list?.forEach {
-                    it.id?.let { it1 -> venues.add(it1) }
+        try {
+            studentLife.getDiningPreferences(bearerToken).subscribe({ preferences ->
+                val list = preferences.preferences
+                val venues = mutableListOf<Int>()
+                if (list?.isEmpty() == true) {
+                    venues.add(593)
+                    venues.add(1442)
+                    venues.add(636)
+                } else {
+                    list?.forEach {
+                        it.id?.let { it1 -> venues.add(it1) }
+                    }
                 }
-            }
 
-            val diningCell = DiningCell(venues)
-            addCell(diningCell, DINING_POS)
+                val diningCell = DiningCell(venues)
+                addCell(diningCell, DINING_POS)
 
-            Log.i(TAG, "Loaded dining")
+                Log.i(TAG, "Loaded dining")
 
-            latch.countDown()
-        }, { throwable ->
-            Log.i(TAG, "Could not load dining")
-            throwable.printStackTrace()
-            latch.countDown()
-        })
+                latch.countDown()
+            }, { throwable ->
+                Log.i(TAG, "Could not load dining")
+                throwable.printStackTrace()
+                latch.countDown()
+            })
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun getGSRReservations(
@@ -323,21 +347,25 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
         bearerToken: String,
         latch: CountDownLatch,
     ) {
-        studentLife.getGsrReservations(bearerToken).subscribe({ reservationsList ->
-            if (reservationsList.isEmpty()) {
-                addCell(HomeCell(), GSR_POS)
-            } else {
-                val gsrCell = GSRCell(reservationsList)
-                Log.i(TAG, "Loaded GSR Reservations")
-                addCell(gsrCell, GSR_POS)
-            }
-            latch.countDown()
-        }, {
-                throwable ->
-            Log.i(TAG, "Could not load GSR reservations")
-            throwable.printStackTrace()
-            latch.countDown()
-        })
+        try {
+            studentLife.getGsrReservations(bearerToken).subscribe({ reservationsList ->
+                if (reservationsList.isEmpty()) {
+                    addCell(HomeCell(), GSR_POS)
+                } else {
+                    val gsrCell = GSRCell(reservationsList)
+                    Log.i(TAG, "Loaded GSR Reservations")
+                    addCell(gsrCell, GSR_POS)
+                }
+                latch.countDown()
+            }, {
+                    throwable ->
+                Log.i(TAG, "Could not load GSR reservations")
+                throwable.printStackTrace()
+                latch.countDown()
+            })
+        } catch (e : Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun setPostBlurView(status: Boolean) =
