@@ -205,7 +205,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
                 throwable.printStackTrace()
                 latch.countDown()
             })
-        } catch (e : Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -227,7 +227,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
                 throwable.printStackTrace()
                 latch.countDown()
             })
-        } catch (e : Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -249,7 +249,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
                 throwable.printStackTrace()
                 latch.countDown()
             })
-        } catch (e : Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -261,7 +261,8 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
     ) {
         try {
             studentLife.getLaundryPref(bearerToken).subscribe({ preferences ->
-                val laundryCell = if (preferences.isNullOrEmpty()) LaundryCell(0) else LaundryCell(preferences[0])
+                val laundryCell =
+                    if (preferences.isNullOrEmpty()) LaundryCell(0) else LaundryCell(preferences[0])
 
                 Log.i(TAG, "Loaded laundry")
 
@@ -273,7 +274,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
                 throwable.printStackTrace()
                 latch.countDown()
             })
-        } catch (e : Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -302,7 +303,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
                 throwable.printStackTrace()
                 latch.countDown()
             })
-        } catch (e : Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -357,13 +358,12 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
                     addCell(gsrCell, GSR_POS)
                 }
                 latch.countDown()
-            }, {
-                    throwable ->
+            }, { throwable ->
                 Log.i(TAG, "Could not load GSR reservations")
                 throwable.printStackTrace()
                 latch.countDown()
             })
-        } catch (e : Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }

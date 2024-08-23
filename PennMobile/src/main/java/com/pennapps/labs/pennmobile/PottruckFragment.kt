@@ -77,7 +77,8 @@ class PottruckFragment : Fragment() {
         loadingPanel = view.findViewById(R.id.loadingPanel)
 
         swipeRefresh.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
-        recyclerView.layoutManager = LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false)
+        recyclerView.layoutManager =
+            LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false)
         swipeRefresh.setOnRefreshListener { getFitnessRooms() }
 
         // populate the title/date of the app bar
@@ -192,7 +193,12 @@ class PottruckFragment : Fragment() {
         val connectionMessage: TextView = binding.textFitnessConnectionMessage
 
         if (!isOnline(context)) {
-            connectionToolbar.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.darkRedBackground))
+            connectionToolbar.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.darkRedBackground
+                )
+            )
             connectionMessage.text = getString(R.string.internet_error)
             connectionToolbar.visibility = View.VISIBLE
             loadingPanel.visibility = View.GONE
