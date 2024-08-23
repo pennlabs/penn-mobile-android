@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.DiningHallWidget
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.DiningRequest
@@ -131,7 +132,8 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
                         }
                 }
             } catch (e: Exception) {
-                e.printStackTrace();
+                FirebaseCrashlytics.getInstance().recordException(e)
+                e.printStackTrace()
             }
         }
 

@@ -131,6 +131,7 @@ class GsrReservationsFragment : Fragment() {
                     }
                 })
             } catch (e: Exception) {
+                FirebaseCrashlytics.getInstance().recordException(e)
                 e.printStackTrace()
             }
         }

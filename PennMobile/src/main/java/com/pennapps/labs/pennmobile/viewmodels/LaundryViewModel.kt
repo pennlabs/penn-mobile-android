@@ -77,6 +77,7 @@ class LaundryViewModel : ViewModel() {
                                 val room = roomResponse.body()!!
                                 room.id = roomId
                                 rooms.add(room)
+                                Log.i("Laundry", "Room data fetched")
                                 true
                             } else {
                                 Log.i("Laundry", "Failed to get room data")
