@@ -218,40 +218,44 @@ class LoginWebviewFragment : Fragment() {
     }
 
     private fun getUser(accessToken: String?) {
-        mPlatform?.getUser(
-            "Bearer $accessToken",
-            accessToken,
-            object : Callback<GetUserResponse> {
-                override fun success(
-                    t: GetUserResponse?,
-                    response: Response?,
-                ) {
-                    val user = t?.user
-                    val editor = sp.edit()
-                    editor.putString(getString(R.string.first_name), user?.firstName)
-                    editor.putString(getString(R.string.last_name), user?.lastName)
-                    var initials = ""
-                    try {
-                        initials = initials + user?.firstName?.first() + user?.lastName?.first()
-                        initials.capitalize()
-                    } catch (ignored: Exception) {
+        try {
+            mPlatform?.getUser(
+                "Bearer $accessToken",
+                accessToken,
+                object : Callback<GetUserResponse> {
+                    override fun success(
+                        t: GetUserResponse?,
+                        response: Response?,
+                    ) {
+                        val user = t?.user
+                        val editor = sp.edit()
+                        editor.putString(getString(R.string.first_name), user?.firstName)
+                        editor.putString(getString(R.string.last_name), user?.lastName)
+                        var initials = ""
+                        try {
+                            initials = initials + user?.firstName?.first() + user?.lastName?.first()
+                            initials.capitalize()
+                        } catch (ignored: Exception) {
+                        }
+                        editor.putString(getString(R.string.initials), initials)
+                        editor.putString(getString(R.string.email_address), user?.email)
+                        editor.putString(getString(R.string.pennkey), user?.username)
+                        editor.apply()
+                        mActivity.startHomeFragment()
+                        // saveAccount(Account(user?.firstName, user?.lastName,
+                        //        user?.username, user?.pennid, user?.email, user?.affiliation), user?.username.toString(), accessToken)
                     }
-                    editor.putString(getString(R.string.initials), initials)
-                    editor.putString(getString(R.string.email_address), user?.email)
-                    editor.putString(getString(R.string.pennkey), user?.username)
-                    editor.apply()
-                    mActivity.startHomeFragment()
-                    // saveAccount(Account(user?.firstName, user?.lastName,
-                    //        user?.username, user?.pennid, user?.email, user?.affiliation), user?.username.toString(), accessToken)
-                }
 
-                override fun failure(error: RetrofitError) {
-                    Log.e("Accounts", "Error getting user $error")
-                    Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
-                    mActivity.startLoginFragment()
-                }
-            },
-        )
+                    override fun failure(error: RetrofitError) {
+                        Log.e("Accounts", "Error getting user $error")
+                        Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
+                        mActivity.startLoginFragment()
+                    }
+                },
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun getCodeChallenge(codeVerifier: String): String {

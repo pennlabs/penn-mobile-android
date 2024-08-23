@@ -85,41 +85,45 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                     val labs = MainActivity.studentLifeInstance
                     val bearerToken =
                         "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
-                    labs.cancelReservation(
-                        bearerToken,
-                        null,
-                        bookingID,
-                        sessionID,
-                        object : ResponseCallback() {
-                            override fun success(response: Response) {
-                                if (reservations.size > position) {
-                                    reservations.removeAt(position)
-                                }
-                                run {
-                                    if (reservations.size == 0) {
-                                        var intent = Intent("refresh")
-                                        LocalBroadcastManager.getInstance(mContext)
-                                            .sendBroadcast(intent)
-                                    } else {
-                                        notifyItemRemoved(position)
+                    try {
+                        labs.cancelReservation(
+                            bearerToken,
+                            null,
+                            bookingID,
+                            sessionID,
+                            object : ResponseCallback() {
+                                override fun success(response: Response) {
+                                    if (reservations.size > position) {
+                                        reservations.removeAt(position)
+                                    }
+                                    run {
+                                        if (reservations.size == 0) {
+                                            var intent = Intent("refresh")
+                                            LocalBroadcastManager.getInstance(mContext)
+                                                .sendBroadcast(intent)
+                                        } else {
+                                            notifyItemRemoved(position)
+                                        }
                                     }
                                 }
-                            }
 
-                            override fun failure(error: RetrofitError) {
-                                Log.e(
-                                    "GsrReservationsAdapter",
-                                    "Error canceling gsr reservation",
-                                    error,
-                                )
-                                Toast.makeText(
-                                    mContext,
-                                    "Error deleting your GSR reservation.",
-                                    LENGTH_SHORT,
-                                ).show()
-                            }
-                        },
-                    )
+                                override fun failure(error: RetrofitError) {
+                                    Log.e(
+                                        "GsrReservationsAdapter",
+                                        "Error canceling gsr reservation",
+                                        error,
+                                    )
+                                    Toast.makeText(
+                                        mContext,
+                                        "Error deleting your GSR reservation.",
+                                        LENGTH_SHORT,
+                                    ).show()
+                                }
+                            },
+                        )
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
             }
 

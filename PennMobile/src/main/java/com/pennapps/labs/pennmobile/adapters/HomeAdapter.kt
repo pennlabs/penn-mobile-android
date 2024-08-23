@@ -207,33 +207,36 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()
         }
-
-        mStudentLife.venues()
-            .flatMap { venues -> Observable.from(venues) }
-            .flatMap { venue ->
-                val hall = DiningFragment.createHall(venue)
-                Observable.just(hall)
-            }
-            .toList()
-            .subscribe { diningHalls ->
-                mActivity.runOnUiThread {
-                    val favorites: ArrayList<DiningHall> = arrayListOf()
-                    val favoritesIdList: List<Int>? = cell.venues
-                    diningHalls.forEach {
-                        if (favoritesIdList?.contains(it.id) == true) {
-                            favorites.add(it)
-                        }
-                    }
-                    getMenus(favorites)
-                    holder.itemView.home_card_rv.layoutManager =
-                        LinearLayoutManager(
-                            mContext,
-                            LinearLayoutManager.VERTICAL,
-                            false,
-                        )
-                    holder.itemView.home_card_rv.adapter = DiningCardAdapter(favorites)
+        try {
+            mStudentLife.venues()
+                .flatMap { venues -> Observable.from(venues) }
+                .flatMap { venue ->
+                    val hall = DiningFragment.createHall(venue)
+                    Observable.just(hall)
                 }
-            }
+                .toList()
+                .subscribe { diningHalls ->
+                    mActivity.runOnUiThread {
+                        val favorites: ArrayList<DiningHall> = arrayListOf()
+                        val favoritesIdList: List<Int>? = cell.venues
+                        diningHalls.forEach {
+                            if (favoritesIdList?.contains(it.id) == true) {
+                                favorites.add(it)
+                            }
+                        }
+                        getMenus(favorites)
+                        holder.itemView.home_card_rv.layoutManager =
+                            LinearLayoutManager(
+                                mContext,
+                                LinearLayoutManager.VERTICAL,
+                                false,
+                            )
+                        holder.itemView.home_card_rv.adapter = DiningCardAdapter(favorites)
+                    }
+                }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun bindNewsCell(
@@ -399,13 +402,17 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
 
         holder.itemView.home_card_rv.layoutParams = params
 
-        mStudentLife.room(roomID).subscribe({ room ->
-            mActivity.runOnUiThread {
-                holder.itemView.home_card_title.text = room.name
-                val rooms = arrayListOf(room)
-                holder.itemView.home_card_rv.adapter = LaundryRoomAdapter(mContext, rooms, null, true)
-            }
-        }, { throwable -> mActivity.runOnUiThread { throwable.printStackTrace() } })
+        try {
+            mStudentLife.room(roomID).subscribe({ room ->
+                mActivity.runOnUiThread {
+                    holder.itemView.home_card_title.text = room.name
+                    val rooms = arrayListOf(room)
+                    holder.itemView.home_card_rv.adapter = LaundryRoomAdapter(mContext, rooms, null, true)
+                }
+            }, { throwable -> mActivity.runOnUiThread { throwable.printStackTrace() } })
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun bindPostCell(
@@ -567,20 +574,25 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
                     val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
                     val bearerToken = "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
 
-                    mStudentLife.createPollVote(
-                        bearerToken,
-                        idHash,
-                        selectedOptions,
-                        object : ResponseCallback() {
-                            override fun success(response: Response?) {
-                                Log.i("HomeAdapter", "Successfully voted for poll!")
-                            }
+                    try {
+                        mStudentLife.createPollVote(
+                            bearerToken,
+                            idHash,
+                            selectedOptions,
+                            object : ResponseCallback() {
+                                override fun success(response: Response?) {
+                                    Log.i("HomeAdapter", "Successfully voted for poll!")
+                                }
 
-                            override fun failure(error: RetrofitError?) {
-                                Log.e("HomeAdapter", "Error voting for poll", error)
-                            }
-                        },
-                    )
+                                override fun failure(error: RetrofitError?) {
+                                    Log.e("HomeAdapter", "Error voting for poll", error)
+                                }
+                            },
+                        )
+                    } catch (e : Exception) {
+                        e.printStackTrace()
+                    }
+
                 }
             }
         } else {

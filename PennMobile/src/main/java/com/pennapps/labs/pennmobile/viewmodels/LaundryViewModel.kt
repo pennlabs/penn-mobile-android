@@ -70,29 +70,37 @@ class LaundryViewModel : ViewModel() {
             var addUsageSuccess = false
             val addRoom =
                 CoroutineScope(context).launch {
-                    val roomResponse = studentLife.room(roomId)
-                    addRoomSuccess =
-                        if (roomResponse.isSuccessful) {
-                            val room = roomResponse.body()!!
-                            room.id = roomId
-                            rooms.add(room)
-                            true
-                        } else {
-                            Log.i("Laundry", "Failed to get room data")
-                            false
-                        }
+                    try {
+                        val roomResponse = studentLife.room(roomId)
+                        addRoomSuccess =
+                            if (roomResponse.isSuccessful) {
+                                val room = roomResponse.body()!!
+                                room.id = roomId
+                                rooms.add(room)
+                                true
+                            } else {
+                                Log.i("Laundry", "Failed to get room data")
+                                false
+                            }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
             val addUsage =
                 CoroutineScope(context).launch {
-                    val usageResponse = studentLife.usage(roomId)
-                    addUsageSuccess =
-                        if (usageResponse.isSuccessful) {
-                            usages.add(usageResponse.body()!!)
-                            true
-                        } else {
-                            Log.i("Laundry", "Failed to get usage data")
-                            false
-                        }
+                    try {
+                        val usageResponse = studentLife.usage(roomId)
+                        addUsageSuccess =
+                            if (usageResponse.isSuccessful) {
+                                usages.add(usageResponse.body()!!)
+                                true
+                            } else {
+                                Log.i("Laundry", "Failed to get usage data")
+                                false
+                            }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
 
             addRoom.join()
@@ -114,17 +122,21 @@ class LaundryViewModel : ViewModel() {
         bearerToken: String,
     ) {
         CoroutineScope(Dispatchers.IO).launch {
-            val favoriteIdList: MutableList<Int> = mutableListOf()
-            val response = studentLife.getLaundryPref(bearerToken)
-            if (response.isSuccessful) {
-                val prefs = response.body()!!.rooms
-                for (room in prefs!!) {
-                    favoriteIdList.add(room)
+            try {
+                val favoriteIdList: MutableList<Int> = mutableListOf()
+                val response = studentLife.getLaundryPref(bearerToken)
+                if (response.isSuccessful) {
+                    val prefs = response.body()!!.rooms
+                    for (room in prefs!!) {
+                        favoriteIdList.add(room)
+                    }
+                } else {
+                    Log.i("Laundry", "Failed to get preferences")
                 }
-            } else {
-                Log.i("Laundry", "Failed to get preferences")
+                populateFavorites(coroutineContext, studentLife, favoriteIdList)
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            populateFavorites(coroutineContext, studentLife, favoriteIdList)
         }
     }
 
@@ -133,51 +145,55 @@ class LaundryViewModel : ViewModel() {
             return
         }
         CoroutineScope(Dispatchers.IO).launch {
-            val roomsResponse = studentLife.laundryRooms()
-            if (roomsResponse.isSuccessful) {
-                val rooms = roomsResponse.body()!!
-                laundryRooms.clear()
-                laundryHalls.clear()
+            try {
+                val roomsResponse = studentLife.laundryRooms()
+                if (roomsResponse.isSuccessful) {
+                    val rooms = roomsResponse.body()!!
+                    laundryRooms.clear()
+                    laundryHalls.clear()
 
-                val numRooms = rooms.size
-                var i = 0
-                // go through all the rooms
-                while (i < numRooms) {
-                    // new list for the rooms in the hall
-                    var roomList: MutableList<LaundryRoomSimple> = ArrayList()
+                    val numRooms = rooms.size
+                    var i = 0
+                    // go through all the rooms
+                    while (i < numRooms) {
+                        // new list for the rooms in the hall
+                        var roomList: MutableList<LaundryRoomSimple> = ArrayList()
 
-                    // if hall name already exists, get the list of rooms and add to that
-                    var hallName = rooms[i].location ?: ""
+                        // if hall name already exists, get the list of rooms and add to that
+                        var hallName = rooms[i].location ?: ""
 
-                    if (laundryHalls.contains(hallName)) {
-                        roomList = laundryRooms[hallName] as MutableList<LaundryRoomSimple>
-                        laundryRooms.remove(hallName)
-                        laundryHalls.remove(hallName)
-                    }
-
-                    while (hallName == rooms[i].location) {
-                        roomList.add(rooms[i])
-
-                        i += 1
-                        if (i >= rooms.size) {
-                            break
+                        if (laundryHalls.contains(hallName)) {
+                            roomList = laundryRooms[hallName] as MutableList<LaundryRoomSimple>
+                            laundryRooms.remove(hallName)
+                            laundryHalls.remove(hallName)
                         }
-                    }
 
-                    // name formatting for consistency
-                    if (hallName == "Lauder College House") {
-                        hallName = "Lauder"
-                    }
+                        while (hallName == rooms[i].location) {
+                            roomList.add(rooms[i])
 
-                    // add the hall name to the list
-                    laundryHalls.add(hallName)
-                    laundryRooms[hallName] = roomList
+                            i += 1
+                            if (i >= rooms.size) {
+                                break
+                            }
+                        }
+
+                        // name formatting for consistency
+                        if (hallName == "Lauder College House") {
+                            hallName = "Lauder"
+                        }
+
+                        // add the hall name to the list
+                        laundryHalls.add(hallName)
+                        laundryRooms[hallName] = roomList
+                    }
+                } else {
+                    Log.i("Laundry", "Failed to get laundry rooms")
                 }
-            } else {
-                Log.i("Laundry", "Failed to get laundry rooms")
-            }
 
-            _loadedRooms.postValue(true)
+                _loadedRooms.postValue(true)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -208,12 +224,16 @@ class LaundryViewModel : ViewModel() {
         bearerToken: String,
         favoriteIdList: List<Int>,
     ) {
-        val laundryRequest = LaundryRequest(favoriteIdList)
-        val response = studentLife.sendLaundryPref(bearerToken, laundryRequest)
-        if (response.isSuccessful) {
-            Log.i("Laundry Preferences", "Successfully updated preferences")
-        } else {
-            Log.i("Laundry Preferences", "Error updating preferences")
+        try {
+            val laundryRequest = LaundryRequest(favoriteIdList)
+            val response = studentLife.sendLaundryPref(bearerToken, laundryRequest)
+            if (response.isSuccessful) {
+                Log.i("Laundry Preferences", "Successfully updated preferences")
+            } else {
+                Log.i("Laundry Preferences", "Error updating preferences")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

@@ -76,19 +76,23 @@ class FitnessAdapter(private val isFavorite: Boolean, private val dataModel: Fit
         ) {
             if (hasExtraData) return
             room.roomId?.let {
-                studentLife.getFitnessRoomUsage(it, 3, "week").subscribe(
-                    { roomUsage ->
-                        createBarChart(context, roomUsage)
-                        activity.runOnUiThread {
-                            hasExtraData = true
-                            showExtra()
-                        }
-                    },
-                    {
-                        Log.e("Fitness Adapter", "Error loading room usage", it)
-                        Toast.makeText(context, "Error loading room", Toast.LENGTH_SHORT).show()
-                    },
-                )
+                try {
+                    studentLife.getFitnessRoomUsage(it, 3, "week").subscribe(
+                        { roomUsage ->
+                            createBarChart(context, roomUsage)
+                            activity.runOnUiThread {
+                                hasExtraData = true
+                                showExtra()
+                            }
+                        },
+                        {
+                            Log.e("Fitness Adapter", "Error loading room usage", it)
+                            Toast.makeText(context, "Error loading room", Toast.LENGTH_SHORT).show()
+                        },
+                    )
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
 

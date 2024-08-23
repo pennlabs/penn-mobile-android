@@ -98,37 +98,41 @@ class GsrReservationsFragment : Fragment() {
             val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
             val email = sp.getString(getString(R.string.email_address), "")
             val token = sp.getString(getString(R.string.access_token), "")
-            labs.getGsrReservations("Bearer $token").subscribe({ reservations ->
-                mActivity.runOnUiThread {
-                    loadingPanel?.visibility = View.GONE
+            try {
+                labs.getGsrReservations("Bearer $token").subscribe({ reservations ->
+                    mActivity.runOnUiThread {
+                        loadingPanel?.visibility = View.GONE
 
-                    try {
-                        binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList(reservations))
-                        if (reservations.size > 0) {
-                            binding.gsrNoReservations.visibility = View.GONE
-                        } else {
-                            binding.gsrNoReservations.visibility = View.VISIBLE
+                        try {
+                            binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList(reservations))
+                            if (reservations.size > 0) {
+                                binding.gsrNoReservations.visibility = View.GONE
+                            } else {
+                                binding.gsrNoReservations.visibility = View.VISIBLE
+                            }
+                            // stop refreshing
+                            binding.gsrReservationsRefreshLayout.isRefreshing = false
+                        } catch (e: Exception) {
+                            FirebaseCrashlytics.getInstance().recordException(e)
                         }
-                        // stop refreshing
-                        binding.gsrReservationsRefreshLayout.isRefreshing = false
-                    } catch (e: Exception) {
-                        FirebaseCrashlytics.getInstance().recordException(e)
                     }
-                }
-            }, { throwable ->
-                mActivity.runOnUiThread {
-                    Log.e("GsrReservationsFragment", "Error getting reservations", throwable)
-                    throwable.printStackTrace()
-                    loadingPanel?.visibility = View.GONE
-                    try {
-                        binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList())
-                        binding.gsrNoReservations.visibility = View.VISIBLE
-                        binding.gsrReservationsRefreshLayout.isRefreshing = false
-                    } catch (e: Exception) {
-                        FirebaseCrashlytics.getInstance().recordException(e)
+                }, { throwable ->
+                    mActivity.runOnUiThread {
+                        Log.e("GsrReservationsFragment", "Error getting reservations", throwable)
+                        throwable.printStackTrace()
+                        loadingPanel?.visibility = View.GONE
+                        try {
+                            binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList())
+                            binding.gsrNoReservations.visibility = View.VISIBLE
+                            binding.gsrReservationsRefreshLayout.isRefreshing = false
+                        } catch (e: Exception) {
+                            FirebaseCrashlytics.getInstance().recordException(e)
+                        }
                     }
-                }
-            })
+                })
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

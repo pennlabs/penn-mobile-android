@@ -142,49 +142,53 @@ class BookGsrFragment : Fragment() {
             Log.i("BookGSRFragment", "ID $roomId")
             Log.i("BookGSRFragment", "Room Name $roomName")
 
-            mStudentLife.bookGSR(
-                // Passing the values
-                bearerToken,
-                startTime,
-                endTime,
-                gid,
-                roomId,
-                roomName,
-                // Creating an anonymous callback
-                object : Callback<GSRBookingResult> {
-                    override fun success(
-                        result: GSRBookingResult,
-                        response: Response,
-                    ) {
-                        // Displaying the output as a toast and go back to GSR fragment
-                        if (result.getDetail().equals("success")) {
-                            Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
+            try {
+                mStudentLife.bookGSR(
+                    // Passing the values
+                    bearerToken,
+                    startTime,
+                    endTime,
+                    gid,
+                    roomId,
+                    roomName,
+                    // Creating an anonymous callback
+                    object : Callback<GSRBookingResult> {
+                        override fun success(
+                            result: GSRBookingResult,
+                            response: Response,
+                        ) {
+                            // Displaying the output as a toast and go back to GSR fragment
+                            if (result.getDetail().equals("success")) {
+                                Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
 
-                            // Save user info in shared preferences
-                            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                            val editor = sp.edit()
-                            editor.putString(getString(R.string.first_name), firstNameEt.text.toString())
-                            editor.putString(getString(R.string.last_name), lastNameEt.text.toString())
-                            editor.putString(getString(R.string.email_address), emailEt.text.toString())
-                            editor.apply()
-                        } else {
-                            Toast.makeText(activity, "GSR booking failed", Toast.LENGTH_LONG).show()
-                            Log.e("BookGsrFragment", "GSR booking failed with " + result.getError())
+                                // Save user info in shared preferences
+                                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                                val editor = sp.edit()
+                                editor.putString(getString(R.string.first_name), firstNameEt.text.toString())
+                                editor.putString(getString(R.string.last_name), lastNameEt.text.toString())
+                                editor.putString(getString(R.string.email_address), emailEt.text.toString())
+                                editor.apply()
+                            } else {
+                                Toast.makeText(activity, "GSR booking failed", Toast.LENGTH_LONG).show()
+                                Log.e("BookGsrFragment", "GSR booking failed with " + result.getError())
+                            }
+                            // go back to GSR fragment
+                            binding.loading.loadingPanel.visibility = View.GONE
+                            activity?.onBackPressed()
                         }
-                        // go back to GSR fragment
-                        binding.loading.loadingPanel.visibility = View.GONE
-                        activity?.onBackPressed()
-                    }
 
-                    override fun failure(error: RetrofitError) {
-                        // If any error occurred displaying the error as toast
-                        Log.e("BookGSRFragment", "Error booking gsr", error)
-                        Toast.makeText(activity, "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
-                        binding.loading.loadingPanel.visibility = View.GONE
-                        activity?.onBackPressed()
-                    }
-                },
-            )
+                        override fun failure(error: RetrofitError) {
+                            // If any error occurred displaying the error as toast
+                            Log.e("BookGSRFragment", "Error booking gsr", error)
+                            Toast.makeText(activity, "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
+                            binding.loading.loadingPanel.visibility = View.GONE
+                            activity?.onBackPressed()
+                        }
+                    },
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

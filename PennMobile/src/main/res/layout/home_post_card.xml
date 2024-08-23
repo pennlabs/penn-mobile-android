@@ -23,7 +23,7 @@
         <LinearLayout
             android:id="@+id/post_card_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="280dp"
             app:layout_constraintBottom_toBottomOf="@+id/home_post_subtitle"
             android:orientation="vertical"
             android:weightSum="10">

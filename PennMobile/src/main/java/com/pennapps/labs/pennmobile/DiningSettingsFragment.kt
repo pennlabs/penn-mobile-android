@@ -92,25 +92,30 @@ class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
     private fun getDiningHalls() {
         // Map each item in the list of venues to a Venue Observable, then map each Venue to a DiningHall Observable
         originalPreferences = dataModel.getDiningHallPrefs()
-        mStudentLife.venues()
-            .flatMap { venues -> Observable.from(venues) }
-            .flatMap { venue ->
-                val hall = DiningFragment.createHall(venue)
-                Observable.just(hall)
-            }
-            .toList()
-            .subscribe({ diningHalls ->
-                mActivity.runOnUiThread {
-                    halls = diningHalls
-                    try {
-                        binding.diningHallRv.adapter = DiningSettingsAdapter(diningHalls)
-                    } catch (e: Exception) {
-                        FirebaseCrashlytics.getInstance().recordException(e)
-                    }
+        try {
+            mStudentLife.venues()
+                .flatMap { venues -> Observable.from(venues) }
+                .flatMap { venue ->
+                    val hall = DiningFragment.createHall(venue)
+                    Observable.just(hall)
                 }
-            }, {
-                Log.e("DiningSettings", "error fetching dining halls")
-            })
+                .toList()
+                .subscribe({ diningHalls ->
+                    mActivity.runOnUiThread {
+                        halls = diningHalls
+                        try {
+                            binding.diningHallRv.adapter = DiningSettingsAdapter(diningHalls)
+                        } catch (e: Exception) {
+                            FirebaseCrashlytics.getInstance().recordException(e)
+                        }
+                    }
+                }, {
+                    Log.e("DiningSettings", "error fetching dining halls")
+                })
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
     }
 
     override fun onDestroyView() {
@@ -146,25 +151,29 @@ class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
         mActivity.mNetworkManager.getAccessToken {
             val bearerToken =
                 "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
-            mStudentLife.sendDiningPref(
-                bearerToken,
-                DiningRequest(favoriteDiningHalls),
-                object : ResponseCallback() {
-                    override fun success(response: Response) {
-                        Log.i("Dining", "Dining preferences saved")
-                        mActivity.onBackPressed()
-                    }
+            try {
+                mStudentLife.sendDiningPref(
+                    bearerToken,
+                    DiningRequest(favoriteDiningHalls),
+                    object : ResponseCallback() {
+                        override fun success(response: Response) {
+                            Log.i("Dining", "Dining preferences saved")
+                            mActivity.onBackPressed()
+                        }
 
-                    override fun failure(error: RetrofitError) {
-                        Log.e("Dining", "Error saving dining preferences: $error")
-                        Toast.makeText(
-                            mActivity,
-                            "Error saving dining preferences",
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                    }
-                },
-            )
+                        override fun failure(error: RetrofitError) {
+                            Log.e("Dining", "Error saving dining preferences: $error")
+                            Toast.makeText(
+                                mActivity,
+                                "Error saving dining preferences",
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                        }
+                    },
+                )
+            } catch (e : Exception) {
+                e.printStackTrace()
+            }
         }
     }
 }

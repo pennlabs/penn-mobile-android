@@ -91,54 +91,58 @@ class PottruckFragment : Fragment() {
         // displays banner if not connected
         if (!getConnected()) return
 
-        mStudentLife.fitnessRooms
-            .subscribe({ fitnessRooms ->
-                for (room in fitnessRooms) {
-                    Log.i("Fitness Room${room.roomId}", "${room.roomName}")
-                }
-                val sortedRooms = fitnessRooms.sortedBy { it.roomName }
-
-                dataModel = FitnessPreferenceViewModel(mStudentLife, sortedRooms)
-
-                mActivity.runOnUiThread {
-                    mActivity.mNetworkManager.getAccessToken {
-                        val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
-                        val context = mActivity.applicationContext
-                        val bearerToken =
-                            "Bearer " +
-                                sp.getString(context.getString(R.string.access_token), "")
-                                    .toString()
-
-                        mStudentLife.getFitnessPreferences(bearerToken).subscribe({ favorites ->
-                            mActivity.runOnUiThread {
-                                for (roomId in favorites) {
-                                    dataModel.addId(roomId)
-                                }
-                                dataModel.updatePositionMap()
-
-                                setAdapters()
-                            }
-                        }, { throwable ->
-                            mActivity.runOnUiThread {
-                                // empty preferences
-                                setAdapters()
-                                Log.e(
-                                    "Pottruck Fragment",
-                                    "Could not load Fitness Preferences",
-                                    throwable,
-                                )
-                            }
-                        })
+        try {
+            mStudentLife.fitnessRooms
+                .subscribe({ fitnessRooms ->
+                    for (room in fitnessRooms) {
+                        Log.i("Fitness Room${room.roomId}", "${room.roomName}")
                     }
-                }
-            }, {
-                Log.e("PottruckFragment", "Error getting fitness rooms", it)
-                mActivity.runOnUiThread {
-                    Log.e("Fitness", "Could not load Pottruck page", it)
-                    loadingPanel.visibility = View.GONE
-                    swipeRefresh.isRefreshing = false
-                }
-            })
+                    val sortedRooms = fitnessRooms.sortedBy { it.roomName }
+
+                    dataModel = FitnessPreferenceViewModel(mStudentLife, sortedRooms)
+
+                    mActivity.runOnUiThread {
+                        mActivity.mNetworkManager.getAccessToken {
+                            val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
+                            val context = mActivity.applicationContext
+                            val bearerToken =
+                                "Bearer " +
+                                        sp.getString(context.getString(R.string.access_token), "")
+                                            .toString()
+
+                            mStudentLife.getFitnessPreferences(bearerToken).subscribe({ favorites ->
+                                mActivity.runOnUiThread {
+                                    for (roomId in favorites) {
+                                        dataModel.addId(roomId)
+                                    }
+                                    dataModel.updatePositionMap()
+
+                                    setAdapters()
+                                }
+                            }, { throwable ->
+                                mActivity.runOnUiThread {
+                                    // empty preferences
+                                    setAdapters()
+                                    Log.e(
+                                        "Pottruck Fragment",
+                                        "Could not load Fitness Preferences",
+                                        throwable,
+                                    )
+                                }
+                            })
+                        }
+                    }
+                }, {
+                    Log.e("PottruckFragment", "Error getting fitness rooms", it)
+                    mActivity.runOnUiThread {
+                        Log.e("Fitness", "Could not load Pottruck page", it)
+                        loadingPanel.visibility = View.GONE
+                        swipeRefresh.isRefreshing = false
+                    }
+                })
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun setAdapters() {
