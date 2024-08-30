@@ -52,7 +52,8 @@ class PennCourseAlertViewModel : ViewModel() {
                 autoResubscribe = true,
                 closeNotification = notifyWhenClosed,
             )
-        PennCourseAlertApi.retrofitService.createRegistration(registrationBody, bearerToken)
+        PennCourseAlertApi.retrofitService
+            .createRegistration(registrationBody, bearerToken)
             .enqueue(
                 object : Callback<String> {
                     override fun onResponse(
@@ -82,7 +83,8 @@ class PennCourseAlertViewModel : ViewModel() {
     ) {
         var response = ""
         // using search type course for query optimization
-        PennCourseAlertApi.retrofitService.getCourses("current", id, "course")
+        PennCourseAlertApi.retrofitService
+            .getCourses("current", id, "course")
             .enqueue(
                 object : Callback<List<Course>> {
                     override fun onResponse(
@@ -110,7 +112,8 @@ class PennCourseAlertViewModel : ViewModel() {
 
     fun retrieveRegistrations() {
         var internalResponse = ""
-        PennCourseAlertApi.retrofitService.getAllRegistrations(bearerToken)
+        PennCourseAlertApi.retrofitService
+            .getAllRegistrations(bearerToken)
             .enqueue(
                 object : Callback<List<PennCourseAlertRegistration>> {
                     override fun onFailure(
@@ -151,7 +154,8 @@ class PennCourseAlertViewModel : ViewModel() {
         var response = ""
 
         // using search type course for query optimization
-        PennCourseAlertApi.retrofitService.getSections("current", courseId)
+        PennCourseAlertApi.retrofitService
+            .getSections("current", courseId)
             .enqueue(
                 object : Callback<List<Section>> {
                     override fun onResponse(
@@ -199,7 +203,8 @@ class PennCourseAlertViewModel : ViewModel() {
                 closeNotifications = false,
                 resubscribe = false,
             )
-        PennCourseAlertApi.retrofitService.updateRegistrationById(id, updateBody, bearerToken)
+        PennCourseAlertApi.retrofitService
+            .updateRegistrationById(id, updateBody, bearerToken)
             .enqueue(
                 object : Callback<String> {
                     override fun onResponse(
@@ -231,7 +236,8 @@ class PennCourseAlertViewModel : ViewModel() {
                 resubscribe = true,
                 autoResubscribe = true,
             )
-        PennCourseAlertApi.retrofitService.updateRegistrationById(id, updateBody, bearerToken)
+        PennCourseAlertApi.retrofitService
+            .updateRegistrationById(id, updateBody, bearerToken)
             .enqueue(
                 object : Callback<String> {
                     override fun onResponse(
@@ -262,7 +268,8 @@ class PennCourseAlertViewModel : ViewModel() {
 
         val updateBody = PennCourseAlertUpdateBody(closeNotifications = notifyWhenClosed)
 
-        PennCourseAlertApi.retrofitService.updateRegistrationById(id, updateBody, bearerToken)
+        PennCourseAlertApi.retrofitService
+            .updateRegistrationById(id, updateBody, bearerToken)
             .enqueue(
                 object : Callback<String> {
                     override fun onResponse(
@@ -295,7 +302,8 @@ class PennCourseAlertViewModel : ViewModel() {
                 closeNotifications = false,
                 resubscribe = false,
             )
-        PennCourseAlertApi.retrofitService.updateRegistrationById(id, updateBody, bearerToken)
+        PennCourseAlertApi.retrofitService
+            .updateRegistrationById(id, updateBody, bearerToken)
             .enqueue(
                 object : Callback<String> {
                     override fun onResponse(
@@ -319,7 +327,8 @@ class PennCourseAlertViewModel : ViewModel() {
 
     fun getRegistrationById(id: String) {
         var internalResponse = ""
-        PennCourseAlertApi.retrofitService.getRegistrationById(id, bearerToken)
+        PennCourseAlertApi.retrofitService
+            .getRegistrationById(id, bearerToken)
             .enqueue(
                 object : Callback<PennCourseAlertRegistration> {
                     override fun onResponse(
@@ -354,7 +363,8 @@ class PennCourseAlertViewModel : ViewModel() {
     ) {
         var internalResponse = ""
         val profile = Profile(true, phone = phone, email = email)
-        PennCourseAlertApi.retrofitService.updateInfo(profile, bearerToken)
+        PennCourseAlertApi.retrofitService
+            .updateInfo(profile, bearerToken)
             .enqueue(
                 object : Callback<String> {
                     override fun onResponse(
@@ -378,7 +388,8 @@ class PennCourseAlertViewModel : ViewModel() {
 
     fun getUserInfo() {
         var internalResponse = ""
-        PennCourseAlertApi.retrofitService.retrieveUser(bearerToken)
+        PennCourseAlertApi.retrofitService
+            .retrieveUser(bearerToken)
             .enqueue(
                 object : Callback<UserInfo> {
                     override fun onResponse(

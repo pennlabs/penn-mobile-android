@@ -64,10 +64,9 @@ class Post {
     @Expose
     internal val targetPopulations: List<Int>? = null
 
-    override fun toString(): String {
-        return id.toString() + ", " +
+    override fun toString(): String =
+        id.toString() + ", " +
             clubCode + ""
-    }
 
     override fun equals(other: Any?): Boolean {
         // note: targetPopulations is not included because it's unused and structural

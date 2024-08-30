@@ -116,11 +116,12 @@ class GsrFragment : Fragment() {
             ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m", "120m"))
         whartonDurationAdapter =
             ArrayAdapter(mActivity, R.layout.gsr_spinner_item, arrayOf("30m", "60m", "90m"))
-        biotechDurationAdapter = ArrayAdapter(
-            mActivity,
-            R.layout.gsr_spinner_item,
-            arrayOf("30m", "60m", "90m", "120m", "150m", "180m")
-        )
+        biotechDurationAdapter =
+            ArrayAdapter(
+                mActivity,
+                R.layout.gsr_spinner_item,
+                arrayOf("30m", "60m", "90m", "120m", "150m", "180m"),
+            )
 
         // update user status by getting the bearer token and checking wharton status
         updateStatus()
@@ -191,13 +192,14 @@ class GsrFragment : Fragment() {
                         val entryMonth = monthOfYear + 1
 
                         // Update year + month + day
-                        selectedDateTime = DateTime(
-                            year,
-                            entryMonth,
-                            dayOfMonth,
-                            selectedDateTime.hourOfDay,
-                            selectedDateTime.minuteOfHour
-                        )
+                        selectedDateTime =
+                            DateTime(
+                                year,
+                                entryMonth,
+                                dayOfMonth,
+                                selectedDateTime.hourOfDay,
+                                selectedDateTime.minuteOfHour,
+                            )
 
                         // Display the selected date; use Joda to do the formatting work
                         selectDateButton.text = selectedDateTime.toString(spinnerDateFormatter)
@@ -229,7 +231,7 @@ class GsrFragment : Fragment() {
         // handle swipe to refresh
         binding.gsrRefreshLayout.setColorSchemeResources(
             R.color.color_accent,
-            R.color.color_primary
+            R.color.color_primary,
         )
         binding.gsrRefreshLayout.setOnRefreshListener {
             updateStatus()
@@ -247,10 +249,10 @@ class GsrFragment : Fragment() {
                 Toast.makeText(activity, "You are not logged in!", Toast.LENGTH_LONG).show()
             } else {
                 try {
-                    mStudentLife.isWharton(
-                        "Bearer $bearerToken",
-                    )
-                        ?.subscribe(
+                    mStudentLife
+                        .isWharton(
+                            "Bearer $bearerToken",
+                        )?.subscribe(
                             { status ->
                                 isWharton = status.isWharton
                             },
@@ -299,11 +301,12 @@ class GsrFragment : Fragment() {
                 if (!isWharton && (location == "ARB" || location == "JMHH")) {
                     showNoResults()
                     if (!calledByRefreshLayout) {
-                        Toast.makeText(
-                            activity,
-                            "You need to have a Wharton pennkey to access Wharton GSRs",
-                            Toast.LENGTH_LONG,
-                        ).show()
+                        Toast
+                            .makeText(
+                                activity,
+                                "You need to have a Wharton pennkey to access Wharton GSRs",
+                                Toast.LENGTH_LONG,
+                            ).show()
                     }
                 } else {
                     noResultsPanel.visibility = View.GONE
@@ -335,13 +338,13 @@ class GsrFragment : Fragment() {
             Log.i("GsrFragment", "Wharton Status: $isWharton")
 
             try {
-                mStudentLife.gsrRoom(
-                    "Bearer $bearerToken",
-                    location,
-                    gId,
-                    adjustedDateString,
-                )
-                    ?.subscribe(
+                mStudentLife
+                    .gsrRoom(
+                        "Bearer $bearerToken",
+                        location,
+                        gId,
+                        adjustedDateString,
+                    )?.subscribe(
                         { gsr ->
                             activity?.let { activity ->
                                 activity.runOnUiThread {
@@ -377,16 +380,16 @@ class GsrFragment : Fragment() {
                                     }
 
                                     binding.gsrRoomsList.adapter = (
-                                            context?.let {
-                                                GsrBuildingAdapter(
-                                                    it,
-                                                    mGSRS,
-                                                    location,
-                                                    (durationDropDown.selectedItemPosition + 1) * 30,
-                                                    sortByTime,
-                                                )
-                                            }
+                                        context?.let {
+                                            GsrBuildingAdapter(
+                                                it,
+                                                mGSRS,
+                                                location,
+                                                (durationDropDown.selectedItemPosition + 1) * 30,
+                                                sortByTime,
                                             )
+                                        }
+                                    )
 
                                     mGSRS = ArrayList()
                                     selectDateButton.isClickable = true
@@ -477,7 +480,8 @@ class GsrFragment : Fragment() {
 
     private fun populateDropDownGSR() {
         try {
-            mStudentLife.location()
+            mStudentLife
+                .location()
                 ?.subscribe(
                     { locations ->
                         activity?.let { activity ->
@@ -581,10 +585,11 @@ class GsrFragment : Fragment() {
                 ) {
                     // change possible durations depending on the location
                     var durationPos = durationDropDown.selectedItemPosition
-                    if (durationPos >= 3 && (
-                                gsrLocationDropDown.selectedItem.toString() == "Huntsman" ||
-                                        gsrLocationDropDown.selectedItem.toString() == "Academic Research"
-                                )
+                    if (durationPos >= 3 &&
+                        (
+                            gsrLocationDropDown.selectedItem.toString() == "Huntsman" ||
+                                gsrLocationDropDown.selectedItem.toString() == "Academic Research"
+                        )
                     ) {
                         durationPos = 2
                     } else if (durationPos > 3 && gsrLocationDropDown.selectedItem.toString() != "Biotech Commons") {
@@ -662,16 +667,17 @@ class GsrFragment : Fragment() {
         }
         // can't find existing GSR. Create new object
         if (!encountered) {
-            val newGSRObject = GSRContainer(
-                gsrName,
-                GSRTimeRange,
-                GSRStartTime,
-                GSRElementId,
-                gid,
-                roomId,
-                start,
-                end
-            )
+            val newGSRObject =
+                GSRContainer(
+                    gsrName,
+                    GSRTimeRange,
+                    GSRStartTime,
+                    GSRElementId,
+                    gid,
+                    roomId,
+                    start,
+                    end,
+                )
             mGSRS.add(newGSRObject)
         }
     }

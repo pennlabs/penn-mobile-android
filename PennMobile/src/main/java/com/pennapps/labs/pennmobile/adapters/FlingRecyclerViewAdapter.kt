@@ -24,9 +24,7 @@ class FlingRecyclerViewAdapter(
 ) : RecyclerView.Adapter<FlingRecyclerViewAdapter.ViewHolder>() {
     private val timeFormatter: DateTimeFormatter = ISODateTimeFormat.dateTimeNoMillis()
 
-    override fun getItemCount(): Int {
-        return sampleData.size
-    }
+    override fun getItemCount(): Int = sampleData.size
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -60,7 +58,9 @@ class FlingRecyclerViewAdapter(
         }
     }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(
+        view: View,
+    ) : RecyclerView.ViewHolder(view) {
         internal var flingviewImage: ImageView? = view.flingview_image
         internal var flingviewName: TextView? = view.flingview_name
         internal var flingviewDescription: TextView? = view.flingview_description

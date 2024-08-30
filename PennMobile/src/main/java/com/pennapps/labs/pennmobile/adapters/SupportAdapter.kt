@@ -13,7 +13,10 @@ import kotlinx.android.synthetic.main.support_list_item.view.support_name
 import kotlinx.android.synthetic.main.support_list_item.view.support_phone
 import kotlinx.android.synthetic.main.support_list_item.view.support_phone_icon
 
-class SupportAdapter(context: Context, contacts: List<Contact?>) : ArrayAdapter<Contact?>(context, R.layout.support_list_item, contacts) {
+class SupportAdapter(
+    context: Context,
+    contacts: List<Contact?>,
+) : ArrayAdapter<Contact?>(context, R.layout.support_list_item, contacts) {
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
     override fun getView(

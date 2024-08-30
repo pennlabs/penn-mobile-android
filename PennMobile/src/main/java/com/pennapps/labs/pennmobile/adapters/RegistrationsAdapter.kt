@@ -13,8 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.PennCourseAlertRegistration
 
-class RegistrationsAdapter(private val listener: OnItemClickListener) :
-    ListAdapter<
+class RegistrationsAdapter(
+    private val listener: OnItemClickListener,
+) : ListAdapter<
         PennCourseAlertRegistration,
         RegistrationsAdapter.ViewHolder,
     >(RegistrationDiffCallBack()) {
@@ -38,8 +39,9 @@ class RegistrationsAdapter(private val listener: OnItemClickListener) :
         holder.bindTo(getItem(position))
     }
 
-    inner class ViewHolder(registrationView: View) :
-        RecyclerView.ViewHolder(registrationView),
+    inner class ViewHolder(
+        registrationView: View,
+    ) : RecyclerView.ViewHolder(registrationView),
         View.OnClickListener {
         var courseIdText: TextView
         var isOpenText: TextView
@@ -121,7 +123,8 @@ class RegistrationsAdapter(private val listener: OnItemClickListener) :
 
     private fun formatDate(date: String): String {
         val formattedDate = "Last Notified "
-        return formattedDate.plus(date.slice(5..6))
+        return formattedDate
+            .plus(date.slice(5..6))
             .plus("/")
             .plus(date.slice(8..9))
             .plus("/")

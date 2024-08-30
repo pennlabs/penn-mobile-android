@@ -41,13 +41,17 @@ import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-class FitnessAdapter(private val isFavorite: Boolean, private val dataModel: FitnessAdapterDataModel) :
-    RecyclerView.Adapter<FitnessAdapter.ViewHolder>() {
+class FitnessAdapter(
+    private val isFavorite: Boolean,
+    private val dataModel: FitnessAdapterDataModel,
+) : RecyclerView.Adapter<FitnessAdapter.ViewHolder>() {
     private lateinit var mActivity: Activity
     private lateinit var mContext: Context
     private lateinit var mStudentLife: StudentLife
 
-    class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(
+        val view: View,
+    ) : RecyclerView.ViewHolder(view) {
         val mainView: ConstraintLayout = view.findViewById(R.id.fitness_list_info_layout)
         val roomView: TextView = view.findViewById(R.id.item_fitness_name)
         val statusView: TextView = view.findViewById(R.id.item_fitness_status)
@@ -177,7 +181,8 @@ class FitnessAdapter(private val isFavorite: Boolean, private val dataModel: Fit
                 view.visibility = View.VISIBLE
                 view.alpha = 0.0f
 
-                view.animate()
+                view
+                    .animate()
                     .alpha(1.0f)
 
                 val rotate =
@@ -223,7 +228,8 @@ class FitnessAdapter(private val isFavorite: Boolean, private val dataModel: Fit
         mStudentLife = MainActivity.studentLifeInstance
 
         val view =
-            LayoutInflater.from(parent.context)
+            LayoutInflater
+                .from(parent.context)
                 .inflate(R.layout.fitness_list_item, parent, false)
 
         return ViewHolder(view)

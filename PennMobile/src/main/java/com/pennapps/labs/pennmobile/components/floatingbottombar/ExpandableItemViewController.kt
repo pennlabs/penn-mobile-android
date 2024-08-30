@@ -81,13 +81,12 @@ internal open class ExpandableItemViewController(
     }
 
     @VisibleForTesting
-    internal open fun createHighlightedMenuShape(): Drawable {
-        return DrawableHelper.createShapeDrawable(
+    internal open fun createHighlightedMenuShape(): Drawable =
+        DrawableHelper.createShapeDrawable(
             menuItem.activeColor,
             backgroundCornerRadius,
             backgroundOpacity,
         )
-    }
 
     fun attachTo(
         parent: ConstraintLayout,
@@ -144,7 +143,9 @@ internal open class ExpandableItemViewController(
         cl.applyTo(parent)
     }
 
-    class Builder(private val menuItem: ExpandableBottomBarMenuItem) {
+    class Builder(
+        private val menuItem: ExpandableBottomBarMenuItem,
+    ) {
         @Px
         private var itemVerticalPadding: Int = 0
 
@@ -237,31 +238,34 @@ internal open class ExpandableItemViewController(
                 }
 
             val itemLayoutParams =
-                LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                ).apply {
-                    gravity = Gravity.CENTER
-                    setMargins(0, 0, 0, 0)
-                }
+                LinearLayout
+                    .LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                    ).apply {
+                        gravity = Gravity.CENTER
+                        setMargins(0, 0, 0, 0)
+                    }
 
             val textLayoutParams =
-                LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                ).apply {
-                    gravity = Gravity.CENTER
-                    setMargins(0, 24, 0, 12)
-                }
+                LinearLayout
+                    .LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                    ).apply {
+                        gravity = Gravity.CENTER
+                        setMargins(0, 24, 0, 12)
+                    }
 
             val indicatorLayoutParams =
-                LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                ).apply {
-                    gravity = Gravity.CENTER
-                    setMargins(0, 0, 0, 0)
-                }
+                LinearLayout
+                    .LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                    ).apply {
+                        gravity = Gravity.CENTER
+                        setMargins(0, 0, 0, 0)
+                    }
 
             val imageView =
                 ImageView(context).apply {
@@ -289,13 +293,14 @@ internal open class ExpandableItemViewController(
                 }
 
             val highlightLayoutParams =
-                FrameLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    Gravity.BOTTOM,
-                ).apply {
-                    setMargins(0, 0, 0, 0)
-                }
+                FrameLayout
+                    .LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        Gravity.BOTTOM,
+                    ).apply {
+                        setMargins(0, 0, 0, 0)
+                    }
 
             val frameView =
                 FrameLayout(context).apply {

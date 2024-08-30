@@ -50,11 +50,7 @@ class Venue {
         return intervals
     }
 
-    fun allHours(): List<VenueInterval> {
-        return hours
-    }
+    fun allHours(): List<VenueInterval> = hours
 
-    fun getExtras(): List<String>? {
-        return extras
-    }
+    fun getExtras(): List<String>? = extras
 }

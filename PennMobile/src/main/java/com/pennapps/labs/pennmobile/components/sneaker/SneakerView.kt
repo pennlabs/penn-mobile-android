@@ -12,7 +12,9 @@ import androidx.appcompat.widget.AppCompatImageView
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.components.sneaker.Utils.customView
 
-internal class SneakerView(context: Context?) : LinearLayout(context) {
+internal class SneakerView(
+    context: Context?,
+) : LinearLayout(context) {
     init {
         id = R.id.mainLayout
         layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)

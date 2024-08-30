@@ -19,7 +19,9 @@ import kotlinx.android.synthetic.main.gsr_list_item.view.item_gsr_location
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 
-class HomeGsrReservationAdapter(reservations: List<GSRReservation>) : RecyclerView.Adapter<HomeGsrReservationAdapter.ViewHolder>() {
+class HomeGsrReservationAdapter(
+    reservations: List<GSRReservation>,
+) : RecyclerView.Adapter<HomeGsrReservationAdapter.ViewHolder>() {
     private var activeReservations: List<GSRReservation> = reservations
 
     private lateinit var itemImage: ImageView
@@ -44,7 +46,12 @@ class HomeGsrReservationAdapter(reservations: List<GSRReservation>) : RecyclerVi
         val toHour = to.toString("h:mm a")
 
         val imageUrl = currentReservation.info?.get("thumbnail") ?: "https://s3.us-east-2.amazonaws.com/labs.api/dining/MBA+Cafe.jpg"
-        Picasso.get().load(imageUrl).fit().centerCrop().into(holder.itemView.item_gsr_image)
+        Picasso
+            .get()
+            .load(imageUrl)
+            .fit()
+            .centerCrop()
+            .into(holder.itemView.item_gsr_image)
 
         holder.itemView.item_gsr_location.text = location
         holder.itemView.item_gsr_date.text = day + "\n" + fromHour + "-" + toHour
@@ -62,9 +69,7 @@ class HomeGsrReservationAdapter(reservations: List<GSRReservation>) : RecyclerVi
         }
     }
 
-    override fun getItemCount(): Int {
-        return activeReservations.size
-    }
+    override fun getItemCount(): Int = activeReservations.size
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -78,7 +83,9 @@ class HomeGsrReservationAdapter(reservations: List<GSRReservation>) : RecyclerVi
         return ViewHolder(view)
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(
+        itemView: View,
+    ) : RecyclerView.ViewHolder(itemView) {
         init {
             itemImage = itemView.item_gsr_image
             itemLocation = itemView.item_gsr_location

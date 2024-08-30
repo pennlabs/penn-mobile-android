@@ -26,7 +26,9 @@ import kotlinx.android.synthetic.main.dining_list_item.view.item_dining_name
 import kotlinx.android.synthetic.main.dining_list_item.view.item_dining_status
 import rx.android.schedulers.AndroidSchedulers
 
-class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<DiningCardAdapter.ViewHolder>() {
+class DiningCardAdapter(
+    halls: ArrayList<DiningHall>,
+) : RecyclerView.Adapter<DiningCardAdapter.ViewHolder>() {
     private var favoriteHalls: ArrayList<DiningHall> = halls
     private lateinit var itemImage: ImageView
     private lateinit var itemName: TextView
@@ -42,7 +44,12 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
         position: Int,
     ) {
         val currentHall = favoriteHalls[position]
-        Glide.with(mContext).load(currentHall.image).fitCenter().centerCrop().into(itemImage)
+        Glide
+            .with(mContext)
+            .load(currentHall.image)
+            .fitCenter()
+            .centerCrop()
+            .into(itemImage)
         itemName.text = currentHall.name
         if (currentHall.isOpen) {
             itemStatus.background = ContextCompat.getDrawable(itemStatus.context, R.drawable.label_green)
@@ -64,7 +71,8 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
         // Load the menu for each dining hall
         if (currentHall.isResidential) {
             try {
-                mStudentLife.daily_menu(currentHall.id)
+                mStudentLife
+                    .daily_menu(currentHall.id)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ newDiningHall ->
                         currentHall.sortMeals(newDiningHall.menus)
@@ -85,7 +93,8 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
             fragment.arguments = args
 
             val fragmentManager = mActivity.supportFragmentManager
-            fragmentManager.beginTransaction()
+            fragmentManager
+                .beginTransaction()
                 .replace(R.id.content_frame, fragment, "DINING_INFO_FRAGMENT")
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
@@ -93,9 +102,7 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
         }
     }
 
-    override fun getItemCount(): Int {
-        return favoriteHalls.size
-    }
+    override fun getItemCount(): Int = favoriteHalls.size
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -111,8 +118,8 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
     }
 
     // Converts the String representation of a meal name to its corresponding resource ID
-    private fun getOpenStatusLabel(openMeal: String): Int {
-        return when (openMeal) {
+    private fun getOpenStatusLabel(openMeal: String): Int =
+        when (openMeal) {
             "Breakfast" -> R.string.dining_hall_breakfast
             "Brunch" -> R.string.dining_hall_brunch
             "Lunch" -> R.string.dining_hall_lunch
@@ -120,9 +127,10 @@ class DiningCardAdapter(halls: ArrayList<DiningHall>) : RecyclerView.Adapter<Din
             "Late Night" -> R.string.dining_hall_late_night
             else -> R.string.dining_hall_open
         }
-    }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(
+        itemView: View,
+    ) : RecyclerView.ViewHolder(itemView) {
         init {
             itemImage = itemView.item_dining_image
             itemName = itemView.item_dining_name

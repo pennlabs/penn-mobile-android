@@ -10,9 +10,12 @@ import com.pennapps.labs.pennmobile.HomeFragment
 import com.pennapps.labs.pennmobile.LaundryFragment
 import com.pennapps.labs.pennmobile.morefragments.MoreFragment
 
-class MainPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle?) : FragmentStateAdapter(fragmentManager, lifecycle!!) {
-    override fun createFragment(position: Int): Fragment {
-        return when (position) {
+class MainPagerAdapter(
+    fragmentManager: FragmentManager,
+    lifecycle: Lifecycle?,
+) : FragmentStateAdapter(fragmentManager, lifecycle!!) {
+    override fun createFragment(position: Int): Fragment =
+        when (position) {
             HOME_POSITION -> HomeFragment()
             DINING_POSITION -> DiningHolderFragment()
             GSR_POSITION -> GsrTabbedFragment()
@@ -20,15 +23,10 @@ class MainPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle?) 
             MORE_POSITION -> MoreFragment()
             else -> HomeFragment()
         }
-    }
 
-    override fun getItemCount(): Int {
-        return COUNT
-    }
+    override fun getItemCount(): Int = COUNT
 
-    override fun getItemId(position: Int): Long {
-        return if (position < COUNT) position.toLong() else createFragment(position).hashCode().toLong()
-    }
+    override fun getItemId(position: Int): Long = if (position < COUNT) position.toLong() else createFragment(position).hashCode().toLong()
 
     companion object {
         const val HOME_POSITION = 0

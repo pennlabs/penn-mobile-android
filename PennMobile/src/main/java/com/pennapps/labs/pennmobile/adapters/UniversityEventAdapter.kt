@@ -12,8 +12,9 @@ import com.pennapps.labs.pennmobile.classes.CalendarEvent
 import kotlinx.android.synthetic.main.university_event.view.event_month
 import kotlinx.android.synthetic.main.university_event.view.event_name_tv
 
-class UniversityEventAdapter(private var events: ArrayList<CalendarEvent>) :
-    RecyclerView.Adapter<UniversityEventAdapter.UniversityEventViewHolder>() {
+class UniversityEventAdapter(
+    private var events: ArrayList<CalendarEvent>,
+) : RecyclerView.Adapter<UniversityEventAdapter.UniversityEventViewHolder>() {
     private lateinit var mContext: Context
 
     override fun onCreateViewHolder(
@@ -54,11 +55,11 @@ class UniversityEventAdapter(private var events: ArrayList<CalendarEvent>) :
         }*/
     }
 
-    override fun getItemCount(): Int {
-        return events.size
-    }
+    override fun getItemCount(): Int = events.size
 
-    inner class UniversityEventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class UniversityEventViewHolder(
+        itemView: View,
+    ) : RecyclerView.ViewHolder(itemView) {
         val view = itemView
     }
 }

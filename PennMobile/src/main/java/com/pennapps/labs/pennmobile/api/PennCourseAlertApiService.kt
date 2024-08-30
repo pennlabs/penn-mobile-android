@@ -25,14 +25,16 @@ import java.util.concurrent.TimeUnit
 private const val BASE_URL = "https://penncoursealert.com"
 
 var okHttpClient: OkHttpClient =
-    OkHttpClient.Builder()
+    OkHttpClient
+        .Builder()
         .connectTimeout(1, TimeUnit.MINUTES)
         .readTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(15, TimeUnit.SECONDS)
         .build()
 
 private val retrofit =
-    Retrofit.Builder()
+    Retrofit
+        .Builder()
         .client(okHttpClient)
         .addConverterFactory(ScalarsConverterFactory.create())
         .addConverterFactory(GsonConverterFactory.create())

@@ -13,8 +13,9 @@ import com.pennapps.labs.pennmobile.classes.DiningHall
 import kotlinx.android.synthetic.main.laundry_settings_child_item.view.laundry_favorite_switch
 import kotlinx.android.synthetic.main.laundry_settings_child_item.view.laundry_room_name
 
-class DiningSettingsAdapter(private var diningHalls: List<DiningHall>) :
-    RecyclerView.Adapter<DiningSettingsAdapter.DiningSettingsViewHolder>() {
+class DiningSettingsAdapter(
+    private var diningHalls: List<DiningHall>,
+) : RecyclerView.Adapter<DiningSettingsAdapter.DiningSettingsViewHolder>() {
     private lateinit var mContext: Context
     private lateinit var sp: SharedPreferences
 
@@ -28,9 +29,7 @@ class DiningSettingsAdapter(private var diningHalls: List<DiningHall>) :
         return DiningSettingsViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return diningHalls.count()
-    }
+    override fun getItemCount(): Int = diningHalls.count()
 
     override fun onBindViewHolder(
         holder: DiningSettingsViewHolder,
@@ -51,7 +50,9 @@ class DiningSettingsAdapter(private var diningHalls: List<DiningHall>) :
         }
     }
 
-    inner class DiningSettingsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class DiningSettingsViewHolder(
+        itemView: View,
+    ) : RecyclerView.ViewHolder(itemView) {
         val view = itemView
     }
 }

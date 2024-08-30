@@ -33,8 +33,8 @@ class Article {
     @Expose
     val articleUrl: String? = null
 
-    override fun equals(other: Any?): Boolean {
-        return when (other) {
+    override fun equals(other: Any?): Boolean =
+        when (other) {
             is Article -> {
                 this.imageUrl == other.imageUrl &&
                     this.source == other.source &&
@@ -44,7 +44,6 @@ class Article {
                     this.articleUrl == other.articleUrl
             } else -> false
         }
-    }
 
     override fun hashCode(): Int {
         // lazy hash function but we don't use this method anyways

@@ -12,11 +12,16 @@ import kotlinx.android.synthetic.main.phone_save_list_item.view.support_name
 import kotlinx.android.synthetic.main.phone_save_list_item.view.support_phone
 import kotlinx.android.synthetic.main.phone_save_list_item.view.support_phone_icon
 
-class PhoneSaveAdapter(context: Context, contacts: List<Contact?>, s: MutableList<Contact>, size: Int) : ArrayAdapter<Contact?>(
-    context,
-    R.layout.phone_save_list_item,
-    contacts,
-) {
+class PhoneSaveAdapter(
+    context: Context,
+    contacts: List<Contact?>,
+    s: MutableList<Contact>,
+    size: Int,
+) : ArrayAdapter<Contact?>(
+        context,
+        R.layout.phone_save_list_item,
+        contacts,
+    ) {
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private val selections: MutableList<Contact> = s
     private val state: BooleanArray = BooleanArray(size)

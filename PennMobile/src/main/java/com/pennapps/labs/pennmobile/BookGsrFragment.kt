@@ -91,14 +91,16 @@ class BookGsrFragment : Fragment() {
         emailEt.setText(email)
 
         submit.setOnClickListener {
-            if (firstNameEt.text.toString().matches("".toRegex()) || lastNameEt.text.toString().matches("".toRegex()) ||
+            if (firstNameEt.text.toString().matches("".toRegex()) ||
+                lastNameEt.text.toString().matches("".toRegex()) ||
                 emailEt.text.toString().matches("".toRegex())
             ) {
-                Toast.makeText(
-                    activity,
-                    "Please fill in all fields before booking",
-                    Toast.LENGTH_LONG,
-                ).show()
+                Toast
+                    .makeText(
+                        activity,
+                        "Please fill in all fields before booking",
+                        Toast.LENGTH_LONG,
+                    ).show()
             } else if (!emailEt.text.toString().matches("""\w+@(seas\.|sas\.|wharton\.|nursing\.)?upenn\.edu""".toRegex())) {
                 Toast.makeText(activity, "Please enter a valid Penn email", Toast.LENGTH_LONG).show()
             } else {

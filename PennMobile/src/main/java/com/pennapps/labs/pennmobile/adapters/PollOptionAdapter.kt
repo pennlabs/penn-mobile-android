@@ -40,17 +40,15 @@ class PollOptionAdapter(
         bindPollOption(holder, pollOption)
     }
 
-    override fun getItemCount(): Int {
-        return pollOptions.size
-    }
+    override fun getItemCount(): Int = pollOptions.size
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(
+        itemView: View,
+    ) : RecyclerView.ViewHolder(itemView) {
         val view = itemView
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return 0
-    }
+    override fun getItemViewType(position: Int): Int = 0
 
     private fun bindPollOption(
         holder: ViewHolder,

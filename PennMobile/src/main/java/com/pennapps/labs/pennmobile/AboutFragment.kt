@@ -48,29 +48,31 @@ class AboutFragment : Fragment() {
         if (gif is AnimatedVectorDrawable) {
             gif.start()
         } else {
-            Glide.with(this).asGif().load(R.drawable.logo_gif_transparent).listener(
-                object : RequestListener<GifDrawable> {
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: com.bumptech.glide.request.target.Target<GifDrawable>?,
-                        isFirstResource: Boolean,
-                    ): Boolean {
-                        return false
-                    }
+            Glide
+                .with(this)
+                .asGif()
+                .load(R.drawable.logo_gif_transparent)
+                .listener(
+                    object : RequestListener<GifDrawable> {
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: com.bumptech.glide.request.target.Target<GifDrawable>?,
+                            isFirstResource: Boolean,
+                        ): Boolean = false
 
-                    override fun onResourceReady(
-                        resource: GifDrawable,
-                        model: Any,
-                        target: com.bumptech.glide.request.target.Target<GifDrawable>?,
-                        dataSource: DataSource,
-                        isFirstResource: Boolean,
-                    ): Boolean {
-                        resource.setLoopCount(1)
-                        return false
-                    }
-                },
-            ).into(binding.logoGifIv)
+                        override fun onResourceReady(
+                            resource: GifDrawable,
+                            model: Any,
+                            target: com.bumptech.glide.request.target.Target<GifDrawable>?,
+                            dataSource: DataSource,
+                            isFirstResource: Boolean,
+                        ): Boolean {
+                            resource.setLoopCount(1)
+                            return false
+                        }
+                    },
+                ).into(binding.logoGifIv)
         }
 
         binding.ourTeamRv.layoutManager = GridLayoutManager(context, 3)
@@ -103,7 +105,8 @@ class AboutFragment : Fragment() {
         binding.licensesBtn.setOnClickListener {
             val webView = LayoutInflater.from(mActivity).inflate(R.layout.dialog_licenses, null) as WebView
             webView.loadUrl("file:///android_asset/open_source_licenses.html")
-            AlertDialog.Builder(mActivity, R.style.AppTheme_AppBarOverlay_Light)
+            AlertDialog
+                .Builder(mActivity, R.style.AppTheme_AppBarOverlay_Light)
                 .setTitle(getString(R.string.action_licenses))
                 .setView(webView)
                 .setPositiveButton(android.R.string.ok, null)

@@ -108,13 +108,15 @@ class LaundryMachineAdapter(
         }
     }
 
-    override fun getItemCount(): Int {
-        return mMachineDetails.size
-    }
+    override fun getItemCount(): Int = mMachineDetails.size
 
-    inner class CustomViewHolder(view: View, var context: Context, var machineDetails: List<MachineDetail>) : RecyclerView.ViewHolder(
-        view,
-    ) {
+    inner class CustomViewHolder(
+        view: View,
+        var context: Context,
+        var machineDetails: List<MachineDetail>,
+    ) : RecyclerView.ViewHolder(
+            view,
+        ) {
         var machineView: ImageView? = view.laundry_machine_image_view
         var timeTextView: TextView? = view.min_left_time
         var notificationBell: LottieAnimationView = view.bell_notification_icon

@@ -18,7 +18,10 @@ data class ExpandableBottomBarMenuItem(
     val text: CharSequence,
     @ColorInt val activeColor: Int,
 ) {
-    class ItemBuildRequest internal constructor(private val builder: Builder, private val context: Context) {
+    class ItemBuildRequest internal constructor(
+        private val builder: Builder,
+        private val context: Context,
+    ) {
         @IdRes
         private var itemId: Int = 0
 
@@ -87,7 +90,9 @@ data class ExpandableBottomBarMenuItem(
     /**
      * Class-helper to create expandable bottom bar menu items
      */
-    class Builder(private val context: Context) {
+    class Builder(
+        private val context: Context,
+    ) {
         internal val items = mutableListOf<ExpandableBottomBarMenuItem>()
 
         fun addItem() = ItemBuildRequest(this, context)
@@ -102,7 +107,12 @@ data class ExpandableBottomBarMenuItem(
             @DrawableRes iconId: Int,
             @StringRes textId: Int,
             @ColorInt activeColor: Int,
-        ) = ItemBuildRequest(this, context).id(itemId).icon(iconId).textRes(textId).color(activeColor).create()
+        ) = ItemBuildRequest(this, context)
+            .id(itemId)
+            .icon(iconId)
+            .textRes(textId)
+            .color(activeColor)
+            .create()
 
         fun build(): List<ExpandableBottomBarMenuItem> = items
     }

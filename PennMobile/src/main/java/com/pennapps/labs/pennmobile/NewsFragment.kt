@@ -71,7 +71,12 @@ class NewsFragment : ListFragment() {
         }
     }
 
-    internal inner class NewsSite(val name: String, val url: String, val description: String, val image: Int) {
+    internal inner class NewsSite(
+        val name: String,
+        val url: String,
+        val description: String,
+        val image: Int,
+    ) {
         override fun toString() = name
     }
 

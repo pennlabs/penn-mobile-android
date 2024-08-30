@@ -7,18 +7,18 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.pennapps.labs.pennmobile.DiningFragment
 import com.pennapps.labs.pennmobile.DiningInsightsFragment
 
-class DiningPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle?) : FragmentStateAdapter(fragmentManager, lifecycle!!) {
-    override fun createFragment(position: Int): Fragment {
-        return if (position == 0) {
+class DiningPagerAdapter(
+    fragmentManager: FragmentManager,
+    lifecycle: Lifecycle?,
+) : FragmentStateAdapter(fragmentManager, lifecycle!!) {
+    override fun createFragment(position: Int): Fragment =
+        if (position == 0) {
             DiningFragment()
         } else {
             DiningInsightsFragment()
         }
-    }
 
-    override fun getItemCount(): Int {
-        return COUNT
-    }
+    override fun getItemCount(): Int = COUNT
 
     override fun getItemId(position: Int): Long {
         if (position == HOME_POSITION) {

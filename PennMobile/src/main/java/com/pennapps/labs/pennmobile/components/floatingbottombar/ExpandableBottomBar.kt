@@ -113,25 +113,29 @@ class ExpandableBottomBar
             itemInactiveColor =
                 typedArray.getColor(R.styleable.ExpandableBottomBar_exb_itemInactiveColor, Color.BLACK)
             menuItemHorizontalMargin =
-                typedArray.getDimension(
-                    R.styleable.ExpandableBottomBar_exb_item_horizontal_margin,
-                    5F.toPx(),
-                ).toInt()
+                typedArray
+                    .getDimension(
+                        R.styleable.ExpandableBottomBar_exb_item_horizontal_margin,
+                        5F.toPx(),
+                    ).toInt()
             menuItemVerticalMargin =
-                typedArray.getDimension(
-                    R.styleable.ExpandableBottomBar_exb_item_vertical_margin,
-                    5F.toPx(),
-                ).toInt()
+                typedArray
+                    .getDimension(
+                        R.styleable.ExpandableBottomBar_exb_item_vertical_margin,
+                        5F.toPx(),
+                    ).toInt()
             menuHorizontalPadding =
-                typedArray.getDimension(
-                    R.styleable.ExpandableBottomBar_exb_item_horizontal_padding,
-                    15F.toPx(),
-                ).toInt()
+                typedArray
+                    .getDimension(
+                        R.styleable.ExpandableBottomBar_exb_item_horizontal_padding,
+                        15F.toPx(),
+                    ).toInt()
             menuVerticalPadding =
-                typedArray.getDimension(
-                    R.styleable.ExpandableBottomBar_exb_item_vertical_padding,
-                    10F.toPx(),
-                ).toInt()
+                typedArray
+                    .getDimension(
+                        R.styleable.ExpandableBottomBar_exb_item_vertical_padding,
+                        10F.toPx(),
+                    ).toInt()
 
             val backgroundColor =
                 typedArray.getColor(R.styleable.ExpandableBottomBar_exb_backgroundColor, Color.WHITE)
@@ -264,7 +268,8 @@ class ExpandableBottomBar
             val selectedStateColorList = ColorStateList(backgroundStates, colors)
 
             val viewController =
-                ExpandableItemViewController.Builder(menuItem)
+                ExpandableItemViewController
+                    .Builder(menuItem)
                     .itemMargins(menuHorizontalPadding, menuVerticalPadding)
                     .itemBackground(backgroundCornerRadius, backgroundOpacity)
                     .itemsColors(selectedStateColorList)
@@ -275,8 +280,7 @@ class ExpandableBottomBar
                         } else {
                             onItemReselectedListener?.invoke(v, menuItem)
                         }
-                    }
-                    .build(context)
+                    }.build(context)
 
             if (selectedItemId == menuItem.itemId) {
                 viewController.select()
@@ -317,7 +321,8 @@ class ExpandableBottomBar
                 val selectedItemId = state.selectedItem
                 val viewController =
                     expandableBottomBar
-                        .viewControllers.getValue(selectedItemId)
+                        .viewControllers
+                        .getValue(selectedItemId)
                 expandableBottomBar.onItemSelected(viewController.menuItem)
             }
         }

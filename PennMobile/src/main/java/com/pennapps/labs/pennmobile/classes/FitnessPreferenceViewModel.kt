@@ -48,17 +48,11 @@ class FitnessPreferenceViewModel(
         return roomList[positionMap[position + favoriteRooms.size]]
     }
 
-    override fun getTot(): Int {
-        return roomTot
-    }
+    override fun getTot(): Int = roomTot
 
-    override fun getRoomAll(roomId: Int): FitnessRoom {
-        return roomList[roomId]
-    }
+    override fun getRoomAll(roomId: Int): FitnessRoom = roomList[roomId]
 
-    override fun isFavorite(roomId: Int): Boolean {
-        return favoriteRooms.contains(roomId)
-    }
+    override fun isFavorite(roomId: Int): Boolean = favoriteRooms.contains(roomId)
 
     fun clearFavorites() {
         favoriteRooms.clear()
@@ -112,7 +106,7 @@ class FitnessPreferenceViewModel(
                             Log.e(
                                 "Fitness Preference View Model",
                                 "Error saving fitness " +
-                                        "preferences: $error",
+                                    "preferences: $error",
                                 error,
                             )
                         }

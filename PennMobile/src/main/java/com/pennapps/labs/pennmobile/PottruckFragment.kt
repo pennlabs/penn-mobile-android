@@ -107,9 +107,7 @@ class PottruckFragment : Fragment() {
                             val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
                             val context = mActivity.applicationContext
                             val bearerToken =
-                                "Bearer " +
-                                        sp.getString(context.getString(R.string.access_token), "")
-                                            .toString()
+                                "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
                             mStudentLife.getFitnessPreferences(bearerToken).subscribe({ favorites ->
                                 mActivity.runOnUiThread {
@@ -196,8 +194,8 @@ class PottruckFragment : Fragment() {
             connectionToolbar.setBackgroundColor(
                 ContextCompat.getColor(
                     requireContext(),
-                    R.color.darkRedBackground
-                )
+                    R.color.darkRedBackground,
+                ),
             )
             connectionMessage.text = getString(R.string.internet_error)
             connectionToolbar.visibility = View.VISIBLE

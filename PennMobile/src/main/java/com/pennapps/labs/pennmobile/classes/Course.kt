@@ -24,7 +24,5 @@ data class Course(
     @SerializedName("instructor_quality")
     val instructorQuality: Double = 0.0,
 ) {
-    override fun toString(): String {
-        return this.id + " - " + this.title
-    }
+    override fun toString(): String = this.id + " - " + this.title
 }

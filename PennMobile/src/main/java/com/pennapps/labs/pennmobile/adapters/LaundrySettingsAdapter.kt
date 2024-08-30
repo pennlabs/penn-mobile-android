@@ -26,39 +26,25 @@ class LaundrySettingsAdapter(
         dataModel.setToggled()
     }
 
-    override fun getGroupCount(): Int {
-        return dataModel.getGroupCount()
-    }
+    override fun getGroupCount(): Int = dataModel.getGroupCount()
 
-    override fun getChildrenCount(i: Int): Int {
-        return dataModel.getChildrenCount(i)
-    }
+    override fun getChildrenCount(i: Int): Int = dataModel.getChildrenCount(i)
 
-    override fun getGroup(i: Int): Any {
-        return dataModel.getGroup(i)
-    }
+    override fun getGroup(i: Int): Any = dataModel.getGroup(i)
 
     override fun getChild(
         i: Int,
         i1: Int,
-    ): Any {
-        return dataModel.getChild(i, i1)
-    }
+    ): Any = dataModel.getChild(i, i1)
 
-    override fun getGroupId(i: Int): Long {
-        return i.toLong()
-    }
+    override fun getGroupId(i: Int): Long = i.toLong()
 
     override fun getChildId(
         i: Int,
         i1: Int,
-    ): Long {
-        return i1.toLong()
-    }
+    ): Long = i1.toLong()
 
-    override fun hasStableIds(): Boolean {
-        return false
-    }
+    override fun hasStableIds(): Boolean = false
 
     // view for the laundry buildings
     override fun getGroupView(
@@ -163,9 +149,7 @@ class LaundrySettingsAdapter(
     override fun isChildSelectable(
         i: Int,
         i1: Int,
-    ): Boolean {
-        return false
-    }
+    ): Boolean = false
 
     private fun updateSwitches() {
         if (dataModel.isFull()) {

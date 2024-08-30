@@ -139,11 +139,13 @@ class HuntsmanGSRLogin : Fragment() {
                         ) {
                             // Display the output as a toast
                             if (result?.getResults() == true) {
-                                Toast.makeText(mActivity, "GSR successfully booked", Toast.LENGTH_LONG)
+                                Toast
+                                    .makeText(mActivity, "GSR successfully booked", Toast.LENGTH_LONG)
                                     .show()
                             } else {
                                 Log.e("HuntsmanGSRLogin", "GSR booking failed: " + result?.getError())
-                                Toast.makeText(mActivity, "GSR booking failed", Toast.LENGTH_LONG)
+                                Toast
+                                    .makeText(mActivity, "GSR booking failed", Toast.LENGTH_LONG)
                                     .show()
                                 val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
                                 val editor = sp.edit()
@@ -153,7 +155,8 @@ class HuntsmanGSRLogin : Fragment() {
                             // redirect user
                             val gsrFragment = GsrTabbedFragment()
                             val fragmentManager = mActivity.supportFragmentManager
-                            fragmentManager.beginTransaction()
+                            fragmentManager
+                                .beginTransaction()
                                 .replace(R.id.content_frame, gsrFragment)
                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                 .commit()
@@ -170,7 +173,8 @@ class HuntsmanGSRLogin : Fragment() {
                             // redirect user
                             val gsrFragment = GsrTabbedFragment()
                             val fragmentManager = mActivity.supportFragmentManager
-                            fragmentManager.beginTransaction()
+                            fragmentManager
+                                .beginTransaction()
                                 .replace(R.id.content_frame, gsrFragment)
                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                 .commit()

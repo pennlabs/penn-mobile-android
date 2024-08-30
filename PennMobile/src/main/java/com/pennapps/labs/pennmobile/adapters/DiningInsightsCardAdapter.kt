@@ -33,8 +33,9 @@ import java.util.Locale
 import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
-class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>) :
-    RecyclerView.Adapter<DiningInsightsCardAdapter.ViewHolder>() {
+class DiningInsightsCardAdapter(
+    private var cells: ArrayList<DiningInsightCell>,
+) : RecyclerView.Adapter<DiningInsightsCardAdapter.ViewHolder>() {
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
 
@@ -93,11 +94,11 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
         }
     }
 
-    override fun getItemCount(): Int {
-        return cells.size
-    }
+    override fun getItemCount(): Int = cells.size
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(
+        itemView: View,
+    ) : RecyclerView.ViewHolder(itemView) {
         val view = itemView
     }
 
@@ -255,13 +256,12 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
         tvGuestSwipesAmount.text = guestSwipes.toString()
     }
 
-    private fun getPredictionSlope(amounts: List<Float>): Float {
-        return if (amounts.size <= 1) {
+    private fun getPredictionSlope(amounts: List<Float>): Float =
+        if (amounts.size <= 1) {
             0f
         } else {
             (amounts[amounts.size - 1] - amounts[0]) / (amounts.size - 1)
         }
-    }
 
     private fun setData(
         amounts: List<Float>,
@@ -397,8 +397,9 @@ class DiningInsightsCardAdapter(private var cells: ArrayList<DiningInsightCell>)
         return Utils.addDaysToDateMMMdd(START_DAY_OF_SEMESTER, actualValuesSize + i)
     }
 
-    class ClaimsXAxisValueFormatter(var datesList: List<String>) :
-        ValueFormatter() {
+    class ClaimsXAxisValueFormatter(
+        var datesList: List<String>,
+    ) : ValueFormatter() {
         override fun getAxisLabel(
             value: Float,
             axis: AxisBase,

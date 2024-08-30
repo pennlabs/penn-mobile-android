@@ -26,8 +26,9 @@ import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
 
-class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>) :
-    RecyclerView.Adapter<GsrReservationsAdapter.GsrReservationViewHolder>() {
+class GsrReservationsAdapter(
+    private var reservations: ArrayList<GSRReservation>,
+) : RecyclerView.Adapter<GsrReservationsAdapter.GsrReservationViewHolder>() {
     private lateinit var mContext: Context
 
     override fun onCreateViewHolder(
@@ -56,7 +57,12 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
 
         // huntsman reservation responses don't have an image url so we set it here
         val imageUrl = reservation.info?.get("thumbnail") ?: "https://s3.us-east-2.amazonaws.com/labs.api/dining/MBA+Cafe.jpg"
-        Picasso.get().load(imageUrl).fit().centerCrop().into(holder.itemView.gsr_reservation_iv)
+        Picasso
+            .get()
+            .load(imageUrl)
+            .fit()
+            .centerCrop()
+            .into(holder.itemView.gsr_reservation_iv)
 
         holder.itemView.gsr_reservation_location_tv.text = roomName
         holder.itemView.gsr_reservation_date_tv.text = day + "\n" + fromHour + "-" + toHour
@@ -99,7 +105,8 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                                     run {
                                         if (reservations.size == 0) {
                                             var intent = Intent("refresh")
-                                            LocalBroadcastManager.getInstance(mContext)
+                                            LocalBroadcastManager
+                                                .getInstance(mContext)
                                                 .sendBroadcast(intent)
                                         } else {
                                             notifyItemRemoved(position)
@@ -113,11 +120,12 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
                                         "Error canceling gsr reservation",
                                         error,
                                     )
-                                    Toast.makeText(
-                                        mContext,
-                                        "Error deleting your GSR reservation.",
-                                        LENGTH_SHORT,
-                                    ).show()
+                                    Toast
+                                        .makeText(
+                                            mContext,
+                                            "Error deleting your GSR reservation.",
+                                            LENGTH_SHORT,
+                                        ).show()
                                 }
                             },
                         )
@@ -133,11 +141,11 @@ class GsrReservationsAdapter(private var reservations: ArrayList<GSRReservation>
         }
     }
 
-    override fun getItemCount(): Int {
-        return reservations.size
-    }
+    override fun getItemCount(): Int = reservations.size
 
-    inner class GsrReservationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class GsrReservationViewHolder(
+        itemView: View,
+    ) : RecyclerView.ViewHolder(itemView) {
         val view = itemView
     }
 }

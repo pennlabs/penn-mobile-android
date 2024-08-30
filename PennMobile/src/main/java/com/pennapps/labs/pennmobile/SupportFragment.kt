@@ -68,7 +68,8 @@ class SupportFragment : ListFragment() {
             R.id.support_contacts_add -> {
                 val frag = SaveContactsFragment()
                 val fragmentManager = mActivity.supportFragmentManager
-                fragmentManager.beginTransaction()
+                fragmentManager
+                    .beginTransaction()
                     .replace(R.id.save_contacts_fragment, frag, "SAVE_CONTACTS_FRAGMENT")
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)

@@ -8,7 +8,9 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.components.floatingbottombar.ExpandableBottomBarMenuItem
 import org.xmlpull.v1.XmlPullParser
 
-internal class ExpandableBottomBarParser(private val context: Context) {
+internal class ExpandableBottomBarParser(
+    private val context: Context,
+) {
     companion object {
         private const val NO_ID = 0
         private const val NO_TEXT = ""

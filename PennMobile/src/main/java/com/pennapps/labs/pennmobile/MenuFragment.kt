@@ -22,7 +22,9 @@ class MenuFragment : Fragment() {
     private lateinit var mActivity: MainActivity
     private var pageAdapter: PagerAdapter? = null
 
-    inner class TabAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+    inner class TabAdapter(
+        fm: FragmentManager,
+    ) : FragmentStatePagerAdapter(fm) {
         // for each meal: {name of station: arraylist of foods at the station}
         var foods: ArrayList<HashMap<String, ArrayList<String>>> = ArrayList()
 
@@ -77,13 +79,9 @@ class MenuFragment : Fragment() {
             return myFragment
         }
 
-        override fun getPageTitle(position: Int): CharSequence {
-            return headers[position]
-        }
+        override fun getPageTitle(position: Int): CharSequence = headers[position]
 
-        override fun getCount(): Int {
-            return foods.size
-        }
+        override fun getCount(): Int = foods.size
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

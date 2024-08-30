@@ -43,7 +43,8 @@ class MoreFragment : Fragment() {
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
-        childFragmentManager.beginTransaction()
+        childFragmentManager
+            .beginTransaction()
             .replace(R.id.more_frame, PreferenceFragment())
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .commit()
@@ -60,7 +61,8 @@ class MoreFragment : Fragment() {
 
     override fun onResume() {
         val initials =
-            PreferenceManager.getDefaultSharedPreferences(mActivity)
+            PreferenceManager
+                .getDefaultSharedPreferences(mActivity)
                 .getString(getString(R.string.initials), null)
         if (initials != null && initials.isNotEmpty()) {
             this.initials.text = initials
