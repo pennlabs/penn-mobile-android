@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class DiningHallPreference {
-    @SerializedName("venueId")
+    @SerializedName("venue_id")
     @Expose
     val id: Int? = null
 }

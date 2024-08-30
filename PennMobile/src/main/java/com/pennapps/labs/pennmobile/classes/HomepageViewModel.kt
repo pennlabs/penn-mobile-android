@@ -317,12 +317,12 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
             studentLife.getDiningPreferences(bearerToken).subscribe({ preferences ->
                 val list = preferences.preferences
                 val venues = mutableListOf<Int>()
-                if (list?.isEmpty() == true) {
+                if (list.isNullOrEmpty()) {
                     venues.add(593)
                     venues.add(1442)
                     venues.add(636)
                 } else {
-                    list?.forEach {
+                    list.forEach {
                         it.id?.let { it1 -> venues.add(it1) }
                     }
                 }
