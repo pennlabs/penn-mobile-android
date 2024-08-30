@@ -108,10 +108,10 @@ class LaundryViewModel : ViewModel() {
             addUsage.join()
 
             if (addUsageSuccess && !addRoomSuccess) {
-                rooms.removeLast()
+                usages.removeLast()
             }
             if (!addUsageSuccess && addRoomSuccess) {
-                usages.removeLast()
+                rooms.removeLast()
             }
         }
         replaceFavorites(rooms, usages)
