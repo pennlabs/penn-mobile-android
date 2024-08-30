@@ -19,9 +19,7 @@ import rx.Observable
 // https://programmer.group/app-widgets-details-four-remoteviews-remoteviews-service-and-remoteviews-factory.html
 
 class DiningHallWidgetAdapter : RemoteViewsService() {
-    override fun onGetViewFactory(p0: Intent): RemoteViewsFactory {
-        return DiningWidgetFactory(applicationContext, p0)
-    }
+    override fun onGetViewFactory(p0: Intent): RemoteViewsFactory = DiningWidgetFactory(applicationContext, p0)
 
     // The appwidget RemoteViewsFactory updates the data on the appwidget by:
     // 1. onUpdate automatically called every 30 minutes (in DiningHallWidget class)
@@ -29,7 +27,10 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
     // 3. In onCreate, the function getWidgetDiningHalls is called
     // 4. getWidgetDiningHall makes a network request to update diningHall data and calls notifyAppWidgetViewDataChanged, which then calls
     //      getViewAt() and updates the UI of the widget).
-    class DiningWidgetFactory(private val context: Context, intent: Intent) : RemoteViewsFactory {
+    class DiningWidgetFactory(
+        private val context: Context,
+        intent: Intent,
+    ) : RemoteViewsFactory {
         private var mDiningRequest: DiningRequest? = null
         private var appWidgetId: Int =
             intent.getIntExtra(
@@ -56,9 +57,7 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
         override fun onDestroy() {
         }
 
-        override fun getCount(): Int {
-            return dataSet.size
-        }
+        override fun getCount(): Int = dataSet.size
 
         override fun getViewAt(position: Int): RemoteViews {
             val views = RemoteViews(context.packageName, R.layout.dining_hall_widget_item)
@@ -98,32 +97,24 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
             return views
         }
 
-        override fun getLoadingView(): RemoteViews? {
-            return null
-        }
+        override fun getLoadingView(): RemoteViews? = null
 
-        override fun getViewTypeCount(): Int {
-            return 1
-        }
+        override fun getViewTypeCount(): Int = 1
 
-        override fun getItemId(position: Int): Long {
-            return position.toLong()
-        }
+        override fun getItemId(position: Int): Long = position.toLong()
 
-        override fun hasStableIds(): Boolean {
-            return true
-        }
+        override fun hasStableIds(): Boolean = true
 
         private fun getWidgetDiningHalls() {
             try {
                 if (mDiningRequest != null) {
-                    mDiningRequest!!.venues()
+                    mDiningRequest!!
+                        .venues()
                         .flatMap { venues -> Observable.from(venues) }
                         .flatMap { venue ->
                             val hall = createHall(venue)
                             Observable.just(hall)
-                        }
-                        .toList()
+                        }.toList()
                         .subscribe { diningHalls ->
                             dataSet = diningHalls
                             val appWidgetManager: AppWidgetManager =
@@ -137,8 +128,8 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
             }
         }
 
-        private fun getOpenStatusLabel(openMeal: String): Int {
-            return when (openMeal) {
+        private fun getOpenStatusLabel(openMeal: String): Int =
+            when (openMeal) {
                 "Breakfast" -> R.string.dining_hall_breakfast
                 "Brunch" -> R.string.dining_hall_brunch
                 "Lunch" -> R.string.dining_hall_lunch
@@ -146,7 +137,6 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
                 "Late Night" -> R.string.dining_hall_late_night
                 else -> R.string.dining_hall_open
             }
-        }
 
         companion object {
             fun createHall(venue: Venue): DiningHall {

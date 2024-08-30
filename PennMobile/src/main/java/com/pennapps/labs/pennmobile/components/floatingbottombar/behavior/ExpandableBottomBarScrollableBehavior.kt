@@ -10,8 +10,7 @@ import com.pennapps.labs.pennmobile.components.floatingbottombar.utils.clamp
 class ExpandableBottomBarScrollableBehavior<V : View>(
     context: Context,
     attributeSet: AttributeSet,
-) :
-    ExpandableBottomBarBehavior<V>(context, attributeSet) {
+) : ExpandableBottomBarBehavior<V>(context, attributeSet) {
     override fun onStartNestedScroll(
         coordinatorLayout: CoordinatorLayout,
         child: V,
@@ -19,9 +18,7 @@ class ExpandableBottomBarScrollableBehavior<V : View>(
         target: View,
         axes: Int,
         type: Int,
-    ): Boolean {
-        return axes == ViewCompat.SCROLL_AXIS_VERTICAL
-    }
+    ): Boolean = axes == ViewCompat.SCROLL_AXIS_VERTICAL
 
     override fun onNestedPreScroll(
         coordinatorLayout: CoordinatorLayout,

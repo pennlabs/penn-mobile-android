@@ -24,10 +24,11 @@ class PollOption {
 
     var isVisible: Boolean = false
 
-    override fun equals(other: Any?): Boolean {
-        return other is PollOption && this.choice == other.choice && this.id == other.id &&
+    override fun equals(other: Any?): Boolean =
+        other is PollOption &&
+            this.choice == other.choice &&
+            this.id == other.id &&
             this.voteCount == other.voteCount
-    }
 
     override fun hashCode(): Int {
         var result = id ?: 0

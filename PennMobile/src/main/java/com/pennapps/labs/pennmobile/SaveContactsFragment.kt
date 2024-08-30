@@ -106,20 +106,23 @@ class SaveContactsFragment : ListFragment() {
             val ops = ArrayList<ContentProviderOperation>()
             val id = ops.size
             ops.add(
-                ContentProviderOperation.newInsert(ContactsContract.RawContacts.CONTENT_URI)
+                ContentProviderOperation
+                    .newInsert(ContactsContract.RawContacts.CONTENT_URI)
                     .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, null)
                     .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, null)
                     .build(),
             )
             ops.add(
-                ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                ContentProviderOperation
+                    .newInsert(ContactsContract.Data.CONTENT_URI)
                     .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, id)
                     .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
                     .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, p.name)
                     .build(),
             )
             ops.add(
-                ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                ContentProviderOperation
+                    .newInsert(ContactsContract.Data.CONTENT_URI)
                     .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, id)
                     .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
                     .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, p.phone)
@@ -136,11 +139,12 @@ class SaveContactsFragment : ListFragment() {
                 Toast.makeText(mActivity, "Could not save contacts", Toast.LENGTH_SHORT).show()
             }
         }
-        Toast.makeText(
-            mActivity,
-            selected.size.toString() + " contact" + (if (selected.size > 1 || selected.size == 0) "s" else "") + " saved",
-            Toast.LENGTH_SHORT,
-        ).show()
+        Toast
+            .makeText(
+                mActivity,
+                selected.size.toString() + " contact" + (if (selected.size > 1 || selected.size == 0) "s" else "") + " saved",
+                Toast.LENGTH_SHORT,
+            ).show()
         mActivity.onBackPressed()
     }
 

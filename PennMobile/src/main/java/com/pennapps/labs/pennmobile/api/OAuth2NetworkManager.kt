@@ -15,7 +15,9 @@ import retrofit.RetrofitError
 import retrofit.client.Response
 import java.util.Calendar
 
-class OAuth2NetworkManager(private var mActivity: MainActivity) {
+class OAuth2NetworkManager(
+    private var mActivity: MainActivity,
+) {
     private var mStudentLife = MainActivity.studentLifeInstance
     private val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
     val editor = sp?.edit()

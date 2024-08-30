@@ -9,8 +9,9 @@ import com.pennapps.labs.pennmobile.R
 import kotlinx.android.synthetic.main.team_member.view.name_tv
 import kotlinx.android.synthetic.main.team_member.view.person_iv
 
-class AboutAdapter(private var members: ArrayList<String>) :
-    RecyclerView.Adapter<AboutAdapter.TeamViewHolder>() {
+class AboutAdapter(
+    private var members: ArrayList<String>,
+) : RecyclerView.Adapter<AboutAdapter.TeamViewHolder>() {
     private lateinit var mContext: Context
 
     override fun onCreateViewHolder(
@@ -22,9 +23,7 @@ class AboutAdapter(private var members: ArrayList<String>) :
         return TeamViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return members.count()
-    }
+    override fun getItemCount(): Int = members.count()
 
     override fun onBindViewHolder(
         holder: TeamViewHolder,
@@ -55,7 +54,9 @@ class AboutAdapter(private var members: ArrayList<String>) :
         if (imageId != null) holder.view.person_iv?.setImageResource(imageId)
     }
 
-    inner class TeamViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class TeamViewHolder(
+        itemView: View,
+    ) : RecyclerView.ViewHolder(itemView) {
         val view = itemView
     }
 }

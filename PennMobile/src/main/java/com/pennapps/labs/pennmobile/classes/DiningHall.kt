@@ -54,9 +54,7 @@ open class DiningHall : Parcelable {
         this.menus.sortedWith(comparator)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    override fun describeContents(): Int = 0
 
     override fun writeToParcel(
         dest: Parcel,
@@ -121,8 +119,8 @@ open class DiningHall : Parcelable {
         return builder.toString()
     }
 
-    private fun getFormattedTime(time: DateTime): String {
-        return if (time.toString("mm") == "00") {
+    private fun getFormattedTime(time: DateTime): String =
+        if (time.toString("mm") == "00") {
             if (isResidential) {
                 time.toString("h")
             } else {
@@ -135,7 +133,6 @@ open class DiningHall : Parcelable {
                 time.toString("h:mm a")
             }
         }
-    }
 
     val isOpen: Boolean
         get() {
@@ -161,7 +158,9 @@ open class DiningHall : Parcelable {
      * Created by Adel on 12/18/14.
      * Class for a single menu, ie. Lunch, Dinner
      */
-    open class Menu protected constructor(`in`: Parcel) : Parcelable {
+    open class Menu protected constructor(
+        `in`: Parcel,
+    ) : Parcelable {
         @SerializedName("service")
         var name: String = `in`.readString() ?: ""
 
@@ -171,9 +170,7 @@ open class DiningHall : Parcelable {
         @SerializedName("venue")
         var venue: DiningVenue? = null
 
-        override fun describeContents(): Int {
-            return 0
-        }
+        override fun describeContents(): Int = 0
 
         override fun writeToParcel(
             dest: Parcel,
@@ -183,13 +180,9 @@ open class DiningHall : Parcelable {
         }
 
         companion object CREATOR : Parcelable.Creator<Menu?> {
-            override fun createFromParcel(`in`: Parcel): Menu? {
-                return Menu(`in`)
-            }
+            override fun createFromParcel(`in`: Parcel): Menu? = Menu(`in`)
 
-            override fun newArray(size: Int): Array<Menu?> {
-                return arrayOfNulls(size)
-            }
+            override fun newArray(size: Int): Array<Menu?> = arrayOfNulls(size)
         }
     }
 
@@ -223,12 +216,8 @@ open class DiningHall : Parcelable {
     }
 
     companion object CREATOR : Parcelable.Creator<DiningHall> {
-        override fun createFromParcel(parcel: Parcel): DiningHall {
-            return DiningHall(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel): DiningHall = DiningHall(parcel)
 
-        override fun newArray(size: Int): Array<DiningHall?> {
-            return arrayOfNulls(size)
-        }
+        override fun newArray(size: Int): Array<DiningHall?> = arrayOfNulls(size)
     }
 }

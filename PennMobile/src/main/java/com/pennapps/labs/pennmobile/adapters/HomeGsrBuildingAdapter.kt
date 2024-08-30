@@ -15,8 +15,9 @@ import com.pennapps.labs.pennmobile.R
 import kotlinx.android.synthetic.main.home_gsr_building.view.home_gsr_building_iv
 import kotlinx.android.synthetic.main.home_gsr_building.view.home_gsr_building_tv
 
-class HomeGsrBuildingAdapter(private var buildings: ArrayList<String>) :
-    RecyclerView.Adapter<HomeGsrBuildingAdapter.HomeGsrBuildingViewHolder>() {
+class HomeGsrBuildingAdapter(
+    private var buildings: ArrayList<String>,
+) : RecyclerView.Adapter<HomeGsrBuildingAdapter.HomeGsrBuildingViewHolder>() {
     private lateinit var mContext: Context
 
     override fun onCreateViewHolder(
@@ -46,11 +47,11 @@ class HomeGsrBuildingAdapter(private var buildings: ArrayList<String>) :
         }
     }
 
-    override fun getItemCount(): Int {
-        return buildings.size
-    }
+    override fun getItemCount(): Int = buildings.size
 
-    inner class HomeGsrBuildingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class HomeGsrBuildingViewHolder(
+        itemView: View,
+    ) : RecyclerView.ViewHolder(itemView) {
         val view = itemView
     }
 

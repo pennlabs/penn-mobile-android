@@ -89,8 +89,9 @@ import retrofit.RetrofitError
 import retrofit.client.Response
 import rx.Observable
 
-class HomeAdapter(private val dataModel: HomepageDataModel) :
-    RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
+class HomeAdapter(
+    private val dataModel: HomepageDataModel,
+) : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
@@ -129,19 +130,19 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         return when (viewType) {
             NEWS -> {
                 ViewHolder(
-                    LayoutInflater.from(mContext).inflate(R.layout.home_news_card, parent, false)
+                    LayoutInflater.from(mContext).inflate(R.layout.home_news_card, parent, false),
                 )
             }
 
             POST -> {
                 ViewHolder(
-                    LayoutInflater.from(mContext).inflate(R.layout.home_post_card, parent, false)
+                    LayoutInflater.from(mContext).inflate(R.layout.home_post_card, parent, false),
                 )
             }
 
             FEATURE -> {
                 ViewHolder(
-                    LayoutInflater.from(mContext).inflate(R.layout.home_post_card, parent, false)
+                    LayoutInflater.from(mContext).inflate(R.layout.home_post_card, parent, false),
                 )
             }
 
@@ -151,19 +152,19 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
 
             GSR_BOOKING -> {
                 ViewHolder(
-                    LayoutInflater.from(mContext).inflate(R.layout.home_gsr_card, parent, false)
+                    LayoutInflater.from(mContext).inflate(R.layout.home_gsr_card, parent, false),
                 )
             }
 
             NOT_SUPPORTED -> {
                 ViewHolder(
-                    LayoutInflater.from(mContext).inflate(R.layout.empty_view, parent, false)
+                    LayoutInflater.from(mContext).inflate(R.layout.empty_view, parent, false),
                 )
             }
 
             else -> {
                 ViewHolder(
-                    LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false)
+                    LayoutInflater.from(mContext).inflate(R.layout.home_base_card, parent, false),
                 )
             }
         }
@@ -187,11 +188,11 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         }
     }
 
-    override fun getItemCount(): Int {
-        return dataModel.getSize()
-    }
+    override fun getItemCount(): Int = dataModel.getSize()
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(
+        itemView: View,
+    ) : RecyclerView.ViewHolder(itemView) {
         val view = itemView
     }
 
@@ -219,20 +220,21 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         holder.itemView.home_card_subtitle.text = "DINING HALLS"
         holder.itemView.dining_prefs_btn.visibility = View.VISIBLE
         holder.itemView.dining_prefs_btn.setOnClickListener {
-            mActivity.supportFragmentManager.beginTransaction()
+            mActivity.supportFragmentManager
+                .beginTransaction()
                 .replace(R.id.content_frame, DiningSettingsFragment(dataModel))
                 .addToBackStack(null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()
         }
         try {
-            mStudentLife.venues()
+            mStudentLife
+                .venues()
                 .flatMap { venues -> Observable.from(venues) }
                 .flatMap { venue ->
                     val hall = DiningFragment.createHall(venue)
                     Observable.just(hall)
-                }
-                .toList()
+                }.toList()
                 .subscribe { diningHalls ->
                     mActivity.runOnUiThread {
                         val favorites: ArrayList<DiningHall> = arrayListOf()
@@ -266,7 +268,9 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         holder.itemView.home_news_subtitle.text = article?.subtitle
         holder.itemView.home_news_timestamp.text = article?.timestamp?.trim()
 
-        Glide.with(mContext).load(article?.imageUrl)
+        Glide
+            .with(mContext)
+            .load(article?.imageUrl)
             .fitCenter()
             .centerCrop()
             .into(holder.itemView.home_news_iv)
@@ -274,7 +278,13 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         /** Adds dynamically generated accent color from the fetched image to the news card */
         var accentColor: Int = getColor(mContext, R.color.black)
         mActivity.lifecycleScope.launch(Dispatchers.Default) {
-            val bitmap = Glide.with(mContext).load(article?.imageUrl).submit().get().toBitmap()
+            val bitmap =
+                Glide
+                    .with(mContext)
+                    .load(article?.imageUrl)
+                    .submit()
+                    .get()
+                    .toBitmap()
 
             // Create palette from bitmap
             fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
@@ -290,22 +300,22 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
                     )
                     DrawableCompat.setTint(
                         DrawableCompat.wrap(holder.itemView.news_info_icon.drawable),
-                        it
+                        it,
                     )
                     DrawableCompat.setTint(
                         DrawableCompat.wrap(holder.itemView.dot_divider.drawable),
-                        it
+                        it,
                     )
                     holder.itemView.button.setTextColor(ColorUtils.setAlphaComponent(it, 150))
                     DrawableCompat.setTint(
                         DrawableCompat.wrap(holder.itemView.button.background),
-                        it
+                        it,
                     )
                     holder.itemView.home_news_title.setTextColor(
                         ColorUtils.setAlphaComponent(
                             it,
-                            150
-                        )
+                            150,
+                        ),
                     )
                     holder.itemView.home_news_subtitle.setTextColor(it)
                     holder.itemView.home_news_timestamp.setTextColor(it)
@@ -343,7 +353,8 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         }
 
         /** Sets up blur view on news card */
-        holder.itemView.blurView.setupWith(holder.itemView.news_card_container)
+        holder.itemView.blurView
+            .setupWith(holder.itemView.news_card_container)
             .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))
             .setBlurRadius(25f)
 
@@ -469,18 +480,26 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
         holder.itemView.home_post_source.text = "Penn Labs" // post?.clubCode?.capitalize()
         val time =
             post.startDate?.substring(5, 7) + " / " +
-                    post.startDate?.substring(8, 10) + " - " +
-                    post.expireDate?.substring(5, 7) + " / " +
-                    post.expireDate?.substring(8, 10)
+                post.startDate?.substring(8, 10) + " - " +
+                post.expireDate?.substring(5, 7) + " / " +
+                post.expireDate?.substring(8, 10)
         holder.itemView.home_post_timestamp.text = time
-        Glide.with(mContext).load(post.imageUrl)
+        Glide
+            .with(mContext)
+            .load(post.imageUrl)
             .fitCenter()
             .centerCrop()
             .into(holder.itemView.home_post_iv)
         /** Adds dynamically generated accent color from the fetched image to the news card */
         var accentColor: Int = getColor(mContext, R.color.black)
         mActivity.lifecycleScope.launch(Dispatchers.Default) {
-            val bitmap = Glide.with(mContext).load(post.imageUrl).submit().get().toBitmap()
+            val bitmap =
+                Glide
+                    .with(mContext)
+                    .load(post.imageUrl)
+                    .submit()
+                    .get()
+                    .toBitmap()
 
             // Create palette from bitmap
             fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
@@ -516,7 +535,8 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
             }
         }
         /** Sets up blur view on post card */
-        holder.itemView.postBlurView.setupWith(holder.itemView.post_card_container)
+        holder.itemView.postBlurView
+            .setupWith(holder.itemView.post_card_container)
             .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))
             .setBlurRadius(25f)
         /** Post clicking logic if there exists a URL **/
@@ -585,11 +605,12 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
                 var isSelected = false
                 poll.options.forEach { isSelected = isSelected || it.selected }
                 if (!isSelected) {
-                    Toast.makeText(
-                        mActivity,
-                        "Need to select an option to vote",
-                        Toast.LENGTH_SHORT,
-                    ).show()
+                    Toast
+                        .makeText(
+                            mActivity,
+                            "Need to select an option to vote",
+                            Toast.LENGTH_SHORT,
+                        ).show()
                     return@setOnClickListener
                 }
                 poll.isVisible = true
@@ -627,7 +648,6 @@ class HomeAdapter(private val dataModel: HomepageDataModel) :
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-
                 }
             }
         } else {

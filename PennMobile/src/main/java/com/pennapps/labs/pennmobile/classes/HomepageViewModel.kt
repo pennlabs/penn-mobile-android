@@ -23,7 +23,9 @@ import java.util.concurrent.CountDownLatch
  * posts) have finished loaded.
  */
 
-class HomepageViewModel : HomepageDataModel, ViewModel() {
+class HomepageViewModel :
+    ViewModel(),
+    HomepageDataModel {
     companion object {
         private const val NUM_CELLS = 7
         private const val NUM_CELLS_LOGGED_IN = NUM_CELLS
@@ -47,7 +49,9 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
     private val homepageCells = mutableListOf<HomeCell>()
     private val cellMutex = Mutex()
 
-    data class ItemUpdateEvents(val positions: List<Int> = emptyList())
+    data class ItemUpdateEvents(
+        val positions: List<Int> = emptyList(),
+    )
 
     private val _updateState = MutableStateFlow(ItemUpdateEvents())
     val updateState: StateFlow<ItemUpdateEvents> = _updateState.asStateFlow()
@@ -421,9 +425,7 @@ class HomepageViewModel : HomepageDataModel, ViewModel() {
      * Since homepageCells is always populated, it should always have NUM_CELLS cells. The idea is
      * that we keep the unused cells empty.
      */
-    override fun getSize(): Int {
-        return NUM_CELLS
-    }
+    override fun getSize(): Int = NUM_CELLS
 
     override fun getCell(position: Int): HomeCell {
         // be careful to not read an old value

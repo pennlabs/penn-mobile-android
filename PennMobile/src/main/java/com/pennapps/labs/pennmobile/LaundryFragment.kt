@@ -137,7 +137,8 @@ class LaundryFragment : Fragment() {
             val bearerToken =
                 "Bearer " +
                     sharedPreferences
-                        .getString(getString(R.string.access_token), "").toString()
+                        .getString(getString(R.string.access_token), "")
+                        .toString()
             laundryViewModel.getFavorites(mStudentLife, bearerToken)
         }
     }
@@ -148,7 +149,8 @@ class LaundryFragment : Fragment() {
         binding.dateView.text = Utils.getCurrentSystemTime()
         binding.laundryPreferences.setOnClickListener {
             val fragmentManager = mActivity.supportFragmentManager
-            fragmentManager.beginTransaction()
+            fragmentManager
+                .beginTransaction()
                 .replace(R.id.content_frame, LaundrySettingsFragment())
                 .addToBackStack("Laundry Settings Fragment")
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

@@ -51,7 +51,8 @@ class GsrRoomAdapter(
                         roomName,
                     )
                 val fragmentManager = (context as MainActivity).supportFragmentManager
-                fragmentManager.beginTransaction()
+                fragmentManager
+                    .beginTransaction()
                     .replace(R.id.content_frame, bookGsrFragment)
                     .addToBackStack("GSR Fragment")
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -74,7 +75,5 @@ class GsrRoomAdapter(
         }
     }
 
-    override fun getItemCount(): Int {
-        return timeRanges.size
-    }
+    override fun getItemCount(): Int = timeRanges.size
 }

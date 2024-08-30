@@ -27,7 +27,12 @@ class LaundryBroadcastReceiver : BroadcastReceiver() {
         }
         notificationID = id + 1
         val builder = StringBuilder()
-        builder.append("A ").append(machineType).append(" in ").append(roomName).append(" is available!")
+        builder
+            .append("A ")
+            .append(machineType)
+            .append(" in ")
+            .append(roomName)
+            .append(" is available!")
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         // build notification
@@ -42,7 +47,8 @@ class LaundryBroadcastReceiver : BroadcastReceiver() {
         channel.lightColor = ContextCompat.getColor(context, R.color.color_primary)
         notificationManager.createNotificationChannel(channel)
         mBuilder =
-            NotificationCompat.Builder(context, channel.id)
+            NotificationCompat
+                .Builder(context, channel.id)
                 .setSmallIcon(R.drawable.ic_bottom_nav_laundry_grey)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(builder)

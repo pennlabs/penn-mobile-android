@@ -54,11 +54,14 @@ class Poll {
     @Expose
     var isVisible: Boolean = false
 
-    override fun equals(other: Any?): Boolean {
-        return other is Poll && this.id == other.id && this.totalVotes == other.totalVotes &&
-            this.question == other.question && this.options.size == other.options.size &&
-            this.options.containsAll(other.options) && other.options.containsAll(this.options)
-    }
+    override fun equals(other: Any?): Boolean =
+        other is Poll &&
+            this.id == other.id &&
+            this.totalVotes == other.totalVotes &&
+            this.question == other.question &&
+            this.options.size == other.options.size &&
+            this.options.containsAll(other.options) &&
+            other.options.containsAll(this.options)
 
     // @Expose
     // var homeAdapter : HomeAdapter? = null

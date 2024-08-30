@@ -22,7 +22,8 @@ class GsrBuildingAdapter(
         viewType: Int,
     ): GsrBuildingHolder {
         val view =
-            LayoutInflater.from(parent.context)
+            LayoutInflater
+                .from(parent.context)
                 .inflate(R.layout.gsr_building, parent, false)
         return GsrBuildingHolder(view)
     }
@@ -110,7 +111,5 @@ class GsrBuildingAdapter(
         }
     }
 
-    override fun getItemCount(): Int {
-        return gsrs.size
-    }
+    override fun getItemCount(): Int = gsrs.size
 }

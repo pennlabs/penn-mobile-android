@@ -16,15 +16,9 @@ class GSRBookingResult {
     @Expose
     private val error: String? = null
 
-    fun getDetail(): String? {
-        return detail
-    }
+    fun getDetail(): String? = detail
 
-    fun getResults(): Boolean? {
-        return results
-    }
+    fun getResults(): Boolean? = results
 
-    fun getError(): String? {
-        return error
-    }
+    fun getError(): String? = error
 }

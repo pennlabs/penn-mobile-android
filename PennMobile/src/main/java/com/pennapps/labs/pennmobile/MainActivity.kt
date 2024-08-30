@@ -98,7 +98,11 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setHomeButtonEnabled(false)
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
 
-        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+        val policy =
+            StrictMode.ThreadPolicy
+                .Builder()
+                .permitAll()
+                .build()
         StrictMode.setThreadPolicy(policy)
 
         onExpandableBottomNavigationItemSelected()
@@ -194,7 +198,8 @@ class MainActivity : AppCompatActivity() {
         // change the fragment only if we're not already on the login fragment
         if (currentFragment == null || currentFragment::class != fragment::class) {
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-            fragmentManager.beginTransaction()
+            fragmentManager
+                .beginTransaction()
                 .replace(R.id.content_frame, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()
@@ -245,7 +250,8 @@ class MainActivity : AppCompatActivity() {
                     if (popBackStack) {
                         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                     }
-                    fragmentManager.beginTransaction()
+                    fragmentManager
+                        .beginTransaction()
                         .replace(R.id.content_frame, fragment)
                         .addToBackStack(null)
                         .setTransition(FragmentTransaction.TRANSIT_NONE)
@@ -272,8 +278,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun setTitle(title: CharSequence) {
-        appbar.findViewById<View>(R.id.toolbar)
-            .findViewById<TextView>(R.id.toolbar_title).text = title
+        appbar
+            .findViewById<View>(R.id.toolbar)
+            .findViewById<TextView>(R.id.toolbar_title)
+            .text = title
     }
 
     override fun onBackPressed() {
@@ -319,7 +327,8 @@ class MainActivity : AppCompatActivity() {
                     val gsonBuilder = GsonBuilder()
                     val gson = gsonBuilder.create()
                     val restAdapter =
-                        RestAdapter.Builder()
+                        RestAdapter
+                            .Builder()
                             .setConverter(GsonConverter(gson))
                             .setLogLevel(RestAdapter.LogLevel.FULL)
                             .setLog(AndroidLog("Campus Express"))
@@ -337,7 +346,8 @@ class MainActivity : AppCompatActivity() {
                     val gsonBuilder = GsonBuilder()
                     val gson = gsonBuilder.create()
                     val restAdapter =
-                        RestAdapter.Builder()
+                        RestAdapter
+                            .Builder()
                             .setConverter(GsonConverter(gson))
                             .setLogLevel(RestAdapter.LogLevel.FULL)
                             .setLog(AndroidLog("Platform"))
@@ -352,14 +362,16 @@ class MainActivity : AppCompatActivity() {
             get() {
                 if (mStudentLifeRf2 == null) {
                     val okHttpClient =
-                        OkHttpClient.Builder()
+                        OkHttpClient
+                            .Builder()
                             .connectTimeout(35, TimeUnit.SECONDS)
                             .readTimeout(35, TimeUnit.SECONDS)
                             .writeTimeout(35, TimeUnit.SECONDS)
                             .build()
 
                     val retrofit =
-                        Retrofit.Builder()
+                        Retrofit
+                            .Builder()
                             .baseUrl("https://pennmobile.org/api/")
                             .client(okHttpClient)
                             .addConverterFactory(ScalarsConverterFactory.create())
@@ -427,7 +439,8 @@ class MainActivity : AppCompatActivity() {
                     okHttpClient.setReadTimeout(35, TimeUnit.SECONDS) // Read timeout
                     okHttpClient.setWriteTimeout(35, TimeUnit.SECONDS) // Write timeout
                     val restAdapter =
-                        RestAdapter.Builder()
+                        RestAdapter
+                            .Builder()
                             .setConverter(GsonConverter(gson))
                             .setClient(OkClient(okHttpClient))
                             .setEndpoint("https://pennmobile.org/api")
@@ -472,10 +485,12 @@ fun ViewGroup.showSneakerToast(
 ) {
     val sneaker = Sneaker.with(this)
     val view =
-        LayoutInflater.from(this.context)
+        LayoutInflater
+            .from(this.context)
             .inflate(R.layout.custom_sneaker_view, sneaker.getView(), false)
 
-    view.blurView.setupWith(this)
+    view.blurView
+        .setupWith(this)
         .setFrameClearDrawable(ColorDrawable(Color.TRANSPARENT))
         .setBlurRadius(10f)
         .setOverlayColor(resources.getColor(sneakerColor))

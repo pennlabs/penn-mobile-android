@@ -111,7 +111,8 @@ class DiningHallWidget : AppWidgetProvider() {
                     okHttpClient.setWriteTimeout(35, TimeUnit.SECONDS) // Write timeout
 
                     val restAdapter =
-                        RestAdapter.Builder()
+                        RestAdapter
+                            .Builder()
                             .setConverter(GsonConverter(gson))
                             .setClient(OkClient(okHttpClient))
                             .setEndpoint("https://pennmobile.org/api")

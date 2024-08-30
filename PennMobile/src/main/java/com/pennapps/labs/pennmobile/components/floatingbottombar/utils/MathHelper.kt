@@ -4,9 +4,7 @@ internal fun <T : Comparable<T>> clamp(
     value: T,
     min: T,
     max: T,
-): T {
-    return max(min, min(value, max))
-}
+): T = max(min, min(value, max))
 
 internal fun <T : Comparable<T>> max(
     value1: T,

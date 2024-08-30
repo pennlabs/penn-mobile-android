@@ -25,7 +25,9 @@ import retrofit.RetrofitError
 import retrofit.client.Response
 import rx.Observable
 
-class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
+class DiningSettingsFragment(
+    dataModel: HomepageDataModel,
+) : Fragment() {
     private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
     private lateinit var halls: List<DiningHall>
@@ -93,13 +95,13 @@ class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
         // Map each item in the list of venues to a Venue Observable, then map each Venue to a DiningHall Observable
         originalPreferences = dataModel.getDiningHallPrefs()
         try {
-            mStudentLife.venues()
+            mStudentLife
+                .venues()
                 .flatMap { venues -> Observable.from(venues) }
                 .flatMap { venue ->
                     val hall = DiningFragment.createHall(venue)
                     Observable.just(hall)
-                }
-                .toList()
+                }.toList()
                 .subscribe({ diningHalls ->
                     mActivity.runOnUiThread {
                         halls = diningHalls
@@ -162,11 +164,12 @@ class DiningSettingsFragment(dataModel: HomepageDataModel) : Fragment() {
 
                         override fun failure(error: RetrofitError) {
                             Log.e("Dining", "Error saving dining preferences: $error")
-                            Toast.makeText(
-                                mActivity,
-                                "Error saving dining preferences",
-                                Toast.LENGTH_SHORT,
-                            ).show()
+                            Toast
+                                .makeText(
+                                    mActivity,
+                                    "Error saving dining preferences",
+                                    Toast.LENGTH_SHORT,
+                                ).show()
                         }
                     },
                 )

@@ -24,7 +24,9 @@ import com.pennapps.labs.pennmobile.viewmodels.PennCourseAlertViewModel
 import kotlinx.android.synthetic.main.pca_registration_list_item.notify_closed_switch
 import kotlinx.android.synthetic.main.pca_registration_list_item.subscribed_switch
 
-class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnItemClickListener {
+class PennCourseAlertManageAlertsFragment :
+    Fragment(),
+    RegistrationsAdapter.OnItemClickListener {
     private val viewModel: PennCourseAlertViewModel by activityViewModels()
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RegistrationsAdapter
@@ -123,11 +125,12 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
                     alert.cancel()
                 }
             } else {
-                Toast.makeText(
-                    context,
-                    "You do not have any registrations yet!",
-                    Toast.LENGTH_SHORT,
-                ).show()
+                Toast
+                    .makeText(
+                        context,
+                        "You do not have any registrations yet!",
+                        Toast.LENGTH_SHORT,
+                    ).show()
             }
         }
         swipeRefresh = view.findViewById(R.id.pca_manage_swiperefresh)
@@ -169,11 +172,12 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
             viewModel.switchOnClosedNotifications(id, onClosedNotifications)
         } else {
             notify_closed_switch.isChecked = false
-            Toast.makeText(
-                context,
-                "Please toggle alert first to perform this action!",
-                Toast.LENGTH_SHORT,
-            ).show()
+            Toast
+                .makeText(
+                    context,
+                    "Please toggle alert first to perform this action!",
+                    Toast.LENGTH_SHORT,
+                ).show()
         }
     }
 

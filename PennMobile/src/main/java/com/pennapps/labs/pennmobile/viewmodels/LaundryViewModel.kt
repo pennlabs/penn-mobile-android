@@ -274,32 +274,20 @@ class LaundryViewModel : ViewModel() {
         return (curToggled.size >= MAX_NUM_ROOMS).xor(origState)
     }
 
-    fun getGroupCount(): Int {
-        return laundryHalls.size
-    }
+    fun getGroupCount(): Int = laundryHalls.size
 
-    fun getChildrenCount(i: Int): Int {
-        return laundryRooms[laundryHalls[i]]!!.size
-    }
+    fun getChildrenCount(i: Int): Int = laundryRooms[laundryHalls[i]]!!.size
 
-    fun getGroup(i: Int): Any {
-        return laundryHalls[i]
-    }
+    fun getGroup(i: Int): Any = laundryHalls[i]
 
     fun getChild(
         i: Int,
         i1: Int,
-    ): Any {
-        return laundryRooms[laundryHalls[i]]!![i1]
-    }
+    ): Any = laundryRooms[laundryHalls[i]]!![i1]
 
-    fun getRooms(hallName: String): List<LaundryRoomSimple>? {
-        return laundryRooms[hallName]
-    }
+    fun getRooms(hallName: String): List<LaundryRoomSimple>? = laundryRooms[hallName]
 
-    fun isChecked(roomId: Int): Boolean {
-        return curToggled.contains(roomId)
-    }
+    fun isChecked(roomId: Int): Boolean = curToggled.contains(roomId)
 
     fun isFull() = (curToggled.size >= MAX_NUM_ROOMS)
 }

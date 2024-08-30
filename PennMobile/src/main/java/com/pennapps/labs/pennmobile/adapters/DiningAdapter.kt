@@ -29,7 +29,9 @@ import kotlinx.android.synthetic.main.dining_list_item.view.item_dining_status
 import rx.android.schedulers.AndroidSchedulers
 import java.util.Collections
 
-class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Adapter<DiningAdapter.DiningViewHolder>() {
+class DiningAdapter(
+    private var diningHalls: List<DiningHall>,
+) : RecyclerView.Adapter<DiningAdapter.DiningViewHolder>() {
     private lateinit var mStudentLife: StudentLife
     private lateinit var loaded: BooleanArray
     private lateinit var sortBy: String
@@ -62,7 +64,12 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
 
             holder.hallNameTV?.text = diningHall.name
             holder.hallNameTV?.isSelected = true
-            Picasso.get().load(diningHall.image).fit().centerCrop().into(holder.hallImage)
+            Picasso
+                .get()
+                .load(diningHall.image)
+                .fit()
+                .centerCrop()
+                .into(holder.hallImage)
 
             if (diningHall.isOpen) {
                 holder.hallStatus?.background = ContextCompat.getDrawable(context, R.drawable.label_green)
@@ -84,7 +91,8 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
             if (diningHall.isResidential && !loaded[position]) {
                 holder.progressBar?.visibility = View.VISIBLE
                 try {
-                    mStudentLife.daily_menu(diningHall.id)
+                    mStudentLife
+                        .daily_menu(diningHall.id)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ newDiningHall ->
                             diningHall.sortMeals(newDiningHall.menus)
@@ -111,7 +119,8 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
                 fragment.arguments = args
 
                 val fragmentManager = mainActivity.supportFragmentManager
-                fragmentManager.beginTransaction()
+                fragmentManager
+                    .beginTransaction()
                     .replace(R.id.content_frame, fragment, "DINING_INFO_FRAGMENT")
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
@@ -121,8 +130,8 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
     }
 
     // Converts the String representation of a meal name to its corresponding resource ID
-    private fun getOpenStatusLabel(openMeal: String): Int {
-        return when (openMeal) {
+    private fun getOpenStatusLabel(openMeal: String): Int =
+        when (openMeal) {
             "Breakfast" -> R.string.dining_hall_breakfast
             "Brunch" -> R.string.dining_hall_brunch
             "Lunch" -> R.string.dining_hall_lunch
@@ -130,11 +139,8 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
             "Late Night" -> R.string.dining_hall_late_night
             else -> R.string.dining_hall_open
         }
-    }
 
-    override fun getItemCount(): Int {
-        return diningHalls.size
-    }
+    override fun getItemCount(): Int = diningHalls.size
 
     private inner class MenuComparator : Comparator<DiningHall> {
         override fun compare(
@@ -168,7 +174,9 @@ class DiningAdapter(private var diningHalls: List<DiningHall>) : RecyclerView.Ad
         }
     }
 
-    class DiningViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class DiningViewHolder(
+        view: View,
+    ) : RecyclerView.ViewHolder(view) {
         val layout: ConstraintLayout? = view.dining_list_item_layout
         val hallNameTV: TextView? = view.item_dining_name
         val hallStatus: TextView? = view.item_dining_status

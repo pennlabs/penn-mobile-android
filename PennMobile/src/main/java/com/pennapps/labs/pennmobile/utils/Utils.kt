@@ -12,11 +12,11 @@ import java.util.Locale
 object Utils {
     /** Get current formatted system time */
     @JvmStatic
-    fun getCurrentSystemTime(): String {
-        return SimpleDateFormat("EEEE, MMM d", Locale.getDefault()).format(
-            Date(),
-        ).toUpperCase(Locale.getDefault())
-    }
+    fun getCurrentSystemTime(): String =
+        SimpleDateFormat("EEEE, MMM d", Locale.getDefault())
+            .format(
+                Date(),
+            ).toUpperCase(Locale.getDefault())
 
     /**
      * Converts dps to pixels nicely.
@@ -35,11 +35,12 @@ object Utils {
         return try {
             (dp * (metrics.densityDpi / 160f)).toInt()
         } catch (ignored: NoSuchFieldError) {
-            TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                dp,
-                metrics,
-            ).toInt()
+            TypedValue
+                .applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    dp,
+                    metrics,
+                ).toInt()
         }
     }
 

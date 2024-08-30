@@ -12,15 +12,14 @@ internal object Utils {
      *
      * @return
      */
-    fun getStatusBarHeight(activityDecorView: ViewGroup?): Int {
-        return if (activityDecorView != null) {
+    fun getStatusBarHeight(activityDecorView: ViewGroup?): Int =
+        if (activityDecorView != null) {
             val rectangle = Rect()
             activityDecorView.getWindowVisibleDisplayFrame(rectangle)
             rectangle.top
         } else {
             0
         }
-    }
 
     fun convertToDp(
         context: Context,
@@ -56,11 +55,10 @@ internal object Utils {
     fun getColor(
         context: Context,
         color: Int,
-    ): Int {
-        return try {
+    ): Int =
+        try {
             ContextCompat.getColor(context, color)
         } catch (e: Exception) {
             color
         }
-    }
 }

@@ -154,13 +154,13 @@ class DiningFragment : Fragment() {
 
         // Map each item in the list of venues to a Venue Observable, then map each Venue to a DiningHall Observable
         try {
-            mStudentLife.venues()
+            mStudentLife
+                .venues()
                 .flatMap { venues -> Observable.from(venues) }
                 .flatMap { venue ->
                     val hall = createHall(venue)
                     Observable.just(hall)
-                }
-                .toList()
+                }.toList()
                 .subscribe({ diningHalls ->
                     mActivity.runOnUiThread {
                         getMenus(diningHalls)

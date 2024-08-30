@@ -87,8 +87,15 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
             viewModel.userInfo.observe(
                 viewLifecycleOwner,
                 Observer {
-                    val formattedPhoneNumber = viewModel.userInfo.value?.profile?.phone?.drop(2)
-                    val email = viewModel.userInfo.value?.profile?.email
+                    val formattedPhoneNumber =
+                        viewModel.userInfo.value
+                            ?.profile
+                            ?.phone
+                            ?.drop(2)
+                    val email =
+                        viewModel.userInfo.value
+                            ?.profile
+                            ?.email
 
                     phoneNumberEditText.text =
                         Editable.Factory.getInstance().newEditable(formattedPhoneNumber ?: "")
@@ -169,10 +176,13 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
                     },
                 )
                 courseListView.onItemClickListener =
-                    OnItemClickListener { _, _, position, _ -> // when item selected from list
+                    OnItemClickListener { _, _, position, _ ->
+                        // when item selected from list
                         // set selected item on textView
                         courseSpinner.text =
-                            courseSpinnerAdapter.getItem(position).toString()
+                            courseSpinnerAdapter
+                                .getItem(position)
+                                .toString()
                                 .substringBefore(" -")
                         viewModel.getSections(courseSpinner.text.toString(), sectionSpinnerAdapter)
                         // Dismiss dialog
@@ -182,7 +192,8 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
 
             sectionSpinner.setOnClickListener {
                 if (sectionSpinnerAdapter.isEmpty) {
-                    Toast.makeText(context, "Select course number first!", Toast.LENGTH_SHORT)
+                    Toast
+                        .makeText(context, "Select course number first!", Toast.LENGTH_SHORT)
                         .show()
                 } else {
                     dialog = Dialog(requireContext())
@@ -230,10 +241,13 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
                         },
                     )
                     sectionListView.onItemClickListener =
-                        OnItemClickListener { _, _, position, _ -> // when item selected from list
+                        OnItemClickListener { _, _, position, _ ->
+                            // when item selected from list
                             // set selected item on textView
                             sectionSpinner.text =
-                                sectionSpinnerAdapter.getItem(position).toString()
+                                sectionSpinnerAdapter
+                                    .getItem(position)
+                                    .toString()
                                     .substringBefore(" -")
                             viewModel.selectedSection = sectionSpinnerAdapter.getItem(position)!!
                             viewModel.isSectionSelected = true
@@ -246,11 +260,12 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
 
             alertButton.setOnClickListener {
                 if (emailEditText.text.isEmpty()) {
-                    Toast.makeText(
-                        context,
-                        "Please enter your email address for alert purposes",
-                        Toast.LENGTH_SHORT,
-                    ).show()
+                    Toast
+                        .makeText(
+                            context,
+                            "Please enter your email address for alert purposes",
+                            Toast.LENGTH_SHORT,
+                        ).show()
                 } else if (phoneNumberEditText.text.isNotEmpty() &&
                     !isValidNumber(
                         phoneNumberEditText.text.toString(),
@@ -258,21 +273,24 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
                 ) {
                     // If phoneNumberEditText is not empty and the entered number is not valid,
                     // show a toast message
-                    Toast.makeText(
-                        context,
-                        "Please enter a valid US number (or leave the field empty)",
-                        Toast.LENGTH_SHORT,
-                    ).show()
+                    Toast
+                        .makeText(
+                            context,
+                            "Please enter a valid US number (or leave the field empty)",
+                            Toast.LENGTH_SHORT,
+                        ).show()
                 } else {
                     // If email is not empty and phone number (if entered) is valid
                     if (viewModel.isSectionSelected) {
                         // If a course section is selected
                         if (emailEditText.text.toString() !=
                             viewModel.userInfo.value
-                                ?.profile?.email ||
+                                ?.profile
+                                ?.email ||
                             phoneNumberEditText.text.toString() !=
                             viewModel.userInfo.value
-                                ?.profile?.phone
+                                ?.profile
+                                ?.phone
                         ) {
                             // If the entered email or phone number is different from the
                             // stored values, update the user info
@@ -298,11 +316,12 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
                         viewModel.clearSelectedSection()
                     } else {
                         // If no course section is selected, prompt user to select a section
-                        Toast.makeText(
-                            context,
-                            "Please select a course section",
-                            Toast.LENGTH_SHORT,
-                        ).show()
+                        Toast
+                            .makeText(
+                                context,
+                                "Please select a course section",
+                                Toast.LENGTH_SHORT,
+                            ).show()
                     }
                 }
             }
@@ -311,12 +330,12 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
                 viewLifecycleOwner,
                 Observer {
                     if (it) {
-                        Toast.makeText(
-                            context,
-                            "Registration Created Successfully!",
-                            Toast.LENGTH_SHORT,
-                        )
-                            .show()
+                        Toast
+                            .makeText(
+                                context,
+                                "Registration Created Successfully!",
+                                Toast.LENGTH_SHORT,
+                            ).show()
                         viewModel.onSuccessToastDone()
                     }
                 },

@@ -29,7 +29,10 @@ import com.pennapps.labs.pennmobile.components.sneaker.intf.OnSneakerDismissList
  *
  * Modified for PennMobile by Davies Lumumba on 7/25/2020
  * */
-class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObserver {
+class Sneaker(
+    private var context: Context,
+) : View.OnClickListener,
+    LifecycleObserver {
     private val defaultValue = -100000
     private var mIconDrawable: Drawable? = null
     private var mBackgroundColor = defaultValue
@@ -60,11 +63,10 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
          * @return Sneaker instance
          */
         @JvmStatic
-        fun with(activity: Activity): Sneaker {
-            return Sneaker(activity).also {
+        fun with(activity: Activity): Sneaker =
+            Sneaker(activity).also {
                 it.setTargetView(activity)
             }
-        }
 
         /**
          * Create Sneaker instance
@@ -73,11 +75,10 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
          * @return Sneaker instance
          */
         @JvmStatic
-        fun with(fragment: Fragment): Sneaker {
-            return Sneaker(fragment.requireContext()).also {
+        fun with(fragment: Fragment): Sneaker =
+            Sneaker(fragment.requireContext()).also {
                 it.setTargetView(fragment)
             }
-        }
 
         /**
          * Create Sneaker instance
@@ -86,11 +87,10 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
          * @return Sneaker instance
          */
         @JvmStatic
-        fun with(viewGroup: ViewGroup): Sneaker {
-            return Sneaker(viewGroup.context).also {
+        fun with(viewGroup: ViewGroup): Sneaker =
+            Sneaker(viewGroup.context).also {
                 it.setTargetView(viewGroup)
             }
-        }
     }
 
     private fun setTargetView(targetView: Any) {

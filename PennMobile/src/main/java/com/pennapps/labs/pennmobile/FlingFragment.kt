@@ -58,7 +58,7 @@ class FlingFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentFlingBinding.inflate(inflater, container, false)
         val view = binding.root
@@ -75,13 +75,15 @@ class FlingFragment : Fragment() {
                 },
                 {
                     activity?.runOnUiThread {
-                        Toast.makeText(
-                            activity,
-                            "Could not retrieve Spring Fling schedule",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        Toast
+                            .makeText(
+                                activity,
+                                "Could not retrieve Spring Fling schedule",
+                                Toast.LENGTH_LONG,
+                            ).show()
                     }
-                })
+                },
+            )
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -96,8 +98,8 @@ class FlingFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val mActivity: MainActivity? = activity as MainActivity
-        mActivity?.removeTabs()
-        mActivity?.setTitle(R.string.spring_fling)
+        val mActivity: MainActivity = activity as MainActivity
+        mActivity.removeTabs()
+        mActivity.setTitle(R.string.spring_fling)
     }
 }

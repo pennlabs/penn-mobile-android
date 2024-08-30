@@ -101,7 +101,8 @@ class PreferenceFragment : PreferenceFragmentCompat() {
 
         val newsFeaturePref: Preference? = findPreference("pref_news_feature")
         newsFeaturePref?.setOnPreferenceClickListener {
-            mActivity.supportFragmentManager.beginTransaction()
+            mActivity.supportFragmentManager
+                .beginTransaction()
                 .replace(R.id.content_frame, NewsFragment())
                 .addToBackStack(null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -111,7 +112,8 @@ class PreferenceFragment : PreferenceFragmentCompat() {
 
         val contactsFeaturePref: Preference? = findPreference("pref_contacts_feature")
         contactsFeaturePref?.setOnPreferenceClickListener {
-            mActivity.supportFragmentManager.beginTransaction()
+            mActivity.supportFragmentManager
+                .beginTransaction()
                 .replace(R.id.content_frame, SupportFragment())
                 .addToBackStack(null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -121,7 +123,8 @@ class PreferenceFragment : PreferenceFragmentCompat() {
 
         val aboutFeaturePref: Preference? = findPreference("pref_about_feature")
         aboutFeaturePref?.setOnPreferenceClickListener {
-            mActivity.supportFragmentManager.beginTransaction()
+            mActivity.supportFragmentManager
+                .beginTransaction()
                 .replace(R.id.content_frame, AboutFragment())
                 .addToBackStack(null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -131,7 +134,8 @@ class PreferenceFragment : PreferenceFragmentCompat() {
 
         val fitnessFeaturePref: Preference? = findPreference("pref_fitness_feature")
         fitnessFeaturePref?.setOnPreferenceClickListener {
-            mActivity.supportFragmentManager.beginTransaction()
+            mActivity.supportFragmentManager
+                .beginTransaction()
                 .replace(R.id.content_frame, PottruckFragment())
                 .addToBackStack(null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -211,7 +215,8 @@ class PreferenceFragment : PreferenceFragmentCompat() {
         text.add(sharedPreference.getString(getString(R.string.email_address), null))
 
         val alert: CustomAlertDialogue.Builder =
-            CustomAlertDialogue.Builder(activity)
+            CustomAlertDialogue
+                .Builder(activity)
                 .setStyle(CustomAlertDialogue.Style.INPUT)
                 .setTitle("Contact Info")
                 .setMessage("This information is used when booking GSRs and when displaying your name on the app.")
@@ -246,8 +251,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                         )
                     }
                     dialog.dismiss()
-                }
-                .setNegativeText("Cancel")
+                }.setNegativeText("Cancel")
                 .setNegativeColor(stream.customalert.R.color.negative)
                 .setOnNegativeClicked { _, dialog -> dialog.dismiss() }
                 .setLineInputHint(hints)

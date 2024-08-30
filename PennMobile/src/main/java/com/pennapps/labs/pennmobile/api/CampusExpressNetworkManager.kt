@@ -6,7 +6,9 @@ import com.pennapps.labs.pennmobile.R
 import java.util.Calendar
 import java.util.Date
 
-class CampusExpressNetworkManager(private var mActivity: MainActivity) {
+class CampusExpressNetworkManager(
+    private var mActivity: MainActivity,
+) {
     private val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
     val editor = sp?.edit()
 

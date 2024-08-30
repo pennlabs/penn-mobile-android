@@ -12,7 +12,10 @@ import com.pennapps.labs.pennmobile.adapters.DiningInsightsCardAdapter
 import java.text.SimpleDateFormat
 import kotlin.math.roundToInt
 
-class DiningMarkerView(context: Context, layoutResource: Int) : MarkerView(context, layoutResource) {
+class DiningMarkerView(
+    context: Context,
+    layoutResource: Int,
+) : MarkerView(context, layoutResource) {
     companion object {
         private const val DINING_DOLLARS_PREDICTIONS = 2
         private const val DINING_SWIPES_PREDICTIONS = 3
@@ -63,7 +66,5 @@ class DiningMarkerView(context: Context, layoutResource: Int) : MarkerView(conte
     }
 
     // This is used to reposition the marker
-    override fun getOffset(): MPPointF {
-        return MPPointF(0.0F, (-height / 6).toFloat())
-    }
+    override fun getOffset(): MPPointF = MPPointF(0.0F, (-height / 6).toFloat())
 }

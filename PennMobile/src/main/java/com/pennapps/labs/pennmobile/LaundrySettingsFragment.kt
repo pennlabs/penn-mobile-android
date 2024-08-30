@@ -104,7 +104,8 @@ class LaundrySettingsFragment : Fragment() {
                 val bearerToken =
                     "Bearer " +
                         sharedPreferences
-                            .getString(getString(R.string.access_token), "").toString()
+                            .getString(getString(R.string.access_token), "")
+                            .toString()
                 laundryViewModel.setFavoritesFromToggled(mStudentLife, bearerToken)
             }
         }

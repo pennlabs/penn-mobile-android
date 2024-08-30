@@ -75,7 +75,8 @@ class DiningInsightsFragment : Fragment() {
         val accessToken = networkManager.getAccessToken()
         if (accessToken == "") {
             val fragment = CampusExpressLoginFragment()
-            parentFragmentManager.beginTransaction()
+            parentFragmentManager
+                .beginTransaction()
                 .replace(R.id.dining_insights_page, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack("DiningInsightsFragment")
@@ -112,7 +113,8 @@ class DiningInsightsFragment : Fragment() {
         if (accessToken == "") {
             binding.diningInsightsRefresh.isRefreshing = false
             val fragment = CampusExpressLoginFragment()
-            parentFragmentManager.beginTransaction()
+            parentFragmentManager
+                .beginTransaction()
                 .replace(R.id.dining_insights_page, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack("DiningInsightsFragment")

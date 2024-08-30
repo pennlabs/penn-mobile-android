@@ -38,33 +38,36 @@ class LoginFragment : Fragment() {
         val fragmentManager = mActivity.supportFragmentManager
         val gif = R.drawable.login_background
 
-        Glide.with(this).asGif().load(gif).listener(
-            object : RequestListener<GifDrawable> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: com.bumptech.glide.request.target.Target<GifDrawable>?,
-                    isFirstResource: Boolean,
-                ): Boolean {
-                    return false
-                }
+        Glide
+            .with(this)
+            .asGif()
+            .load(gif)
+            .listener(
+                object : RequestListener<GifDrawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: com.bumptech.glide.request.target.Target<GifDrawable>?,
+                        isFirstResource: Boolean,
+                    ): Boolean = false
 
-                override fun onResourceReady(
-                    resource: GifDrawable,
-                    model: Any,
-                    target: com.bumptech.glide.request.target.Target<GifDrawable>?,
-                    dataSource: DataSource,
-                    isFirstResource: Boolean,
-                ): Boolean {
-                    resource.setLoopCount(1)
-                    return false
-                }
-            },
-        ).into(binding.backgroundIv)
+                    override fun onResourceReady(
+                        resource: GifDrawable,
+                        model: Any,
+                        target: com.bumptech.glide.request.target.Target<GifDrawable>?,
+                        dataSource: DataSource,
+                        isFirstResource: Boolean,
+                    ): Boolean {
+                        resource.setLoopCount(1)
+                        return false
+                    }
+                },
+            ).into(binding.backgroundIv)
 
         binding.loginButton.setOnClickListener {
             val fragment = LoginWebviewFragment()
-            fragmentManager.beginTransaction()
+            fragmentManager
+                .beginTransaction()
                 .replace(R.id.content_frame, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()

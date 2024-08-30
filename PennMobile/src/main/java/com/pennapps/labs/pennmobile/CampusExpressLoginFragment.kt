@@ -57,9 +57,7 @@ class CampusExpressLoginFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
-        return inflater.inflate(R.layout.fragment_campus_express_login, container, false)
-    }
+    ): View? = inflater.inflate(R.layout.fragment_campus_express_login, container, false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,7 +84,8 @@ class CampusExpressLoginFragment : Fragment() {
         headerLayout = view.findViewById(R.id.linear_layout)
         cancelButton = view.findViewById(R.id.cancel_button)
         val uri =
-            Uri.parse(campusExpressAuthUrl)
+            Uri
+                .parse(campusExpressAuthUrl)
                 .buildUpon()
                 .appendQueryParameter("response_type", "code")
                 .appendQueryParameter("client_id", clientID)
@@ -135,7 +134,8 @@ class CampusExpressLoginFragment : Fragment() {
     private fun goToDiningInsights(refresh: Boolean) {
         if (refresh) {
             val fragment = DiningInsightsFragment()
-            parentFragmentManager.beginTransaction()
+            parentFragmentManager
+                .beginTransaction()
                 .replace(R.id.campus_express_page, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
