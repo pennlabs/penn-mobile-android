@@ -54,6 +54,7 @@ import com.pennapps.labs.pennmobile.classes.Post
 import com.pennapps.labs.pennmobile.classes.PostCell
 import com.pennapps.labs.pennmobile.components.sneaker.Utils.convertToDp
 import com.pennapps.labs.pennmobile.utils.Utils
+import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.android.synthetic.main.home_base_card.view.dining_prefs_btn
 import kotlinx.android.synthetic.main.home_base_card.view.home_card_rv
 import kotlinx.android.synthetic.main.home_base_card.view.home_card_subtitle
@@ -354,7 +355,7 @@ class HomeAdapter(
 
         /** Sets up blur view on news card */
         holder.itemView.blurView
-            .setupWith(holder.itemView.news_card_container)
+            .setupWith(holder.itemView.news_card_container, RenderScriptBlur(mContext))
             .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))
             .setBlurRadius(25f)
 
@@ -536,7 +537,7 @@ class HomeAdapter(
         }
         /** Sets up blur view on post card */
         holder.itemView.postBlurView
-            .setupWith(holder.itemView.post_card_container)
+            .setupWith(holder.itemView.post_card_container, RenderScriptBlur(mContext))
             .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))
             .setBlurRadius(25f)
         /** Post clicking logic if there exists a URL **/
