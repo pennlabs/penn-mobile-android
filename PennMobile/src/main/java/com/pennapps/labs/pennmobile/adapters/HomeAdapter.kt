@@ -386,7 +386,7 @@ class HomeAdapter(
                         mContext,
                         0,
                         share,
-                        PendingIntent.FLAG_CANCEL_CURRENT,
+                        PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE,
                     ),
                 )
                 customTabsIntent = builder?.build()
@@ -567,7 +567,7 @@ class HomeAdapter(
                         mContext,
                         0,
                         share,
-                        PendingIntent.FLAG_CANCEL_CURRENT,
+                        PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE,
                     ),
                 )
                 customTabsIntent = builder?.build()

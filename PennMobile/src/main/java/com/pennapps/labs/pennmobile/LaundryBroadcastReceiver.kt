@@ -64,7 +64,7 @@ class LaundryBroadcastReceiver : BroadcastReceiver() {
         notificationManager.notify(notificationID, mBuilder.build())
 
         // cancel intent after notification/alarm goes off
-        val fromIntent = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_NO_CREATE)
+        val fromIntent = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE)
         fromIntent?.cancel()
     }
 }
