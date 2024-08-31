@@ -134,6 +134,11 @@ class MenuFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        if (view != null) {
+            val pager: ViewPager = requireView().findViewById(R.id.menu_pager)
+            pager.adapter = null
+        }
+
         super.onDestroyView()
         mActivity.removeTabs()
         if (mActivity.supportActionBar != null) {
