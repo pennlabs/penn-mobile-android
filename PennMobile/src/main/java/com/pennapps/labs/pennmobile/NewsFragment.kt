@@ -35,6 +35,7 @@ class NewsFragment : ListFragment() {
 
     private var mListView: ListView? = null
     private var mCustomTabsClient: CustomTabsClient? = null
+    private lateinit var mActivity: MainActivity
     private var customTabsIntent: CustomTabsIntent? = null
     private var share: Intent? = null
     private var session: CustomTabsSession? = null
@@ -43,6 +44,7 @@ class NewsFragment : ListFragment() {
     private lateinit var sharedPreferences: SharedPreferences
 
     private var connection: NewsCustomTabsServiceConnection? = null
+
 
     private var _binding: FragmentNewsBinding? = null
     val binding get() = _binding!!
@@ -162,7 +164,7 @@ class NewsFragment : ListFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val mActivity = activity as MainActivity
+        mActivity = activity as MainActivity
         mActivity.closeKeyboard()
         setHasOptionsMenu(true)
 
@@ -175,6 +177,7 @@ class NewsFragment : ListFragment() {
         savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentNewsBinding.inflate(inflater, container, false)
+        mActivity.hideBottomBar()
         return binding.root
     }
 
