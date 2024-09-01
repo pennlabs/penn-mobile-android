@@ -33,20 +33,18 @@ class NewsFragment : ListFragment() {
         @JvmStatic val CUSTOM_TAB_PACKAGE_NAME = "com.android.chrome"
     }
 
-    private var mListView: ListView? = null
-    private var mCustomTabsClient: CustomTabsClient? = null
-    private lateinit var mActivity: MainActivity
-    private var customTabsIntent: CustomTabsIntent? = null
-    private var share: Intent? = null
-    private var session: CustomTabsSession? = null
+    private var _binding: FragmentNewsBinding? = null
     private var builder: CustomTabsIntent.Builder? = null
+    private var connection: NewsCustomTabsServiceConnection? = null
+    private var customTabsIntent: CustomTabsIntent? = null
     private var isCustomTabsSupported: Boolean = false
+    private var mCustomTabsClient: CustomTabsClient? = null
+    private var mListView: ListView? = null
+    private var session: CustomTabsSession? = null
+    private var share: Intent? = null
+    private lateinit var mActivity: MainActivity
     private lateinit var sharedPreferences: SharedPreferences
 
-    private var connection: NewsCustomTabsServiceConnection? = null
-
-
-    private var _binding: FragmentNewsBinding? = null
     val binding get() = _binding!!
 
     internal inner class CustomListAdapter(
