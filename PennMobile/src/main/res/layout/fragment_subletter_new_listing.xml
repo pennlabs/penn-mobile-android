@@ -430,12 +430,12 @@
                 />
 
             <CheckBox
-                android:id="@+id/gym_check"
+                android:id="@+id/fitness_check"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="26sp"
                 android:fontFamily="@font/sf_pro_display_regular"
-                android:text="@string/gym"
+                android:text="Fitness Facilities"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/bathroom_check"
@@ -450,7 +450,7 @@
                 android:fontFamily="@font/sf_pro_display_regular"
                 android:text="@string/wifi"
                 android:textSize="16sp"
-                app:layout_constraintStart_toEndOf="@id/gym_check"
+                app:layout_constraintStart_toEndOf="@id/fitness_check"
                 app:layout_constraintTop_toBottomOf="@id/bathroom_check" />
 
             <CheckBox
@@ -465,15 +465,15 @@
                 app:layout_constraintTop_toBottomOf="@id/bathroom_check" />
 
             <CheckBox
-                android:id="@+id/furnished_check"
+                android:id="@+id/furniture_check"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="26sp"
                 android:fontFamily="@font/sf_pro_display_regular"
-                android:text="@string/furnished"
+                android:text="@string/furniture"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/gym_check"
+                app:layout_constraintTop_toBottomOf="@id/fitness_check"
 
                 />
 
@@ -485,8 +485,8 @@
                 android:fontFamily="@font/sf_pro_display_regular"
                 android:text="@string/utilities_included"
                 android:textSize="16sp"
-                app:layout_constraintStart_toEndOf="@id/furnished_check"
-                app:layout_constraintTop_toBottomOf="@id/gym_check" />
+                app:layout_constraintStart_toEndOf="@id/furniture_check"
+                app:layout_constraintTop_toBottomOf="@id/fitness_check" />
 
             <CheckBox
                 android:id="@+id/pool_check"
@@ -497,7 +497,7 @@
                 android:text="@string/swimming_pool"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/furnished_check"
+                app:layout_constraintTop_toBottomOf="@id/furniture_check"
 
                 />
 
@@ -510,7 +510,7 @@
                 android:text="@string/resident_lounge"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/pool_check"
-                app:layout_constraintTop_toBottomOf="@id/furnished_check" />
+                app:layout_constraintTop_toBottomOf="@id/furniture_check" />
 
             <CheckBox
                 android:id="@+id/parking_check"
@@ -572,6 +572,72 @@
                 app:layout_constraintStart_toEndOf="@id/dog_check"
                 app:layout_constraintTop_toBottomOf="@id/parking_check" />
 
+            <CheckBox
+                android:id="@+id/kitchen_appliances_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="26sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="@string/kitchen_appliances"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/dog_check" />
+
+            <CheckBox
+                android:id="@+id/maintenance_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="Maintenance Services"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@id/kitchen_appliances_check"
+                app:layout_constraintTop_toBottomOf="@id/dog_check" />
+
+
+            <CheckBox
+                android:id="@+id/security_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="26sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="Security Features"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/kitchen_appliances_check" />
+
+            <CheckBox
+                android:id="@+id/ac_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="Air Conditioning"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@id/security_check"
+                app:layout_constraintTop_toBottomOf="@id/kitchen_appliances_check" />
+
+            <CheckBox
+                android:id="@+id/accessibility_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="26sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="Accessibility Features"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/security_check" />
+
+            <CheckBox
+                android:id="@+id/heating_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10sp"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:text="Heating"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@id/accessibility_check"
+                app:layout_constraintTop_toBottomOf="@id/security_check" />
 
             <TextView
                 android:id="@+id/description_text"
@@ -584,7 +650,9 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dog_check" />
+                app:layout_constraintTop_toBottomOf="@id/accessibility_check" />
+
+
 
             <EditText
                 android:id="@+id/description_input"

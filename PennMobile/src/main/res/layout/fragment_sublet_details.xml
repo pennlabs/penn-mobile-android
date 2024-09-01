@@ -152,12 +152,13 @@
 
             <TextView
                 android:id="@+id/description_text"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="26sp"
                 android:layout_marginTop="10sp"
                 android:text="TextView"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/description_title_text" />
 
             <View
@@ -183,12 +184,13 @@
                 app:layout_constraintTop_toBottomOf="@+id/divider4" />
             <TextView
                 android:id="@+id/amenities_text"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="26sp"
                 android:layout_marginTop="10sp"
                 android:text="TextView"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/amenties_title" />
 
             <TextView
