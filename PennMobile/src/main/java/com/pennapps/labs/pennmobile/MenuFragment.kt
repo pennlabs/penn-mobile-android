@@ -103,9 +103,13 @@ class MenuFragment : Fragment() {
         pager.adapter = pageAdapter
         v.setBackgroundColor(Color.WHITE)
         mActivity.addTabs(pageAdapter as TabAdapter, pager, true)
-        mActivity.toolbar.visibility = View.VISIBLE
         mActivity.hideBottomBar()
         return v
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mActivity.toolbar.visibility = View.VISIBLE
     }
 
     override fun onCreateOptionsMenu(
