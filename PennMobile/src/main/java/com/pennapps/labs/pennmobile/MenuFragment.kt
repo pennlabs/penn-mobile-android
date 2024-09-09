@@ -109,7 +109,7 @@ class MenuFragment : Fragment() {
 
     override fun onViewCreated(
         view: View,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
         mActivity.toolbar.visibility = View.VISIBLE
