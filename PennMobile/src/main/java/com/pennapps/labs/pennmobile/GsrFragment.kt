@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -242,27 +243,29 @@ class GsrFragment : Fragment() {
 
     private fun updateStatus() {
         mActivity.mNetworkManager.getAccessToken {
-            val bearerToken =
-                sharedPreferences.getString(getString(R.string.access_token), "").toString()
+            checkIfFragmentAttached {
+                val bearerToken =
+                    sharedPreferences.getString(getString(R.string.access_token), "").toString()
 
-            if (bearerToken.isEmpty()) {
-                Toast.makeText(activity, "You are not logged in!", Toast.LENGTH_LONG).show()
-            } else {
-                try {
-                    mStudentLife
-                        .isWharton(
-                            "Bearer $bearerToken",
-                        )?.subscribe(
-                            { status ->
-                                isWharton = status.isWharton
-                            },
-                            {
-                                Log.e("GsrFragment", "Error getting Wharton status", it)
-                                isWharton = false
-                            },
-                        )
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                if (bearerToken.isEmpty()) {
+                    Toast.makeText(activity, "You are not logged in!", Toast.LENGTH_LONG).show()
+                } else {
+                    try {
+                        mStudentLife
+                            .isWharton(
+                                "Bearer $bearerToken",
+                            )?.subscribe(
+                                { status ->
+                                    isWharton = status.isWharton
+                                },
+                                {
+                                    Log.e("GsrFragment", "Error getting Wharton status", it)
+                                    isWharton = false
+                                },
+                            )
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
             }
         }
@@ -679,6 +682,11 @@ class GsrFragment : Fragment() {
                     end,
                 )
             mGSRS.add(newGSRObject)
+        }
+    }
+    fun checkIfFragmentAttached(operation: Context.() -> Unit) {
+        if (isAdded && context != null) {
+            operation(requireContext())
         }
     }
 }

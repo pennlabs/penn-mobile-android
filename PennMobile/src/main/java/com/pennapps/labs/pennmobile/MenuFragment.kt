@@ -88,9 +88,7 @@ class MenuFragment : Fragment() {
         super.onCreate(savedInstanceState)
         mDiningHall = arguments?.getParcelable("DiningHall")
         mActivity = activity as MainActivity
-        mActivity.toolbar.visibility = View.VISIBLE
         setHasOptionsMenu(true)
-        mActivity.hideBottomBar()
     }
 
     override fun onCreateView(
@@ -105,6 +103,8 @@ class MenuFragment : Fragment() {
         pager.adapter = pageAdapter
         v.setBackgroundColor(Color.WHITE)
         mActivity.addTabs(pageAdapter as TabAdapter, pager, true)
+        mActivity.toolbar.visibility = View.VISIBLE
+        mActivity.hideBottomBar()
         return v
     }
 
