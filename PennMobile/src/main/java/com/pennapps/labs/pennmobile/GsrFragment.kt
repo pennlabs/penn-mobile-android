@@ -684,6 +684,7 @@ class GsrFragment : Fragment() {
             mGSRS.add(newGSRObject)
         }
     }
+
     fun checkIfFragmentAttached(operation: Context.() -> Unit) {
         if (isAdded && context != null) {
             operation(requireContext())
