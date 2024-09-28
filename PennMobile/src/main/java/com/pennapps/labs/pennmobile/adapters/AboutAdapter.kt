@@ -49,6 +49,7 @@ class AboutAdapter(
                 "Aaron Mei" -> R.drawable.aaron
                 "Joe MacDougall" -> R.drawable.joe
                 "Baron Ping-Yeh Hsieh" -> R.drawable.baron
+                "David Fu" -> R.drawable.david
                 else -> null
             }
         if (imageId != null) holder.view.person_iv?.setImageResource(imageId)
