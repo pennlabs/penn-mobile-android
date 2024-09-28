@@ -16,10 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.adapters.GsrReservationsAdapter
 import com.pennapps.labs.pennmobile.databinding.FragmentGsrReservationsBinding
-import kotlinx.android.synthetic.main.loading_panel.loadingPanel
 
 class GsrReservationsFragment : Fragment() {
     private lateinit var mActivity: MainActivity
+    private lateinit var loadingPanel: View
 
     private var _binding: FragmentGsrReservationsBinding? = null
     val binding get() = _binding!!
@@ -65,6 +65,7 @@ class GsrReservationsFragment : Fragment() {
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
+        loadingPanel = view.findViewById(R.id.loadingPanel)
         if (!isOnline(context)) {
             binding.internetConnectionGSRReservations.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
             binding.internetConnectionMessageGsrReservations.text = "Not Connected to Internet"
