@@ -169,7 +169,7 @@ class DiningAdapter(
     }
 
     class DiningViewHolder(
-        private val itemBinding: DiningListItemBinding,
+        itemBinding: DiningListItemBinding,
     ) : RecyclerView.ViewHolder(itemBinding.root) {
         val layout: ConstraintLayout = itemBinding.diningListItemLayout
         val hallNameTV: TextView = itemBinding.itemDiningName
