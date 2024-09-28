@@ -16,8 +16,8 @@ import com.pennapps.labs.pennmobile.classes.PennCourseAlertRegistration
 class RegistrationsAdapter(
     private val listener: OnItemClickListener,
 ) : ListAdapter<
-        PennCourseAlertRegistration,
-        RegistrationsAdapter.ViewHolder,
+    PennCourseAlertRegistration,
+    RegistrationsAdapter.ViewHolder,
     >(RegistrationDiffCallBack()) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -75,7 +75,7 @@ class RegistrationsAdapter(
             notifyClosedSwitch.isChecked = (
                 registration.closeNotification &&
                     !registration.cancelled
-            )
+                )
             if (registration.lastNotificationSentAt.isNotEmpty()) {
                 lastNotified.text = formatDate(registration.lastNotificationSentAt)
             }

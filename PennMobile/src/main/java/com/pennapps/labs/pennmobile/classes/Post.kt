@@ -113,6 +113,6 @@ class Post {
                 createdDateHash + startDateHash + expireDateHash +
                 clubCommentHash + adminCommentHash + statusHash +
                 targetPopulationsHash
-        ).hashCode()
+            ).hashCode()
     }
 }

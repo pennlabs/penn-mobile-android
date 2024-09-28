@@ -115,8 +115,8 @@ class LaundryMachineAdapter(
         var context: Context,
         var machineDetails: List<MachineDetail>,
     ) : RecyclerView.ViewHolder(
-            view,
-        ) {
+        view,
+    ) {
         var machineView: ImageView? = view.laundry_machine_image_view
         var timeTextView: TextView? = view.min_left_time
         var notificationBell: LottieAnimationView = view.bell_notification_icon
@@ -176,7 +176,7 @@ class LaundryMachineAdapter(
                         null,
                         R.color.sneakerBlurColorOverlay,
                     )
-                )
+                    )
             } else {
                 holder.notificationBell.visibility = View.INVISIBLE
                 // cancel alarm if exists
@@ -202,7 +202,7 @@ class LaundryMachineAdapter(
                         null,
                         R.color.sneakerBlurColorOverlay,
                     )
-                )
+                    )
             }
         }
     }

@@ -56,7 +56,7 @@ class MoreFragment : Fragment() {
         (
             view.appbar_home.layoutParams
                 as CoordinatorLayout.LayoutParams
-        ).behavior = ToolbarBehavior()
+            ).behavior = ToolbarBehavior()
     }
 
     override fun onResume() {

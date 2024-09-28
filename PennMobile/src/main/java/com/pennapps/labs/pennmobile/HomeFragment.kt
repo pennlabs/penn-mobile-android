@@ -232,7 +232,7 @@ class HomeFragment : Fragment() {
         (
             view.appbar_home.layoutParams
                 as CoordinatorLayout.LayoutParams
-        ).behavior = ToolbarBehavior()
+            ).behavior = ToolbarBehavior()
         view.profile.setOnClickListener {
             // TODO: Account Settings
         }

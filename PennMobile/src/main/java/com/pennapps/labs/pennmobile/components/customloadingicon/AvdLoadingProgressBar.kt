@@ -12,23 +12,23 @@ import com.pennapps.labs.pennmobile.R
  * Davies Lumumba - 25th Feb 2021
  */
 class AvdLoadingProgressBar
-    @JvmOverloads
-    constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0,
-    ) : AppCompatImageView(context, attrs, defStyleAttr) {
-        private val avd = AnimatedVectorDrawableCompat.create(context, R.drawable.ic_labs_loading_icon)!!
+@JvmOverloads
+constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+) : AppCompatImageView(context, attrs, defStyleAttr) {
+    private val avd = AnimatedVectorDrawableCompat.create(context, R.drawable.ic_labs_loading_icon)!!
 
-        init {
-            setImageDrawable(avd)
-            avd.registerAnimationCallback(
-                object : Animatable2Compat.AnimationCallback() {
-                    override fun onAnimationEnd(drawable: Drawable?) {
-                        post { avd.start() }
-                    }
-                },
-            )
-            avd.start()
-        }
+    init {
+        setImageDrawable(avd)
+        avd.registerAnimationCallback(
+            object : Animatable2Compat.AnimationCallback() {
+                override fun onAnimationEnd(drawable: Drawable?) {
+                    post { avd.start() }
+                }
+            },
+        )
+        avd.start()
     }
+}

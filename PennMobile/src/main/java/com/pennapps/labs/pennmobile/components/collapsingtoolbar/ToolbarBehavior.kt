@@ -128,7 +128,7 @@ class ToolbarBehavior : CoordinatorLayout.Behavior<AppBarLayout>() {
                         (
                             (title.layoutParams as FrameLayout.LayoutParams).marginStart +
                                 title.measuredWidth / 2
-                        ).toFloat()
+                            ).toFloat()
 
                 // Maps the x translation to the shifting toolbar height
                 title.translationX = (toolbarOriginalHeight - toolbar.layoutParams.height) /
@@ -167,7 +167,7 @@ class ToolbarBehavior : CoordinatorLayout.Behavior<AppBarLayout>() {
                         (
                             (title.layoutParams as FrameLayout.LayoutParams).marginStart +
                                 title.measuredWidth / 2
-                        ).toFloat()
+                            ).toFloat()
 
                 // Maps the x translation to the shifting toolbar height
                 title.translationX = (toolbarOriginalHeight - toolbar.layoutParams.height) /

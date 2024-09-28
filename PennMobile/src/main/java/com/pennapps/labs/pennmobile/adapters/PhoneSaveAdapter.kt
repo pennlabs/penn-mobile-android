@@ -18,10 +18,10 @@ class PhoneSaveAdapter(
     s: MutableList<Contact>,
     size: Int,
 ) : ArrayAdapter<Contact?>(
-        context,
-        R.layout.phone_save_list_item,
-        contacts,
-    ) {
+    context,
+    R.layout.phone_save_list_item,
+    contacts,
+) {
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private val selections: MutableList<Contact> = s
     private val state: BooleanArray = BooleanArray(size)

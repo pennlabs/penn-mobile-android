@@ -392,7 +392,7 @@ class GsrFragment : Fragment() {
                                                 sortByTime,
                                             )
                                         }
-                                    )
+                                        )
 
                                     mGSRS = ArrayList()
                                     selectDateButton.isClickable = true
@@ -592,7 +592,7 @@ class GsrFragment : Fragment() {
                         (
                             gsrLocationDropDown.selectedItem.toString() == "Huntsman" ||
                                 gsrLocationDropDown.selectedItem.toString() == "Academic Research"
-                        )
+                            )
                     ) {
                         durationPos = 2
                     } else if (durationPos > 3 && gsrLocationDropDown.selectedItem.toString() != "Biotech Commons") {
