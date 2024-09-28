@@ -18,14 +18,8 @@ import com.pennapps.labs.pennmobile.MenuFragment
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
+import com.pennapps.labs.pennmobile.databinding.DiningListItemBinding
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.dining_list_item.view.dining_hall_menu_indicator
-import kotlinx.android.synthetic.main.dining_list_item.view.dining_list_item_layout
-import kotlinx.android.synthetic.main.dining_list_item.view.dining_progress
-import kotlinx.android.synthetic.main.dining_list_item.view.item_dining_hours
-import kotlinx.android.synthetic.main.dining_list_item.view.item_dining_image
-import kotlinx.android.synthetic.main.dining_list_item.view.item_dining_name
-import kotlinx.android.synthetic.main.dining_list_item.view.item_dining_status
 import rx.android.schedulers.AndroidSchedulers
 import java.util.Collections
 
@@ -41,14 +35,14 @@ class DiningAdapter(
         parent: ViewGroup,
         viewType: Int,
     ): DiningViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.dining_list_item, parent, false)
+        val itemBinding = DiningListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         mStudentLife = MainActivity.studentLifeInstance
         loaded = BooleanArray(diningHalls.size)
         context = parent.context
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
         sortBy = sp.getString("dining_sortBy", "RESIDENTIAL") ?: "RESIDENTIAL"
         Collections.sort(diningHalls, MenuComparator())
-        return DiningViewHolder(view)
+        return DiningViewHolder(itemBinding)
     }
 
     override fun onBindViewHolder(
@@ -59,11 +53,11 @@ class DiningAdapter(
             val diningHall = diningHalls[position]
 
             // Show dining hall name, photo, status, and hours on the screen
-            holder.menuArrow?.visibility = View.GONE
-            holder.progressBar?.visibility = View.VISIBLE
+            holder.menuArrow.visibility = View.GONE
+            holder.progressBar.visibility = View.VISIBLE
 
-            holder.hallNameTV?.text = diningHall.name
-            holder.hallNameTV?.isSelected = true
+            holder.hallNameTV.text = diningHall.name
+            holder.hallNameTV.isSelected = true
             Picasso
                 .get()
                 .load(diningHall.image)
@@ -72,45 +66,45 @@ class DiningAdapter(
                 .into(holder.hallImage)
 
             if (diningHall.isOpen) {
-                holder.hallStatus?.background = ContextCompat.getDrawable(context, R.drawable.label_green)
+                holder.hallStatus.background = ContextCompat.getDrawable(context, R.drawable.label_green)
                 if (diningHall.openMeal() != "all" && diningHall.openMeal() != null) {
-                    holder.hallStatus?.setText(getOpenStatusLabel(diningHall.openMeal() ?: ""))
+                    holder.hallStatus.setText(getOpenStatusLabel(diningHall.openMeal() ?: ""))
                 }
-                holder.hallHours?.text = diningHall.openTimes().lowercase()
+                holder.hallHours.text = diningHall.openTimes().lowercase()
             } else {
-                holder.hallStatus?.setText(R.string.dining_hall_closed)
-                holder.hallStatus?.background = ContextCompat.getDrawable(context, R.drawable.label_red)
+                holder.hallStatus.setText(R.string.dining_hall_closed)
+                holder.hallStatus.background = ContextCompat.getDrawable(context, R.drawable.label_red)
                 val openTimes = diningHall.openTimes()
                 if (openTimes.isEmpty()) {
-                    holder.hallHours?.setText(R.string.dining_closed)
+                    holder.hallHours.setText(R.string.dining_closed)
                 } else {
-                    holder.hallHours?.text = diningHall.openTimes().lowercase()
+                    holder.hallHours.text = diningHall.openTimes().lowercase()
                 }
             }
             // Load the menu for each dining hall
             if (diningHall.isResidential && !loaded[position]) {
-                holder.progressBar?.visibility = View.VISIBLE
+                holder.progressBar.visibility = View.VISIBLE
                 try {
                     mStudentLife
                         .daily_menu(diningHall.id)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ newDiningHall ->
                             diningHall.sortMeals(newDiningHall.menus)
-                            holder.progressBar?.visibility = View.INVISIBLE
-                            holder.menuArrow?.visibility = View.VISIBLE
+                            holder.progressBar.visibility = View.INVISIBLE
+                            holder.menuArrow.visibility = View.VISIBLE
                             loaded[position] = true
                         }, {
-                            holder.progressBar?.visibility = View.VISIBLE
-                            holder.menuArrow?.visibility = View.GONE
+                            holder.progressBar.visibility = View.VISIBLE
+                            holder.menuArrow.visibility = View.GONE
                         })
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             } else {
-                holder.progressBar?.visibility = View.GONE
-                holder.menuArrow?.visibility = View.VISIBLE
+                holder.progressBar.visibility = View.GONE
+                holder.menuArrow.visibility = View.VISIBLE
             }
-            holder.layout?.setOnClickListener {
+            holder.layout.setOnClickListener {
                 val mainActivity = context as MainActivity
                 val fragment = MenuFragment()
 
@@ -175,14 +169,14 @@ class DiningAdapter(
     }
 
     class DiningViewHolder(
-        view: View,
-    ) : RecyclerView.ViewHolder(view) {
-        val layout: ConstraintLayout? = view.dining_list_item_layout
-        val hallNameTV: TextView? = view.item_dining_name
-        val hallStatus: TextView? = view.item_dining_status
-        val hallImage: ImageView? = view.item_dining_image
-        val hallHours: TextView? = view.item_dining_hours
-        val menuArrow: ImageView? = view.dining_hall_menu_indicator
-        val progressBar: ProgressBar? = view.dining_progress
+        private val itemBinding: DiningListItemBinding,
+    ) : RecyclerView.ViewHolder(itemBinding.root) {
+        val layout: ConstraintLayout = itemBinding.diningListItemLayout
+        val hallNameTV: TextView = itemBinding.itemDiningName
+        val hallStatus: TextView = itemBinding.itemDiningStatus
+        val hallImage: ImageView = itemBinding.itemDiningImage
+        val hallHours: TextView = itemBinding.itemDiningHours
+        val menuArrow: ImageView = itemBinding.diningHallMenuIndicator
+        val progressBar: ProgressBar = itemBinding.diningProgress
     }
 }
