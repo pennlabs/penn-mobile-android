@@ -12,14 +12,16 @@ import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
+import com.pennapps.labs.pennmobile.databinding.FragmentHomeBinding
+import com.pennapps.labs.pennmobile.databinding.FragmentMoreBinding
 import com.pennapps.labs.pennmobile.utils.Utils
-import kotlinx.android.synthetic.main.fragment_home.initials
-import kotlinx.android.synthetic.main.fragment_home.profile_background
-import kotlinx.android.synthetic.main.fragment_home.view.appbar_home
-import kotlinx.android.synthetic.main.fragment_home.view.date_view
+
 
 class MoreFragment : Fragment() {
     private lateinit var mActivity: MainActivity
+
+    private var _binding: FragmentMoreBinding? = null
+    val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,11 +33,11 @@ class MoreFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_more, container, false)
-
-        initAppBar(view)
-        return view
+    ): View {
+        _binding = FragmentMoreBinding.inflate(inflater, container, false)
+        val v = binding.root
+        initAppBar(v)
+        return v
     }
 
     override fun onViewCreated(
@@ -51,12 +53,12 @@ class MoreFragment : Fragment() {
     }
 
     private fun initAppBar(view: View) {
-        view.date_view.text = Utils.getCurrentSystemTime()
+        binding.dateView.text = Utils.getCurrentSystemTime()
         // Appbar behavior init
         (
-            view.appbar_home.layoutParams
-                as CoordinatorLayout.LayoutParams
-        ).behavior = ToolbarBehavior()
+                binding.appbarHome.layoutParams
+                        as CoordinatorLayout.LayoutParams
+                ).behavior = ToolbarBehavior()
     }
 
     override fun onResume() {
@@ -65,9 +67,9 @@ class MoreFragment : Fragment() {
                 .getDefaultSharedPreferences(mActivity)
                 .getString(getString(R.string.initials), null)
         if (initials != null && initials.isNotEmpty()) {
-            this.initials.text = initials
+            binding.initials.text = initials
         } else {
-            this.profile_background.setImageDrawable(
+            binding.profileBackground.setImageDrawable(
                 ResourcesCompat.getDrawable(
                     resources,
                     R.drawable.ic_guest_avatar,
@@ -77,5 +79,10 @@ class MoreFragment : Fragment() {
         }
         mActivity.setSelectedTab(MainActivity.MORE)
         super.onResume()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
