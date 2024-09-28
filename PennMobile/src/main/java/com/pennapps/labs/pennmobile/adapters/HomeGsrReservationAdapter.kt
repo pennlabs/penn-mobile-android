@@ -2,38 +2,43 @@ package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.GsrTabbedFragment
 import com.pennapps.labs.pennmobile.MainActivity
-import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRReservation
+import com.pennapps.labs.pennmobile.databinding.GsrListItemBinding
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.gsr_list_item.view.item_gsr_date
-import kotlinx.android.synthetic.main.gsr_list_item.view.item_gsr_image
-import kotlinx.android.synthetic.main.gsr_list_item.view.item_gsr_location
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 
 class HomeGsrReservationAdapter(
     reservations: List<GSRReservation>,
-) : RecyclerView.Adapter<HomeGsrReservationAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<HomeGsrReservationAdapter.GSRReservationViewHolder>() {
     private var activeReservations: List<GSRReservation> = reservations
-
-    private lateinit var itemImage: ImageView
-    private lateinit var itemLocation: TextView
-    private lateinit var itemDate: TextView
 
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
 
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): GSRReservationViewHolder {
+        mContext = parent.context
+        mActivity = mContext as MainActivity
+        mStudentLife = MainActivity.studentLifeInstance
+
+        val itemBinding = GsrListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+
+        return GSRReservationViewHolder(itemBinding)
+    }
+
     override fun onBindViewHolder(
-        holder: HomeGsrReservationAdapter.ViewHolder,
+        holder: GSRReservationViewHolder,
         position: Int,
     ) {
         val currentReservation = activeReservations[position]
@@ -51,10 +56,10 @@ class HomeGsrReservationAdapter(
             .load(imageUrl)
             .fit()
             .centerCrop()
-            .into(holder.itemView.item_gsr_image)
+            .into(holder.itemImage)
 
-        holder.itemView.item_gsr_location.text = location
-        holder.itemView.item_gsr_date.text = day + "\n" + fromHour + "-" + toHour
+        holder.itemLocation.text = location
+        holder.itemDate.text = day + "\n" + fromHour + "-" + toHour
 
         holder.itemView.setOnClickListener {
             // Moves to GSR Booking Tab
@@ -71,25 +76,12 @@ class HomeGsrReservationAdapter(
 
     override fun getItemCount(): Int = activeReservations.size
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int,
-    ): HomeGsrReservationAdapter.ViewHolder {
-        mContext = parent.context
-        mActivity = mContext as MainActivity
-        mStudentLife = MainActivity.studentLifeInstance
 
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.gsr_list_item, parent, false)
-        return ViewHolder(view)
-    }
-
-    inner class ViewHolder(
-        itemView: View,
-    ) : RecyclerView.ViewHolder(itemView) {
-        init {
-            itemImage = itemView.item_gsr_image
-            itemLocation = itemView.item_gsr_location
-            itemDate = itemView.item_gsr_date
-        }
+    inner class GSRReservationViewHolder(
+        itemBinding: GsrListItemBinding,
+    ) : RecyclerView.ViewHolder(itemBinding.root) {
+        val itemImage : ImageView = itemBinding.itemGsrImage
+        val itemLocation : TextView = itemBinding.itemGsrLocation
+        val itemDate : TextView = itemBinding.itemGsrDate
     }
 }
