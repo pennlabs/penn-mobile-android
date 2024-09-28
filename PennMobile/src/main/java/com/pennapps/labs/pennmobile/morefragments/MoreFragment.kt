@@ -12,7 +12,6 @@ import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
-import com.pennapps.labs.pennmobile.databinding.FragmentHomeBinding
 import com.pennapps.labs.pennmobile.databinding.FragmentMoreBinding
 import com.pennapps.labs.pennmobile.utils.Utils
 
@@ -36,7 +35,11 @@ class MoreFragment : Fragment() {
     ): View {
         _binding = FragmentMoreBinding.inflate(inflater, container, false)
         val v = binding.root
-        initAppBar(v)
+        binding.dateView.text = Utils.getCurrentSystemTime()
+        (
+                binding.appbarHome.layoutParams
+                        as CoordinatorLayout.LayoutParams
+                ).behavior = ToolbarBehavior()
         return v
     }
 
@@ -50,15 +53,6 @@ class MoreFragment : Fragment() {
             .replace(R.id.more_frame, PreferenceFragment())
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .commit()
-    }
-
-    private fun initAppBar(view: View) {
-        binding.dateView.text = Utils.getCurrentSystemTime()
-        // Appbar behavior init
-        (
-                binding.appbarHome.layoutParams
-                        as CoordinatorLayout.LayoutParams
-                ).behavior = ToolbarBehavior()
     }
 
     override fun onResume() {
