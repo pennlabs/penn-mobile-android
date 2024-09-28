@@ -19,8 +19,8 @@ class UniversityEventAdapter(
         parent: ViewGroup,
         viewType: Int,
     ): UniversityEventViewHolder {
-        val itemBinding = UniversityEventBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         mContext = parent.context
+        val itemBinding = UniversityEventBinding.inflate(LayoutInflater.from(mContext), parent, false)
         return UniversityEventViewHolder(itemBinding)
     }
 
