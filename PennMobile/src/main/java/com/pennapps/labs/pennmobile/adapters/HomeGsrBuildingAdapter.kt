@@ -3,8 +3,9 @@ package com.pennapps.labs.pennmobile.adapters
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -12,8 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.GsrTabbedFragment
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import kotlinx.android.synthetic.main.home_gsr_building.view.home_gsr_building_iv
-import kotlinx.android.synthetic.main.home_gsr_building.view.home_gsr_building_tv
+import com.pennapps.labs.pennmobile.databinding.HomeGsrBuildingBinding
 
 class HomeGsrBuildingAdapter(
     private var buildings: ArrayList<String>,
@@ -24,9 +24,9 @@ class HomeGsrBuildingAdapter(
         parent: ViewGroup,
         viewType: Int,
     ): HomeGsrBuildingViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.home_gsr_building, parent, false)
         mContext = parent.context
-        return HomeGsrBuildingViewHolder(view)
+        val itemBinding = HomeGsrBuildingBinding.inflate(LayoutInflater.from(mContext), parent, false)
+        return HomeGsrBuildingViewHolder(itemBinding)
     }
 
     override fun onBindViewHolder(
@@ -34,13 +34,11 @@ class HomeGsrBuildingAdapter(
         position: Int,
     ) {
         val building = buildings[position]
-
-        holder.itemView.home_gsr_building_tv.text = building
-        holder.itemView.home_gsr_building_iv
+        holder.home_gsr_building_tv.text = building
         if (building == "Huntsman Hall") {
-            holder.itemView.home_gsr_building_iv.setImageResource(R.drawable.huntsman)
+            holder.home_gsr_building_iv.setImageResource(R.drawable.huntsman)
         } else {
-            holder.itemView.home_gsr_building_iv.setImageResource(R.drawable.weigle)
+            holder.home_gsr_building_iv.setImageResource(R.drawable.weigle)
         }
         holder.itemView.setOnClickListener {
             fragmentTransact(GsrTabbedFragment(), false)
@@ -50,9 +48,10 @@ class HomeGsrBuildingAdapter(
     override fun getItemCount(): Int = buildings.size
 
     inner class HomeGsrBuildingViewHolder(
-        itemView: View,
-    ) : RecyclerView.ViewHolder(itemView) {
-        val view = itemView
+        itemBinding: HomeGsrBuildingBinding,
+    ) : RecyclerView.ViewHolder(itemBinding.root) {
+        val home_gsr_building_iv: ImageView = itemBinding.homeGsrBuildingIv
+        val home_gsr_building_tv: TextView = itemBinding.homeGsrBuildingTv
     }
 
     private fun fragmentTransact(
