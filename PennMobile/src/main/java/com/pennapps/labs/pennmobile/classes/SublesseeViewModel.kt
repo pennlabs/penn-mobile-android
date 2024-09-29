@@ -112,11 +112,11 @@ class SublesseeViewModel(private val activity: Activity, private val studentLife
         return savedSublets.value?.get(position) ?: Sublet() // Provide a default value if needed
     } */
 
-    fun addSavedSublet(mActivity: MainActivity, id: Int) {
+    fun addSavedSublet(mActivity: MainActivity, sublet: Sublet) {
         val context = activity.applicationContext
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
 
-        savedSubletIds.add(id)
+        //savedSubletIds.add(id)
 
         OAuth2NetworkManager(mActivity).getAccessToken {
 
@@ -124,7 +124,7 @@ class SublesseeViewModel(private val activity: Activity, private val studentLife
                     "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
 
-            studentLife.addFavoriteSublet(bearerToken, SubletRequest(ArrayList(savedSubletIds)), id, object : Callback<Sublet> {
+            studentLife.addFavoriteSublet(bearerToken, sublet, object : Callback<Sublet> {
                 override fun success(t: Sublet?, response: Response?) {
                     Log.i("Sublessee View Model", "sublet added")
                 }

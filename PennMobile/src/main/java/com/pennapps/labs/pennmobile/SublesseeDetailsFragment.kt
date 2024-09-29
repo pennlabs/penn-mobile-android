@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -98,7 +99,16 @@ class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position:
             }
 
             dataModel.addSavedSublet(sublet) */
-            dataModel.addSavedSublet(mActivity, sublet.id!!)
+            /* dataModel.addSavedSublet(mActivity, newSublet) { postedSublet ->
+                if (postedSublet != null) {
+                    Log.i("MainActivity", "Posted sublet ID: ${postedSublet.id}")
+                    subletId = postedSublet.id!!
+                } else {
+                    // Handle failure to post sublet
+                    Log.e("MainActivity", "Failed to post sublet")
+                }
+            } */
+            dataModel.addSavedSublet(mActivity, sublet)
             Toast.makeText(context, "This property has been saved", Toast.LENGTH_LONG).show()
             mActivity.supportFragmentManager.beginTransaction()
                     .replace(((view as ViewGroup).parent as View).id, SublesseeSavedFragment())

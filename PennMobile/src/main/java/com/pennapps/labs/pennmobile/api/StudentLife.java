@@ -273,8 +273,7 @@ public interface StudentLife {
     @POST("/sublet/properties/{sublet_id}/favorites")
     void addFavoriteSublet(
             @Header("Authorization") String bearerToken,
-            @Body SubletRequest sublets,
-            @Path("sublet_id") int id,
+            @Body Sublet sublet,
             Callback<Sublet> callback);
 
     @Headers({"Content-Type: application/json"})
