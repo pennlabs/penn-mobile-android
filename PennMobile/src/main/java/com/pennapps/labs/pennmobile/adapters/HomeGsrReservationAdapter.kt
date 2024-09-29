@@ -76,12 +76,11 @@ class HomeGsrReservationAdapter(
 
     override fun getItemCount(): Int = activeReservations.size
 
-
     inner class GSRReservationViewHolder(
         itemBinding: GsrListItemBinding,
     ) : RecyclerView.ViewHolder(itemBinding.root) {
-        val itemImage : ImageView = itemBinding.itemGsrImage
-        val itemLocation : TextView = itemBinding.itemGsrLocation
-        val itemDate : TextView = itemBinding.itemGsrDate
+        val itemImage: ImageView = itemBinding.itemGsrImage
+        val itemLocation: TextView = itemBinding.itemGsrLocation
+        val itemDate: TextView = itemBinding.itemGsrDate
     }
 }

@@ -34,11 +34,11 @@ class HomeGsrBuildingAdapter(
         position: Int,
     ) {
         val building = buildings[position]
-        holder.home_gsr_building_tv.text = building
+        holder.homeGsrBuildingTv.text = building
         if (building == "Huntsman Hall") {
-            holder.home_gsr_building_iv.setImageResource(R.drawable.huntsman)
+            holder.homeGsrBuildingIv.setImageResource(R.drawable.huntsman)
         } else {
-            holder.home_gsr_building_iv.setImageResource(R.drawable.weigle)
+            holder.homeGsrBuildingIv.setImageResource(R.drawable.weigle)
         }
         holder.itemView.setOnClickListener {
             fragmentTransact(GsrTabbedFragment(), false)
@@ -50,8 +50,8 @@ class HomeGsrBuildingAdapter(
     inner class HomeGsrBuildingViewHolder(
         itemBinding: HomeGsrBuildingBinding,
     ) : RecyclerView.ViewHolder(itemBinding.root) {
-        val home_gsr_building_iv: ImageView = itemBinding.homeGsrBuildingIv
-        val home_gsr_building_tv: TextView = itemBinding.homeGsrBuildingTv
+        val homeGsrBuildingIv: ImageView = itemBinding.homeGsrBuildingIv
+        val homeGsrBuildingTv: TextView = itemBinding.homeGsrBuildingTv
     }
 
     private fun fragmentTransact(

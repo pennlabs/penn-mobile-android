@@ -15,7 +15,6 @@ import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentMoreBinding
 import com.pennapps.labs.pennmobile.utils.Utils
 
-
 class MoreFragment : Fragment() {
     private lateinit var mActivity: MainActivity
 
@@ -37,9 +36,9 @@ class MoreFragment : Fragment() {
         val v = binding.root
         binding.dateView.text = Utils.getCurrentSystemTime()
         (
-                binding.appbarHome.layoutParams
-                        as CoordinatorLayout.LayoutParams
-                ).behavior = ToolbarBehavior()
+            binding.appbarHome.layoutParams
+                as CoordinatorLayout.LayoutParams
+        ).behavior = ToolbarBehavior()
         return v
     }
 

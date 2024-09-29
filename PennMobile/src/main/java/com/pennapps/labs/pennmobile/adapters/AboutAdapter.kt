@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.TeamMemberBinding
 
-
 class AboutAdapter(
     private var members: ArrayList<String>,
 ) : RecyclerView.Adapter<AboutAdapter.TeamViewHolder>() {
@@ -30,7 +29,7 @@ class AboutAdapter(
         holder: TeamViewHolder,
         position: Int,
     ) {
-        holder.name_tv.text = members[position]
+        holder.nameTv.text = members[position]
         val imageId =
             when (members[position]) {
                 "Marta García Ferreiro" -> R.drawable.marta
@@ -52,13 +51,13 @@ class AboutAdapter(
                 "Baron Ping-Yeh Hsieh" -> R.drawable.baron
                 else -> null
             }
-        if (imageId != null) holder.person_iv.setImageResource(imageId)
+        if (imageId != null) holder.personIv.setImageResource(imageId)
     }
 
     inner class TeamViewHolder(
         itemBinding: TeamMemberBinding,
     ) : RecyclerView.ViewHolder(itemBinding.root) {
-        val person_iv: ImageView = itemBinding.personIv
-        val name_tv: TextView = itemBinding.nameTv
+        val personIv: ImageView = itemBinding.personIv
+        val nameTv: TextView = itemBinding.nameTv
     }
 }

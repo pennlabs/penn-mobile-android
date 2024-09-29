@@ -55,11 +55,11 @@ class PollOptionAdapter(
         holder: PollHolder,
         pollOption: PollOption,
     ) {
-        holder.tv_option.text = pollOption.choice
+        holder.tvOption.text = pollOption.choice
 
         var startX: Float? = null
         var startY: Float? = null
-        holder.seek_bar.setOnTouchListener { v, event ->
+        holder.seekBar.setOnTouchListener { v, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     startX = event.x
@@ -77,24 +77,24 @@ class PollOptionAdapter(
             true
         }
         if (pollOption.selected) {
-            holder.tv_option.setTextColor(mContext.resources.getColor(R.color.color_secondary))
-            holder.tv_percent.setTextColor(mContext.resources.getColor(R.color.color_secondary))
-            holder.tv_votes.setTextColor(mContext.resources.getColor(R.color.color_secondary))
-            holder.seek_bar.progressDrawable = mContext.getDrawable(R.drawable.poll_track_selected)
-            holder.card_view.foreground = mContext.getDrawable(R.drawable.card_view_border)
+            holder.tvOption.setTextColor(mContext.resources.getColor(R.color.color_secondary))
+            holder.tvPercent.setTextColor(mContext.resources.getColor(R.color.color_secondary))
+            holder.tvVotes.setTextColor(mContext.resources.getColor(R.color.color_secondary))
+            holder.seekBar.progressDrawable = mContext.getDrawable(R.drawable.poll_track_selected)
+            holder.cardView.foreground = mContext.getDrawable(R.drawable.card_view_border)
         } else {
-            holder.tv_option.setTextColor(Color.parseColor("#13284B"))
-            holder.tv_percent.setTextColor(Color.parseColor("#13284B"))
-            holder.tv_votes.setTextColor(Color.parseColor("#13284B"))
-            holder.seek_bar.progressDrawable = mContext.getDrawable(R.drawable.poll_track)
-            holder.card_view.foreground = null
+            holder.tvOption.setTextColor(Color.parseColor("#13284B"))
+            holder.tvPercent.setTextColor(Color.parseColor("#13284B"))
+            holder.tvVotes.setTextColor(Color.parseColor("#13284B"))
+            holder.seekBar.progressDrawable = mContext.getDrawable(R.drawable.poll_track)
+            holder.cardView.foreground = null
         }
         if (poll.isVisible) {
-            holder.tv_votes.text = "${pollOption.voteCount}"
+            holder.tvVotes.text = "${pollOption.voteCount}"
             val votePercent = (pollOption.voteCount.div(poll.totalVotes.toDouble())) * 100
-            holder.tv_percent.text = String.format("%.2f%%", votePercent)
-            holder.seek_bar.progress = round(votePercent).toInt()
-            holder.seek_bar.setOnTouchListener { v, event -> true }
+            holder.tvPercent.text = String.format("%.2f%%", votePercent)
+            holder.seekBar.progress = round(votePercent).toInt()
+            holder.seekBar.setOnTouchListener { v, event -> true }
         }
     }
 
@@ -112,11 +112,11 @@ class PollOptionAdapter(
     class PollHolder(
         itemBinding: PollListItemBinding,
     ) : RecyclerView.ViewHolder(itemBinding.root) {
-        internal var tv_option: TextView = itemBinding.tvOption
-        internal var tv_percent: TextView = itemBinding.tvPercent
-        internal var seek_bar: SeekBar = itemBinding.seekBar
-        internal var card_view: CardView = itemBinding.cardView
-        internal var tv_votes: TextView = itemBinding.tvVotes
+        internal var tvOption: TextView = itemBinding.tvOption
+        internal var tvPercent: TextView = itemBinding.tvPercent
+        internal var seekBar: SeekBar = itemBinding.seekBar
+        internal var cardView: CardView = itemBinding.cardView
+        internal var tvVotes: TextView = itemBinding.tvVotes
     }
 
     companion object {

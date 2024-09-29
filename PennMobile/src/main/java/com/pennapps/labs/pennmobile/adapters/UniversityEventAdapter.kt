@@ -43,9 +43,9 @@ class UniversityEventAdapter(
 
         // holder.itemView.event_day.text = dayOfMonth
         // holder.itemView.event_month.text = month
-        holder.event_month.text = event.date
-        holder.event_name.text = name
-        holder.event_name.isSelected = true
+        holder.eventMonth.text = event.date
+        holder.eventName.text = name
+        holder.eventName.isSelected = true
         /* if (from == to) {
             holder.itemView.event_day_of_week.text = start
         } else {
@@ -58,7 +58,7 @@ class UniversityEventAdapter(
     inner class UniversityEventViewHolder(
         itemBinding: UniversityEventBinding,
     ) : RecyclerView.ViewHolder(itemBinding.root) {
-        val event_month : TextView = itemBinding.eventMonth
-        val event_name : TextView = itemBinding.eventNameTv
+        val eventMonth: TextView = itemBinding.eventMonth
+        val eventName: TextView = itemBinding.eventNameTv
     }
 }

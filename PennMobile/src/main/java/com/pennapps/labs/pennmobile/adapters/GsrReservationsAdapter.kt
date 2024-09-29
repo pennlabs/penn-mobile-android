@@ -58,12 +58,12 @@ class GsrReservationsAdapter(
             .load(imageUrl)
             .fit()
             .centerCrop()
-            .into(holder.gsr_reservation_iv)
+            .into(holder.gsrReservationIv)
 
-        holder.gsr_reservation_location_tv.text = roomName
-        holder.gsr_reservation_date_tv.text = day + "\n" + fromHour + "-" + toHour
+        holder.gsrReservationLocationTv.text = roomName
+        holder.gsrReservationDateTv.text = day + "\n" + fromHour + "-" + toHour
 
-        holder.gsr_reservation_cancel_button.setOnClickListener {
+        holder.gsrReservationCancelButton.setOnClickListener {
             // create dialog to confirm that you want to cancel reservation
             val builder = AlertDialog.Builder(mContext)
             builder.setTitle("Are you sure?")
@@ -142,9 +142,9 @@ class GsrReservationsAdapter(
     inner class GsrReservationViewHolder(
         itemBinding: GsrReservationBinding,
     ) : RecyclerView.ViewHolder(itemBinding.root) {
-        val gsr_reservation_cancel_button = itemBinding.gsrReservationCancelBtn
-        val gsr_reservation_location_tv = itemBinding.gsrReservationLocationTv
-        val gsr_reservation_date_tv = itemBinding.gsrReservationDateTv
-        val gsr_reservation_iv = itemBinding.gsrReservationIv
+        val gsrReservationCancelButton = itemBinding.gsrReservationCancelBtn
+        val gsrReservationLocationTv = itemBinding.gsrReservationLocationTv
+        val gsrReservationDateTv = itemBinding.gsrReservationDateTv
+        val gsrReservationIv = itemBinding.gsrReservationIv
     }
 }
