@@ -78,8 +78,16 @@ class AboutFragment : Fragment() {
         binding.ourTeamRv.layoutManager = GridLayoutManager(context, 3)
         binding.alumniRv.layoutManager = GridLayoutManager(context, 3)
         val members =
-            arrayListOf("Rohan Chhaya", "Julius Snipes", "Aaron Mei", "Trini Feng", "Vedha Avali",
-                "Joe MacDougall", "Baron Ping-Yeh Hsieh", "David Fu")
+            arrayListOf(
+                "Rohan Chhaya",
+                "Julius Snipes",
+                "Aaron Mei",
+                "Trini Feng",
+                "Vedha Avali",
+                "Joe MacDougall",
+                "Baron Ping-Yeh Hsieh",
+                "David Fu",
+            )
         val alumni =
             arrayListOf(
                 "Marta García Ferreiro",
