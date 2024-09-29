@@ -18,6 +18,29 @@
             android:layout_height="0dp">
 
 
+            <TextView
+                android:id="@+id/edit_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="26sp"
+                android:fontFamily="@font/sf_pro_display_bold"
+                android:text="Edit"
+                android:textColor="@color/pennmobile_blue"
+                app:layout_constraintBottom_toBottomOf="@id/title_text"
+                app:layout_constraintEnd_toStartOf="@id/delete_text"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/delete_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="26sp"
+                android:fontFamily="@font/sf_pro_display_bold"
+                android:text="Delete"
+                android:textColor="@color/pennmobile_blue"
+                app:layout_constraintBottom_toBottomOf="@id/title_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/title_text"
@@ -29,19 +52,9 @@
                 android:textSize="26sp"
                 android:layout_marginEnd="36dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/edit_text" />
 
-            <TextView
-                android:id="@+id/edit_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="26sp"
-                android:fontFamily="@font/sf_pro_display_bold"
-                android:text="Edit"
-                android:textColor="@color/pennmobile_blue"
-                app:layout_constraintBottom_toBottomOf="@id/title_text"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+
 
             <ImageView
                 android:id="@+id/sublet_image"
@@ -152,12 +165,13 @@
 
             <TextView
                 android:id="@+id/description_text"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="26sp"
                 android:layout_marginTop="10sp"
                 android:text="TextView"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/description_title_text" />
 
             <View
@@ -183,12 +197,13 @@
                 app:layout_constraintTop_toBottomOf="@+id/divider4" />
             <TextView
                 android:id="@+id/amenities_text"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="26sp"
                 android:layout_marginTop="10sp"
                 android:text="TextView"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/amenties_title" />
 
             <TextView

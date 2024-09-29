@@ -278,4 +278,6 @@
     <string name="calendar_icon">calendar icon</string>
     <string name="title">Title</string>
     <string name="details">Details</string>
+    <string name="kitchen_appliances">Kitchen Appliances</string>
+    <string name="furniture">Furniture</string>
 </resources>

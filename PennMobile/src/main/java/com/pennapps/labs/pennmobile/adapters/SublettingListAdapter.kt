@@ -70,6 +70,7 @@ class SublettingListAdapter(var sublettingList: ArrayList<SublettingModel>, var 
         }
 
         holder.itemView.setOnClickListener {
+            mActivity.hideBottomBar()
             mActivity.supportFragmentManager.beginTransaction()
                     .replace(R.id.content_frame, SublesseeDetailsFragment(dataModel, position))
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

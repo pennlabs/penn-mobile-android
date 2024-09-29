@@ -45,9 +45,9 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
     internal lateinit var descriptionEt : EditText
     internal lateinit var bathroomCheck : CheckBox
     internal lateinit var laundryCheck : CheckBox
-    internal lateinit var gymCheck : CheckBox
+    internal lateinit var fitnessCheck : CheckBox
     internal lateinit var wifiCheck : CheckBox
-    internal lateinit var furnishedCheck : CheckBox
+    internal lateinit var furnitureCheck : CheckBox
     internal lateinit var closetCheck : CheckBox
     internal lateinit var utilitiesCheck : CheckBox
     internal lateinit var poolCheck : CheckBox
@@ -57,6 +57,13 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
     internal lateinit var kitchenCheck : CheckBox
     internal lateinit var dogCheck : CheckBox
     internal lateinit var catCheck : CheckBox
+    internal lateinit var kitchenAppliancesCheck : CheckBox
+    internal lateinit var maintenanceCheck : CheckBox
+    internal lateinit var securityCheck : CheckBox
+    internal lateinit var acCheck : CheckBox
+    internal lateinit var accessibilityCheck : CheckBox
+    internal lateinit var heatingCheck : CheckBox
+
     internal lateinit var imageView: ImageView
     internal lateinit var imageIcon: ImageView
     internal lateinit var imageText: TextView
@@ -115,9 +122,9 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
         descriptionEt = binding.descriptionInput
         bathroomCheck = binding.bathroomCheck
         laundryCheck = binding.laundryCheck
-        gymCheck = binding.gymCheck
+        fitnessCheck = binding.fitnessCheck
         wifiCheck = binding.wifiCheck
-        furnishedCheck = binding.furnishedCheck
+        furnitureCheck = binding.furnitureCheck
         closetCheck = binding.closetCheck
         utilitiesCheck = binding.utilitiesCheck
         poolCheck = binding.poolCheck
@@ -127,6 +134,12 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
         kitchenCheck = binding.kitchenCheck
         dogCheck = binding.dogCheck
         catCheck = binding.catCheck
+        kitchenAppliancesCheck = binding.kitchenAppliancesCheck
+        maintenanceCheck = binding.maintenanceCheck
+        securityCheck = binding.securityCheck
+        acCheck = binding.acCheck
+        accessibilityCheck = binding.accessibilityCheck
+        heatingCheck = binding.heatingCheck
         imageView = binding.mainImage
         imageIcon = binding.mainImageIcon
         imageText = binding.addPhotosText
@@ -193,9 +206,9 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
                 val amenitiesList = mutableListOf<String>()
                 if(bathroomCheck.isChecked) { amenitiesList.add("Private Bathroom") }
                 if(laundryCheck.isChecked) { amenitiesList.add("In-Unit Laundry") }
-                if(gymCheck.isChecked) { amenitiesList.add("Gym") }
+                if(fitnessCheck.isChecked) { amenitiesList.add("Fitness Facilities") }
                 if(wifiCheck.isChecked) { amenitiesList.add("Wifi") }
-                if(furnishedCheck.isChecked) { amenitiesList.add("Furnished") }
+                if(furnitureCheck.isChecked) { amenitiesList.add("Furniture") }
                 if(closetCheck.isChecked) { amenitiesList.add("Walk-in Closet") }
                 if(utilitiesCheck.isChecked) { amenitiesList.add("Utilities Included") }
                 if(poolCheck.isChecked) { amenitiesList.add("Swimming Pool") }
@@ -205,6 +218,14 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
                 if(kitchenCheck.isChecked) { amenitiesList.add("Kitchen") }
                 if(dogCheck.isChecked) { amenitiesList.add("Dog-Friendly") }
                 if(catCheck.isChecked) { amenitiesList.add("Cat-Friendly") }
+                if(kitchenAppliancesCheck.isChecked) { amenitiesList.add("Kitchen Appliances") }
+                if(maintenanceCheck.isChecked) { amenitiesList.add("Maintenance Services") }
+                if(securityCheck.isChecked) { amenitiesList.add("Security Features") }
+                if(acCheck.isChecked) { amenitiesList.add("Air Conditioning") }
+                if(accessibilityCheck.isChecked) { amenitiesList.add("Accessibility Features") }
+                if(heatingCheck.isChecked) { amenitiesList.add("Heating") }
+
+
 
                 description = descriptionEt.text.toString()
                 if (description.equals("")) {

@@ -53,8 +53,13 @@ class SubletDetailsFragment(private val dataModel: SublettingViewModel, private 
             dataModel.deleteSublet(mActivity, subletNumber)
         }
 
-        binding.editText.setOnClickListener(){
+        binding.editText.setOnClickListener{
             navigateEditListing()
+        }
+
+        binding.deleteText.setOnClickListener{
+            dataModel.deleteSublet(mActivity, subletNumber)
+
         }
 
 

@@ -15,17 +15,15 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentSublesseeDetailsBinding
-import com.pennapps.labs.pennmobile.databinding.FragmentSubletteeMarketplaceBinding
-import kotlinx.android.synthetic.main.fragment_sublessee_details.interested_sublet_button
-import org.joda.time.format.DateTimeFormatter
 
-class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position: Int): Fragment() {
+class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position: Int): Fragment(){
 
     private var _binding : FragmentSublesseeDetailsBinding? = null
     private val binding get() = _binding!!
     private lateinit var mActivity: MainActivity
 
     private lateinit var saveButton: Button
+    private lateinit var mapButton: Button
     private lateinit var interestedButton: Button
 
     private lateinit var titleText: TextView
@@ -46,7 +44,7 @@ class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position:
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
         //container?.removeAllViews()
         // Inflate the layout for this fragment
         _binding = FragmentSublesseeDetailsBinding.inflate(inflater, container, false)
@@ -55,7 +53,7 @@ class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position:
 
     @SuppressLint("MutatingSharedPrefs")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        var sublet = dataModel.getSublet(position)
+        val sublet = dataModel.getSublet(position)
 
         titleText = binding.titleText
         titleText.text = sublet.title
@@ -84,6 +82,7 @@ class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position:
         //AMENITIES
 
         saveButton = binding.saveSubletButton
+        mapButton = binding.mapSubletButton
         interestedButton = binding.interestedSubletButton
 
         saveButton.setOnClickListener {
@@ -115,6 +114,14 @@ class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position:
                     .addToBackStack(null)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit()
+        }
+
+        mapButton.setOnClickListener{
+            mActivity.supportFragmentManager.beginTransaction()
+                .replace(((view as ViewGroup).parent as View).id, SublesseeDetailsMapFragment(sublet.address!!))
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit()
         }
 
         interestedButton.setOnClickListener {
