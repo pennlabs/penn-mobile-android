@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentTransaction
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -22,7 +23,6 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.SupportFragment
 import com.pennapps.labs.pennmobile.components.dialog.CustomAlertDialogue
 import com.pennapps.labs.pennmobile.showSneakerToast
-import kotlinx.android.synthetic.main.include_main.toolbar
 
 /**
  * Created by Davies Lumumba Spring 2021
@@ -30,6 +30,7 @@ import kotlinx.android.synthetic.main.include_main.toolbar
 class PreferenceFragment : PreferenceFragmentCompat() {
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
+    private lateinit var toolbar: Toolbar
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -43,7 +44,8 @@ class PreferenceFragment : PreferenceFragmentCompat() {
         super.onViewCreated(view, savedInstanceState)
         listView.isVerticalScrollBarEnabled = false
         mActivity = mContext as MainActivity
-        mActivity.toolbar.visibility = View.GONE
+        toolbar = mActivity.findViewById(R.id.toolbar)
+        toolbar.visibility = View.GONE
         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
         val editor = sp.edit()
 
