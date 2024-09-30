@@ -8,18 +8,20 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.pennapps.labs.pennmobile.classes.DiningHall
-import kotlinx.android.synthetic.main.include_main.toolbar
 import org.apache.commons.lang3.StringUtils
 
 class MenuFragment : Fragment() {
-    private var mDiningHall: DiningHall? = null
     private lateinit var mActivity: MainActivity
+    private lateinit var toolBar: Toolbar
+
+    private var mDiningHall: DiningHall? = null
     private var pageAdapter: PagerAdapter? = null
 
     inner class TabAdapter(
@@ -88,9 +90,7 @@ class MenuFragment : Fragment() {
         super.onCreate(savedInstanceState)
         mDiningHall = arguments?.getParcelable("DiningHall")
         mActivity = activity as MainActivity
-        mActivity.toolbar.visibility = View.VISIBLE
         setHasOptionsMenu(true)
-        mActivity.hideBottomBar()
     }
 
     override fun onCreateView(
@@ -106,6 +106,16 @@ class MenuFragment : Fragment() {
         v.setBackgroundColor(Color.WHITE)
         mActivity.addTabs(pageAdapter as TabAdapter, pager, true)
         return v
+    }
+
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
+        super.onViewCreated(view, savedInstanceState)
+        toolBar = mActivity.findViewById(R.id.toolbar)
+        toolBar.visibility = View.VISIBLE
+        mActivity.hideBottomBar()
     }
 
     override fun onCreateOptionsMenu(
