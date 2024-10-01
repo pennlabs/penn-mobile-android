@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.BookGsrFragment
-import com.pennapps.labs.pennmobile.GsrRoomHolder
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.GsrRoomBinding
+import com.pennapps.labs.pennmobile.viewholders.GsrRoomHolder
 import org.joda.time.DateTime
 
 class GsrRoomAdapter(

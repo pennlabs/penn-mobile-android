@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile
+package com.pennapps.labs.pennmobile.viewholders
 
 import android.widget.LinearLayout
 import android.widget.TextView
