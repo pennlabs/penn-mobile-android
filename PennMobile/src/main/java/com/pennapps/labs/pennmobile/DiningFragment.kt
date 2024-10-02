@@ -20,8 +20,6 @@ import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.Venue
 import com.pennapps.labs.pennmobile.databinding.FragmentDiningBinding
-import kotlinx.android.synthetic.main.loading_panel.loadingPanel
-import kotlinx.android.synthetic.main.no_results.no_results
 import rx.Observable
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -29,6 +27,8 @@ import java.time.format.DateTimeFormatter
 class DiningFragment : Fragment() {
     private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
+    private lateinit var loadingPanel: View
+    private lateinit var noResults: View
 
     private var _binding: FragmentDiningBinding? = null
     val binding get() = _binding!!
@@ -74,6 +74,8 @@ class DiningFragment : Fragment() {
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
+        loadingPanel = view.findViewById(R.id.loadingPanel)
+        noResults = view.findViewById(R.id.no_results)
         getDiningHalls()
     }
 
@@ -167,7 +169,7 @@ class DiningFragment : Fragment() {
                         val adapter = DiningAdapter(diningHalls)
                         loadingPanel?.visibility = View.GONE
                         if (diningHalls.size > 0) {
-                            no_results?.visibility = View.GONE
+                            noResults?.visibility = View.GONE
                         }
 
                         // Log non-fatal error to crashyltics if null
