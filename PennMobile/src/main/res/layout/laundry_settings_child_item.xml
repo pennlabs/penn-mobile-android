@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:background="@color/white">
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/laundry_favorite_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
