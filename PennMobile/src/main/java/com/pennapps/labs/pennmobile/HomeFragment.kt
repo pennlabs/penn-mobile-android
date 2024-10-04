@@ -6,6 +6,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -20,13 +21,6 @@ import com.pennapps.labs.pennmobile.classes.HomepageViewModel
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentHomeBinding
 import com.pennapps.labs.pennmobile.utils.Utils
-import kotlinx.android.synthetic.main.fragment_home.view.appbar_home
-import kotlinx.android.synthetic.main.fragment_home.view.date_view
-import kotlinx.android.synthetic.main.fragment_home.view.home_cells_rv
-import kotlinx.android.synthetic.main.fragment_home.view.home_refresh_layout
-import kotlinx.android.synthetic.main.fragment_home.view.profile
-import kotlinx.android.synthetic.main.include_main.toolbar
-import kotlinx.android.synthetic.main.loading_panel.loadingPanel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -35,6 +29,8 @@ import java.util.Locale
 class HomeFragment : Fragment() {
     private lateinit var mActivity: MainActivity
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var loadingPanel: View
+    private lateinit var toolbar: Toolbar
 
     private var _binding: FragmentHomeBinding? = null
     val binding get() = _binding!!
@@ -55,28 +51,8 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val view = binding.root
-
-        view.home_cells_rv.layoutManager =
-            LinearLayoutManager(
-                context,
-                LinearLayoutManager.VERTICAL,
-                false,
-            )
-
-        view.home_refresh_layout
-            .setColorSchemeResources(R.color.color_accent, R.color.color_primary)
-        view.home_refresh_layout
-            .setOnRefreshListener {
-                getHomePage()
-            }
-
         initAppBar(view)
         return view
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     override fun onViewCreated(
@@ -107,6 +83,21 @@ class HomeFragment : Fragment() {
         below and change getHomePage() so that when HomeAdapter is set, homeCellsRv.visibility is
         set to View.VISIBLE instead of View.INVISIBLE and hide loadingPanel
          */
+        toolbar = mActivity.findViewById(R.id.toolbar)
+        loadingPanel = view.findViewById(R.id.loadingPanel)
+        binding.homeCellsRv.layoutManager =
+            LinearLayoutManager(
+                context,
+                LinearLayoutManager.VERTICAL,
+                false,
+            )
+
+        binding.homeRefreshLayout
+            .setColorSchemeResources(R.color.color_accent, R.color.color_primary)
+        binding.homeRefreshLayout
+            .setOnRefreshListener {
+                getHomePage()
+            }
         homepageViewModel.resetBlurViews()
         homepageViewModel.blurViewsLoaded.observe(viewLifecycleOwner) { loaded ->
             if (loaded) {
@@ -198,7 +189,7 @@ class HomeFragment : Fragment() {
         super.onResume()
         mActivity.removeTabs()
         this.setTitle(getString(R.string.home))
-        mActivity.toolbar.visibility = View.GONE
+        toolbar.visibility = View.GONE
         val initials = sharedPreferences.getString(getString(R.string.initials), null)
         if (!initials.isNullOrEmpty()) {
             binding.initials.text = initials
@@ -219,22 +210,27 @@ class HomeFragment : Fragment() {
     private fun initAppBar(view: View) {
         val firstName = sharedPreferences.getString(getString(R.string.first_name), null)
         firstName?.let {
-            view.date_view.text = "Welcome, $it!".toUpperCase(Locale.getDefault())
+            binding.dateView.text = "Welcome, $it!".toUpperCase(Locale.getDefault())
             Handler().postDelayed(
                 {
-                    view.date_view.text = Utils.getCurrentSystemTime()
+                    binding.dateView.text = Utils.getCurrentSystemTime()
                 },
                 4000,
             )
         } ?: run {
-            view.date_view.text = Utils.getCurrentSystemTime()
+            binding.dateView.text = Utils.getCurrentSystemTime()
         }
         (
-            view.appbar_home.layoutParams
+            binding.appbarHome.layoutParams
                 as CoordinatorLayout.LayoutParams
         ).behavior = ToolbarBehavior()
-        view.profile.setOnClickListener {
+        binding.profile.setOnClickListener {
             // TODO: Account Settings
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
