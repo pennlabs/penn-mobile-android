@@ -29,7 +29,6 @@ import java.util.Locale
 class HomeFragment : Fragment() {
     private lateinit var mActivity: MainActivity
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var loadingPanel: View
     private lateinit var toolbar: Toolbar
 
     private var _binding: FragmentHomeBinding? = null
@@ -84,7 +83,6 @@ class HomeFragment : Fragment() {
         set to View.VISIBLE instead of View.INVISIBLE and hide loadingPanel
          */
         toolbar = mActivity.findViewById(R.id.toolbar)
-        loadingPanel = view.findViewById(R.id.loadingPanel)
         binding.homeCellsRv.layoutManager =
             LinearLayoutManager(
                 context,
@@ -102,7 +100,7 @@ class HomeFragment : Fragment() {
         homepageViewModel.blurViewsLoaded.observe(viewLifecycleOwner) { loaded ->
             if (loaded) {
                 binding.homeCellsRv.visibility = View.VISIBLE
-                loadingPanel?.visibility = View.GONE
+                binding.loadingPanel.root.visibility = View.GONE
             }
         }
 
@@ -132,7 +130,7 @@ class HomeFragment : Fragment() {
             binding.homeCellsRv.setPadding(0, 90, 0, 0)
             binding.internetConnectionHome.visibility = View.VISIBLE
             binding.homeRefreshLayout.isRefreshing = false
-            loadingPanel?.visibility = View.GONE
+            binding.loadingPanel.root.visibility = View.GONE
             return false
         }
 

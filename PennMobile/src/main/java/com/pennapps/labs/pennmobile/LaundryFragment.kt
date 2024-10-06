@@ -26,7 +26,6 @@ class LaundryFragment : Fragment() {
 
     private lateinit var mStudentLife: StudentLifeRf2
     private lateinit var mContext: Context
-    private lateinit var loadingPanel: View
 
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -84,12 +83,10 @@ class LaundryFragment : Fragment() {
         mActivity.removeTabs()
         mActivity.setTitle(R.string.laundry)
 
-        loadingPanel = view.findViewById(R.id.loadingPanel)
-
         mAdapter = LaundryRoomAdapter(mContext, laundryRooms, roomsData, false)
         binding.favoriteLaundryList.adapter = mAdapter
 
-        loadingPanel.visibility = View.VISIBLE
+        binding.loadingPanel.root.visibility = View.VISIBLE
 
         laundryViewModel.favoriteRooms.observe(viewLifecycleOwner) { favorites ->
             binding.laundryMachineRefresh.isRefreshing = false
@@ -108,7 +105,7 @@ class LaundryFragment : Fragment() {
                 mAdapter!!.notifyItemChanged(pos)
             }
 
-            loadingPanel.visibility = View.GONE
+            binding.loadingPanel.root.visibility = View.GONE
             binding.laundryHelpText.visibility = View.INVISIBLE
         }
 
@@ -123,7 +120,7 @@ class LaundryFragment : Fragment() {
             binding.internetConnectionLaundry.visibility = View.VISIBLE
             binding.laundryHelpText.visibility = View.INVISIBLE
             binding.laundryMachineRefresh.isRefreshing = false
-            loadingPanel?.visibility = View.GONE
+            binding.loadingPanel.root.visibility = View.GONE
             return false
         }
 

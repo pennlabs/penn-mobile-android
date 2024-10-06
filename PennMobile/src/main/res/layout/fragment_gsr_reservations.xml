@@ -59,6 +59,8 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <include layout="@layout/loading_panel" />
+    <include
+        android:id="@+id/loading_panel"
+        layout="@layout/loading_panel" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

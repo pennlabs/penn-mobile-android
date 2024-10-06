@@ -27,8 +27,6 @@ import java.time.format.DateTimeFormatter
 class DiningFragment : Fragment() {
     private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
-    private lateinit var loadingPanel: View
-    private lateinit var noResults: View
 
     private var _binding: FragmentDiningBinding? = null
     val binding get() = _binding!!
@@ -74,8 +72,6 @@ class DiningFragment : Fragment() {
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
-        loadingPanel = view.findViewById(R.id.loadingPanel)
-        noResults = view.findViewById(R.id.no_results)
         getDiningHalls()
     }
 
@@ -167,9 +163,9 @@ class DiningFragment : Fragment() {
                     mActivity.runOnUiThread {
                         getMenus(diningHalls)
                         val adapter = DiningAdapter(diningHalls)
-                        loadingPanel?.visibility = View.GONE
+                        binding.loadingPanel.root.visibility = View.GONE
                         if (diningHalls.size > 0) {
-                            noResults?.visibility = View.GONE
+                            binding.noResults.root.visibility = View.GONE
                         }
 
                         // Log non-fatal error to crashyltics if null
@@ -188,7 +184,7 @@ class DiningFragment : Fragment() {
                     Log.e("DiningFragment", "Error getting dining halls", it)
                     mActivity.runOnUiThread {
                         Log.e("Dining", "Could not load Dining page", it)
-                        loadingPanel?.visibility = View.GONE
+                        binding.loadingPanel.root.visibility = View.GONE
                         binding.diningSwiperefresh.isRefreshing = false
                     }
                 })
