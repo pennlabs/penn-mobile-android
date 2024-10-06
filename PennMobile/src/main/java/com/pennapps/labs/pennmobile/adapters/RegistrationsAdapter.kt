@@ -97,9 +97,11 @@ class RegistrationsAdapter(
                 }
                 if (v?.id?.equals(R.id.notify_closed_switch) == true) {
                     Log.i("PCA_RV", "Notify switch clicked")
+                    val isSubscribed = subscribedSwitch.isChecked
                     listener.onClosedNotificationsSwitchClick(
                         position,
                         notifyClosedSwitch.isChecked,
+                        isSubscribed,
                     )
                 }
                 listener.onItemClick(position)
@@ -118,6 +120,7 @@ class RegistrationsAdapter(
         fun onClosedNotificationsSwitchClick(
             position: Int,
             onClosedNotifications: Boolean,
+            isSubscribed: Boolean,
         )
     }
 
