@@ -60,7 +60,10 @@ import com.pennapps.labs.pennmobile.databinding.HomePostCardBinding
 import com.pennapps.labs.pennmobile.databinding.PollCardBinding
 import com.pennapps.labs.pennmobile.utils.Utils
 import com.pennapps.labs.pennmobile.viewholders.HomeBaseHolder
+import com.pennapps.labs.pennmobile.viewholders.HomeCalendarHolder
+import com.pennapps.labs.pennmobile.viewholders.HomeDiningHolder
 import com.pennapps.labs.pennmobile.viewholders.HomeGSRHolder
+import com.pennapps.labs.pennmobile.viewholders.HomeLaundryHolder
 import com.pennapps.labs.pennmobile.viewholders.HomeNewsCardHolder
 import com.pennapps.labs.pennmobile.viewholders.HomePollHolder
 import com.pennapps.labs.pennmobile.viewholders.HomePostHolder
@@ -111,6 +114,21 @@ class HomeAdapter(
         mActivity = mContext as MainActivity
 
         return when (viewType) {
+            DINING -> {
+                val itemBinding = HomeBaseCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
+                return HomeDiningHolder(itemBinding)
+            }
+
+            CALENDAR -> {
+                val itemBinding = HomeBaseCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
+                return HomeCalendarHolder(itemBinding)
+            }
+
+            LAUNDRY -> {
+                val itemBinding = HomeBaseCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
+                return HomeLaundryHolder(itemBinding)
+            }
+
             NEWS -> {
                 val itemBinding = HomeNewsCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
                 return HomeNewsCardHolder(itemBinding)
@@ -155,10 +173,10 @@ class HomeAdapter(
     ) {
         val cell = dataModel.getCell(position)
         when (cell.type) {
-            "dining" -> bindDiningCell(holder as HomeBaseHolder, cell as DiningCell)
-            "calendar" -> bindCalendarCell(holder as HomeBaseHolder, cell as CalendarCell)
+            "dining" -> bindDiningCell(holder as HomeDiningHolder, cell as DiningCell)
+            "calendar" -> bindCalendarCell(holder as HomeCalendarHolder, cell as CalendarCell)
             "news" -> bindNewsCard(holder as HomeNewsCardHolder, cell as NewsCell)
-            "laundry" -> bindLaundryCell(holder as HomeBaseHolder, cell as LaundryCell)
+            "laundry" -> bindLaundryCell(holder as HomeLaundryHolder, cell as LaundryCell)
             "post" -> bindPostCell(holder as HomePostHolder, cell as PostCell)
             "poll" -> bindPollCell(holder as HomePollHolder, position, cell as PollCell)
             "gsr_booking" -> bindGSRCell(holder as HomeGSRHolder, cell as GSRCell)
@@ -212,7 +230,7 @@ class HomeAdapter(
     }
 
     private fun bindLaundryCell(
-        holder: HomeBaseHolder,
+        holder: HomeLaundryHolder,
         cell: LaundryCell,
     ) {
         val roomID = cell.roomId
@@ -246,7 +264,7 @@ class HomeAdapter(
     }
 
     private fun bindDiningCell(
-        holder: HomeBaseHolder,
+        holder: HomeDiningHolder,
         cell: DiningCell,
     ) {
         holder.homeTitle.text = "Favorites"
@@ -293,7 +311,7 @@ class HomeAdapter(
     }
 
     private fun bindCalendarCell(
-        holder: HomeBaseHolder,
+        holder: HomeCalendarHolder,
         cell: CalendarCell,
     ) {
         val events = cell.events
