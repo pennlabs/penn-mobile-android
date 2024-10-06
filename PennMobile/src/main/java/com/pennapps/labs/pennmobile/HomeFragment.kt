@@ -187,6 +187,7 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        getOnline()
         mActivity.removeTabs()
         this.setTitle(getString(R.string.home))
         toolbar.visibility = View.GONE

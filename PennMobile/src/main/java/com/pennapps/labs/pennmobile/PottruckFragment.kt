@@ -24,7 +24,6 @@ import com.pennapps.labs.pennmobile.classes.FitnessPreferenceViewModel
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentPottruckBinding
 import com.pennapps.labs.pennmobile.utils.Utils
-import kotlinx.android.synthetic.main.fragment_home.internetConnectionHome
 
 class PottruckFragment : Fragment() {
     private lateinit var mActivity: MainActivity
@@ -203,7 +202,6 @@ class PottruckFragment : Fragment() {
             swipeRefresh.isRefreshing = false
             return false
         }
-        internetConnectionHome?.visibility = View.GONE
         connectionToolbar.visibility = View.GONE
         return true
     }
