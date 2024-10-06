@@ -4,9 +4,9 @@ plugins {
     id 'com.google.gms.google-services'
     id("com.google.firebase.crashlytics")
     id 'jacoco'
+    id 'kotlin-parcelize'
 }
 
-apply plugin: 'kotlin-android-extensions'
 apply plugin: "kotlin-android"
 
 android {
