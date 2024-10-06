@@ -105,6 +105,7 @@ class MenuFragment : Fragment() {
         pager.adapter = pageAdapter
         v.setBackgroundColor(Color.WHITE)
         mActivity.addTabs(pageAdapter as TabAdapter, pager, true)
+        mActivity.hideBottomBar()
         return v
     }
 
