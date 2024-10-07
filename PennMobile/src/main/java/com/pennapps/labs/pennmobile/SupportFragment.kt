@@ -49,7 +49,7 @@ class SupportFragment : ListFragment() {
         savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(R.layout.fragment_support, container, false)
-        setHasOptionsMenu(false)
+        setHasOptionsMenu(true)
         return view
     }
 
