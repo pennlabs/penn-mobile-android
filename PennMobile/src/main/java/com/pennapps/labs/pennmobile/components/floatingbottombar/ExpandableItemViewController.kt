@@ -49,11 +49,11 @@ internal open class ExpandableItemViewController(
             itemView,
             object : AccessibilityDelegateCompat() {
                 override fun onInitializeAccessibilityNodeInfo(
-                    host: View?,
-                    info: AccessibilityNodeInfoCompat?,
+                    host: View,
+                    info: AccessibilityNodeInfoCompat,
                 ) {
-                    info?.setTraversalAfter(prev?.itemView)
-                    info?.setTraversalBefore(next?.itemView)
+                    info.setTraversalAfter(prev?.itemView)
+                    info.setTraversalBefore(next?.itemView)
                     super.onInitializeAccessibilityNodeInfo(host, info)
                 }
             },
