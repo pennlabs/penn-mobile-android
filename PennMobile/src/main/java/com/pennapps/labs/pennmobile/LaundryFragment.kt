@@ -20,7 +20,6 @@ import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentLaundryBinding
 import com.pennapps.labs.pennmobile.utils.Utils
 import com.pennapps.labs.pennmobile.viewmodels.LaundryViewModel
-import kotlinx.android.synthetic.main.loading_panel.loadingPanel
 
 class LaundryFragment : Fragment() {
     private lateinit var mActivity: MainActivity
@@ -87,7 +86,7 @@ class LaundryFragment : Fragment() {
         mAdapter = LaundryRoomAdapter(mContext, laundryRooms, roomsData, false)
         binding.favoriteLaundryList.adapter = mAdapter
 
-        loadingPanel?.visibility = View.VISIBLE
+        binding.loadingPanel.root.visibility = View.VISIBLE
 
         laundryViewModel.favoriteRooms.observe(viewLifecycleOwner) { favorites ->
             binding.laundryMachineRefresh.isRefreshing = false
@@ -106,7 +105,7 @@ class LaundryFragment : Fragment() {
                 mAdapter!!.notifyItemChanged(pos)
             }
 
-            loadingPanel?.visibility = View.GONE
+            binding.loadingPanel.root.visibility = View.GONE
             binding.laundryHelpText.visibility = View.INVISIBLE
         }
 
@@ -121,7 +120,7 @@ class LaundryFragment : Fragment() {
             binding.internetConnectionLaundry.visibility = View.VISIBLE
             binding.laundryHelpText.visibility = View.INVISIBLE
             binding.laundryMachineRefresh.isRefreshing = false
-            loadingPanel?.visibility = View.GONE
+            binding.loadingPanel.root.visibility = View.GONE
             return false
         }
 

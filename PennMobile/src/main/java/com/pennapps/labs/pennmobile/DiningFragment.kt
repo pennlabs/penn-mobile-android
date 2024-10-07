@@ -20,8 +20,6 @@ import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.Venue
 import com.pennapps.labs.pennmobile.databinding.FragmentDiningBinding
-import kotlinx.android.synthetic.main.loading_panel.loadingPanel
-import kotlinx.android.synthetic.main.no_results.no_results
 import rx.Observable
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -165,9 +163,9 @@ class DiningFragment : Fragment() {
                     mActivity.runOnUiThread {
                         getMenus(diningHalls)
                         val adapter = DiningAdapter(diningHalls)
-                        loadingPanel?.visibility = View.GONE
+                        binding.loadingPanel.root.visibility = View.GONE
                         if (diningHalls.size > 0) {
-                            no_results?.visibility = View.GONE
+                            binding.noResults.root.visibility = View.GONE
                         }
 
                         // Log non-fatal error to crashyltics if null
@@ -186,7 +184,7 @@ class DiningFragment : Fragment() {
                     Log.e("DiningFragment", "Error getting dining halls", it)
                     mActivity.runOnUiThread {
                         Log.e("Dining", "Could not load Dining page", it)
-                        loadingPanel?.visibility = View.GONE
+                        binding.loadingPanel.root.visibility = View.GONE
                         binding.diningSwiperefresh.isRefreshing = false
                     }
                 })

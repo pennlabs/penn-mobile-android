@@ -24,7 +24,6 @@ import com.pennapps.labs.pennmobile.classes.FitnessPreferenceViewModel
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentPottruckBinding
 import com.pennapps.labs.pennmobile.utils.Utils
-import kotlinx.android.synthetic.main.fragment_home.internetConnectionHome
 
 class PottruckFragment : Fragment() {
     private lateinit var mActivity: MainActivity
@@ -33,7 +32,6 @@ class PottruckFragment : Fragment() {
     private lateinit var mView: View
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var recyclerView: RecyclerView
-    private lateinit var loadingPanel: View
 
     private lateinit var dataModel: FitnessPreferenceViewModel
     private lateinit var favoritesAdapter: FitnessAdapter
@@ -74,7 +72,6 @@ class PottruckFragment : Fragment() {
 
         swipeRefresh = binding.swiperefreshFitness
         recyclerView = binding.recyclerViewFitnessRooms
-        loadingPanel = view.findViewById(R.id.loadingPanel)
 
         swipeRefresh.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
         recyclerView.layoutManager =
@@ -135,7 +132,7 @@ class PottruckFragment : Fragment() {
                     Log.e("PottruckFragment", "Error getting fitness rooms", it)
                     mActivity.runOnUiThread {
                         Log.e("Fitness", "Could not load Pottruck page", it)
-                        loadingPanel.visibility = View.GONE
+                        binding.loadingPanel.root.visibility = View.GONE
                         swipeRefresh.isRefreshing = false
                     }
                 })
@@ -160,7 +157,7 @@ class PottruckFragment : Fragment() {
             )
 
         recyclerView.adapter = concatAdapter
-        loadingPanel.visibility = View.GONE
+        binding.loadingPanel.root.visibility = View.GONE
         swipeRefresh.isRefreshing = false
 
         // set click listener for favorites button
@@ -199,11 +196,10 @@ class PottruckFragment : Fragment() {
             )
             connectionMessage.text = getString(R.string.internet_error)
             connectionToolbar.visibility = View.VISIBLE
-            loadingPanel.visibility = View.GONE
+            binding.loadingPanel.root.visibility = View.GONE
             swipeRefresh.isRefreshing = false
             return false
         }
-        internetConnectionHome?.visibility = View.GONE
         connectionToolbar.visibility = View.GONE
         return true
     }

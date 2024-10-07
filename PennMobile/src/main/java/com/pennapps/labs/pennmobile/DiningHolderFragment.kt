@@ -11,7 +11,6 @@ import com.pennapps.labs.pennmobile.adapters.DiningPagerAdapter
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentDiningHolderBinding
 import com.pennapps.labs.pennmobile.utils.Utils
-import kotlinx.android.synthetic.main.fragment_dining.view.dining_swiperefresh
 
 class DiningHolderFragment : Fragment() {
     lateinit var pagerAdapter: DiningPagerAdapter
@@ -33,9 +32,6 @@ class DiningHolderFragment : Fragment() {
     ): View {
         _binding = FragmentDiningHolderBinding.inflate(inflater, container, false)
         val view = binding.root
-        view.dining_swiperefresh?.setOnRefreshListener { getConnected() }
-        view.dining_swiperefresh?.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
-        getConnected()
         initAppBar()
         // Inflate the layout for this fragment
         return view
@@ -64,21 +60,8 @@ class DiningHolderFragment : Fragment() {
         setTitle("Dining")
     }
 
-    private fun getConnected() {
-        // displays banner if not connected
-        if (!isOnline(context)) {
-            binding.internetConnectionDiningHolder.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-            binding.internetConnectionMessageDiningHolder.text = getString(R.string.internet_error)
-            binding.internetConnectionDiningHolder.visibility = View.VISIBLE
-            // loadingPanel?.visibility = View.GONE
-        } else {
-            binding.internetConnectionDiningHolder.visibility = View.GONE
-        }
-    }
-
     override fun onResume() {
         super.onResume()
-        getConnected()
         mActivity.removeTabs()
         mActivity.setTitle(R.string.dining)
         mActivity.setSelectedTab(MainActivity.DINING)

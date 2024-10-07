@@ -2,18 +2,14 @@ package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.FlingEvent
+import com.pennapps.labs.pennmobile.databinding.FlingPerformanceItemBinding
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fling_performance_item.view.flingview_description
-import kotlinx.android.synthetic.main.fling_performance_item.view.flingview_image
-import kotlinx.android.synthetic.main.fling_performance_item.view.flingview_name
-import kotlinx.android.synthetic.main.fling_performance_item.view.flingview_time
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import org.joda.time.format.ISODateTimeFormat
@@ -30,8 +26,8 @@ class FlingRecyclerViewAdapter(
         parent: ViewGroup,
         viewType: Int,
     ): ViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.fling_performance_item, parent, false)
-        return ViewHolder(view)
+        val itemBinding = FlingPerformanceItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(itemBinding)
     }
 
     override fun onBindViewHolder(
@@ -59,11 +55,11 @@ class FlingRecyclerViewAdapter(
     }
 
     class ViewHolder(
-        view: View,
-    ) : RecyclerView.ViewHolder(view) {
-        internal var flingviewImage: ImageView? = view.flingview_image
-        internal var flingviewName: TextView? = view.flingview_name
-        internal var flingviewDescription: TextView? = view.flingview_description
-        internal var flingviewTime: TextView? = view.flingview_time
+        itemBinding: FlingPerformanceItemBinding,
+    ) : RecyclerView.ViewHolder(itemBinding.root) {
+        internal var flingviewImage: ImageView? = itemBinding.flingviewImage
+        internal var flingviewName: TextView? = itemBinding.flingviewName
+        internal var flingviewDescription: TextView? = itemBinding.flingviewDescription
+        internal var flingviewTime: TextView? = itemBinding.flingviewTime
     }
 }

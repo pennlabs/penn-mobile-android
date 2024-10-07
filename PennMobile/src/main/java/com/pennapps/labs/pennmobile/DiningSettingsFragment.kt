@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,7 +20,6 @@ import com.pennapps.labs.pennmobile.classes.DiningHall
 import com.pennapps.labs.pennmobile.classes.DiningRequest
 import com.pennapps.labs.pennmobile.classes.HomepageDataModel
 import com.pennapps.labs.pennmobile.databinding.FragmentDiningPreferencesBinding
-import kotlinx.android.synthetic.main.include_main.toolbar
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
@@ -31,6 +31,7 @@ class DiningSettingsFragment(
     private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
     private lateinit var halls: List<DiningHall>
+    private lateinit var toolbar: Toolbar
     private val dataModel: HomepageDataModel = dataModel
 
     private var _binding: FragmentDiningPreferencesBinding? = null
@@ -43,8 +44,6 @@ class DiningSettingsFragment(
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         mActivity = activity as MainActivity
-        mActivity.toolbar.visibility = View.VISIBLE
-        mActivity.title = "Select Favorites"
         mStudentLife = MainActivity.studentLifeInstance
         mStudentLife = MainActivity.studentLifeInstance
     }
@@ -68,6 +67,16 @@ class DiningSettingsFragment(
         return v
     }
 
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
+        super.onViewCreated(view, savedInstanceState)
+        toolbar = mActivity.findViewById(R.id.toolbar)
+        toolbar.visibility = View.VISIBLE
+        mActivity.title = "Select Favorites"
+    }
+
     override fun onCreateOptionsMenu(
         menu: Menu,
         inflater: MenuInflater,
@@ -76,7 +85,7 @@ class DiningSettingsFragment(
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        mActivity.toolbar.visibility = View.GONE
+        toolbar.visibility = View.GONE
         when (item.itemId) {
             android.R.id.home -> {
                 mActivity.onBackPressed()
@@ -120,7 +129,7 @@ class DiningSettingsFragment(
     }
 
     override fun onDestroyView() {
-        mActivity.toolbar.visibility = View.GONE
+        toolbar.visibility = View.GONE
         if (!savedNewPrefs) restoreOriginal()
         _binding = null
         super.onDestroyView()

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.preference.PreferenceManager
@@ -14,14 +15,12 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.adapters.LaundrySettingsAdapter
 import com.pennapps.labs.pennmobile.databinding.FragmentLaundrySettingsBinding
 import com.pennapps.labs.pennmobile.viewmodels.LaundryViewModel
-import kotlinx.android.synthetic.main.include_main.toolbar
-import kotlinx.android.synthetic.main.loading_panel.loadingPanel
-import kotlinx.android.synthetic.main.no_results.no_results
 
 class LaundrySettingsFragment : Fragment() {
     private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLifeRf2
     private lateinit var mContext: Context
+    private lateinit var toolbar: Toolbar
 
     private var _binding: FragmentLaundrySettingsBinding? = null
     val binding get() = _binding!!
@@ -37,9 +36,6 @@ class LaundrySettingsFragment : Fragment() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity)
 
         mContext = mActivity
-        mActivity.closeKeyboard()
-        mActivity.toolbar.visibility = View.VISIBLE
-        mActivity.hideBottomBar()
     }
 
     override fun onCreateView(
@@ -49,9 +45,6 @@ class LaundrySettingsFragment : Fragment() {
     ): View {
         _binding = FragmentLaundrySettingsBinding.inflate(inflater, container, false)
         val view = binding.root
-
-        // set up back button
-        mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         return view
     }
@@ -70,20 +63,28 @@ class LaundrySettingsFragment : Fragment() {
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
-        loadingPanel?.visibility = View.VISIBLE
+
+        toolbar = mActivity.findViewById(R.id.toolbar)
+        toolbar.visibility = View.VISIBLE
+
+        mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        mActivity.closeKeyboard()
+        mActivity.hideBottomBar()
+
+        binding.loadingPanel.root.visibility = View.VISIBLE
 
         // if this value is already true, then simply attach adapter
         if (laundryViewModel.loadedRooms.value != null && laundryViewModel.loadedRooms.value!!) {
             attachAdapter()
-            loadingPanel?.visibility = View.GONE
-            no_results?.visibility = View.GONE
+            binding.loadingPanel.root.visibility = View.GONE
+            binding.noResults.root.visibility = View.GONE
         } else {
             // otherwise, wait until the network request is done
             laundryViewModel.loadedRooms.observe(viewLifecycleOwner) { loaded ->
                 if (loaded) {
                     attachAdapter()
-                    loadingPanel?.visibility = View.GONE
-                    no_results?.visibility = View.GONE
+                    binding.loadingPanel.root.visibility = View.GONE
+                    binding.noResults.root.visibility = View.GONE
                 }
             }
             laundryViewModel.getHalls(mStudentLife)
@@ -110,7 +111,7 @@ class LaundrySettingsFragment : Fragment() {
             }
         }
         mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        mActivity.toolbar.visibility = View.GONE
+        toolbar.visibility = View.GONE
         _binding = null
     }
 }

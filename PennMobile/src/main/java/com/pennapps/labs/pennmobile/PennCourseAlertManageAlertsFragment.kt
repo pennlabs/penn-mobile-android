@@ -21,8 +21,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.pennapps.labs.pennmobile.adapters.RegistrationsAdapter
 import com.pennapps.labs.pennmobile.viewmodels.PennCourseAlertViewModel
-import kotlinx.android.synthetic.main.pca_registration_list_item.notify_closed_switch
-import kotlinx.android.synthetic.main.pca_registration_list_item.subscribed_switch
 
 class PennCourseAlertManageAlertsFragment :
     Fragment(),
@@ -161,6 +159,7 @@ class PennCourseAlertManageAlertsFragment :
     override fun onClosedNotificationsSwitchClick(
         position: Int,
         onClosedNotifications: Boolean,
+        isSubscribed: Boolean,
     ) {
         val id = adapter.currentList[position].id.toString()
         Log.i(
@@ -168,10 +167,10 @@ class PennCourseAlertManageAlertsFragment :
             "Item $position closedNoti" +
                 " clicked with closed noti set to $onClosedNotifications",
         )
-        if (subscribed_switch.isChecked) {
+        if (isSubscribed) {
             viewModel.switchOnClosedNotifications(id, onClosedNotifications)
         } else {
-            notify_closed_switch.isChecked = false
+            adapter.notifyItemChanged(position)
             Toast
                 .makeText(
                     context,

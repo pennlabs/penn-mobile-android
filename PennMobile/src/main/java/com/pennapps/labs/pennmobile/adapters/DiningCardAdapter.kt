@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -19,11 +18,7 @@ import com.pennapps.labs.pennmobile.MenuFragment
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.DiningHall
-import kotlinx.android.synthetic.main.dining_list_item.view.dining_progress
-import kotlinx.android.synthetic.main.dining_list_item.view.item_dining_hours
-import kotlinx.android.synthetic.main.dining_list_item.view.item_dining_image
-import kotlinx.android.synthetic.main.dining_list_item.view.item_dining_name
-import kotlinx.android.synthetic.main.dining_list_item.view.item_dining_status
+import com.pennapps.labs.pennmobile.databinding.DiningListItemBinding
 import rx.android.schedulers.AndroidSchedulers
 
 class DiningCardAdapter(
@@ -38,6 +33,29 @@ class DiningCardAdapter(
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
+
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): ViewHolder {
+        mContext = parent.context
+        mActivity = mContext as MainActivity
+        mStudentLife = MainActivity.studentLifeInstance
+        val itemBinding = DiningListItemBinding.inflate(LayoutInflater.from(mContext), parent, false)
+        itemBinding.diningProgress.visibility = GONE
+        return ViewHolder(itemBinding)
+    }
+
+    // Converts the String representation of a meal name to its corresponding resource ID
+    private fun getOpenStatusLabel(openMeal: String): Int =
+        when (openMeal) {
+            "Breakfast" -> R.string.dining_hall_breakfast
+            "Brunch" -> R.string.dining_hall_brunch
+            "Lunch" -> R.string.dining_hall_lunch
+            "Dinner" -> R.string.dining_hall_dinner
+            "Late Night" -> R.string.dining_hall_late_night
+            else -> R.string.dining_hall_open
+        }
 
     override fun onBindViewHolder(
         holder: ViewHolder,
@@ -104,38 +122,14 @@ class DiningCardAdapter(
 
     override fun getItemCount(): Int = favoriteHalls.size
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int,
-    ): ViewHolder {
-        mContext = parent.context
-        mActivity = mContext as MainActivity
-        mStudentLife = MainActivity.studentLifeInstance
-
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.dining_list_item, parent, false)
-        view?.dining_progress?.visibility = GONE
-        return ViewHolder(view)
-    }
-
-    // Converts the String representation of a meal name to its corresponding resource ID
-    private fun getOpenStatusLabel(openMeal: String): Int =
-        when (openMeal) {
-            "Breakfast" -> R.string.dining_hall_breakfast
-            "Brunch" -> R.string.dining_hall_brunch
-            "Lunch" -> R.string.dining_hall_lunch
-            "Dinner" -> R.string.dining_hall_dinner
-            "Late Night" -> R.string.dining_hall_late_night
-            else -> R.string.dining_hall_open
-        }
-
     inner class ViewHolder(
-        itemView: View,
-    ) : RecyclerView.ViewHolder(itemView) {
+        itemBinding: DiningListItemBinding,
+    ) : RecyclerView.ViewHolder(itemBinding.root) {
         init {
-            itemImage = itemView.item_dining_image
-            itemName = itemView.item_dining_name
-            itemStatus = itemView.item_dining_status
-            itemHours = itemView.item_dining_hours
+            itemImage = itemBinding.itemDiningImage
+            itemName = itemBinding.itemDiningName
+            itemStatus = itemBinding.itemDiningStatus
+            itemHours = itemBinding.itemDiningHours
         }
     }
 }

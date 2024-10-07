@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
@@ -15,11 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.GSRReservation
+import com.pennapps.labs.pennmobile.databinding.GsrReservationBinding
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.gsr_reservation.view.gsr_reservation_cancel_btn
-import kotlinx.android.synthetic.main.gsr_reservation.view.gsr_reservation_date_tv
-import kotlinx.android.synthetic.main.gsr_reservation.view.gsr_reservation_iv
-import kotlinx.android.synthetic.main.gsr_reservation.view.gsr_reservation_location_tv
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import retrofit.ResponseCallback
@@ -35,9 +31,9 @@ class GsrReservationsAdapter(
         parent: ViewGroup,
         viewType: Int,
     ): GsrReservationViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.gsr_reservation, parent, false)
         mContext = parent.context
-        return GsrReservationViewHolder(view)
+        val itemBinding = GsrReservationBinding.inflate(LayoutInflater.from(mContext), parent, false)
+        return GsrReservationViewHolder(itemBinding)
     }
 
     override fun onBindViewHolder(
@@ -62,12 +58,12 @@ class GsrReservationsAdapter(
             .load(imageUrl)
             .fit()
             .centerCrop()
-            .into(holder.itemView.gsr_reservation_iv)
+            .into(holder.gsrReservationIv)
 
-        holder.itemView.gsr_reservation_location_tv.text = roomName
-        holder.itemView.gsr_reservation_date_tv.text = day + "\n" + fromHour + "-" + toHour
+        holder.gsrReservationLocationTv.text = roomName
+        holder.gsrReservationDateTv.text = day + "\n" + fromHour + "-" + toHour
 
-        holder.itemView.gsr_reservation_cancel_btn.setOnClickListener {
+        holder.gsrReservationCancelButton.setOnClickListener {
             // create dialog to confirm that you want to cancel reservation
             val builder = AlertDialog.Builder(mContext)
             builder.setTitle("Are you sure?")
@@ -144,8 +140,11 @@ class GsrReservationsAdapter(
     override fun getItemCount(): Int = reservations.size
 
     inner class GsrReservationViewHolder(
-        itemView: View,
-    ) : RecyclerView.ViewHolder(itemView) {
-        val view = itemView
+        itemBinding: GsrReservationBinding,
+    ) : RecyclerView.ViewHolder(itemBinding.root) {
+        val gsrReservationCancelButton = itemBinding.gsrReservationCancelBtn
+        val gsrReservationLocationTv = itemBinding.gsrReservationLocationTv
+        val gsrReservationDateTv = itemBinding.gsrReservationDateTv
+        val gsrReservationIv = itemBinding.gsrReservationIv
     }
 }
