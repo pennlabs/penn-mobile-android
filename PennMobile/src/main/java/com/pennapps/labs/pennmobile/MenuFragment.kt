@@ -8,18 +8,20 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.pennapps.labs.pennmobile.classes.DiningHall
-import kotlinx.android.synthetic.main.include_main.toolbar
 import org.apache.commons.lang3.StringUtils
 
 class MenuFragment : Fragment() {
-    private var mDiningHall: DiningHall? = null
     private lateinit var mActivity: MainActivity
+    private lateinit var toolBar: Toolbar
+
+    private var mDiningHall: DiningHall? = null
     private var pageAdapter: PagerAdapter? = null
 
     inner class TabAdapter(
@@ -103,7 +105,6 @@ class MenuFragment : Fragment() {
         pager.adapter = pageAdapter
         v.setBackgroundColor(Color.WHITE)
         mActivity.addTabs(pageAdapter as TabAdapter, pager, true)
-        mActivity.hideBottomBar()
         return v
     }
 
@@ -112,7 +113,9 @@ class MenuFragment : Fragment() {
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
-        mActivity.toolbar.visibility = View.VISIBLE
+        toolBar = mActivity.findViewById(R.id.toolbar)
+        toolBar.visibility = View.VISIBLE
+        mActivity.hideBottomBar()
     }
 
     override fun onCreateOptionsMenu(

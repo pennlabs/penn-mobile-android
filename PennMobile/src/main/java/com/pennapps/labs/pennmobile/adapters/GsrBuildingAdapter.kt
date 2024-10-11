@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.pennapps.labs.pennmobile.GsrBuildingHolder
-import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.GSRContainer
+import com.pennapps.labs.pennmobile.databinding.GsrBuildingBinding
+import com.pennapps.labs.pennmobile.viewholders.GsrBuildingHolder
 import org.joda.time.DateTime
 
 class GsrBuildingAdapter(
@@ -21,11 +21,8 @@ class GsrBuildingAdapter(
         parent: ViewGroup,
         viewType: Int,
     ): GsrBuildingHolder {
-        val view =
-            LayoutInflater
-                .from(parent.context)
-                .inflate(R.layout.gsr_building, parent, false)
-        return GsrBuildingHolder(view)
+        val itemBinding = GsrBuildingBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return GsrBuildingHolder(itemBinding)
     }
 
     override fun onBindViewHolder(

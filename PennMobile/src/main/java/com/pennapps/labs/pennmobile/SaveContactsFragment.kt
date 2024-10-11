@@ -14,15 +14,16 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.ListFragment
 import com.pennapps.labs.pennmobile.adapters.PhoneSaveAdapter
 import com.pennapps.labs.pennmobile.classes.Contact
-import kotlinx.android.synthetic.main.include_main.toolbar
 
 class SaveContactsFragment : ListFragment() {
     private lateinit var mActivity: MainActivity
+    private lateinit var toolbar: Toolbar
     private var contactsList: MutableList<Contact> = ArrayList()
     private var selected: MutableList<Contact> = ArrayList()
     private var currentNumbers: MutableSet<String> = HashSet()
@@ -58,9 +59,17 @@ class SaveContactsFragment : ListFragment() {
         val view = inflater.inflate(R.layout.fragment_save_contacts, container, false)
         setHasOptionsMenu(true)
         mActivity = activity as MainActivity
-        mActivity.toolbar.visibility = View.VISIBLE
-        mActivity.toolbar.setNavigationIcon(R.drawable.ic_back_navigation)
         return view
+    }
+
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
+        super.onViewCreated(view, savedInstanceState)
+        toolbar = mActivity.findViewById(R.id.toolbar)
+        toolbar.visibility = View.VISIBLE
+        toolbar.setNavigationIcon(R.drawable.ic_back_navigation)
     }
 
     override fun onCreateOptionsMenu(

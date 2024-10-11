@@ -4,14 +4,11 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
-import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.DiningHall
-import kotlinx.android.synthetic.main.laundry_settings_child_item.view.laundry_favorite_switch
-import kotlinx.android.synthetic.main.laundry_settings_child_item.view.laundry_room_name
+import com.pennapps.labs.pennmobile.databinding.LaundrySettingsChildItemBinding
 
 class DiningSettingsAdapter(
     private var diningHalls: List<DiningHall>,
@@ -24,9 +21,9 @@ class DiningSettingsAdapter(
         viewType: Int,
     ): DiningSettingsViewHolder {
         mContext = parent.context
-        val view = LayoutInflater.from(mContext).inflate(R.layout.laundry_settings_child_item, parent, false)
+        val itemBinding = LaundrySettingsChildItemBinding.inflate(LayoutInflater.from(mContext), parent, false)
         sp = PreferenceManager.getDefaultSharedPreferences(mContext)
-        return DiningSettingsViewHolder(view)
+        return DiningSettingsViewHolder(itemBinding)
     }
 
     override fun getItemCount(): Int = diningHalls.count()
@@ -36,8 +33,8 @@ class DiningSettingsAdapter(
         position: Int,
     ) {
         val hall = diningHalls[position]
-        holder.view.laundry_room_name?.text = hall.name
-        val switch = holder.view.laundry_favorite_switch
+        holder.laundryRoomName.text = hall.name
+        val switch = holder.laundryFavoriteSwitch
         // set the switch to the correct on or off
         switch.isChecked = sp.getBoolean(hall.name, false)
 
@@ -51,8 +48,9 @@ class DiningSettingsAdapter(
     }
 
     inner class DiningSettingsViewHolder(
-        itemView: View,
-    ) : RecyclerView.ViewHolder(itemView) {
-        val view = itemView
+        itemBinding: LaundrySettingsChildItemBinding,
+    ) : RecyclerView.ViewHolder(itemBinding.root) {
+        val laundryRoomName = itemBinding.laundryRoomName
+        val laundryFavoriteSwitch = itemBinding.laundryFavoriteSwitch
     }
 }

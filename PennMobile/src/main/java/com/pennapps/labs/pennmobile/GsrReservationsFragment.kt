@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.adapters.GsrReservationsAdapter
 import com.pennapps.labs.pennmobile.databinding.FragmentGsrReservationsBinding
-import kotlinx.android.synthetic.main.loading_panel.loadingPanel
 
 class GsrReservationsFragment : Fragment() {
     private lateinit var mActivity: MainActivity
@@ -70,7 +69,7 @@ class GsrReservationsFragment : Fragment() {
             binding.internetConnectionMessageGsrReservations.text = "Not Connected to Internet"
             binding.internetConnectionGSRReservations.visibility = View.VISIBLE
             binding.gsrReservationsRefreshLayout.isRefreshing = false
-            loadingPanel?.visibility = View.GONE
+            binding.loadingPanel.root.visibility = View.GONE
             binding.gsrNoReservations.visibility = View.VISIBLE
         } else {
             binding.internetConnectionGSRReservations.visibility = View.GONE
@@ -84,7 +83,7 @@ class GsrReservationsFragment : Fragment() {
             binding.internetConnectionGSRReservations.visibility = View.VISIBLE
             binding.gsrReservationsRefreshLayout.isRefreshing = false
             binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList())
-            loadingPanel?.visibility = View.GONE
+            binding.loadingPanel.root.visibility = View.GONE
             binding.gsrNoReservations.visibility = View.VISIBLE
         } else {
             binding.internetConnectionGSRReservations.visibility = View.GONE
@@ -101,7 +100,7 @@ class GsrReservationsFragment : Fragment() {
             try {
                 labs.getGsrReservations("Bearer $token").subscribe({ reservations ->
                     mActivity.runOnUiThread {
-                        loadingPanel?.visibility = View.GONE
+                        binding.loadingPanel.root.visibility = View.GONE
 
                         try {
                             binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList(reservations))
@@ -120,7 +119,7 @@ class GsrReservationsFragment : Fragment() {
                     mActivity.runOnUiThread {
                         Log.e("GsrReservationsFragment", "Error getting reservations", throwable)
                         throwable.printStackTrace()
-                        loadingPanel?.visibility = View.GONE
+                        binding.loadingPanel.root.visibility = View.GONE
                         try {
                             binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList())
                             binding.gsrNoReservations.visibility = View.VISIBLE

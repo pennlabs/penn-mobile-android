@@ -2,12 +2,12 @@ package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.R
-import kotlinx.android.synthetic.main.team_member.view.name_tv
-import kotlinx.android.synthetic.main.team_member.view.person_iv
+import com.pennapps.labs.pennmobile.databinding.TeamMemberBinding
 
 class AboutAdapter(
     private var members: ArrayList<String>,
@@ -18,9 +18,9 @@ class AboutAdapter(
         parent: ViewGroup,
         viewType: Int,
     ): TeamViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.team_member, parent, false)
         mContext = parent.context
-        return TeamViewHolder(view)
+        val itemBinding = TeamMemberBinding.inflate(LayoutInflater.from(mContext), parent, false)
+        return TeamViewHolder(itemBinding)
     }
 
     override fun getItemCount(): Int = members.count()
@@ -29,7 +29,7 @@ class AboutAdapter(
         holder: TeamViewHolder,
         position: Int,
     ) {
-        holder.view.name_tv?.text = members[position]
+        holder.nameTv.text = members[position]
         val imageId =
             when (members[position]) {
                 "Marta García Ferreiro" -> R.drawable.marta
@@ -53,12 +53,13 @@ class AboutAdapter(
                 "Kaushik Akula" -> R.drawable.kaushik
                 else -> null
             }
-        if (imageId != null) holder.view.person_iv?.setImageResource(imageId)
+        if (imageId != null) holder.personIv.setImageResource(imageId)
     }
 
     inner class TeamViewHolder(
-        itemView: View,
-    ) : RecyclerView.ViewHolder(itemView) {
-        val view = itemView
+        itemBinding: TeamMemberBinding,
+    ) : RecyclerView.ViewHolder(itemBinding.root) {
+        val personIv: ImageView = itemBinding.personIv
+        val nameTv: TextView = itemBinding.nameTv
     }
 }

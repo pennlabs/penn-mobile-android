@@ -6,9 +6,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.BookGsrFragment
-import com.pennapps.labs.pennmobile.GsrRoomHolder
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.databinding.GsrRoomBinding
+import com.pennapps.labs.pennmobile.viewholders.GsrRoomHolder
 import org.joda.time.DateTime
 
 class GsrRoomAdapter(
@@ -27,8 +28,8 @@ class GsrRoomAdapter(
         parent: ViewGroup,
         viewType: Int,
     ): GsrRoomHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.gsr_room, parent, false)
-        val gsrRoomHolder = GsrRoomHolder(view)
+        val itemBinding = GsrRoomBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val gsrRoomHolder = GsrRoomHolder(itemBinding)
 
         // whenever a time slot is clicked, open spinner to let user pick a duration
         gsrRoomHolder.gsrRoom.setOnClickListener {
