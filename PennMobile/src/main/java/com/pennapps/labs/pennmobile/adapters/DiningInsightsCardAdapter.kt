@@ -113,6 +113,23 @@ class DiningInsightsCardAdapter(
         }
     }
 
+    private fun filterPastBalances(values: List<Entry>): List<Entry> {
+        if (values.size <= 2) {
+            return values
+        }
+        return values.filterIndexed { index, currBalance ->
+            if (index == 0 || index == values.size - 1) {
+                return@filterIndexed true
+            }
+            val prevBalance = values[index - 1].y
+            val nextBalance = values[index + 1].y
+
+            return@filterIndexed currBalance.y != 0f ||
+                prevBalance <= 0f ||
+                nextBalance <= 0f
+        }
+    }
+
     private fun bindDollarsSpentReservationsCell(
         holder: ViewHolder,
         cell: DiningInsightCell,
@@ -152,6 +169,7 @@ class DiningInsightsCardAdapter(
         val v = holder.view
         val dates = ArrayList<String>()
         val amounts = ArrayList<Float>()
+        val currentBalance = cell.diningBalances
         val diningBalances = cell.diningBalancesList?.diningBalancesList
         diningBalances?.forEach {
             it.date?.let { it1 -> dates.add(it1) }
@@ -161,6 +179,20 @@ class DiningInsightsCardAdapter(
                 it.regularVisits?.let { it1 -> amounts.add(it1.toFloat()) }
             }
         }
+        if (amounts.isNotEmpty()) {
+            if (amounts.last() == 0f) {
+                if (typeId == DINING_DOLLARS_PREDICTIONS) {
+                    currentBalance?.diningDollars?.let { it1 ->
+                        amounts[amounts.lastIndex] = it1.toFloat()
+                    }
+                } else if (typeId == DINING_SWIPES_PREDICTIONS) {
+                    currentBalance?.regularVisits?.let { it1 ->
+                        amounts[amounts.lastIndex] = it1.toFloat()
+                    }
+                }
+            }
+        }
+
         val tf = mContext.resources.getFont(R.font.gilroy_light)
         val predictionChart = (v.findViewById<View>(R.id.dining_predictions_graph) as LineChart)
         predictionChart.description = null
@@ -256,11 +288,11 @@ class DiningInsightsCardAdapter(
         tvGuestSwipesAmount.text = guestSwipes.toString()
     }
 
-    private fun getPredictionSlope(amounts: List<Float>): Float =
-        if (amounts.size <= 1) {
+    private fun getPredictionSlope(values: List<Entry>): Float =
+        if (values.size <= 1) {
             0f
         } else {
-            (amounts[amounts.size - 1] - amounts[0]) / (amounts.size - 1)
+            (values[values.size - 1].y - values[0].y) / (values.size - 1)
         }
 
     private fun setData(
@@ -273,13 +305,14 @@ class DiningInsightsCardAdapter(
         amounts.forEachIndexed { index, amount ->
             values.add(Entry(index.toFloat(), amount))
         }
-        if (values.size == 0) {
+        val filteredValues = filterPastBalances(values)
+        if (filteredValues.isEmpty()) {
             return
         }
         val predictionValues: ArrayList<Entry> = ArrayList()
-        val slope = getPredictionSlope(amounts)
-        val b = if (amounts.isNotEmpty()) amounts[0] else 0f
-        for (i in values.size..DAYS_IN_SEMESTER.toInt()) {
+        val slope = getPredictionSlope(values)
+        val b = if (filteredValues.isNotEmpty()) filteredValues[0].y else 0f
+        for (i in values.size - 1..DAYS_IN_SEMESTER.toInt()) {
             predictionValues.add(Entry(i.toFloat(), slope * i + b))
         }
         val actualValues: LineDataSet
@@ -287,11 +320,11 @@ class DiningInsightsCardAdapter(
             diningDollarsGraph.data.dataSetCount > 0
         ) {
             actualValues = diningDollarsGraph.data.getDataSetByIndex(0) as LineDataSet
-            actualValues.values = values
+            actualValues.values = filteredValues
             diningDollarsGraph.data.notifyDataChanged()
             diningDollarsGraph.notifyDataSetChanged()
         } else {
-            actualValues = LineDataSet(values, "")
+            actualValues = LineDataSet(filteredValues, "")
             actualValues.setDrawValues(false)
             actualValues.setDrawCircles(false)
             actualValues.setDrawFilled(false)
@@ -320,8 +353,8 @@ class DiningInsightsCardAdapter(
             val tvExpiredOrExtra = (v.findViewById<View>(R.id.extraAmount) as TextView)
             val tvExtra = (v.findViewById<View>(R.id.extra) as TextView)
             val tvExtraNote = (v.findViewById<View>(R.id.extraNote) as TextView)
-            if (values[values.size - 1].y <= 0) {
-                val expiredDate = getExpired(values)
+            if (filteredValues[filteredValues.size - 1].y <= 0) {
+                val expiredDate = getExpired(filteredValues as ArrayList)
                 tvExpiredOrExtra.text = expiredDate
                 if (typeId == DINING_DOLLARS_PREDICTIONS) {
                     tvExtra.text = mContext.getString(R.string.out_of_dining_dollars)
@@ -342,7 +375,7 @@ class DiningInsightsCardAdapter(
                         tvExtraNote.text = mContext.getString(R.string.out_of_dining_swipes_prediction_message)
                     }
                 } else {
-                    var extraAmount = values[values.size - 1].y
+                    var extraAmount = filteredValues[filteredValues.size - 1].y
                     if (predictionValues.size != 0) {
                         extraAmount = predictionValues[predictionValues.size - 1].y
                     }
