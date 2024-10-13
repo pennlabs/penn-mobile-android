@@ -50,6 +50,7 @@ class AboutAdapter(
                 "Joe MacDougall" -> R.drawable.joe
                 "Baron Ping-Yeh Hsieh" -> R.drawable.baron
                 "David Fu" -> R.drawable.david
+                "Kaushik Akula" -> R.drawable.kaushik
                 else -> null
             }
         if (imageId != null) holder.personIv.setImageResource(imageId)
