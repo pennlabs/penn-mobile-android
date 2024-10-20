@@ -4,7 +4,9 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:theme="@style/Theme.Pennmobileandroid.AppWidgetContainer"
-    android:id="@+id/gsr_reservation_widget_root" >
+    android:clickable="true"
+    android:id="@+id/gsr_reservation_widget_root"
+    android:background="@android:color/transparent">
     <FrameLayout
         android:id="@+id/widgetframe"
         android:layout_width="match_parent"

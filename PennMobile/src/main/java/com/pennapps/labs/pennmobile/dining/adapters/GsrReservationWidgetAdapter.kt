@@ -5,21 +5,15 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.preference.PreferenceManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.GsrReservationWidget
-import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.adapters.DiningHallWidgetAdapter.DiningWidgetFactory.Companion.createHall
-import com.pennapps.labs.pennmobile.api.CampusExpress
 import com.pennapps.labs.pennmobile.api.GsrReservationsRequest
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRReservation
-import kotlinx.android.synthetic.main.loading_panel.loadingPanel
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import rx.Observable
@@ -96,6 +90,11 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+
+            val extras = Bundle()
+            val fillInIntent = Intent()
+            fillInIntent.putExtras(extras)
+            views.setOnClickFillInIntent(R.id.gsr_reservation_widget_item_root, fillInIntent)
 
             return views
         }
