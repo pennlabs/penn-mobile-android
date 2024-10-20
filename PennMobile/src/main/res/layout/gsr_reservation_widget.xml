@@ -1,11 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:theme="@style/Theme.Pennmobileandroid.AppWidgetContainer"
-    android:id="@+id/gsr_reservation_widget_root"
-    android:background="@android:color/transparent">
+    android:id="@+id/gsr_reservation_widget_root" >
     <FrameLayout
         android:id="@+id/widgetframe"
         android:layout_width="match_parent"
@@ -22,6 +20,7 @@
             />
 
         <ImageView
+            android:contentDescription="Penn Logo"
             android:id="@+id/gsr_reservation_widget_empty_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
