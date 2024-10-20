@@ -15,6 +15,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.*
+import com.pennapps.labs.pennmobile.Subletting.SublettingFragment
 import com.pennapps.labs.pennmobile.components.dialog.CustomAlertDialogue
 import kotlinx.android.synthetic.main.include_main.*
 import java.util.*

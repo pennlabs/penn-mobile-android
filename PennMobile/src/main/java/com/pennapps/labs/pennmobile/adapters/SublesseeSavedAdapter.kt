@@ -1,23 +1,17 @@
 package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentTransaction
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.SublesseeDetailsFragment
-import com.pennapps.labs.pennmobile.SubletteeMarketplace
+import com.pennapps.labs.pennmobile.Subletting.SublesseeDetailsFragment
 import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
-import com.pennapps.labs.pennmobile.classes.Sublet
-import com.pennapps.labs.pennmobile.classes.SublettingModel
 
 //for the listview for the saved sublets
 class SublesseeSavedAdapter(var dataModel: SublesseeViewModel):

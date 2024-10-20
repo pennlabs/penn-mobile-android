@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile
+package com.pennapps.labs.pennmobile.Subletting
 
 import android.location.Geocoder
 import android.os.Bundle
@@ -17,6 +17,8 @@ import com.google.android.gms.maps.model.MarkerOptions
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.pennapps.labs.pennmobile.MainActivity
+import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.FragmentSublesseeDetailsMapBinding
 import java.util.Locale
 

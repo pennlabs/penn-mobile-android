@@ -1,12 +1,9 @@
 package com.pennapps.labs.pennmobile.adapters
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.pennapps.labs.pennmobile.SublesseeAppliedListingsHolder
-import com.pennapps.labs.pennmobile.SublesseeSavedListingsHolderFragment
-import com.pennapps.labs.pennmobile.SubletteeFragment
-import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
+import com.pennapps.labs.pennmobile.Subletting.SublesseeAppliedListingsHolder
+import com.pennapps.labs.pennmobile.Subletting.SublesseeSavedListingsHolderFragment
 
 class SublesseeSavedPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
     override fun getItemCount(): Int = 2

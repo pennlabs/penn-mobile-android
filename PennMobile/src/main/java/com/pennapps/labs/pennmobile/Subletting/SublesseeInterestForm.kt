@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile
+package com.pennapps.labs.pennmobile.Subletting
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,12 +8,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
+import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
+import com.pennapps.labs.pennmobile.classes.Offer
 import com.pennapps.labs.pennmobile.databinding.FragmentSublesseeInterestFormBinding
-import com.pennapps.labs.pennmobile.databinding.FragmentSubletteeViewBinding
 
-class SublesseeInterestForm (): Fragment() {
+class SublesseeInterestForm (id: Int): Fragment() {
 
     //create binding
     private var _binding : FragmentSublesseeInterestFormBinding? = null
@@ -43,8 +43,16 @@ class SublesseeInterestForm (): Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         interestButton = binding.sublesseeInterestSendButton
 
+        //Need data validation
         interestButton.setOnClickListener {
-            //some backend things to send the message
+            val offer = Offer(
+                sublet = id,
+                phoneNumber = "test",
+                createdDate = "",
+                message = "",
+                user = "",
+                email = ""
+            )
 
             Toast.makeText(mActivity, "Your message has been sent!", Toast.LENGTH_LONG).show()
             mActivity.supportFragmentManager.beginTransaction()

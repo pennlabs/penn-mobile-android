@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile
+package com.pennapps.labs.pennmobile.Subletting
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,13 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.FragmentTransaction
-import com.google.firebase.analytics.FirebaseAnalytics
+import com.pennapps.labs.pennmobile.MainActivity
+import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
-import com.pennapps.labs.pennmobile.classes.SublettingViewModel
-import com.pennapps.labs.pennmobile.databinding.FragmentGsrBinding
 import com.pennapps.labs.pennmobile.databinding.FragmentSubletteeViewBinding
-import org.joda.time.DateTime
 
 class SubletteeFragment : Fragment() {
 
