@@ -52,8 +52,10 @@ class GsrReservationWidget : AppWidgetProvider() {
             // Setting up the widget remoteViews; change cardview to something else
             val views = RemoteViews(context.packageName, R.layout.gsr_reservation_widget)
             views.setRemoteAdapter(R.id.gsr_reservation_widget_stack_view, serviceIntent)
-            views.setEmptyView(R.id.gsr_reservation_widget_stack_view,
-                R.id.gsr_reservation_widget_empty_view)
+            views.setEmptyView(
+                R.id.gsr_reservation_widget_stack_view,
+                R.id.gsr_reservation_widget_empty_view,
+            )
 
             // Setting up the intents for the remoteview for both when it is empty and
             // when it loads the collection view (in this case we use setPendingIntentTemplate to
@@ -63,8 +65,10 @@ class GsrReservationWidget : AppWidgetProvider() {
 
             // Notify appwidgetviewdata has changed to call getViewAt to set up the widget UI
             // and handle update for every appwidget item in the Collection widget.
-            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId,
-                R.id.gsr_reservation_widget_stack_view)
+            appWidgetManager.notifyAppWidgetViewDataChanged(
+                appWidgetId,
+                R.id.gsr_reservation_widget_stack_view,
+            )
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
     }

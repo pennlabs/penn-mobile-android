@@ -19,15 +19,12 @@ import rx.Observable
 import java.net.HttpURLConnection
 import java.net.URL
 
-
 class GsrReservationWidgetAdapter : RemoteViewsService() {
-    override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-        return GsrReservationWidgetFactory(applicationContext, intent)
-    }
+    override fun onGetViewFactory(intent: Intent): RemoteViewsFactory = GsrReservationWidgetFactory(applicationContext, intent)
 
     class GsrReservationWidgetFactory(
         private val context: Context,
-        intent: Intent
+        intent: Intent,
     ) : RemoteViewsFactory {
         private var mGsrReservationsRequest: GsrReservationsRequest? = null
         private var appWidgetId: Int =
@@ -45,16 +42,12 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
 
         // Not used since already handled
         override fun onDataSetChanged() {
-
         }
 
         override fun onDestroy() {
-
         }
 
-        override fun getCount(): Int {
-            return dataSet.size
-        }
+        override fun getCount(): Int = dataSet.size
 
         // TODO("Get building name(?), and hopefully support click behavior")
         override fun getViewAt(index: Int): RemoteViews {
@@ -69,18 +62,22 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
             val fromHour = from.toString("h:mm a")
             val toHour = to.toString("h:mm a")
 
-            val imageUrl = reservation.info?.get("thumbnail") ?:
-            "https://s3.us-east-2.amazonaws.com/labs.api/dining/MBA+Cafe.jpg"
+            val imageUrl =
+                reservation.info?.get("thumbnail")
+                    ?: "https://s3.us-east-2.amazonaws.com/labs.api/dining/MBA+Cafe.jpg"
 
             val views = RemoteViews(context.packageName, R.layout.gsr_reservation_widget_item)
             views.setTextViewText(R.id.gsr_reservation_widget_item_location_tv, roomName)
             views.setTextViewText(
-                R.id.gsr_reservation_widget_item_time_tv, "$day\n$fromHour-$toHour")
+                R.id.gsr_reservation_widget_item_time_tv,
+                "$day\n$fromHour-$toHour",
+            )
 
             try {
                 val urlConnection = URL(imageUrl)
-                val connection = urlConnection
-                    .openConnection() as HttpURLConnection
+                val connection =
+                    urlConnection
+                        .openConnection() as HttpURLConnection
                 connection.doInput = true
                 connection.connect()
                 val input = connection.inputStream
@@ -98,27 +95,22 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
             return views
         }
 
-        override fun getLoadingView(): RemoteViews? {
-            return null
-        }
+        override fun getLoadingView(): RemoteViews? = null
 
-        override fun getViewTypeCount(): Int {
-            return 1
-        }
+        override fun getViewTypeCount(): Int = 1
 
-        override fun getItemId(id: Int): Long {
-            return id.toLong()
-        }
+        override fun getItemId(id: Int): Long = id.toLong()
 
-        override fun hasStableIds(): Boolean {
-            return true
-        }
+        override fun hasStableIds(): Boolean = true
 
         private fun getWidgetGsrReservations() {
             try {
                 if (mGsrReservationsRequest != null) {
-                    val token = sharedPreferences.getString(
-                        context.getString(R.string.access_token), "")
+                    val token =
+                        sharedPreferences.getString(
+                            context.getString(R.string.access_token),
+                            "",
+                        )
                     mGsrReservationsRequest!!
                         .getGsrReservations("Bearer $token")
                         .flatMap { reservations -> Observable.from(reservations) }
@@ -130,8 +122,10 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
                             println("subscribed")
                             val appWidgetManager: AppWidgetManager =
                                 AppWidgetManager.getInstance(context)
-                            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId,
-                                R.id.gsr_reservation_widget_stack_view)
+                            appWidgetManager.notifyAppWidgetViewDataChanged(
+                                appWidgetId,
+                                R.id.gsr_reservation_widget_stack_view,
+                            )
                         }
                 }
             } catch (e: Exception) {
