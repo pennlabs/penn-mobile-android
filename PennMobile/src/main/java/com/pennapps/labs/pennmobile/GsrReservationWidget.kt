@@ -7,14 +7,14 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.RemoteViews
+import androidx.preference.PreferenceManager
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.pennapps.labs.pennmobile.adapters.DiningHallWidgetAdapter
 import com.pennapps.labs.pennmobile.adapters.GsrReservationWidgetAdapter
-import com.pennapps.labs.pennmobile.api.DiningRequest
+import com.pennapps.labs.pennmobile.api.GsrReservationsRequest
 import com.pennapps.labs.pennmobile.api.Serializer
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRReservation
-import com.pennapps.labs.pennmobile.classes.Venue
 import com.squareup.okhttp.OkHttpClient
 import retrofit.RestAdapter
 import retrofit.client.OkClient
@@ -34,17 +34,8 @@ class GsrReservationWidget : AppWidgetProvider() {
                 flags += Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
 
-            // The value we put in the Widget_Tab_Switch Extra is 1 (originally tried to implement
-            // global variable but it involves singleton class), and as long as the
-            // value of the Extra is not -1 (getIntExtra declared to have default value -1 in MainActivity)
-            // we set the tab as the dining tab (so users could access the dining tab when they
-            // click on any of the widget). Extra could be further utilized for clicking
-            // on individual items on the widget to access their info in the app (future feature
-            // to be implemented).
-            mainActivityIntent.putExtra("Widget_Tab_Switch", 1)
+            mainActivityIntent.putExtra("Gsr_Tab_Switch", 1)
 
-            // Set up intent for adapter and pendingIntent to allow users to access the app when
-            // clicking on the items on the widget.
             val serviceIntent = Intent(context, GsrReservationWidgetAdapter::class.java)
             val pendingIntent: PendingIntent =
                 PendingIntent.getActivity(
@@ -88,42 +79,38 @@ class GsrReservationWidget : AppWidgetProvider() {
     override fun onDisabled(context: Context) {
     }
 
-    // TODO("Implement actually getting a reservation instance")
     companion object {
-        private var mGSRReservation: GSRReservation? = null
-        val ACTION_AUTO_UPDATE = "AUTO_UPDATE"
+        private var mGSRReservationsRequest: GsrReservationsRequest? = null
 
         @JvmStatic
-        val gsrReservationInstance: GSRReservation
+        val gsrReservationsRequestInstance: GsrReservationsRequest
             get() {
-                if (mGSRReservation == null) {
-//                    val gsonBuilder = GsonBuilder()
-//
-//                    // RegisterTypeAdapter with VenueSerializer since we are accessing the
-//                    // Venue data specifically in our widget.
-//                    gsonBuilder.registerTypeAdapter(
-//                        object : TypeToken<MutableList<Venue?>?>() {}.type,
-//                        Serializer.VenueSerializer(),
-//                    )
-//
-//                    val gson = gsonBuilder.create()
-//                    val okHttpClient = OkHttpClient()
-//                    okHttpClient.setConnectTimeout(35, TimeUnit.SECONDS) // Connection timeout
-//                    okHttpClient.setReadTimeout(35, TimeUnit.SECONDS) // Read timeout
-//                    okHttpClient.setWriteTimeout(35, TimeUnit.SECONDS) // Write timeout
-//
-//                    val restAdapter =
-//                        RestAdapter
-//                            .Builder()
-//                            .setConverter(GsonConverter(gson))
-//                            .setClient(OkClient(okHttpClient))
-//                            .setEndpoint("https://pennmobile.org/api")
-//                            .build()
-//                    mGSRReservation = restAdapter.create(GSRReservation::class.java)
-                    // change later; bruh I need dummy values
-                    mGSRReservation = GSRReservation()
+                if (mGSRReservationsRequest == null) {
+                    val gsonBuilder = GsonBuilder()
+
+                    // RegisterTypeAdapter with GsrReservationSerializer
+                    // since we are only accessing gsr reservations
+                    gsonBuilder.registerTypeAdapter(
+                        object : TypeToken<MutableList<GSRReservation?>?>() {}.type,
+                        Serializer.GsrReservationSerializer(),
+                    )
+
+                    val gson = gsonBuilder.create()
+                    val okHttpClient = OkHttpClient()
+                    okHttpClient.setConnectTimeout(35, TimeUnit.SECONDS) // Connection timeout
+                    okHttpClient.setReadTimeout(35, TimeUnit.SECONDS) // Read timeout
+                    okHttpClient.setWriteTimeout(35, TimeUnit.SECONDS) // Write timeout
+
+                    val restAdapter =
+                        RestAdapter
+                            .Builder()
+                            .setConverter(GsonConverter(gson))
+                            .setClient(OkClient(okHttpClient))
+                            .setEndpoint("https://pennmobile.org/api")
+                            .build()
+                    mGSRReservationsRequest = restAdapter.create(GsrReservationsRequest::class.java)
                 }
-                return mGSRReservation!!
+                return mGSRReservationsRequest!!
             }
     }
 }

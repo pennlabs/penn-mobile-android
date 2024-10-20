@@ -1,18 +1,28 @@
 package com.pennapps.labs.pennmobile.adapters
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.Uri
+import android.os.Bundle
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import androidx.preference.PreferenceManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.GsrReservationWidget
+import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.adapters.DiningHallWidgetAdapter.DiningWidgetFactory.Companion.createHall
+import com.pennapps.labs.pennmobile.api.CampusExpress
+import com.pennapps.labs.pennmobile.api.GsrReservationsRequest
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRReservation
-import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.loading_panel.loadingPanel
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
+import rx.Observable
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -26,23 +36,23 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
         private val context: Context,
         intent: Intent
     ) : RemoteViewsFactory {
-        // Need to change later to actual source
-        private var mGsrReservation: GSRReservation? = null
+        private var mGsrReservationsRequest: GsrReservationsRequest? = null
         private var appWidgetId: Int =
             intent.getIntExtra(
                 AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID,
             )
         private var dataSet: List<GSRReservation> = emptyList()
+        private var sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
         override fun onCreate() {
-            mGsrReservation = GsrReservationWidget.gsrReservationInstance
+            mGsrReservationsRequest = GsrReservationWidget.gsrReservationsRequestInstance
             getWidgetGsrReservations()
         }
 
-        // Only when there's a change to the user's reservations
+        // Not used since already handled
         override fun onDataSetChanged() {
-            getWidgetGsrReservations();
+
         }
 
         override fun onDestroy() {
@@ -53,7 +63,7 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
             return dataSet.size
         }
 
-        // TODO("Set the image, get building name, and hopefully support click behavior")
+        // TODO("Get building name(?), and hopefully support click behavior")
         override fun getViewAt(index: Int): RemoteViews {
             val reservation = dataSet[index]
             val roomName = reservation.name
@@ -73,12 +83,7 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
             views.setTextViewText(R.id.gsr_reservation_widget_item_location_tv, roomName)
             views.setTextViewText(
                 R.id.gsr_reservation_widget_item_time_tv, "$day\n$fromHour-$toHour")
-//            Picasso
-//                .get()
-//                .load(imageUrl)
-//                .fit()
-//                .centerCrop()
-//                .into()
+
             try {
                 val urlConnection = URL(imageUrl)
                 val connection = urlConnection
@@ -104,18 +109,32 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
         }
 
         override fun getItemId(id: Int): Long {
-            return id.toLong();
+            return id.toLong()
         }
 
         override fun hasStableIds(): Boolean {
-            return true;
+            return true
         }
 
-        // TODO("Actually get the user's reservations")
         private fun getWidgetGsrReservations() {
             try {
-                if (mGsrReservation != null) {
-                    dataSet = listOf(mGsrReservation!!)
+                if (mGsrReservationsRequest != null) {
+                    val token = sharedPreferences.getString(
+                        context.getString(R.string.access_token), "")
+                    mGsrReservationsRequest!!
+                        .getGsrReservations("Bearer $token")
+                        .flatMap { reservations -> Observable.from(reservations) }
+                        .flatMap { reservation ->
+                            Observable.just(reservation)
+                        }.toList()
+                        .subscribe { reservations ->
+                            dataSet = reservations
+                            println("subscribed")
+                            val appWidgetManager: AppWidgetManager =
+                                AppWidgetManager.getInstance(context)
+                            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId,
+                                R.id.gsr_reservation_widget_stack_view)
+                        }
                 }
             } catch (e: Exception) {
                 FirebaseCrashlytics.getInstance().recordException(e)
