@@ -16,7 +16,7 @@ import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentSublesseeDetailsBinding
 
-class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position: Int): Fragment(){
+class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position: Int, var isSaved: Boolean): Fragment(){
 
     private var _binding : FragmentSublesseeDetailsBinding? = null
     private val binding get() = _binding!!
@@ -53,7 +53,10 @@ class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position:
 
     @SuppressLint("MutatingSharedPrefs")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val sublet = dataModel.getSublet(position)
+        var sublet = dataModel.getSublet(position)
+        if (isSaved) {
+            sublet = dataModel.getSavedSublet(position)
+        }
 
         titleText = binding.titleText
         titleText.text = sublet.title

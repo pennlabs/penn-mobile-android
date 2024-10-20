@@ -24,7 +24,7 @@ class SublesseeViewModel(private val activity: Activity, private val studentLife
 
     var sublettingList = MutableLiveData<ArrayList<Sublet>>()
     var savedSublets = MutableLiveData<ArrayList<Sublet>>()
-    var savedSubletIds = hashSetOf<Int>()
+    //var savedSubletIds = hashSetOf<Int>()
 
     fun getSublet(position : Int) : Sublet {
         return sublettingList.value?.get(position) ?: Sublet() // Provide a default value if needed

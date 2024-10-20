@@ -64,7 +64,7 @@ class SublesseeSavedAdapter(var dataModel: SublesseeViewModel):
 
         holder.itemView.setOnClickListener {
             mActivity.supportFragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, SublesseeDetailsFragment(dataModel, position))
+                    .replace(R.id.content_frame, SublesseeDetailsFragment(dataModel, position, true))
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit()

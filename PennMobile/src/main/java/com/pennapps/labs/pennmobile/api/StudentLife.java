@@ -279,7 +279,7 @@ public interface StudentLife {
 
     @Headers({"Content-Type: application/json"})
     @GET("/sublet/favorites/")
-    Observable<List<Integer>> getSubletFavorites(
+    Observable<List<Sublet>> getSubletFavorites(
             @Header("Authorization") String bearerToken);
 
 }
