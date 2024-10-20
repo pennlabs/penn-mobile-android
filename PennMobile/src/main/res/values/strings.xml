@@ -280,4 +280,9 @@
     <string name="details">Details</string>
     <string name="kitchen_appliances">Kitchen Appliances</string>
     <string name="furniture">Furniture</string>
+    <string name="air_conditioning">Air Conditioning</string>
+    <string name="accessibility_features">Accessibility Features</string>
+    <string name="end_date">End Date</string>
+    <string name="fitness_facilities">Fitness Facilities</string>
+    <string name="heating">Heating</string>
 </resources>
