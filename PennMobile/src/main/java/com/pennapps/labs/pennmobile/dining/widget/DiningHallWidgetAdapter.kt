@@ -88,11 +88,11 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
 
             // For future feature of clicking app widget item would direct to the respective dining
             // hall info page
-//            val extras = Bundle()
-//            extras.putInt("dining_hall_id", dataSet[position].id)
-//            val fillInIntent = Intent()
-//            fillInIntent.putExtras(extras)
-//            views.setOnClickFillInIntent(R.id.widgetBackground, fillInIntent)
+            val extras = Bundle()
+            extras.putInt("dining_hall_id", dataSet[position].id)
+            val fillInIntent = Intent()
+            fillInIntent.putExtras(extras)
+            views.setOnClickFillInIntent(R.id.widgetBackground, fillInIntent)
 
             return views
         }
