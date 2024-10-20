@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile
 
+import StudentLifeRf2
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -37,59 +38,77 @@ import com.pennapps.labs.pennmobile.adapters.MainPagerAdapter
 import com.pennapps.labs.pennmobile.api.CampusExpress
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.Platform
-import com.pennapps.labs.pennmobile.api.Serializer.*
+import com.pennapps.labs.pennmobile.api.Serializer
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.classes.*
+import com.pennapps.labs.pennmobile.classes.Account
+import com.pennapps.labs.pennmobile.classes.Contact
+import com.pennapps.labs.pennmobile.classes.DiningHall
+import com.pennapps.labs.pennmobile.classes.FlingEvent
+import com.pennapps.labs.pennmobile.classes.GSRLocation
+import com.pennapps.labs.pennmobile.classes.GSRReservation
+import com.pennapps.labs.pennmobile.classes.LaundryRoom
+import com.pennapps.labs.pennmobile.classes.Post
+import com.pennapps.labs.pennmobile.classes.Venue
 import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
+import com.pennapps.labs.pennmobile.databinding.ActivityMainBinding
 import com.pennapps.labs.pennmobile.utils.Utils
-import com.squareup.okhttp.OkHttpClient
-import eightbitlab.com.blurview.RenderScriptBlur
-import kotlinx.android.synthetic.main.custom_sneaker_view.view.*
-import kotlinx.android.synthetic.main.include_main.*
+import eightbitlab.com.blurview.BlurView
 import kotlinx.coroutines.sync.Mutex
+import okhttp3.OkHttpClient
 import retrofit.RestAdapter
 import retrofit.android.AndroidLog
 import retrofit.client.OkClient
 import retrofit.converter.GsonConverter
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
-
+import com.squareup.okhttp.OkHttpClient as SquareOkHttpClient
 
 class MainActivity : AppCompatActivity() {
     private var tabShowed = false
     private lateinit var fragmentManager: FragmentManager
     private lateinit var mSharedPrefs: SharedPreferences
+    private lateinit var binding: ActivityMainBinding
 
     val tokenMutex = Mutex()
     private lateinit var mFirebaseAnalytics: FirebaseAnalytics
     val mNetworkManager by lazy { OAuth2NetworkManager(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppTheme)
         if (Build.VERSION.SDK_INT > 28) {
             setTheme(R.style.DarkModeApi29)
         }
         super.onCreate(savedInstanceState)
+        setTheme(R.style.AppTheme)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         if (applicationContext.resources.configuration.uiMode and
-                Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
+            Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+        ) {
             setTheme(R.style.DarkBackground)
         }
-        setContentView(R.layout.activity_main)
         Utils.getCurrentSystemTime()
 
-        setSupportActionBar(appbar.findViewById(R.id.toolbar))
+        setSupportActionBar(binding.include.toolbar)
         fragmentManager = supportFragmentManager
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.setHomeButtonEnabled(false)
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
 
-        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+        val policy =
+            StrictMode.ThreadPolicy
+                .Builder()
+                .permitAll()
+                .build()
         StrictMode.setThreadPolicy(policy)
 
         onExpandableBottomNavigationItemSelected()
         showBottomBar()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
         mFirebaseAnalytics.logEvent("MainActivityStart", null)
 
         // Show HomeFragment if logged in, otherwise show LoginFragment
@@ -100,25 +119,36 @@ class MainActivity : AppCompatActivity() {
         } else {
             startHomeFragment()
         }
+
+        // Did diningWidgetIntentSetup not as separate function as for some reason when
+        // diningWidgetBroadcast out of onCreate setTab does not trigger.
+        var diningWidgetBroadCast = 0
+        if (intent != null) {
+            diningWidgetBroadCast = intent.getIntExtra("Widget_Tab_Switch", -1)
+        }
+        if (diningWidgetBroadCast != -1) {
+            setTab(DINING_ID)
+        }
     }
 
     private fun onExpandableBottomNavigationItemSelected() {
-        expandable_bottom_bar.setOnNavigationItemSelectedListener { item ->
-            val position = when (item.itemId) {
-                R.id.nav_home-> MainPagerAdapter.HOME_POSITION
-                R.id.nav_dining-> MainPagerAdapter.DINING_POSITION
-                R.id.nav_gsr-> MainPagerAdapter.GSR_POSITION
-                R.id.nav_laundry-> MainPagerAdapter.LAUNDRY_POSITION
-                R.id.nav_more-> MainPagerAdapter.MORE_POSITION
-                else -> MainPagerAdapter.HOME_POSITION
-            }
-            main_view_pager.setCurrentItem(position, false)
+        binding.include.expandableBottomBar.setOnNavigationItemSelectedListener { item ->
+            val position =
+                when (item.itemId) {
+                    R.id.nav_home -> MainPagerAdapter.HOME_POSITION
+                    R.id.nav_dining -> MainPagerAdapter.DINING_POSITION
+                    R.id.nav_gsr -> MainPagerAdapter.GSR_POSITION
+                    R.id.nav_laundry -> MainPagerAdapter.LAUNDRY_POSITION
+                    R.id.nav_more -> MainPagerAdapter.MORE_POSITION
+                    else -> MainPagerAdapter.HOME_POSITION
+                }
+            binding.include.mainViewPager.setCurrentItem(position, false)
             true
         }
     }
 
     fun setTab(id: Int) {
-        expandable_bottom_bar.selectedItemId = id
+        binding.include.expandableBottomBar.selectedItemId = id
     }
 
     fun setSelectedTab(id: Int) {}
@@ -133,22 +163,21 @@ class MainActivity : AppCompatActivity() {
 
     fun startHomeFragment() {
         for (fragment in supportFragmentManager.fragments) {
-            if(fragment != null) {
+            if (fragment != null) {
                 fragmentManager.beginTransaction().remove(fragment).commit()
             }
         }
         val mainPagerAdapter = MainPagerAdapter(fragmentManager, lifecycle)
-        main_view_pager.isSaveEnabled = false;
-        main_view_pager?.adapter = mainPagerAdapter
-        main_view_pager.isUserInputEnabled = false
-        main_view_pager.offscreenPageLimit = 5
-        main_view_pager.visibility = View.VISIBLE
-        expandable_bottom_bar.visibility = View.VISIBLE
+        binding.include.mainViewPager.isSaveEnabled = false
+        binding.include.mainViewPager.adapter = mainPagerAdapter
+        binding.include.mainViewPager.isUserInputEnabled = false
+        binding.include.mainViewPager.offscreenPageLimit = 5
+        binding.include.mainViewPager.visibility = View.VISIBLE
+        binding.include.expandableBottomBar.visibility = View.VISIBLE
         setTab(HOME_ID)
     }
 
     fun startLoginFragment() {
-
         CookieManager.getInstance().removeAllCookie()
         val editor = PreferenceManager.getDefaultSharedPreferences(this).edit()
         editor.remove(getString(R.string.penn_password))
@@ -168,12 +197,13 @@ class MainActivity : AppCompatActivity() {
         // change the fragment only if we're not already on the login fragment
         if (currentFragment == null || currentFragment::class != fragment::class) {
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-            fragmentManager.beginTransaction()
+            fragmentManager
+                .beginTransaction()
                 .replace(R.id.content_frame, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()
-            main_view_pager.visibility = View.GONE
-            expandable_bottom_bar.visibility = View.GONE
+            binding.include.mainViewPager.visibility = View.GONE
+            binding.include.expandableBottomBar.visibility = View.GONE
         }
     }
 
@@ -181,7 +211,11 @@ class MainActivity : AppCompatActivity() {
         runOnUiThread { Toast.makeText(applicationContext, errorMessage, Toast.LENGTH_SHORT).show() }
     }
 
-    fun addTabs(pageAdapter: FragmentStatePagerAdapter?, pager: ViewPager, scrollable: Boolean) {
+    fun addTabs(
+        pageAdapter: FragmentStatePagerAdapter?,
+        pager: ViewPager,
+        scrollable: Boolean,
+    ) {
         if (tabShowed) {
             return
         }
@@ -205,29 +239,37 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun fragmentTransact(fragment: Fragment?, popBackStack: Boolean) {
+    fun fragmentTransact(
+        fragment: Fragment?,
+        popBackStack: Boolean,
+    ) {
         if (fragment != null) {
             runOnUiThread {
                 try {
                     if (popBackStack) {
                         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                     }
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.content_frame, fragment)
-                            .addToBackStack(null)
-                            .setTransition(FragmentTransaction.TRANSIT_NONE)
-                            .commit()
+                    fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.content_frame, fragment)
+                        .addToBackStack(null)
+                        .setTransition(FragmentTransaction.TRANSIT_NONE)
+                        .commit()
                 } catch (e: IllegalStateException) {
-                    //ignore because the onSaveInstanceState etc states are called when activity is going to background etc
+                    // ignore because the onSaveInstanceState etc states are called when activity is going to background etc
                 }
             }
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray,
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isEmpty() || grantResults[0] == PackageManager.PERMISSION_DENIED) {
-            if (requestCode == SaveContactsFragment.permission_read) {
+            if (requestCode == SaveContactsFragment.PERMISSION_READ) {
                 showErrorToast(R.string.ask_contacts_fail)
             }
             return
@@ -235,8 +277,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun setTitle(title: CharSequence) {
-        appbar.findViewById<View>(R.id.toolbar)
-                .findViewById<TextView>(R.id.toolbar_title).text = title
+        binding.include.appbar
+            .findViewById<View>(R.id.toolbar)
+            .findViewById<TextView>(R.id.toolbar_title)
+            .text = title
     }
 
     override fun onBackPressed() {
@@ -245,17 +289,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun hideBottomBar() {
-        expandable_bottom_bar.visibility = View.GONE
-        val layoutParams = this.content_frame.layoutParams as CoordinatorLayout.LayoutParams
+        binding.include.expandableBottomBar.visibility = View.GONE
+        val layoutParams = binding.include.contentFrame.layoutParams as CoordinatorLayout.LayoutParams
         layoutParams.setMargins(0, 0, 0, 0)
-        this.content_frame.layoutParams = layoutParams
+        binding.include.contentFrame.layoutParams = layoutParams
     }
 
     fun showBottomBar() {
-        expandable_bottom_bar.visibility = View.VISIBLE
-        val layoutParams = this.content_frame.layoutParams as CoordinatorLayout.LayoutParams
+        binding.include.expandableBottomBar.visibility = View.VISIBLE
+        val layoutParams = binding.include.contentFrame.layoutParams as CoordinatorLayout.LayoutParams
         layoutParams.setMargins(0, 0, 0, Utils.dpToPixel(this, 16f))
-        this.content_frame.layoutParams = layoutParams
+        binding.include.contentFrame.layoutParams = layoutParams
     }
 
     companion object {
@@ -268,8 +312,10 @@ class MainActivity : AppCompatActivity() {
 
         val HOME_ID = R.id.nav_home
         val GSR_ID = R.id.nav_gsr
+        val DINING_ID = R.id.nav_dining
 
         private var mStudentLife: StudentLife? = null
+        private var mStudentLifeRf2: StudentLifeRf2? = null
         private var mPlatform: Platform? = null
         private var mCampusExpress: CampusExpress? = null
 
@@ -279,12 +325,14 @@ class MainActivity : AppCompatActivity() {
                 if (mCampusExpress == null) {
                     val gsonBuilder = GsonBuilder()
                     val gson = gsonBuilder.create()
-                    val restAdapter = RestAdapter.Builder()
-                        .setConverter(GsonConverter(gson))
-                        .setLogLevel(RestAdapter.LogLevel.FULL)
-                        .setLog(AndroidLog("Campus Express"))
-                        .setEndpoint(Platform.campusExpressBaseUrl)
-                        .build()
+                    val restAdapter =
+                        RestAdapter
+                            .Builder()
+                            .setConverter(GsonConverter(gson))
+                            .setLogLevel(RestAdapter.LogLevel.FULL)
+                            .setLog(AndroidLog("Campus Express"))
+                            .setEndpoint(Platform.campusExpressBaseUrl)
+                            .build()
                     mCampusExpress = restAdapter.create(CampusExpress::class.java)
                 }
                 return mCampusExpress!!
@@ -296,7 +344,9 @@ class MainActivity : AppCompatActivity() {
                 if (mPlatform == null) {
                     val gsonBuilder = GsonBuilder()
                     val gson = gsonBuilder.create()
-                    val restAdapter = RestAdapter.Builder()
+                    val restAdapter =
+                        RestAdapter
+                            .Builder()
                             .setConverter(GsonConverter(gson))
                             .setLogLevel(RestAdapter.LogLevel.FULL)
                             .setLog(AndroidLog("Platform"))
@@ -307,36 +357,89 @@ class MainActivity : AppCompatActivity() {
                 return mPlatform!!
             }
 
+        val studentLifeInstanceRf2: StudentLifeRf2
+            get() {
+                if (mStudentLifeRf2 == null) {
+                    val okHttpClient =
+                        OkHttpClient
+                            .Builder()
+                            .connectTimeout(35, TimeUnit.SECONDS)
+                            .readTimeout(35, TimeUnit.SECONDS)
+                            .writeTimeout(35, TimeUnit.SECONDS)
+                            .build()
+
+                    val retrofit =
+                        Retrofit
+                            .Builder()
+                            .baseUrl("https://pennmobile.org/api/")
+                            .client(okHttpClient)
+                            .addConverterFactory(ScalarsConverterFactory.create())
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                            .build()
+                    mStudentLifeRf2 = retrofit.create(StudentLifeRf2::class.java)
+                }
+                return mStudentLifeRf2!!
+            }
+
         @JvmStatic
         val studentLifeInstance: StudentLife
             get() {
                 if (mStudentLife == null) {
                     val gsonBuilder = GsonBuilder()
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Contact?>?>() {}.type, DataSerializer<Any?>())
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Venue?>?>() {}.type, VenueSerializer())
-                    gsonBuilder.registerTypeAdapter(DiningHall::class.java, MenuSerializer())
+                    gsonBuilder.registerTypeAdapter(
+                        object : TypeToken<MutableList<Contact?>?>() {}.type,
+                        Serializer.DataSerializer<Any?>(),
+                    )
+                    gsonBuilder.registerTypeAdapter(
+                        object : TypeToken<MutableList<Venue?>?>() {}.type,
+                        Serializer.VenueSerializer(),
+                    )
+                    gsonBuilder.registerTypeAdapter(
+                        DiningHall::class.java,
+                        Serializer.MenuSerializer(),
+                    )
                     // gets room
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<LaundryRoom?>() {}.type, LaundryRoomSerializer())
-                    // gets laundry room list
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<LaundryRoomSimple?>?>() {}.type, LaundryRoomListSerializer())
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<GSRLocation?>?>() {}.type, GsrLocationSerializer())
-                    // gets laundry usage
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<LaundryUsage?>() {}.type, LaundryUsageSerializer())
+                    gsonBuilder.registerTypeAdapter(
+                        object : TypeToken<LaundryRoom?>() {}.type,
+                        Serializer.LaundryRoomSerializer(),
+                    )
+                    gsonBuilder.registerTypeAdapter(
+                        object : TypeToken<MutableList<GSRLocation?>?>() {}.type,
+                        Serializer.GsrLocationSerializer(),
+                    )
                     // gets laundry preferences (used only for testing)
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<Int?>?>() {}.type, LaundryPrefSerializer())
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<FlingEvent?>?>() {}.type, FlingEventSerializer())
+                    gsonBuilder.registerTypeAdapter(
+                        object : TypeToken<MutableList<Int?>?>() {}.type,
+                        Serializer.LaundryPrefSerializer(),
+                    )
+                    gsonBuilder.registerTypeAdapter(
+                        object : TypeToken<MutableList<FlingEvent?>?>() {}.type,
+                        Serializer.FlingEventSerializer(),
+                    )
                     // gets gsr reservations
-                    gsonBuilder.registerTypeAdapter(object : TypeToken<MutableList<GSRReservation?>?>() {}.type, GsrReservationSerializer())
+                    gsonBuilder.registerTypeAdapter(
+                        object : TypeToken<MutableList<GSRReservation?>?>() {}.type,
+                        Serializer.GsrReservationSerializer(),
+                    )
                     // gets user
-                    gsonBuilder.registerTypeAdapter(Account::class.java, UserSerializer())
+                    gsonBuilder.registerTypeAdapter(
+                        Account::class.java,
+                        Serializer.UserSerializer(),
+                    )
                     // gets posts
-                    gsonBuilder.registerTypeAdapter(object:  TypeToken<MutableList<Post?>?>() {}.type, PostsSerializer())
+                    gsonBuilder.registerTypeAdapter(
+                        object : TypeToken<MutableList<Post?>?>() {}.type,
+                        Serializer.PostsSerializer(),
+                    )
                     val gson = gsonBuilder.create()
-                    val okHttpClient = OkHttpClient()
+                    val okHttpClient = SquareOkHttpClient()
                     okHttpClient.setConnectTimeout(35, TimeUnit.SECONDS) // Connection timeout
-                    okHttpClient.setReadTimeout(35, TimeUnit.SECONDS)    // Read timeout
-                    okHttpClient.setWriteTimeout(35, TimeUnit.SECONDS)   // Write timeout
-                    val restAdapter = RestAdapter.Builder()
+                    okHttpClient.setReadTimeout(35, TimeUnit.SECONDS) // Read timeout
+                    okHttpClient.setWriteTimeout(35, TimeUnit.SECONDS) // Write timeout
+                    val restAdapter =
+                        RestAdapter
+                            .Builder()
                             .setConverter(GsonConverter(gson))
                             .setClient(OkClient(okHttpClient))
                             .setEndpoint("https://pennmobile.org/api")
@@ -346,13 +449,12 @@ class MainActivity : AppCompatActivity() {
                 return mStudentLife!!
             }
     }
-
 }
 
-//checks if internet is connected
+// checks if internet is connected
 fun isOnline(context: Context?): Boolean {
     val connectivityManager =
-            context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val capabilities =
         connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
     if (capabilities != null) {
@@ -374,19 +476,25 @@ fun isOnline(context: Context?): Boolean {
     return false
 }
 
-
 /** Shows an error sneaker given a view group with an optional retry function */
-fun ViewGroup.showSneakerToast(message: String, doOnRetry: (() -> Unit)?, sneakerColor: Int) {
+fun ViewGroup.showSneakerToast(
+    message: String,
+    doOnRetry: (() -> Unit)?,
+    sneakerColor: Int,
+) {
     val sneaker = Sneaker.with(this)
-    val view = LayoutInflater.from(this.context)
+    val view =
+        LayoutInflater
+            .from(this.context)
             .inflate(R.layout.custom_sneaker_view, sneaker.getView(), false)
 
-    view.blurView.setupWith(this)
-            .setFrameClearDrawable(ColorDrawable(Color.TRANSPARENT))
-            .setBlurAlgorithm(RenderScriptBlur(this.context))
-            .setBlurRadius(10f)
-            .setHasFixedTransformationMatrix(true)
-            .setOverlayColor(resources.getColor(sneakerColor))
+    val blurView: BlurView = view.findViewById(R.id.blurView)
+
+    blurView
+        .setupWith(this)
+        .setFrameClearDrawable(ColorDrawable(Color.TRANSPARENT))
+        .setBlurRadius(10f)
+        .setOverlayColor(resources.getColor(sneakerColor))
 
     val retryBtn = view.findViewById<TextView>(R.id.retryButton)
     doOnRetry ?: run { retryBtn.visibility = View.GONE }

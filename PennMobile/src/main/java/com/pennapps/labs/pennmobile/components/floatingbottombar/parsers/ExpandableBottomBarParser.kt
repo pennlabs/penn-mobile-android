@@ -8,7 +8,9 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.components.floatingbottombar.ExpandableBottomBarMenuItem
 import org.xmlpull.v1.XmlPullParser
 
-internal class ExpandableBottomBarParser(private val context: Context) {
+internal class ExpandableBottomBarParser(
+    private val context: Context,
+) {
     companion object {
         private const val NO_ID = 0
         private const val NO_TEXT = ""
@@ -29,8 +31,10 @@ internal class ExpandableBottomBarParser(private val context: Context) {
         }
     }
 
-    private fun readBottomBar(parser: XmlPullParser,
-                              attrs: AttributeSet): List<ExpandableBottomBarMenuItem> {
+    private fun readBottomBar(
+        parser: XmlPullParser,
+        attrs: AttributeSet,
+    ): List<ExpandableBottomBarMenuItem> {
         val items = mutableListOf<ExpandableBottomBarMenuItem>()
         var eventType = parser.eventType
         var tagName: String
@@ -72,8 +76,10 @@ internal class ExpandableBottomBarParser(private val context: Context) {
         return items
     }
 
-    private fun readBottomBarItem(parser: XmlPullParser,
-                                  attrs: AttributeSet): ExpandableBottomBarMenuItem {
+    private fun readBottomBarItem(
+        parser: XmlPullParser,
+        attrs: AttributeSet,
+    ): ExpandableBottomBarMenuItem {
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.ExpandableBottomBarItem)
 
         val id = typedArray.getResourceId(R.styleable.ExpandableBottomBarItem_android_id, NO_ID)

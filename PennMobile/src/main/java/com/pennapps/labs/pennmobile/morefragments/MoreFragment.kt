@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile.more_fragments
+package com.pennapps.labs.pennmobile.morefragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,13 +12,14 @@ import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
+import com.pennapps.labs.pennmobile.databinding.FragmentMoreBinding
 import com.pennapps.labs.pennmobile.utils.Utils
-import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.fragment_home.view.*
 
 class MoreFragment : Fragment() {
-
     private lateinit var mActivity: MainActivity
+
+    private var _binding: FragmentMoreBinding? = null
+    val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,42 +27,55 @@ class MoreFragment : Fragment() {
         mActivity.closeKeyboard()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_more, container, false)
-
-        initAppBar(view)
-        return view
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
+        _binding = FragmentMoreBinding.inflate(inflater, container, false)
+        val v = binding.root
+        binding.dateView.text = Utils.getCurrentSystemTime()
+        (
+            binding.appbarHome.layoutParams
+                as CoordinatorLayout.LayoutParams
+        ).behavior = ToolbarBehavior()
+        return v
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
-        childFragmentManager.beginTransaction()
+        childFragmentManager
+            .beginTransaction()
             .replace(R.id.more_frame, PreferenceFragment())
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .commit()
     }
 
-    private fun initAppBar(view: View) {
-        view.date_view.text = Utils.getCurrentSystemTime()
-        // Appbar behavior init
-        (view.appbar_home.layoutParams
-                as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
-
-    }
-
     override fun onResume() {
-        val initials = PreferenceManager.getDefaultSharedPreferences(mActivity)
+        val initials =
+            PreferenceManager
+                .getDefaultSharedPreferences(mActivity)
                 .getString(getString(R.string.initials), null)
         if (initials != null && initials.isNotEmpty()) {
-            this.initials.text = initials
+            binding.initials.text = initials
         } else {
-            this.profile_background.setImageDrawable(
-                    ResourcesCompat.getDrawable(resources,
-                            R.drawable.ic_guest_avatar, context?.theme)
+            binding.profileBackground.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_guest_avatar,
+                    context?.theme,
+                ),
             )
         }
         mActivity.setSelectedTab(MainActivity.MORE)
         super.onResume()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

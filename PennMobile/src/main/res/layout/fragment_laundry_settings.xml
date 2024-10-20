@@ -6,9 +6,13 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <include layout="@layout/no_results" />
+    <include
+        android:id="@+id/no_results"
+        layout="@layout/no_results" />
 
-    <include layout="@layout/loading_panel" />
+    <include
+        android:id="@+id/loadingPanel"
+        layout="@layout/loading_panel" />
 
     <RelativeLayout
         android:id="@+id/laundry_settings_help_layout"

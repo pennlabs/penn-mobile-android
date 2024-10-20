@@ -10,6 +10,7 @@
     <color name="olive">#808000</color>
     <color name="purple">#800080</color>
     <color name="maroon">#800000</color>
+    <color name ="PennRed">#990000</color>
     <color name="aqua">#00FFFF</color>
     <color name="lime">#00FF00</color>
     <color name="teal">#008080</color>
@@ -20,9 +21,9 @@
     <color name="lightgray">#EEEEEE</color>
     <color name="pink">#E91E63</color>
 
-<!--    <color name="color_primary">#3f51b5</color>-->
-<!--    <color name="color_primary_dark">#303f9f</color>-->
-<!--    <color name="color_accent">#E91E63</color> -->
+    <!--    <color name="color_primary">#3f51b5</color>-->
+    <!--    <color name="color_primary_dark">#303f9f</color>-->
+    <!--    <color name="color_accent">#E91E63</color> -->
     <color name="color_primary">#12274B</color>
     <color name="color_primary_dark">#12274B</color>
     <color name="color_primary_light">#e8f4fc</color>
@@ -67,5 +68,9 @@
     <color name="diningBlue">#99BCF7</color>
 
     <color name="darkRedBackground">#D9534F</color>
+    <color name="light_blue_50">#FFE1F5FE</color>
+    <color name="light_blue_200">#FF81D4FA</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="light_blue_900">#FF01579B</color>
 
 </resources>

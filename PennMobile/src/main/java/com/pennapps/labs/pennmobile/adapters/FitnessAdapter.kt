@@ -41,52 +41,69 @@ import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-class FitnessAdapter(private val isFavorite : Boolean, private val dataModel: FitnessAdapterDataModel) :
-        RecyclerView.Adapter<FitnessAdapter.ViewHolder>() {
-
+class FitnessAdapter(
+    private val isFavorite: Boolean,
+    private val dataModel: FitnessAdapterDataModel,
+) : RecyclerView.Adapter<FitnessAdapter.ViewHolder>() {
     private lateinit var mActivity: Activity
-    private lateinit var mContext : Context
-    private lateinit var mStudentLife : StudentLife
+    private lateinit var mContext: Context
+    private lateinit var mStudentLife: StudentLife
 
-    class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val mainView : ConstraintLayout = view.findViewById(R.id.fitness_list_info_layout)
-        val roomView : TextView = view.findViewById(R.id.item_fitness_name)
-        val statusView : TextView = view.findViewById(R.id.item_fitness_status)
-        val hoursView : TextView = view.findViewById(R.id.item_fitness_hours)
-        val imageView : ImageView = view.findViewById(R.id.item_fitness_image)
-        val progressBar : ProgressBar = view.findViewById(R.id.fitness_progress)
-        val arrowView : ImageView = view.findViewById(R.id.fitness_more_indicator)
+    class ViewHolder(
+        val view: View,
+    ) : RecyclerView.ViewHolder(view) {
+        val mainView: ConstraintLayout = view.findViewById(R.id.fitness_list_info_layout)
+        val roomView: TextView = view.findViewById(R.id.item_fitness_name)
+        val statusView: TextView = view.findViewById(R.id.item_fitness_status)
+        val hoursView: TextView = view.findViewById(R.id.item_fitness_hours)
+        val imageView: ImageView = view.findViewById(R.id.item_fitness_image)
+        val progressBar: ProgressBar = view.findViewById(R.id.fitness_progress)
+        val arrowView: ImageView = view.findViewById(R.id.fitness_more_indicator)
 
-        val timeCapacityView : TextView = view.findViewById(R.id.timeCapacity)
-        val lastUpdatedView : TextView = view.findViewById(R.id.item_pottruck_last_updated)
-        val capacityViewCircle : com.google.android.material.progressindicator.CircularProgressIndicator =
+        val timeCapacityView: TextView = view.findViewById(R.id.timeCapacity)
+        val lastUpdatedView: TextView = view.findViewById(R.id.item_pottruck_last_updated)
+        val capacityViewCircle: com.google.android.material.progressindicator.CircularProgressIndicator =
             view.findViewById(R.id.item_pottruck_capacity_circle)
-        val capacityView : TextView = view.findViewById(R.id.item_pottruck_capacity)
+        val capacityView: TextView = view.findViewById(R.id.item_pottruck_capacity)
 
-        private val extraInfoView : LinearLayout = view.findViewById(R.id.fitness_list_extra_layout)
-        private val barChart : BarChart = view.findViewById(R.id.barchart_times)
+        private val extraInfoView: LinearLayout = view.findViewById(R.id.fitness_list_extra_layout)
+        private val barChart: BarChart = view.findViewById(R.id.barchart_times)
 
         var extraIsVisible = false
         var hasExtraData = false
 
-        fun getExtraData(context: Context, activity: Activity, studentLife : StudentLife,
-            room: FitnessRoom
+        fun getExtraData(
+            context: Context,
+            activity: Activity,
+            studentLife: StudentLife,
+            room: FitnessRoom,
         ) {
             if (hasExtraData) return
-            room.roomId?.let { studentLife.getFitnessRoomUsage(it, 3, "week").subscribe(
-                { roomUsage ->
-                    createBarChart(context, roomUsage)
-                    activity.runOnUiThread {
-                        hasExtraData = true
-                        showExtra()
-                    }
-                }, {
-                    Log.e("Fitness Adapter", "Error loading room usage", it)
-                    Toast.makeText(context, "Error loading room", Toast.LENGTH_SHORT).show()
+            room.roomId?.let {
+                try {
+                    studentLife.getFitnessRoomUsage(it, 3, "week").subscribe(
+                        { roomUsage ->
+                            createBarChart(context, roomUsage)
+                            activity.runOnUiThread {
+                                hasExtraData = true
+                                showExtra()
+                            }
+                        },
+                        {
+                            Log.e("Fitness Adapter", "Error loading room usage", it)
+                            Toast.makeText(context, "Error loading room", Toast.LENGTH_SHORT).show()
+                        },
+                    )
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-            )}
+            }
         }
-        private fun createBarChart(context: Context, roomData: FitnessRoomUsage) {
+
+        private fun createBarChart(
+            context: Context,
+            roomData: FitnessRoomUsage,
+        ) {
             val entries: MutableList<BarEntry> = ArrayList()
             val labels: MutableList<String> = ArrayList()
             val colors: MutableList<Int> = ArrayList()
@@ -132,7 +149,7 @@ class FitnessAdapter(private val isFavorite : Boolean, private val dataModel: Fi
             rightAxis.setDrawAxisLine(false)
             rightAxis.setDrawLabels(false)
 
-            val xAxis : XAxis = barChart.xAxis
+            val xAxis: XAxis = barChart.xAxis
             xAxis.setDrawGridLines(false)
             xAxis.axisLineWidth = 1f
             xAxis.position = XAxis.XAxisPosition.BOTTOM
@@ -144,12 +161,17 @@ class FitnessAdapter(private val isFavorite : Boolean, private val dataModel: Fi
             barChart.description.isEnabled = false
             barChart.setScaleEnabled(false)
 
-            barChart.renderer = RoundedBarChartRenderer(barChart, barChart.animator,
-                barChart.viewPortHandler, 50.0f)
+            barChart.renderer =
+                RoundedBarChartRenderer(
+                    barChart,
+                    barChart.animator,
+                    barChart.viewPortHandler,
+                    50.0f,
+                )
 
             barChart.data = data
 
-            barChart.invalidate() //refresh the bar chart
+            barChart.invalidate() // refresh the bar chart
         }
 
         fun showExtra() {
@@ -159,17 +181,19 @@ class FitnessAdapter(private val isFavorite : Boolean, private val dataModel: Fi
                 view.visibility = View.VISIBLE
                 view.alpha = 0.0f
 
-                view.animate()
+                view
+                    .animate()
                     .alpha(1.0f)
 
-                val rotate = RotateAnimation(
-                    0f,
-                    90f,
-                    Animation.RELATIVE_TO_SELF,
-                    0.5f,
-                    Animation.RELATIVE_TO_SELF,
-                    0.5f
-                )
+                val rotate =
+                    RotateAnimation(
+                        0f,
+                        90f,
+                        Animation.RELATIVE_TO_SELF,
+                        0.5f,
+                        Animation.RELATIVE_TO_SELF,
+                        0.5f,
+                    )
                 rotate.duration = 200
                 rotate.fillAfter = true
                 rotate.interpolator = LinearInterpolator()
@@ -177,14 +201,15 @@ class FitnessAdapter(private val isFavorite : Boolean, private val dataModel: Fi
             } else {
                 view.visibility = View.GONE
 
-                val rotate = RotateAnimation(
-                    90f,
-                    0f,
-                    Animation.RELATIVE_TO_SELF,
-                    0.5f,
-                    Animation.RELATIVE_TO_SELF,
-                    0.5f
-                )
+                val rotate =
+                    RotateAnimation(
+                        90f,
+                        0f,
+                        Animation.RELATIVE_TO_SELF,
+                        0.5f,
+                        Animation.RELATIVE_TO_SELF,
+                        0.5f,
+                    )
                 rotate.duration = 10
                 rotate.fillAfter = true
                 rotate.interpolator = LinearInterpolator()
@@ -194,13 +219,18 @@ class FitnessAdapter(private val isFavorite : Boolean, private val dataModel: Fi
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): ViewHolder {
         mContext = parent.context
         mActivity = mContext as MainActivity
         mStudentLife = MainActivity.studentLifeInstance
 
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.fitness_list_item, parent, false)
+        val view =
+            LayoutInflater
+                .from(parent.context)
+                .inflate(R.layout.fitness_list_item, parent, false)
 
         return ViewHolder(view)
     }
@@ -208,14 +238,15 @@ class FitnessAdapter(private val isFavorite : Boolean, private val dataModel: Fi
     override fun onViewAttachedToWindow(holder: ViewHolder) {
         // re-rotate the image if the extra information panels are open
         if (holder.extraIsVisible) {
-            val rotate = RotateAnimation(
-                0f,
-                90f,
-                Animation.RELATIVE_TO_SELF,
-                0.5f,
-                Animation.RELATIVE_TO_SELF,
-                0.5f
-            )
+            val rotate =
+                RotateAnimation(
+                    0f,
+                    90f,
+                    Animation.RELATIVE_TO_SELF,
+                    0.5f,
+                    Animation.RELATIVE_TO_SELF,
+                    0.5f,
+                )
             rotate.duration = 10
             rotate.fillAfter = true
             rotate.interpolator = LinearInterpolator()
@@ -223,8 +254,10 @@ class FitnessAdapter(private val isFavorite : Boolean, private val dataModel: Fi
         }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
+    override fun onBindViewHolder(
+        holder: ViewHolder,
+        position: Int,
+    ) {
         val room = dataModel.getRoom(isFavorite, position)
         holder.roomView.text = room.roomName
 
@@ -275,7 +308,6 @@ class FitnessAdapter(private val isFavorite : Boolean, private val dataModel: Fi
         val sundayCloseTime = LocalTime.parse(room.closeTimeList?.get(sundayIndex))
         val sundayHours = "${sundayOpenTime.format(timeFormatter)} - ${sundayCloseTime.format(timeFormatter)}"
 
-
         (holder.view.findViewById(R.id.fitness_sunday_time) as TextView).text = sundayHours
         (holder.view.findViewById(R.id.fitness_mf_time) as TextView).text = mfHours
         (holder.view.findViewById(R.id.fitness_sat_time) as TextView).text = saturdayHours
@@ -291,7 +323,6 @@ class FitnessAdapter(private val isFavorite : Boolean, private val dataModel: Fi
         } else {
             (holder.view.findViewById(R.id.fitness_sunday) as TextView).setTextColor(blue)
             (holder.view.findViewById(R.id.fitness_sunday_time) as TextView).setTextColor(blue)
-
         }
 
         // make progress bar invisible
@@ -300,7 +331,7 @@ class FitnessAdapter(private val isFavorite : Boolean, private val dataModel: Fi
         // get image from url
         Glide.with(mContext).load(room.imageURL).into(holder.imageView)
 
-        val busyness : String
+        val busyness: String
 
         // update the capacity
         if (room.capacity == null) {
@@ -311,19 +342,20 @@ class FitnessAdapter(private val isFavorite : Boolean, private val dataModel: Fi
             val capacityInt = room.capacity!!.toInt()
             val capacity = "$capacityInt%"
 
-            busyness = if (capacityInt == 0) {
-                "Empty"
-            } else if (capacityInt < 10) {
-                "Not very busy"
-            } else if (capacityInt < 30) {
-                "Slightly busy"
-            } else if (capacityInt < 60) {
-                "Pretty busy"
-            } else if (capacityInt < 90) {
-                "Extremely busy"
-            } else {
-                "Packed"
-            }
+            busyness =
+                if (capacityInt == 0) {
+                    "Empty"
+                } else if (capacityInt < 10) {
+                    "Not very busy"
+                } else if (capacityInt < 30) {
+                    "Slightly busy"
+                } else if (capacityInt < 60) {
+                    "Pretty busy"
+                } else if (capacityInt < 90) {
+                    "Extremely busy"
+                } else {
+                    "Packed"
+                }
 
             holder.capacityViewCircle.progress = capacityInt
             holder.capacityView.text = capacity
@@ -345,14 +377,15 @@ class FitnessAdapter(private val isFavorite : Boolean, private val dataModel: Fi
 
         val updHours = duration.toHours()
 
-        val lastUpd = if (updHours > 2L) {
-            "Updated $updHours hours ago"
-        } else if (updHours == 1L) {
-            "Updated $updHours hour ago"
-        } else {
-            val updMinutes = duration.toMinutes()
-            "Updated $updMinutes minutes ago"
-        }
+        val lastUpd =
+            if (updHours > 2L) {
+                "Updated $updHours hours ago"
+            } else if (updHours == 1L) {
+                "Updated $updHours hour ago"
+            } else {
+                val updMinutes = duration.toMinutes()
+                "Updated $updMinutes minutes ago"
+            }
 
         holder.lastUpdatedView.text = lastUpd
 

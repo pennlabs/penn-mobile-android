@@ -23,12 +23,11 @@ import com.pennapps.labs.pennmobile.adapters.AboutAdapter
 import com.pennapps.labs.pennmobile.databinding.FragmentAboutBinding
 
 class AboutFragment : Fragment() {
-
     private lateinit var mActivity: MainActivity
     private lateinit var sharedPreferences: SharedPreferences
 
     private var _binding: FragmentAboutBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +36,11 @@ class AboutFragment : Fragment() {
         mActivity.closeKeyboard()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
         _binding = FragmentAboutBinding.inflate(inflater, container, false)
         val view = binding.root
 
@@ -45,22 +48,60 @@ class AboutFragment : Fragment() {
         if (gif is AnimatedVectorDrawable) {
             gif.start()
         } else {
-            Glide.with(this).asGif().load(R.drawable.logo_gif_transparent).listener(object : RequestListener<GifDrawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: com.bumptech.glide.request.target.Target<GifDrawable>?, isFirstResource: Boolean): Boolean {
-                    return false
-                }
-                override fun onResourceReady(resource: GifDrawable, model: Any, target: com.bumptech.glide.request.target.Target<GifDrawable>?, dataSource: DataSource, isFirstResource: Boolean): Boolean {
-                    resource.setLoopCount(1)
-                    return false
-                }
-            }).into(binding.logoGifIv)
+            Glide
+                .with(this)
+                .asGif()
+                .load(R.drawable.logo_gif_transparent)
+                .listener(
+                    object : RequestListener<GifDrawable> {
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: com.bumptech.glide.request.target.Target<GifDrawable>?,
+                            isFirstResource: Boolean,
+                        ): Boolean = false
+
+                        override fun onResourceReady(
+                            resource: GifDrawable,
+                            model: Any,
+                            target: com.bumptech.glide.request.target.Target<GifDrawable>?,
+                            dataSource: DataSource,
+                            isFirstResource: Boolean,
+                        ): Boolean {
+                            resource.setLoopCount(1)
+                            return false
+                        }
+                    },
+                ).into(binding.logoGifIv)
         }
 
         binding.ourTeamRv.layoutManager = GridLayoutManager(context, 3)
         binding.alumniRv.layoutManager = GridLayoutManager(context, 3)
-        val members = arrayListOf("Rohan Chhaya", "Julius Snipes", "Aaron Mei", "Trini Feng", "Vedha Avali", "Joe MacDougall", "Baron Ping-Yeh Hsieh")
-        val alumni = arrayListOf("Marta García Ferreiro", "Varun Ramakrishnan", "Sahit Penmatcha",
-            "Anna Wang", "Sophia Ye", "Awad Irfan", "Liz Powell", "Davies Lumumba", "Anna Jiang", "Ali Krema")
+        val members =
+            arrayListOf(
+                "Rohan Chhaya",
+                "Julius Snipes",
+                "Aaron Mei",
+                "Trini Feng",
+                "Vedha Avali",
+                "Joe MacDougall",
+                "Baron Ping-Yeh Hsieh",
+                "David Fu",
+                "Kaushik Akula",
+            )
+        val alumni =
+            arrayListOf(
+                "Marta García Ferreiro",
+                "Varun Ramakrishnan",
+                "Sahit Penmatcha",
+                "Anna Wang",
+                "Sophia Ye",
+                "Awad Irfan",
+                "Liz Powell",
+                "Davies Lumumba",
+                "Anna Jiang",
+                "Ali Krema",
+            )
         binding.ourTeamRv.adapter = AboutAdapter(members)
         binding.alumniRv.adapter = AboutAdapter(alumni)
 
@@ -74,14 +115,15 @@ class AboutFragment : Fragment() {
         binding.licensesBtn.setOnClickListener {
             val webView = LayoutInflater.from(mActivity).inflate(R.layout.dialog_licenses, null) as WebView
             webView.loadUrl("file:///android_asset/open_source_licenses.html")
-            AlertDialog.Builder(mActivity, R.style.AppTheme_AppBarOverlay_Light)
-                    .setTitle(getString(R.string.action_licenses))
-                    .setView(webView)
-                    .setPositiveButton(android.R.string.ok, null)
-                    .show()
+            AlertDialog
+                .Builder(mActivity, R.style.AppTheme_AppBarOverlay_Light)
+                .setTitle(getString(R.string.action_licenses))
+                .setView(webView)
+                .setPositiveButton(android.R.string.ok, null)
+                .show()
         }
 
-        //mActivity.toolbar.visibility = View.VISIBLE
+        // mActivity.toolbar.visibility = View.VISIBLE
         mActivity.hideBottomBar()
         mActivity.setTitle(R.string.contacts)
 
@@ -95,10 +137,9 @@ class AboutFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val mActivity : MainActivity = activity as MainActivity
+        val mActivity: MainActivity = activity as MainActivity
         mActivity.removeTabs()
         mActivity.setTitle(R.string.about)
         mActivity.setSelectedTab(MainActivity.MORE)
     }
-
 }

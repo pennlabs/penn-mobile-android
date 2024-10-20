@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile.more_fragments
+package com.pennapps.labs.pennmobile.morefragments
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -10,41 +10,51 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentTransaction
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
-import com.pennapps.labs.pennmobile.*
+import com.pennapps.labs.pennmobile.AboutFragment
+import com.pennapps.labs.pennmobile.MainActivity
+import com.pennapps.labs.pennmobile.NewsFragment
+import com.pennapps.labs.pennmobile.PottruckFragment
+import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.SupportFragment
 import com.pennapps.labs.pennmobile.components.dialog.CustomAlertDialogue
-import kotlinx.android.synthetic.main.include_main.*
-import java.util.*
+import com.pennapps.labs.pennmobile.showSneakerToast
 
 /**
  * Created by Davies Lumumba Spring 2021
  */
 class PreferenceFragment : PreferenceFragmentCompat() {
-
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
+    private lateinit var toolbar: Toolbar
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mContext = context
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         listView.isVerticalScrollBarEnabled = false
         mActivity = mContext as MainActivity
-        mActivity.toolbar.visibility = View.GONE
+        toolbar = mActivity.findViewById(R.id.toolbar)
+        toolbar.visibility = View.GONE
         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
         val editor = sp.edit()
 
         val editProfilePref: Preference? = findPreference("pref_account_edit")
-        editProfilePref?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            showEditProfileDialog()
-            true
-        }
+        editProfilePref?.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                showEditProfileDialog()
+                true
+            }
 
         val userLoginPref: Preference? = findPreference("pref_account_login_logout")
         val pennKey = sp.getString(getString(R.string.pennkey), null)
@@ -61,38 +71,40 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             editProfilePref?.parent?.removePreference(editProfilePref)
             editProfilePref?.shouldDisableView = true
         }
-        userLoginPref?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            if (pennKey != null) {
-                val dialog = AlertDialog.Builder(context).create()
-                dialog.setTitle("Log out")
-                dialog.setMessage("Are you sure you want to log out?")
-                dialog.setButton("Logout") { dialog, _ ->
-                    CookieManager.getInstance().removeAllCookie()
-                    editor.remove(getString(R.string.penn_password))
-                    editor.remove(getString(R.string.penn_user))
-                    editor.remove(getString(R.string.first_name))
-                    editor.remove(getString(R.string.last_name))
-                    editor.remove(getString(R.string.email_address))
-                    editor.remove(getString(R.string.pennkey))
-                    editor.remove(getString(R.string.accountID))
-                    editor.remove(getString(R.string.access_token))
-                    editor.remove(getString(R.string.guest_mode))
-                    editor.remove(getString(R.string.initials))
-                    editor.apply()
-                    dialog.cancel()
+        userLoginPref?.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                if (pennKey != null) {
+                    val dialog = AlertDialog.Builder(context).create()
+                    dialog.setTitle("Log out")
+                    dialog.setMessage("Are you sure you want to log out?")
+                    dialog.setButton("Logout") { dialog, _ ->
+                        CookieManager.getInstance().removeAllCookie()
+                        editor.remove(getString(R.string.penn_password))
+                        editor.remove(getString(R.string.penn_user))
+                        editor.remove(getString(R.string.first_name))
+                        editor.remove(getString(R.string.last_name))
+                        editor.remove(getString(R.string.email_address))
+                        editor.remove(getString(R.string.pennkey))
+                        editor.remove(getString(R.string.accountID))
+                        editor.remove(getString(R.string.access_token))
+                        editor.remove(getString(R.string.guest_mode))
+                        editor.remove(getString(R.string.initials))
+                        editor.apply()
+                        dialog.cancel()
+                        mActivity.startLoginFragment()
+                    }
+                    // dialog.setButton(2,"Cancel") { dialog, _ -> dialog.cancel() }
+                    dialog.show()
+                } else {
                     mActivity.startLoginFragment()
                 }
-                //dialog.setButton(2,"Cancel") { dialog, _ -> dialog.cancel() }
-                dialog.show()
-            } else {
-                mActivity.startLoginFragment()
+                true
             }
-            true
-        }
 
         val newsFeaturePref: Preference? = findPreference("pref_news_feature")
         newsFeaturePref?.setOnPreferenceClickListener {
-            mActivity.supportFragmentManager.beginTransaction()
+            mActivity.supportFragmentManager
+                .beginTransaction()
                 .replace(R.id.content_frame, NewsFragment())
                 .addToBackStack(null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -102,7 +114,8 @@ class PreferenceFragment : PreferenceFragmentCompat() {
 
         val contactsFeaturePref: Preference? = findPreference("pref_contacts_feature")
         contactsFeaturePref?.setOnPreferenceClickListener {
-            mActivity.supportFragmentManager.beginTransaction()
+            mActivity.supportFragmentManager
+                .beginTransaction()
                 .replace(R.id.content_frame, SupportFragment())
                 .addToBackStack(null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -112,7 +125,8 @@ class PreferenceFragment : PreferenceFragmentCompat() {
 
         val aboutFeaturePref: Preference? = findPreference("pref_about_feature")
         aboutFeaturePref?.setOnPreferenceClickListener {
-            mActivity.supportFragmentManager.beginTransaction()
+            mActivity.supportFragmentManager
+                .beginTransaction()
                 .replace(R.id.content_frame, AboutFragment())
                 .addToBackStack(null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -122,7 +136,8 @@ class PreferenceFragment : PreferenceFragmentCompat() {
 
         val fitnessFeaturePref: Preference? = findPreference("pref_fitness_feature")
         fitnessFeaturePref?.setOnPreferenceClickListener {
-            mActivity.supportFragmentManager.beginTransaction()
+            mActivity.supportFragmentManager
+                .beginTransaction()
                 .replace(R.id.content_frame, PottruckFragment())
                 .addToBackStack(null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -130,62 +145,53 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             return@setOnPreferenceClickListener true
         }
 
-        val sublettingFeaturePref: Preference? = findPreference("pref_subletting_feature")
-        sublettingFeaturePref?.setOnPreferenceClickListener {
-            mActivity.supportFragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, SublettingFragment())
-                    .addToBackStack(null)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .commit()
-            return@setOnPreferenceClickListener true
-        }
-
-
         val pennLabsPref: Preference? = findPreference("pref_labs_link")
         pennLabsPref?.setOnPreferenceClickListener {
-            openLink(PennLabs)
+            openLink(PENNLABS)
             return@setOnPreferenceClickListener true
         }
 
         val feedbackPref: Preference? = findPreference("pref_feedback_link")
         feedbackPref?.setOnPreferenceClickListener {
-            openLink(Feedback)
+            openLink(FEEDBACK)
             return@setOnPreferenceClickListener true
         }
 
         val pennHomepagePref: Preference? = findPreference("pref_penn_link")
         pennHomepagePref?.setOnPreferenceClickListener {
-            openLink(PennHomepage)
+            openLink(PENN_HOMEPAGE)
             return@setOnPreferenceClickListener true
         }
 
         val pennCampusExpressPref: Preference? = findPreference("pref_campus_express_link")
         pennCampusExpressPref?.setOnPreferenceClickListener {
-            openLink(CampusExpress)
+            openLink(CAMPUS_EXPRESS)
             return@setOnPreferenceClickListener true
         }
 
         val pennCanvasPref: Preference? = findPreference("pref_canvas_link")
         pennCanvasPref?.setOnPreferenceClickListener {
-            openLink(Canvas)
+            openLink(CANVAS)
             return@setOnPreferenceClickListener true
         }
 
         val pathAtPennPref: Preference? = findPreference("pref_path_at_penn_link")
         pathAtPennPref?.setOnPreferenceClickListener {
-            openLink(PathAtPenn)
+            openLink(PATH_AT_PENN)
             return@setOnPreferenceClickListener true
         }
 
         val pennPortalPref: Preference? = findPreference("pref_penn_portal_link")
         pennPortalPref?.setOnPreferenceClickListener {
-            openLink(PennPortal)
+            openLink(PENN_PORTAL)
             return@setOnPreferenceClickListener true
         }
-
     }
 
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+    override fun onCreatePreferences(
+        savedInstanceState: Bundle?,
+        rootKey: String?,
+    ) {
         setPreferencesFromResource(R.xml.settings, rootKey)
     }
 
@@ -197,7 +203,6 @@ class PreferenceFragment : PreferenceFragmentCompat() {
 
     @SuppressLint("RestrictedApi")
     private fun showEditProfileDialog() {
-
         val sharedPreference = PreferenceManager.getDefaultSharedPreferences(activity)
         val editor = sharedPreference.edit()
 
@@ -211,7 +216,9 @@ class PreferenceFragment : PreferenceFragmentCompat() {
         text.add(sharedPreference.getString(getString(R.string.last_name), null))
         text.add(sharedPreference.getString(getString(R.string.email_address), null))
 
-        val alert: CustomAlertDialogue.Builder = CustomAlertDialogue.Builder(activity)
+        val alert: CustomAlertDialogue.Builder =
+            CustomAlertDialogue
+                .Builder(activity)
                 .setStyle(CustomAlertDialogue.Style.INPUT)
                 .setTitle("Contact Info")
                 .setMessage("This information is used when booking GSRs and when displaying your name on the app.")
@@ -229,8 +236,10 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                         editor.putString(getString(R.string.initials), initials.capitalize())
                         editor.apply()
                         (activity?.window?.decorView as ViewGroup).showSneakerToast(
-                                "Profile details updated successfully.", null,
-                                R.color.sneakerBlurColorOverlay)
+                            "Profile details updated successfully.",
+                            null,
+                            R.color.sneakerBlurColorOverlay,
+                        )
                         val userLoginPref: Preference? = findPreference("pref_account_login_logout")
                         userLoginPref?.summary = "You are currently signed in as ${
                             sharedPreference.getString(getString(R.string.first_name), null)
@@ -238,12 +247,13 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                         activity?.findViewById<TextView>(R.id.initials)?.text = initials
                     } else {
                         (activity?.window?.decorView as ViewGroup).showSneakerToast(
-                                "Complete required fields to update your profile information.", { showEditProfileDialog() },
-                                R.color.sneakerWarningOverlay)
+                            "Complete required fields to update your profile information.",
+                            { showEditProfileDialog() },
+                            R.color.sneakerWarningOverlay,
+                        )
                     }
                     dialog.dismiss()
-                }
-                .setNegativeText("Cancel")
+                }.setNegativeText("Cancel")
                 .setNegativeColor(stream.customalert.R.color.negative)
                 .setOnNegativeClicked { _, dialog -> dialog.dismiss() }
                 .setLineInputHint(hints)
@@ -251,17 +261,15 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                 .setDecorView(activity?.window?.decorView)
                 .build()
         alert.show()
-
-
     }
 
     companion object {
-        private const val PennLabs = "https://pennlabs.org"
-        private const val Feedback = "https://airtable.com/appFRa4NQvNMEbWsA/shrn4VbSQa8QDj8OG"
-        private const val PennHomepage = "https://www.upenn.edu"
-        private const val CampusExpress = "https://prod.campusexpress.upenn.edu"
-        private const val Canvas = "https://canvas.upenn.edu"
-        private const val PathAtPenn = "https://path.at.upenn.edu/"
-        private const val PennPortal = "https://portal.apps.upenn.edu/penn_portal"
+        private const val PENNLABS = "https://pennlabs.org"
+        private const val FEEDBACK = "https://airtable.com/appFRa4NQvNMEbWsA/shrn4VbSQa8QDj8OG"
+        private const val PENN_HOMEPAGE = "https://www.upenn.edu"
+        private const val CAMPUS_EXPRESS = "https://prod.campusexpress.upenn.edu"
+        private const val CANVAS = "https://canvas.upenn.edu"
+        private const val PATH_AT_PENN = "https://path.at.upenn.edu/"
+        private const val PENN_PORTAL = "https://portal.apps.upenn.edu/penn_portal"
     }
 }

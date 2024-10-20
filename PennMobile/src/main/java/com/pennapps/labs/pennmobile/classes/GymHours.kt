@@ -2,18 +2,17 @@ package com.pennapps.labs.pennmobile.classes
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-
 import org.joda.time.Interval
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 
 class GymHours {
-
     @SerializedName("all_day")
     private var allDay: Boolean = false
 
     @Expose
     private var start: String? = null
+
     @Expose
     private var end: String? = null
 
@@ -38,5 +37,4 @@ class GymHours {
         val formatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ")
         val allDayInterval = Interval(0, 0)
     }
-
 }

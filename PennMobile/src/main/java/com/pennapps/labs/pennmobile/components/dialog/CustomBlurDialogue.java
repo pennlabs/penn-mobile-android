@@ -3,14 +3,12 @@ package com.pennapps.labs.pennmobile.components.dialog;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 
 import eightbitlab.com.blurview.BlurView;
-import eightbitlab.com.blurview.RenderScriptBlur;
 import stream.customalert.CustomAlertDialogue;
 import stream.customalert.ui.RoundedCornersDrawable;
 
@@ -58,9 +56,7 @@ public class CustomBlurDialogue extends BlurView {
 
         setupWith(rootView)
                 .setFrameClearDrawable(windowBackground)
-                .setBlurAlgorithm(new RenderScriptBlur(getContext()))
-                .setBlurRadius(radius)
-                .setHasFixedTransformationMatrix(true);
+                .setBlurRadius(radius);
     }
 
     /**

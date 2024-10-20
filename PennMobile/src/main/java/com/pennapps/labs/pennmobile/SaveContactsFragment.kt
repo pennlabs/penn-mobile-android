@@ -7,18 +7,23 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.RemoteException
 import android.provider.ContactsContract
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.ListFragment
 import com.pennapps.labs.pennmobile.adapters.PhoneSaveAdapter
 import com.pennapps.labs.pennmobile.classes.Contact
-import kotlinx.android.synthetic.main.include_main.*
-import java.util.*
 
 class SaveContactsFragment : ListFragment() {
     private lateinit var mActivity: MainActivity
+    private lateinit var toolbar: Toolbar
     private var contactsList: MutableList<Contact> = ArrayList()
     private var selected: MutableList<Contact> = ArrayList()
     private var currentNumbers: MutableSet<String> = HashSet()
@@ -34,24 +39,43 @@ class SaveContactsFragment : ListFragment() {
         }
         listView.adapter = PhoneSaveAdapter(mActivity, contactsList, selected, contactsList.size)
         if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(mActivity, arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS),
-                    permission_read)
+            != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_CONTACTS)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                mActivity,
+                arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS),
+                PERMISSION_READ,
+            )
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, save: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        save: Bundle?,
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_save_contacts, container, false)
         setHasOptionsMenu(true)
         mActivity = activity as MainActivity
-        mActivity.toolbar.visibility = View.VISIBLE
-        mActivity.toolbar.setNavigationIcon(R.drawable.ic_back_navigation)
         return view
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
+        super.onViewCreated(view, savedInstanceState)
+        toolbar = mActivity.findViewById(R.id.toolbar)
+        toolbar.visibility = View.VISIBLE
+        toolbar.setNavigationIcon(R.drawable.ic_back_navigation)
+    }
+
+    override fun onCreateOptionsMenu(
+        menu: Menu,
+        inflater: MenuInflater,
+    ) {
         mActivity.menuInflater.inflate(R.menu.phone_save_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -60,11 +84,15 @@ class SaveContactsFragment : ListFragment() {
         val id = item.itemId
         if (id == R.id.support_contacts_add) {
             if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_CONTACTS)
-                    != PackageManager.PERMISSION_GRANTED ||
-                    ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_CONTACTS)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(mActivity, arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS),
-                        permission_read)
+                != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    mActivity,
+                    arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS),
+                    PERMISSION_READ,
+                )
             } else {
                 loadCurrent()
                 addContacts()
@@ -86,21 +114,30 @@ class SaveContactsFragment : ListFragment() {
             }
             val ops = ArrayList<ContentProviderOperation>()
             val id = ops.size
-            ops.add(ContentProviderOperation.newInsert(ContactsContract.RawContacts.CONTENT_URI)
+            ops.add(
+                ContentProviderOperation
+                    .newInsert(ContactsContract.RawContacts.CONTENT_URI)
                     .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, null)
                     .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, null)
-                    .build())
-            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                    .build(),
+            )
+            ops.add(
+                ContentProviderOperation
+                    .newInsert(ContactsContract.Data.CONTENT_URI)
                     .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, id)
                     .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
                     .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, p.name)
-                    .build())
-            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                    .build(),
+            )
+            ops.add(
+                ContentProviderOperation
+                    .newInsert(ContactsContract.Data.CONTENT_URI)
                     .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, id)
                     .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
                     .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, p.phone)
                     .withValue(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)
-                    .build())
+                    .build(),
+            )
             try {
                 val results = mActivity.contentResolver.applyBatch(ContactsContract.AUTHORITY, ops)
                 currentNames.add(p.name)
@@ -111,13 +148,22 @@ class SaveContactsFragment : ListFragment() {
                 Toast.makeText(mActivity, "Could not save contacts", Toast.LENGTH_SHORT).show()
             }
         }
-        Toast.makeText(mActivity, selected.size.toString() + " contact" + (if (selected.size > 1 || selected.size == 0) "s" else "") + " saved", Toast.LENGTH_SHORT).show()
+        Toast
+            .makeText(
+                mActivity,
+                selected.size.toString() + " contact" + (if (selected.size > 1 || selected.size == 0) "s" else "") + " saved",
+                Toast.LENGTH_SHORT,
+            ).show()
         mActivity.onBackPressed()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray,
+    ) {
         when (requestCode) {
-            permission_read -> {
+            PERMISSION_READ -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     loadCurrent()
                     addContacts()
@@ -143,7 +189,8 @@ class SaveContactsFragment : ListFragment() {
     private fun loadCurrent() {
         currentNumbers.clear()
         currentNames.clear()
-        val cursor = mActivity.contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null)
+        val cursor =
+            mActivity.contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null)
                 ?: return
         if (cursor.moveToFirst()) {
             do {
@@ -155,6 +202,6 @@ class SaveContactsFragment : ListFragment() {
     }
 
     companion object {
-        const val permission_read = 123
+        const val PERMISSION_READ = 123
     }
 }

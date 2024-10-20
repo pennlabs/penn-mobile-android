@@ -4,9 +4,10 @@ plugins {
     id 'com.google.gms.google-services'
     id("com.google.firebase.crashlytics")
     id 'jacoco'
+    id 'kotlin-parcelize'
 }
 
-apply plugin: 'kotlin-android-extensions'
+apply plugin: "kotlin-android"
 
 android {
     namespace 'com.pennapps.labs.pennmobile'
@@ -16,86 +17,123 @@ android {
     buildTypes {
         debug {
             matchingFallbacks = ['qa', 'release']
-            testCoverageEnabled true
+            enableUnitTestCoverage true
+            enableAndroidTestCoverage true
         }
         release {}
     }
+    compileSdk 34
     buildFeatures {
         viewBinding true
+        compose true
     }
-    compileSdkVersion 33
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.14"
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 33
+        targetSdkVersion 34
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         buildConfigField ("String", "PLATFORM_REDIRECT_URI", getPlatformRedirectUri())
         buildConfigField ("String", "PLATFORM_CLIENT_ID", getPlatformClientID())
     }
     packagingOptions {
-        pickFirst 'META-INF/LICENSE.txt'
-        pickFirst 'META-INF/NOTICE.txt'
+        resources {
+            excludes += ['META-INF/rxjava.properties']
+            pickFirsts += ['META-INF/LICENSE.txt', 'META-INF/NOTICE.txt']
+        }
     }
 }
 
 dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'com.kaspersky.android-components:kaspresso:1.5.3'
+    androidTestImplementation 'org.testng:testng:7.8.0'
+
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:3.0-alpha-1'
 
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation(platform("com.google.firebase:firebase-bom:31.5.0"))
-
-    implementation 'com.google.firebase:firebase-analytics'
-    implementation("com.google.firebase:firebase-crashlytics")
-
-    implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'com.google.maps:google-maps-services:2.2.0'
-    implementation 'org.jsoup:jsoup:1.16.2'
-    implementation 'com.google.android.material:material:1.6.1'
-    implementation 'androidx.percentlayout:percentlayout:1.0.0'
-    implementation 'androidx.exifinterface:exifinterface:1.3.6'
-    implementation 'androidx.preference:preference-ktx:1.1.1'
-    implementation 'com.google.android.gms:play-services-maps:18.2.0'
-    implementation 'com.google.android.gms:play-services-location:21.0.1'
-    implementation 'joda-time:joda-time:2.12.5'
-    implementation 'org.apache.commons:commons-lang3:3.13.0'
+    implementation "io.reactivex.rxjava2:rxandroid:2.0.2"
     implementation 'androidx.annotation:annotation:1.7.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0'
-    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
     implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0@aar") {
         transitive = true
     }
-    implementation 'com.squareup.retrofit:retrofit:1.9.0'
-    implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'com.squareup.okhttp:okhttp:2.7.5'
-    implementation 'io.reactivex:rxandroid:1.2.1'
     implementation 'androidx.browser:browser:1.5.0'
-    implementation 'androidx.recyclerview:recyclerview:1.3.2'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.daimajia.swipelayout:library:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.6.0'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'org.testng:testng:7.8.0'
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.github.ahorn:android-rss:master-SNAPSHOT'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3'
-    implementation 'com.eightbitlab:supportrenderscriptblur:1.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
+    implementation 'androidx.exifinterface:exifinterface:1.3.6'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0'
+    implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.palette:palette-ktx:1.0.0'
-    implementation 'com.github.searchy2:CustomAlertViewDialogue:2.6.1'
+    implementation 'androidx.percentlayout:percentlayout:1.0.0'
+    implementation 'androidx.preference:preference-ktx:1.1.1'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
     implementation 'com.airbnb.android:lottie:5.2.0'
+    implementation 'com.daimajia.swipelayout:library:1.2.0'
+    implementation 'com.github.Dimezis:BlurView:version-2.0.5'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'com.github.ahorn:android-rss:master-SNAPSHOT'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    implementation('com.github.meiron03:CustomAlertViewDialogue:a1fc69d54d'){
+        exclude group: 'com.github.Dimezis.BlurView', module: 'blurview'
+    }
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+    implementation 'com.google.android.gms:play-services-maps:18.2.0'
+    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.6.0'
+    implementation 'com.google.maps:google-maps-services:2.2.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    androidTestImplementation 'com.kaspersky.android-components:kaspresso:1.5.3'
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.okhttp:okhttp:2.7.5'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
     implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation "androidx.activity:activity-ktx:1.7.2"
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit:retrofit:1.9.0'
+    implementation 'io.reactivex:rxandroid:1.2.1'
+    implementation 'joda-time:joda-time:2.12.5'
+    implementation 'org.apache.commons:commons-lang3:3.13.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3'
+    implementation 'org.jsoup:jsoup:1.16.2'
+    implementation("com.google.firebase:firebase-crashlytics")
 
+    def composeBom = platform("androidx.compose:compose-bom:2024.09.03")
+    implementation composeBom
+    testImplementation composeBom
+    androidTestImplementation composeBom
+
+    implementation 'androidx.compose.material3:material3-android'
+    implementation 'androidx.compose.runtime:runtime'
+    implementation 'androidx.compose.runtime:runtime-rxjava2'
+    implementation 'androidx.compose.runtime:runtime-livedata'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    debugImplementation 'androidx.compose.ui:ui-tooling'
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
+    debugImplementation 'androidx.compose.ui:ui-test-manifest'
+    implementation 'androidx.compose.material:material-icons-core'
+    implementation 'androidx.compose.material:material-icons-extended'
+    implementation 'androidx.activity:activity-compose:1.8.0'
+
+    implementation "androidx.glance:glance-appwidget:1.1.0"
+    implementation "androidx.glance:glance-material3:1.1.0"
+    implementation "androidx.glance:glance-material:1.1.0"
+
+    implementation(platform("com.google.firebase:firebase-bom:31.5.0"))
+
+    testImplementation 'junit:junit:4.13.2'
 }
 
 String getPlatformClientID() {
@@ -117,7 +155,7 @@ String getPlatformRedirectUri() {
 // Code Coverage: https://www.raywenderlich.com/10562143-continuous-integration-for-android#toc-anchor-014
 
 jacoco {
-  toolVersion = "0.8.11"
+    toolVersion = "0.8.11"
 }
 
 // https://stackoverflow.com/questions/68065743/cannot-run-gradle-test-tasks-because-of-java-lang-noclassdeffounderror-jdk-inte
@@ -132,7 +170,7 @@ def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*',
 
 // Location of generated output classes
 def debugTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug",
-   excludes: fileFilter)
+        excludes: fileFilter)
 
 // Source code directory
 def mainSrc = "$project.projectDir/src/main/java"
@@ -140,20 +178,20 @@ def mainSrc = "$project.projectDir/src/main/java"
 // Task declaration
 
 task jacocoTestReport(type: JacocoReport) {
-  // Runs only after the dependencies are executed
-  dependsOn = ['testDebugUnitTest', 'createDebugCoverageReport']
-  // Export formats
-  /*reports {
-    xml.enabled = true
-    html.enabled = true
-  }*/
+    // Runs only after the dependencies are executed
+    dependsOn = ['testDebugUnitTest', 'createDebugCoverageReport']
+    // Export formats
+    /*reports {
+      xml.enabled = true
+      html.enabled = true
+    }*/
 
-  sourceDirectories.setFrom(files([mainSrc]))
-  classDirectories.setFrom(files([debugTree]))
+    sourceDirectories.setFrom(files([mainSrc]))
+    classDirectories.setFrom(files([debugTree]))
 
-  // Inform Gradle where the files generated by test cases - are located
-  executionData.from = fileTree(dir: project.buildDir, includes: [
-      'jacoco/testDebugUnitTest.exec'
+    // Inform Gradle where the files generated by test cases - are located
+    executionData.from = fileTree(dir: project.buildDir, includes: [
+            'jacoco/testDebugUnitTest.exec'
 //      'outputs/code_coverage/debugAndroidTest/connected/*.ec'
-  ])
+    ])
 }

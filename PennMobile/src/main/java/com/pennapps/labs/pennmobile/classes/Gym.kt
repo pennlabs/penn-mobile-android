@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import org.joda.time.DateTime
 import org.joda.time.Interval
-
 import java.util.LinkedList
 
 class Gym {
@@ -12,6 +11,7 @@ class Gym {
     @SerializedName("hours")
     @Expose
     private val hoursList: List<GymHours>? = null
+
     @Expose
     val name: String? = null
 

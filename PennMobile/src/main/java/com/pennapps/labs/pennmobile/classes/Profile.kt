@@ -8,5 +8,5 @@ data class Profile(
     @SerializedName("phone")
     val phone: String = "",
     @SerializedName("email")
-    val email: String = ""
+    val email: String = "",
 )

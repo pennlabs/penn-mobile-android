@@ -10,18 +10,25 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.CheckBox
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.ListView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.classes.Course
 import com.pennapps.labs.pennmobile.classes.Section
+import com.pennapps.labs.pennmobile.databinding.FragmentPennCourseAlertCreateAlertBinding
 import com.pennapps.labs.pennmobile.viewmodels.PennCourseAlertViewModel
 import java.util.regex.Pattern
-import androidx.appcompat.widget.Toolbar
-import com.pennapps.labs.pennmobile.databinding.FragmentPennCourseAlertCreateAlertBinding
 
 class PennCourseAlertCreateAlertFragment : Fragment() {
     private val viewModel: PennCourseAlertViewModel by activityViewModels()
@@ -30,13 +37,13 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
     private lateinit var dialog: Dialog
     private lateinit var mActivity: MainActivity
 
-    private var _binding : FragmentPennCourseAlertCreateAlertBinding? = null
-    private val binding get() = _binding!!
-
+    private var _binding: FragmentPennCourseAlertCreateAlertBinding? = null
+    val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentPennCourseAlertCreateAlertBinding.inflate(inflater, container, false)
@@ -48,7 +55,10 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
         _binding = null
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         mActivity = activity as MainActivity
 
@@ -63,7 +73,7 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
         val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
         viewModel.setBearerTokenValue(bearerToken)
 
-        //if guest login
+        // if guest login
         if (pennKey == null) {
             handleGuestLogin()
         } else {
@@ -74,14 +84,24 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
 
             val phoneNumberEditText = view.findViewById<EditText>(R.id.pca_phone_edit_text)
 
-            viewModel.userInfo.observe(viewLifecycleOwner, Observer {
-                val formattedPhoneNumber = viewModel.userInfo.value?.profile?.phone?.drop(2)
-                val email = viewModel.userInfo.value?.profile?.email
+            viewModel.userInfo.observe(
+                viewLifecycleOwner,
+                Observer {
+                    val formattedPhoneNumber =
+                        viewModel.userInfo.value
+                            ?.profile
+                            ?.phone
+                            ?.drop(2)
+                    val email =
+                        viewModel.userInfo.value
+                            ?.profile
+                            ?.email
 
-                phoneNumberEditText.text =
-                    Editable.Factory.getInstance().newEditable(formattedPhoneNumber?: "")
-                emailEditText.text = Editable.Factory.getInstance().newEditable(email?: "")
-            })
+                    phoneNumberEditText.text =
+                        Editable.Factory.getInstance().newEditable(formattedPhoneNumber ?: "")
+                    emailEditText.text = Editable.Factory.getInstance().newEditable(email ?: "")
+                },
+            )
 
             val alertButton = view.findViewById<Button>(R.id.pca_alert_button)
             alertButton.isClickable = false
@@ -89,18 +109,20 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
             val notifyClosedCheckbox = view.findViewById<CheckBox>(R.id.pca_notify_checkbox)
 
             courseSpinner = binding.pcaCourseSpinner
-            val courseSpinnerAdapter: ArrayAdapter<Course> = ArrayAdapter(
-                requireContext(),
-                android.R.layout.simple_list_item_1,
-                viewModel.coursesList
-            )
+            val courseSpinnerAdapter: ArrayAdapter<Course> =
+                ArrayAdapter(
+                    requireContext(),
+                    android.R.layout.simple_list_item_1,
+                    viewModel.coursesList,
+                )
 
             sectionSpinner = binding.pcaSectionSpinner
-            val sectionSpinnerAdapter: ArrayAdapter<Section> = ArrayAdapter(
-                requireContext(),
-                android.R.layout.simple_list_item_1,
-                viewModel.sectionsList
-            )
+            val sectionSpinnerAdapter: ArrayAdapter<Section> =
+                ArrayAdapter(
+                    requireContext(),
+                    android.R.layout.simple_list_item_1,
+                    viewModel.sectionsList,
+                )
 
             courseSpinner.setOnClickListener {
                 dialog = Dialog(requireContext())
@@ -108,7 +130,7 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
                 // set custom height and width
                 dialog.window?.setLayout(
                     LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
                 )
                 // set transparent background
                 dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -124,38 +146,43 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
                 val courseListView = dialog.findViewById<ListView>(R.id.pca_course_list_view)
 
                 courseListView.adapter = courseSpinnerAdapter
-                searchEditText.addTextChangedListener(object : TextWatcher {
-                    override fun beforeTextChanged(
-                        s: CharSequence,
-                        start: Int,
-                        count: Int,
-                        after: Int
-                    ) {
-                    }
-
-                    override fun onTextChanged(
-                        s: CharSequence,
-                        start: Int,
-                        before: Int,
-                        count: Int
-                    ) {
-                        //only search if course name is >= 3 chars for optimization
-                        if (searchEditText.text.length >= 3) {
-                            viewModel.getCourses(
-                                searchEditText.text.toString(),
-                                courseSpinnerAdapter
-                            )
+                searchEditText.addTextChangedListener(
+                    object : TextWatcher {
+                        override fun beforeTextChanged(
+                            s: CharSequence,
+                            start: Int,
+                            count: Int,
+                            after: Int,
+                        ) {
                         }
-                        courseSpinnerAdapter.notifyDataSetChanged()
-                    }
 
-                    override fun afterTextChanged(s: Editable) {}
-                })
+                        override fun onTextChanged(
+                            s: CharSequence,
+                            start: Int,
+                            before: Int,
+                            count: Int,
+                        ) {
+                            // only search if course name is >= 3 chars for optimization
+                            if (searchEditText.text.length >= 3) {
+                                viewModel.getCourses(
+                                    searchEditText.text.toString(),
+                                    courseSpinnerAdapter,
+                                )
+                            }
+                            courseSpinnerAdapter.notifyDataSetChanged()
+                        }
+
+                        override fun afterTextChanged(s: Editable) {}
+                    },
+                )
                 courseListView.onItemClickListener =
-                    OnItemClickListener { _, _, position, _ -> // when item selected from list
+                    OnItemClickListener { _, _, position, _ ->
+                        // when item selected from list
                         // set selected item on textView
                         courseSpinner.text =
-                            courseSpinnerAdapter.getItem(position).toString()
+                            courseSpinnerAdapter
+                                .getItem(position)
+                                .toString()
                                 .substringBefore(" -")
                         viewModel.getSections(courseSpinner.text.toString(), sectionSpinnerAdapter)
                         // Dismiss dialog
@@ -163,10 +190,10 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
                     }
             }
 
-
             sectionSpinner.setOnClickListener {
                 if (sectionSpinnerAdapter.isEmpty) {
-                    Toast.makeText(context, "Select course number first!", Toast.LENGTH_SHORT)
+                    Toast
+                        .makeText(context, "Select course number first!", Toast.LENGTH_SHORT)
                         .show()
                 } else {
                     dialog = Dialog(requireContext())
@@ -174,7 +201,7 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
                     // set custom height and width
                     dialog.window?.setLayout(
                         LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
                     )
                     // set transparent background
                     dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -191,31 +218,36 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
                     val sectionListView = dialog.findViewById<ListView>(R.id.pca_section_list_view)
 
                     sectionListView.adapter = sectionSpinnerAdapter
-                    searchEditText.addTextChangedListener(object : TextWatcher {
-                        override fun beforeTextChanged(
-                            s: CharSequence,
-                            start: Int,
-                            count: Int,
-                            after: Int
-                        ) {
-                        }
+                    searchEditText.addTextChangedListener(
+                        object : TextWatcher {
+                            override fun beforeTextChanged(
+                                s: CharSequence,
+                                start: Int,
+                                count: Int,
+                                after: Int,
+                            ) {
+                            }
 
-                        override fun onTextChanged(
-                            s: CharSequence,
-                            start: Int,
-                            before: Int,
-                            count: Int
-                        ) {
-                            sectionSpinnerAdapter.filter.filter(s)
-                        }
+                            override fun onTextChanged(
+                                s: CharSequence,
+                                start: Int,
+                                before: Int,
+                                count: Int,
+                            ) {
+                                sectionSpinnerAdapter.filter.filter(s)
+                            }
 
-                        override fun afterTextChanged(s: Editable) {}
-                    })
+                            override fun afterTextChanged(s: Editable) {}
+                        },
+                    )
                     sectionListView.onItemClickListener =
-                        OnItemClickListener { _, _, position, _ -> // when item selected from list
+                        OnItemClickListener { _, _, position, _ ->
+                            // when item selected from list
                             // set selected item on textView
                             sectionSpinner.text =
-                                sectionSpinnerAdapter.getItem(position).toString()
+                                sectionSpinnerAdapter
+                                    .getItem(position)
+                                    .toString()
                                     .substringBefore(" -")
                             viewModel.selectedSection = sectionSpinnerAdapter.getItem(position)!!
                             viewModel.isSectionSelected = true
@@ -224,41 +256,47 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
                             dialog.dismiss()
                         }
                 }
-
             }
 
             alertButton.setOnClickListener {
                 if (emailEditText.text.isEmpty()) {
-                    Toast.makeText(
-                        context,
-                        "Please enter your email address for alert purposes",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else if (phoneNumberEditText.text.isNotEmpty() && !isValidNumber(
-                        phoneNumberEditText.text.toString()
+                    Toast
+                        .makeText(
+                            context,
+                            "Please enter your email address for alert purposes",
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                } else if (phoneNumberEditText.text.isNotEmpty() &&
+                    !isValidNumber(
+                        phoneNumberEditText.text.toString(),
                     )
                 ) {
                     // If phoneNumberEditText is not empty and the entered number is not valid,
                     // show a toast message
-                    Toast.makeText(
-                        context,
-                        "Please enter a valid US number (or leave the field empty)",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast
+                        .makeText(
+                            context,
+                            "Please enter a valid US number (or leave the field empty)",
+                            Toast.LENGTH_SHORT,
+                        ).show()
                 } else {
                     // If email is not empty and phone number (if entered) is valid
                     if (viewModel.isSectionSelected) {
                         // If a course section is selected
-                        if (emailEditText.text.toString() != viewModel.userInfo.value
-                                ?.profile?.email
-                            || phoneNumberEditText.text.toString() != viewModel.userInfo.value
-                                ?.profile?.phone
+                        if (emailEditText.text.toString() !=
+                            viewModel.userInfo.value
+                                ?.profile
+                                ?.email ||
+                            phoneNumberEditText.text.toString() !=
+                            viewModel.userInfo.value
+                                ?.profile
+                                ?.phone
                         ) {
                             // If the entered email or phone number is different from the
                             // stored values, update the user info
                             viewModel.updateUserInfo(
                                 emailEditText.text.toString(),
-                                phoneNumberEditText.text.toString()
+                                phoneNumberEditText.text.toString(),
                             )
                         }
                         // Check if the notifyClosedCheckbox is checked
@@ -267,7 +305,7 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
                         // the notifyWhenClosed value
                         viewModel.createRegistration(
                             viewModel.selectedSection.sectionId,
-                            notifyWhenClosed
+                            notifyWhenClosed,
                         )
                         // Clear the text and adapters for the courseSpinner and sectionSpinner
                         courseSpinner.text = ""
@@ -278,28 +316,30 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
                         viewModel.clearSelectedSection()
                     } else {
                         // If no course section is selected, prompt user to select a section
-                        Toast.makeText(
-                            context,
-                            "Please select a course section",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast
+                            .makeText(
+                                context,
+                                "Please select a course section",
+                                Toast.LENGTH_SHORT,
+                            ).show()
                     }
                 }
             }
 
-
-            viewModel.registrationCreatedSuccessfullyToast.observe(viewLifecycleOwner, Observer {
-                if (it) {
-                    Toast.makeText(
-                        context,
-                        "Registration Created Successfully!",
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
-                    viewModel.onSuccessToastDone()
-                }
-            })
-
+            viewModel.registrationCreatedSuccessfullyToast.observe(
+                viewLifecycleOwner,
+                Observer {
+                    if (it) {
+                        Toast
+                            .makeText(
+                                context,
+                                "Registration Created Successfully!",
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                        viewModel.onSuccessToastDone()
+                    }
+                },
+            )
         }
     }
 
@@ -336,6 +376,4 @@ class PennCourseAlertCreateAlertFragment : Fragment() {
         val matcher = pattern.matcher(number)
         return matcher.matches()
     }
-
-
 }

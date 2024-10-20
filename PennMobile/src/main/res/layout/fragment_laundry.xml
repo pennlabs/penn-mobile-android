@@ -82,7 +82,9 @@
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <include layout="@layout/loading_panel" />
+    <include
+        android:id="@+id/loading_panel"
+        layout="@layout/loading_panel" />
 
         <androidx.appcompat.widget.Toolbar
         android:id="@+id/internetConnectionLaundry"

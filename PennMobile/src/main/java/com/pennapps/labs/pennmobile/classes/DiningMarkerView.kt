@@ -1,27 +1,26 @@
 package com.pennapps.labs.pennmobile.classes
 
 import android.content.Context
-import android.graphics.Canvas
-import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import com.github.mikephil.charting.components.MarkerView
-import com.pennapps.labs.pennmobile.R
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.utils.MPPointF
+import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.adapters.DiningInsightsCardAdapter
-import kotlinx.android.synthetic.main.dining_spent_card.view.view
 import java.text.SimpleDateFormat
-import java.util.Date
 import kotlin.math.roundToInt
 
-class DiningMarkerView(context: Context, layoutResource: Int) : MarkerView(context, layoutResource) {
-
+class DiningMarkerView(
+    context: Context,
+    layoutResource: Int,
+) : MarkerView(context, layoutResource) {
     companion object {
         private const val DINING_DOLLARS_PREDICTIONS = 2
         private const val DINING_SWIPES_PREDICTIONS = 3
     }
+
     private val textView: TextView = findViewById(R.id.dining_marker_text)
     private val point: ImageView = findViewById(R.id.dining_marker_point)
     private var xValue: Float = 0.0F
@@ -29,10 +28,13 @@ class DiningMarkerView(context: Context, layoutResource: Int) : MarkerView(conte
     private var typeId: Int = 0
 
     // Callback method to update the marker content
-    override fun refreshContent(entry: Entry, highlight: Highlight) {
+    override fun refreshContent(
+        entry: Entry,
+        highlight: Highlight,
+    ) {
         xValue = entry.x
         yValue = entry.y
-        //convert entry.x to date
+        // convert entry.x to date
         val daysFromStart = xValue.roundToInt()
         val sdf = SimpleDateFormat("MMM. dd")
         val date = DiningInsightsCardAdapter.Utils.addDaysToDateMMMdd(DiningInsightsCardAdapter.START_DAY_OF_SEMESTER, daysFromStart)
@@ -44,16 +46,16 @@ class DiningMarkerView(context: Context, layoutResource: Int) : MarkerView(conte
         if (typeId == DINING_DOLLARS_PREDICTIONS) {
             diningData = "\$" + diningData
         }
-        textView.text = buildString {
-            append(date)
-            append("\n")
-            append(diningData)
-        }
-        if(typeId == DINING_SWIPES_PREDICTIONS) {
+        textView.text =
+            buildString {
+                append(date)
+                append("\n")
+                append(diningData)
+            }
+        if (typeId == DINING_SWIPES_PREDICTIONS) {
             textView.setTextColor(context.getColor(R.color.diningBlue))
             point.setColorFilter(context.getColor(R.color.diningBlue))
-        }
-        else {
+        } else {
             textView.setTextColor(context.getColor(R.color.diningGreen))
             point.setColorFilter(context.getColor(R.color.diningGreen))
         }
@@ -62,8 +64,7 @@ class DiningMarkerView(context: Context, layoutResource: Int) : MarkerView(conte
     fun setGraphType(typeId: Int) {
         this.typeId = typeId
     }
+
     // This is used to reposition the marker
-    override fun getOffset(): MPPointF {
-        return MPPointF(0.0F, (-height / 6).toFloat())
-    }
+    override fun getOffset(): MPPointF = MPPointF(0.0F, (-height / 6).toFloat())
 }

@@ -1,19 +1,10 @@
 package com.pennapps.labs.pennmobile.classes
 
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.pennapps.labs.pennmobile.api.Serializer
-import org.joda.time.Interval
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Test
-
 // Unit tests
 class HomePageSerializerTest {
     /*
     var serializer = Serializer.HomePageSerializer()
-    var jsonStr = """{"cells":[{"info":{"image_url":"https://s3.amazonaws.com/penn.mobile.portal/images/Penn%20Labs/1619465670.144596-cropped.png","post_id":53,"post_url":"https://docs.google.com/forms/u/1/d/12TQpqnattdWnL4tpczR6HPGu8a6-FuujU5dWS7k2k8I/edit","source":"Penn Labs","subtitle":"Having issues with Penn Mobile? Or maybe an idea for a new feature? Chat with us to share your thoughts and help improve the Penn Mobile experience!","test":false,"time_label":"Tap the Image!","title":"Penn Mobile User Feedback"},"type":"post"},{"info":{"venues":[593,636]},"type":"dining"},{"info":{"article_url":"https://www.thedp.com/article/2021/04/penn-museum-move-protest-philadelphia","image_url":"https://s3.amazonaws.com/snwceomedia/dpn/b1fb9439-7490-4f86-980a-55152825dc69.sized-1000x1000.gif?w=1000","source":"The Daily Pennsylvanian","subtitle":"The protest was organized by Black liberation advocacy group MOVE, in collaboration with Black Lives Matter Philadelphia, following the discovery that the Penn Museum stored the remains of at least one child killed in the bombing.","timestamp":"13 hours ago\n","title":"West Philadelphians protest on campus for Penn to return MOVE victim remains to family"},"type":"news"},{"info":[{"end":"2021-05-04","name":"Reading Days","start":"2021-04-30"},{"end":"2021-05-12","name":"Final Examinations","start":"2021-05-04"},{"end":"2021-05-11","name":"Spring Term ends","start":"2021-05-11"}],"type":"calendar"},{"info":[1086,2587],"type":"gsr-locations"},{"info":{"room_id":29},"type":"laundry"}]}"""
+    var jsonStr = """{"cells":[{"info":{"image_url":"https://s3.amazonaws.com/penn.mobile.portal/images/Penn%20Labs/1619465670.144596-cropped.png","post_id":53,"post_url":"https://docs.google.com/forms/u/1/d/12TQpqnattdWnL4tpczR6HPGu8a6-FuujU5dWS7k2k8I/edit","source":"Penn Labs","subtitle":"Having issues with Penn Mobile? Or maybe an idea for a new feature? Chat with us to share your thoughts and help improve the Penn Mobile experience!","test":false,"time_label":"Tap the Image!","title":"Penn Mobile User Feedback"},"type":"post"},{"info":{"venues":[593,636]},"type":"dining"},{"info":{"article_url":"https://www.thedp.com/article/2021/04/penn-museum-move-protest-philadelphia","image_url":"https://s3.amazonaws.com/snwceomedia/dpn/b1fb9439-7490-4f86-980a-55152825dc69.sized-1000x1000.gif?w=1000","source":"The Daily Pennsylvanian","subtitle":"The protest was organized by Black liberation advocacy group MOVE, in collaboration with Black Lives Matter Philadelphia, following the discovery that the Penn Museum stored the remains of at least one child killed in the bombing.","timestamp":"13 hours ago\n","title":"West Philadelphians protest on campus for Penn to return MOVE victim remains to family"},"type":"news"},{"info":[{"end":"2021-05-04","name":"Reading Days","start":"2021-04-30"},{"end":"2021-05-12","name":"Final Examinations","start":"2021-05-04"},{"end":"2021-05-11","name":"Spring Term ends","start":"2021-05-11"}],"type":"calendar"},{"info":[1086,2587],"type":"gsr-locations"},{"info":{"roomId":29},"type":"laundry"}]}"""
     var gson = Gson()
     var jsonObj = gson.fromJson(jsonStr, JsonObject::class.java)
     lateinit var homeData: List<HomeCell>

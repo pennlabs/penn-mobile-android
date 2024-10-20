@@ -7,12 +7,14 @@ class HomeCourse {
     @SerializedName("name")
     @Expose
     var name: String? = null
+
     @SerializedName("start_time")
     @Expose
-    var start_time: String? = null
+    var startTime: String? = null
+
     @SerializedName("end_time")
     @Expose
-    var end_time: String? = null
+    var endTime: String? = null
 
 /*    Example:
     "building": "TOWNE",
