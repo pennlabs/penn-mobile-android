@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:theme="@style/Theme.Pennmobileandroid.AppWidgetContainer"
-    android:clickable="true"
     android:id="@+id/gsr_reservation_widget_root"
     android:background="@android:color/transparent">
     <FrameLayout
@@ -20,7 +19,6 @@
             android:loopViews="true"
             android:divider="@android:color/transparent"
             android:dividerHeight="8dp"
-            android:clickable="true"
             />
 
         <ImageView
