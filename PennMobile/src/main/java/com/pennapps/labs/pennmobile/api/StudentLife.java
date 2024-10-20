@@ -270,14 +270,15 @@ public interface StudentLife {
             @Header("Authorization") String bearerToken);
 
     @Headers({"Content-Type: application/json"})
-    @POST("/sublet/properties/{sublet_id}/favorites")
+    @POST("/sublet/properties/{sublet_id}/favorites/")
     void addFavoriteSublet(
             @Header("Authorization") String bearerToken,
+            @Path("sublet_id") int id,
             @Body Sublet sublet,
             Callback<Sublet> callback);
 
     @Headers({"Content-Type: application/json"})
-    @GET("/sublet/favorites")
+    @GET("/sublet/favorites/")
     Observable<List<Integer>> getSubletFavorites(
             @Header("Authorization") String bearerToken);
 

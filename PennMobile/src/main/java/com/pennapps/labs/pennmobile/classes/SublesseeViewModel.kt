@@ -104,19 +104,9 @@ class SublesseeViewModel(private val activity: Activity, private val studentLife
         Log.i("sublets", getSublettingList()?.size.toString())
     }
 
-    /* fun getSavedSublets(): ArrayList<Sublet>? {
-        return savedSublets.value
-    }
-
-    fun getSavedSublet(position : Int) : Sublet {
-        return savedSublets.value?.get(position) ?: Sublet() // Provide a default value if needed
-    } */
-
-    fun addSavedSublet(mActivity: MainActivity, sublet: Sublet) {
+    fun addSavedSublet(mActivity: MainActivity, id: Int, sublet: Sublet, callback: (Sublet?) -> Unit) {
         val context = activity.applicationContext
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-
-        //savedSubletIds.add(id)
 
         OAuth2NetworkManager(mActivity).getAccessToken {
 
@@ -124,9 +114,10 @@ class SublesseeViewModel(private val activity: Activity, private val studentLife
                     "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
 
-            studentLife.addFavoriteSublet(bearerToken, sublet, object : Callback<Sublet> {
+            studentLife.addFavoriteSublet(bearerToken, id, sublet, object : Callback<Sublet> {
                 override fun success(t: Sublet?, response: Response?) {
                     Log.i("Sublessee View Model", "sublet added")
+                    callback(sublet)
                 }
 
                 override fun failure(error: RetrofitError?) {
@@ -149,12 +140,15 @@ class SublesseeViewModel(private val activity: Activity, private val studentLife
 
             studentLife.getSubletFavorites(bearerToken).subscribe({ sublets ->
                 mActivity.runOnUiThread {
+                    Log.i("can access saved sublets", savedSublets.value.toString())
                     savedSublets.value = sublets as ArrayList<Sublet>
+                    //returns list of ints?
+                    Log.i("saved sublet size", savedSublets.value.toString())
                 }
             }, { throwable ->
                 mActivity.runOnUiThread {
                     Log.e(
-                            "Sublessee Marketplace",
+                            "Sublessee Favorites",
                             "Could not load saved Sublets",
                             throwable
                     )

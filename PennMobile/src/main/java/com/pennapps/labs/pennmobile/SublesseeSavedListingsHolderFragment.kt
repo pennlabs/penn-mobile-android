@@ -50,7 +50,7 @@ class SublesseeSavedListingsHolderFragment (): Fragment() {
         mActivity.closeKeyboard()
 
         dataModel = SublesseeViewModel(mActivity, mStudentLife)
-        dataModel.listSublets(mActivity)
+        //dataModel.listSublets(mActivity)
         dataModel.getFavoriteSublets(mActivity)
 
         val bundle = Bundle()

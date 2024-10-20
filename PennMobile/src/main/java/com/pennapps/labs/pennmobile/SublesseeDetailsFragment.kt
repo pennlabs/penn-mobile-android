@@ -107,7 +107,13 @@ class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position:
                     Log.e("MainActivity", "Failed to post sublet")
                 }
             } */
-            dataModel.addSavedSublet(mActivity, sublet)
+            dataModel.addSavedSublet(mActivity, sublet.id!!, sublet) { sublet ->
+                if (sublet != null) {
+                    Log.i("MainActivity", "Sublet ID: ${sublet.id}")
+                } else {
+                    // Handle failure to post sublet
+                    Log.e("MainActivity", "Failed to post sublet")
+                } }
             Toast.makeText(context, "This property has been saved", Toast.LENGTH_LONG).show()
             mActivity.supportFragmentManager.beginTransaction()
                     .replace(((view as ViewGroup).parent as View).id, SublesseeSavedFragment())
