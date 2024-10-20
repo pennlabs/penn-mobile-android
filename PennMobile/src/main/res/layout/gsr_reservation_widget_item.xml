@@ -7,6 +7,7 @@
     android:layout_height = "92dp"
     android:orientation="horizontal"
     android:background="#ffffff"
+    android:clickable="true"
     android:id="@+id/gsr_reservation_widget_item_root">
 
     <ImageView

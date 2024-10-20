@@ -49,8 +49,7 @@
                 <action android:name="AUTO_UPDATE" />
             </intent-filter>
 
-            <meta-data
-                android:name="android.appwidget.provider"
+            <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/gsr_reservation_widget_info" />
         </receiver>
 
