@@ -7,13 +7,11 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.RemoteViews
-import androidx.preference.PreferenceManager
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.pennapps.labs.pennmobile.adapters.GsrReservationWidgetAdapter
 import com.pennapps.labs.pennmobile.api.GsrReservationsRequest
 import com.pennapps.labs.pennmobile.api.Serializer
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.GSRReservation
 import com.squareup.okhttp.OkHttpClient
 import retrofit.RestAdapter
