@@ -15,7 +15,6 @@ import com.pennapps.labs.pennmobile.adapters.SubletDetailsPagerAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
-import kotlinx.android.synthetic.main.fragment_dining_holder.view.appbar_home_holder
 
 //Pulls existing datamodel from previous
 class SubletDetailsHolderFragment(private val dataModel: SublettingViewModel, private val subletNumber: Int) : Fragment() {
@@ -57,8 +56,4 @@ class SubletDetailsHolderFragment(private val dataModel: SublettingViewModel, pr
 
     }
 
-
-    private fun initAppBar(view: View) {
-        (view.appbar_home_holder.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
-    }
 }

@@ -13,7 +13,6 @@ import com.pennapps.labs.pennmobile.adapters.SubletterPagerAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
-import kotlinx.android.synthetic.main.fragment_dining_holder.view.appbar_home_holder
 
 class SubletterHolderFragment : Fragment() {
     lateinit var subletterPagerAdapter: SubletterPagerAdapter
@@ -46,8 +45,8 @@ class SubletterHolderFragment : Fragment() {
 
     }
 
-
-    private fun initAppBar(view: View) {
-        (view.appbar_home_holder.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
-    }
+//
+//    private fun initAppBar(view: View) {
+//        (view.appbar_home_holder.layoutParams as CoordinatorLayout.LayoutParams).behavior = ToolbarBehavior()
+//    }
 }

@@ -8,6 +8,7 @@ import com.pennapps.labs.pennmobile.DiningHolderFragment
 import com.pennapps.labs.pennmobile.GsrTabbedFragment
 import com.pennapps.labs.pennmobile.HomeFragment
 import com.pennapps.labs.pennmobile.LaundryFragment
+import com.pennapps.labs.pennmobile.Subletting.SublettingFragment
 import com.pennapps.labs.pennmobile.morefragments.MoreFragment
 
 class MainPagerAdapter(
@@ -19,7 +20,7 @@ class MainPagerAdapter(
             HOME_POSITION -> HomeFragment()
             DINING_POSITION -> DiningHolderFragment()
             GSR_POSITION -> GsrTabbedFragment()
-            LAUNDRY_POSITION -> LaundryFragment()
+            LAUNDRY_POSITION -> SublettingFragment()
             MORE_POSITION -> MoreFragment()
             else -> HomeFragment()
         }
