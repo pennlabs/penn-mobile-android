@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile
+package com.pennapps.labs.pennmobile.Subletting
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,10 +9,9 @@ import android.widget.Button
 import androidx.fragment.app.FragmentTransaction
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
+import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.adapters.SublesseeSavedPagerAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
-import com.pennapps.labs.pennmobile.databinding.FragmentSublesseeInterestFormBinding
 import com.pennapps.labs.pennmobile.databinding.FragmentSublesseeSavedBinding
 
 class SublesseeSavedFragment() : Fragment() {

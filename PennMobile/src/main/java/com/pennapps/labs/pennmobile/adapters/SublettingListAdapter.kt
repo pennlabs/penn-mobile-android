@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,10 +10,8 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.SublesseeDetailsFragment
-import com.pennapps.labs.pennmobile.SubletteeMarketplace
+import com.pennapps.labs.pennmobile.Subletting.SublesseeDetailsFragment
 import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
-import com.pennapps.labs.pennmobile.classes.Sublet
 import com.pennapps.labs.pennmobile.classes.SublettingModel
 
 class SublettingListAdapter(var sublettingList: ArrayList<SublettingModel>, var dataModel: SublesseeViewModel):
@@ -72,7 +69,7 @@ class SublettingListAdapter(var sublettingList: ArrayList<SublettingModel>, var 
         holder.itemView.setOnClickListener {
             mActivity.hideBottomBar()
             mActivity.supportFragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, SublesseeDetailsFragment(dataModel, position))
+                    .replace(R.id.content_frame, SublesseeDetailsFragment(dataModel, position, false))
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit()

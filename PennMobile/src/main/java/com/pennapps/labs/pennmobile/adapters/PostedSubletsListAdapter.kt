@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,11 +20,6 @@ import com.pennapps.labs.pennmobile.classes.SublettingModel
 import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 import kotlinx.android.synthetic.main.include_main.expandable_bottom_bar
 import kotlinx.android.synthetic.main.include_main.toolbar
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
-val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-val outputFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy")
 
 class PostedSubletsListAdapter(private val dataModel: SublettingViewModel):
         RecyclerView.Adapter<PostedSubletsListAdapter.SublettingCardViewHolder>() {
@@ -78,27 +72,8 @@ class PostedSubletsListAdapter(private val dataModel: SublettingViewModel):
                     .commit()
         }
 
-        val startDate = LocalDate.parse(mSublettingCard.startDate,
-            inputFormatter
-        )
-        val endDate = LocalDate.parse(mSublettingCard.endDate,
-            inputFormatter
-        )
-
-        val formattedStartDate = startDate.format(outputFormatter)
-        val formattedEndDate = endDate.format(outputFormatter)
-        Log.d("Formatted Date", formattedStartDate)
-        Log.e("Date", formattedEndDate)
-
-
         holder.listingDates.isSingleLine = false;
-
-        holder.listingDates.text = buildString {
-        append(formattedStartDate)
-        append(" - ")
-        append(formattedEndDate)
-        }
-
+        holder.listingDates.text = mSublettingCard.startDate + " to \n" + mSublettingCard.endDate
     }
 
     override fun getItemCount(): Int {

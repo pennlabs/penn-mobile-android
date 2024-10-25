@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile
+package com.pennapps.labs.pennmobile.Subletting
 
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
@@ -13,10 +13,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import androidx.preference.PreferenceManager
+import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentSublesseeDetailsBinding
 
-class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position: Int): Fragment(){
+class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position: Int, var isSaved: Boolean): Fragment(){
 
     private var _binding : FragmentSublesseeDetailsBinding? = null
     private val binding get() = _binding!!
@@ -53,7 +54,10 @@ class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position:
 
     @SuppressLint("MutatingSharedPrefs")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val sublet = dataModel.getSublet(position)
+        var sublet = dataModel.getSublet(position)
+        if (isSaved) {
+            sublet = dataModel.getSavedSublet(position)
+        }
 
         titleText = binding.titleText
         titleText.text = sublet.title
@@ -86,28 +90,13 @@ class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position:
         interestedButton = binding.interestedSubletButton
 
         saveButton.setOnClickListener {
-            /* saveButton.text = "Saved"
-            var savedProperties = sharedPreferences.getStringSet("sublet_saved", HashSet<String>())!!.toSet()
-            var newSavedProperties = HashSet<String>()
-            newSavedProperties.addAll(savedProperties)
-            newSavedProperties.add(sublet.id.toString())
-            var mEditor = sharedPreferences.edit()
-            mEditor.apply {
-                mEditor.putStringSet("sublet_saved", newSavedProperties)
-                apply()
-            }
-
-            dataModel.addSavedSublet(sublet) */
-            /* dataModel.addSavedSublet(mActivity, newSublet) { postedSublet ->
-                if (postedSublet != null) {
-                    Log.i("MainActivity", "Posted sublet ID: ${postedSublet.id}")
-                    subletId = postedSublet.id!!
+            dataModel.addSavedSublet(mActivity, sublet.id!!, sublet) { sublet ->
+                if (sublet != null) {
+                    Log.i("MainActivity", "Sublet ID: ${sublet.id}")
                 } else {
                     // Handle failure to post sublet
                     Log.e("MainActivity", "Failed to post sublet")
-                }
-            } */
-            dataModel.addSavedSublet(mActivity, sublet)
+                } }
             Toast.makeText(context, "This property has been saved", Toast.LENGTH_LONG).show()
             mActivity.supportFragmentManager.beginTransaction()
                     .replace(((view as ViewGroup).parent as View).id, SublesseeSavedFragment())
@@ -126,7 +115,7 @@ class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position:
 
         interestedButton.setOnClickListener {
             mActivity.supportFragmentManager.beginTransaction()
-                    .replace(((view as ViewGroup).parent as View).id, SublesseeInterestForm())
+                    .replace(((view as ViewGroup).parent as View).id, SublesseeInterestForm(sublet.id!!))
                     .addToBackStack(null)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit()

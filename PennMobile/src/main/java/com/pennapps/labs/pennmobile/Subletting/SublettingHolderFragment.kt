@@ -1,20 +1,16 @@
-package com.pennapps.labs.pennmobile
+package com.pennapps.labs.pennmobile.Subletting
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.pennapps.labs.pennmobile.adapters.SublettingPagerAdapter
-import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
-import kotlinx.android.synthetic.main.fragment_dining_holder.view.appbar_home_holder
 import com.google.android.material.tabs.TabLayoutMediator
-import com.pennapps.labs.pennmobile.adapters.DiningPagerAdapter
-import com.pennapps.labs.pennmobile.databinding.FragmentDiningHolderBinding
-import com.pennapps.labs.pennmobile.databinding.FragmentSublettingBinding
+import com.pennapps.labs.pennmobile.MainActivity
+import com.pennapps.labs.pennmobile.R
 
 
 /**

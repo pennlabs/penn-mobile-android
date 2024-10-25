@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile
+package com.pennapps.labs.pennmobile.Subletting
 
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -7,19 +7,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.adapters.SublesseeSavedAdapter
-import com.pennapps.labs.pennmobile.adapters.SublettingListAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
 import com.pennapps.labs.pennmobile.classes.Sublet
-import com.pennapps.labs.pennmobile.classes.SublettingModel
 import com.pennapps.labs.pennmobile.databinding.FragmentSublesseeSavedListingsHolderBinding
-import com.pennapps.labs.pennmobile.databinding.FragmentSubletteeMarketplaceBinding
 
 class SublesseeSavedListingsHolderFragment (): Fragment() {
 
@@ -50,7 +47,7 @@ class SublesseeSavedListingsHolderFragment (): Fragment() {
         mActivity.closeKeyboard()
 
         dataModel = SublesseeViewModel(mActivity, mStudentLife)
-        dataModel.listSublets(mActivity)
+        //dataModel.listSublets(mActivity)
         dataModel.getFavoriteSublets(mActivity)
 
         val bundle = Bundle()
