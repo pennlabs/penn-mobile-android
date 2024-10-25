@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile.Subletting
 
 import android.graphics.BitmapFactory
+import android.media.Image
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -67,6 +68,17 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
     internal lateinit var imageView: ImageView
     internal lateinit var imageIcon: ImageView
     internal lateinit var imageText: TextView
+
+    internal lateinit var moreImagesView: ImageView
+    internal lateinit var image1 :ImageView
+    internal lateinit var image2 : ImageView
+    internal lateinit var image3 : ImageView
+    internal lateinit var image4 : ImageView
+    internal lateinit var image5 : ImageView
+
+    var imageCount = 0;
+    val imageParts = mutableListOf<MultipartBody.Part>()
+
 
 
 
@@ -143,6 +155,15 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
         imageView = binding.mainImage
         imageIcon = binding.mainImageIcon
         imageText = binding.addPhotosText
+        moreImagesView = binding.addImage
+        image1 = binding.image1
+        image2 = binding.image2
+        image3 = binding.image3
+        image4 = binding.image4
+        image5 = binding.image5
+
+        val imageParts = mutableListOf<MultipartBody.Part>()
+
 
 
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -155,12 +176,32 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
                     val inputStream = context?.contentResolver?.openInputStream(uri)
                     val bitmap = BitmapFactory.decodeStream(inputStream)
                     image = bitmap.toString()
-                    imageView.setImageBitmap(bitmap)
-                    imageIcon.visibility = View.GONE
-                    imageText.visibility = View.GONE
-                    multipartImage = MultipartUtil.createPartFromBitmap(bitmap)
+
+                    if (imageCount <= 5) {
+                        if (imageCount == 0) {
+                            imageView.setImageBitmap(bitmap)
+                            imageIcon.visibility = View.GONE
+                            imageText.visibility = View.GONE
+                        } else if (imageCount == 1) {
+                            image1.setImageBitmap(bitmap)
+                        } else if (imageCount == 2) {
+                            image2.setImageBitmap(bitmap)
+                        } else if (imageCount == 3) {
+                            image3.setImageBitmap(bitmap)
+                        } else if (imageCount == 4) {
+                            image4.setImageBitmap(bitmap)
+                        } else {
+                            image5.setImageBitmap(bitmap)
+                        }
+
+                        multipartImage = MultipartUtil.createPartFromBitmap(bitmap)
+                        if (multipartImage != null) {
+                            imageParts.add(multipartImage!!)
+                        }
+                    }
 
 
+                    imageCount++
 
                     inputStream?.close()
                 } catch (e: IOException) {
@@ -174,6 +215,19 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
 
         imageView.setOnClickListener{
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }
+
+        moreImagesView.setOnClickListener {
+            if (imageCount == 0) {
+                Toast.makeText(activity, "Please select main image first.",
+                    Toast.LENGTH_LONG).show()
+            } else if (imageCount > 5) {
+                Toast.makeText(activity, "Image Limit Reached", Toast.LENGTH_LONG).show()
+            }
+            else {
+                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            }
+
         }
 
 
@@ -273,13 +327,12 @@ class NewListingsFragment(private val dataModel: SublettingViewModel) : Fragment
             }
         }
 
-        if (multipartImage != null) {
-            val subletPart = MultipartUtil.createSubletPart(subletId)
-            dataModel.postImage(mActivity, subletId,  subletPart, multipartImage!!)
+        val subletPart = MultipartUtil.createSubletPart(subletId)
+
+        for (part in imageParts)  {
+            dataModel.postImage(mActivity, subletId,  subletPart, part)
+
         }
-
-
-
 
 
     }

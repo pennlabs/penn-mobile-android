@@ -74,6 +74,111 @@
                 app:layout_constraintStart_toStartOf="@id/main_image"
                 app:layout_constraintTop_toTopOf="@id/main_image" />
 
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/main_image"
+                android:id="@+id/images_scroll_view"
+                android:layout_marginTop="10sp"
+                android:layout_marginStart="26sp"
+                >
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:orientation="horizontal"
+                    >
+                    <ImageView
+                        android:id="@+id/add_image"
+                        android:layout_width="75sp"
+                        android:layout_height="75sp"
+                        android:layout_margin="5sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf='parent'
+                        app:srcCompat="@drawable/subletting_square" />
+
+                    <ImageView
+                        android:id="@+id/additional_image_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/add_photo"
+                        app:layout_constraintBottom_toTopOf="@id/additional_photos_text"
+                        app:layout_constraintEnd_toEndOf="@id/add_image"
+                        app:layout_constraintStart_toStartOf="@id/add_image"
+                        app:srcCompat="@drawable/add_photo" />
+
+                    <TextView
+                        android:id="@+id/additional_photos_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10sp"
+                        android:fontFamily="@font/sf_pro_display_regular"
+                        android:text="@string/add_photos"
+                        android:textColor="#8A8A8D"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="@id/add_image"
+                        app:layout_constraintEnd_toEndOf="@id/add_image"
+                        app:layout_constraintStart_toStartOf="@id/add_image"
+                        app:layout_constraintTop_toTopOf="@id/add_image" />
+
+                    <ImageView
+                        android:id="@+id/image1"
+                        android:layout_width="75sp"
+                        android:layout_height="75sp"
+                        android:layout_margin="5sp"
+
+                        app:layout_constraintStart_toEndOf="@id/add_image"
+                        app:layout_constraintTop_toTopOf='parent'
+                        app:srcCompat="@drawable/subletting_square" />
+
+                    <ImageView
+                        android:id="@+id/image2"
+                        android:layout_width="75sp"
+                        android:layout_height="75sp"
+                        android:layout_margin="5sp"
+
+                        app:layout_constraintStart_toEndOf="@id/image1"
+                        app:layout_constraintTop_toTopOf='parent'
+                        app:srcCompat="@drawable/subletting_square" />
+
+                    <ImageView
+                        android:id="@+id/image3"
+                        android:layout_width="75sp"
+                        android:layout_height="75sp"
+                        android:layout_margin="5sp"
+
+                        app:layout_constraintStart_toEndOf="@id/image2"
+                        app:layout_constraintTop_toTopOf='parent'
+                        app:srcCompat="@drawable/subletting_square" />
+
+                    <ImageView
+                        android:id="@+id/image4"
+                        android:layout_width="75sp"
+                        android:layout_height="75sp"
+                        android:layout_margin="5sp"
+
+                        app:layout_constraintStart_toEndOf="@id/image3"
+                        app:layout_constraintTop_toTopOf='parent'
+                        app:srcCompat="@drawable/subletting_square" />
+
+                    <ImageView
+                        android:id="@+id/image5"
+                        android:layout_width="75sp"
+                        android:layout_height="75sp"
+                        android:layout_margin="5sp"
+
+                        app:layout_constraintStart_toEndOf="@id/image4"
+                        app:layout_constraintTop_toTopOf='parent'
+                        app:srcCompat="@drawable/subletting_square" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </HorizontalScrollView>
+
 
             <TextView
                 android:id="@+id/listing_name_text"
@@ -86,7 +191,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/main_image" />
+                app:layout_constraintTop_toBottomOf="@id/images_scroll_view" />
 
             <EditText
                 android:id="@+id/listing_name_input"
@@ -246,7 +351,7 @@
                     android:layout_marginStart="10sp"
                     android:layout_weight="1"
                     android:fontFamily="@font/sf_pro_display_regular"
-                    android:text="End Date"
+                    android:text="@string/end_date"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -435,7 +540,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="26sp"
                 android:fontFamily="@font/sf_pro_display_regular"
-                android:text="Fitness Facilities"
+                android:text="@string/fitness_facilities"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/bathroom_check"
@@ -612,7 +717,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10sp"
                 android:fontFamily="@font/sf_pro_display_regular"
-                android:text="Air Conditioning"
+                android:text="@string/air_conditioning"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/security_check"
                 app:layout_constraintTop_toBottomOf="@id/kitchen_appliances_check" />
@@ -623,7 +728,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="26sp"
                 android:fontFamily="@font/sf_pro_display_regular"
-                android:text="Accessibility Features"
+                android:text="@string/accessibility_features"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/security_check" />
@@ -634,7 +739,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10sp"
                 android:fontFamily="@font/sf_pro_display_regular"
-                android:text="Heating"
+                android:text="@string/heating"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/accessibility_check"
                 app:layout_constraintTop_toBottomOf="@id/security_check" />
@@ -719,7 +824,7 @@
                 app:layout_constraintTop_toBottomOf="@id/button_layout"
                 app:layout_constraintStart_toStartOf="parent"
                 android:text=""
-                android:textSize="75dp"/>
+                android:textSize="75sp"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

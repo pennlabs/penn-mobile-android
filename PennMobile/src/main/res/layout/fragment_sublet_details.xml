@@ -26,7 +26,7 @@
                 android:fontFamily="@font/sf_pro_display_bold"
                 android:text="Edit"
                 android:textColor="@color/pennmobile_blue"
-                app:layout_constraintBottom_toBottomOf="@id/title_text"
+                app:layout_constraintBottom_toTopOf="@id/title_text"
                 app:layout_constraintEnd_toStartOf="@id/delete_text"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -38,7 +38,7 @@
                 android:fontFamily="@font/sf_pro_display_bold"
                 android:text="Delete"
                 android:textColor="@color/pennmobile_blue"
-                app:layout_constraintBottom_toBottomOf="@id/title_text"
+                app:layout_constraintBottom_toTopOf="@id/title_text"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -46,27 +46,77 @@
                 android:id="@+id/title_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="26dp"
+                android:layout_marginStart="26sp"
                 android:fontFamily="@font/sf_pro_display_bold"
                 android:text="@string/title"
                 android:textSize="26sp"
-                android:layout_marginEnd="36dp"
+                android:paddingRight="26sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/edit_text" />
 
 
 
-            <ImageView
-                android:id="@+id/sublet_image"
+
+            <HorizontalScrollView
+                android:id="@+id/sublet_images"
                 android:layout_width="0dp"
                 android:layout_height="250sp"
-                android:layout_marginStart="26sp"
-                android:layout_marginTop="10sp"
-                android:layout_marginEnd="26sp"
+                android:layout_margin="26sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/title_text"
-                app:srcCompat="@drawable/subletting_house" />
+                app:layout_constraintTop_toBottomOf="@id/title_text">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/image1"
+                        android:layout_width="250sp"
+                        android:layout_height="250sp"
+                        android:layout_margin="10sp"
+                        app:srcCompat="@drawable/subletting_house" />
+
+                    <ImageView
+                        android:id="@+id/image2"
+                        android:layout_width="250sp"
+                        android:layout_height="250sp"
+                        android:layout_margin="10sp"
+                        app:srcCompat="@drawable/subletting_house" />
+
+                    <ImageView
+                        android:id="@+id/image3"
+                        android:layout_width="250sp"
+                        android:layout_height="250sp"
+                        android:layout_margin="10sp"
+                        app:srcCompat="@drawable/subletting_house" />
+
+                    <ImageView
+                        android:id="@+id/image4"
+                        android:layout_width="250sp"
+                        android:layout_height="250sp"
+                        android:layout_margin="10sp"
+                        app:srcCompat="@drawable/subletting_house" />
+
+                    <ImageView
+                        android:id="@+id/image5"
+                        android:layout_width="250sp"
+                        android:layout_height="250sp"
+                        android:layout_margin="10sp"
+                        app:srcCompat="@drawable/subletting_house" />
+
+                    <ImageView
+                        android:id="@+id/image6"
+                        android:layout_width="250sp"
+                        android:layout_height="250sp"
+                        android:layout_margin="10sp"
+                        app:srcCompat="@drawable/subletting_house" />
+
+
+                </LinearLayout>
+
+            </HorizontalScrollView>
 
             <TextView
                 android:id="@+id/price_text"
@@ -79,7 +129,7 @@
                 android:textColor="@color/dark_gray"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sublet_image" />
+                app:layout_constraintTop_toBottomOf="@+id/sublet_images" />
 
             <TextView
                 android:id="@+id/address_text"
@@ -213,6 +263,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:text=" "
                 android:textSize="75dp"/>
+
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
