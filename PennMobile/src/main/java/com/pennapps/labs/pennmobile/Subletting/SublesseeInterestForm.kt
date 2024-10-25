@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile.Subletting
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -53,6 +54,14 @@ class SublesseeInterestForm (id: Int): Fragment() {
                 user = "",
                 email = ""
             )
+
+            /* dataModel.addSavedSublet(mActivity, sublet.id!!, sublet) { sublet ->
+                if (sublet != null) {
+                    Log.i("MainActivity", "Sublet ID: ${sublet.id}")
+                } else {
+                    // Handle failure to post sublet
+                    Log.e("MainActivity", "Failed to post sublet")
+                } } */
 
             Toast.makeText(mActivity, "Your message has been sent!", Toast.LENGTH_LONG).show()
             mActivity.supportFragmentManager.beginTransaction()
