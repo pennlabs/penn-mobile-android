@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.classes
 
+import com.pennapps.labs.pennmobile.fitness.classes.GymHours
 import org.joda.time.Interval
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

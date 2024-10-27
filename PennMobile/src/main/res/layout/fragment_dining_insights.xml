@@ -5,7 +5,7 @@
     android:id="@+id/dining_insights_page"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DiningInsightsFragment">
+    tools:context=".dining.fragments.DiningInsightsFragment">
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/dining_insights_refresh"
         android:layout_width="match_parent"
