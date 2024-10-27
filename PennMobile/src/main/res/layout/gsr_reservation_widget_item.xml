@@ -33,8 +33,8 @@
             android:layout_marginEnd="16dp"
             android:maxLines = "2"
             android:minLines="2"
-            android:text="VP Weigle Room 110 oiwejfoiwjeof"
-            android:textSize="14sp"
+            android:text="VP Weigle Room 110 oiwejfoiwjeof ihu"
+            android:textSize="12sp"
             android:textStyle="bold" />
 
         <TextView
@@ -46,7 +46,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:text="Wednesday September 20 \n2:00pm-3:00 pm"
-            android:textSize="14sp"
+            android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@+id/gsr_reservation_iv"
             app:layout_constraintTop_toBottomOf="@+id/gsr_reservation_location_tv" />
     </LinearLayout>
