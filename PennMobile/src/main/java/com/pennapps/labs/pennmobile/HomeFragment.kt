@@ -25,6 +25,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
+import com.pennapps.labs.pennmobile.fragments.HomeSlidingToolbar
+import androidx.fragment.app.FragmentTransaction
+import com.pennapps.labs.pennmobile.adapters.MainPagerAdapter
 
 class HomeFragment : Fragment() {
     private lateinit var mActivity: MainActivity
@@ -83,6 +86,14 @@ class HomeFragment : Fragment() {
         set to View.VISIBLE instead of View.INVISIBLE and hide loadingPanel
          */
         toolbar = mActivity.findViewById(R.id.toolbar)
+
+        // Set up the ComposeView
+        binding.composeToolbar.setContent {
+            HomeSlidingToolbar { index ->
+                handleFeatureClick(index)
+            }
+        }
+
         binding.homeCellsRv.layoutManager =
             LinearLayoutManager(
                 context,
@@ -120,6 +131,38 @@ class HomeFragment : Fragment() {
         }
 
         getHomePage()
+    }
+
+    private fun handleFeatureClick(index: Int) {
+        when (index) {
+            0 -> mActivity.setTab(MainActivity.DINING_ID)
+            1 -> mActivity.setTab(MainActivity.GSR_ID)
+            2 -> mActivity.setTab(MainActivity.LAUNDRY_ID)
+            3 -> {
+                mActivity.supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.content_frame, NewsFragment())
+                    .addToBackStack(null)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .commit()
+            }
+            4 -> {
+                mActivity.supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.content_frame, SupportFragment())
+                    .addToBackStack(null)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .commit()
+            }
+            5 -> {
+                mActivity.supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.content_frame, PottruckFragment())
+                    .addToBackStack(null)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .commit()
+            }
+        }
     }
 
     private fun getOnline(): Boolean {

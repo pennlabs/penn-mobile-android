@@ -18,7 +18,7 @@ class SupportFragment : ListFragment() {
     private lateinit var toolbar: Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onCreate( savedInstanceState)
 
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()

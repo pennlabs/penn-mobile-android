@@ -122,10 +122,18 @@
 
             </androidx.appcompat.widget.Toolbar>
 
+<!--                TODO add in the toolbar here -->
+            <androidx.compose.ui.platform.ComposeView
+                android:id="@+id/compose_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/internetConnectionHome" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/home_cells_rv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/compose_toolbar"
                 android:scrollbars="none"
                 app:layout_constraintTop_toTopOf="parent" />
 

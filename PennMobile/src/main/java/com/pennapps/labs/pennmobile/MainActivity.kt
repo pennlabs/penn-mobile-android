@@ -313,6 +313,7 @@ class MainActivity : AppCompatActivity() {
         val HOME_ID = R.id.nav_home
         val GSR_ID = R.id.nav_gsr
         val DINING_ID = R.id.nav_dining
+        val LAUNDRY_ID = R.id.nav_laundry
 
         private var mStudentLife: StudentLife? = null
         private var mStudentLifeRf2: StudentLifeRf2? = null
