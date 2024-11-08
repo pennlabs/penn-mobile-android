@@ -14,6 +14,8 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
+import com.pennapps.labs.pennmobile.api.StudentLife
+import com.pennapps.labs.pennmobile.classes.OfferViewModel
 import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentSublesseeDetailsBinding
 
@@ -22,6 +24,7 @@ class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position:
     private var _binding : FragmentSublesseeDetailsBinding? = null
     private val binding get() = _binding!!
     private lateinit var mActivity: MainActivity
+    private lateinit var mStudentLife: StudentLife
 
     private lateinit var saveButton: Button
     private lateinit var mapButton: Button
@@ -39,6 +42,7 @@ class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position:
         super.onCreate(savedInstanceState)
 
         mActivity = activity as MainActivity
+        mStudentLife = MainActivity.studentLifeInstance
         mActivity.closeKeyboard()
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity)
@@ -115,7 +119,7 @@ class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position:
 
         interestedButton.setOnClickListener {
             mActivity.supportFragmentManager.beginTransaction()
-                    .replace(((view as ViewGroup).parent as View).id, SublesseeInterestForm(sublet.id!!))
+                    .replace(((view as ViewGroup).parent as View).id, SublesseeInterestForm(sublet))
                     .addToBackStack(null)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit()

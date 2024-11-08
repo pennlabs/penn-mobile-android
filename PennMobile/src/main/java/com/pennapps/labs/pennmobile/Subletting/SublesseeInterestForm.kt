@@ -12,9 +12,11 @@ import androidx.fragment.app.FragmentTransaction
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.Offer
+import com.pennapps.labs.pennmobile.classes.OfferViewModel
+import com.pennapps.labs.pennmobile.classes.Sublet
 import com.pennapps.labs.pennmobile.databinding.FragmentSublesseeInterestFormBinding
 
-class SublesseeInterestForm (id: Int): Fragment() {
+class SublesseeInterestForm (var sublet: Sublet): Fragment() {
 
     //create binding
     private var _binding : FragmentSublesseeInterestFormBinding? = null
@@ -47,7 +49,7 @@ class SublesseeInterestForm (id: Int): Fragment() {
         //Need data validation
         interestButton.setOnClickListener {
             val offer = Offer(
-                sublet = id,
+                sublet = sublet.id!!,
                 phoneNumber = "test",
                 createdDate = "",
                 message = "",
@@ -55,15 +57,19 @@ class SublesseeInterestForm (id: Int): Fragment() {
                 email = ""
             )
 
-            /* dataModel.addSavedSublet(mActivity, sublet.id!!, sublet) { sublet ->
-                if (sublet != null) {
-                    Log.i("MainActivity", "Sublet ID: ${sublet.id}")
+            val dataModel = OfferViewModel(mActivity, mStudentLife)
+
+            dataModel.makeOffer(mActivity, sublet.id!!, offer) { postedOffer ->
+                if (offer != null) {
+                    Log.i("Interest form", "Offer ID: ${offer.id}")
+                    Toast.makeText(mActivity, "Your message has been sent!", Toast.LENGTH_LONG).show()
                 } else {
                     // Handle failure to post sublet
-                    Log.e("MainActivity", "Failed to post sublet")
-                } } */
+                    Log.e("Interest form", "Failed to post offer")
+                    Toast.makeText(mActivity, "Error making offer", Toast.LENGTH_LONG).show()
+                } }
 
-            Toast.makeText(mActivity, "Your message has been sent!", Toast.LENGTH_LONG).show()
+
             mActivity.supportFragmentManager.beginTransaction()
                     .replace(((view as ViewGroup).parent as View).id, SublesseeSavedFragment())
                     .addToBackStack(null)

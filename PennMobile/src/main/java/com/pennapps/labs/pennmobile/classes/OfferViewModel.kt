@@ -56,15 +56,15 @@ class OfferViewModel (private val activity: Activity, private val studentLife: S
             val bearerToken =
                 "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
-
+            Log.i("Offer view model", "in network request")
             studentLife.createOffer(bearerToken, id, offer, object : Callback<Offer> {
                 override fun success(t: Offer?, response: Response?) {
-                    Log.i("Sublessee View Model", "offer added")
+                    Log.i("offer View Model", "offer added")
                     callback(offer)
                 }
 
                 override fun failure(error: RetrofitError?) {
-                    Log.e("Sublessee View Model", "Error making offer on sublet $error", error)
+                    Log.e("offer View Model interest", "Error making offer on sublet $error", error)
                     Toast.makeText(activity, "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
                 }
             })

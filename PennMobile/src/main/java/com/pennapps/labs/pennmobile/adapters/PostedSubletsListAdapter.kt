@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.SublesseeDetailsFragment
+import com.pennapps.labs.pennmobile.Subletting.SublesseeDetailsFragment
 import com.pennapps.labs.pennmobile.Subletting.SubletDetailsFragment
 import com.pennapps.labs.pennmobile.Subletting.SubletDetailsHolderFragment
 import com.pennapps.labs.pennmobile.classes.Sublet
