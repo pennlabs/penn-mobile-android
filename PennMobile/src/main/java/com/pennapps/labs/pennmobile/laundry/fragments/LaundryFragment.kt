@@ -15,14 +15,14 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.laundry.adapters.LaundryRoomAdapter
-import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom
-import com.pennapps.labs.pennmobile.laundry.classes.LaundryUsage
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentLaundryBinding
 import com.pennapps.labs.pennmobile.isOnline
-import com.pennapps.labs.pennmobile.utils.Utils
 import com.pennapps.labs.pennmobile.laundry.LaundryViewModel
+import com.pennapps.labs.pennmobile.laundry.adapters.LaundryRoomAdapter
+import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom
+import com.pennapps.labs.pennmobile.laundry.classes.LaundryUsage
+import com.pennapps.labs.pennmobile.utils.Utils
 
 class LaundryFragment : Fragment() {
     private lateinit var mActivity: MainActivity
@@ -70,7 +70,7 @@ class LaundryFragment : Fragment() {
         }
         binding.laundryMachineRefresh.setColorSchemeResources(
             R.color.color_accent,
-            R.color.color_primary
+            R.color.color_primary,
         )
 
         return view
@@ -94,7 +94,7 @@ class LaundryFragment : Fragment() {
                 mContext,
                 laundryRooms,
                 roomsData,
-                false
+                false,
             )
         binding.favoriteLaundryList.adapter = mAdapter
 

@@ -14,8 +14,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.fling.adapters.FlingRecyclerViewAdapter
 import com.pennapps.labs.pennmobile.databinding.FragmentFlingBinding
+import com.pennapps.labs.pennmobile.fling.adapters.FlingRecyclerViewAdapter
 
 class FlingFragment : Fragment() {
     private lateinit var mActivity: MainActivity

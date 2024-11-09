@@ -16,12 +16,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.dining.adapters.DiningSettingsAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
+import com.pennapps.labs.pennmobile.databinding.FragmentDiningPreferencesBinding
+import com.pennapps.labs.pennmobile.dining.adapters.DiningSettingsAdapter
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 import com.pennapps.labs.pennmobile.dining.classes.DiningRequest
 import com.pennapps.labs.pennmobile.home.classes.HomepageDataModel
-import com.pennapps.labs.pennmobile.databinding.FragmentDiningPreferencesBinding
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response

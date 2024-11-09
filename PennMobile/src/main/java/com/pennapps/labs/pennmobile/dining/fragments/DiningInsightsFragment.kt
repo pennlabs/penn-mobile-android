@@ -9,17 +9,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.pennapps.labs.pennmobile.api.fragments.CampusExpressLoginFragment
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.dining.adapters.DiningInsightsCardAdapter
 import com.pennapps.labs.pennmobile.api.CampusExpress
 import com.pennapps.labs.pennmobile.api.CampusExpressNetworkManager
+import com.pennapps.labs.pennmobile.api.fragments.CampusExpressLoginFragment
+import com.pennapps.labs.pennmobile.databinding.FragmentDiningInsightsBinding
+import com.pennapps.labs.pennmobile.dining.adapters.DiningInsightsCardAdapter
 import com.pennapps.labs.pennmobile.dining.classes.DiningBalances
 import com.pennapps.labs.pennmobile.dining.classes.DiningBalancesList
 import com.pennapps.labs.pennmobile.dining.classes.DiningInsightCell
 import com.pennapps.labs.pennmobile.dining.classes.DollarsSpentCell
-import com.pennapps.labs.pennmobile.databinding.FragmentDiningInsightsBinding
 import com.pennapps.labs.pennmobile.isOnline
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -57,7 +57,7 @@ class DiningInsightsFragment : Fragment() {
         binding.diningInsightsRefresh.setOnRefreshListener { refresh() }
         binding.diningInsightsRefresh.setColorSchemeResources(
             R.color.color_accent,
-            R.color.color_primary
+            R.color.color_primary,
         )
         binding.insightsrv.layoutManager =
             LinearLayoutManager(

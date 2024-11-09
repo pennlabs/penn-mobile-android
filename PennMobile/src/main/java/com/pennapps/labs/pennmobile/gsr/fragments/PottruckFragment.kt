@@ -19,12 +19,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.fitness.adapters.FitnessAdapter
-import com.pennapps.labs.pennmobile.fitness.adapters.FitnessHeaderAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.fitness.FitnessPreferenceViewModel
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentPottruckBinding
+import com.pennapps.labs.pennmobile.fitness.FitnessPreferenceViewModel
+import com.pennapps.labs.pennmobile.fitness.adapters.FitnessAdapter
+import com.pennapps.labs.pennmobile.fitness.adapters.FitnessHeaderAdapter
 import com.pennapps.labs.pennmobile.fitness.fragments.CloseListener
 import com.pennapps.labs.pennmobile.fitness.fragments.FitnessPreferencesFragment
 import com.pennapps.labs.pennmobile.isOnline

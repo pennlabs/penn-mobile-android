@@ -15,8 +15,8 @@ import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.gsr.classes.GSRBookingResult
 import com.pennapps.labs.pennmobile.databinding.GsrDetailsBookBinding
+import com.pennapps.labs.pennmobile.gsr.classes.GSRBookingResult
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response

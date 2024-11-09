@@ -11,9 +11,9 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.databinding.PollListItemBinding
 import com.pennapps.labs.pennmobile.home.classes.Poll
 import com.pennapps.labs.pennmobile.home.classes.PollOption
-import com.pennapps.labs.pennmobile.databinding.PollListItemBinding
 import kotlin.math.abs
 import kotlin.math.round
 

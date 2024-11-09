@@ -9,8 +9,8 @@ import android.widget.ImageView
 import android.widget.Switch
 import android.widget.TextView
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoomSimple
 import com.pennapps.labs.pennmobile.laundry.LaundryViewModel
+import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoomSimple
 
 /**
  * Created by Jackie on 2017-10-13.

@@ -14,11 +14,11 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
-import com.pennapps.labs.pennmobile.dining.fragments.MenuFragment
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 import com.pennapps.labs.pennmobile.databinding.DiningListItemBinding
+import com.pennapps.labs.pennmobile.dining.classes.DiningHall
+import com.pennapps.labs.pennmobile.dining.fragments.MenuFragment
 import com.squareup.picasso.Picasso
 import rx.android.schedulers.AndroidSchedulers
 import java.util.Collections

@@ -13,8 +13,8 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
 import com.pennapps.labs.pennmobile.databinding.GsrReservationBinding
+import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
 import com.squareup.picasso.Picasso
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter

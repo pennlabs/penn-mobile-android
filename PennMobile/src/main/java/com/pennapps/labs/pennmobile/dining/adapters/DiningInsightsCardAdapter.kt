@@ -22,11 +22,11 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.dining.classes.DiningInsightCell
-import com.pennapps.labs.pennmobile.dining.classes.DiningMarkerView
 import com.pennapps.labs.pennmobile.databinding.DiningBalancesCardBinding
 import com.pennapps.labs.pennmobile.databinding.DiningPredictionsCardBinding
 import com.pennapps.labs.pennmobile.databinding.DiningSpentCardBinding
+import com.pennapps.labs.pennmobile.dining.classes.DiningInsightCell
+import com.pennapps.labs.pennmobile.dining.classes.DiningMarkerView
 import com.pennapps.labs.pennmobile.dining.viewholders.DiningBalancesCardHolder
 import com.pennapps.labs.pennmobile.dining.viewholders.DiningPredictionsHolder
 import com.pennapps.labs.pennmobile.dining.viewholders.DiningSpentHolder

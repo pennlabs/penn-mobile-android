@@ -7,8 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.fling.classes.FlingEvent
 import com.pennapps.labs.pennmobile.databinding.FlingPerformanceItemBinding
+import com.pennapps.labs.pennmobile.fling.classes.FlingEvent
 import com.squareup.picasso.Picasso
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter

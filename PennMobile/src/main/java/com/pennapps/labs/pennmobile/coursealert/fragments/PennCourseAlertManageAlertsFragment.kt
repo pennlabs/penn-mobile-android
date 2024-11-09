@@ -21,9 +21,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.coursealert.PennCourseAlertViewModel
 import com.pennapps.labs.pennmobile.coursealert.adapters.RegistrationsAdapter
 import com.pennapps.labs.pennmobile.isOnline
-import com.pennapps.labs.pennmobile.coursealert.PennCourseAlertViewModel
 
 class PennCourseAlertManageAlertsFragment :
     Fragment(),

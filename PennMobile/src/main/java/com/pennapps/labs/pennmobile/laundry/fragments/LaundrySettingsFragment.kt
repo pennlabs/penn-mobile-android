@@ -14,9 +14,9 @@ import androidx.preference.PreferenceManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.laundry.adapters.LaundrySettingsAdapter
 import com.pennapps.labs.pennmobile.databinding.FragmentLaundrySettingsBinding
 import com.pennapps.labs.pennmobile.laundry.LaundryViewModel
+import com.pennapps.labs.pennmobile.laundry.adapters.LaundrySettingsAdapter
 
 class LaundrySettingsFragment : Fragment() {
     private lateinit var mActivity: MainActivity

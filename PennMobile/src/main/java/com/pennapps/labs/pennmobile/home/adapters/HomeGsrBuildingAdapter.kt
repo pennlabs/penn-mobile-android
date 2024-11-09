@@ -10,10 +10,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import com.pennapps.labs.pennmobile.gsr.fragments.GsrTabbedFragment
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.HomeGsrBuildingBinding
+import com.pennapps.labs.pennmobile.gsr.fragments.GsrTabbedFragment
 
 class HomeGsrBuildingAdapter(
     private var buildings: ArrayList<String>,

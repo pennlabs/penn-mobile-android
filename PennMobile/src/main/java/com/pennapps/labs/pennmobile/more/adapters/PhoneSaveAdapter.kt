@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.more.classes.Contact
 import com.pennapps.labs.pennmobile.databinding.PhoneSaveListItemBinding
+import com.pennapps.labs.pennmobile.more.classes.Contact
 
 class PhoneSaveAdapter(
     context: Context,

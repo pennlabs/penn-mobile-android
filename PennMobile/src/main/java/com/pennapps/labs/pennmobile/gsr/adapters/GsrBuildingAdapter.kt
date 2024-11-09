@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.pennapps.labs.pennmobile.gsr.classes.GSRContainer
 import com.pennapps.labs.pennmobile.databinding.GsrBuildingBinding
+import com.pennapps.labs.pennmobile.gsr.classes.GSRContainer
 import com.pennapps.labs.pennmobile.gsr.viewholders.GsrBuildingHolder
 import org.joda.time.DateTime
 

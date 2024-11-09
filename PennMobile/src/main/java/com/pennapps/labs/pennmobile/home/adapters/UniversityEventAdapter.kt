@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.pennapps.labs.pennmobile.home.classes.CalendarEvent
 import com.pennapps.labs.pennmobile.databinding.UniversityEventBinding
+import com.pennapps.labs.pennmobile.home.classes.CalendarEvent
 
 class UniversityEventAdapter(
     private var events: ArrayList<CalendarEvent>,

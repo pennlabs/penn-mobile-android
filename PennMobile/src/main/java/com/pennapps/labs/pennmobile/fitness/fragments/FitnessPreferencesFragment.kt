@@ -9,8 +9,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.fitness.adapters.FitnessPreferenceAdapter
 import com.pennapps.labs.pennmobile.fitness.FitnessPreferenceViewModel
+import com.pennapps.labs.pennmobile.fitness.adapters.FitnessPreferenceAdapter
 
 interface CloseListener {
     fun updateAdapters()

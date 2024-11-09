@@ -31,36 +31,33 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.pennapps.labs.pennmobile.dining.adapters.DiningCardAdapter
-import com.pennapps.labs.pennmobile.dining.fragments.DiningFragment
-import com.pennapps.labs.pennmobile.dining.fragments.DiningFragment.Companion.getMenus
-import com.pennapps.labs.pennmobile.dining.fragments.DiningSettingsFragment
-import com.pennapps.labs.pennmobile.gsr.fragments.GsrTabbedFragment
 import com.pennapps.labs.pennmobile.MainActivity
-import com.pennapps.labs.pennmobile.home.fragments.NewsFragment
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.home.classes.CalendarCell
-import com.pennapps.labs.pennmobile.home.classes.CalendarEvent
-import com.pennapps.labs.pennmobile.dining.classes.DiningCell
-import com.pennapps.labs.pennmobile.dining.classes.DiningHall
-import com.pennapps.labs.pennmobile.gsr.classes.GSRCell
-import com.pennapps.labs.pennmobile.home.classes.HomepageDataModel
-import com.pennapps.labs.pennmobile.laundry.classes.LaundryCell
-import com.pennapps.labs.pennmobile.home.classes.NewsCell
-import com.pennapps.labs.pennmobile.home.classes.Poll
-import com.pennapps.labs.pennmobile.home.classes.PollCell
-import com.pennapps.labs.pennmobile.home.classes.Post
-import com.pennapps.labs.pennmobile.home.classes.PostCell
 import com.pennapps.labs.pennmobile.components.sneaker.Utils.convertToDp
 import com.pennapps.labs.pennmobile.databinding.HomeBaseCardBinding
 import com.pennapps.labs.pennmobile.databinding.HomeGsrCardBinding
 import com.pennapps.labs.pennmobile.databinding.HomeNewsCardBinding
 import com.pennapps.labs.pennmobile.databinding.HomePostCardBinding
 import com.pennapps.labs.pennmobile.databinding.PollCardBinding
-import com.pennapps.labs.pennmobile.laundry.adapters.LaundryRoomAdapter
-import com.pennapps.labs.pennmobile.utils.Utils
+import com.pennapps.labs.pennmobile.dining.adapters.DiningCardAdapter
+import com.pennapps.labs.pennmobile.dining.classes.DiningCell
+import com.pennapps.labs.pennmobile.dining.classes.DiningHall
+import com.pennapps.labs.pennmobile.dining.fragments.DiningFragment
+import com.pennapps.labs.pennmobile.dining.fragments.DiningFragment.Companion.getMenus
+import com.pennapps.labs.pennmobile.dining.fragments.DiningSettingsFragment
+import com.pennapps.labs.pennmobile.gsr.classes.GSRCell
+import com.pennapps.labs.pennmobile.gsr.fragments.GsrTabbedFragment
+import com.pennapps.labs.pennmobile.home.classes.CalendarCell
+import com.pennapps.labs.pennmobile.home.classes.CalendarEvent
+import com.pennapps.labs.pennmobile.home.classes.HomepageDataModel
+import com.pennapps.labs.pennmobile.home.classes.NewsCell
+import com.pennapps.labs.pennmobile.home.classes.Poll
+import com.pennapps.labs.pennmobile.home.classes.PollCell
+import com.pennapps.labs.pennmobile.home.classes.Post
+import com.pennapps.labs.pennmobile.home.classes.PostCell
+import com.pennapps.labs.pennmobile.home.fragments.NewsFragment
 import com.pennapps.labs.pennmobile.home.viewholders.HomeBaseHolder
 import com.pennapps.labs.pennmobile.home.viewholders.HomeCalendarHolder
 import com.pennapps.labs.pennmobile.home.viewholders.HomeDiningHolder
@@ -69,6 +66,9 @@ import com.pennapps.labs.pennmobile.home.viewholders.HomeLaundryHolder
 import com.pennapps.labs.pennmobile.home.viewholders.HomeNewsCardHolder
 import com.pennapps.labs.pennmobile.home.viewholders.HomePollHolder
 import com.pennapps.labs.pennmobile.home.viewholders.HomePostHolder
+import com.pennapps.labs.pennmobile.laundry.adapters.LaundryRoomAdapter
+import com.pennapps.labs.pennmobile.laundry.classes.LaundryCell
+import com.pennapps.labs.pennmobile.utils.Utils
 import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -261,7 +261,7 @@ class HomeAdapter(
                             mContext,
                             rooms,
                             null,
-                            true
+                            true,
                         )
                 }
             }, { throwable -> mActivity.runOnUiThread { throwable.printStackTrace() } })

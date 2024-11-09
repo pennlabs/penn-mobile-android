@@ -82,7 +82,8 @@ class CampusExpressLoginFragment : Fragment() {
         headerLayout = view.findViewById(R.id.linear_layout)
         cancelButton = view.findViewById(R.id.cancel_button)
         val uri =
-            Uri.parse(campusExpressAuthUrl)
+            Uri
+                .parse(campusExpressAuthUrl)
                 .buildUpon()
                 .appendQueryParameter("response_type", "code")
                 .appendQueryParameter("client_id", clientID)
@@ -174,11 +175,12 @@ class CampusExpressLoginFragment : Fragment() {
 
                 override fun failure(error: RetrofitError) {
                     Log.e("Campus Webview", "Error fetching access token $error")
-                    Toast.makeText(
-                        context,
-                        "Error getting campus express authorization",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast
+                        .makeText(
+                            context,
+                            "Error getting campus express authorization",
+                            Toast.LENGTH_SHORT,
+                        ).show()
                     goToDiningInsights(false)
                 }
             },

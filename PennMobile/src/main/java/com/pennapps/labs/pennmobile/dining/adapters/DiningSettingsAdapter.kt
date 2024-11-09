@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
-import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 import com.pennapps.labs.pennmobile.databinding.LaundrySettingsChildItemBinding
+import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 
 class DiningSettingsAdapter(
     private var diningHalls: List<DiningHall>,

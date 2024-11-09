@@ -26,11 +26,11 @@ import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.coursealert.PennCourseAlertViewModel
 import com.pennapps.labs.pennmobile.coursealert.classes.Course
 import com.pennapps.labs.pennmobile.coursealert.classes.Section
 import com.pennapps.labs.pennmobile.databinding.FragmentPennCourseAlertCreateAlertBinding
 import com.pennapps.labs.pennmobile.isOnline
-import com.pennapps.labs.pennmobile.coursealert.PennCourseAlertViewModel
 import java.util.regex.Pattern
 
 class PennCourseAlertCreateAlertFragment : Fragment() {

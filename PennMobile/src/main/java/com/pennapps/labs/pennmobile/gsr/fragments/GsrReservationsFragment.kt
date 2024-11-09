@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.gsr.adapters.GsrReservationsAdapter
 import com.pennapps.labs.pennmobile.databinding.FragmentGsrReservationsBinding
+import com.pennapps.labs.pennmobile.gsr.adapters.GsrReservationsAdapter
 import com.pennapps.labs.pennmobile.isOnline
 
 class GsrReservationsFragment : Fragment() {
@@ -51,7 +51,7 @@ class GsrReservationsFragment : Fragment() {
 
         binding.gsrReservationsRefreshLayout.setColorSchemeResources(
             R.color.color_accent,
-            R.color.color_primary
+            R.color.color_primary,
         )
         binding.gsrReservationsRefreshLayout.setOnRefreshListener { getReservations() }
 

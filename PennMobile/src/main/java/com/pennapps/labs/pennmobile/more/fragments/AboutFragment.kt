@@ -21,8 +21,8 @@ import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.RequestListener
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.more.adapters.AboutAdapter
 import com.pennapps.labs.pennmobile.databinding.FragmentAboutBinding
+import com.pennapps.labs.pennmobile.more.adapters.AboutAdapter
 
 class AboutFragment : Fragment() {
     private lateinit var mActivity: MainActivity

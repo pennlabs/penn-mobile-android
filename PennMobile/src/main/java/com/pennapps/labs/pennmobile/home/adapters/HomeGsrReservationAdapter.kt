@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.pennapps.labs.pennmobile.gsr.fragments.GsrTabbedFragment
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
 import com.pennapps.labs.pennmobile.databinding.GsrListItemBinding
+import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
+import com.pennapps.labs.pennmobile.gsr.fragments.GsrTabbedFragment
 import com.squareup.picasso.Picasso
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter

@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
-import com.pennapps.labs.pennmobile.gsr.fragments.BookGsrFragment
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.GsrRoomBinding
+import com.pennapps.labs.pennmobile.gsr.fragments.BookGsrFragment
 import com.pennapps.labs.pennmobile.gsr.viewholders.GsrRoomHolder
 import org.joda.time.DateTime
 

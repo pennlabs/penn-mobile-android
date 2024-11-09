@@ -9,9 +9,9 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.dining.adapters.DiningPagerAdapter
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentDiningHolderBinding
+import com.pennapps.labs.pennmobile.dining.adapters.DiningPagerAdapter
 import com.pennapps.labs.pennmobile.utils.Utils
 
 class DiningHolderFragment : Fragment() {

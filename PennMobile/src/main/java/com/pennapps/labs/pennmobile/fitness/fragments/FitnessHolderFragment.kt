@@ -11,9 +11,9 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.fitness.adapters.FitnessPagerAdapter
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentFitnessHolderBinding
+import com.pennapps.labs.pennmobile.fitness.adapters.FitnessPagerAdapter
 import com.pennapps.labs.pennmobile.utils.Utils
 
 class FitnessHolderFragment : Fragment() {

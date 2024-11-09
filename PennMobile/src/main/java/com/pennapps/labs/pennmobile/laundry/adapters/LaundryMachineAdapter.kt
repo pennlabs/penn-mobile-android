@@ -20,11 +20,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.airbnb.lottie.LottieAnimationView
-import com.pennapps.labs.pennmobile.laundry.LaundryBroadcastReceiver
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.laundry.classes.MachineDetail
 import com.pennapps.labs.pennmobile.databinding.LaundryDryerItemBinding
 import com.pennapps.labs.pennmobile.databinding.LaundryMachineItemBinding
+import com.pennapps.labs.pennmobile.laundry.LaundryBroadcastReceiver
+import com.pennapps.labs.pennmobile.laundry.classes.MachineDetail
 import com.pennapps.labs.pennmobile.showSneakerToast
 
 class LaundryMachineAdapter(
