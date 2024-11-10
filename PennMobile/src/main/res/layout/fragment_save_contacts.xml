@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context="com.pennapps.labs.pennmobile.SaveContactsFragment"
+    tools:context="com.pennapps.labs.pennmobile.more.fragments.SaveContactsFragment"
     android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
