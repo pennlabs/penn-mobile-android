@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.api;
 
-import com.pennapps.labs.pennmobile.classes.Venue;
+import com.pennapps.labs.pennmobile.dining.classes.Venue;
 
 import java.util.List;
 

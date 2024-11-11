@@ -8,7 +8,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.BuildConfig
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.classes.AccessTokenResponse
+import com.pennapps.labs.pennmobile.api.classes.AccessTokenResponse
 import kotlinx.coroutines.launch
 import retrofit.Callback
 import retrofit.RetrofitError

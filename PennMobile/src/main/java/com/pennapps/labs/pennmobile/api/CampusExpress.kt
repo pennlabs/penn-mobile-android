@@ -1,8 +1,8 @@
 package com.pennapps.labs.pennmobile.api
 
-import com.pennapps.labs.pennmobile.classes.CampusExpressAccessTokenResponse
-import com.pennapps.labs.pennmobile.classes.DiningBalances
-import com.pennapps.labs.pennmobile.classes.DiningBalancesList
+import com.pennapps.labs.pennmobile.api.classes.CampusExpressAccessTokenResponse
+import com.pennapps.labs.pennmobile.dining.classes.DiningBalances
+import com.pennapps.labs.pennmobile.dining.classes.DiningBalancesList
 import retrofit.Callback
 import retrofit.http.GET
 import retrofit.http.Header

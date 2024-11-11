@@ -1,8 +1,8 @@
-import com.pennapps.labs.pennmobile.classes.LaundryPreferences
-import com.pennapps.labs.pennmobile.classes.LaundryRequest
-import com.pennapps.labs.pennmobile.classes.LaundryRoom
-import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple
-import com.pennapps.labs.pennmobile.classes.LaundryUsage
+import com.pennapps.labs.pennmobile.laundry.classes.LaundryPreferences
+import com.pennapps.labs.pennmobile.laundry.classes.LaundryRequest
+import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom
+import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoomSimple
+import com.pennapps.labs.pennmobile.laundry.classes.LaundryUsage
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body

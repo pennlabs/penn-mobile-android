@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    tools:context="com.pennapps.labs.pennmobile.SupportFragment">
+    tools:context="com.pennapps.labs.pennmobile.more.fragments.SupportFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"

@@ -125,7 +125,7 @@
 65
 66        <receiver
 66-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:39:7-42:39
-67            android:name="com.pennapps.labs.pennmobile.LaundryBroadcastReceiver"
+67            android:name="com.pennapps.labs.pennmobile.laundry.LaundryBroadcastReceiver"
 67-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:40:13-53
 68            android:enabled="true"
 68-->/Users/lumumba/Desktop/penn-mobile-android/PennMobile/src/main/AndroidManifest.xml:41:13-35

@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile.api;
 
-import com.pennapps.labs.pennmobile.classes.AccessTokenResponse;
-import com.pennapps.labs.pennmobile.classes.GetUserResponse;
+import com.pennapps.labs.pennmobile.api.classes.GetUserResponse;
 
 import retrofit.Callback;
 import retrofit.http.Field;
