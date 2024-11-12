@@ -18,9 +18,10 @@ coordinatorlayout = "1.2.0"
 customalertviewdialogue = "a1fc69d54d"
 espressoCore = "3.5.0"
 exifinterface = "1.3.6"
-firebaseBom = "31.5.0"
+firebaseBom = "33.5.1"
 firebaseCrashlyticsKtx = "18.6.0"
 firebaseCrashalytics = "2.9.9"
+firebaseMessaging = "24.0.3"
 glanceAppwidget = "1.1.0"
 glide = "4.11.0"
 googleMapsServices = "2.2.0"
@@ -103,6 +104,7 @@ firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx", version.ref = "firebaseCrashlyticsKtx" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging", version.ref = "firebaseMessaging" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 google-maps-services = { module = "com.google.maps:google-maps-services", version.ref = "googleMapsServices" }
 joda-time = { module = "joda-time:joda-time", version.ref = "jodaTime" }

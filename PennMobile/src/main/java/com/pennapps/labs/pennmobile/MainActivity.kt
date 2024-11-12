@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile
 
 import StudentLifeRf2
+import android.Manifest
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -20,8 +21,10 @@ import android.view.inputmethod.InputMethodManager
 import android.webkit.CookieManager
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -77,6 +80,18 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mFirebaseAnalytics: FirebaseAnalytics
     val mNetworkManager by lazy { OAuth2NetworkManager(this) }
 
+    // Declare the launcher at the top of your Activity/Fragment:
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission(),
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                // FCM SDK (and your app) can post notifications.
+            } else {
+                // TODO: Inform user that that your app will not show notifications.
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         if (Build.VERSION.SDK_INT > 28) {
             setTheme(R.style.DarkModeApi29)
@@ -91,6 +106,7 @@ class MainActivity : AppCompatActivity() {
             setTheme(R.style.DarkBackground)
         }
         Utils.getCurrentSystemTime()
+        askNotificationPermission()
 
         setSupportActionBar(binding.include.toolbar)
         fragmentManager = supportFragmentManager
@@ -129,6 +145,25 @@ class MainActivity : AppCompatActivity() {
         }
         if (diningWidgetBroadCast != -1) {
             setTab(DINING_ID)
+        }
+    }
+
+    private fun askNotificationPermission() {
+        // This is only necessary for API level >= 33 (TIRAMISU)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                PackageManager.PERMISSION_GRANTED
+            ) {
+                // FCM SDK (and your app) can post notifications.
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+                // TODO: display an educational UI explaining to the user the features that will be enabled
+                //       by them granting the POST_NOTIFICATION permission. This UI should provide the user
+                //       "OK" and "No thanks" buttons. If the user selects "OK," directly request the permission.
+                //       If the user selects "No thanks," allow the user to continue without notifications.
+            } else {
+                // Directly ask for the permission
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
         }
     }
 
