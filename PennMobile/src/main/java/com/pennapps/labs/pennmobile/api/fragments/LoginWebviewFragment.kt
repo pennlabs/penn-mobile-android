@@ -270,16 +270,14 @@ class LoginWebviewFragment : Fragment() {
     private fun sendNotifToken() {
         val mNotificationAPI = MainActivity.notificationAPIInstance
 
-        mActivity.mNetworkManager.getAccessToken {
-            val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
-            val notifToken = sp.getString(getString(R.string.notification_token), "").toString()
+        val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
+        val notifToken = sp.getString(getString(R.string.notification_token), "").toString()
 
-            Log.d("Notification Token", notifToken)
-            val notGuest = !sp.getBoolean(mActivity.getString(R.string.guest_mode), false)
+        Log.d("Notification Token", notifToken)
+        val notGuest = !sp.getBoolean(mActivity.getString(R.string.guest_mode), false)
 
-            lifecycleScope.launch(Dispatchers.IO) {
-                loginWebviewViewmodel.sendToken(mNotificationAPI, notGuest, bearerToken, notifToken)
-            }
+        lifecycleScope.launch(Dispatchers.IO) {
+            loginWebviewViewmodel.sendToken(mNotificationAPI, notGuest, bearerToken, notifToken)
         }
     }
 

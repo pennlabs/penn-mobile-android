@@ -82,10 +82,9 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                 if (pennKey != null) {
                     AlertDialog
                         .Builder(context)
-                        .setTitle("Log out")
+                        .setTitle("Log Out")
                         .setMessage("Are you sure you want to log out?")
                         .setPositiveButton("Logout") { dialog, _ ->
-                            Log.d("SettingsFragment", "Logout button clicked in dialog.")
                             deleteNotifToken(sp)
                             CookieManager.getInstance().removeAllCookie()
                             editor.apply {
@@ -100,14 +99,13 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                                 remove(getString(R.string.guest_mode))
                                 remove(getString(R.string.campus_express_token))
                                 remove(getString(R.string.campus_token_expires_in))
+                                remove(getString(R.string.initials))
                             }
                             dialog.dismiss()
-                            Log.d("SettingsFragment", "SharedPreferences cleared, navigating to Login.")
                             mActivity.startLoginFragment()
                         }.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
                         .create()
                         .show()
-                    Log.d("SettingsFragment", "Logout confirmation dialog displayed.")
                 } else {
                     mActivity.startLoginFragment()
                 }
@@ -279,16 +277,13 @@ class PreferenceFragment : PreferenceFragmentCompat() {
     private fun deleteNotifToken(sp: SharedPreferences) {
         val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
         val notifToken = sp.getString(getString(R.string.notification_token), "").toString()
-        Log.d("SettingsFragment", "deleteNotifToken called with notifToken: $notifToken")
         val mNotificationAPI = MainActivity.notificationAPIInstance
         Log.i("Notification Token", notifToken)
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 preferencesViewModel.deleteTokenResponse(mNotificationAPI, bearerToken, notifToken)
-                Log.d("SettingsFragment", "deleteTokenResponse coroutine completed.")
             } catch (e: Exception) {
-                Log.e("SettingsFragment", "Error in deleteNotifToken: ${e.message}")
                 e.printStackTrace()
             }
         }
