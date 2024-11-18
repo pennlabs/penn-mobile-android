@@ -38,6 +38,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.pennapps.labs.pennmobile.api.CampusExpress
+import com.pennapps.labs.pennmobile.api.NotificationAPI
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Serializer
@@ -354,6 +355,7 @@ class MainActivity : AppCompatActivity() {
         private var mStudentLifeRf2: StudentLifeRf2? = null
         private var mPlatform: Platform? = null
         private var mCampusExpress: CampusExpress? = null
+        private var mNotificationAPI: NotificationAPI? = null
 
         @JvmStatic
         val campusExpressInstance: CampusExpress
@@ -416,6 +418,31 @@ class MainActivity : AppCompatActivity() {
                     mStudentLifeRf2 = retrofit.create(StudentLifeRf2::class.java)
                 }
                 return mStudentLifeRf2!!
+            }
+
+        val notificationAPIInstance: NotificationAPI
+            get() {
+                if (mNotificationAPI == null) {
+                    val okHttpClient =
+                        OkHttpClient
+                            .Builder()
+                            .connectTimeout(35, TimeUnit.SECONDS)
+                            .readTimeout(35, TimeUnit.SECONDS)
+                            .writeTimeout(35, TimeUnit.SECONDS)
+                            .build()
+
+                    val retrofit =
+                        Retrofit
+                            .Builder()
+                            .baseUrl("https://pennmobile.org/api/")
+                            .client(okHttpClient)
+                            .addConverterFactory(ScalarsConverterFactory.create())
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                            .build()
+                    mNotificationAPI = retrofit.create(NotificationAPI::class.java)
+                }
+                return mNotificationAPI!!
             }
 
         @JvmStatic

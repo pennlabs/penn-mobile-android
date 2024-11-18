@@ -22,6 +22,7 @@
 
     <application
         android:name="androidx.multidex.MultiDexApplication"
+        android:label="Penn Mobile"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
@@ -72,11 +73,15 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
         <meta-data
-            android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/penn_red" />
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="default_channel_id"/>
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/baseline_circle_notifications_24" />
+            android:resource="@mipmap/ic_launcher_foreground" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/penn_red" />
+
 
         <receiver
             android:name=".laundry.LaundryBroadcastReceiver"
