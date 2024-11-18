@@ -13,21 +13,15 @@ import android.webkit.CookieManager
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.view.ContextThemeWrapper
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.more.viewmodels.SettingsViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class SettingsFragment : PreferenceFragmentCompat() {
     private var accountSettings: Preference? = null
     private var logInOutButton: Preference? = null
-    private val settingsViewModel: SettingsViewModel by viewModels()
     private lateinit var mActivity: MainActivity
     private lateinit var mContext: Context
 
@@ -56,8 +50,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
     ) {
         super.onViewCreated(view, savedInstanceState)
         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
-        val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
-        val notifToken = sp.getString(getString(R.string.notification_token), "").toString()
         val editor = sp.edit()
         accountSettings = findPreference("pref_account_edit")
         accountSettings?.onPreferenceClickListener =
@@ -103,7 +95,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         .setTitle("Log out")
                         .setMessage("Are you sure you want to log out?")
                         .setPositiveButton("Logout") { dialog, _ ->
-                            deleteNotifToken(bearerToken, notifToken)
+                            Log.d("SettingsFragment", "Logout button clicked in dialog.")
                             CookieManager.getInstance().removeAllCookie()
                             editor.apply {
                                 remove(getString(R.string.penn_password))
@@ -119,10 +111,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
                                 remove(getString(R.string.campus_token_expires_in))
                             }
                             dialog.dismiss()
+                            Log.d("SettingsFragment", "SharedPreferences cleared, navigating to Login.")
                             mActivity.startLoginFragment()
                         }.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
                         .create()
                         .show()
+                    Log.d("SettingsFragment", "Logout confirmation dialog displayed.")
                 } else {
                     mActivity.startLoginFragment()
                 }
@@ -135,18 +129,5 @@ class SettingsFragment : PreferenceFragmentCompat() {
         mActivity.removeTabs()
         mActivity.setTitle(R.string.action_settings)
         mActivity.setSelectedTab(MainActivity.MORE)
-    }
-
-    private fun deleteNotifToken(
-        bearerToken: String,
-        notifToken: String,
-    ) {
-        val mNotificationAPI = MainActivity.notificationAPIInstance
-        Log.i("Notification Token", notifToken)
-
-        lifecycleScope.launch(Dispatchers.Main) {
-            settingsViewModel.deleteTokenResponse(mNotificationAPI, bearerToken, notifToken)
-            Log.i("TestLaunch", "Launched!")
-        }
     }
 }

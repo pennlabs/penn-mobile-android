@@ -6,7 +6,7 @@ import com.pennapps.labs.pennmobile.api.NotificationAPI
 
 // Currently only implemented the notification logic, other network logistics to be implemented
 
-class SettingsViewModel : ViewModel() {
+class PreferencesViewModel : ViewModel() {
     suspend fun deleteTokenResponse(
         mNotificationAPI: NotificationAPI,
         bearerToken: String,
