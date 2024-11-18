@@ -6,14 +6,13 @@ import com.pennapps.labs.pennmobile.api.NotificationAPI
 
 // Currently only implemented the notification logic, other network logistics to be implemented
 
-class PreferencesViewModel : ViewModel() {
+class PreferenceViewModel : ViewModel() {
     suspend fun deleteTokenResponse(
         mNotificationAPI: NotificationAPI,
-        bearerToken: String,
         notifToken: String,
     ) {
         try {
-            val response = mNotificationAPI.deleteNotificationToken(bearerToken, notifToken)
+            val response = mNotificationAPI.deleteNotificationToken(notifToken)
             if (response.isSuccessful) {
                 Log.i("Notification Token", "Successfully deleted token")
             } else {

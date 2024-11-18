@@ -16,7 +16,6 @@ interface NotificationAPI {
 
     @DELETE("user/notifications/tokens/android/{token}/")
     suspend fun deleteNotificationToken(
-        @Header("Authorization") bearerToken: String,
         @Path("token") token: String,
     ): Response<ResponseBody>
 }

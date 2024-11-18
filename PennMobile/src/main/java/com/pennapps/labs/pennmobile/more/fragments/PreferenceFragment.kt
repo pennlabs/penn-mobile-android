@@ -24,7 +24,7 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.components.dialog.CustomAlertDialogue
 import com.pennapps.labs.pennmobile.gsr.fragments.PottruckFragment
 import com.pennapps.labs.pennmobile.home.fragments.NewsFragment
-import com.pennapps.labs.pennmobile.more.viewmodels.PreferencesViewModel
+import com.pennapps.labs.pennmobile.more.viewmodels.PreferenceViewModel
 import com.pennapps.labs.pennmobile.showSneakerToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,7 +36,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
     private lateinit var toolbar: Toolbar
-    private val preferencesViewModel: PreferencesViewModel by viewModels()
+    private val preferenceViewModel: PreferenceViewModel by viewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -275,14 +275,13 @@ class PreferenceFragment : PreferenceFragmentCompat() {
     }
 
     private fun deleteNotifToken(sp: SharedPreferences) {
-        val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
         val notifToken = sp.getString(getString(R.string.notification_token), "").toString()
         val mNotificationAPI = MainActivity.notificationAPIInstance
         Log.i("Notification Token", notifToken)
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                preferencesViewModel.deleteTokenResponse(mNotificationAPI, bearerToken, notifToken)
+                preferenceViewModel.deleteTokenResponse(mNotificationAPI, notifToken)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
