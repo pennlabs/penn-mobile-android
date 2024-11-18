@@ -4,14 +4,18 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
@@ -20,7 +24,10 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.components.dialog.CustomAlertDialogue
 import com.pennapps.labs.pennmobile.gsr.fragments.PottruckFragment
 import com.pennapps.labs.pennmobile.home.fragments.NewsFragment
+import com.pennapps.labs.pennmobile.more.viewmodels.PreferenceViewModel
 import com.pennapps.labs.pennmobile.showSneakerToast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * Created by Davies Lumumba Spring 2021
@@ -29,6 +36,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
     private lateinit var toolbar: Toolbar
+    private val preferenceViewModel: PreferenceViewModel by viewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -72,27 +80,32 @@ class PreferenceFragment : PreferenceFragmentCompat() {
         userLoginPref?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener {
                 if (pennKey != null) {
-                    val dialog = AlertDialog.Builder(context).create()
-                    dialog.setTitle("Log out")
-                    dialog.setMessage("Are you sure you want to log out?")
-                    dialog.setButton("Logout") { dialog, _ ->
-                        CookieManager.getInstance().removeAllCookie()
-                        editor.remove(getString(R.string.penn_password))
-                        editor.remove(getString(R.string.penn_user))
-                        editor.remove(getString(R.string.first_name))
-                        editor.remove(getString(R.string.last_name))
-                        editor.remove(getString(R.string.email_address))
-                        editor.remove(getString(R.string.pennkey))
-                        editor.remove(getString(R.string.accountID))
-                        editor.remove(getString(R.string.access_token))
-                        editor.remove(getString(R.string.guest_mode))
-                        editor.remove(getString(R.string.initials))
-                        editor.apply()
-                        dialog.cancel()
-                        mActivity.startLoginFragment()
-                    }
-                    // dialog.setButton(2,"Cancel") { dialog, _ -> dialog.cancel() }
-                    dialog.show()
+                    AlertDialog
+                        .Builder(context)
+                        .setTitle("Log Out")
+                        .setMessage("Are you sure you want to log out?")
+                        .setPositiveButton("Logout") { dialog, _ ->
+                            deleteNotifToken(sp)
+                            CookieManager.getInstance().removeAllCookie()
+                            editor.apply {
+                                remove(getString(R.string.penn_password))
+                                remove(getString(R.string.penn_user))
+                                remove(getString(R.string.first_name))
+                                remove(getString(R.string.last_name))
+                                remove(getString(R.string.email_address))
+                                remove(getString(R.string.pennkey))
+                                remove(getString(R.string.accountID))
+                                remove(getString(R.string.access_token))
+                                remove(getString(R.string.guest_mode))
+                                remove(getString(R.string.campus_express_token))
+                                remove(getString(R.string.campus_token_expires_in))
+                                remove(getString(R.string.initials))
+                            }
+                            dialog.dismiss()
+                            mActivity.startLoginFragment()
+                        }.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+                        .create()
+                        .show()
                 } else {
                     mActivity.startLoginFragment()
                 }
@@ -259,6 +272,20 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                 .setDecorView(activity?.window?.decorView)
                 .build()
         alert.show()
+    }
+
+    private fun deleteNotifToken(sp: SharedPreferences) {
+        val notifToken = sp.getString(getString(R.string.notification_token), "").toString()
+        val mNotificationAPI = MainActivity.notificationAPIInstance
+        Log.i("Notification Token", notifToken)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                preferenceViewModel.deleteTokenResponse(mNotificationAPI, notifToken)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     companion object {

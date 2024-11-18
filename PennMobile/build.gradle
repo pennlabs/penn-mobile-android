@@ -99,6 +99,7 @@ dependencies {
     testImplementation platform(libs.androidx.compose.bom)
     androidTestImplementation platform(libs.androidx.compose.bom)
     implementation platform(libs.firebase.bom)
+    implementation(libs.firebase.messaging)
 
     implementation libs.bundles.compose
     implementation libs.bundles.material
