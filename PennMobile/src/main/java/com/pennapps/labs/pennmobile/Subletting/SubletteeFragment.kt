@@ -119,6 +119,11 @@ class SubletteeFragment : Fragment() {
                 return@setOnClickListener
             }
 
+            if (!validatePrices()) {
+                Toast.makeText(context, "Please enter a valid price range", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
 
             // Load new fragment, which will hold the subletting marketplace in whole
             mActivity.supportFragmentManager.beginTransaction()
@@ -135,6 +140,28 @@ class SubletteeFragment : Fragment() {
             // Update the address text view with the selected address
             binding.subletteeLocationAddressView.text = selectedAddress
         }
+    }
+
+    private fun validatePrices(): Boolean {
+        val minPriceString = binding.subletteeMinPriceText.text.toString().trim()
+        val maxPriceString = binding.subletteeMaxPriceText.text.toString().trim()
+
+        if (minPriceString.isEmpty() || maxPriceString.isEmpty()) {
+            return false
+        }
+
+        val minPrice = minPriceString.toDoubleOrNull()
+        val maxPrice = maxPriceString.toDoubleOrNull()
+
+        if (minPrice == null || maxPrice == null || minPrice < 0 || maxPrice < 0) {
+            return false
+        }
+
+        if (minPrice > maxPrice) {
+            return false
+        }
+
+        return true
     }
 
 
