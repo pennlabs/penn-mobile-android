@@ -3,27 +3,32 @@ package com.pennapps.labs.pennmobile.adapters
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import com.pennapps.labs.pennmobile.R
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.classes.CalendarEvent
-import kotlinx.android.synthetic.main.university_event.view.*
+import com.pennapps.labs.pennmobile.databinding.UniversityEventBinding
 
-class UniversityEventAdapter(private var events: ArrayList<CalendarEvent>) :
-    RecyclerView.Adapter<UniversityEventAdapter.UniversityEventViewHolder>() {
-
+class UniversityEventAdapter(
+    private var events: ArrayList<CalendarEvent>,
+) : RecyclerView.Adapter<UniversityEventAdapter.UniversityEventViewHolder>() {
     private lateinit var mContext: Context
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UniversityEventViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.university_event, parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): UniversityEventViewHolder {
         mContext = parent.context
-        return UniversityEventViewHolder(view)
+        val itemBinding = UniversityEventBinding.inflate(LayoutInflater.from(mContext), parent, false)
+        return UniversityEventViewHolder(itemBinding)
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: UniversityEventViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: UniversityEventViewHolder,
+        position: Int,
+    ) {
         val event = events[position]
 
         val name = event.name
@@ -38,22 +43,22 @@ class UniversityEventAdapter(private var events: ArrayList<CalendarEvent>) :
 
         // holder.itemView.event_day.text = dayOfMonth
         // holder.itemView.event_month.text = month
-        holder.itemView.event_month.text = event.date
-        holder.itemView.event_name_tv.text = name
-        holder.itemView.event_name_tv.isSelected = true
+        holder.eventMonth.text = event.date
+        holder.eventName.text = name
+        holder.eventName.isSelected = true
         /* if (from == to) {
             holder.itemView.event_day_of_week.text = start
         } else {
             holder.itemView.event_day_of_week.text = "$start - $end"
         }*/
-
     }
 
-    override fun getItemCount(): Int {
-        return events.size
-    }
+    override fun getItemCount(): Int = events.size
 
-    inner class UniversityEventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val view = itemView
+    inner class UniversityEventViewHolder(
+        itemBinding: UniversityEventBinding,
+    ) : RecyclerView.ViewHolder(itemBinding.root) {
+        val eventMonth: TextView = itemBinding.eventMonth
+        val eventName: TextView = itemBinding.eventNameTv
     }
 }

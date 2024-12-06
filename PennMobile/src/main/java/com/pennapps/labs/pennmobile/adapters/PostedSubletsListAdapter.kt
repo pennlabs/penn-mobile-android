@@ -18,8 +18,8 @@ import com.pennapps.labs.pennmobile.Subletting.SubletDetailsHolderFragment
 import com.pennapps.labs.pennmobile.classes.Sublet
 import com.pennapps.labs.pennmobile.classes.SublettingModel
 import com.pennapps.labs.pennmobile.classes.SublettingViewModel
-import kotlinx.android.synthetic.main.include_main.expandable_bottom_bar
-import kotlinx.android.synthetic.main.include_main.toolbar
+//import kotlinx.android.synthetic.main.include_main.expandable_bottom_bar
+//import kotlinx.android.synthetic.main.include_main.toolbar
 
 class PostedSubletsListAdapter(private val dataModel: SublettingViewModel):
         RecyclerView.Adapter<PostedSubletsListAdapter.SublettingCardViewHolder>() {

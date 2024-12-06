@@ -7,28 +7,27 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.pennapps.labs.pennmobile.DiningHolderFragment
 import com.pennapps.labs.pennmobile.GsrTabbedFragment
 import com.pennapps.labs.pennmobile.HomeFragment
+import com.pennapps.labs.pennmobile.LaundryFragment
 import com.pennapps.labs.pennmobile.Subletting.SublettingFragment
-import com.pennapps.labs.pennmobile.more_fragments.MoreFragment
+import com.pennapps.labs.pennmobile.morefragments.MoreFragment
 
-class MainPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle?) : FragmentStateAdapter(fragmentManager, lifecycle!!) {
-    override fun createFragment(position: Int): Fragment {
-        return when(position) {
-            HOME_POSITION-> HomeFragment()
-            DINING_POSITION-> DiningHolderFragment()
-            GSR_POSITION-> GsrTabbedFragment()
-            LAUNDRY_POSITION-> SublettingFragment()
-            MORE_POSITION-> MoreFragment()
+class MainPagerAdapter(
+    fragmentManager: FragmentManager,
+    lifecycle: Lifecycle?,
+) : FragmentStateAdapter(fragmentManager, lifecycle!!) {
+    override fun createFragment(position: Int): Fragment =
+        when (position) {
+            HOME_POSITION -> HomeFragment()
+            DINING_POSITION -> DiningHolderFragment()
+            GSR_POSITION -> GsrTabbedFragment()
+            LAUNDRY_POSITION -> SublettingFragment()
+            MORE_POSITION -> MoreFragment()
             else -> HomeFragment()
         }
-    }
 
-    override fun getItemCount(): Int {
-        return COUNT
-    }
+    override fun getItemCount(): Int = COUNT
 
-    override fun getItemId(position: Int): Long {
-        return if (position < COUNT) position.toLong() else createFragment(position).hashCode().toLong()
-    }
+    override fun getItemId(position: Int): Long = if (position < COUNT) position.toLong() else createFragment(position).hashCode().toLong()
 
     companion object {
         const val HOME_POSITION = 0

@@ -8,7 +8,7 @@ open class DiningInsightCell {
     @Expose
     var type: String? = null
 
-    var diningBalances : DiningBalances? = null
+    var diningBalances: DiningBalances? = null
 
-    var diningBalancesList : DiningBalancesList? = null
+    var diningBalancesList: DiningBalancesList? = null
 }

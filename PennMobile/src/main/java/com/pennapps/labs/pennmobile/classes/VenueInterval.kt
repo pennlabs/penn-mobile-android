@@ -6,7 +6,6 @@ import org.joda.time.IllegalInstantException
 import org.joda.time.Interval
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
-import java.util.*
 
 /**
  * Interval for venues with meal name and Joda Intervals
@@ -15,7 +14,7 @@ import java.util.*
 class VenueInterval {
     var date: String? = null
 
-    //@SerializedName("meal")
+    // @SerializedName("meal")
     var meals: List<MealInterval> = arrayListOf()
 
     /**
@@ -54,8 +53,8 @@ class VenueInterval {
             }
             Log.i("VenueInterval", "$openTime")
             if (open == "" && close == "") {
-                open ="00:00:00"
-                close ="00:00:00"
+                open = "00:00:00"
+                close = "00:00:00"
                 openTime = "$date $open"
                 closeTime = "$date $close"
             }
@@ -83,18 +82,17 @@ class VenueInterval {
                 if (hour > 12) {
                     newHours = "" + (hour - 12) + hours.substring(2, 5)
                 }
-                newHours += if (hour >= 12) {
-                    "pm"
-                } else {
-                    "am"
-                }
+                newHours +=
+                    if (hour >= 12) {
+                        "pm"
+                    } else {
+                        "am"
+                    }
                 return newHours
-
             } catch (exception: Exception) {
                 Log.d("Time Formatting Error", exception.message ?: "")
                 return hours
             }
-
         }
 
         companion object {

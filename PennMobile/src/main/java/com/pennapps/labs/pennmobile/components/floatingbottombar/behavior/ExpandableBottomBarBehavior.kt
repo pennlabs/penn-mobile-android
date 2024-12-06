@@ -7,20 +7,26 @@ import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.snackbar.Snackbar
 
-open class ExpandableBottomBarBehavior<V: View>: CoordinatorLayout.Behavior<V> {
+open class ExpandableBottomBarBehavior<V : View> : CoordinatorLayout.Behavior<V> {
+    constructor() : super()
 
-    constructor(): super()
+    constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet)
 
-    constructor(context: Context, attributeSet: AttributeSet): super(context, attributeSet)
-
-    override fun layoutDependsOn(parent: CoordinatorLayout, child: V, dependency: View): Boolean {
+    override fun layoutDependsOn(
+        parent: CoordinatorLayout,
+        child: V,
+        dependency: View,
+    ): Boolean {
         if (dependency is Snackbar.SnackbarLayout) {
             updateSnackBar(child, dependency)
         }
         return super.layoutDependsOn(parent, child, dependency)
     }
 
-    private fun updateSnackBar(child: View, snackBarLayout: Snackbar.SnackbarLayout) {
+    private fun updateSnackBar(
+        child: View,
+        snackBarLayout: Snackbar.SnackbarLayout,
+    ) {
         if (snackBarLayout.layoutParams is CoordinatorLayout.LayoutParams) {
             val params = snackBarLayout.layoutParams as CoordinatorLayout.LayoutParams
 

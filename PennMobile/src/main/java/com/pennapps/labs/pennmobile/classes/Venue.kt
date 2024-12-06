@@ -3,7 +3,6 @@ package com.pennapps.labs.pennmobile.classes
 import org.joda.time.DateTime
 import org.joda.time.Interval
 import org.joda.time.format.DateTimeFormat
-import java.util.*
 
 /**
  * Created by Adel on 12/16/14.
@@ -15,7 +14,7 @@ class Venue {
     var venueType: String? = null
     var extras: ArrayList<String>? = null
 
-    //@SerializedName("dateHours")
+    // @SerializedName("dateHours")
     var hours: List<VenueInterval> = ArrayList()
 
     /**
@@ -51,11 +50,7 @@ class Venue {
         return intervals
     }
 
-    fun allHours(): List<VenueInterval> {
-        return hours
-    }
+    fun allHours(): List<VenueInterval> = hours
 
-    fun getExtras(): List<String>? {
-        return extras
-    }
+    fun getExtras(): List<String>? = extras
 }

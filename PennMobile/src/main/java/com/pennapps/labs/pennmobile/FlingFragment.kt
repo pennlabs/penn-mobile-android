@@ -2,22 +2,24 @@ package com.pennapps.labs.pennmobile
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent.Builder
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import android.view.*
-import android.widget.Toast
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.pennapps.labs.pennmobile.adapters.FlingRecyclerViewAdapter
 import com.pennapps.labs.pennmobile.databinding.FragmentFlingBinding
 
-
 class FlingFragment : Fragment() {
-
     private lateinit var mActivity: MainActivity
 
-    private var _binding : FragmentFlingBinding? = null
-    private val binding get() = _binding!!
+    private var _binding: FragmentFlingBinding? = null
+    val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +28,10 @@ class FlingFragment : Fragment() {
         mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    override fun onCreateOptionsMenu(
+        menu: Menu,
+        inflater: MenuInflater,
+    ) {
         inflater.inflate(R.menu.fling_menu, menu)
     }
 
@@ -37,8 +42,10 @@ class FlingFragment : Fragment() {
                 mActivity.onBackPressed()
                 return true
             }
+
             R.id.fling_raffle -> {
-                val url = "https://docs.google.com/forms/d/e/1FAIpQLSexkehYfGgyAa7RagaCl8rze4KUKQSX9TbcvvA6iXp34TyHew/viewform"
+                val url =
+                    "https://docs.google.com/forms/d/e/1FAIpQLSexkehYfGgyAa7RagaCl8rze4KUKQSX9TbcvvA6iXp34TyHew/viewform"
                 val builder = Builder()
                 val customTabsIntent = builder.build()
                 customTabsIntent.launchUrl(mActivity, Uri.parse(url))
@@ -47,18 +54,39 @@ class FlingFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentFlingBinding.inflate(inflater, container, false)
         val view = binding.root
         val labs = MainActivity.studentLifeInstance
-        labs.flingEvents.subscribe({ flingEvents ->
-            activity?.runOnUiThread {
-                binding.flingFragmentRecyclerview.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                binding.flingFragmentRecyclerview.adapter = FlingRecyclerViewAdapter(context, flingEvents)
-            }
-        }, { activity?.runOnUiThread { Toast.makeText(activity, "Could not retrieve Spring Fling schedule", Toast.LENGTH_LONG).show() } })
+        try {
+            labs.flingEvents.subscribe(
+                { flingEvents ->
+                    activity?.runOnUiThread {
+                        binding.flingFragmentRecyclerview.layoutManager =
+                            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                        binding.flingFragmentRecyclerview.adapter =
+                            FlingRecyclerViewAdapter(context, flingEvents)
+                    }
+                },
+                {
+                    activity?.runOnUiThread {
+                        Toast
+                            .makeText(
+                                activity,
+                                "Could not retrieve Spring Fling schedule",
+                                Toast.LENGTH_LONG,
+                            ).show()
+                    }
+                },
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         return view
     }
 
@@ -70,8 +98,8 @@ class FlingFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val mActivity : MainActivity? = activity as MainActivity
-        mActivity?.removeTabs()
-        mActivity?.setTitle(R.string.spring_fling)
+        val mActivity: MainActivity = activity as MainActivity
+        mActivity.removeTabs()
+        mActivity.setTitle(R.string.spring_fling)
     }
 }

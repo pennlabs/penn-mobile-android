@@ -1,29 +1,28 @@
 package com.pennapps.labs.pennmobile.classes
 
-import android.app.Activity
 import android.util.Log
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
 
-class FitnessPreferenceViewModel(private val studentLife: StudentLife,
-                                 private val roomList: List<FitnessRoom>) : FitnessAdapterDataModel {
-
+class FitnessPreferenceViewModel(
+    private val studentLife: StudentLife,
+    private val roomList: List<FitnessRoom>,
+) : FitnessAdapterDataModel {
     private val roomTot = roomList.size
 
     // hashset of the favorite room ids
-    private val favoriteRooms : HashSet<Int>  = hashSetOf()
-    private val prevFavoriteRooms :  HashSet<Int> = hashSetOf()
+    private val favoriteRooms: HashSet<Int> = hashSetOf()
+    private val prevFavoriteRooms: HashSet<Int> = hashSetOf()
 
     // hashmap that maps position --> position in array
-    private val positionMap : Array<Int> = (0 until roomTot).toList().toTypedArray()
+    private val positionMap: Array<Int> = (0 until roomTot).toList().toTypedArray()
 
-    override fun flipState(roomId: Int) : Boolean {
+    override fun flipState(roomId: Int): Boolean {
         if (favoriteRooms.contains(roomId)) {
             favoriteRooms.remove(roomId)
             return false
@@ -39,24 +38,21 @@ class FitnessPreferenceViewModel(private val studentLife: StudentLife,
         return roomTot - favoriteRooms.size
     }
 
-    override fun getRoom(isFavorite: Boolean, position: Int): FitnessRoom {
+    override fun getRoom(
+        isFavorite: Boolean,
+        position: Int,
+    ): FitnessRoom {
         if (isFavorite) {
             return roomList[positionMap[position]]
         }
         return roomList[positionMap[position + favoriteRooms.size]]
     }
 
-    override fun getTot(): Int {
-        return roomTot
-    }
+    override fun getTot(): Int = roomTot
 
-    override fun getRoomAll(roomId: Int): FitnessRoom {
-        return roomList[roomId]
-    }
+    override fun getRoomAll(roomId: Int): FitnessRoom = roomList[roomId]
 
-    override fun isFavorite(roomId: Int): Boolean {
-        return favoriteRooms.contains(roomId)
-    }
+    override fun isFavorite(roomId: Int): Boolean = favoriteRooms.contains(roomId)
 
     fun clearFavorites() {
         favoriteRooms.clear()
@@ -89,30 +85,36 @@ class FitnessPreferenceViewModel(private val studentLife: StudentLife,
         favoriteRooms.addAll(prevFavoriteRooms)
     }
 
-    fun updateRemotePreferences(mActivity : MainActivity) {
+    fun updateRemotePreferences(mActivity: MainActivity) {
         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
         val context = mActivity.applicationContext
 
         mActivity.mNetworkManager.getAccessToken {
-
             val bearerToken =
                 "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
+            try {
+                studentLife.sendFitnessPref(
+                    bearerToken,
+                    FitnessRequest(ArrayList(favoriteRooms)),
+                    object : ResponseCallback() {
+                        override fun success(response: Response) {
+                            Log.i("Fitness Preference View Model", "fitness preferences saved")
+                        }
 
-            studentLife.sendFitnessPref(bearerToken, FitnessRequest(ArrayList(favoriteRooms)),
-                object : ResponseCallback() {
-                    override fun success(response: Response) {
-                        Log.i("Fitness Preference View Model", "fitness preferences saved")
-                    }
-
-                    override fun failure(error: RetrofitError) {
-                        Log.e(
-                            "Fitness Preference View Model", "Error saving fitness " +
-                                    "preferences: $error", error
-                        )
-                    }
-                })
+                        override fun failure(error: RetrofitError) {
+                            Log.e(
+                                "Fitness Preference View Model",
+                                "Error saving fitness " +
+                                    "preferences: $error",
+                                error,
+                            )
+                        }
+                    },
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
-
 }

@@ -11,5 +11,5 @@ data class PennCourseAlertUpdateBody(
     @SerializedName("deleted") val deleted: Boolean? = false,
     @SerializedName("auto_resubscribe") val autoResubscribe: Boolean? = true,
     @SerializedName("close_notification") val closeNotifications: Boolean? = false,
-    @SerializedName("resubscribe") val resubscribe: Boolean? = false
+    @SerializedName("resubscribe") val resubscribe: Boolean? = false,
 )

@@ -9,6 +9,8 @@
     android:layout_marginStart="16dp">
 
 
+
+
     <TextView
         android:id="@+id/sublettee_intro_text"
         style="@style/title_fragment"
@@ -17,9 +19,10 @@
         android:text="Tell us a bit about what you are looking for"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <TextView
         android:id="@+id/sublettee_date_text"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:paddingBottom="10dp"
@@ -28,36 +31,67 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sublettee_intro_text" />
 
-    <EditText
-        android:id="@+id/sublettee_start_date_text"
+
+    <!--    <EditText-->
+    <!--        android:id="@+id/sublettee_start_date_text"-->
+    <!--        android:layout_width="167dp"-->
+    <!--        android:layout_height="48dp"-->
+    <!--        android:layout_marginTop="8dp"-->
+    <!--        android:ems="10"-->
+    <!--        android:hint="Start Date"-->
+    <!--        android:inputType="date"-->
+    <!--        app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/sublettee_date_text" />-->
+
+
+    <Button
+        android:text="Start Date"
+        android:id="@+id/sublettee_start_date_button"
         android:layout_width="167dp"
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:inputType="date"
-        android:text="Start Date"
+        android:backgroundTint="@color/aqua"
+        android:gravity="center_horizontal"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sublettee_date_text" />
 
-    <EditText
-        android:id="@+id/sublettee_end_date_text"
+
+    <!--    <EditText-->
+    <!--        android:id="@+id/sublettee_end_date_text"-->
+    <!--        android:layout_width="167dp"-->
+    <!--        android:layout_height="48dp"-->
+    <!--        android:layout_marginTop="8dp"-->
+    <!--        android:ems="10"-->
+    <!--        android:hint="End Date"-->
+    <!--        android:inputType="date"-->
+    <!--        app:layout_constraintLeft_toRightOf="@id/sublettee_start_date_button"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/sublettee_date_text" />-->
+
+
+    <Button
+        android:id="@+id/sublettee_end_date_button"
         android:layout_width="167dp"
         android:layout_height="48dp"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:backgroundTint="@color/aqua"
         android:ems="10"
-        android:inputType="date"
+        android:gravity="center_horizontal"
         android:text="End Date"
-        app:layout_constraintLeft_toRightOf="@id/sublettee_start_date_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/sublettee_start_date_button"
         app:layout_constraintTop_toBottomOf="@id/sublettee_date_text" />
+
 
     <CheckBox
         android:id="@+id/sublettee_date_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:text="Dates Flexible"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sublettee_start_date_text"/>
+        app:layout_constraintLeft_toRightOf="@id/sublettee_date_text"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sublettee_intro_text"/>
+
 
     <TextView
         android:id="@+id/sublettee_price_text"
@@ -68,7 +102,8 @@
         android:text="How much are you willing to pay per month?"
         android:textSize="20sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sublettee_date_checkbox" />
+        app:layout_constraintTop_toBottomOf="@id/sublettee_start_date_button" />
+
 
     <EditText
         android:id="@+id/sublettee_min_price_text"
@@ -76,64 +111,88 @@
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:inputType="date"
-        android:text="Minimum Price"
+        android:hint="Minimum Price"
+        android:inputType="numberDecimal"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sublettee_price_text" />
+
 
     <EditText
         android:id="@+id/sublettee_max_price_text"
         android:layout_width="167dp"
         android:layout_height="48dp"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:inputType="date"
-        android:text="Maximum Price"
+        android:hint="Maximum Price"
+        android:inputType="numberDecimal"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@id/sublettee_min_price_text"
         app:layout_constraintTop_toBottomOf="@id/sublettee_price_text" />
 
+
     <TextView
         android:id="@+id/sublettee_location_text"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:paddingBottom="10dp"
-        android:text="Desired location"
+        android:text="What is Your Desired Location?"
         android:textSize="20sp"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/sublettee_location_checkbox"
         app:layout_constraintTop_toBottomOf="@id/sublettee_min_price_text" />
 
-    <EditText
+
+    <AutoCompleteTextView
         android:id="@+id/sublettee_location_edittext"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:inputType="date"
-        android:text="Location"
+        android:hint="Enter address"
+        android:completionThreshold="3"
+        android:imeOptions="actionDone"
+        android:inputType="textPostalAddress"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sublettee_location_text" />
+
+
+
 
     <CheckBox
         android:id="@+id/sublettee_location_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
+        android:layout_marginTop="8dp"
         android:text="Location Flexible"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sublettee_location_edittext"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/sublettee_location_text"
+        app:layout_constraintStart_toEndOf="@+id/sublettee_location_text"
+        app:layout_constraintTop_toBottomOf="@id/sublettee_min_price_text" />
+
 
     <Button
         android:id="@+id/sublettee_enter_subletting_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Let's Go"
+        android:layout_marginBottom="24dp"
         android:backgroundTint="@color/aqua"
-        android:layout_marginBottom="90dp"
-        app:layout_constraintTop_toBottomOf="@id/sublettee_location_checkbox"
+        android:gravity="center_horizontal"
+        android:text="Let's Go"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:gravity="center_horizontal" />
+        app:layout_constraintTop_toBottomOf="@id/sublettee_location_checkbox" />
+
+
+    <TextView
+        android:id="@+id/sublettee_location_address_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Address: "
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sublettee_location_edittext" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

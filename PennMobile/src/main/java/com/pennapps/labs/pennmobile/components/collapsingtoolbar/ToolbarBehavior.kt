@@ -10,7 +10,6 @@ import com.google.android.material.appbar.AppBarLayout
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.components.floatingbottombar.utils.clamp
 
-
 /**
  * This behavior animates the toolbar elements (toolbarTitle, toolBarDate, e.t.c) as
  * the recyclerView in a fragment scrolls.
@@ -50,104 +49,133 @@ class ToolbarBehavior : CoordinatorLayout.Behavior<AppBarLayout>() {
         toolbarCollapsedHeight = toolbarOriginalHeight * minScale
     }
 
-    override fun onNestedPreScroll(coordinatorLayout: CoordinatorLayout,
-                                   child: AppBarLayout, target: View,
-                                   dx: Int, dy: Int, consumed: IntArray, type: Int) {
+    override fun onNestedPreScroll(
+        coordinatorLayout: CoordinatorLayout,
+        child: AppBarLayout,
+        target: View,
+        dx: Int,
+        dy: Int,
+        consumed: IntArray,
+        type: Int,
+    ) {
         super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type)
-        bottomBar.translationY = clamp(bottomBar.translationY + dy,
-                0f, bottomBar.height + 65F)
+        bottomBar.translationY =
+            clamp(
+                bottomBar.translationY + dy,
+                0f,
+                bottomBar.height + 65F,
+            )
     }
 
     /**
      * Consume if vertical scroll because we don't care about other scrolls
      */
-    override fun onStartNestedScroll(coordinatorLayout: CoordinatorLayout, child: AppBarLayout, directTargetChild: View,
-                                     target: View, axes: Int, type: Int): Boolean {
+    override fun onStartNestedScroll(
+        coordinatorLayout: CoordinatorLayout,
+        child: AppBarLayout,
+        directTargetChild: View,
+        target: View,
+        axes: Int,
+        type: Int,
+    ): Boolean {
         getViews(child)
         return axes == ViewCompat.SCROLL_AXIS_VERTICAL ||
-                super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target, axes, type)
+            super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target, axes, type)
     }
-
 
     /**
      * Perform actual animation by determining the dY amount
      */
-    override fun onNestedScroll(coordinatorLayout: CoordinatorLayout, child: AppBarLayout, target: View,
-                                dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int,
-                                type: Int, consumed: IntArray) {
+    override fun onNestedScroll(
+        coordinatorLayout: CoordinatorLayout,
+        child: AppBarLayout,
+        target: View,
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int,
+        type: Int,
+        consumed: IntArray,
+    ) {
         super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type, consumed)
         getViews(child)
 
         if (dyConsumed > 0) {
-
             // scroll up:
             if (toolbar.layoutParams.height > toolbarCollapsedHeight) {
-
                 divider.visibility = View.VISIBLE
-                //--- shrink toolbar
+                // --- shrink toolbar
                 val height = toolbar.layoutParams.height - dyConsumed
                 toolbar.layoutParams.height = if (height < toolbarCollapsedHeight) toolbarCollapsedHeight.toInt() else height
                 toolbar.requestLayout()
 
-                //--- translate up drawer icon
-                var translate: Float = (toolbarOriginalHeight - toolbar.layoutParams.height) / (toolbarOriginalHeight - toolbarCollapsedHeight)
+                // --- translate up drawer icon
+                var translate: Float =
+                    (toolbarOriginalHeight - toolbar.layoutParams.height) /
+                        (toolbarOriginalHeight - toolbarCollapsedHeight)
                 translate *= toolbarOriginalHeight
                 date.translationY = -translate
                 profile?.translationY = -translate
 
-                //--- title
+                // --- title
                 val scale = toolbar.layoutParams.height / toolbarOriginalHeight
                 title.scaleX = if (scale < minScale) minScale else scale
                 title.scaleY = title.scaleX
 
                 // Gets the x distance the title should move to get to the centre
-                val translateX = (toolbar.measuredWidth / 2) -
-                        ((title.layoutParams as FrameLayout.LayoutParams).marginStart
-                                + title.measuredWidth / 2).toFloat()
+                val translateX =
+                    (toolbar.measuredWidth / 2) -
+                        (
+                            (title.layoutParams as FrameLayout.LayoutParams).marginStart +
+                                title.measuredWidth / 2
+                        ).toFloat()
 
                 // Maps the x translation to the shifting toolbar height
                 title.translationX = (toolbarOriginalHeight - toolbar.layoutParams.height) /
-                        (toolbarOriginalHeight - toolbarCollapsedHeight) * translateX
-
+                    (toolbarOriginalHeight - toolbarCollapsedHeight) * translateX
 
                 // Maps the y translation to the shifting toolbar height
                 title.translationY = (toolbarOriginalHeight - toolbar.layoutParams.height) /
-                        (toolbarOriginalHeight - toolbarCollapsedHeight)
+                    (toolbarOriginalHeight - toolbarCollapsedHeight)
             }
         } else if (dyUnconsumed < 0) {
-
             // scroll down
             if (toolbar.layoutParams.height < toolbarOriginalHeight) {
                 divider.visibility = View.INVISIBLE
-                //--- expand toolbar
+                // --- expand toolbar
                 // subtract because dyUnconsumed is < 0
                 val height = toolbar.layoutParams.height - dyUnconsumed
                 toolbar.layoutParams.height = if (height > toolbarOriginalHeight) toolbarOriginalHeight.toInt() else height
                 toolbar.requestLayout()
 
-                //--- translate down  drawer icon
-                var translate: Float = (toolbarOriginalHeight - toolbar.layoutParams.height) / (toolbarOriginalHeight - toolbarCollapsedHeight)
+                // --- translate down  drawer icon
+                var translate: Float =
+                    (toolbarOriginalHeight - toolbar.layoutParams.height) /
+                        (toolbarOriginalHeight - toolbarCollapsedHeight)
                 translate *= toolbarOriginalHeight
                 date.translationY = -translate
                 profile?.translationY = -translate
 
-                //--- title
+                // --- title
                 val scale = toolbar.layoutParams.height / toolbarOriginalHeight
                 title.scaleX = if (scale < minScale) minScale else scale
                 title.scaleY = title.scaleX
 
                 // Gets the x distance the title should move to get to the centre
-                val translateX = (toolbar.measuredWidth / 2) -
-                        ((title.layoutParams as FrameLayout.LayoutParams).marginStart
-                                + title.measuredWidth / 2).toFloat()
+                val translateX =
+                    (toolbar.measuredWidth / 2) -
+                        (
+                            (title.layoutParams as FrameLayout.LayoutParams).marginStart +
+                                title.measuredWidth / 2
+                        ).toFloat()
 
                 // Maps the x translation to the shifting toolbar height
                 title.translationX = (toolbarOriginalHeight - toolbar.layoutParams.height) /
-                        (toolbarOriginalHeight - toolbarCollapsedHeight) * translateX
+                    (toolbarOriginalHeight - toolbarCollapsedHeight) * translateX
 
                 // Maps the y translation to the shifting toolbar height
                 title.translationY = (toolbarOriginalHeight - toolbar.layoutParams.height) /
-                        (toolbarOriginalHeight - toolbarCollapsedHeight)
+                    (toolbarOriginalHeight - toolbarCollapsedHeight)
             }
         }
     }

@@ -8,7 +8,6 @@ import com.google.gson.annotations.SerializedName
  */
 
 class MachineDetail : Comparable<MachineDetail> {
-
     @SerializedName("id")
     @Expose
     val id: Int = 0
@@ -25,12 +24,10 @@ class MachineDetail : Comparable<MachineDetail> {
     @Expose
     val type: String? = null
 
-    override fun compareTo(machineDetail: MachineDetail): Int {
-
-        return when {
+    override fun compareTo(machineDetail: MachineDetail): Int =
+        when {
             (timeRemaining == machineDetail.timeRemaining) -> 0
             (timeRemaining > machineDetail.timeRemaining) -> 1
             else -> -1
         }
-    }
 }

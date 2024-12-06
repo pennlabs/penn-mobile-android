@@ -13,22 +13,35 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.PennCourseAlertRegistration
 
-class RegistrationsAdapter(private val listener: OnItemClickListener):
-    ListAdapter<PennCourseAlertRegistration,
-            RegistrationsAdapter.ViewHolder>(RegistrationDiffCallBack()) {
-
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.pca_registration_list_item,
-            parent, false)
+class RegistrationsAdapter(
+    private val listener: OnItemClickListener,
+) : ListAdapter<
+        PennCourseAlertRegistration,
+        RegistrationsAdapter.ViewHolder,
+    >(RegistrationDiffCallBack()) {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): ViewHolder {
+        val view =
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.pca_registration_list_item,
+                parent,
+                false,
+            )
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: ViewHolder,
+        position: Int,
+    ) {
         holder.bindTo(getItem(position))
     }
 
-    inner class ViewHolder(registrationView: View): RecyclerView.ViewHolder(registrationView),
+    inner class ViewHolder(
+        registrationView: View,
+    ) : RecyclerView.ViewHolder(registrationView),
         View.OnClickListener {
         var courseIdText: TextView
         var isOpenText: TextView
@@ -51,15 +64,18 @@ class RegistrationsAdapter(private val listener: OnItemClickListener):
 
         fun bindTo(registration: PennCourseAlertRegistration) {
             courseIdText.text = registration.section
-            isOpenText.text = when(registration.sectionStatus) {
-                "O" -> "Open"
-                "C" -> "Closed"
-                "X" -> "Cancelled"
-                else -> "Unlisted"
-            }
+            isOpenText.text =
+                when (registration.sectionStatus) {
+                    "O" -> "Open"
+                    "C" -> "Closed"
+                    "X" -> "Cancelled"
+                    else -> "Unlisted"
+                }
             subscribedSwitch.isChecked = !registration.cancelled
-            notifyClosedSwitch.isChecked = (registration.closeNotification
-                    && !registration.cancelled)
+            notifyClosedSwitch.isChecked = (
+                registration.closeNotification &&
+                    !registration.cancelled
+            )
             if (registration.lastNotificationSentAt.isNotEmpty()) {
                 lastNotified.text = formatDate(registration.lastNotificationSentAt)
             }
@@ -81,26 +97,37 @@ class RegistrationsAdapter(private val listener: OnItemClickListener):
                 }
                 if (v?.id?.equals(R.id.notify_closed_switch) == true) {
                     Log.i("PCA_RV", "Notify switch clicked")
-                    listener.onClosedNotificationsSwitchClick(position,
-                        notifyClosedSwitch.isChecked)
+                    val isSubscribed = subscribedSwitch.isChecked
+                    listener.onClosedNotificationsSwitchClick(
+                        position,
+                        notifyClosedSwitch.isChecked,
+                        isSubscribed,
+                    )
                 }
                 listener.onItemClick(position)
             }
         }
-
     }
-
 
     interface OnItemClickListener {
         fun onItemClick(position: Int)
-        fun onSubscribedSwitchClick(position: Int, onSubscribeNotifications: Boolean)
-        fun onClosedNotificationsSwitchClick(position: Int, onClosedNotifications: Boolean)
 
+        fun onSubscribedSwitchClick(
+            position: Int,
+            onSubscribeNotifications: Boolean,
+        )
+
+        fun onClosedNotificationsSwitchClick(
+            position: Int,
+            onClosedNotifications: Boolean,
+            isSubscribed: Boolean,
+        )
     }
 
     private fun formatDate(date: String): String {
         val formattedDate = "Last Notified "
-        return formattedDate.plus(date.slice(5..6))
+        return formattedDate
+            .plus(date.slice(5..6))
             .plus("/")
             .plus(date.slice(8..9))
             .plus("/")
@@ -110,14 +137,14 @@ class RegistrationsAdapter(private val listener: OnItemClickListener):
     }
 
     private class RegistrationDiffCallBack : DiffUtil.ItemCallback<PennCourseAlertRegistration>() {
-        override fun areItemsTheSame(oldItem: PennCourseAlertRegistration,
-                                     newItem: PennCourseAlertRegistration): Boolean =
-            oldItem == newItem
+        override fun areItemsTheSame(
+            oldItem: PennCourseAlertRegistration,
+            newItem: PennCourseAlertRegistration,
+        ): Boolean = oldItem == newItem
 
-        override fun areContentsTheSame(oldItem: PennCourseAlertRegistration,
-                                        newItem: PennCourseAlertRegistration): Boolean =
-            oldItem == newItem
+        override fun areContentsTheSame(
+            oldItem: PennCourseAlertRegistration,
+            newItem: PennCourseAlertRegistration,
+        ): Boolean = oldItem == newItem
     }
-
-
 }

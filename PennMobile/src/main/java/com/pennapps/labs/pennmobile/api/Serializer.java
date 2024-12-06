@@ -9,15 +9,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.pennapps.labs.pennmobile.classes.Account;
-import com.pennapps.labs.pennmobile.classes.CalendarEvent;
 import com.pennapps.labs.pennmobile.classes.DiningHall;
 import com.pennapps.labs.pennmobile.classes.FlingEvent;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.GSRReservation;
-import com.pennapps.labs.pennmobile.classes.Gym;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
-import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
-import com.pennapps.labs.pennmobile.classes.LaundryUsage;
 import com.pennapps.labs.pennmobile.classes.Post;
 import com.pennapps.labs.pennmobile.classes.Venue;
 import com.pennapps.labs.pennmobile.classes.VenueInterval;
@@ -142,17 +138,6 @@ public class Serializer {
         }
     }
 
-    // gets laundry room list
-    public static class LaundryRoomListSerializer implements JsonDeserializer<List<LaundryRoomSimple>> {
-        @Override
-        public List<LaundryRoomSimple> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-                throws JsonParseException {
-            JsonElement content = je.getAsJsonArray();
-            return new Gson().fromJson(content, new TypeToken<List<LaundryRoomSimple>>() {
-            }.getType());
-        }
-    }
-
     // gets gsr locations
     public static class GsrLocationSerializer implements JsonDeserializer<List<GSRLocation>> {
         @Override
@@ -171,17 +156,6 @@ public class Serializer {
                 locations.add(location);
             }
             return locations;
-        }
-    }
-  
-    // gets laundry usage
-    public static class LaundryUsageSerializer implements JsonDeserializer<LaundryUsage> {
-        @Override
-        public LaundryUsage deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-                throws JsonParseException {
-            JsonElement content = je.getAsJsonObject();
-            return new Gson().fromJson(content, new TypeToken<LaundryUsage>() {
-            }.getType());
         }
     }
 
@@ -222,7 +196,7 @@ public class Serializer {
             for (JsonElement jsonElement: content) {
                 GSRReservation reservation = new GSRReservation();
                 JsonObject jsonReservation = jsonElement.getAsJsonObject();
-                reservation.booking_id = jsonReservation.get("booking_id").getAsString();
+                reservation.bookingId = jsonReservation.get("booking_id").getAsString();
                 reservation.name = jsonReservation.get("room_name").getAsString();
                 reservation.fromDate = jsonReservation.get("start").getAsString();
                 reservation.toDate = jsonReservation.get("end").getAsString();

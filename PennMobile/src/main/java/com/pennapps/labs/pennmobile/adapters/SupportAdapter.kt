@@ -9,31 +9,38 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.classes.Contact
-import kotlinx.android.synthetic.main.support_list_item.view.*
+import com.pennapps.labs.pennmobile.databinding.SupportListItemBinding
 
-class SupportAdapter(context: Context, contacts: List<Contact?>) : ArrayAdapter<Contact?>(context, R.layout.support_list_item, contacts) {
-
-    private val inflater: LayoutInflater = LayoutInflater.from(context)
-
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-
+class SupportAdapter(
+    context: Context,
+    contacts: List<Contact?>,
+) : ArrayAdapter<Contact?>(context, R.layout.support_list_item, contacts) {
+    override fun getView(
+        position: Int,
+        convertView: View?,
+        parent: ViewGroup,
+    ): View {
         val currentPerson = getItem(position)
+        val itemBinding: SupportListItemBinding =
+            if (convertView != null) {
+                SupportListItemBinding.bind(convertView)
+            } else {
+                SupportListItemBinding.inflate(LayoutInflater.from(context), parent, false)
+            }
 
-        val view = convertView ?: inflater.inflate(R.layout.support_list_item, parent, false)
-
-        view.support_name?.text = currentPerson?.name
+        itemBinding.supportName.text = currentPerson?.name
 
         if (currentPerson?.phoneWords == "") {
-            view.support_phone?.text = currentPerson.phone
+            itemBinding.supportPhone.text = currentPerson.phone
         } else {
-            view.support_phone?.text = currentPerson?.phoneWords + " (" + currentPerson?.phone + ")"
+            itemBinding.supportPhone.text = currentPerson?.phoneWords + " (" + currentPerson?.phone + ")"
         }
         if (currentPerson?.isURL == true) {
-            view.support_phone_icon?.visibility = View.GONE
+            itemBinding.supportPhoneIcon.visibility = View.GONE
         } else {
-            view.support_phone_icon?.visibility = View.GONE
+            itemBinding.supportPhoneIcon.visibility = View.GONE
         }
-        view.setOnClickListener { v ->
+        itemBinding.root.setOnClickListener { v ->
             val intent: Intent
             if (currentPerson?.isURL == true) {
                 intent = Intent(Intent.ACTION_VIEW)
@@ -46,7 +53,6 @@ class SupportAdapter(context: Context, contacts: List<Contact?>) : ArrayAdapter<
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             v.context.startActivity(intent)
         }
-        return view
+        return itemBinding.root
     }
-
 }

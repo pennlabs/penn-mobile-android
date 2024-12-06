@@ -11,10 +11,12 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 
 class LaundryBroadcastReceiver : BroadcastReceiver() {
-
     private var notificationID = 0
 
-    override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(
+        context: Context,
+        intent: Intent,
+    ) {
         val roomName = intent.getStringExtra(context.resources.getString(R.string.laundry_room_name))
         val machineType = intent.getStringExtra(context.resources.getString(R.string.laundry_machine_type))
         val id = intent.getIntExtra(context.resources.getString(R.string.laundry_machine_id), -1)
@@ -25,7 +27,12 @@ class LaundryBroadcastReceiver : BroadcastReceiver() {
         }
         notificationID = id + 1
         val builder = StringBuilder()
-        builder.append("A ").append(machineType).append(" in ").append(roomName).append(" is available!")
+        builder
+            .append("A ")
+            .append(machineType)
+            .append(" in ")
+            .append(roomName)
+            .append(" is available!")
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         // build notification
@@ -39,7 +46,9 @@ class LaundryBroadcastReceiver : BroadcastReceiver() {
         channel.enableLights(true)
         channel.lightColor = ContextCompat.getColor(context, R.color.color_primary)
         notificationManager.createNotificationChannel(channel)
-        mBuilder = NotificationCompat.Builder(context, channel.id)
+        mBuilder =
+            NotificationCompat
+                .Builder(context, channel.id)
                 .setSmallIcon(R.drawable.ic_bottom_nav_laundry_grey)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(builder)
@@ -55,7 +64,7 @@ class LaundryBroadcastReceiver : BroadcastReceiver() {
         notificationManager.notify(notificationID, mBuilder.build())
 
         // cancel intent after notification/alarm goes off
-        val fromIntent = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_NO_CREATE)
+        val fromIntent = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE)
         fromIntent?.cancel()
     }
 }

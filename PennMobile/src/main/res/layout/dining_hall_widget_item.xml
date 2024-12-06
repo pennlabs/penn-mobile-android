@@ -1,0 +1,57 @@
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widgetBackground"
+    android:layout_width = "203dp"
+    android:layout_height = "220dp"
+    android:theme="@style/Theme.Pennmobileandroid.AppWidgetContainer">
+
+    <ImageView
+        android:id="@+id/diningBackground"
+        android:background="@drawable/roundcorner"
+        android:clipToOutline="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:foreground="@drawable/white_fade_gradient"
+        android:scaleType="centerCrop"
+        android:src="@drawable/dining_commons" />
+
+    <TextView
+        android:id="@+id/appwidget_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="@string/appwidget_text"
+        android:text="Lauder\nCollege House"
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        style="@style/DiningStatusLabel"
+        android:id="@+id/open_status_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text=" Closed until Wednesday "
+        android:background="@color/PennRed"
+        android:foreground="@drawable/roundcorner"
+        android:clipToOutline="true"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:layout_centerHorizontal="true"/>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/open_status_label"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="-75dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/baseline_cancel_24" />
+
+</RelativeLayout>

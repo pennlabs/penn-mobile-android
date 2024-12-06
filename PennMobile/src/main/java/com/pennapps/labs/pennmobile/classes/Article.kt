@@ -11,15 +11,19 @@ class Article {
     @SerializedName("imageurl")
     @Expose
     val imageUrl: String? = null
+
     @SerializedName("source")
     @Expose
     val source: String? = null
+
     @SerializedName("title")
     @Expose
     val title: String? = null
+
     @SerializedName("subtitle")
     @Expose
     val subtitle: String? = null
+
     @SerializedName("timestamp")
     @Expose
     val timestamp: String? = null
@@ -29,20 +33,19 @@ class Article {
     @Expose
     val articleUrl: String? = null
 
-    override fun equals(other: Any?) : Boolean {
-        return when(other) {
+    override fun equals(other: Any?): Boolean =
+        when (other) {
             is Article -> {
                 this.imageUrl == other.imageUrl &&
-                this.source == other.source &&
-                this.title == other.title &&
-                this.subtitle == other.subtitle &&
-                this.timestamp == other.timestamp &&
-                this.articleUrl == other.articleUrl
+                    this.source == other.source &&
+                    this.title == other.title &&
+                    this.subtitle == other.subtitle &&
+                    this.timestamp == other.timestamp &&
+                    this.articleUrl == other.articleUrl
             } else -> false
         }
-    }
 
-    override fun hashCode() : Int {
+    override fun hashCode(): Int {
         // lazy hash function but we don't use this method anyways
         val urlHash = imageUrl.hashCode().toString()
         val sourceHash = source.hashCode().toString()

@@ -1,10 +1,10 @@
 package com.pennapps.labs.pennmobile
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -18,8 +18,8 @@ class PennCourseAlertHolderFragment : Fragment() {
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
 
-    private var _binding : FragmentPennCourseAlertHolderBinding? = null
-    private val binding get() = _binding!!
+    private var _binding: FragmentPennCourseAlertHolderBinding? = null
+    val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,8 +28,9 @@ class PennCourseAlertHolderFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentPennCourseAlertHolderBinding.inflate(inflater, container, false)
@@ -53,7 +54,10 @@ class PennCourseAlertHolderFragment : Fragment() {
         binding.dateView.text = Utils.getCurrentSystemTime()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         pagerAdapter = PennCourseAlertPagerAdapter(this)
         viewPager = view.findViewById(R.id.PCAPager)

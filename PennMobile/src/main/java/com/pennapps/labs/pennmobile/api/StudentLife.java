@@ -15,16 +15,12 @@ import com.pennapps.labs.pennmobile.classes.GSR;
 import com.pennapps.labs.pennmobile.classes.GSRBookingResult;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.GSRReservation;
-import com.pennapps.labs.pennmobile.classes.LaundryRequest;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
-import com.pennapps.labs.pennmobile.classes.LaundryRoomSimple;
-import com.pennapps.labs.pennmobile.classes.LaundryUsage;
 import com.pennapps.labs.pennmobile.classes.Offer;
 import com.pennapps.labs.pennmobile.classes.Poll;
 import com.pennapps.labs.pennmobile.classes.Post;
 import com.pennapps.labs.pennmobile.classes.SaveAccountResponse;
 import com.pennapps.labs.pennmobile.classes.Sublet;
-import com.pennapps.labs.pennmobile.classes.SubletRequest;
 import com.pennapps.labs.pennmobile.classes.Venue;
 import com.pennapps.labs.pennmobile.classes.WhartonStatus;
 
@@ -47,7 +43,6 @@ import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
-
 
 /**
  * Created by Julius.
@@ -73,9 +68,6 @@ public interface StudentLife {
             @Field("client_id") String clientID,
             Callback<AccessTokenResponse> callback);
 
-    @GET("/accounts/me/")
-    Account getAccount();
-
     @GET("/dining/venues")
     Observable<List<Venue>> venues();
 
@@ -91,9 +83,6 @@ public interface StudentLife {
     Observable<DiningPreferences> getDiningPreferences(
             @Header("Authorization") String bearerToken
     );
-
-    @GET("/laundry/halls/ids")
-    Observable<List<LaundryRoomSimple>> laundryRooms();
 
     @GET("/laundry/hall/{id}")
     Observable<LaundryRoom> room(
@@ -125,10 +114,6 @@ public interface StudentLife {
             @Field("id") int id,
             @Field("room_name") String roomName,
             Callback<GSRBookingResult> callback);
-
-    @GET("/laundry/usage/{id}")
-    Observable<LaundryUsage> usage(
-            @Path("id") int id);
 
     @GET("/events/fling")
     Observable<List<FlingEvent>> getFlingEvents();
@@ -165,12 +150,6 @@ public interface StudentLife {
     @GET("/laundry/preferences")
     Observable<List<Integer>> getLaundryPref(
             @Header("Authorization") String bearerToken);
-
-    @POST("/laundry/preferences/")
-    void sendLaundryPref(
-            @Header("Authorization") String bearerToken,
-            @Body LaundryRequest rooms,
-            Callback<Response> callback);
 
     @Headers({"Content-Type: application/json"})
     @POST("/dining/preferences/")
@@ -217,6 +196,7 @@ public interface StudentLife {
             @Header("Authorization") String bearerToken,
             @Body FitnessRequest rooms,
             Callback<Response> callback);
+
 
     @Headers({"Content-Type: application/json"})
     @POST("/sublet/properties/")
@@ -290,3 +270,4 @@ public interface StudentLife {
             @Body Offer offer,
             Callback<Offer> callback);
 }
+

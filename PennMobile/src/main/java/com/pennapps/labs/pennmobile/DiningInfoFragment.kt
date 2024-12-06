@@ -18,12 +18,10 @@ import org.joda.time.format.DateTimeFormat
  * Fragment for Dining information (hours)
  */
 class DiningInfoFragment : Fragment() {
-
     private lateinit var menuParent: RelativeLayout
     private var mDiningHall: DiningHall? = null
     private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +30,11 @@ class DiningInfoFragment : Fragment() {
         mStudentLife = MainActivity.studentLifeInstance
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
         val v = inflater.inflate(R.layout.fragment_dining_info, container, false)
         v.setBackgroundColor(Color.WHITE)
         menuParent = v.findViewById(R.id.dining_hours)
@@ -47,7 +49,7 @@ class DiningInfoFragment : Fragment() {
 
     private fun fillInfo() {
         if (mDiningHall?.venue != null) {
-            val days = mDiningHall?.venue?.allHours()  ?: ArrayList()
+            val days = mDiningHall?.venue?.allHours() ?: ArrayList()
             var vertical = ArrayList<TextView>()
             for (day in days) {
                 if (hasMeals(day)) {
@@ -57,11 +59,12 @@ class DiningInfoFragment : Fragment() {
         }
     }
 
-    private fun hasMeals(day: VenueInterval): Boolean {
-        return day.meals.isNotEmpty()
-    }
+    private fun hasMeals(day: VenueInterval): Boolean = day.meals.isNotEmpty()
 
-    private fun addDiningHour(day: VenueInterval, vertical: ArrayList<TextView>): ArrayList<TextView> {
+    private fun addDiningHour(
+        day: VenueInterval,
+        vertical: ArrayList<TextView>,
+    ): ArrayList<TextView> {
         val textView = TextView(mActivity)
         val intervalFormatter = DateTimeFormat.forPattern("yyyy-MM-dd")
         val dateTime = intervalFormatter.parseDateTime(day.date)
@@ -79,8 +82,11 @@ class DiningInfoFragment : Fragment() {
             menuParent.addView(textView)
         } else {
             textView.id = vertical.last().id + 1
-            val param = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                    RelativeLayout.LayoutParams.WRAP_CONTENT)
+            val param =
+                RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                )
             param.addRule(RelativeLayout.BELOW, vertical.last().id)
             param.setMargins(0, 10, 10, 0)
             menuParent.addView(textView, param)
@@ -90,14 +96,20 @@ class DiningInfoFragment : Fragment() {
             val mealType = TextView(mActivity)
             mealType.text = meal.type
             mealType.id = vertical.last().id + 1
-            val layparammeal = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                    RelativeLayout.LayoutParams.WRAP_CONTENT)
+            val layparammeal =
+                RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                )
             layparammeal.addRule(RelativeLayout.BELOW, vertical.last().id)
             layparammeal.setMargins(0, 10, 10, 0)
             menuParent.addView(mealType, layparammeal)
             vertical.add(mealType)
-            val layparamtimes = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                    RelativeLayout.LayoutParams.WRAP_CONTENT)
+            val layparamtimes =
+                RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                )
             layparamtimes.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, vertical.last().id)
             layparamtimes.addRule(RelativeLayout.ALIGN_BOTTOM, vertical.last().id)
             layparamtimes.setMargins(0, 10, 0, 0)

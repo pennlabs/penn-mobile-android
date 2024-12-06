@@ -2,10 +2,10 @@ package com.pennapps.labs.pennmobile
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +17,6 @@ import com.pennapps.labs.pennmobile.classes.DiningBalancesList
 import com.pennapps.labs.pennmobile.classes.DiningInsightCell
 import com.pennapps.labs.pennmobile.classes.DollarsSpentCell
 import com.pennapps.labs.pennmobile.databinding.FragmentDiningInsightsBinding
-
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.collections.ArrayList
@@ -27,15 +26,14 @@ import kotlin.collections.ArrayList
  * Created by Julius Snipes
  */
 class DiningInsightsFragment : Fragment() {
-
-    private lateinit var mActivity : MainActivity
+    private lateinit var mActivity: MainActivity
     private lateinit var mCampusExpress: CampusExpress
     private lateinit var networkManager: CampusExpressNetworkManager
-    private lateinit var cells : ArrayList<DiningInsightCell>
-    private lateinit var insightsrv : RecyclerView
+    private lateinit var cells: ArrayList<DiningInsightCell>
+    private lateinit var insightsrv: RecyclerView
 
-    private var _binding : FragmentDiningInsightsBinding? = null
-    private val binding get() = _binding!!
+    private var _binding: FragmentDiningInsightsBinding? = null
+    val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,16 +42,22 @@ class DiningInsightsFragment : Fragment() {
         mActivity.closeKeyboard()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
         _binding = FragmentDiningInsightsBinding.inflate(inflater, container, false)
         val view = binding.root
 
         binding.diningInsightsRefresh.setOnRefreshListener { refresh() }
         binding.diningInsightsRefresh.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
-        binding.insightsrv.layoutManager = LinearLayoutManager(
+        binding.insightsrv.layoutManager =
+            LinearLayoutManager(
                 context,
-                LinearLayoutManager.VERTICAL, false)
+                LinearLayoutManager.VERTICAL,
+                false,
+            )
         networkManager = CampusExpressNetworkManager(mActivity)
         val diningBalance = DollarsSpentCell()
         diningBalance.type = "dining_balance"
@@ -71,7 +75,8 @@ class DiningInsightsFragment : Fragment() {
         val accessToken = networkManager.getAccessToken()
         if (accessToken == "") {
             val fragment = CampusExpressLoginFragment()
-            parentFragmentManager.beginTransaction()
+            parentFragmentManager
+                .beginTransaction()
                 .replace(R.id.dining_insights_page, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack("DiningInsightsFragment")
@@ -87,8 +92,10 @@ class DiningInsightsFragment : Fragment() {
         _binding = null
     }
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         if (!isOnline(context)) {
             binding.internetConnectionDiningInsights.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
@@ -101,13 +108,13 @@ class DiningInsightsFragment : Fragment() {
         }
     }
 
-
     private fun refresh() {
         val accessToken = networkManager.getAccessToken()
         if (accessToken == "") {
             binding.diningInsightsRefresh.isRefreshing = false
             val fragment = CampusExpressLoginFragment()
-            parentFragmentManager.beginTransaction()
+            parentFragmentManager
+                .beginTransaction()
                 .replace(R.id.dining_insights_page, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack("DiningInsightsFragment")
@@ -117,9 +124,6 @@ class DiningInsightsFragment : Fragment() {
             getInsights(accessToken)
         }
     }
-
-
-
 
     private fun getInsights(accessToken: String?) {
         if (!isOnline(context)) {
@@ -132,37 +136,41 @@ class DiningInsightsFragment : Fragment() {
             binding.internetConnectionDiningInsights.visibility = View.GONE
         }
         val bearerToken = "Bearer $accessToken"
-        mCampusExpress.getCurrentDiningBalances(bearerToken).subscribe( { t: DiningBalances? ->
-            activity?.runOnUiThread {
-                val diningBalanceCell = cells[0]
-                diningBalanceCell.diningBalances = t
-                (insightsrv.adapter as DiningInsightsCardAdapter).notifyItemChanged(0)
-                binding.diningInsightsRefresh.isRefreshing = false
-            } },
-            { throwable ->
-            activity?.runOnUiThread {
-                Log.e("DiningInsightsFragment", "Error getting balances", throwable)
-                binding.diningInsightsRefresh.isRefreshing = false
-            }
-        })
-        val current = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        val formattedCurrentDate = current.format(formatter)
-        mCampusExpress.getPastDiningBalances(bearerToken, DiningInsightsCardAdapter.START_DAY_OF_SEMESTER, formattedCurrentDate).subscribe( { t: DiningBalancesList? ->
-            activity?.runOnUiThread {
-                cells[1].diningBalancesList = t
-                cells[2].diningBalancesList = t
-                (insightsrv.adapter as DiningInsightsCardAdapter).notifyItemChanged(1)
-                (insightsrv.adapter as DiningInsightsCardAdapter).notifyItemChanged(2)
-                binding.diningInsightsRefresh.isRefreshing = false
-            } },
+        mCampusExpress.getCurrentDiningBalances(bearerToken).subscribe(
+            { t: DiningBalances? ->
+                activity?.runOnUiThread {
+                    val diningBalanceCell = cells[0]
+                    diningBalanceCell.diningBalances = t
+                    (insightsrv.adapter as DiningInsightsCardAdapter).notifyItemChanged(0)
+                    binding.diningInsightsRefresh.isRefreshing = false
+                }
+            },
             { throwable ->
                 activity?.runOnUiThread {
                     Log.e("DiningInsightsFragment", "Error getting balances", throwable)
                     binding.diningInsightsRefresh.isRefreshing = false
                 }
-            })
-
+            },
+        )
+        val current = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val formattedCurrentDate = current.format(formatter)
+        mCampusExpress.getPastDiningBalances(bearerToken, DiningInsightsCardAdapter.START_DAY_OF_SEMESTER, formattedCurrentDate).subscribe(
+            { t: DiningBalancesList? ->
+                activity?.runOnUiThread {
+                    cells[1].diningBalancesList = t
+                    cells[2].diningBalancesList = t
+                    (insightsrv.adapter as DiningInsightsCardAdapter).notifyItemChanged(1)
+                    (insightsrv.adapter as DiningInsightsCardAdapter).notifyItemChanged(2)
+                    binding.diningInsightsRefresh.isRefreshing = false
+                }
+            },
+            { throwable ->
+                activity?.runOnUiThread {
+                    Log.e("DiningInsightsFragment", "Error getting balances", throwable)
+                    binding.diningInsightsRefresh.isRefreshing = false
+                }
+            },
+        )
     }
-    
 }

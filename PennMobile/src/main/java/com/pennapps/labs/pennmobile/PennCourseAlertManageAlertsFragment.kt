@@ -21,11 +21,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.pennapps.labs.pennmobile.adapters.RegistrationsAdapter
 import com.pennapps.labs.pennmobile.viewmodels.PennCourseAlertViewModel
-import kotlinx.android.synthetic.main.pca_registration_list_item.*
 
-
-class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnItemClickListener {
-
+class PennCourseAlertManageAlertsFragment :
+    Fragment(),
+    RegistrationsAdapter.OnItemClickListener {
     private val viewModel: PennCourseAlertViewModel by activityViewModels()
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RegistrationsAdapter
@@ -35,20 +34,24 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
     private lateinit var noAlertsImage: ImageView
     private lateinit var noAlertsMessage: TextView
 
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(
-            R.layout.fragment_penn_course_alert_manage_alerts, container,
-            false
+            R.layout.fragment_penn_course_alert_manage_alerts,
+            container,
+            false,
         )
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         if (!isOnline(context)) {
@@ -68,7 +71,6 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
 
         adapter = RegistrationsAdapter(this)
         recyclerView.adapter = adapter
-
 
         viewModel.userRegistrations.observe(viewLifecycleOwner) { list ->
             run {
@@ -121,11 +123,12 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
                     alert.cancel()
                 }
             } else {
-                Toast.makeText(
-                    context,
-                    "You do not have any registrations yet!",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast
+                    .makeText(
+                        context,
+                        "You do not have any registrations yet!",
+                        Toast.LENGTH_SHORT,
+                    ).show()
             }
         }
         swipeRefresh = view.findViewById(R.id.pca_manage_swiperefresh)
@@ -138,7 +141,6 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
 
         setNoDataViewsVisibility()
     }
-
 
     private fun setNoDataViewsVisibility() {
         // Check if the recycler view data is empty
@@ -154,24 +156,34 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
         Log.i("PCA_RV", "Item $position clicked")
     }
 
-    override fun onClosedNotificationsSwitchClick(position: Int, onClosedNotifications: Boolean) {
+    override fun onClosedNotificationsSwitchClick(
+        position: Int,
+        onClosedNotifications: Boolean,
+        isSubscribed: Boolean,
+    ) {
         val id = adapter.currentList[position].id.toString()
         Log.i(
-            "PCA_RV", "Item $position closedNoti" +
-                    " clicked with closed noti set to $onClosedNotifications"
+            "PCA_RV",
+            "Item $position closedNoti" +
+                " clicked with closed noti set to $onClosedNotifications",
         )
-        if (subscribed_switch.isChecked) {
+        if (isSubscribed) {
             viewModel.switchOnClosedNotifications(id, onClosedNotifications)
         } else {
-            notify_closed_switch.isChecked = false
-            Toast.makeText(
-                context, "Please toggle alert first to perform this action!",
-                Toast.LENGTH_SHORT
-            ).show()
+            adapter.notifyItemChanged(position)
+            Toast
+                .makeText(
+                    context,
+                    "Please toggle alert first to perform this action!",
+                    Toast.LENGTH_SHORT,
+                ).show()
         }
     }
 
-    override fun onSubscribedSwitchClick(position: Int, onSubscribeNotifications: Boolean) {
+    override fun onSubscribedSwitchClick(
+        position: Int,
+        onSubscribeNotifications: Boolean,
+    ) {
         Log.i("PCA_RV", "Item $position subscribed clicked with subscribed set to")
         val id = adapter.currentList[position].id.toString()
         if (onSubscribeNotifications) {
@@ -180,7 +192,6 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
             viewModel.cancelRegistration(id)
         }
     }
-
 
     private fun showInternetErrorBar(view: View) {
         val internetConnectionBanner = view.findViewById<Toolbar>(R.id.internetConnectionPCAManage)
@@ -195,5 +206,4 @@ class PennCourseAlertManageAlertsFragment : Fragment(), RegistrationsAdapter.OnI
         val internetConnectionBanner = view.findViewById<Toolbar>(R.id.internetConnectionPCAManage)
         internetConnectionBanner.visibility = View.GONE
     }
-
 }

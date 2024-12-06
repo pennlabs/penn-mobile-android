@@ -13,14 +13,12 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
-import androidx.appcompat.widget.ViewUtils
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import com.google.android.material.appbar.AppBarLayout
 import com.pennapps.labs.pennmobile.R
-
 import com.pennapps.labs.pennmobile.components.sneaker.intf.OnSneakerClickListener
 import com.pennapps.labs.pennmobile.components.sneaker.intf.OnSneakerDismissListener
 
@@ -31,32 +29,33 @@ import com.pennapps.labs.pennmobile.components.sneaker.intf.OnSneakerDismissList
  *
  * Modified for PennMobile by Davies Lumumba on 7/25/2020
  * */
-class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObserver {
-
-    private val DEFAULT_VALUE = -100000
+class Sneaker(
+    private var context: Context,
+) : View.OnClickListener,
+    LifecycleObserver {
+    private val defaultValue = -100000
     private var mIconDrawable: Drawable? = null
-    private var mBackgroundColor = DEFAULT_VALUE
-    private var mHeight = DEFAULT_VALUE
-    private var mIconColorFilterColor = DEFAULT_VALUE
+    private var mBackgroundColor = defaultValue
+    private var mHeight = defaultValue
+    private var mIconColorFilterColor = defaultValue
     private var mIconSize = 24
     private var mTitle = ""
     private var mMessage = ""
-    private var mTitleColor = DEFAULT_VALUE
-    private var mMessageColor = DEFAULT_VALUE
+    private var mTitleColor = defaultValue
+    private var mMessageColor = defaultValue
     private var mAutoHide = true
     private var mDuration = 3000
     private var mIsCircular = false
     private var mListener: OnSneakerClickListener? = null
     private var mDismissListener: OnSneakerDismissListener? = null
     private var mTypeFace: Typeface? = null
-    private var mCornerRadius = DEFAULT_VALUE
-    private var mMargin = DEFAULT_VALUE
+    private var mCornerRadius = defaultValue
+    private var mMargin = defaultValue
     private var targetView: ViewGroup? = null
     private var isActivity: Boolean = false
     private val sneakerView by lazy { SneakerView(context) }
 
     companion object {
-
         /**
          * Create Sneaker instance
          *
@@ -64,11 +63,10 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
          * @return Sneaker instance
          */
         @JvmStatic
-        fun with(activity: Activity): Sneaker {
-            return Sneaker(activity).also {
+        fun with(activity: Activity): Sneaker =
+            Sneaker(activity).also {
                 it.setTargetView(activity)
             }
-        }
 
         /**
          * Create Sneaker instance
@@ -77,11 +75,10 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
          * @return Sneaker instance
          */
         @JvmStatic
-        fun with(fragment: Fragment): Sneaker {
-            return Sneaker(fragment.requireContext()).also {
+        fun with(fragment: Fragment): Sneaker =
+            Sneaker(fragment.requireContext()).also {
                 it.setTargetView(fragment)
             }
-        }
 
         /**
          * Create Sneaker instance
@@ -90,24 +87,23 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
          * @return Sneaker instance
          */
         @JvmStatic
-        fun with(viewGroup: ViewGroup): Sneaker {
-            return Sneaker(viewGroup.context).also {
+        fun with(viewGroup: ViewGroup): Sneaker =
+            Sneaker(viewGroup.context).also {
                 it.setTargetView(viewGroup)
             }
-        }
     }
 
     private fun setTargetView(targetView: Any) {
         this.targetView =
-                when (targetView) {
-                    is Activity -> {
-                        isActivity = true
-                        targetView.window?.decorView as ViewGroup
-                    }
-                    is Fragment -> targetView.view as ViewGroup
-                    is ViewGroup -> targetView
-                    else -> null
+            when (targetView) {
+                is Activity -> {
+                    isActivity = true
+                    targetView.window?.decorView as ViewGroup
                 }
+                is Fragment -> targetView.view as ViewGroup
+                is ViewGroup -> targetView
+                else -> null
+            }
     }
 
     /**
@@ -136,13 +132,17 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
      * @param color Color resource for title text
      * @return
      */
-    fun setTitle(title: String, color: Int): Sneaker {
+    fun setTitle(
+        title: String,
+        color: Int,
+    ): Sneaker {
         mTitle = title
-        mTitleColor = try {
-            ContextCompat.getColor(context, color)
-        } catch (e: Exception) {
-            color
-        }
+        mTitleColor =
+            try {
+                ContextCompat.getColor(context, color)
+            } catch (e: Exception) {
+                color
+            }
         return this
     }
 
@@ -164,13 +164,17 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
      * @param color   Color resource for message text
      * @return
      */
-    fun setMessage(message: String, color: Int): Sneaker {
+    fun setMessage(
+        message: String,
+        color: Int,
+    ): Sneaker {
         mMessage = message
-        mMessageColor = try {
-            ContextCompat.getColor(context, color)
-        } catch (e: Exception) {
-            color
-        }
+        mMessageColor =
+            try {
+                ContextCompat.getColor(context, color)
+            } catch (e: Exception) {
+                color
+            }
         return this
     }
 
@@ -180,8 +184,10 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
      * @param icon Icon resource for sneaker
      * @return
      */
-    fun setIcon(@DrawableRes icon: Int): Sneaker {
-        setIcon(icon, DEFAULT_VALUE, false)
+    fun setIcon(
+        @DrawableRes icon: Int,
+    ): Sneaker {
+        setIcon(icon, defaultValue, false)
         return this
     }
 
@@ -192,7 +198,7 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
      * @return
      */
     fun setIcon(icon: Drawable): Sneaker {
-        setIcon(icon, DEFAULT_VALUE, false)
+        setIcon(icon, defaultValue, false)
         return this
     }
 
@@ -203,8 +209,11 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
      * @param isCircular If icon is round or not
      * @return
      */
-    fun setIcon(@DrawableRes icon: Int, isCircular: Boolean): Sneaker {
-        setIcon(icon, DEFAULT_VALUE, isCircular)
+    fun setIcon(
+        @DrawableRes icon: Int,
+        isCircular: Boolean,
+    ): Sneaker {
+        setIcon(icon, defaultValue, isCircular)
         return this
     }
 
@@ -215,17 +224,26 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
      * @param isCircular If icon is round or not
      * @return
      */
-    fun setIcon(icon: Drawable, isCircular: Boolean): Sneaker {
-        setIcon(icon, DEFAULT_VALUE, isCircular)
+    fun setIcon(
+        icon: Drawable,
+        isCircular: Boolean,
+    ): Sneaker {
+        setIcon(icon, defaultValue, isCircular)
         return this
     }
 
-    fun setIcon(@DrawableRes icon: Int, tintColor: Int): Sneaker {
+    fun setIcon(
+        @DrawableRes icon: Int,
+        tintColor: Int,
+    ): Sneaker {
         setIcon(icon, tintColor, false)
         return this
     }
 
-    fun setIcon(icon: Drawable, tintColor: Int): Sneaker {
+    fun setIcon(
+        icon: Drawable,
+        tintColor: Int,
+    ): Sneaker {
         setIcon(icon, tintColor, false)
         return this
     }
@@ -238,7 +256,11 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
      * @param isCircular If icon is round or not
      * @return
      */
-    fun setIcon(@DrawableRes icon: Int, tintColor: Int, isCircular: Boolean): Sneaker {
+    fun setIcon(
+        @DrawableRes icon: Int,
+        tintColor: Int,
+        isCircular: Boolean,
+    ): Sneaker {
         mIconDrawable = ContextCompat.getDrawable(context, icon)
         mIsCircular = isCircular
         mIconColorFilterColor = Utils.getColor(context, tintColor)
@@ -253,7 +275,11 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
      * @param isCircular If icon is round or not
      * @return
      */
-    fun setIcon(icon: Drawable, tintColor: Int, isCircular: Boolean): Sneaker {
+    fun setIcon(
+        icon: Drawable,
+        tintColor: Int,
+        isCircular: Boolean,
+    ): Sneaker {
         mIconDrawable = icon
         mIsCircular = isCircular
         mIconColorFilterColor = Utils.getColor(context, tintColor)
@@ -276,7 +302,7 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
      * @param radius Corner radius.
      */
     fun setCornerRadius(radius: Int): Sneaker {
-        setCornerRadius(radius, DEFAULT_VALUE)
+        setCornerRadius(radius, defaultValue)
         return this
     }
 
@@ -286,7 +312,10 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
      * @param radius Corner radius.
      * @param margin margin.
      */
-    fun setCornerRadius(radius: Int, margin: Int): Sneaker {
+    fun setCornerRadius(
+        radius: Int,
+        margin: Int,
+    ): Sneaker {
         mCornerRadius = radius
         mMargin = margin
         return this
@@ -362,11 +391,12 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
      * @param backgroundColor Color resource for sneaker background color
      */
     fun sneak(backgroundColor: Int) {
-        mBackgroundColor = try {
-            ContextCompat.getColor(context, backgroundColor)
-        } catch (e: Exception) {
-            backgroundColor
-        }
+        mBackgroundColor =
+            try {
+                ContextCompat.getColor(context, backgroundColor)
+            } catch (e: Exception) {
+                backgroundColor
+            }
         sneakView()
     }
 
@@ -418,10 +448,12 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
     private fun sneakView() {
         // Main layout
         targetView?.let {
-            val layoutParams = CoordinatorLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
-            )
-            if (mMargin != DEFAULT_VALUE) {
+            val layoutParams =
+                CoordinatorLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                )
+            if (mMargin != defaultValue) {
                 val margin = Utils.convertToDp(context, mMargin.toFloat())
                 layoutParams.setMargins(margin, margin, margin, margin)
             }
@@ -429,10 +461,10 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
             layoutParams.behavior = AppBarLayout.ScrollingViewBehavior()
             layoutParams.anchorGravity = Gravity.BOTTOM
 
-
             with(sneakerView) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     elevation = 6f
+                }
 
                 this.layoutParams = layoutParams
                 orientation = LinearLayout.HORIZONTAL
@@ -460,9 +492,11 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
 
     fun sneakCustom(layout: View): Sneaker {
         sneakerView.setCustomView(layout)
-        val layoutParams = CoordinatorLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
-        )
+        val layoutParams =
+            CoordinatorLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+            )
         layoutParams.behavior = AppBarLayout.ScrollingViewBehavior()
         layoutParams.anchorGravity = Gravity.BOTTOM
         layoutParams.bottomMargin = Utils.convertToDp(context, 52f)
@@ -498,7 +532,10 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
         }
     }
 
-    private fun removeView(view: View?, animate: Boolean = true) {
+    private fun removeView(
+        view: View?,
+        animate: Boolean = true,
+    ) {
         view?.let {
             if (animate) it.startAnimation(AnimationUtils.loadAnimation(context, R.anim.popup_hide))
             targetView?.removeView(it)
