@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile.adapters
+package com.pennapps.labs.pennmobile.gsr.widget
 
 import android.appwidget.AppWidgetManager
 import android.content.Context
@@ -9,10 +9,9 @@ import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.preference.PreferenceManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.pennapps.labs.pennmobile.GsrReservationWidget
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.GsrReservationsRequest
-import com.pennapps.labs.pennmobile.classes.GSRReservation
+import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import rx.Observable
