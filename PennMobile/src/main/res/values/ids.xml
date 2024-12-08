@@ -7,4 +7,7 @@
     <item name="icon_settings" type="id" />
     <item name="mainLayout" type="id"/>
     <item name="bottomBarLayout" type="id"/>
+    <item name="gsr_reservation_widget_empty_view" type="id" />
+    <item name="gsr_reservation_widget_stack_view" type="id" />
+    <item name="gsr_reservation_widget_root" type="id" />
 </resources>

@@ -43,6 +43,10 @@
                 android:maxLines="1"
                 />
 
+            <include
+                layout="@layout/fragment_menu_tab"
+                />
+
             <ImageView
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
