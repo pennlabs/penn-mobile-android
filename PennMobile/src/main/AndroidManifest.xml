@@ -69,6 +69,8 @@
         </activity>
         <service android:name=".dining.widget.DiningHallWidgetAdapter"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <service android:name=".gsr.widget.GsrReservationsWidgetAdapter"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <meta-data
             android:name="com.google.android.gms.version"
