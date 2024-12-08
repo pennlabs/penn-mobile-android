@@ -34,28 +34,26 @@ import com.google.android.material.tabs.TabLayout
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.pennapps.labs.pennmobile.adapters.MainPagerAdapter
 import com.pennapps.labs.pennmobile.api.CampusExpress
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Serializer
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.classes.Account
-import com.pennapps.labs.pennmobile.classes.Contact
-import com.pennapps.labs.pennmobile.classes.DiningHall
-import com.pennapps.labs.pennmobile.classes.FlingEvent
-import com.pennapps.labs.pennmobile.classes.GSRLocation
-import com.pennapps.labs.pennmobile.classes.GSRReservation
-import com.pennapps.labs.pennmobile.classes.LaundryRoom
-import com.pennapps.labs.pennmobile.classes.Post
-import com.pennapps.labs.pennmobile.classes.Venue
+import com.pennapps.labs.pennmobile.api.classes.Account
+import com.pennapps.labs.pennmobile.api.fragments.LoginFragment
 import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
+import com.pennapps.labs.pennmobile.databinding.ActivityMainBinding
+import com.pennapps.labs.pennmobile.dining.classes.DiningHall
+import com.pennapps.labs.pennmobile.dining.classes.Venue
+import com.pennapps.labs.pennmobile.fling.classes.FlingEvent
+import com.pennapps.labs.pennmobile.gsr.classes.GSRLocation
+import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
+import com.pennapps.labs.pennmobile.home.classes.Post
+import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom
+import com.pennapps.labs.pennmobile.more.classes.Contact
+import com.pennapps.labs.pennmobile.more.fragments.SaveContactsFragment
 import com.pennapps.labs.pennmobile.utils.Utils
-import kotlinx.android.synthetic.main.custom_sneaker_view.view.blurView
-import kotlinx.android.synthetic.main.include_main.appbar
-import kotlinx.android.synthetic.main.include_main.content_frame
-import kotlinx.android.synthetic.main.include_main.expandable_bottom_bar
-import kotlinx.android.synthetic.main.include_main.main_view_pager
+import eightbitlab.com.blurview.BlurView
 import kotlinx.coroutines.sync.Mutex
 import okhttp3.OkHttpClient
 import retrofit.RestAdapter
@@ -73,26 +71,28 @@ class MainActivity : AppCompatActivity() {
     private var tabShowed = false
     private lateinit var fragmentManager: FragmentManager
     private lateinit var mSharedPrefs: SharedPreferences
+    private lateinit var binding: ActivityMainBinding
 
     val tokenMutex = Mutex()
     private lateinit var mFirebaseAnalytics: FirebaseAnalytics
     val mNetworkManager by lazy { OAuth2NetworkManager(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppTheme)
         if (Build.VERSION.SDK_INT > 28) {
             setTheme(R.style.DarkModeApi29)
         }
         super.onCreate(savedInstanceState)
+        setTheme(R.style.AppTheme)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         if (applicationContext.resources.configuration.uiMode and
             Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
         ) {
             setTheme(R.style.DarkBackground)
         }
-        setContentView(R.layout.activity_main)
         Utils.getCurrentSystemTime()
 
-        setSupportActionBar(appbar.findViewById(R.id.toolbar))
+        setSupportActionBar(binding.include.toolbar)
         fragmentManager = supportFragmentManager
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.setHomeButtonEnabled(false)
@@ -142,7 +142,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onExpandableBottomNavigationItemSelected() {
-        expandable_bottom_bar.setOnNavigationItemSelectedListener { item ->
+        binding.include.expandableBottomBar.setOnNavigationItemSelectedListener { item ->
             val position =
                 when (item.itemId) {
                     R.id.nav_home -> MainPagerAdapter.HOME_POSITION
@@ -152,13 +152,13 @@ class MainActivity : AppCompatActivity() {
                     R.id.nav_more -> MainPagerAdapter.MORE_POSITION
                     else -> MainPagerAdapter.HOME_POSITION
                 }
-            main_view_pager.setCurrentItem(position, false)
+            binding.include.mainViewPager.setCurrentItem(position, false)
             true
         }
     }
 
     fun setTab(id: Int) {
-        expandable_bottom_bar.selectedItemId = id
+        binding.include.expandableBottomBar.selectedItemId = id
     }
 
     fun setSelectedTab(id: Int) {}
@@ -178,12 +178,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
         val mainPagerAdapter = MainPagerAdapter(fragmentManager, lifecycle)
-        main_view_pager.isSaveEnabled = false
-        main_view_pager?.adapter = mainPagerAdapter
-        main_view_pager.isUserInputEnabled = false
-        main_view_pager.offscreenPageLimit = 5
-        main_view_pager.visibility = View.VISIBLE
-        expandable_bottom_bar.visibility = View.VISIBLE
+        binding.include.mainViewPager.isSaveEnabled = false
+        binding.include.mainViewPager.adapter = mainPagerAdapter
+        binding.include.mainViewPager.isUserInputEnabled = false
+        binding.include.mainViewPager.offscreenPageLimit = 5
+        binding.include.mainViewPager.visibility = View.VISIBLE
+        binding.include.expandableBottomBar.visibility = View.VISIBLE
         setTab(HOME_ID)
     }
 
@@ -212,8 +212,8 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.content_frame, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()
-            main_view_pager.visibility = View.GONE
-            expandable_bottom_bar.visibility = View.GONE
+            binding.include.mainViewPager.visibility = View.GONE
+            binding.include.expandableBottomBar.visibility = View.GONE
         }
     }
 
@@ -287,7 +287,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun setTitle(title: CharSequence) {
-        appbar
+        binding.include.appbar
             .findViewById<View>(R.id.toolbar)
             .findViewById<TextView>(R.id.toolbar_title)
             .text = title
@@ -299,17 +299,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun hideBottomBar() {
-        expandable_bottom_bar.visibility = View.GONE
-        val layoutParams = this.content_frame.layoutParams as CoordinatorLayout.LayoutParams
+        binding.include.expandableBottomBar.visibility = View.GONE
+        val layoutParams = binding.include.contentFrame.layoutParams as CoordinatorLayout.LayoutParams
         layoutParams.setMargins(0, 0, 0, 0)
-        this.content_frame.layoutParams = layoutParams
+        binding.include.contentFrame.layoutParams = layoutParams
     }
 
     fun showBottomBar() {
-        expandable_bottom_bar.visibility = View.VISIBLE
-        val layoutParams = this.content_frame.layoutParams as CoordinatorLayout.LayoutParams
+        binding.include.expandableBottomBar.visibility = View.VISIBLE
+        val layoutParams = binding.include.contentFrame.layoutParams as CoordinatorLayout.LayoutParams
         layoutParams.setMargins(0, 0, 0, Utils.dpToPixel(this, 16f))
-        this.content_frame.layoutParams = layoutParams
+        binding.include.contentFrame.layoutParams = layoutParams
     }
 
     companion object {
@@ -498,7 +498,9 @@ fun ViewGroup.showSneakerToast(
             .from(this.context)
             .inflate(R.layout.custom_sneaker_view, sneaker.getView(), false)
 
-    view.blurView
+    val blurView: BlurView = view.findViewById(R.id.blurView)
+
+    blurView
         .setupWith(this)
         .setFrameClearDrawable(ColorDrawable(Color.TRANSPARENT))
         .setBlurRadius(10f)

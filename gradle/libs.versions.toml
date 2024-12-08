@@ -1,0 +1,182 @@
+[versions]
+activityCompose = "1.8.0"
+adapterRxjava2 = "2.4.0"
+agp = "8.6.1"
+androidRss = "master-SNAPSHOT"
+annotation = "1.7.0"
+blurview = "version-2.0.5"
+browser = "1.5.0"
+cardview = "1.0.0"
+commonsLang3 = "3.13.0"
+compiler = "4.11.0"
+composeBom = "2024.10.01"
+constraintlayout = "2.1.4"
+converterGson = "2.9.0"
+converterMoshi = "2.9.0"
+converterScalars = "2.9.0"
+coordinatorlayout = "1.2.0"
+customalertviewdialogue = "a1fc69d54d"
+espressoCore = "3.5.0"
+exifinterface = "1.3.6"
+firebaseBom = "31.5.0"
+firebaseCrashlyticsKtx = "18.6.0"
+firebaseCrashalytics = "2.9.9"
+glanceAppwidget = "1.1.0"
+glide = "4.11.0"
+googleMapsServices = "2.2.0"
+googleServices = "4.4.0"
+jodaTime = "2.12.5"
+jsoup = "1.16.2"
+junit = "1.1.5"
+kaspresso = "1.5.3"
+kotlin = "1.9.24"
+junitVersion = "4.13.2"
+kotlinxCoroutinesCore = "1.7.3"
+leakcanaryAndroid = "3.0-alpha-1"
+legacySupportV4 = "1.0.0"
+library = "1.2.0"
+lifecycleExtensions = "2.2.0"
+lifecycleRuntimeKtx = "2.4.0"
+lifecycleViewmodelCompose = "2.8.6"
+loggingInterceptor = "5.0.0-alpha.11"
+lottie = "5.2.0"
+material = "1.6.1"
+mpandroidchart = "v3.1.0"
+multidex = "2.0.1"
+okhttp = "2.7.5"
+paletteKtx = "1.0.0"
+percentlayout = "1.0.0"
+picasso = "2.71828"
+playServicesLocation = "21.0.1"
+playServicesMaps = "18.2.0"
+preferenceKtx = "1.1.1"
+recyclerview = "1.3.2"
+retrofit = "2.9.0"
+retrofitVersion = "1.9.0"
+rxandroid = "2.0.2"
+rxandroidVersion = "1.2.1"
+testng = "7.8.0"
+
+[libraries]
+adapter-rxjava2 = { module = "com.squareup.retrofit2:adapter-rxjava2", version.ref = "adapterRxjava2" }
+android-rss = { module = "com.github.ahorn:android-rss", version.ref = "androidRss" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
+androidx-browser = { module = "androidx.browser:browser", version.ref = "browser" }
+androidx-cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
+androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
+androidx-coordinatorlayout = { module = "androidx.coordinatorlayout:coordinatorlayout", version.ref = "coordinatorlayout" }
+androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
+androidx-exifinterface = { module = "androidx.exifinterface:exifinterface", version.ref = "exifinterface" }
+androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glanceAppwidget" }
+androidx-glance-material = { module = "androidx.glance:glance-material", version.ref = "glanceAppwidget" }
+androidx-glance-material3 = { module = "androidx.glance:glance-material3", version.ref = "glanceAppwidget" }
+androidx-junit = { module = "androidx.test.ext:junit", version.ref = "junit" }
+androidx-legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacySupportV4" }
+androidx-lifecycle-extensions = { module = "androidx.lifecycle:lifecycle-extensions", version.ref = "lifecycleExtensions" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
+androidx-material-icons-core = { module = "androidx.compose.material:material-icons-core" }
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
+androidx-material3-android = { module = "androidx.compose.material3:material3" }
+androidx-multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
+androidx-palette-ktx = { module = "androidx.palette:palette-ktx", version.ref = "paletteKtx" }
+androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preferenceKtx" }
+androidx-percentlayout = { module = "androidx.percentlayout:percentlayout", version.ref = "percentlayout" }
+androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
+androidx-runtime = { module = "androidx.compose.runtime:runtime" }
+androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
+androidx-runtime-rxjava2 = { module = "androidx.compose.runtime:runtime-rxjava2" }
+androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
+androidx-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+blurview = { module = "com.github.Dimezis:BlurView", version.ref = "blurview" }
+commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commonsLang3" }
+compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "converterMoshi" }
+converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "converterScalars" }
+customalertviewdialogue = { module = "com.github.meiron03:CustomAlertViewDialogue", version.ref = "customalertviewdialogue" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx", version.ref = "firebaseCrashlyticsKtx" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+google-maps-services = { module = "com.google.maps:google-maps-services", version.ref = "googleMapsServices" }
+joda-time = { module = "joda-time:joda-time", version.ref = "jodaTime" }
+jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
+junit = { module = "junit:junit", version.ref = "junitVersion" }
+kaspresso = { module = "com.kaspersky.android-components:kaspresso", version.ref = "kaspresso" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
+leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanaryAndroid" }
+library = { module = "com.daimajia.swipelayout:library", version.ref = "library" }
+logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
+lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
+material = { module = "com.google.android.material:material", version.ref = "material" }
+mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
+okhttp = { module = "com.squareup.okhttp:okhttp", version.ref = "okhttp" }
+picasso = { module = "com.squareup.picasso:picasso", version.ref = "picasso" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
+play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
+reactivex-rxandroid = { module = "io.reactivex:rxandroid", version.ref = "rxandroidVersion" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+rxandroid = { module = "io.reactivex.rxjava2:rxandroid", version.ref = "rxandroid" }
+squareup-retrofit = { module = "com.squareup.retrofit:retrofit", version.ref = "retrofitVersion" }
+testng = { module = "org.testng:testng", version.ref = "testng" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices"}
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashalytics"}
+
+
+[bundles]
+compose = [
+    "androidx-activity-compose",
+    "androidx-glance-appwidget",
+    "androidx-lifecycle-viewmodel-compose",
+]
+
+material = [
+    "androidx-material3-android",
+    "androidx-glance-material",
+    "androidx-glance-material3",
+    "androidx-material-icons-core",
+    "androidx-material-icons-extended",
+    "material"
+]
+
+firebase = [
+    "firebase-crashlytics",
+    "firebase-analytics",
+    "firebase-crashlytics-ktx"
+]
+
+runtime = [
+    "androidx-runtime",
+    "androidx-runtime-livedata",
+    "androidx-runtime-rxjava2"
+]
+
+ui = [
+    "androidx-ui-test-junit4",
+    "androidx-ui-test-manifest",
+    "androidx-ui-tooling",
+    "androidx-ui-tooling-preview"
+]
+
+retrofit2 = [
+    "retrofit",
+    "converter-gson",
+    "converter-moshi",
+    "converter-scalars"
+]
+
+google = [
+    "google-maps-services",
+    "play-services-location",
+    "play-services-maps"
+]

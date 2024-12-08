@@ -135,7 +135,9 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <include layout="@layout/loading_panel" />
+        <include
+            android:id="@+id/loading_panel"
+            layout="@layout/loading_panel" />
 
     <!-- Coordinator Layout used to position the SnackBar -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:forceDarkAllowed="false"
-    tools:context=".LoginWebviewFragment">
+    tools:context=".api.fragments.LoginWebviewFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
