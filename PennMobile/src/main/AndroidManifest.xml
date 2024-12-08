@@ -41,7 +41,7 @@
         </receiver>
 
         <receiver
-            android:name="com.pennapps.labs.pennmobile.GsrReservationWidget"
+            android:name="com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -69,7 +69,7 @@
         </activity>
         <service android:name=".dining.widget.DiningHallWidgetAdapter"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
-        <service android:name=".adapters.GsrReservationWidgetAdapter"
+        <service android:name=".gsr.widget.GsrReservationWidgetAdapter"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <meta-data

@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile
+package com.pennapps.labs.pennmobile.gsr.widget
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -9,10 +9,11 @@ import android.net.Uri
 import android.widget.RemoteViews
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.pennapps.labs.pennmobile.adapters.GsrReservationWidgetAdapter
+import com.pennapps.labs.pennmobile.MainActivity
+import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.GsrReservationsRequest
 import com.pennapps.labs.pennmobile.api.Serializer
-import com.pennapps.labs.pennmobile.classes.GSRReservation
+import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
 import com.squareup.okhttp.OkHttpClient
 import retrofit.RestAdapter
 import retrofit.client.OkClient
