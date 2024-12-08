@@ -19,5 +19,4 @@ public interface Platform {
             @Header("Authorization") String authorizationHeader,
             @Field("token") String token,
             Callback<GetUserResponse> callback);
-
 }
