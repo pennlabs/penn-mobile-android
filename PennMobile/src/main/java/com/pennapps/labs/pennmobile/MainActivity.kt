@@ -130,6 +130,15 @@ class MainActivity : AppCompatActivity() {
         if (diningWidgetBroadCast != -1) {
             setTab(DINING_ID)
         }
+
+        var gsrReservationWidgetBroadCast = 0
+        if (intent != null) {
+            gsrReservationWidgetBroadCast =
+                intent.getIntExtra("Gsr_Tab_Switch", -1)
+        }
+        if (gsrReservationWidgetBroadCast != -1) {
+            setTab(GSR_ID)
+        }
     }
 
     private fun onExpandableBottomNavigationItemSelected() {
