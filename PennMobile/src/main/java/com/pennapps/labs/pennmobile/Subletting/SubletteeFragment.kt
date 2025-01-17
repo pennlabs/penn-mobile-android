@@ -53,6 +53,11 @@ class SubletteeFragment : Fragment() {
     private var endCalendar: Calendar = Calendar.getInstance()
     private val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.US)
 
+    // The "Flexible" check boxes
+    private lateinit var btnDatesFlexible: Button
+    private lateinit var btnLocationFlexible: Button
+    private var areDatesFlexible: Boolean = false
+    private var areLocationsFlexible: Boolean = false
 
     // Address adapter for autocomplete
     private lateinit var addressAdapter: ArrayAdapter<String>
@@ -108,6 +113,7 @@ class SubletteeFragment : Fragment() {
 
         setupAddressAutocomplete()
         setupDatePickers()
+        setupFlexibleBoxes()
 
 
         val marketplaceButton: Button = view.findViewById(R.id.sublettee_enter_subletting_button)
@@ -164,6 +170,19 @@ class SubletteeFragment : Fragment() {
         return true
     }
 
+    private fun setupFlexibleBoxes() {
+        //Dates Flexible
+        btnDatesFlexible = binding.subletteeDateCheckbox
+        btnDatesFlexible.setOnClickListener {
+            areDatesFlexible = !areDatesFlexible
+        }
+        //Location Flexible
+        btnLocationFlexible = binding.subletteeLocationCheckbox
+        btnLocationFlexible.setOnClickListener {
+            areLocationsFlexible = !areLocationsFlexible
+        }
+    }
+
 
     private fun setupDatePickers() {
         // Start Date
@@ -205,7 +224,7 @@ class SubletteeFragment : Fragment() {
 
     private fun validateDates(): Boolean {
         val currentDate = Calendar.getInstance()
-        return !(startCalendar < currentDate || startCalendar > endCalendar)
+        return !(startCalendar < currentDate || startCalendar > endCalendar) || areDatesFlexible
     }
 
 
