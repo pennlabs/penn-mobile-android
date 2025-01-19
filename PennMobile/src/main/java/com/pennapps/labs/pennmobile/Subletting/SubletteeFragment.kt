@@ -315,10 +315,6 @@ class SubletteeFragment : Fragment() {
                     addressAdapter.clear()
                     addressAdapter.addAll(addresses)
                     addressAdapter.notifyDataSetChanged()
-                    // Show the dropdown if the text box is focused
-                    if (binding.subletteeLocationEdittext.hasFocus()) {
-                        //binding.subletteeLocationEdittext.showDropDown()
-                    }
                 }
                 .addOnFailureListener { exception: Exception ->
                     if (exception is ApiException) {
