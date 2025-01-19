@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile.gsr.fragments
+package com.pennapps.labs.pennmobile.fitness.fragments
 
 import android.os.Bundle
 import android.util.Log
@@ -25,8 +25,6 @@ import com.pennapps.labs.pennmobile.databinding.FragmentPottruckBinding
 import com.pennapps.labs.pennmobile.fitness.FitnessPreferenceViewModel
 import com.pennapps.labs.pennmobile.fitness.adapters.FitnessAdapter
 import com.pennapps.labs.pennmobile.fitness.adapters.FitnessHeaderAdapter
-import com.pennapps.labs.pennmobile.fitness.fragments.CloseListener
-import com.pennapps.labs.pennmobile.fitness.fragments.FitnessPreferencesFragment
 import com.pennapps.labs.pennmobile.isOnline
 import com.pennapps.labs.pennmobile.utils.Utils
 
@@ -51,6 +49,7 @@ class PottruckFragment : Fragment() {
         super.onCreate(savedInstanceState)
         mStudentLife = MainActivity.studentLifeInstance
         mActivity = activity as MainActivity
+        dataModel = FitnessPreferenceViewModel(mStudentLife)
     }
 
     override fun onCreateView(
@@ -81,13 +80,19 @@ class PottruckFragment : Fragment() {
         swipeRefresh.setColorSchemeResources(R.color.color_accent, R.color.color_primary)
         recyclerView.layoutManager =
             LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false)
-        swipeRefresh.setOnRefreshListener { getFitnessRooms() }
+        swipeRefresh.setOnRefreshListener { dataModel.getFitnessRooms(mActivity) }
 
         // populate the title/date of the app bar
         initAppBar()
 
         // populate recyclerview
-        getFitnessRooms()
+        if(getConnected()) {
+            dataModel.getFitnessRooms(mActivity)
+            //call setAdapters() after calling getFitnessRooms from data model
+            setAdapters()
+        }
+
+
     }
 
     private fun getFitnessRooms() {
@@ -102,7 +107,7 @@ class PottruckFragment : Fragment() {
                     }
                     val sortedRooms = fitnessRooms.sortedBy { it.roomName }
 
-                    dataModel = FitnessPreferenceViewModel(mStudentLife, sortedRooms)
+                    dataModel = FitnessPreferenceViewModel(mStudentLife)
 
                     mActivity.runOnUiThread {
                         mActivity.mNetworkManager.getAccessToken {

@@ -14,9 +14,9 @@ import retrofit.client.Response
 
 class FitnessPreferenceViewModel(
     private val studentLife: StudentLife,
-    private val roomList: List<FitnessRoom>,
 ) : FitnessAdapterDataModel {
-    private val roomTot = roomList.size
+    private lateinit var roomList: List<FitnessRoom>
+    private var roomTot : Int = 0
 
     // hashset of the favorite room ids
     private val favoriteRooms: HashSet<Int> = hashSetOf()
@@ -118,6 +118,50 @@ class FitnessPreferenceViewModel(
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+        }
+    }
+
+    fun getFitnessRooms(mActivity: MainActivity) {
+        try {
+            studentLife.fitnessRooms
+                .subscribe({ fitnessRooms ->
+                    for (room in fitnessRooms) {
+                        Log.i("Fitness Room${room.roomId}", "${room.roomName}")
+                    }
+                    val sortedRooms = fitnessRooms.sortedBy { it.roomName }
+                    roomList = sortedRooms
+                    roomTot = roomList.size
+
+                    mActivity.runOnUiThread {
+                        mActivity.mNetworkManager.getAccessToken {
+                            val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
+                            val context = mActivity.applicationContext
+                            val bearerToken =
+                                "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
+
+                            studentLife.getFitnessPreferences(bearerToken).subscribe({ favorites ->
+                                mActivity.runOnUiThread {
+                                    for (roomId in favorites) {
+                                        addId(roomId)
+                                    }
+                                    updatePositionMap()
+                                }
+
+                            }, {throwable ->
+                                mActivity.runOnUiThread {
+                                    //call setAdapters
+                                    Log.e(
+                                        "Pottruck Fragment",
+                                        "Could not load Fitness Preferences",
+                                        throwable,
+                                    )
+                                }
+                            })
+                        }
+                    }
+                })
+        }  catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }
