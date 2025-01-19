@@ -130,10 +130,37 @@ class SubletteeFragment : Fragment() {
                 return@setOnClickListener
             }
 
+            //Information to pass:
+            //Dates
+            val startDateMillis = startCalendar.timeInMillis
+            val endDateMillis = endCalendar.timeInMillis
+            //Price
+            val minPriceString = binding.subletteeMinPriceText.text.toString().trim()
+            val maxPriceString = binding.subletteeMaxPriceText.text.toString().trim()
+            val minPrice = minPriceString.toDouble()
+            val maxPrice = maxPriceString.toDouble()
+            //Location
+            val selectedLocation = binding.subletteeLocationAddressView.text.toString().removePrefix("Address: ").trim()
+
+            //Create the bundle:
+            val bundle = Bundle().apply {
+                putString("location", selectedLocation)
+                putDouble("minPrice", minPrice)
+                putDouble("maxPrice", maxPrice)
+                putLong("startDate", startDateMillis)
+                putLong("endDate", endDateMillis)
+                putBoolean("datesFlexible", areDatesFlexible)
+                putBoolean("locationFlexible", areLocationsFlexible)
+            }
+
+            //Pass the bundle:
+            val subletteeMarketplace = SubletteeMarketplace().apply {
+                arguments = bundle
+            }
 
             // Load new fragment, which will hold the subletting marketplace in whole
             mActivity.supportFragmentManager.beginTransaction()
-                .replace(((view as ViewGroup).parent as View).id, SubletteeMarketplace())
+                .replace(((view as ViewGroup).parent as View).id, subletteeMarketplace)
                 .addToBackStack(null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()
