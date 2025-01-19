@@ -12,10 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.pennapps.labs.pennmobile.MainActivity
-import com.pennapps.labs.pennmobile.adapters.SublesseeSavedAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
-import com.pennapps.labs.pennmobile.classes.Sublet
 import com.pennapps.labs.pennmobile.databinding.FragmentSublesseeSavedListingsHolderBinding
 
 class SublesseeSavedListingsHolderFragment (): Fragment() {

@@ -15,8 +15,6 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.classes.OfferViewModel
-import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentSublesseeDetailsBinding
 
 class SublesseeDetailsFragment (var dataModel: SublesseeViewModel, var position: Int, var isSaved: Boolean): Fragment(){

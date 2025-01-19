@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile.Subletting
 
 import android.graphics.BitmapFactory
-import android.media.Image
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,8 +19,6 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.AmenitiesItem
 import com.pennapps.labs.pennmobile.classes.MultipartUtil
-import com.pennapps.labs.pennmobile.classes.Sublet
-import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentSubletterNewListingBinding
 import okhttp3.MultipartBody
 import java.io.IOException

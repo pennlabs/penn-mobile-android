@@ -10,9 +10,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.adapters.SubletterPagerAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 
 // TODO: Rename parameter arguments, choose names that match
 

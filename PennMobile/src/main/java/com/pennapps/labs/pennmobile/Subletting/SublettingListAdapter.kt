@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile.adapters
+package com.pennapps.labs.pennmobile.Subletting
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -10,9 +10,6 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.Subletting.SublesseeDetailsFragment
-import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
-import com.pennapps.labs.pennmobile.classes.SublettingModel
 
 class SublettingListAdapter(var sublettingList: ArrayList<SublettingModel>, var dataModel: SublesseeViewModel):
         RecyclerView.Adapter<SublettingListAdapter.SublettingCardViewHolder>() {

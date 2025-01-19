@@ -1,6 +1,4 @@
-package com.pennapps.labs.pennmobile.classes
-
-import java.util.Date
+package com.pennapps.labs.pennmobile.Subletting
 
 class SublettingModel {
 

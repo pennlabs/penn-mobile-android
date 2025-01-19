@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.pennapps.labs.pennmobile.MainActivity
-import com.pennapps.labs.pennmobile.adapters.SublesseeSavedPagerAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.databinding.FragmentSublesseeSavedBinding
 

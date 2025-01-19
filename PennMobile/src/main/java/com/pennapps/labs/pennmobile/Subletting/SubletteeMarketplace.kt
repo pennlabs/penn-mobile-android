@@ -14,11 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.adapters.SublettingListAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.classes.SublesseeViewModel
-import com.pennapps.labs.pennmobile.classes.Sublet
-import com.pennapps.labs.pennmobile.classes.SublettingModel
 import com.pennapps.labs.pennmobile.databinding.FragmentSubletteeMarketplaceBinding
 
 /**
@@ -157,9 +153,11 @@ class SubletteeMarketplace : Fragment() {
         )
 
         for (i in sublettingImages.indices)
-            sublettingListTest.add(SublettingModel(sublettingImages[i], sublettingNames[i],
+            sublettingListTest.add(
+                SublettingModel(sublettingImages[i], sublettingNames[i],
                     sublettingPrices[i], sublettingNegotiablePrices[i], sublettingBedrooms[i],
-                    sublettingBathrooms[i], 2, 2))
+                    sublettingBathrooms[i], 2, 2)
+            )
 
         return sublettingListTest
 

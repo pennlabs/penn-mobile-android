@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile.classes
+package com.pennapps.labs.pennmobile.Subletting
 
 import com.google.gson.annotations.SerializedName
 

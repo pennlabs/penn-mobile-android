@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
-import com.pennapps.labs.pennmobile.adapters.SublettingPagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R

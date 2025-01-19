@@ -21,10 +21,7 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.classes.AmenitiesItem
 import com.pennapps.labs.pennmobile.classes.MultipartUtil
-import com.pennapps.labs.pennmobile.classes.Sublet
-import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentSubletterEditListingBinding
-import com.pennapps.labs.pennmobile.databinding.FragmentSubletterNewListingBinding
 import okhttp3.MultipartBody
 import java.io.IOException
 

@@ -6,15 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.classes.Sublet
-import com.pennapps.labs.pennmobile.classes.SubletImage
-import com.pennapps.labs.pennmobile.classes.SublettingViewModel
 import com.pennapps.labs.pennmobile.databinding.FragmentSubletDetailsBinding
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

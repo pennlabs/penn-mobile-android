@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile.adapters
+package com.pennapps.labs.pennmobile.Subletting
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -12,12 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.Subletting.SublesseeDetailsFragment
-import com.pennapps.labs.pennmobile.Subletting.SubletDetailsFragment
-import com.pennapps.labs.pennmobile.Subletting.SubletDetailsHolderFragment
-import com.pennapps.labs.pennmobile.classes.Sublet
-import com.pennapps.labs.pennmobile.classes.SublettingModel
-import com.pennapps.labs.pennmobile.classes.SublettingViewModel
+
 //import kotlinx.android.synthetic.main.include_main.expandable_bottom_bar
 //import kotlinx.android.synthetic.main.include_main.toolbar
 

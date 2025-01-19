@@ -1,8 +1,7 @@
-package com.pennapps.labs.pennmobile.classes
+package com.pennapps.labs.pennmobile.Subletting
 
 import android.app.Activity
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
@@ -10,15 +9,9 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import retrofit.Callback
-import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
-import java.util.concurrent.CountDownLatch
 
 class SublesseeViewModel(private val activity: Activity, private val studentLife: StudentLife) {
 

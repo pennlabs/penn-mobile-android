@@ -4,17 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.adapters.SubletDetailsPagerAdapter
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.classes.SublettingViewModel
-import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 
 //Pulls existing datamodel from previous
 class SubletDetailsHolderFragment(private val dataModel: SublettingViewModel, private val subletNumber: Int) : Fragment() {

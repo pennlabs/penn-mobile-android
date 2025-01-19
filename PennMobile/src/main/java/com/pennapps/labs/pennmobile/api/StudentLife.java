@@ -16,11 +16,11 @@ import com.pennapps.labs.pennmobile.classes.GSRBookingResult;
 import com.pennapps.labs.pennmobile.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.classes.GSRReservation;
 import com.pennapps.labs.pennmobile.classes.LaundryRoom;
-import com.pennapps.labs.pennmobile.classes.Offer;
+import com.pennapps.labs.pennmobile.Subletting.Offer;
 import com.pennapps.labs.pennmobile.classes.Poll;
 import com.pennapps.labs.pennmobile.classes.Post;
 import com.pennapps.labs.pennmobile.classes.SaveAccountResponse;
-import com.pennapps.labs.pennmobile.classes.Sublet;
+import com.pennapps.labs.pennmobile.Subletting.Sublet;
 import com.pennapps.labs.pennmobile.classes.Venue;
 import com.pennapps.labs.pennmobile.classes.WhartonStatus;
 

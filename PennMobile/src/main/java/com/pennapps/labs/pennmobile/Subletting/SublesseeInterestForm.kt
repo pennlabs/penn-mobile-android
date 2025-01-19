@@ -11,9 +11,6 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.classes.Offer
-import com.pennapps.labs.pennmobile.classes.OfferViewModel
-import com.pennapps.labs.pennmobile.classes.Sublet
 import com.pennapps.labs.pennmobile.databinding.FragmentSublesseeInterestFormBinding
 
 class SublesseeInterestForm (var sublet: Sublet): Fragment() {

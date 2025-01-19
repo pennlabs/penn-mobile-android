@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile.classes
+package com.pennapps.labs.pennmobile.Subletting
 
 class SubletRequest(favoriteSublets: ArrayList<Int>) {
     var sublets: ArrayList<Int> = favoriteSublets
