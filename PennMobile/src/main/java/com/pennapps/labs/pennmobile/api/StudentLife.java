@@ -44,24 +44,6 @@ import rx.Observable;
  */
 public interface StudentLife {
 
-    @FormUrlEncoded
-    @POST("/accounts/token/")
-    void getAccessToken(
-            @Field("code") String authCode,
-            @Field("grant_type") String grantType,
-            @Field("client_id") String clientID,
-            @Field("redirect_uri") String redirectURI,
-            @Field("code_verifier") String codeVerifier,
-            Callback<AccessTokenResponse> callback);
-
-    @FormUrlEncoded
-    @POST("/accounts/token/")
-    void refreshAccessToken(
-            @Field("refresh_token") String refreshToken,
-            @Field("grant_type") String grantType,
-            @Field("client_id") String clientID,
-            Callback<AccessTokenResponse> callback);
-
     @GET("/dining/venues")
     Observable<List<Venue>> venues();
 
