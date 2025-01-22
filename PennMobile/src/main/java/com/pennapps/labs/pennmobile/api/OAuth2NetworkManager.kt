@@ -18,7 +18,7 @@ import java.util.Calendar
 class OAuth2NetworkManager(
     private var mActivity: MainActivity,
 ) {
-    private var mStudentLife = MainActivity.studentLifeInstance
+    private var mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
     private val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
     val editor = sp?.edit()
 
@@ -62,49 +62,45 @@ class OAuth2NetworkManager(
         }
     }
 
-    @Synchronized
-    private fun refreshAccessToken(
+    private suspend fun refreshAccessToken(
         function: () -> Unit,
         unlockMutex: () -> Unit,
     ) {
-        val refreshToken = sp.getString(mActivity.getString(R.string.refresh_token), "")
+        val refreshToken = sp.getString(mActivity.getString(R.string.refresh_token), "") ?: ""
         val clientID = BuildConfig.PLATFORM_CLIENT_ID
 
-        mStudentLife.refreshAccessToken(
+        val response = mStudentLifeRf2.refreshAccessToken(
             refreshToken,
             "refresh_token",
             clientID,
-            object : Callback<AccessTokenResponse> {
-                override fun success(
-                    t: AccessTokenResponse?,
-                    response: Response?,
-                ) {
-                    if (response?.status == 200) {
-                        val editor = sp.edit()
-                        editor.putString(mActivity.getString(R.string.access_token), t?.accessToken)
-                        editor.putString(mActivity.getString(R.string.refresh_token), t?.refreshToken)
-                        editor.putString(mActivity.getString(R.string.expires_in), t?.expiresIn)
-                        val expiresIn = t?.expiresIn
-                        val expiresInInt = (expiresIn!!.toInt() * 1000)
-                        val currentTime = Calendar.getInstance().timeInMillis
-                        editor.putLong(mActivity.getString(R.string.token_expires_at), currentTime + expiresInInt)
-                        editor.apply()
-                        unlockMutex.invoke()
-                        function.invoke()
-                        Log.i("Accounts", "Reloaded Homepage")
-                    }
-                }
-
-                override fun failure(error: RetrofitError) {
-                    FirebaseCrashlytics.getInstance().recordException(error)
-                    Log.e("Accounts", "Error refreshing access token $error")
-
-                    if (error.response != null && error.response.status == 400) {
-                        mActivity.startLoginFragment()
-                        unlockMutex.invoke()
-                    }
-                }
-            },
         )
+
+        if (response.isSuccessful) {
+            val t = response.body()!!
+
+            val editor = sp.edit()
+            editor.putString(mActivity.getString(R.string.access_token), t.accessToken)
+            editor.putString(mActivity.getString(R.string.refresh_token), t.refreshToken)
+            editor.putString(mActivity.getString(R.string.expires_in), t.expiresIn)
+            val expiresIn = t.expiresIn
+            val expiresInInt = (expiresIn!!.toInt() * 1000)
+            val currentTime = Calendar.getInstance().timeInMillis
+            editor.putLong(mActivity.getString(R.string.token_expires_at), currentTime + expiresInInt)
+            editor.apply()
+            Log.i("Accounts", "Refreshed access token")
+
+            unlockMutex.invoke()
+            function.invoke()
+        } else {
+            val error = response.errorBody()!!
+
+            FirebaseCrashlytics.getInstance().recordException(Exception(error.toString()))
+            Log.e("Accounts", "Error refreshing access token $error")
+
+            if (response.code() == 400) {
+                mActivity.startLoginFragment()
+                unlockMutex.invoke()
+            }
+        }
     }
 }

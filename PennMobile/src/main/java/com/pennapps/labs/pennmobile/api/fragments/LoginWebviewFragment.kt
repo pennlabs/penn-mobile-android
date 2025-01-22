@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.api.fragments
 
+import StudentLifeRf2
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.security.keystore.KeyGenParameterSpec
@@ -17,6 +18,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -25,10 +27,10 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Platform.platformBaseUrl
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.api.classes.AccessTokenResponse
 import com.pennapps.labs.pennmobile.api.classes.Account
 import com.pennapps.labs.pennmobile.api.classes.GetUserResponse
+import kotlinx.coroutines.launch
 import org.apache.commons.lang3.RandomStringUtils
 import retrofit.Callback
 import retrofit.RetrofitError
@@ -46,7 +48,7 @@ class LoginWebviewFragment : Fragment() {
     lateinit var headerLayout: LinearLayout
     lateinit var cancelButton: Button
     lateinit var user: Account
-    private lateinit var mStudentLife: StudentLife
+    private lateinit var mStudentLifeRf2: StudentLifeRf2
     private var mPlatform: Platform? = null
     private lateinit var mActivity: MainActivity
     lateinit var sp: SharedPreferences
@@ -64,7 +66,7 @@ class LoginWebviewFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mStudentLife = MainActivity.studentLifeInstance
+        mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
         mPlatform = MainActivity.platformInstance
         arguments?.let {
             user = arguments?.getSerializable("user") as Account
@@ -180,43 +182,41 @@ class LoginWebviewFragment : Fragment() {
     }
 
     private fun initiateAuthentication(authCode: String) {
-        mStudentLife.getAccessToken(
-            authCode,
-            "authorization_code",
-            clientID,
-            redirectUri,
-            codeVerifier,
-            object : Callback<AccessTokenResponse> {
-                override fun success(
-                    t: AccessTokenResponse?,
-                    response: Response?,
-                ) {
-                    if (response?.status == 200) {
-                        FirebaseAnalytics.getInstance(mActivity).logEvent("LoginEvent", null)
+        mActivity.lifecycleScope.launch {
+            val response = mStudentLifeRf2.getAccessToken(
+                authCode,
+                "authorization_code",
+                clientID,
+                redirectUri,
+                codeVerifier,
+            )
 
-                        val accessToken = t?.accessToken
-                        val editor = sp.edit()
-                        editor.putString(getString(R.string.access_token), accessToken)
-                        editor.putString(getString(R.string.refresh_token), t?.refreshToken)
-                        editor.putString(getString(R.string.expires_in), t?.expiresIn)
+            if (response.isSuccessful) {
+                val t : AccessTokenResponse? = response.body()
+                FirebaseAnalytics.getInstance(mActivity).logEvent("LoginEvent", null)
 
-                        val expiresInInt = t?.expiresIn!!.toInt() * 1000
-                        Log.i("LoginWebview", "Expires In: $expiresInInt")
-                        val currentTime = Calendar.getInstance().timeInMillis
-                        editor.putLong(getString(R.string.token_expires_at), currentTime + expiresInInt)
-                        editor.apply()
-                        getUser(accessToken)
-                    }
-                }
+                val accessToken = t?.accessToken
+                val editor = sp.edit()
+                editor.putString(getString(R.string.access_token), accessToken)
+                editor.putString(getString(R.string.refresh_token), t?.refreshToken)
+                editor.putString(getString(R.string.expires_in), t?.expiresIn)
 
-                override fun failure(error: RetrofitError) {
-                    FirebaseCrashlytics.getInstance().recordException(error)
-                    Log.e("Accounts", "Error fetching access token $error", error)
-                    Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
-                    mActivity.startLoginFragment()
-                }
-            },
-        )
+                val expiresInInt = t?.expiresIn!!.toInt() * 1000
+                Log.i("LoginWebview", "Expires In: $expiresInInt")
+                val currentTime = Calendar.getInstance().timeInMillis
+                editor.putLong(getString(R.string.token_expires_at), currentTime + expiresInInt)
+                editor.apply()
+                getUser(accessToken)
+            } else {
+                val error = response.errorBody()
+                val exception = Exception(error.toString())
+
+                FirebaseCrashlytics.getInstance().recordException(exception)
+                Log.e("Accounts", "Error fetching access token $error", exception)
+                Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
+                mActivity.startLoginFragment()
+            }
+        }
     }
 
     private fun getUser(accessToken: String?) {
