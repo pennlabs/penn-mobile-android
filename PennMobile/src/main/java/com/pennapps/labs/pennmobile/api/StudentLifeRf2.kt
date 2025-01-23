@@ -1,4 +1,5 @@
 import com.pennapps.labs.pennmobile.api.classes.AccessTokenResponse
+import com.pennapps.labs.pennmobile.fitness.classes.FitnessPreferences
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRoom
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRoomUsage
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryPreferences
@@ -73,6 +74,6 @@ interface StudentLifeRf2 {
 
     @GET("penndata/fitness/preferences")
     fun getFitnessPreferences(
-        @retrofit.http.Header("Authorization") bearerToken: String?
-    ): Observable<List<Int?>?>?
+        @Header("Authorization") bearerToken: String?
+    ): Observable<FitnessPreferences?>?
 }

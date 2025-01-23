@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.gsr.fragments
 
+import StudentLifeRf2
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -33,6 +34,7 @@ import com.pennapps.labs.pennmobile.utils.Utils
 class PottruckFragment : Fragment() {
     private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
+    private lateinit var mStudentLifeRf2: StudentLifeRf2
 
     private lateinit var mView: View
     private lateinit var swipeRefresh: SwipeRefreshLayout
@@ -50,6 +52,7 @@ class PottruckFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mStudentLife = MainActivity.studentLifeInstance
+        mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
         mActivity = activity as MainActivity
     }
 
@@ -95,44 +98,45 @@ class PottruckFragment : Fragment() {
         if (!getConnected()) return
 
         try {
-            mStudentLife.fitnessRooms
-                .subscribe({ fitnessRooms ->
-                    for (room in fitnessRooms) {
+            mStudentLifeRf2.getFitnessRooms()?.subscribe({ fitnessRooms ->
+                    val rooms = fitnessRooms?.filterNotNull().orEmpty()
+                    for (room in rooms) {
                         Log.i("Fitness Room${room.roomId}", "${room.roomName}")
                     }
-                    val sortedRooms = fitnessRooms.sortedBy { it.roomName }
+                    val sortedRooms = rooms.sortedBy { it.roomName }
 
                     dataModel = FitnessPreferenceViewModel(mStudentLife, sortedRooms)
 
-                    mActivity.runOnUiThread {
-                        mActivity.mNetworkManager.getAccessToken {
-                            val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
-                            val context = mActivity.applicationContext
-                            val bearerToken =
-                                "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
+                    mActivity.mNetworkManager.getAccessToken {
+                        val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
+                        val context = mActivity.applicationContext
+                        val bearerToken =
+                            "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
-                            mStudentLife.getFitnessPreferences(bearerToken).subscribe({ favorites ->
-                                mActivity.runOnUiThread {
-                                    for (roomId in favorites) {
-                                        dataModel.addId(roomId)
-                                    }
-                                    dataModel.updatePositionMap()
+                        mStudentLifeRf2.getFitnessPreferences(bearerToken)?.subscribe({ favorites ->
+                            val favoriteRooms = favorites?.rooms?.filterNotNull().orEmpty()
 
-                                    setAdapters()
-                                }
-                            }, { throwable ->
-                                mActivity.runOnUiThread {
-                                    // empty preferences
-                                    setAdapters()
-                                    Log.e(
-                                        "Pottruck Fragment",
-                                        "Could not load Fitness Preferences",
-                                        throwable,
-                                    )
-                                }
-                            })
-                        }
+                            for (roomId in favoriteRooms) {
+                                dataModel.addId(roomId)
+                            }
+                            dataModel.updatePositionMap()
+
+                            mActivity.runOnUiThread {
+                                setAdapters()
+                            }
+                        }, { throwable ->
+                            mActivity.runOnUiThread {
+                                // empty preferences
+                                setAdapters()
+                                Log.e(
+                                    "Pottruck Fragment",
+                                    "Could not load Fitness Preferences",
+                                    throwable,
+                                )
+                            }
+                        })
                     }
+
                 }, {
                     Log.e("PottruckFragment", "Error getting fitness rooms", it)
                     mActivity.runOnUiThread {

@@ -157,12 +157,6 @@ public interface StudentLife {
     @GET("/penndata/fitness/rooms/")
     Observable<List<FitnessRoom>> getFitnessRooms();
 
-    @GET("/penndata/fitness/usage/{id}")
-    Observable<FitnessRoomUsage> getFitnessRoomUsage(
-            @Path("id") int id,
-            @Query("num_samples") int samples,
-            @Query("group_by") String groupBy);
-
     @GET("/penndata/fitness/preferences")
     Observable<List<Integer>> getFitnessPreferences(
             @Header("Authorization") String bearerToken);
