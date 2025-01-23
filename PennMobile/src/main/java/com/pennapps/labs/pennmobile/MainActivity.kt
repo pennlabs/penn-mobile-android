@@ -61,7 +61,7 @@ import retrofit.android.AndroidLog
 import retrofit.client.OkClient
 import retrofit.converter.GsonConverter
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
@@ -376,7 +376,7 @@ class MainActivity : AppCompatActivity() {
                             .client(okHttpClient)
                             .addConverterFactory(ScalarsConverterFactory.create())
                             .addConverterFactory(GsonConverterFactory.create())
-                            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                             .build()
                     mStudentLifeRf2 = retrofit.create(StudentLifeRf2::class.java)
                 }

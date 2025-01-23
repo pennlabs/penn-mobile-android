@@ -1,4 +1,6 @@
 import com.pennapps.labs.pennmobile.api.classes.AccessTokenResponse
+import com.pennapps.labs.pennmobile.fitness.classes.FitnessRoom
+import com.pennapps.labs.pennmobile.fitness.classes.FitnessRoomUsage
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryPreferences
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRequest
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom
@@ -13,6 +15,8 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
+import rx.Observable
 
 interface StudentLifeRf2 {
     @FormUrlEncoded
@@ -56,4 +60,19 @@ interface StudentLifeRf2 {
         @Header("Authorization") bearerToken: String,
         @Body rooms: LaundryRequest,
     ): Response<ResponseBody>
+
+    @GET("penndata/fitness/rooms/")
+    fun getFitnessRooms(): Observable<List<FitnessRoom?>?>?
+
+    @GET("penndata/fitness/usage/{id}")
+    fun getFitnessRoomUsage(
+        @Path("id") id: Int,
+        @Query("num_samples") samples: Int,
+        @Query("group_by") groupBy: String?
+    ): Observable<FitnessRoomUsage?>?
+
+    @GET("penndata/fitness/preferences")
+    fun getFitnessPreferences(
+        @retrofit.http.Header("Authorization") bearerToken: String?
+    ): Observable<List<Int?>?>?
 }
