@@ -1,5 +1,6 @@
 import com.pennapps.labs.pennmobile.api.classes.AccessTokenResponse
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessPreferences
+import com.pennapps.labs.pennmobile.fitness.classes.FitnessRequest
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRoom
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRoomUsage
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryPreferences
@@ -8,6 +9,7 @@ import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoomSimple
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryUsage
 import okhttp3.ResponseBody
+import retrofit.Callback
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Field
@@ -76,4 +78,11 @@ interface StudentLifeRf2 {
     fun getFitnessPreferences(
         @Header("Authorization") bearerToken: String?
     ): Observable<FitnessPreferences?>?
+
+    @POST("penndata/fitness/preferences/")
+    suspend fun sendFitnessPref(
+        @Header("Authorization") bearerToken: String,
+        @Body rooms: FitnessRequest
+    ) : Response<ResponseBody>
 }
+

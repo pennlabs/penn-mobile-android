@@ -105,7 +105,7 @@ class PottruckFragment : Fragment() {
                     }
                     val sortedRooms = rooms.sortedBy { it.roomName }
 
-                    dataModel = FitnessPreferenceViewModel(mStudentLife, sortedRooms)
+                    dataModel = FitnessPreferenceViewModel(mStudentLifeRf2, sortedRooms)
 
                     mActivity.mNetworkManager.getAccessToken {
                         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)

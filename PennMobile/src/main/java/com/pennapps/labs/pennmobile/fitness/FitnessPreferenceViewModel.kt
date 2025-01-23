@@ -9,12 +9,16 @@ import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessAdapterDataModel
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRequest
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRoom
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
 
 class FitnessPreferenceViewModel(
-    private val studentLife: StudentLife,
+    private val studentLifeRf2: StudentLifeRf2,
     private val roomList: List<FitnessRoom>,
 ) : FitnessAdapterDataModel {
     private val roomTot = roomList.size
@@ -97,27 +101,27 @@ class FitnessPreferenceViewModel(
             val bearerToken =
                 "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
-            try {
-                studentLife.sendFitnessPref(
+            // Global since this is not a real view model. (yes, I was naive and dumb)
+            // Also, this is only used for sending preferences (not critical) and there is no actual
+            // logic being executed on callback beyond logging
+            @OptIn(DelicateCoroutinesApi::class)
+            GlobalScope.launch(Dispatchers.IO) {
+                val response = studentLifeRf2.sendFitnessPref(
                     bearerToken,
-                    FitnessRequest(ArrayList(favoriteRooms)),
-                    object : ResponseCallback() {
-                        override fun success(response: Response) {
-                            Log.i("Fitness Preference View Model", "fitness preferences saved")
-                        }
-
-                        override fun failure(error: RetrofitError) {
-                            Log.e(
-                                "Fitness Preference View Model",
-                                "Error saving fitness " +
-                                    "preferences: $error",
-                                error,
-                            )
-                        }
-                    },
+                    FitnessRequest(ArrayList(favoriteRooms))
                 )
-            } catch (e: Exception) {
-                e.printStackTrace()
+
+                if (response.isSuccessful) {
+                    Log.i("Fitness Preference View Model", "fitness preferences saved")
+                } else {
+                    val errorBody = response.errorBody().toString()
+                    Log.e(
+                        "Fitness Preference View Model",
+                        "Error saving fitness " +
+                                "preferences: $errorBody",
+                        Exception(errorBody),
+                    )
+                }
             }
         }
     }

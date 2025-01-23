@@ -153,17 +153,4 @@ public interface StudentLife {
             @Field("id_hash") String idHash,
             @Field("poll_options") ArrayList<Integer> pollOptions,
             Callback<Response> callback);
-
-    @GET("/penndata/fitness/rooms/")
-    Observable<List<FitnessRoom>> getFitnessRooms();
-
-    @GET("/penndata/fitness/preferences")
-    Observable<List<Integer>> getFitnessPreferences(
-            @Header("Authorization") String bearerToken);
-
-    @POST("/penndata/fitness/preferences/")
-    void sendFitnessPref(
-            @Header("Authorization") String bearerToken,
-            @Body FitnessRequest rooms,
-            Callback<Response> callback);
 }
