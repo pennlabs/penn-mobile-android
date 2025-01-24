@@ -84,13 +84,11 @@ class PottruckFragment : Fragment() {
         initAppBar()
 
         // populate recyclerview
-        if(getConnected()) {
+        if (getConnected()) {
             dataModel.getFitnessRooms(mActivity)
-            //call setAdapters() after calling getFitnessRooms from data model
+            // call setAdapters() after calling getFitnessRooms from data model
             setAdapters()
         }
-
-
     }
 
     private fun setAdapters() {

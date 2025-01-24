@@ -16,7 +16,7 @@ class FitnessPreferenceViewModel(
     private val studentLife: StudentLife,
 ) : FitnessAdapterDataModel {
     private lateinit var roomList: List<FitnessRoom>
-    private var roomTot : Int = 0
+    private var roomTot: Int = 0
 
     // hashset of the favorite room ids
     private val favoriteRooms: HashSet<Int> = hashSetOf()
@@ -146,10 +146,9 @@ class FitnessPreferenceViewModel(
                                     }
                                     updatePositionMap()
                                 }
-
-                            }, {throwable ->
+                            }, { throwable ->
                                 mActivity.runOnUiThread {
-                                    //call setAdapters
+                                    // call setAdapters
                                     Log.e(
                                         "Pottruck Fragment",
                                         "Could not load Fitness Preferences",
@@ -160,7 +159,7 @@ class FitnessPreferenceViewModel(
                         }
                     }
                 })
-        }  catch (e: Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
