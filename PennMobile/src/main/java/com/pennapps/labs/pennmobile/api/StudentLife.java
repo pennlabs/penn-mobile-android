@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.api;
 
+import com.pennapps.labs.pennmobile.Subletting.Offeree;
 import com.pennapps.labs.pennmobile.classes.AccessTokenResponse;
 import com.pennapps.labs.pennmobile.classes.Account;
 import com.pennapps.labs.pennmobile.classes.Article;
@@ -266,8 +267,8 @@ public interface StudentLife {
     @POST("/sublet/properties/{sublet_id}/offers/")
     void createOffer(
             @Header("Authorization") String bearerToken,
-            @Path("sublet_id") int id,
-            @Body Offer offer,
-            Callback<Offer> callback);
+            @Path("sublet_id") String id,
+            @Body Offeree offer,
+            Callback<Offeree> callback);
 }
 
