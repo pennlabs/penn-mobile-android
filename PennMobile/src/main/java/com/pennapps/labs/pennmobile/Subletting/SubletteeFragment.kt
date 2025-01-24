@@ -130,10 +130,37 @@ class SubletteeFragment : Fragment() {
                 return@setOnClickListener
             }
 
+            //Information to pass:
+            //Dates
+            val startDateMillis = startCalendar.timeInMillis
+            val endDateMillis = endCalendar.timeInMillis
+            //Price
+            val minPriceString = binding.subletteeMinPriceText.text.toString().trim()
+            val maxPriceString = binding.subletteeMaxPriceText.text.toString().trim()
+            val minPrice = minPriceString.toDouble()
+            val maxPrice = maxPriceString.toDouble()
+            //Location
+            val selectedLocation = binding.subletteeLocationAddressView.text.toString().removePrefix("Address: ").trim()
+
+            //Create the bundle:
+            val bundle = Bundle().apply {
+                putString("location", selectedLocation)
+                putDouble("minPrice", minPrice)
+                putDouble("maxPrice", maxPrice)
+                putLong("startDate", startDateMillis)
+                putLong("endDate", endDateMillis)
+                putBoolean("datesFlexible", areDatesFlexible)
+                putBoolean("locationFlexible", areLocationsFlexible)
+            }
+
+            //Pass the bundle:
+            val subletteeMarketplace = SubletteeMarketplace().apply {
+                arguments = bundle
+            }
 
             // Load new fragment, which will hold the subletting marketplace in whole
             mActivity.supportFragmentManager.beginTransaction()
-                .replace(((view as ViewGroup).parent as View).id, SubletteeMarketplace())
+                .replace(((view as ViewGroup).parent as View).id, subletteeMarketplace)
                 .addToBackStack(null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()
@@ -241,6 +268,9 @@ class SubletteeFragment : Fragment() {
 
             override fun onTextChanged(query: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 getAddressPredictions(query.toString())
+                if (binding.subletteeLocationEdittext.hasFocus()) {
+                    binding.subletteeLocationEdittext.showDropDown()
+                }
             }
 
 
@@ -273,10 +303,10 @@ class SubletteeFragment : Fragment() {
                     val predictions = response.autocompletePredictions
                     if (predictions.isNotEmpty()) {
                         val bestPrediction = predictions[0].getFullText(null).toString()
-                        binding.subletteeLocationAddressView.text = bestPrediction
+                        binding.subletteeLocationAddressView.text = "Address: $bestPrediction"
                     } else {
                         // No predictions found; set to original query
-                        binding.subletteeLocationAddressView.text = query
+                        binding.subletteeLocationAddressView.text = "Address: $query"
                     }
                 }
                 .addOnFailureListener { exception: Exception ->
@@ -284,11 +314,11 @@ class SubletteeFragment : Fragment() {
                         Log.e("Places", "Place not found: ${exception.message}")
                     }
                     // On failure, set to original query
-                    binding.subletteeLocationAddressView.text = query
+                    binding.subletteeLocationAddressView.text = "Address: $query"
                 }
         } else {
             // Clear the address text view if the query is empty
-            binding.subletteeLocationAddressView.text = ""
+            binding.subletteeLocationAddressView.text = "Address: "
         }
     }
 
@@ -312,10 +342,6 @@ class SubletteeFragment : Fragment() {
                     addressAdapter.clear()
                     addressAdapter.addAll(addresses)
                     addressAdapter.notifyDataSetChanged()
-                    // Show the dropdown if the text box is focused
-                    if (binding.subletteeLocationEdittext.hasFocus()) {
-                        binding.subletteeLocationEdittext.showDropDown()
-                    }
                 }
                 .addOnFailureListener { exception: Exception ->
                     if (exception is ApiException) {

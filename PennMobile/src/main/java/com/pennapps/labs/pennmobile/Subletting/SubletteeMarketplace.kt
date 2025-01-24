@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageButton
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
@@ -58,6 +59,18 @@ class SubletteeMarketplace : Fragment() {
         dataModel = SublesseeViewModel(mActivity, mStudentLife)
 
         val bundle = Bundle()
+
+        arguments?.let { bundle ->
+            val location = bundle.getString("location", "")
+            val minPrice = bundle.getDouble("minPrice", 0.0)
+            val maxPrice = bundle.getDouble("maxPrice", 0.0)
+            val startDateMillis = bundle.getLong("startDate", 0L)
+            val endDateMillis = bundle.getLong("endDate", 0L)
+            val datesFlexible = bundle.getBoolean("datesFlexible", false)
+            val locationFlexible = bundle.getBoolean("locationFlexible", false)
+
+            //Next Step: Add additional search logic now that the args have been retrieved
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
