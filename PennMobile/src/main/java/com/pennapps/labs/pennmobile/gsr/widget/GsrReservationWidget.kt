@@ -71,12 +71,14 @@ class GsrReservationWidget : AppWidgetProvider() {
             // Called twice because for some reason it doesn't register if called once
             appWidgetManager.notifyAppWidgetViewDataChanged(
                 appWidgetId,
-                R.id.gsr_reservation_widget_stack_view,)
+                R.id.gsr_reservation_widget_stack_view,
+            )
             appWidgetManager.updateAppWidget(appWidgetId, views)
             Handler(Looper.getMainLooper()).postDelayed({
                 appWidgetManager.notifyAppWidgetViewDataChanged(
                     appWidgetId,
-                    R.id.gsr_reservation_widget_stack_view,)
+                    R.id.gsr_reservation_widget_stack_view,
+                )
                 appWidgetManager.updateAppWidget(appWidgetId, views)
             }, 15000)
         }
