@@ -7,11 +7,9 @@ import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.RemoteViews
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AlertDialog
-import androidx.browser.customtabs.CustomTabsClient.getPackageName
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,7 +24,6 @@ import org.joda.time.format.DateTimeFormatter
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
-
 
 class GsrReservationsAdapter(
     private var reservations: ArrayList<GSRReservation>,
@@ -105,8 +102,10 @@ class GsrReservationsAdapter(
                                         reservations.removeAt(position)
                                     }
                                     run {
-                                        val ids = AppWidgetManager.getInstance(mContext).getAppWidgetIds(
-                                            ComponentName(mContext, GsrReservationWidget::class.java))
+                                        val ids =
+                                            AppWidgetManager.getInstance(mContext).getAppWidgetIds(
+                                                ComponentName(mContext, GsrReservationWidget::class.java),
+                                            )
                                         GsrReservationWidget().onUpdate(mContext, AppWidgetManager.getInstance(mContext), ids)
                                         if (reservations.size == 0) {
                                             var intent = Intent("refresh")

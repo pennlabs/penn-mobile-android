@@ -2,7 +2,6 @@ package com.pennapps.labs.pennmobile.gsr.fragments
 
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -14,7 +13,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.glance.appwidget.action.actionSendBroadcast
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
@@ -25,7 +23,6 @@ import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
-
 
 class BookGsrFragment : Fragment() {
     private var _binding: GsrDetailsBookBinding? = null
@@ -171,8 +168,10 @@ class BookGsrFragment : Fragment() {
                             if (result.getDetail().equals("success")) {
                                 Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
 
-                                val ids = AppWidgetManager.getInstance(context).getAppWidgetIds(
-                                    ComponentName(context!!, GsrReservationWidget::class.java))
+                                val ids =
+                                    AppWidgetManager.getInstance(context).getAppWidgetIds(
+                                        ComponentName(context!!, GsrReservationWidget::class.java),
+                                    )
                                 GsrReservationWidget().onUpdate(context!!, AppWidgetManager.getInstance(context), ids)
 
                                 // Save user info in shared preferences
