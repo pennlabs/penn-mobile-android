@@ -1,15 +1,19 @@
 import com.pennapps.labs.pennmobile.api.classes.AccessTokenResponse
+import com.pennapps.labs.pennmobile.dining.classes.DiningPreferences
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessPreferences
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRequest
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRoom
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRoomUsage
+import com.pennapps.labs.pennmobile.gsr.classes.GSR
+import com.pennapps.labs.pennmobile.gsr.classes.WhartonStatus
+import com.pennapps.labs.pennmobile.home.classes.Article
+import com.pennapps.labs.pennmobile.home.classes.CalendarEvent
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryPreferences
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRequest
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoomSimple
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryUsage
 import okhttp3.ResponseBody
-import retrofit.Callback
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Field
@@ -48,6 +52,12 @@ interface StudentLifeRf2 {
         @Path("id") id: Int,
     ): Response<LaundryRoom>
 
+    // this one is for rxjava
+    @GET("laundry/hall/{id}")
+    fun roomObservable(
+        @Path("id") id: Int
+    ): Observable<LaundryRoom?>?
+
     @GET("laundry/usage/{id}")
     suspend fun usage(
         @Path("id") id: Int,
@@ -84,5 +94,29 @@ interface StudentLifeRf2 {
         @Header("Authorization") bearerToken: String,
         @Body rooms: FitnessRequest
     ) : Response<ResponseBody>
+
+    @GET("dining/preferences")
+    fun getDiningPreferences(
+        @Header("Authorization") bearerToken: String?
+    ): Observable<DiningPreferences?>?
+
+    @GET("gsr/availability/{id}/{gid}")
+    fun gsrRoom(
+        @Header("Authorization") bearerToken: String?,
+        @Path("id") id: String?,
+        @Path("gid") gid: Int,
+        @Query("start") date: String?
+    ): Observable<GSR?>?
+
+    @GET("gsr/wharton")
+    fun isWharton(
+        @Header("Authorization") bearerToken: String?
+    ): Observable<WhartonStatus?>?
+
+    @GET("penndata/news")
+    fun getNews(): Observable<Article?>?
+
+    @GET("penndata/calendar")
+    fun getCalendar(): Observable<List<CalendarEvent?>?>?
 }
 

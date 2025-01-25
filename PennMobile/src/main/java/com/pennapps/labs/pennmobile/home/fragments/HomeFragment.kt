@@ -150,6 +150,7 @@ class HomeFragment : Fragment() {
         }
 
         val studentLife = MainActivity.studentLifeInstance
+        val studentLifeRf2 = MainActivity.studentLifeInstanceRf2
         mActivity.mNetworkManager.getAccessToken {
             val sp = sharedPreferences
             val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
@@ -160,7 +161,13 @@ class HomeFragment : Fragment() {
             lifecycleScope.launch(Dispatchers.Default) {
                 // set adapter if it is null
                 if (binding.homeCellsRv.adapter == null) {
-                    homepageViewModel.populateHomePageCells(studentLife, isLoggedIn, bearerToken, deviceID)
+                    homepageViewModel.populateHomePageCells(
+                        studentLife,
+                        studentLifeRf2,
+                        isLoggedIn,
+                        bearerToken,
+                        deviceID
+                    )
                     withContext(Dispatchers.Main) {
                         binding.homeCellsRv.adapter = HomeAdapter(homepageViewModel)
                         binding.homeCellsRv.visibility = View.INVISIBLE
@@ -171,6 +178,7 @@ class HomeFragment : Fragment() {
                     val updatedIndices =
                         homepageViewModel.updateHomePageCells(
                             studentLife,
+                            studentLifeRf2,
                             isLoggedIn,
                             bearerToken,
                             deviceID,

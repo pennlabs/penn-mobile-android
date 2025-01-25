@@ -56,6 +56,7 @@ import com.pennapps.labs.pennmobile.utils.Utils
 import eightbitlab.com.blurview.BlurView
 import kotlinx.coroutines.sync.Mutex
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit.RestAdapter
 import retrofit.android.AndroidLog
 import retrofit.client.OkClient
@@ -361,12 +362,16 @@ class MainActivity : AppCompatActivity() {
         val studentLifeInstanceRf2: StudentLifeRf2
             get() {
                 if (mStudentLifeRf2 == null) {
+                    val logging = HttpLoggingInterceptor().apply {
+                        level = HttpLoggingInterceptor.Level.BODY
+                    }
                     val okHttpClient =
                         OkHttpClient
                             .Builder()
                             .connectTimeout(35, TimeUnit.SECONDS)
                             .readTimeout(35, TimeUnit.SECONDS)
                             .writeTimeout(35, TimeUnit.SECONDS)
+                            .addInterceptor(logging)
                             .build()
 
                     val retrofit =

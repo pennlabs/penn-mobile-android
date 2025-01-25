@@ -30,6 +30,7 @@ import com.pennapps.labs.pennmobile.fitness.fragments.CloseListener
 import com.pennapps.labs.pennmobile.fitness.fragments.FitnessPreferencesFragment
 import com.pennapps.labs.pennmobile.isOnline
 import com.pennapps.labs.pennmobile.utils.Utils
+import rx.schedulers.Schedulers
 
 class PottruckFragment : Fragment() {
     private lateinit var mActivity: MainActivity
@@ -97,12 +98,18 @@ class PottruckFragment : Fragment() {
         // displays banner if not connected
         if (!getConnected()) return
 
+        Log.i("IDK BRO1", Thread.currentThread().name)
+
         try {
-            mStudentLifeRf2.getFitnessRooms()?.subscribe({ fitnessRooms ->
+
+            mStudentLifeRf2.getFitnessRooms()?.subscribeOn(Schedulers.io())?.subscribe({ fitnessRooms ->
                     val rooms = fitnessRooms?.filterNotNull().orEmpty()
                     for (room in rooms) {
                         Log.i("Fitness Room${room.roomId}", "${room.roomName}")
                     }
+
+                    Log.i("IDK BRO1", Thread.currentThread().name)
+
                     val sortedRooms = rooms.sortedBy { it.roomName }
 
                     dataModel = FitnessPreferenceViewModel(mStudentLifeRf2, sortedRooms)
@@ -113,7 +120,12 @@ class PottruckFragment : Fragment() {
                         val bearerToken =
                             "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
+                        Log.i("IDK BRO3", Thread.currentThread().name)
+
                         mStudentLifeRf2.getFitnessPreferences(bearerToken)?.subscribe({ favorites ->
+
+                            Log.i("IDK BRO2", Thread.currentThread().name)
+
                             val favoriteRooms = favorites?.rooms?.filterNotNull().orEmpty()
 
                             for (roomId in favoriteRooms) {
@@ -125,6 +137,7 @@ class PottruckFragment : Fragment() {
                                 setAdapters()
                             }
                         }, { throwable ->
+
                             mActivity.runOnUiThread {
                                 // empty preferences
                                 setAdapters()
@@ -134,6 +147,8 @@ class PottruckFragment : Fragment() {
                                     throwable,
                                 )
                             }
+
+
                         })
                     }
 

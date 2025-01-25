@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.home
 
+import StudentLifeRf2
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -24,6 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import rx.schedulers.Schedulers
 import java.util.concurrent.CountDownLatch
 
 /**
@@ -118,12 +120,13 @@ class HomepageViewModel :
     @Synchronized
     fun updateHomePageCells(
         studentLife: StudentLife,
+        studentLifeRf2: StudentLifeRf2,
         isLoggedIn: Boolean,
         bearerToken: String,
         deviceID: String,
     ): List<Int> {
         val prevList = homepageCells.toList()
-        populateHomePageCells(studentLife, isLoggedIn, bearerToken, deviceID)
+        populateHomePageCells(studentLife, studentLifeRf2, isLoggedIn, bearerToken, deviceID)
 
         val updatedIndices = mutableListOf<Int>()
 
@@ -146,6 +149,7 @@ class HomepageViewModel :
     @Synchronized
     fun populateHomePageCells(
         studentLife: StudentLife,
+        studentLifeRf2: StudentLifeRf2,
         isLoggedIn: Boolean,
         bearerToken: String,
         deviceID: String,
@@ -153,19 +157,19 @@ class HomepageViewModel :
         if (isLoggedIn) {
             val latch = CountDownLatch(NUM_CELLS_LOGGED_IN)
             getPolls(studentLife, bearerToken, deviceID, latch)
-            getNews(studentLife, latch)
-            getCalendar(studentLife, latch)
+            getNews(studentLifeRf2, latch)
+            getCalendar(studentLifeRf2, latch)
             getLaundry(studentLife, bearerToken, latch)
             getPosts(studentLife, bearerToken, latch)
-            getDiningPrefs(studentLife, bearerToken, latch)
+            getDiningPrefs(studentLifeRf2, bearerToken, latch)
             getGSRReservations(studentLife, bearerToken, latch)
             // waits until all of the network calls are processed
             latch.await()
         } else {
             val latch = CountDownLatch(NUM_CELLS_GUEST)
             clearLoggedIn()
-            getCalendar(studentLife, latch)
-            getNews(studentLife, latch)
+            getCalendar(studentLifeRf2, latch)
+            getNews(studentLifeRf2, latch)
             latch.await()
         }
     }
@@ -224,12 +228,14 @@ class HomepageViewModel :
     }
 
     private fun getNews(
-        studentLife: StudentLife,
+        studentLife: StudentLifeRf2,
         latch: CountDownLatch,
     ) {
         try {
-            studentLife.news.subscribe({ article ->
-                val newsCell = NewsCell(article)
+            studentLife.getNews()
+                ?.subscribeOn(Schedulers.io())
+                ?.subscribe({ article ->
+                val newsCell = article?.let { NewsCell(it) } ?: HomeCell()
                 addCell(newsCell, NEWS_POS)
 
                 Log.i(TAG, "Loaded news")
@@ -241,23 +247,28 @@ class HomepageViewModel :
                 latch.countDown()
             })
         } catch (e: Exception) {
+
+            Log.i(TAG, "Could not load calendar")
             e.printStackTrace()
         }
     }
 
     private fun getCalendar(
-        studentLife: StudentLife,
+        studentLife: StudentLifeRf2,
         latch: CountDownLatch,
     ) {
         try {
-            studentLife.calendar.subscribe({ events ->
-                val calendarCell = CalendarCell(events)
+            studentLife.getCalendar()
+                ?.subscribeOn(Schedulers.io())
+                ?.subscribe({ events ->
+                val calendarCell = events?.let { CalendarCell(it.filterNotNull()) } ?: HomeCell()
 
                 Log.i(TAG, "Loaded calendar")
 
                 addCell(calendarCell, CALENDAR_POS)
                 latch.countDown()
             }, { throwable ->
+                setNewsBlurView(true)
                 Log.i(TAG, "Could not load calendar")
                 throwable.printStackTrace()
                 latch.countDown()
@@ -275,14 +286,13 @@ class HomepageViewModel :
         try {
             studentLife.getLaundryPref(bearerToken).subscribe({ preferences ->
                 val laundryCell =
-                    if (preferences.isNullOrEmpty()) LaundryCell(0) else LaundryCell(preferences[0])
+                    if (preferences.isNullOrEmpty()) HomeCell() else LaundryCell(preferences[0])
 
                 Log.i(TAG, "Loaded laundry")
 
                 addCell(laundryCell, LAUNDRY_POS)
                 latch.countDown()
             }, { throwable ->
-                setNewsBlurView(true)
                 Log.i(TAG, "Could not load laundry")
                 throwable.printStackTrace()
                 latch.countDown()
@@ -322,23 +332,18 @@ class HomepageViewModel :
     }
 
     private fun getDiningPrefs(
-        studentLife: StudentLife,
+        studentLife: StudentLifeRf2,
         bearerToken: String,
         latch: CountDownLatch,
     ) {
         try {
-            studentLife.getDiningPreferences(bearerToken).subscribe({ preferences ->
-                val list = preferences.preferences
-                val venues = mutableListOf<Int>()
-                if (list.isNullOrEmpty()) {
-                    venues.add(593)
-                    venues.add(1442)
-                    venues.add(636)
-                } else {
-                    list.forEach {
-                        it.id?.let { it1 -> venues.add(it1) }
-                    }
-                }
+            studentLife.getDiningPreferences(bearerToken)
+                ?.subscribeOn(Schedulers.io())
+                ?.subscribe({ preferences ->
+                val venues = preferences?.preferences
+                    ?.mapNotNull { it.id }
+                    ?.toMutableList()
+                    ?: mutableListOf(593, 1442, 636)
 
                 val diningCell = DiningCell(venues)
                 addCell(diningCell, DINING_POS)

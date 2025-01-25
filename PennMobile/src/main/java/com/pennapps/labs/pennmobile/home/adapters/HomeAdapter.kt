@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.home.adapters
 
+import StudentLifeRf2
 import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
@@ -76,6 +77,7 @@ import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
 import rx.Observable
+import rx.schedulers.Schedulers
 
 class HomeAdapter(
     private val dataModel: HomepageDataModel,
@@ -83,6 +85,7 @@ class HomeAdapter(
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
+    private lateinit var mStudentLifeRf2: StudentLifeRf2
 
     private var mCustomTabsClient: CustomTabsClient? = null
     private var customTabsIntent: CustomTabsIntent? = null
@@ -113,6 +116,7 @@ class HomeAdapter(
     ): RecyclerView.ViewHolder {
         mContext = parent.context
         mStudentLife = MainActivity.studentLifeInstance
+        mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
         mActivity = mContext as MainActivity
 
         return when (viewType) {
@@ -252,10 +256,10 @@ class HomeAdapter(
         holder.homeRv.layoutParams = params
 
         try {
-            mStudentLife.room(roomID).subscribe({ room ->
+            mStudentLifeRf2.roomObservable(roomID)?.subscribeOn(Schedulers.io())?.subscribe({ room ->
                 mActivity.runOnUiThread {
-                    holder.homeTitle.text = room.name
-                    val rooms = arrayListOf(room)
+                    holder.homeTitle.text = room?.name ?: ""
+                    val rooms = room?.let { arrayListOf(it) } ?: arrayListOf()
                     holder.homeRv.adapter =
                         LaundryRoomAdapter(
                             mContext,

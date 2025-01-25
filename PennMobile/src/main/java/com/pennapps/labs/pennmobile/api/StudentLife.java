@@ -1,26 +1,16 @@
 package com.pennapps.labs.pennmobile.api;
 
-import com.pennapps.labs.pennmobile.api.classes.AccessTokenResponse;
 import com.pennapps.labs.pennmobile.api.classes.Account;
-import com.pennapps.labs.pennmobile.home.classes.Article;
-import com.pennapps.labs.pennmobile.home.classes.CalendarEvent;
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall;
-import com.pennapps.labs.pennmobile.dining.classes.DiningPreferences;
 import com.pennapps.labs.pennmobile.dining.classes.DiningRequest;
-import com.pennapps.labs.pennmobile.fitness.classes.FitnessRequest;
-import com.pennapps.labs.pennmobile.fitness.classes.FitnessRoom;
-import com.pennapps.labs.pennmobile.fitness.classes.FitnessRoomUsage;
 import com.pennapps.labs.pennmobile.fling.classes.FlingEvent;
-import com.pennapps.labs.pennmobile.gsr.classes.GSR;
 import com.pennapps.labs.pennmobile.gsr.classes.GSRBookingResult;
 import com.pennapps.labs.pennmobile.gsr.classes.GSRLocation;
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation;
-import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom;
 import com.pennapps.labs.pennmobile.home.classes.Poll;
 import com.pennapps.labs.pennmobile.home.classes.Post;
 import com.pennapps.labs.pennmobile.api.classes.SaveAccountResponse;
 import com.pennapps.labs.pennmobile.dining.classes.Venue;
-import com.pennapps.labs.pennmobile.gsr.classes.WhartonStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +25,6 @@ import retrofit.http.Header;
 import retrofit.http.Headers;
 import retrofit.http.POST;
 import retrofit.http.Path;
-import retrofit.http.Query;
 import rx.Observable;
 
 /**
@@ -55,30 +44,8 @@ public interface StudentLife {
     Observable<DiningHall> daily_menu(
             @Path("id") int id);
 
-    @GET("/dining/preferences")
-    Observable<DiningPreferences> getDiningPreferences(
-            @Header("Authorization") String bearerToken
-    );
-
-    @GET("/laundry/hall/{id}")
-    Observable<LaundryRoom> room(
-            @Path("id") int id);
-
     @GET("/gsr/locations")
     Observable<List<GSRLocation>> location ();
-
-    @GET("/gsr/availability/{id}/{gid}")
-    Observable<GSR> gsrRoom(
-            @Header("Authorization") String bearerToken,
-            @Path("id") String id,
-            @Path("gid") int gid,
-            @Query("start") String date
-            );
-
-    @GET("/gsr/wharton")
-    Observable<WhartonStatus> isWharton (
-            @Header("Authorization") String bearerToken
-    );
 
     @FormUrlEncoded
     @POST("/gsr/book/")
@@ -93,12 +60,6 @@ public interface StudentLife {
 
     @GET("/events/fling")
     Observable<List<FlingEvent>> getFlingEvents();
-
-    @GET("/penndata/news")
-    Observable<Article> getNews();
-
-    @GET("/penndata/calendar")
-    Observable<List<CalendarEvent>> getCalendar();
 
     @GET("/gsr/reservations")
     Observable<List<GSRReservation>> getGsrReservations(

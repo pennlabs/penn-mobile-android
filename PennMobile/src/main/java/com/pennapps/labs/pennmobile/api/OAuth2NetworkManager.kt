@@ -9,6 +9,7 @@ import com.pennapps.labs.pennmobile.BuildConfig
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.classes.AccessTokenResponse
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit.Callback
 import retrofit.RetrofitError
@@ -87,7 +88,6 @@ class OAuth2NetworkManager(
             val currentTime = Calendar.getInstance().timeInMillis
             editor.putLong(mActivity.getString(R.string.token_expires_at), currentTime + expiresInInt)
             editor.apply()
-            Log.i("Accounts", "Refreshed access token")
 
             unlockMutex.invoke()
             function.invoke()
@@ -95,7 +95,6 @@ class OAuth2NetworkManager(
             val error = response.errorBody()!!
 
             FirebaseCrashlytics.getInstance().recordException(Exception(error.toString()))
-            Log.e("Accounts", "Error refreshing access token $error")
 
             if (response.code() == 400) {
                 mActivity.startLoginFragment()

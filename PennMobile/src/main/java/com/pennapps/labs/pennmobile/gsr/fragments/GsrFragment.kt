@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.gsr.fragments
 
+import StudentLifeRf2
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
@@ -31,6 +32,7 @@ import com.pennapps.labs.pennmobile.gsr.classes.GSRSlot
 import com.pennapps.labs.pennmobile.isOnline
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
+import rx.schedulers.Schedulers
 import java.util.Calendar
 import java.util.Date
 
@@ -49,6 +51,7 @@ class GsrFragment : Fragment() {
 
     // api manager
     private lateinit var mStudentLife: StudentLife
+    private lateinit var mStudentLifeRf2: StudentLifeRf2
 
     // list that holds all GSR rooms
     private val gsrHashMap = HashMap<String, String?>()
@@ -81,6 +84,7 @@ class GsrFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mStudentLife = MainActivity.studentLifeInstance
+        mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
         mActivity = activity as MainActivity
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity)
         mActivity.closeKeyboard()
@@ -254,12 +258,14 @@ class GsrFragment : Fragment() {
                     Toast.makeText(activity, "You are not logged in!", Toast.LENGTH_LONG).show()
                 } else {
                     try {
-                        mStudentLife
+                        mStudentLifeRf2
                             .isWharton(
                                 "Bearer $bearerToken",
-                            )?.subscribe(
+                            )
+                            ?.subscribeOn(Schedulers.io())
+                            ?.subscribe(
                                 { status ->
-                                    isWharton = status.isWharton
+                                    isWharton = status?.isWharton ?: false
                                 },
                                 {
                                     Log.e("GsrFragment", "Error getting Wharton status", it)
@@ -267,6 +273,7 @@ class GsrFragment : Fragment() {
                                 },
                             )
                     } catch (e: Exception) {
+                        Log.i("FUCK", "manne")
                         e.printStackTrace()
                     }
                 }
@@ -344,20 +351,22 @@ class GsrFragment : Fragment() {
             Log.i("GsrFragment", "Wharton Status: $isWharton")
 
             try {
-                mStudentLife
+                mStudentLifeRf2
                     .gsrRoom(
                         "Bearer $bearerToken",
                         location,
                         gId,
                         adjustedDateString,
-                    )?.subscribe(
+                    )
+                    ?.subscribeOn(Schedulers.io())
+                    ?.subscribe(
                         { gsr ->
                             activity?.let { activity ->
                                 activity.runOnUiThread {
-                                    val gsrRooms = gsr.rooms
+                                    val gsrRooms = gsr?.rooms
                                     var timeSlotLengthZero = true
 
-                                    if (gsrRooms == null) {
+                                    if (gsrRooms.isNullOrEmpty()) {
                                         // a certification error causes "room" field to remain null
                                         showNoResults()
                                     } else {
@@ -421,6 +430,7 @@ class GsrFragment : Fragment() {
                         },
                     )
             } catch (e: Exception) {
+                Log.i("WHAT THE HELL", "asdf")
                 e.printStackTrace()
             }
         }

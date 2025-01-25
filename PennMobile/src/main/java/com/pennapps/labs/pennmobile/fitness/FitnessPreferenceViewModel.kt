@@ -106,21 +106,25 @@ class FitnessPreferenceViewModel(
             // logic being executed on callback beyond logging
             @OptIn(DelicateCoroutinesApi::class)
             GlobalScope.launch(Dispatchers.IO) {
-                val response = studentLifeRf2.sendFitnessPref(
-                    bearerToken,
-                    FitnessRequest(ArrayList(favoriteRooms))
-                )
-
-                if (response.isSuccessful) {
-                    Log.i("Fitness Preference View Model", "fitness preferences saved")
-                } else {
-                    val errorBody = response.errorBody().toString()
-                    Log.e(
-                        "Fitness Preference View Model",
-                        "Error saving fitness " +
-                                "preferences: $errorBody",
-                        Exception(errorBody),
+                try {
+                    val response = studentLifeRf2.sendFitnessPref(
+                        bearerToken,
+                        FitnessRequest(ArrayList(favoriteRooms))
                     )
+
+                    if (response.isSuccessful) {
+                        Log.i("Fitness Preference View Model", "fitness preferences saved")
+                    } else {
+                        val errorBody = response.errorBody().toString()
+                        Log.e(
+                            "Fitness Preference View Model",
+                            "Error saving fitness " +
+                                    "preferences: $errorBody",
+                            Exception(errorBody),
+                        )
+                    }
+                } catch (e: Exception) {
+                    Log.e("FitnessPreference", "Network call failed", e)
                 }
             }
         }
