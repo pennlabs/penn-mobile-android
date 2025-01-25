@@ -19,15 +19,26 @@
             android:dividerHeight="8dp"
             />
 
-        <ImageView
-            android:contentDescription="Penn Logo"
+<!--        <ImageView-->
+<!--            android:contentDescription="Penn Logo"-->
+<!--            android:id="@+id/gsr_reservation_widget_empty_view"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:background="@drawable/app_widget_background"-->
+<!--            android:scaleType="centerCrop"-->
+<!--            android:src="@drawable/splash_screen435"-->
+<!--            />-->
+
+        <TextView
             android:id="@+id/gsr_reservation_widget_empty_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="You currently have no reservations"
+            android:textSize="28dp"
+            android:textColor="@color/black"
             android:background="@drawable/app_widget_background"
-            android:scaleType="centerCrop"
-            android:src="@drawable/splash_screen435"
             />
     </FrameLayout>
 </LinearLayout>

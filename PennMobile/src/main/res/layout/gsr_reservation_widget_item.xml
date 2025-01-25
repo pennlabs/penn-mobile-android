@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width = "320dp"
-    android:layout_height = "94dp"
+    android:minWidth="245dp"
+    android:layout_width = "292dp"
+    android:minHeight="60dp"
+    android:layout_height = "92dp"
     android:orientation="horizontal"
     android:background="#ffffff"
     android:id="@+id/gsr_reservation_widget_item_root">
@@ -46,7 +48,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:text="Wednesday September 20 \n2:00pm-3:00 pm"
+            android:layout_marginEnd="8dp"
+            android:text="Wednesday September 30 \n2:00pm-3:00 pm"
             android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@+id/gsr_reservation_iv"
             app:layout_constraintTop_toBottomOf="@+id/gsr_reservation_location_tv" />
