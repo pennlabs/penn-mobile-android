@@ -3,7 +3,6 @@ package com.pennapps.labs.pennmobile.gsr.fragments
 import StudentLife
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -22,9 +21,7 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.GsrDetailsBookBinding
 import kotlinx.coroutines.launch
-import com.pennapps.labs.pennmobile.gsr.classes.GSRBookingResult
 import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
-
 
 class BookGsrFragment : Fragment() {
     private var _binding: GsrDetailsBookBinding? = null

@@ -44,7 +44,8 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
             Handler(Looper.getMainLooper()).postDelayed({
                 appWidgetManager.notifyAppWidgetViewDataChanged(
                     appWidgetId,
-                    R.id.gsr_reservation_widget_stack_view,)
+                    R.id.gsr_reservation_widget_stack_view,
+                )
             }, 5000)
         }
 
