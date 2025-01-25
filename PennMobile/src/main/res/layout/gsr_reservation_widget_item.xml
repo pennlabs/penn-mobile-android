@@ -32,10 +32,11 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:maxLines = "2"
-            android:minLines="2"
-            android:text="VP Weigle Room 110 oiwejfoiwjeof ihu"
+            android:minLines="1"
+            android:text="VP Weigle Room 110 oiwejfoiwjeof ihu wefwefwefwefwef"
             android:textSize="12sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:ellipsize="end" />
 
         <TextView
             android:id="@+id/gsr_reservation_widget_item_time_tv"

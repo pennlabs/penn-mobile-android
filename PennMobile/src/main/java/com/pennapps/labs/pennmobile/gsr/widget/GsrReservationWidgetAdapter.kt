@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.preference.PreferenceManager
@@ -37,10 +39,18 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
         override fun onCreate() {
             mGsrReservationsRequest = GsrReservationWidget.gsrReservationsRequestInstance
             getWidgetGsrReservations()
+            val appWidgetManager: AppWidgetManager =
+                AppWidgetManager.getInstance(context)
+            Handler(Looper.getMainLooper()).postDelayed({
+                appWidgetManager.notifyAppWidgetViewDataChanged(
+                    appWidgetId,
+                    R.id.gsr_reservation_widget_stack_view,)
+            }, 5000)
         }
 
         // Not used since already handled
         override fun onDataSetChanged() {
+            getWidgetGsrReservations()
         }
 
         override fun onDestroy() {
@@ -48,7 +58,6 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
 
         override fun getCount(): Int = dataSet.size
 
-        // TODO("Get building name(?), and hopefully support click behavior")
         override fun getViewAt(index: Int): RemoteViews {
             val reservation = dataSet[index]
             val roomName = reservation.name
@@ -118,13 +127,6 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
                         }.toList()
                         .subscribe { reservations ->
                             dataSet = reservations
-                            println("subscribed")
-                            val appWidgetManager: AppWidgetManager =
-                                AppWidgetManager.getInstance(context)
-                            appWidgetManager.notifyAppWidgetViewDataChanged(
-                                appWidgetId,
-                                R.id.gsr_reservation_widget_stack_view,
-                            )
                         }
                 }
             } catch (e: Exception) {

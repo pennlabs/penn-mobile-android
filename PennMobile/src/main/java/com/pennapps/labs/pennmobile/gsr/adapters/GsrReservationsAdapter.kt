@@ -1,5 +1,7 @@
 package com.pennapps.labs.pennmobile.gsr.adapters
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -16,6 +18,7 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.GsrReservationBinding
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
+import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 import org.joda.time.format.DateTimeFormat
@@ -102,6 +105,10 @@ class GsrReservationsAdapter(
                                     reservations.removeAt(position)
                                 }
                                 run {
+                                    val ids = AppWidgetManager.getInstance(mContext).getAppWidgetIds(
+                                        ComponentName(mContext, GsrReservationWidget::class.java)
+                                    )
+                                    GsrReservationWidget().onUpdate(mContext, AppWidgetManager.getInstance(mContext), ids)
                                     if (reservations.size == 0) {
                                         var intent = Intent("refresh")
                                         LocalBroadcastManager
