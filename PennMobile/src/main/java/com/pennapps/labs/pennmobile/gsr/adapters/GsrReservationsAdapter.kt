@@ -1,13 +1,17 @@
 package com.pennapps.labs.pennmobile.gsr.adapters
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.RemoteViews
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AlertDialog
+import androidx.browser.customtabs.CustomTabsClient.getPackageName
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,12 +19,14 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.GsrReservationBinding
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
+import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import com.squareup.picasso.Picasso
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
+
 
 class GsrReservationsAdapter(
     private var reservations: ArrayList<GSRReservation>,
@@ -77,7 +83,7 @@ class GsrReservationsAdapter(
                     val sessionID =
                         if (reservation.info == null) {
                             sp.getString(
-                                mContext.getString(R.string.huntsmanGSR_SessionID),
+                                mContext.getString(com.pennapps.labs.pennmobile.R.string.huntsmanGSR_SessionID),
                                 "",
                             )
                         } else {
@@ -86,7 +92,7 @@ class GsrReservationsAdapter(
 
                     val labs = MainActivity.studentLifeInstance
                     val bearerToken =
-                        "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
+                        "Bearer " + sp.getString(mContext.getString(com.pennapps.labs.pennmobile.R.string.access_token), " ")
                     try {
                         labs.cancelReservation(
                             bearerToken,
@@ -99,6 +105,9 @@ class GsrReservationsAdapter(
                                         reservations.removeAt(position)
                                     }
                                     run {
+                                        val ids = AppWidgetManager.getInstance(mContext).getAppWidgetIds(
+                                            ComponentName(mContext, GsrReservationWidget::class.java))
+                                        GsrReservationWidget().onUpdate(mContext, AppWidgetManager.getInstance(mContext), ids)
                                         if (reservations.size == 0) {
                                             var intent = Intent("refresh")
                                             LocalBroadcastManager
