@@ -10,7 +10,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/laundry_card"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginLeft="12dp"
         android:layout_marginEnd="12dp"
@@ -25,8 +25,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/laundry_info_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/fav_laundry_room_name"
@@ -55,7 +54,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/washer_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/fav_laundry_room_name">
@@ -115,8 +114,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/dryer_layout"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/washer_layout">
@@ -176,7 +175,7 @@
 
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/laundry_availability_chart"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
