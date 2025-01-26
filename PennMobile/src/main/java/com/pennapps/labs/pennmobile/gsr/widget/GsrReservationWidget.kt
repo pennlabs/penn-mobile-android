@@ -6,8 +6,6 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Handler
-import android.os.Looper
 import android.widget.RemoteViews
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -68,19 +66,11 @@ class GsrReservationWidget : AppWidgetProvider() {
 
             // Notify appwidgetviewdata has changed to call getViewAt to set up the widget UI
             // and handle update for every appwidget item in the Collection widget.
-            // Called twice because for some reason it doesn't register if called once
             appWidgetManager.notifyAppWidgetViewDataChanged(
                 appWidgetId,
                 R.id.gsr_reservation_widget_stack_view,
             )
             appWidgetManager.updateAppWidget(appWidgetId, views)
-            Handler(Looper.getMainLooper()).postDelayed({
-                appWidgetManager.notifyAppWidgetViewDataChanged(
-                    appWidgetId,
-                    R.id.gsr_reservation_widget_stack_view,
-                )
-                appWidgetManager.updateAppWidget(appWidgetId, views)
-            }, 15000)
         }
     }
 
