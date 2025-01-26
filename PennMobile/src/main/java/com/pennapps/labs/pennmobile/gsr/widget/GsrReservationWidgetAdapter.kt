@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.preference.PreferenceManager
@@ -33,8 +34,9 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
                 AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID,
             )
-        private var dataSet: List<GSRReservation> = emptyList()
+        private var dataSet: MutableList<GSRReservation> = mutableListOf()
         private var sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        private var updateCounter = 0
 
         override fun onCreate() {
             mGsrReservationsRequest = GsrReservationWidget.gsrReservationsRequestInstance
@@ -49,8 +51,8 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
             }, 5000)
         }
 
-        // Not used since already handled
         override fun onDataSetChanged() {
+            mGsrReservationsRequest = GsrReservationWidget.gsrReservationsRequestInstance
             getWidgetGsrReservations()
         }
 
@@ -60,7 +62,12 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
         override fun getCount(): Int = dataSet.size
 
         override fun getViewAt(index: Int): RemoteViews {
-            val reservation = dataSet[index]
+            var i = index
+            while (i >= dataSet.size) {
+                i -= 1
+            }
+            Log.d("GsrReservationWidgetAdapter", "List size: ${dataSet.size}, Requested index: $i")
+            val reservation = dataSet[i]
             val roomName = reservation.name
 
             val formatter: DateTimeFormatter =
