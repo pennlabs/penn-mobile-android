@@ -94,7 +94,6 @@ class LaundryFragment : Fragment() {
             setMaxRecycledViews(0, LaundryViewModel.MAX_NUM_ROOMS)
         })
         binding.favoriteLaundryList.itemAnimator = null
-        binding.favoriteLaundryList.isNestedScrollingEnabled = false
 
         mAdapter =
             LaundryRoomAdapter(

@@ -249,6 +249,9 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
                 params.setMargins(0,0,0,0);
                 container.setLayoutParams(params);
             }
+
+            washerRecyclerView.setHasFixedSize(true);
+            dryerRecyclerView.setHasFixedSize(true);
         }
     }
 }

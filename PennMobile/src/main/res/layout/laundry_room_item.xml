@@ -10,7 +10,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/laundry_card"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:layout_marginStart="12dp"
         android:layout_marginLeft="12dp"
         android:layout_marginEnd="12dp"
@@ -54,7 +54,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/washer_layout"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -88,8 +88,8 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
                     android:layout_marginStart="12dp"
                     android:layout_marginLeft="12dp"
                     android:layout_marginTop="2dp"
@@ -107,8 +107,8 @@
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/laundry_washer_machine_list"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp" />
                 </androidx.cardview.widget.CardView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -116,7 +116,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/dryer_layout"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/washer_layout">
@@ -149,8 +149,8 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardView2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
                     android:layout_marginStart="12dp"
                     android:layout_marginLeft="12dp"
                     android:layout_marginTop="2dp"
@@ -168,8 +168,8 @@
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/laundry_dryer_machine_list"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp" />
                 </androidx.cardview.widget.CardView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
