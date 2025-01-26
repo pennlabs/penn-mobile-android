@@ -1,5 +1,8 @@
 package com.pennapps.labs.pennmobile.gsr.adapters
 
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -8,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +19,7 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.GsrReservationBinding
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
+import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidgetJobService
 import com.squareup.picasso.Picasso
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
@@ -77,7 +82,7 @@ class GsrReservationsAdapter(
                     val sessionID =
                         if (reservation.info == null) {
                             sp.getString(
-                                mContext.getString(R.string.huntsmanGSR_SessionID),
+                                mContext.getString(com.pennapps.labs.pennmobile.R.string.huntsmanGSR_SessionID),
                                 "",
                             )
                         } else {
@@ -86,7 +91,7 @@ class GsrReservationsAdapter(
 
                     val labs = MainActivity.studentLifeInstance
                     val bearerToken =
-                        "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
+                        "Bearer " + sp.getString(mContext.getString(com.pennapps.labs.pennmobile.R.string.access_token), " ")
                     try {
                         labs.cancelReservation(
                             bearerToken,
@@ -99,6 +104,22 @@ class GsrReservationsAdapter(
                                         reservations.removeAt(position)
                                     }
                                     run {
+                                        val jobScheduler = getSystemService(mContext, JobScheduler::class.java)
+                                        val jobService = ComponentName(mContext, GsrReservationWidgetJobService::class.java)
+                                        val jobInfo =
+                                            JobInfo
+                                                .Builder(1, jobService)
+                                                .setRequiresCharging(false)
+                                                .setMinimumLatency(5_000)
+                                                .build()
+
+                                        val result = jobScheduler?.schedule(jobInfo)
+                                        if (result == JobScheduler.RESULT_SUCCESS) {
+                                            Log.d("CancelGsr", "Job scheduled successfully!")
+                                        } else {
+                                            Log.d("CancelGsr", "Job scheduling failed!")
+                                        }
+
                                         if (reservations.size == 0) {
                                             var intent = Intent("refresh")
                                             LocalBroadcastManager
