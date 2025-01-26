@@ -17,6 +17,8 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -29,6 +31,9 @@ import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.api.classes.AccessTokenResponse
 import com.pennapps.labs.pennmobile.api.classes.Account
 import com.pennapps.labs.pennmobile.api.classes.GetUserResponse
+import com.pennapps.labs.pennmobile.api.viewmodels.LoginWebviewViewmodel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.apache.commons.lang3.RandomStringUtils
 import retrofit.Callback
 import retrofit.RetrofitError
@@ -55,6 +60,7 @@ class LoginWebviewFragment : Fragment() {
     lateinit var platformAuthUrl: String
     lateinit var clientID: String
     lateinit var redirectUri: String
+    private val loginWebviewViewmodel: LoginWebviewViewmodel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -206,6 +212,7 @@ class LoginWebviewFragment : Fragment() {
                         editor.putLong(getString(R.string.token_expires_at), currentTime + expiresInInt)
                         editor.apply()
                         getUser(accessToken)
+                        sendNotifToken()
                     }
                 }
 
@@ -257,6 +264,20 @@ class LoginWebviewFragment : Fragment() {
             )
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    private fun sendNotifToken() {
+        val mNotificationAPI = MainActivity.notificationAPIInstance
+
+        val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
+        val notifToken = sp.getString(getString(R.string.notification_token), "").toString()
+
+        Log.d("Notification Token", notifToken)
+        val notGuest = !sp.getBoolean(mActivity.getString(R.string.guest_mode), false)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            loginWebviewViewmodel.sendToken(mNotificationAPI, notGuest, bearerToken, notifToken)
         }
     }
 

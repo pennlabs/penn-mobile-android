@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -89,28 +90,33 @@ class SettingsFragment : PreferenceFragmentCompat() {
         logInOutButton?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener {
                 if (pennKey != null) {
-                    val dialog = AlertDialog.Builder(context).create()
-                    dialog.setTitle("Log out")
-                    dialog.setMessage("Are you sure you want to log out?")
-                    dialog.setButton("Logout") { dialog, _ ->
-                        CookieManager.getInstance().removeAllCookie()
-                        editor.remove(getString(R.string.penn_password))
-                        editor.remove(getString(R.string.penn_user))
-                        editor.remove(getString(R.string.first_name))
-                        editor.remove(getString(R.string.last_name))
-                        editor.remove(getString(R.string.email_address))
-                        editor.remove(getString(R.string.pennkey))
-                        editor.remove(getString(R.string.accountID))
-                        editor.remove(getString(R.string.access_token))
-                        editor.remove(getString(R.string.guest_mode))
-                        editor.remove(getString(R.string.campus_express_token))
-                        editor.remove(getString(R.string.campus_token_expires_in))
-                        editor.apply()
-                        dialog.cancel()
-                        mActivity.startLoginFragment()
-                    }
-                    dialog.setButton2("Cancel") { dialog, _ -> dialog.cancel() }
-                    dialog.show()
+                    AlertDialog
+                        .Builder(context)
+                        .setTitle("Log out")
+                        .setMessage("Are you sure you want to log out?")
+                        .setPositiveButton("Logout") { dialog, _ ->
+                            Log.d("SettingsFragment", "Logout button clicked in dialog.")
+                            CookieManager.getInstance().removeAllCookie()
+                            editor.apply {
+                                remove(getString(R.string.penn_password))
+                                remove(getString(R.string.penn_user))
+                                remove(getString(R.string.first_name))
+                                remove(getString(R.string.last_name))
+                                remove(getString(R.string.email_address))
+                                remove(getString(R.string.pennkey))
+                                remove(getString(R.string.accountID))
+                                remove(getString(R.string.access_token))
+                                remove(getString(R.string.guest_mode))
+                                remove(getString(R.string.campus_express_token))
+                                remove(getString(R.string.campus_token_expires_in))
+                            }
+                            dialog.dismiss()
+                            Log.d("SettingsFragment", "SharedPreferences cleared, navigating to Login.")
+                            mActivity.startLoginFragment()
+                        }.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+                        .create()
+                        .show()
+                    Log.d("SettingsFragment", "Logout confirmation dialog displayed.")
                 } else {
                     mActivity.startLoginFragment()
                 }

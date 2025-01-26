@@ -47,6 +47,21 @@ class MoreFragment : Fragment() {
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
+        val initials =
+            PreferenceManager
+                .getDefaultSharedPreferences(mActivity)
+                .getString(getString(R.string.initials), null)
+        if (initials != null && initials.isNotEmpty()) {
+            binding.initials.text = initials
+        } else {
+            binding.profileBackground.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_guest_avatar,
+                    context?.theme,
+                ),
+            )
+        }
         childFragmentManager
             .beginTransaction()
             .replace(R.id.more_frame, PreferenceFragment())
