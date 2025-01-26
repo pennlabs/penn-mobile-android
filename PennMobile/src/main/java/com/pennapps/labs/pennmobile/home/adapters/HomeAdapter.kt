@@ -73,6 +73,7 @@ import com.pennapps.labs.pennmobile.utils.Utils
 import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
@@ -256,7 +257,7 @@ class HomeAdapter(
         holder.homeRv.layoutParams = params
 
         try {
-            mStudentLifeRf2.roomObservable(roomID)?.subscribeOn(Schedulers.io())?.subscribe({ room ->
+            mStudentLifeRf2.roomObservable(roomID).subscribeOn(Schedulers.io())?.subscribe({ room ->
                 mActivity.runOnUiThread {
                     holder.homeTitle.text = room?.name ?: ""
                     val rooms = room?.let { arrayListOf(it) } ?: arrayListOf()
@@ -384,11 +385,13 @@ class HomeAdapter(
         var accentColor: Int = getColor(mContext, R.color.black)
         mActivity.lifecycleScope.launch(Dispatchers.Default) {
             val bitmap =
-                Glide
-                    .with(mContext)
-                    .load(post.imageUrl)
-                    .submit()
-                    .get()
+                withContext(Dispatchers.IO) {
+                    Glide
+                        .with(mContext)
+                        .load(post.imageUrl)
+                        .submit()
+                        .get()
+                }
                     .toBitmap()
 
             // Create palette from bitmap
@@ -430,7 +433,7 @@ class HomeAdapter(
             .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))
             .setBlurRadius(25f)
         /** Post clicking logic if there exists a URL **/
-        val url = post?.postUrl ?: return
+        val url = post.postUrl ?: return
         holder.homePostCard.setOnClickListener {
             val connection = NewsCustomTabsServiceConnection()
             builder = CustomTabsIntent.Builder()
@@ -520,23 +523,23 @@ class HomeAdapter(
                     val bearerToken =
                         "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
 
-                    try {
-                        mStudentLife.createPollVote(
-                            bearerToken,
-                            idHash,
-                            selectedOptions,
-                            object : ResponseCallback() {
-                                override fun success(response: Response?) {
-                                    Log.i("HomeAdapter", "Successfully voted for poll!")
-                                }
+                    (mContext as MainActivity).lifecycleScope.launch {
+                        try {
+                            val response = mStudentLifeRf2.createPollVote(
+                                bearerToken,
+                                idHash,
+                                selectedOptions,
+                            )
 
-                                override fun failure(error: RetrofitError?) {
-                                    Log.e("HomeAdapter", "Error voting for poll", error)
-                                }
-                            },
-                        )
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+                            if (response.isSuccessful) {
+                                Log.i("HomeAdapter", "Successfully voted for poll!")
+                            } else {
+                                val error = Exception(response.errorBody()?.string() ?: "Unknown Error")
+                                Log.e("HomeAdapter", "Error voting for poll", error)
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
                 }
             }
@@ -582,7 +585,7 @@ class HomeAdapter(
 
         Glide
             .with(mContext)
-            .load(article?.imageUrl)
+            .load(article.imageUrl)
             .fitCenter()
             .centerCrop()
             .into(holder.homeNewsImageView)
@@ -591,11 +594,13 @@ class HomeAdapter(
         var accentColor: Int = getColor(mContext, R.color.black)
         mActivity.lifecycleScope.launch(Dispatchers.Default) {
             val bitmap =
-                Glide
-                    .with(mContext)
-                    .load(article?.imageUrl)
-                    .submit()
-                    .get()
+                withContext(Dispatchers.IO) {
+                    Glide
+                        .with(mContext)
+                        .load(article.imageUrl)
+                        .submit()
+                        .get()
+                }
                     .toBitmap()
 
             // Create palette from bitmap

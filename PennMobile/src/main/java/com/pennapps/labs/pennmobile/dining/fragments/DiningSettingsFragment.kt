@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.dining.fragments
 
+import StudentLifeRf2
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -22,19 +24,21 @@ import com.pennapps.labs.pennmobile.dining.adapters.DiningSettingsAdapter
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 import com.pennapps.labs.pennmobile.dining.classes.DiningRequest
 import com.pennapps.labs.pennmobile.home.classes.HomepageDataModel
+import kotlinx.coroutines.launch
 import retrofit.ResponseCallback
 import retrofit.RetrofitError
 import retrofit.client.Response
 import rx.Observable
 
 class DiningSettingsFragment(
-    dataModel: HomepageDataModel,
+    private val dataModel: HomepageDataModel,
 ) : Fragment() {
     private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
+    private lateinit var mStudentLifeRf2: StudentLifeRf2
+
     private lateinit var halls: List<DiningHall>
     private lateinit var toolbar: Toolbar
-    private val dataModel: HomepageDataModel = dataModel
 
     private var _binding: FragmentDiningPreferencesBinding? = null
     val binding get() = _binding!!
@@ -47,7 +51,7 @@ class DiningSettingsFragment(
         setHasOptionsMenu(true)
         mActivity = activity as MainActivity
         mStudentLife = MainActivity.studentLifeInstance
-        mStudentLife = MainActivity.studentLifeInstance
+        mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
     }
 
     override fun onCreateView(
@@ -163,29 +167,30 @@ class DiningSettingsFragment(
         mActivity.mNetworkManager.getAccessToken {
             val bearerToken =
                 "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
-            try {
-                mStudentLife.sendDiningPref(
-                    bearerToken,
-                    DiningRequest(favoriteDiningHalls),
-                    object : ResponseCallback() {
-                        override fun success(response: Response) {
-                            Log.i("Dining", "Dining preferences saved")
-                            mActivity.onBackPressed()
-                        }
 
-                        override fun failure(error: RetrofitError) {
-                            Log.e("Dining", "Error saving dining preferences: $error")
-                            Toast
-                                .makeText(
-                                    mActivity,
-                                    "Error saving dining preferences",
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                        }
-                    },
-                )
-            } catch (e: Exception) {
-                e.printStackTrace()
+            viewLifecycleOwner.lifecycleScope.launch {
+                try {
+                    val response = mStudentLifeRf2.sendDiningPref(
+                        bearerToken,
+                        DiningRequest(favoriteDiningHalls),
+                    )
+
+                    if (response.isSuccessful) {
+                        Log.i("Dining", "Dining preferences saved")
+                        mActivity.onBackPressed()
+                    } else {
+                        val error = Exception(response.body().toString())
+                        Log.e("Dining", "Error saving dining preferences: $error")
+                        Toast
+                            .makeText(
+                                mActivity,
+                                "Error saving dining preferences",
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
     }

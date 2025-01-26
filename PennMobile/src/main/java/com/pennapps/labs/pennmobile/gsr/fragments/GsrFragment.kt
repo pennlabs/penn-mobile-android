@@ -262,8 +262,8 @@ class GsrFragment : Fragment() {
                             .isWharton(
                                 "Bearer $bearerToken",
                             )
-                            ?.subscribeOn(Schedulers.io())
-                            ?.subscribe(
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(
                                 { status ->
                                     isWharton = status?.isWharton ?: false
                                 },
@@ -273,7 +273,6 @@ class GsrFragment : Fragment() {
                                 },
                             )
                     } catch (e: Exception) {
-                        Log.i("FUCK", "manne")
                         e.printStackTrace()
                     }
                 }
@@ -358,8 +357,8 @@ class GsrFragment : Fragment() {
                         gId,
                         adjustedDateString,
                     )
-                    ?.subscribeOn(Schedulers.io())
-                    ?.subscribe(
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
                         { gsr ->
                             activity?.let { activity ->
                                 activity.runOnUiThread {

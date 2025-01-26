@@ -102,7 +102,7 @@ class PottruckFragment : Fragment() {
 
         try {
 
-            mStudentLifeRf2.getFitnessRooms()?.subscribeOn(Schedulers.io())?.subscribe({ fitnessRooms ->
+            mStudentLifeRf2.getFitnessRooms().subscribeOn(Schedulers.io())?.subscribe({ fitnessRooms ->
                     val rooms = fitnessRooms?.filterNotNull().orEmpty()
                     for (room in rooms) {
                         Log.i("Fitness Room${room.roomId}", "${room.roomName}")
@@ -122,7 +122,7 @@ class PottruckFragment : Fragment() {
 
                         Log.i("IDK BRO3", Thread.currentThread().name)
 
-                        mStudentLifeRf2.getFitnessPreferences(bearerToken)?.subscribe({ favorites ->
+                        mStudentLifeRf2.getFitnessPreferences(bearerToken).subscribe({ favorites ->
 
                             Log.i("IDK BRO2", Thread.currentThread().name)
 

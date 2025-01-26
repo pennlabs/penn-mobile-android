@@ -82,7 +82,7 @@ class FitnessAdapter(
             if (hasExtraData) return
             room.roomId?.let {
                 try {
-                    studentLifeRf2.getFitnessRoomUsage(it, 3, "week")?.subscribe(
+                    studentLifeRf2.getFitnessRoomUsage(it, 3, "week").subscribe(
                         { roomUsage ->
                             createBarChart(context, roomUsage!!)
                             activity.runOnUiThread {

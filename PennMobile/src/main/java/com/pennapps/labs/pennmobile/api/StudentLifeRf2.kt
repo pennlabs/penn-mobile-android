@@ -1,25 +1,30 @@
 import com.pennapps.labs.pennmobile.api.classes.AccessTokenResponse
 import com.pennapps.labs.pennmobile.dining.classes.DiningPreferences
+import com.pennapps.labs.pennmobile.dining.classes.DiningRequest
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessPreferences
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRequest
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRoom
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRoomUsage
 import com.pennapps.labs.pennmobile.gsr.classes.GSR
+import com.pennapps.labs.pennmobile.gsr.classes.GSRBookingResult
 import com.pennapps.labs.pennmobile.gsr.classes.WhartonStatus
 import com.pennapps.labs.pennmobile.home.classes.Article
 import com.pennapps.labs.pennmobile.home.classes.CalendarEvent
+import com.pennapps.labs.pennmobile.home.classes.Poll
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryPreferences
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRequest
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoomSimple
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryUsage
 import okhttp3.ResponseBody
+import retrofit.Callback
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -56,7 +61,7 @@ interface StudentLifeRf2 {
     @GET("laundry/hall/{id}")
     fun roomObservable(
         @Path("id") id: Int
-    ): Observable<LaundryRoom?>?
+    ): Observable<LaundryRoom?>
 
     @GET("laundry/usage/{id}")
     suspend fun usage(
@@ -75,19 +80,19 @@ interface StudentLifeRf2 {
     ): Response<ResponseBody>
 
     @GET("penndata/fitness/rooms/")
-    fun getFitnessRooms(): Observable<List<FitnessRoom?>?>?
+    fun getFitnessRooms(): Observable<List<FitnessRoom?>?>
 
     @GET("penndata/fitness/usage/{id}")
     fun getFitnessRoomUsage(
         @Path("id") id: Int,
         @Query("num_samples") samples: Int,
         @Query("group_by") groupBy: String?
-    ): Observable<FitnessRoomUsage?>?
+    ): Observable<FitnessRoomUsage?>
 
     @GET("penndata/fitness/preferences")
     fun getFitnessPreferences(
         @Header("Authorization") bearerToken: String?
-    ): Observable<FitnessPreferences?>?
+    ): Observable<FitnessPreferences?>
 
     @POST("penndata/fitness/preferences/")
     suspend fun sendFitnessPref(
@@ -98,7 +103,7 @@ interface StudentLifeRf2 {
     @GET("dining/preferences")
     fun getDiningPreferences(
         @Header("Authorization") bearerToken: String?
-    ): Observable<DiningPreferences?>?
+    ): Observable<DiningPreferences?>
 
     @GET("gsr/availability/{id}/{gid}")
     fun gsrRoom(
@@ -106,17 +111,59 @@ interface StudentLifeRf2 {
         @Path("id") id: String?,
         @Path("gid") gid: Int,
         @Query("start") date: String?
-    ): Observable<GSR?>?
+    ): Observable<GSR?>
 
     @GET("gsr/wharton")
     fun isWharton(
         @Header("Authorization") bearerToken: String?
-    ): Observable<WhartonStatus?>?
+    ): Observable<WhartonStatus?>
 
     @GET("penndata/news")
-    fun getNews(): Observable<Article?>?
+    fun getNews(): Observable<Article?>
 
     @GET("penndata/calendar")
-    fun getCalendar(): Observable<List<CalendarEvent?>?>?
+    fun getCalendar(): Observable<List<CalendarEvent?>?>
+
+    @FormUrlEncoded
+    @POST("gsr/book/")
+    suspend fun bookGSR(
+        @Header("Authorization") bearerToken: String,
+        @Field("start_time") start: String?,
+        @Field("end_time") end: String?,
+        @Field("gid") gid: Int,
+        @Field("id") id: Int,
+        @Field("room_name") roomName: String,
+    ): Response<GSRBookingResult>
+
+    @FormUrlEncoded
+    @POST("gsr/cancel/")
+    suspend fun cancelReservation(
+        @Header("Authorization") bearerToken: String,
+        @Header("X-Device-ID") deviceID: String?,
+        @Field("booking_id") bookingID: String?,
+        @Field("sessionid") sessionID: String?,
+    ): Response<ResponseBody>
+
+    @Headers("Content-Type: application/json")
+    @POST("dining/preferences/")
+    suspend fun sendDiningPref(
+        @Header("Authorization") bearerToken: String,
+        @Body body: DiningRequest,
+    ): Response<ResponseBody>
+
+    @FormUrlEncoded
+    @POST("portal/polls/browse/")
+    fun browsePolls(
+        @Header("Authorization") bearerToken: String,
+        @Field("id_hash") idHash: String
+    ): Observable<List<Poll?>?>
+
+    @FormUrlEncoded
+    @POST("/portal/votes/")
+    suspend fun createPollVote(
+        @Header("Authorization") bearerToken: String,
+        @Field("id_hash") idHash: String,
+        @Field("poll_options") pollOptions: ArrayList<Int>,
+    ): Response<ResponseBody>
 }
 

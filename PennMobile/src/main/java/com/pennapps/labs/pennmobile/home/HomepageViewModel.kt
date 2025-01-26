@@ -156,7 +156,7 @@ class HomepageViewModel :
     ) {
         if (isLoggedIn) {
             val latch = CountDownLatch(NUM_CELLS_LOGGED_IN)
-            getPolls(studentLife, bearerToken, deviceID, latch)
+            getPolls(studentLifeRf2, bearerToken, deviceID, latch)
             getNews(studentLifeRf2, latch)
             getCalendar(studentLifeRf2, latch)
             getLaundry(studentLife, bearerToken, latch)
@@ -200,7 +200,7 @@ class HomepageViewModel :
     }
 
     private fun getPolls(
-        studentLife: StudentLife,
+        studentLife: StudentLifeRf2,
         bearerToken: String,
         deviceID: String,
         latch: CountDownLatch,
@@ -208,8 +208,9 @@ class HomepageViewModel :
         val idHash = getSha256Hash(deviceID)
         try {
             studentLife.browsePolls(bearerToken, idHash).subscribe({ poll ->
-                if (poll.size > 0) {
-                    val pollCell = PollCell(poll[0])
+                val pollList = poll?.filterNotNull() ?: emptyList()
+                if (pollList.isNotEmpty()) {
+                    val pollCell = PollCell(pollList[0])
                     pollCell.poll.options.forEach { pollCell.poll.totalVotes += it.voteCount }
                     addCell(pollCell, POLL_POS)
                 }
@@ -233,8 +234,8 @@ class HomepageViewModel :
     ) {
         try {
             studentLife.getNews()
-                ?.subscribeOn(Schedulers.io())
-                ?.subscribe({ article ->
+                .subscribeOn(Schedulers.io())
+                .subscribe({ article ->
                 val newsCell = article?.let { NewsCell(it) } ?: HomeCell()
                 addCell(newsCell, NEWS_POS)
 
@@ -259,8 +260,8 @@ class HomepageViewModel :
     ) {
         try {
             studentLife.getCalendar()
-                ?.subscribeOn(Schedulers.io())
-                ?.subscribe({ events ->
+                .subscribeOn(Schedulers.io())
+                .subscribe({ events ->
                 val calendarCell = events?.let { CalendarCell(it.filterNotNull()) } ?: HomeCell()
 
                 Log.i(TAG, "Loaded calendar")
@@ -338,8 +339,8 @@ class HomepageViewModel :
     ) {
         try {
             studentLife.getDiningPreferences(bearerToken)
-                ?.subscribeOn(Schedulers.io())
-                ?.subscribe({ preferences ->
+                .subscribeOn(Schedulers.io())
+                .subscribe({ preferences ->
                 val venues = preferences?.preferences
                     ?.mapNotNull { it.id }
                     ?.toMutableList()
