@@ -35,7 +35,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import rx.Observable
 
-interface StudentLifeRf2 {
+interface StudentLife {
     @FormUrlEncoded
     @POST("accounts/token/")
     suspend fun getAccessToken(

@@ -19,7 +19,7 @@ import java.util.Calendar
 class OAuth2NetworkManager(
     private var mActivity: MainActivity,
 ) {
-    private var mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
+    private var mStudentLife = MainActivity.studentLifeInstance
     private val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
     val editor = sp?.edit()
 
@@ -71,7 +71,7 @@ class OAuth2NetworkManager(
         val clientID = BuildConfig.PLATFORM_CLIENT_ID
 
         try {
-            val response = mStudentLifeRf2.refreshAccessToken(
+            val response = mStudentLife.refreshAccessToken(
                 refreshToken,
                 "refresh_token",
                 clientID,

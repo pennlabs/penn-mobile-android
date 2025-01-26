@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.gsr.fragments
 
-import StudentLifeRf2
+import StudentLife
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
@@ -50,7 +50,7 @@ class GsrFragment : Fragment() {
     val binding get() = _binding!!
 
     // api manager
-    private lateinit var mStudentLifeRf2: StudentLifeRf2
+    private lateinit var mStudentLife: StudentLife
 
     // list that holds all GSR rooms
     private val gsrHashMap = HashMap<String, String?>()
@@ -82,7 +82,7 @@ class GsrFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
+        mStudentLife = MainActivity.studentLifeInstance
         mActivity = activity as MainActivity
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity)
         mActivity.closeKeyboard()
@@ -256,7 +256,7 @@ class GsrFragment : Fragment() {
                     Toast.makeText(activity, "You are not logged in!", Toast.LENGTH_LONG).show()
                 } else {
                     try {
-                        mStudentLifeRf2
+                        mStudentLife
                             .isWharton(
                                 "Bearer $bearerToken",
                             )
@@ -348,7 +348,7 @@ class GsrFragment : Fragment() {
             Log.i("GsrFragment", "Wharton Status: $isWharton")
 
             try {
-                mStudentLifeRf2
+                mStudentLife
                     .gsrRoom(
                         "Bearer $bearerToken",
                         location,
@@ -493,7 +493,7 @@ class GsrFragment : Fragment() {
 
     private fun populateDropDownGSR() {
         try {
-            mStudentLifeRf2
+            mStudentLife
                 .location()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

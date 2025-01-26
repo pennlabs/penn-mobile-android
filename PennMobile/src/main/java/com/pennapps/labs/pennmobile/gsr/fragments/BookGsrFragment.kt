@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.gsr.fragments
 
-import StudentLifeRf2
+import StudentLife
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -33,7 +33,7 @@ class BookGsrFragment : Fragment() {
     // submit button
     private lateinit var submit: Button
 
-    private lateinit var mStudentLifeRf2: StudentLifeRf2
+    private lateinit var mStudentLife: StudentLife
 
     // gsr details
     private lateinit var gsrID: String
@@ -56,7 +56,7 @@ class BookGsrFragment : Fragment() {
             roomId = arguments.getInt("id")
             roomName = arguments.getString("roomName") ?: ""
         }
-        mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
+        mStudentLife = MainActivity.studentLifeInstance
 
         mActivity = activity as MainActivity
         mActivity.setTitle(R.string.gsr)
@@ -148,7 +148,7 @@ class BookGsrFragment : Fragment() {
 
             viewLifecycleOwner.lifecycleScope.launch {
                 try {
-                    val response = mStudentLifeRf2.bookGSR(
+                    val response = mStudentLife.bookGSR(
                         // Passing the values
                         bearerToken,
                         startTime,

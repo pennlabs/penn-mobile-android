@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.fitness.adapters
 
-import StudentLifeRf2
+import StudentLife
 import android.app.Activity
 import android.content.Context
 import android.graphics.Color
@@ -48,7 +48,7 @@ class FitnessAdapter(
 ) : RecyclerView.Adapter<FitnessAdapter.ViewHolder>() {
     private lateinit var mActivity: Activity
     private lateinit var mContext: Context
-    private lateinit var mStudentLifeRf2: StudentLifeRf2
+    private lateinit var mStudentLife: StudentLife
 
     class ViewHolder(
         val view: View,
@@ -76,13 +76,13 @@ class FitnessAdapter(
         fun getExtraData(
             context: Context,
             activity: Activity,
-            studentLifeRf2: StudentLifeRf2,
+            studentLife: StudentLife,
             room: FitnessRoom,
         ) {
             if (hasExtraData) return
             room.roomId?.let {
                 try {
-                    studentLifeRf2.getFitnessRoomUsage(it, 3, "week")
+                    studentLife.getFitnessRoomUsage(it, 3, "week")
                         .subscribeOn(Schedulers.io())
                         .subscribe(
                         { roomUsage ->
@@ -228,7 +228,7 @@ class FitnessAdapter(
     ): ViewHolder {
         mContext = parent.context
         mActivity = mContext as MainActivity
-        mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
+        mStudentLife = MainActivity.studentLifeInstance
 
         val view =
             LayoutInflater
@@ -399,7 +399,7 @@ class FitnessAdapter(
             if (holder.hasExtraData) {
                 holder.showExtra()
             } else {
-                holder.getExtraData(mContext, mActivity, mStudentLifeRf2, room)
+                holder.getExtraData(mContext, mActivity, mStudentLife, room)
             }
         }
     }

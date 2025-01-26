@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.laundry
 
-import StudentLifeRf2
+import StudentLife
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -60,7 +60,7 @@ class LaundryViewModel : ViewModel() {
 
     private suspend fun populateFavorites(
         context: CoroutineContext,
-        studentLife: StudentLifeRf2,
+        studentLife: StudentLife,
         favoriteIdList: List<Int>,
     ) {
         val rooms = ArrayList<LaundryRoom>()
@@ -120,7 +120,7 @@ class LaundryViewModel : ViewModel() {
     }
 
     fun getFavorites(
-        studentLife: StudentLifeRf2,
+        studentLife: StudentLife,
         bearerToken: String,
     ) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -142,7 +142,7 @@ class LaundryViewModel : ViewModel() {
         }
     }
 
-    fun getHalls(studentLife: StudentLifeRf2) {
+    fun getHalls(studentLife: StudentLife) {
         if (_loadedRooms.value!!) {
             return
         }
@@ -220,7 +220,7 @@ class LaundryViewModel : ViewModel() {
     }
 
     private suspend fun sendPreferences(
-        studentLife: StudentLifeRf2,
+        studentLife: StudentLife,
         bearerToken: String,
         favoriteIdList: List<Int>,
     ) {
@@ -238,7 +238,7 @@ class LaundryViewModel : ViewModel() {
     }
 
     fun setFavoritesFromToggled(
-        studentLife: StudentLifeRf2,
+        studentLife: StudentLife,
         bearerToken: String,
     ) {
         CoroutineScope(Dispatchers.IO).launch {

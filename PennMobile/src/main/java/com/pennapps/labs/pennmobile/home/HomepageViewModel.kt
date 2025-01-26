@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.home
 
-import StudentLifeRf2
+import StudentLife
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -118,13 +118,13 @@ class HomepageViewModel :
      */
     @Synchronized
     fun updateHomePageCells(
-        studentLifeRf2: StudentLifeRf2,
+        studentLife: StudentLife,
         isLoggedIn: Boolean,
         bearerToken: String,
         deviceID: String,
     ): List<Int> {
         val prevList = homepageCells.toList()
-        populateHomePageCells(studentLifeRf2, isLoggedIn, bearerToken, deviceID)
+        populateHomePageCells(studentLife, isLoggedIn, bearerToken, deviceID)
 
         val updatedIndices = mutableListOf<Int>()
 
@@ -146,27 +146,27 @@ class HomepageViewModel :
      */
     @Synchronized
     fun populateHomePageCells(
-        studentLifeRf2: StudentLifeRf2,
+        studentLife: StudentLife,
         isLoggedIn: Boolean,
         bearerToken: String,
         deviceID: String,
     ) {
         if (isLoggedIn) {
             val latch = CountDownLatch(NUM_CELLS_LOGGED_IN)
-            getPolls(studentLifeRf2, bearerToken, deviceID, latch)
-            getNews(studentLifeRf2, latch)
-            getCalendar(studentLifeRf2, latch)
-            getLaundry(studentLifeRf2, bearerToken, latch)
-            getPosts(studentLifeRf2, bearerToken, latch)
-            getDiningPrefs(studentLifeRf2, bearerToken, latch)
-            getGSRReservations(studentLifeRf2, bearerToken, latch)
+            getPolls(studentLife, bearerToken, deviceID, latch)
+            getNews(studentLife, latch)
+            getCalendar(studentLife, latch)
+            getLaundry(studentLife, bearerToken, latch)
+            getPosts(studentLife, bearerToken, latch)
+            getDiningPrefs(studentLife, bearerToken, latch)
+            getGSRReservations(studentLife, bearerToken, latch)
             // waits until all of the network calls are processed
             latch.await()
         } else {
             val latch = CountDownLatch(NUM_CELLS_GUEST)
             clearLoggedIn()
-            getCalendar(studentLifeRf2, latch)
-            getNews(studentLifeRf2, latch)
+            getCalendar(studentLife, latch)
+            getNews(studentLife, latch)
             latch.await()
         }
     }
@@ -197,7 +197,7 @@ class HomepageViewModel :
     }
 
     private fun getPolls(
-        studentLife: StudentLifeRf2,
+        studentLife: StudentLife,
         bearerToken: String,
         deviceID: String,
         latch: CountDownLatch,
@@ -228,7 +228,7 @@ class HomepageViewModel :
     }
 
     private fun getNews(
-        studentLife: StudentLifeRf2,
+        studentLife: StudentLife,
         latch: CountDownLatch,
     ) {
         try {
@@ -254,7 +254,7 @@ class HomepageViewModel :
     }
 
     private fun getCalendar(
-        studentLife: StudentLifeRf2,
+        studentLife: StudentLife,
         latch: CountDownLatch,
     ) {
         try {
@@ -279,7 +279,7 @@ class HomepageViewModel :
     }
 
     private fun getLaundry(
-        studentLife: StudentLifeRf2,
+        studentLife: StudentLife,
         bearerToken: String,
         latch: CountDownLatch,
     ) {
@@ -310,7 +310,7 @@ class HomepageViewModel :
     }
 
     private fun getPosts(
-        studentLife: StudentLifeRf2,
+        studentLife: StudentLife,
         bearerToken: String,
         latch: CountDownLatch,
     ) {
@@ -342,7 +342,7 @@ class HomepageViewModel :
     }
 
     private fun getDiningPrefs(
-        studentLife: StudentLifeRf2,
+        studentLife: StudentLife,
         bearerToken: String,
         latch: CountDownLatch,
     ) {
@@ -372,7 +372,7 @@ class HomepageViewModel :
     }
 
     private fun getGSRReservations(
-        studentLife: StudentLifeRf2,
+        studentLife: StudentLife,
         bearerToken: String,
         latch: CountDownLatch,
     ) {

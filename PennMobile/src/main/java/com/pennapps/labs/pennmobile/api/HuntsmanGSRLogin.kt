@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.api
 
-import StudentLifeRf2
+import StudentLife
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -29,7 +29,7 @@ class HuntsmanGSRLogin : Fragment() {
     private lateinit var roomName: String
     private var gid: Int = 0
 
-    private lateinit var mStudentLifeRf2: StudentLifeRf2
+    private lateinit var mStudentLife: StudentLife
     private lateinit var mActivity: MainActivity
 
     private var _binding: FragmentHuntsmanGsrloginBinding? = null
@@ -37,7 +37,7 @@ class HuntsmanGSRLogin : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mStudentLifeRf2= MainActivity.studentLifeInstanceRf2
+        mStudentLife = MainActivity.studentLifeInstance
         mActivity = activity as MainActivity
         arguments?.let { arguments ->
             gsrID = arguments.getString("gsrID") ?: ""
@@ -125,7 +125,7 @@ class HuntsmanGSRLogin : Fragment() {
         (activity as MainActivity).mNetworkManager.getAccessToken {
             viewLifecycleOwner.lifecycleScope.launch {
                 try {
-                    val response = mStudentLifeRf2.bookGSR(
+                    val response = mStudentLife.bookGSR(
                             // Passing the values
                             bearerToken,
                             startTime,

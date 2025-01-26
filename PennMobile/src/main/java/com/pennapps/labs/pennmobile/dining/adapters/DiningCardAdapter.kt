@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.dining.adapters
 
-import StudentLifeRf2
+import StudentLife
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -33,7 +33,7 @@ class DiningCardAdapter(
 
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
-    private lateinit var mStudentLifeRf2: StudentLifeRf2
+    private lateinit var mStudentLife: StudentLife
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -41,7 +41,7 @@ class DiningCardAdapter(
     ): ViewHolder {
         mContext = parent.context
         mActivity = mContext as MainActivity
-        mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
+        mStudentLife = MainActivity.studentLifeInstance
         val itemBinding = DiningListItemBinding.inflate(LayoutInflater.from(mContext), parent, false)
         itemBinding.diningProgress.visibility = GONE
         return ViewHolder(itemBinding)
@@ -90,7 +90,7 @@ class DiningCardAdapter(
         // Load the menu for each dining hall
         if (currentHall.isResidential) {
             try {
-                mStudentLifeRf2
+                mStudentLife
                     .daily_menu(currentHall.id)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

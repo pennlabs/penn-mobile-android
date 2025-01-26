@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.dining.fragments
 
-import StudentLifeRf2
+import StudentLife
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
@@ -30,14 +30,14 @@ import java.time.format.DateTimeFormatter
 
 class DiningFragment : Fragment() {
     private lateinit var mActivity: MainActivity
-    private lateinit var mStudentLifeRf2: StudentLifeRf2
+    private lateinit var mStudentLife: StudentLife
 
     private var _binding: FragmentDiningBinding? = null
     val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
+        mStudentLife = MainActivity.studentLifeInstance
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()
         setHasOptionsMenu(true)
@@ -156,7 +156,7 @@ class DiningFragment : Fragment() {
 
         // Map each item in the list of venues to a Venue Observable, then map each Venue to a DiningHall Observable
         try {
-            mStudentLifeRf2
+            mStudentLife
                 .venues()
                 .subscribeOn(Schedulers.io())
                 .flatMap { venues -> Observable.from(venues) }
@@ -236,7 +236,7 @@ class DiningFragment : Fragment() {
                 val current = LocalDateTime.now()
                 val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
                 val formatted = current.format(formatter)
-                val studentLife = MainActivity.studentLifeInstanceRf2
+                val studentLife = MainActivity.studentLifeInstance
                 studentLife.getMenus(formatted)
                     .subscribeOn(Schedulers.io())
                     .subscribe({ menus ->

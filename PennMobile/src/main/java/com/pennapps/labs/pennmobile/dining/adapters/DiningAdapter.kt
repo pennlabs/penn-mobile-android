@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.dining.adapters
 
-import StudentLifeRf2
+import StudentLife
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -27,7 +27,7 @@ import java.util.Collections
 class DiningAdapter(
     private var diningHalls: List<DiningHall>,
 ) : RecyclerView.Adapter<DiningAdapter.DiningViewHolder>() {
-    private lateinit var mStudentLifeRf2: StudentLifeRf2
+    private lateinit var mStudentLife: StudentLife
     private lateinit var loaded: BooleanArray
     private lateinit var sortBy: String
     private lateinit var context: Context
@@ -37,7 +37,7 @@ class DiningAdapter(
         viewType: Int,
     ): DiningViewHolder {
         val itemBinding = DiningListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
+        mStudentLife = MainActivity.studentLifeInstance
         loaded = BooleanArray(diningHalls.size)
         context = parent.context
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
@@ -86,7 +86,7 @@ class DiningAdapter(
             if (diningHall.isResidential && !loaded[position]) {
                 holder.progressBar.visibility = View.VISIBLE
                 try {
-                    mStudentLifeRf2
+                    mStudentLife
                         .daily_menu(diningHall.id)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())

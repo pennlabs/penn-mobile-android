@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.dining.fragments
 
-import StudentLifeRf2
+import StudentLife
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -32,7 +32,7 @@ class DiningSettingsFragment(
     private val dataModel: HomepageDataModel,
 ) : Fragment() {
     private lateinit var mActivity: MainActivity
-    private lateinit var mStudentLifeRf2: StudentLifeRf2
+    private lateinit var mStudentLife: StudentLife
 
     private lateinit var halls: List<DiningHall>
     private lateinit var toolbar: Toolbar
@@ -47,7 +47,7 @@ class DiningSettingsFragment(
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         mActivity = activity as MainActivity
-        mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
+        mStudentLife = MainActivity.studentLifeInstance
     }
 
     override fun onCreateView(
@@ -106,7 +106,7 @@ class DiningSettingsFragment(
         // Map each item in the list of venues to a Venue Observable, then map each Venue to a DiningHall Observable
         originalPreferences = dataModel.getDiningHallPrefs()
         try {
-            mStudentLifeRf2
+            mStudentLife
                 .venues()
                 .subscribeOn(Schedulers.io())
                 .flatMap { venues -> Observable.from(venues) }
@@ -169,7 +169,7 @@ class DiningSettingsFragment(
 
             viewLifecycleOwner.lifecycleScope.launch {
                 try {
-                    val response = mStudentLifeRf2.sendDiningPref(
+                    val response = mStudentLife.sendDiningPref(
                         bearerToken,
                         DiningRequest(favoriteDiningHalls),
                     )

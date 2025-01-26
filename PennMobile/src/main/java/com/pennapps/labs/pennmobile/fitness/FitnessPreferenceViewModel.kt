@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.fitness
 
-import StudentLifeRf2
+import StudentLife
 import android.util.Log
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
@@ -14,7 +14,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class FitnessPreferenceViewModel(
-    private val studentLifeRf2: StudentLifeRf2,
+    private val studentLife: StudentLife,
     private val roomList: List<FitnessRoom>,
 ) : FitnessAdapterDataModel {
     private val roomTot = roomList.size
@@ -103,7 +103,7 @@ class FitnessPreferenceViewModel(
             @OptIn(DelicateCoroutinesApi::class)
             GlobalScope.launch(Dispatchers.IO) {
                 try {
-                    val response = studentLifeRf2.sendFitnessPref(
+                    val response = studentLife.sendFitnessPref(
                         bearerToken,
                         FitnessRequest(ArrayList(favoriteRooms))
                     )

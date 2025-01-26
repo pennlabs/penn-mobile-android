@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile
 
-import StudentLifeRf2
+import StudentLife
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -313,7 +313,7 @@ class MainActivity : AppCompatActivity() {
         val GSR_ID = R.id.nav_gsr
         val DINING_ID = R.id.nav_dining
 
-        private var mStudentLifeRf2: StudentLifeRf2? = null
+        private var mStudentLife: StudentLife? = null
         private var mPlatform: Platform? = null
         private var mCampusExpress: CampusExpress? = null
 
@@ -355,9 +355,9 @@ class MainActivity : AppCompatActivity() {
                 return mPlatform!!
             }
 
-        val studentLifeInstanceRf2: StudentLifeRf2
+        val studentLifeInstance: StudentLife
             get() {
-                if (mStudentLifeRf2 == null) {
+                if (mStudentLife == null) {
                     val gsonBuilder = GsonBuilder()
 
                     gsonBuilder.registerTypeAdapter(
@@ -428,9 +428,9 @@ class MainActivity : AppCompatActivity() {
                             .addConverterFactory(GsonConverterFactory.create(gson))
                             .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                             .build()
-                    mStudentLifeRf2 = retrofit.create(StudentLifeRf2::class.java)
+                    mStudentLife = retrofit.create(StudentLife::class.java)
                 }
-                return mStudentLifeRf2!!
+                return mStudentLife!!
             }
 
     }

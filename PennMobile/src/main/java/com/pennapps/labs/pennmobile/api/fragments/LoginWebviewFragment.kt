@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.api.fragments
 
-import StudentLifeRf2
+import StudentLife
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.security.keystore.KeyGenParameterSpec
@@ -48,7 +48,7 @@ class LoginWebviewFragment : Fragment() {
     lateinit var headerLayout: LinearLayout
     lateinit var cancelButton: Button
     lateinit var user: Account
-    private lateinit var mStudentLifeRf2: StudentLifeRf2
+    private lateinit var mStudentLife: StudentLife
     private var mPlatform: Platform? = null
     private lateinit var mActivity: MainActivity
     lateinit var sp: SharedPreferences
@@ -66,7 +66,7 @@ class LoginWebviewFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
+        mStudentLife = MainActivity.studentLifeInstance
         mPlatform = MainActivity.platformInstance
         arguments?.let {
             user = arguments?.getSerializable("user") as Account
@@ -184,7 +184,7 @@ class LoginWebviewFragment : Fragment() {
     private fun initiateAuthentication(authCode: String) {
         mActivity.lifecycleScope.launch {
             try {
-                val response = mStudentLifeRf2.getAccessToken(
+                val response = mStudentLife.getAccessToken(
                     authCode,
                     "authorization_code",
                     clientID,

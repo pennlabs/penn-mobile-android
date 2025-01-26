@@ -88,7 +88,7 @@ class GsrReservationsAdapter(
                         }
 
                     (mContext as MainActivity).lifecycleScope.launch {
-                        val labs = MainActivity.studentLifeInstanceRf2
+                        val labs = MainActivity.studentLifeInstance
                         val bearerToken =
                             "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
 

@@ -98,7 +98,7 @@ class GsrReservationsFragment : Fragment() {
         }
         // get email and session id from shared preferences
 
-        val labs = MainActivity.studentLifeInstanceRf2
+        val labs = MainActivity.studentLifeInstance
 
         mActivity.mNetworkManager.getAccessToken {
             val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)

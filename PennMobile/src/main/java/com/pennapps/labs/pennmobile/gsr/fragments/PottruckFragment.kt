@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.gsr.fragments
 
-import StudentLifeRf2
+import StudentLife
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -33,7 +33,7 @@ import rx.schedulers.Schedulers
 
 class PottruckFragment : Fragment() {
     private lateinit var mActivity: MainActivity
-    private lateinit var mStudentLifeRf2: StudentLifeRf2
+    private lateinit var mStudentLife: StudentLife
 
     private lateinit var mView: View
     private lateinit var swipeRefresh: SwipeRefreshLayout
@@ -50,7 +50,7 @@ class PottruckFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
+        mStudentLife = MainActivity.studentLifeInstance
         mActivity = activity as MainActivity
     }
 
@@ -97,7 +97,7 @@ class PottruckFragment : Fragment() {
 
         try {
 
-            mStudentLifeRf2.getFitnessRooms().subscribeOn(Schedulers.io()).subscribe({ fitnessRooms ->
+            mStudentLife.getFitnessRooms().subscribeOn(Schedulers.io()).subscribe({ fitnessRooms ->
                     val rooms = fitnessRooms?.filterNotNull().orEmpty()
                     for (room in rooms) {
                         Log.i("Fitness Room${room.roomId}", "${room.roomName}")
@@ -105,7 +105,7 @@ class PottruckFragment : Fragment() {
 
                     val sortedRooms = rooms.sortedBy { it.roomName }
 
-                    dataModel = FitnessPreferenceViewModel(mStudentLifeRf2, sortedRooms)
+                    dataModel = FitnessPreferenceViewModel(mStudentLife, sortedRooms)
 
                     mActivity.mNetworkManager.getAccessToken {
                         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
@@ -113,7 +113,7 @@ class PottruckFragment : Fragment() {
                         val bearerToken =
                             "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
-                        mStudentLifeRf2.getFitnessPreferences(bearerToken)
+                        mStudentLife.getFitnessPreferences(bearerToken)
                             .subscribeOn(Schedulers.io())
                             .subscribe({ favorites ->
 

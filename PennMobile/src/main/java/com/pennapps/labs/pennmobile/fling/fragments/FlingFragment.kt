@@ -66,7 +66,7 @@ class FlingFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentFlingBinding.inflate(inflater, container, false)
         val view = binding.root
-        val labs = MainActivity.studentLifeInstanceRf2
+        val labs = MainActivity.studentLifeInstance
         try {
             labs.getFlingEvents()
                 .subscribeOn(Schedulers.io())

@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.laundry.fragments
 
-import StudentLifeRf2
+import StudentLife
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -28,7 +28,7 @@ import com.pennapps.labs.pennmobile.utils.Utils
 class LaundryFragment : Fragment() {
     private lateinit var mActivity: MainActivity
 
-    private lateinit var mStudentLife: StudentLifeRf2
+    private lateinit var mStudentLife: StudentLife
     private lateinit var mContext: Context
 
     private lateinit var sharedPreferences: SharedPreferences
@@ -49,7 +49,7 @@ class LaundryFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mStudentLife = MainActivity.studentLifeInstanceRf2
+        mStudentLife = MainActivity.studentLifeInstance
         mActivity = activity as MainActivity
         mContext = mActivity
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity)

@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.home.adapters
 
-import StudentLifeRf2
+import StudentLife
 import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
@@ -81,7 +81,7 @@ class HomeAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
-    private lateinit var mStudentLifeRf2: StudentLifeRf2
+    private lateinit var mStudentLife: StudentLife
 
     private var mCustomTabsClient: CustomTabsClient? = null
     private var customTabsIntent: CustomTabsIntent? = null
@@ -111,7 +111,7 @@ class HomeAdapter(
         viewType: Int,
     ): RecyclerView.ViewHolder {
         mContext = parent.context
-        mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
+        mStudentLife = MainActivity.studentLifeInstance
         mActivity = mContext as MainActivity
 
         return when (viewType) {
@@ -251,7 +251,7 @@ class HomeAdapter(
         holder.homeRv.layoutParams = params
 
         try {
-            mStudentLifeRf2.roomObservable(roomID).subscribeOn(Schedulers.io()).subscribe({ room ->
+            mStudentLife.roomObservable(roomID).subscribeOn(Schedulers.io()).subscribe({ room ->
                 mActivity.runOnUiThread {
                     holder.homeTitle.text = room?.name ?: ""
                     val rooms = room?.let { arrayListOf(it) } ?: arrayListOf()
@@ -285,7 +285,7 @@ class HomeAdapter(
                 .commit()
         }
         try {
-            mStudentLifeRf2
+            mStudentLife
                 .venues()
                 .subscribeOn(Schedulers.io())
                 .flatMap { venues -> Observable.from(venues) }
@@ -522,7 +522,7 @@ class HomeAdapter(
 
                     (mContext as MainActivity).lifecycleScope.launch {
                         try {
-                            val response = mStudentLifeRf2.createPollVote(
+                            val response = mStudentLife.createPollVote(
                                 bearerToken,
                                 idHash,
                                 selectedOptions,
