@@ -1,23 +1,22 @@
-package com.pennapps.labs.pennmobile.api;
+package com.pennapps.labs.pennmobile.api
 
-import com.pennapps.labs.pennmobile.api.classes.GetUserResponse;
+import com.pennapps.labs.pennmobile.api.classes.GetUserResponse
+import retrofit2.Response
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.Header
+import retrofit2.http.POST
 
-import retrofit.Callback;
-import retrofit.http.Field;
-import retrofit.http.FormUrlEncoded;
-import retrofit.http.Header;
-import retrofit.http.POST;
-
-public interface Platform {
-
-    String platformBaseUrl = "https://platform.pennlabs.org";
-    String campusExpressBaseUrl = "https://prod.campusexpress.upenn.edu/api/v1/";
+interface Platform {
+    companion object {
+        val platformBaseUrl: String = "https://platform.pennlabs.org/"
+        val campusExpressBaseUrl: String = "https://prod.campusexpress.upenn.edu/api/v1/"
+    }
 
     @FormUrlEncoded
-    @POST("/accounts/introspect/")
-    void getUser(
-            @Header("Authorization") String authorizationHeader,
-            @Field("token") String token,
-            Callback<GetUserResponse> callback);
-
+    @POST("accounts/introspect/")
+    suspend fun getUser(
+        @Header("Authorization") authorizationHeader: String?,
+        @Field("token") token: String?,
+    ): Response<GetUserResponse>
 }

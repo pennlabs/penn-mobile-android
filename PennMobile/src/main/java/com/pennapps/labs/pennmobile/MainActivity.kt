@@ -37,7 +37,6 @@ import com.google.gson.reflect.TypeToken
 import com.pennapps.labs.pennmobile.api.CampusExpress
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.Platform
-import com.pennapps.labs.pennmobile.api.Platform2
 import com.pennapps.labs.pennmobile.api.Serializer
 import com.pennapps.labs.pennmobile.api.classes.Account
 import com.pennapps.labs.pennmobile.api.fragments.LoginFragment
@@ -57,9 +56,6 @@ import eightbitlab.com.blurview.BlurView
 import kotlinx.coroutines.sync.Mutex
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit.RestAdapter
-import retrofit.android.AndroidLog
-import retrofit.converter.GsonConverter
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -316,7 +312,6 @@ class MainActivity : AppCompatActivity() {
 
         private var mStudentLife: StudentLife? = null
         private var mPlatform: Platform? = null
-        private var mPlatform2: Platform2? = null
         private var mCampusExpress: CampusExpress? = null
 
         @JvmStatic
@@ -324,7 +319,7 @@ class MainActivity : AppCompatActivity() {
             get() {
                 if (mCampusExpress == null) {
                     val retrofit = Retrofit.Builder()
-                        .baseUrl(Platform2.campusExpressBaseUrl)
+                        .baseUrl(Platform.campusExpressBaseUrl)
                         .client(OkHttpClient.Builder().build())
                         .addConverterFactory(GsonConverterFactory.create())
                         .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -334,40 +329,23 @@ class MainActivity : AppCompatActivity() {
                 return mCampusExpress!!
             }
 
-        val platformInstance2: Platform2
+        @JvmStatic
+        val platformInstance2: Platform
             get() {
-                if (mPlatform2 == null) {
+                if (mPlatform == null) {
                     val retrofit = Retrofit.Builder()
-                        .baseUrl(Platform2.platformBaseUrl)
+                        .baseUrl(Platform.platformBaseUrl)
                         .client(OkHttpClient.Builder().build())
                         .addConverterFactory(GsonConverterFactory.create())
                         .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                         .build()
 
-                    mPlatform2 = retrofit.create(Platform2::class.java)
-                }
-                return mPlatform2!!
-            }
-
-        @JvmStatic
-        val platformInstance: Platform
-            get() {
-                if (mPlatform == null) {
-                    val gsonBuilder = GsonBuilder()
-                    val gson = gsonBuilder.create()
-                    val restAdapter =
-                        RestAdapter
-                            .Builder()
-                            .setConverter(GsonConverter(gson))
-                            .setLogLevel(RestAdapter.LogLevel.FULL)
-                            .setLog(AndroidLog("Platform"))
-                            .setEndpoint(Platform.platformBaseUrl)
-                            .build()
-                    mPlatform = restAdapter.create(Platform::class.java)
+                    mPlatform = retrofit.create(Platform::class.java)
                 }
                 return mPlatform!!
             }
 
+        @JvmStatic
         val studentLifeInstance: StudentLife
             get() {
                 if (mStudentLife == null) {

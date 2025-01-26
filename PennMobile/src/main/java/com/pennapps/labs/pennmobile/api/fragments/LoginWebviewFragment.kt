@@ -26,16 +26,10 @@ import com.pennapps.labs.pennmobile.BuildConfig
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.Platform
-import com.pennapps.labs.pennmobile.api.Platform.platformBaseUrl
-import com.pennapps.labs.pennmobile.api.Platform2
 import com.pennapps.labs.pennmobile.api.classes.AccessTokenResponse
 import com.pennapps.labs.pennmobile.api.classes.Account
-import com.pennapps.labs.pennmobile.api.classes.GetUserResponse
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.RandomStringUtils
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
 import java.nio.charset.Charset
 import java.security.MessageDigest
 import java.util.Base64
@@ -50,7 +44,7 @@ class LoginWebviewFragment : Fragment() {
     lateinit var cancelButton: Button
     lateinit var user: Account
     private lateinit var mStudentLife: StudentLife
-    private var mPlatform: Platform2? = null
+    private var mPlatform: Platform? = null
     private lateinit var mActivity: MainActivity
     lateinit var sp: SharedPreferences
     lateinit var codeChallenge: String
@@ -81,7 +75,7 @@ class LoginWebviewFragment : Fragment() {
         redirectUri = BuildConfig.PLATFORM_REDIRECT_URI
         codeVerifier = RandomStringUtils.randomAlphanumeric(64)
         codeChallenge = getCodeChallenge(codeVerifier)
-        platformAuthUrl = platformBaseUrl + "/accounts/authorize/?response_type=code&client_id=" +
+        platformAuthUrl = Platform.platformBaseUrl + "accounts/authorize/?response_type=code&client_id=" +
             clientID + "&redirect_uri=" + redirectUri + "&code_challenge_method=S256" +
             "&code_challenge=" + codeChallenge + "&scope=read+introspection&state="
     }
