@@ -77,9 +77,9 @@ class OAuth2NetworkManager(
                 clientID,
             )
 
-            if (response.isSuccessful) {
-                val t = response.body()!!
+            val t = response.body()
 
+            if (response.isSuccessful && t != null) {
                 val editor = sp.edit()
                 editor.putString(mActivity.getString(R.string.access_token), t.accessToken)
                 editor.putString(mActivity.getString(R.string.refresh_token), t.refreshToken)
