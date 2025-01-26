@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
@@ -88,6 +89,12 @@ class LaundryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         mActivity.removeTabs()
         mActivity.setTitle(R.string.laundry)
+
+        binding.favoriteLaundryList.setRecycledViewPool(RecyclerView.RecycledViewPool().apply {
+            setMaxRecycledViews(0, LaundryViewModel.MAX_NUM_ROOMS)
+        })
+        binding.favoriteLaundryList.itemAnimator = null
+        binding.favoriteLaundryList.isNestedScrollingEnabled = false
 
         mAdapter =
             LaundryRoomAdapter(
