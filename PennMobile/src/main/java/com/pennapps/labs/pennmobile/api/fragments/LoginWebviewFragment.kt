@@ -27,6 +27,7 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Platform.platformBaseUrl
+import com.pennapps.labs.pennmobile.api.Platform2
 import com.pennapps.labs.pennmobile.api.classes.AccessTokenResponse
 import com.pennapps.labs.pennmobile.api.classes.Account
 import com.pennapps.labs.pennmobile.api.classes.GetUserResponse
@@ -49,7 +50,7 @@ class LoginWebviewFragment : Fragment() {
     lateinit var cancelButton: Button
     lateinit var user: Account
     private lateinit var mStudentLife: StudentLife
-    private var mPlatform: Platform? = null
+    private var mPlatform: Platform2? = null
     private lateinit var mActivity: MainActivity
     lateinit var sp: SharedPreferences
     lateinit var codeChallenge: String
@@ -67,7 +68,7 @@ class LoginWebviewFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mStudentLife = MainActivity.studentLifeInstance
-        mPlatform = MainActivity.platformInstance
+        mPlatform = MainActivity.platformInstance2
         arguments?.let {
             user = arguments?.getSerializable("user") as Account
         }
@@ -229,15 +230,16 @@ class LoginWebviewFragment : Fragment() {
     }
 
     private fun getUser(accessToken: String?) {
-        try {
-            mPlatform?.getUser(
-                "Bearer $accessToken",
-                accessToken,
-                object : Callback<GetUserResponse> {
-                    override fun success(
-                        t: GetUserResponse?,
-                        response: Response?,
-                    ) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                mPlatform?.let {
+                    val response = it.getUser(
+                        "Bearer $accessToken",
+                        accessToken,
+                    )
+
+                    if (response.isSuccessful) {
+                        val t = response.body()
                         val user = t?.user
                         val editor = sp.edit()
                         editor.putString(getString(R.string.first_name), user?.firstName)
@@ -253,19 +255,16 @@ class LoginWebviewFragment : Fragment() {
                         editor.putString(getString(R.string.pennkey), user?.username)
                         editor.apply()
                         mActivity.startHomeFragment()
-                        // saveAccount(Account(user?.firstName, user?.lastName,
-                        //        user?.username, user?.pennid, user?.email, user?.affiliation), user?.username.toString(), accessToken)
-                    }
-
-                    override fun failure(error: RetrofitError) {
+                    } else {
+                        val error = Exception(response.errorBody()?.string() ?: "Unknown Error")
                         Log.e("Accounts", "Error getting user $error")
                         Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
                         mActivity.startLoginFragment()
                     }
-                },
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

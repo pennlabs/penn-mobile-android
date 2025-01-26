@@ -37,6 +37,7 @@ import com.google.gson.reflect.TypeToken
 import com.pennapps.labs.pennmobile.api.CampusExpress
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.Platform
+import com.pennapps.labs.pennmobile.api.Platform2
 import com.pennapps.labs.pennmobile.api.Serializer
 import com.pennapps.labs.pennmobile.api.classes.Account
 import com.pennapps.labs.pennmobile.api.fragments.LoginFragment
@@ -315,25 +316,37 @@ class MainActivity : AppCompatActivity() {
 
         private var mStudentLife: StudentLife? = null
         private var mPlatform: Platform? = null
+        private var mPlatform2: Platform2? = null
         private var mCampusExpress: CampusExpress? = null
 
         @JvmStatic
         val campusExpressInstance: CampusExpress
             get() {
                 if (mCampusExpress == null) {
-                    val gsonBuilder = GsonBuilder()
-                    val gson = gsonBuilder.create()
-                    val restAdapter =
-                        RestAdapter
-                            .Builder()
-                            .setConverter(GsonConverter(gson))
-                            .setLogLevel(RestAdapter.LogLevel.FULL)
-                            .setLog(AndroidLog("Campus Express"))
-                            .setEndpoint(Platform.campusExpressBaseUrl)
-                            .build()
-                    mCampusExpress = restAdapter.create(CampusExpress::class.java)
-                }
+                    val retrofit = Retrofit.Builder()
+                        .baseUrl(Platform2.campusExpressBaseUrl)
+                        .client(OkHttpClient.Builder().build())
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                        .build()
+
+                    mCampusExpress = retrofit.create(CampusExpress::class.java)                }
                 return mCampusExpress!!
+            }
+
+        val platformInstance2: Platform2
+            get() {
+                if (mPlatform2 == null) {
+                    val retrofit = Retrofit.Builder()
+                        .baseUrl(Platform2.platformBaseUrl)
+                        .client(OkHttpClient.Builder().build())
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                        .build()
+
+                    mPlatform2 = retrofit.create(Platform2::class.java)
+                }
+                return mPlatform2!!
             }
 
         @JvmStatic
