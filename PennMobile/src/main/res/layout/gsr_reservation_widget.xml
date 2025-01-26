@@ -38,7 +38,7 @@
             android:text="You currently have no reservations"
             android:textSize="28dp"
             android:textColor="@color/black"
-            android:background="@drawable/app_widget_background"
+            android:background="@color/white"
             />
     </FrameLayout>
 </LinearLayout>
