@@ -17,7 +17,6 @@ import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoomSimple
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryUsage
 import okhttp3.ResponseBody
-import retrofit.Callback
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Field

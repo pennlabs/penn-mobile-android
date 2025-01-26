@@ -115,7 +115,9 @@ class GsrReservationsAdapter(
                                     }
                                 }
                             } else {
-                                val error = Exception(response.errorBody().toString())
+                                val error = Exception(response.errorBody()?.string()
+                                    ?: "Unknown error"
+                                )
 
                                 Log.e(
                                     "GsrReservationsAdapter",

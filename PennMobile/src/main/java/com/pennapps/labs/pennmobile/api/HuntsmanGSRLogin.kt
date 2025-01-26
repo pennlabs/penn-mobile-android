@@ -161,7 +161,7 @@ class HuntsmanGSRLogin : Fragment() {
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                             .commit()
                     } else {
-                        val error = Exception(response.errorBody().toString())
+                        val error = Exception(response.errorBody()?.string() ?: "Unknown error")
                         Log.e("HuntsmanGSRLogin", "GSR booking failed $error")
                         Toast.makeText(mActivity, "GSR booking failed", Toast.LENGTH_LONG).show()
                         val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)

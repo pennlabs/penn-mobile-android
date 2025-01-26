@@ -207,7 +207,9 @@ class HomepageViewModel :
     ) {
         val idHash = getSha256Hash(deviceID)
         try {
-            studentLife.browsePolls(bearerToken, idHash).subscribe({ poll ->
+            studentLife.browsePolls(bearerToken, idHash)
+                .subscribeOn(Schedulers.io())
+                .subscribe({ poll ->
                 val pollList = poll?.filterNotNull() ?: emptyList()
                 if (pollList.isNotEmpty()) {
                     val pollCell = PollCell(pollList[0])

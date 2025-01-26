@@ -257,7 +257,7 @@ class HomeAdapter(
         holder.homeRv.layoutParams = params
 
         try {
-            mStudentLifeRf2.roomObservable(roomID).subscribeOn(Schedulers.io())?.subscribe({ room ->
+            mStudentLifeRf2.roomObservable(roomID).subscribeOn(Schedulers.io()).subscribe({ room ->
                 mActivity.runOnUiThread {
                     holder.homeTitle.text = room?.name ?: ""
                     val rooms = room?.let { arrayListOf(it) } ?: arrayListOf()
@@ -534,7 +534,9 @@ class HomeAdapter(
                             if (response.isSuccessful) {
                                 Log.i("HomeAdapter", "Successfully voted for poll!")
                             } else {
-                                val error = Exception(response.errorBody()?.string() ?: "Unknown Error")
+                                val error = Exception(response.errorBody()?.string()
+                                    ?: "Unknown Error"
+                                )
                                 Log.e("HomeAdapter", "Error voting for poll", error)
                             }
                         } catch (e: Exception) {

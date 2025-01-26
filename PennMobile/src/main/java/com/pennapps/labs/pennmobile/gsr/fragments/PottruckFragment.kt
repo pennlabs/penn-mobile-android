@@ -98,17 +98,13 @@ class PottruckFragment : Fragment() {
         // displays banner if not connected
         if (!getConnected()) return
 
-        Log.i("IDK BRO1", Thread.currentThread().name)
-
         try {
 
-            mStudentLifeRf2.getFitnessRooms().subscribeOn(Schedulers.io())?.subscribe({ fitnessRooms ->
+            mStudentLifeRf2.getFitnessRooms().subscribeOn(Schedulers.io()).subscribe({ fitnessRooms ->
                     val rooms = fitnessRooms?.filterNotNull().orEmpty()
                     for (room in rooms) {
                         Log.i("Fitness Room${room.roomId}", "${room.roomName}")
                     }
-
-                    Log.i("IDK BRO1", Thread.currentThread().name)
 
                     val sortedRooms = rooms.sortedBy { it.roomName }
 
@@ -120,11 +116,9 @@ class PottruckFragment : Fragment() {
                         val bearerToken =
                             "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
-                        Log.i("IDK BRO3", Thread.currentThread().name)
-
-                        mStudentLifeRf2.getFitnessPreferences(bearerToken).subscribe({ favorites ->
-
-                            Log.i("IDK BRO2", Thread.currentThread().name)
+                        mStudentLifeRf2.getFitnessPreferences(bearerToken)
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({ favorites ->
 
                             val favoriteRooms = favorites?.rooms?.filterNotNull().orEmpty()
 
@@ -147,11 +141,8 @@ class PottruckFragment : Fragment() {
                                     throwable,
                                 )
                             }
-
-
                         })
                     }
-
                 }, {
                     Log.e("PottruckFragment", "Error getting fitness rooms", it)
                     mActivity.runOnUiThread {

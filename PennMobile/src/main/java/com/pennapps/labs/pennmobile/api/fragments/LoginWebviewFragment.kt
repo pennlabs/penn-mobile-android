@@ -183,36 +183,45 @@ class LoginWebviewFragment : Fragment() {
 
     private fun initiateAuthentication(authCode: String) {
         mActivity.lifecycleScope.launch {
-            val response = mStudentLifeRf2.getAccessToken(
-                authCode,
-                "authorization_code",
-                clientID,
-                redirectUri,
-                codeVerifier,
-            )
+            try {
+                val response = mStudentLifeRf2.getAccessToken(
+                    authCode,
+                    "authorization_code",
+                    clientID,
+                    redirectUri,
+                    codeVerifier,
+                )
 
-            if (response.isSuccessful) {
-                val t : AccessTokenResponse? = response.body()
-                FirebaseAnalytics.getInstance(mActivity).logEvent("LoginEvent", null)
+                if (response.isSuccessful) {
+                    val t : AccessTokenResponse? = response.body()
+                    FirebaseAnalytics.getInstance(mActivity).logEvent("LoginEvent", null)
 
-                val accessToken = t?.accessToken
-                val editor = sp.edit()
-                editor.putString(getString(R.string.access_token), accessToken)
-                editor.putString(getString(R.string.refresh_token), t?.refreshToken)
-                editor.putString(getString(R.string.expires_in), t?.expiresIn)
+                    val accessToken = t?.accessToken
+                    val editor = sp.edit()
+                    editor.putString(getString(R.string.access_token), accessToken)
+                    editor.putString(getString(R.string.refresh_token), t?.refreshToken)
+                    editor.putString(getString(R.string.expires_in), t?.expiresIn)
 
-                val expiresInInt = t?.expiresIn!!.toInt() * 1000
-                Log.i("LoginWebview", "Expires In: $expiresInInt")
-                val currentTime = Calendar.getInstance().timeInMillis
-                editor.putLong(getString(R.string.token_expires_at), currentTime + expiresInInt)
-                editor.apply()
-                getUser(accessToken)
-            } else {
-                val error = response.errorBody()
-                val exception = Exception(error.toString())
+                    val expiresInInt = t?.expiresIn!!.toInt() * 1000
+                    Log.i("LoginWebview", "Expires In: $expiresInInt")
+                    val currentTime = Calendar.getInstance().timeInMillis
+                    editor.putLong(getString(R.string.token_expires_at), currentTime + expiresInInt)
+                    editor.apply()
+                    getUser(accessToken)
+                } else {
+                    val error = response.errorBody()
+                    val exception = Exception(error?.string() ?: "Unknown Error")
 
-                FirebaseCrashlytics.getInstance().recordException(exception)
-                Log.e("Accounts", "Error fetching access token $error", exception)
+                    FirebaseCrashlytics.getInstance().recordException(exception)
+                    Log.e("Accounts", "Error fetching access token", exception)
+                    Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
+                    mActivity.startLoginFragment()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+
+                FirebaseCrashlytics.getInstance().recordException(e)
+                Log.e("Accounts", "Error fetching access token", e)
                 Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
                 mActivity.startLoginFragment()
             }

@@ -186,7 +186,7 @@ class BookGsrFragment : Fragment() {
                         binding.loading.loadingPanel.visibility = View.GONE
                         activity?.onBackPressed()
                     } else {
-                        val error = Exception(response.errorBody().toString())
+                        val error = Exception(response.errorBody()?.string() ?: "Unknown Error")
                         // If any error occurred displaying the error as toast
                         Log.e("BookGSRFragment", "Error booking gsr", error)
                         Toast.makeText(activity, "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()

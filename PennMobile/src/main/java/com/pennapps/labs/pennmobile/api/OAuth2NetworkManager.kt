@@ -70,36 +70,41 @@ class OAuth2NetworkManager(
         val refreshToken = sp.getString(mActivity.getString(R.string.refresh_token), "") ?: ""
         val clientID = BuildConfig.PLATFORM_CLIENT_ID
 
-        val response = mStudentLifeRf2.refreshAccessToken(
-            refreshToken,
-            "refresh_token",
-            clientID,
-        )
+        try {
+            val response = mStudentLifeRf2.refreshAccessToken(
+                refreshToken,
+                "refresh_token",
+                clientID,
+            )
 
-        if (response.isSuccessful) {
-            val t = response.body()!!
+            if (response.isSuccessful) {
+                val t = response.body()!!
 
-            val editor = sp.edit()
-            editor.putString(mActivity.getString(R.string.access_token), t.accessToken)
-            editor.putString(mActivity.getString(R.string.refresh_token), t.refreshToken)
-            editor.putString(mActivity.getString(R.string.expires_in), t.expiresIn)
-            val expiresIn = t.expiresIn
-            val expiresInInt = (expiresIn!!.toInt() * 1000)
-            val currentTime = Calendar.getInstance().timeInMillis
-            editor.putLong(mActivity.getString(R.string.token_expires_at), currentTime + expiresInInt)
-            editor.apply()
+                val editor = sp.edit()
+                editor.putString(mActivity.getString(R.string.access_token), t.accessToken)
+                editor.putString(mActivity.getString(R.string.refresh_token), t.refreshToken)
+                editor.putString(mActivity.getString(R.string.expires_in), t.expiresIn)
+                val expiresIn = t.expiresIn
+                val expiresInInt = (expiresIn!!.toInt() * 1000)
+                val currentTime = Calendar.getInstance().timeInMillis
+                editor.putLong(mActivity.getString(R.string.token_expires_at), currentTime + expiresInInt)
+                editor.apply()
 
-            unlockMutex.invoke()
-            function.invoke()
-        } else {
-            val error = response.errorBody()!!
-
-            FirebaseCrashlytics.getInstance().recordException(Exception(error.toString()))
-
-            if (response.code() == 400) {
-                mActivity.startLoginFragment()
                 unlockMutex.invoke()
+                function.invoke()
+            } else {
+                val error = response.errorBody()!!
+
+                FirebaseCrashlytics.getInstance().recordException(Exception(error.string()))
+
+                if (response.code() == 400) {
+                    mActivity.startLoginFragment()
+                    unlockMutex.invoke()
+                }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 }

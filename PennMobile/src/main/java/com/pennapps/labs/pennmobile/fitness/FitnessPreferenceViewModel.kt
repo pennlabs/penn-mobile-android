@@ -115,7 +115,7 @@ class FitnessPreferenceViewModel(
                     if (response.isSuccessful) {
                         Log.i("Fitness Preference View Model", "fitness preferences saved")
                     } else {
-                        val errorBody = response.errorBody().toString()
+                        val errorBody = response.errorBody()?.string() ?: "Unknown Error"
                         Log.e(
                             "Fitness Preference View Model",
                             "Error saving fitness " +

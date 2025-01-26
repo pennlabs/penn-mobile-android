@@ -36,6 +36,7 @@ import com.pennapps.labs.pennmobile.fitness.classes.FitnessAdapterDataModel
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRoom
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRoomUsage
 import com.pennapps.labs.pennmobile.fitness.classes.RoundedBarChartRenderer
+import rx.schedulers.Schedulers
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -82,7 +83,9 @@ class FitnessAdapter(
             if (hasExtraData) return
             room.roomId?.let {
                 try {
-                    studentLifeRf2.getFitnessRoomUsage(it, 3, "week").subscribe(
+                    studentLifeRf2.getFitnessRoomUsage(it, 3, "week")
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(
                         { roomUsage ->
                             createBarChart(context, roomUsage!!)
                             activity.runOnUiThread {

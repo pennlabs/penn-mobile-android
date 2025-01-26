@@ -127,8 +127,8 @@ class LaundryViewModel : ViewModel() {
                 val favoriteIdList: MutableList<Int> = mutableListOf()
                 val response = studentLife.getLaundryPref(bearerToken)
                 if (response.isSuccessful) {
-                    val prefs = response.body()!!.rooms
-                    for (room in prefs!!) {
+                    val prefs = response.body()?.rooms ?: emptyList()
+                    for (room in prefs) {
                         favoriteIdList.add(room)
                     }
                 } else {

@@ -179,7 +179,7 @@ class DiningSettingsFragment(
                         Log.i("Dining", "Dining preferences saved")
                         mActivity.onBackPressed()
                     } else {
-                        val error = Exception(response.body().toString())
+                        val error = Exception(response.body()?.string() ?: "Unknown Error")
                         Log.e("Dining", "Error saving dining preferences: $error")
                         Toast
                             .makeText(
