@@ -145,42 +145,44 @@ class DiningInsightsFragment : Fragment() {
             binding.internetConnectionDiningInsights.visibility = View.GONE
         }
         val bearerToken = "Bearer $accessToken"
-        mCampusExpress.getCurrentDiningBalances(bearerToken)
+        mCampusExpress
+            .getCurrentDiningBalances(bearerToken)
             .subscribeOn(Schedulers.io())
             .subscribe(
-            { t: DiningBalances? ->
-                activity?.runOnUiThread {
-                    val diningBalanceCell = cells[0]
-                    diningBalanceCell.diningBalances = t
-                    (insightsrv.adapter as DiningInsightsCardAdapter).notifyItemChanged(0)
-                    binding.diningInsightsRefresh.isRefreshing = false
-                }
-            },
-            { throwable ->
-                activity?.runOnUiThread {
-                    Log.e("DiningInsightsFragment", "Error getting balances", throwable)
-                    binding.diningInsightsRefresh.isRefreshing = false
-                }
-            },
-        )
+                { t: DiningBalances? ->
+                    activity?.runOnUiThread {
+                        val diningBalanceCell = cells[0]
+                        diningBalanceCell.diningBalances = t
+                        (insightsrv.adapter as DiningInsightsCardAdapter).notifyItemChanged(0)
+                        binding.diningInsightsRefresh.isRefreshing = false
+                    }
+                },
+                { throwable ->
+                    activity?.runOnUiThread {
+                        Log.e("DiningInsightsFragment", "Error getting balances", throwable)
+                        binding.diningInsightsRefresh.isRefreshing = false
+                    }
+                },
+            )
         val current = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val formattedCurrentDate = current.format(formatter)
-        mCampusExpress.getPastDiningBalances(bearerToken, DiningInsightsCardAdapter.START_DAY_OF_SEMESTER, formattedCurrentDate)
+        mCampusExpress
+            .getPastDiningBalances(bearerToken, DiningInsightsCardAdapter.START_DAY_OF_SEMESTER, formattedCurrentDate)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-            { t: DiningBalancesList? ->
-                cells[1].diningBalancesList = t
-                cells[2].diningBalancesList = t
-                (insightsrv.adapter as DiningInsightsCardAdapter).notifyItemChanged(1)
-                (insightsrv.adapter as DiningInsightsCardAdapter).notifyItemChanged(2)
-                binding.diningInsightsRefresh.isRefreshing = false
-            },
-            { throwable ->
-                Log.e("DiningInsightsFragment", "Error getting balances", throwable)
-                binding.diningInsightsRefresh.isRefreshing = false
-            },
-        )
+                { t: DiningBalancesList? ->
+                    cells[1].diningBalancesList = t
+                    cells[2].diningBalancesList = t
+                    (insightsrv.adapter as DiningInsightsCardAdapter).notifyItemChanged(1)
+                    (insightsrv.adapter as DiningInsightsCardAdapter).notifyItemChanged(2)
+                    binding.diningInsightsRefresh.isRefreshing = false
+                },
+                { throwable ->
+                    Log.e("DiningInsightsFragment", "Error getting balances", throwable)
+                    binding.diningInsightsRefresh.isRefreshing = false
+                },
+            )
     }
 }

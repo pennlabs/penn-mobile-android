@@ -8,12 +8,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.BuildConfig
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.api.classes.AccessTokenResponse
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
 import java.util.Calendar
 
 class OAuth2NetworkManager(
@@ -71,11 +66,12 @@ class OAuth2NetworkManager(
         val clientID = BuildConfig.PLATFORM_CLIENT_ID
 
         try {
-            val response = mStudentLife.refreshAccessToken(
-                refreshToken,
-                "refresh_token",
-                clientID,
-            )
+            val response =
+                mStudentLife.refreshAccessToken(
+                    refreshToken,
+                    "refresh_token",
+                    clientID,
+                )
 
             val t = response.body()
 

@@ -162,8 +162,8 @@ class DiningFragment : Fragment() {
                 .flatMap { venues -> Observable.from(venues) }
                 .flatMap { venue ->
                     venue?.let {
-                       val hall = createHall(it)
-                       Observable.just(hall)
+                        val hall = createHall(it)
+                        Observable.just(hall)
                     } ?: Observable.empty()
                 }.toList()
                 .subscribe({ diningHalls ->
@@ -237,21 +237,22 @@ class DiningFragment : Fragment() {
                 val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
                 val formatted = current.format(formatter)
                 val studentLife = MainActivity.studentLifeInstance
-                studentLife.getMenus(formatted)
+                studentLife
+                    .getMenus(formatted)
                     .subscribeOn(Schedulers.io())
                     .subscribe({ menus ->
-                    menus?.filterNotNull()?.forEach { menu ->
-                        menu.venue?.let { venue ->
-                            idVenueMap[venue.venueId]?.let { diningHall ->
-                                val diningHallMenus = diningHall.menus
-                                diningHallMenus.add(menu)
-                                diningHall.sortMeals(diningHallMenus)
+                        menus?.filterNotNull()?.forEach { menu ->
+                            menu.venue?.let { venue ->
+                                idVenueMap[venue.venueId]?.let { diningHall ->
+                                    val diningHallMenus = diningHall.menus
+                                    diningHallMenus.add(menu)
+                                    diningHall.sortMeals(diningHallMenus)
+                                }
                             }
                         }
-                    }
-                }, { throwable ->
-                    Log.e("DiningFragment", "Error getting Menus", throwable)
-                })
+                    }, { throwable ->
+                        Log.e("DiningFragment", "Error getting Menus", throwable)
+                    })
             } catch (e: Exception) {
                 e.printStackTrace()
             }

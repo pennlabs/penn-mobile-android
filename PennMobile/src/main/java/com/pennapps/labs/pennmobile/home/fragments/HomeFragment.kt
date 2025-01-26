@@ -164,7 +164,7 @@ class HomeFragment : Fragment() {
                         studentLife,
                         isLoggedIn,
                         bearerToken,
-                        deviceID
+                        deviceID,
                     )
                     withContext(Dispatchers.Main) {
                         binding.homeCellsRv.adapter = HomeAdapter(homepageViewModel)

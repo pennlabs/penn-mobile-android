@@ -179,16 +179,17 @@ class LoginWebviewFragment : Fragment() {
     private fun initiateAuthentication(authCode: String) {
         mActivity.lifecycleScope.launch {
             try {
-                val response = mStudentLife.getAccessToken(
-                    authCode,
-                    "authorization_code",
-                    clientID,
-                    redirectUri,
-                    codeVerifier,
-                )
+                val response =
+                    mStudentLife.getAccessToken(
+                        authCode,
+                        "authorization_code",
+                        clientID,
+                        redirectUri,
+                        codeVerifier,
+                    )
 
                 if (response.isSuccessful) {
-                    val t : AccessTokenResponse? = response.body()
+                    val t: AccessTokenResponse? = response.body()
                     FirebaseAnalytics.getInstance(mActivity).logEvent("LoginEvent", null)
 
                     val accessToken = t?.accessToken
@@ -227,10 +228,11 @@ class LoginWebviewFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 mPlatform?.let {
-                    val response = it.getUser(
-                        "Bearer $accessToken",
-                        accessToken,
-                    )
+                    val response =
+                        it.getUser(
+                            "Bearer $accessToken",
+                            accessToken,
+                        )
 
                     if (response.isSuccessful) {
                         val t = response.body()

@@ -96,26 +96,26 @@ class PottruckFragment : Fragment() {
         if (!getConnected()) return
 
         try {
-
             mStudentLife.getFitnessRooms().subscribeOn(Schedulers.io()).subscribe({ fitnessRooms ->
-                    val rooms = fitnessRooms?.filterNotNull().orEmpty()
-                    for (room in rooms) {
-                        Log.i("Fitness Room${room.roomId}", "${room.roomName}")
-                    }
+                val rooms = fitnessRooms?.filterNotNull().orEmpty()
+                for (room in rooms) {
+                    Log.i("Fitness Room${room.roomId}", "${room.roomName}")
+                }
 
-                    val sortedRooms = rooms.sortedBy { it.roomName }
+                val sortedRooms = rooms.sortedBy { it.roomName }
 
-                    dataModel = FitnessPreferenceViewModel(mStudentLife, sortedRooms)
+                dataModel = FitnessPreferenceViewModel(mStudentLife, sortedRooms)
 
-                    mActivity.mNetworkManager.getAccessToken {
-                        val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
-                        val context = mActivity.applicationContext
-                        val bearerToken =
-                            "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
+                mActivity.mNetworkManager.getAccessToken {
+                    val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
+                    val context = mActivity.applicationContext
+                    val bearerToken =
+                        "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
-                        mStudentLife.getFitnessPreferences(bearerToken)
-                            .subscribeOn(Schedulers.io())
-                            .subscribe({ favorites ->
+                    mStudentLife
+                        .getFitnessPreferences(bearerToken)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ favorites ->
 
                             val favoriteRooms = favorites?.rooms?.filterNotNull().orEmpty()
 
@@ -139,15 +139,15 @@ class PottruckFragment : Fragment() {
                                 )
                             }
                         })
-                    }
-                }, {
-                    Log.e("PottruckFragment", "Error getting fitness rooms", it)
-                    mActivity.runOnUiThread {
-                        Log.e("Fitness", "Could not load Pottruck page", it)
-                        binding.loadingPanel.root.visibility = View.GONE
-                        swipeRefresh.isRefreshing = false
-                    }
-                })
+                }
+            }, {
+                Log.e("PottruckFragment", "Error getting fitness rooms", it)
+                mActivity.runOnUiThread {
+                    Log.e("Fitness", "Could not load Pottruck page", it)
+                    binding.loadingPanel.root.visibility = View.GONE
+                    swipeRefresh.isRefreshing = false
+                }
+            })
         } catch (e: Exception) {
             e.printStackTrace()
         }

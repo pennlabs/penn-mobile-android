@@ -22,13 +22,9 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.CampusExpress
 import com.pennapps.labs.pennmobile.api.classes.Account
-import com.pennapps.labs.pennmobile.api.classes.CampusExpressAccessTokenResponse
 import com.pennapps.labs.pennmobile.dining.fragments.DiningInsightsFragment
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.RandomStringUtils
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
 import java.security.MessageDigest
 import java.util.Base64
 import java.util.Date
@@ -149,13 +145,14 @@ class CampusExpressLoginFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             mCampusExpress?.let {
                 try {
-                    val response = it.getAccessToken(
-                        authCode,
-                        "authorization_code",
-                        clientID,
-                        redirectUri,
-                        codeVerifier,
-                    )
+                    val response =
+                        it.getAccessToken(
+                            authCode,
+                            "authorization_code",
+                            clientID,
+                            redirectUri,
+                            codeVerifier,
+                        )
 
                     if (response.isSuccessful) {
                         val t = response.body()

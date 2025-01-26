@@ -388,8 +388,7 @@ class HomeAdapter(
                         .load(post.imageUrl)
                         .submit()
                         .get()
-                }
-                    .toBitmap()
+                }.toBitmap()
 
             // Create palette from bitmap
             fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
@@ -522,18 +521,21 @@ class HomeAdapter(
 
                     (mContext as MainActivity).lifecycleScope.launch {
                         try {
-                            val response = mStudentLife.createPollVote(
-                                bearerToken,
-                                idHash,
-                                selectedOptions,
-                            )
+                            val response =
+                                mStudentLife.createPollVote(
+                                    bearerToken,
+                                    idHash,
+                                    selectedOptions,
+                                )
 
                             if (response.isSuccessful) {
                                 Log.i("HomeAdapter", "Successfully voted for poll!")
                             } else {
-                                val error = Exception(response.errorBody()?.string()
-                                    ?: "Unknown Error"
-                                )
+                                val error =
+                                    Exception(
+                                        response.errorBody()?.string()
+                                            ?: "Unknown Error",
+                                    )
                                 Log.e("HomeAdapter", "Error voting for poll", error)
                             }
                         } catch (e: Exception) {
@@ -599,8 +601,7 @@ class HomeAdapter(
                         .load(article.imageUrl)
                         .submit()
                         .get()
-                }
-                    .toBitmap()
+                }.toBitmap()
 
             // Create palette from bitmap
             fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()

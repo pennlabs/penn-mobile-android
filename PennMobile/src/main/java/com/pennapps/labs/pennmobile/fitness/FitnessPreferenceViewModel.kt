@@ -103,10 +103,11 @@ class FitnessPreferenceViewModel(
             @OptIn(DelicateCoroutinesApi::class)
             GlobalScope.launch(Dispatchers.IO) {
                 try {
-                    val response = studentLife.sendFitnessPref(
-                        bearerToken,
-                        FitnessRequest(ArrayList(favoriteRooms))
-                    )
+                    val response =
+                        studentLife.sendFitnessPref(
+                            bearerToken,
+                            FitnessRequest(ArrayList(favoriteRooms)),
+                        )
 
                     if (response.isSuccessful) {
                         Log.i("Fitness Preference View Model", "fitness preferences saved")
@@ -115,7 +116,7 @@ class FitnessPreferenceViewModel(
                         Log.e(
                             "Fitness Preference View Model",
                             "Error saving fitness " +
-                                    "preferences: $errorBody",
+                                "preferences: $errorBody",
                             Exception(errorBody),
                         )
                     }

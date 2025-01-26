@@ -88,7 +88,6 @@ dependencies {
     implementation libs.okhttp
     implementation libs.picasso
     implementation libs.adapter.rxjava
-    implementation libs.squareup.retrofit
     implementation libs.reactivex.rxandroid
     implementation libs.rxjava
     implementation libs.joda.time

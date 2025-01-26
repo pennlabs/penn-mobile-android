@@ -91,7 +91,7 @@ class DiningCardAdapter(
         if (currentHall.isResidential) {
             try {
                 mStudentLife
-                    .daily_menu(currentHall.id)
+                    .dailyMenu(currentHall.id)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ newDiningHall ->

@@ -259,8 +259,7 @@ class GsrFragment : Fragment() {
                         mStudentLife
                             .isWharton(
                                 "Bearer $bearerToken",
-                            )
-                            .subscribeOn(Schedulers.io())
+                            ).subscribeOn(Schedulers.io())
                             .subscribe(
                                 { status ->
                                     isWharton = status?.isWharton ?: false
@@ -354,8 +353,7 @@ class GsrFragment : Fragment() {
                         location,
                         gId,
                         adjustedDateString,
-                    )
-                    .subscribeOn(Schedulers.io())
+                    ).subscribeOn(Schedulers.io())
                     .subscribe(
                         { gsr ->
                             activity?.let { activity ->

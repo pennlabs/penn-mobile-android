@@ -68,27 +68,28 @@ class FlingFragment : Fragment() {
         val view = binding.root
         val labs = MainActivity.studentLifeInstance
         try {
-            labs.getFlingEvents()
+            labs
+                .getFlingEvents()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                { flingEvents ->
-                    flingEvents?.filterNotNull()?.let {
-                        binding.flingFragmentRecyclerview.layoutManager =
-                            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                        binding.flingFragmentRecyclerview.adapter =
-                            FlingRecyclerViewAdapter(context, it)
-                    }
-                },
-                {
-                    Toast
-                        .makeText(
-                            activity,
-                            "Could not retrieve Spring Fling schedule",
-                            Toast.LENGTH_LONG,
-                        ).show()
-                },
-            )
+                    { flingEvents ->
+                        flingEvents?.filterNotNull()?.let {
+                            binding.flingFragmentRecyclerview.layoutManager =
+                                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                            binding.flingFragmentRecyclerview.adapter =
+                                FlingRecyclerViewAdapter(context, it)
+                        }
+                    },
+                    {
+                        Toast
+                            .makeText(
+                                activity,
+                                "Could not retrieve Spring Fling schedule",
+                                Toast.LENGTH_LONG,
+                            ).show()
+                    },
+                )
         } catch (e: Exception) {
             e.printStackTrace()
         }

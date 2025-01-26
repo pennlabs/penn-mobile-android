@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager
@@ -21,9 +20,6 @@ import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
-import retrofit.ResponseCallback
-import retrofit.RetrofitError
-import retrofit.client.Response
 
 class GsrReservationsAdapter(
     private var reservations: ArrayList<GSRReservation>,
@@ -93,12 +89,13 @@ class GsrReservationsAdapter(
                             "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
 
                         try {
-                            val response = labs.cancelReservation(
-                                bearerToken,
-                                null,
-                                bookingID,
-                                sessionID,
-                            )
+                            val response =
+                                labs.cancelReservation(
+                                    bearerToken,
+                                    null,
+                                    bookingID,
+                                    sessionID,
+                                )
 
                             if (response.isSuccessful) {
                                 if (reservations.size > position) {
@@ -115,9 +112,11 @@ class GsrReservationsAdapter(
                                     }
                                 }
                             } else {
-                                val error = Exception(response.errorBody()?.string()
-                                    ?: "Unknown error"
-                                )
+                                val error =
+                                    Exception(
+                                        response.errorBody()?.string()
+                                            ?: "Unknown error",
+                                    )
 
                                 Log.e(
                                     "GsrReservationsAdapter",

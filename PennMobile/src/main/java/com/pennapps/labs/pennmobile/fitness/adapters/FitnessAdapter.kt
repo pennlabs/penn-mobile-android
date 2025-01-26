@@ -82,21 +82,22 @@ class FitnessAdapter(
             if (hasExtraData) return
             room.roomId?.let {
                 try {
-                    studentLife.getFitnessRoomUsage(it, 3, "week")
+                    studentLife
+                        .getFitnessRoomUsage(it, 3, "week")
                         .subscribeOn(Schedulers.io())
                         .subscribe(
-                        { roomUsage ->
-                            createBarChart(context, roomUsage!!)
-                            activity.runOnUiThread {
-                                hasExtraData = true
-                                showExtra()
-                            }
-                        },
-                        {
-                            Log.e("Fitness Adapter", "Error loading room usage", it)
-                            Toast.makeText(context, "Error loading room", Toast.LENGTH_SHORT).show()
-                        },
-                    )
+                            { roomUsage ->
+                                createBarChart(context, roomUsage!!)
+                                activity.runOnUiThread {
+                                    hasExtraData = true
+                                    showExtra()
+                                }
+                            },
+                            {
+                                Log.e("Fitness Adapter", "Error loading room usage", it)
+                                Toast.makeText(context, "Error loading room", Toast.LENGTH_SHORT).show()
+                            },
+                        )
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

@@ -125,14 +125,15 @@ class HuntsmanGSRLogin : Fragment() {
         (activity as MainActivity).mNetworkManager.getAccessToken {
             viewLifecycleOwner.lifecycleScope.launch {
                 try {
-                    val response = mStudentLife.bookGSR(
+                    val response =
+                        mStudentLife.bookGSR(
                             // Passing the values
                             bearerToken,
                             startTime,
                             endTime,
                             gid,
                             Integer.parseInt(gsrID),
-                            roomName
+                            roomName,
                         )
                     if (response.isSuccessful) {
                         val result = response.body()
@@ -178,9 +179,7 @@ class HuntsmanGSRLogin : Fragment() {
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-
             }
-
         }
     }
 }

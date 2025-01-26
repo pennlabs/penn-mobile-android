@@ -318,14 +318,17 @@ class MainActivity : AppCompatActivity() {
         val campusExpressInstance: CampusExpress
             get() {
                 if (mCampusExpress == null) {
-                    val retrofit = Retrofit.Builder()
-                        .baseUrl(Platform.campusExpressBaseUrl)
-                        .client(OkHttpClient.Builder().build())
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                        .build()
+                    val retrofit =
+                        Retrofit
+                            .Builder()
+                            .baseUrl(Platform.campusExpressBaseUrl)
+                            .client(OkHttpClient.Builder().build())
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                            .build()
 
-                    mCampusExpress = retrofit.create(CampusExpress::class.java)                }
+                    mCampusExpress = retrofit.create(CampusExpress::class.java)
+                }
                 return mCampusExpress!!
             }
 
@@ -333,12 +336,14 @@ class MainActivity : AppCompatActivity() {
         val platformInstance2: Platform
             get() {
                 if (mPlatform == null) {
-                    val retrofit = Retrofit.Builder()
-                        .baseUrl(Platform.platformBaseUrl)
-                        .client(OkHttpClient.Builder().build())
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                        .build()
+                    val retrofit =
+                        Retrofit
+                            .Builder()
+                            .baseUrl(Platform.platformBaseUrl)
+                            .client(OkHttpClient.Builder().build())
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                            .build()
 
                     mPlatform = retrofit.create(Platform::class.java)
                 }
@@ -398,9 +403,10 @@ class MainActivity : AppCompatActivity() {
 
                     val gson = gsonBuilder.create()
 
-                    val logging = HttpLoggingInterceptor().apply {
-                        level = HttpLoggingInterceptor.Level.BODY
-                    }
+                    val logging =
+                        HttpLoggingInterceptor().apply {
+                            level = HttpLoggingInterceptor.Level.BODY
+                        }
                     val okHttpClient =
                         OkHttpClient
                             .Builder()
@@ -423,7 +429,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 return mStudentLife!!
             }
-
     }
 }
 

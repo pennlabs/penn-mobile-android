@@ -90,9 +90,11 @@ class LaundryFragment : Fragment() {
         mActivity.removeTabs()
         mActivity.setTitle(R.string.laundry)
 
-        binding.favoriteLaundryList.setRecycledViewPool(RecyclerView.RecycledViewPool().apply {
-            setMaxRecycledViews(0, LaundryViewModel.MAX_NUM_ROOMS)
-        })
+        binding.favoriteLaundryList.setRecycledViewPool(
+            RecyclerView.RecycledViewPool().apply {
+                setMaxRecycledViews(0, LaundryViewModel.MAX_NUM_ROOMS)
+            },
+        )
         binding.favoriteLaundryList.itemAnimator = null
 
         mAdapter =

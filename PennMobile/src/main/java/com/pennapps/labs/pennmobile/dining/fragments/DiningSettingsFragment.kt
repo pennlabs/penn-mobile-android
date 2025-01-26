@@ -169,10 +169,11 @@ class DiningSettingsFragment(
 
             viewLifecycleOwner.lifecycleScope.launch {
                 try {
-                    val response = mStudentLife.sendDiningPref(
-                        bearerToken,
-                        DiningRequest(favoriteDiningHalls),
-                    )
+                    val response =
+                        mStudentLife.sendDiningPref(
+                            bearerToken,
+                            DiningRequest(favoriteDiningHalls),
+                        )
 
                     if (response.isSuccessful) {
                         Log.i("Dining", "Dining preferences saved")

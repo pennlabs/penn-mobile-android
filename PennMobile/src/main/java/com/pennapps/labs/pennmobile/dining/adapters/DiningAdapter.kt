@@ -87,7 +87,7 @@ class DiningAdapter(
                 holder.progressBar.visibility = View.VISIBLE
                 try {
                     mStudentLife
-                        .daily_menu(diningHall.id)
+                        .dailyMenu(diningHall.id)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ newDiningHall ->

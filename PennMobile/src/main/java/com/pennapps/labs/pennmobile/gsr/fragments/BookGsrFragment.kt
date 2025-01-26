@@ -145,18 +145,18 @@ class BookGsrFragment : Fragment() {
             Log.i("BookGSRFragment", "ID $roomId")
             Log.i("BookGSRFragment", "Room Name $roomName")
 
-
             viewLifecycleOwner.lifecycleScope.launch {
                 try {
-                    val response = mStudentLife.bookGSR(
-                        // Passing the values
-                        bearerToken,
-                        startTime,
-                        endTime,
-                        gid,
-                        roomId,
-                        roomName,
-                    )
+                    val response =
+                        mStudentLife.bookGSR(
+                            // Passing the values
+                            bearerToken,
+                            startTime,
+                            endTime,
+                            gid,
+                            roomId,
+                            roomName,
+                        )
 
                     val result = response.body()
                     if (response.isSuccessful && result != null) {

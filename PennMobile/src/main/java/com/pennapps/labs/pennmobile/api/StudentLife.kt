@@ -65,7 +65,7 @@ interface StudentLife {
     // this one is for rxjava
     @GET("laundry/hall/{id}")
     fun roomObservable(
-        @Path("id") id: Int
+        @Path("id") id: Int,
     ): Observable<LaundryRoom?>
 
     @GET("laundry/usage/{id}")
@@ -91,23 +91,23 @@ interface StudentLife {
     fun getFitnessRoomUsage(
         @Path("id") id: Int,
         @Query("num_samples") samples: Int,
-        @Query("group_by") groupBy: String?
+        @Query("group_by") groupBy: String?,
     ): Observable<FitnessRoomUsage?>
 
     @GET("penndata/fitness/preferences")
     fun getFitnessPreferences(
-        @Header("Authorization") bearerToken: String?
+        @Header("Authorization") bearerToken: String?,
     ): Observable<FitnessPreferences?>
 
     @POST("penndata/fitness/preferences/")
     suspend fun sendFitnessPref(
         @Header("Authorization") bearerToken: String,
-        @Body rooms: FitnessRequest
-    ) : Response<ResponseBody>
+        @Body rooms: FitnessRequest,
+    ): Response<ResponseBody>
 
     @GET("dining/preferences")
     fun getDiningPreferences(
-        @Header("Authorization") bearerToken: String?
+        @Header("Authorization") bearerToken: String?,
     ): Observable<DiningPreferences?>
 
     @GET("gsr/availability/{id}/{gid}")
@@ -115,12 +115,12 @@ interface StudentLife {
         @Header("Authorization") bearerToken: String?,
         @Path("id") id: String?,
         @Path("gid") gid: Int,
-        @Query("start") date: String?
+        @Query("start") date: String?,
     ): Observable<GSR?>
 
     @GET("gsr/wharton")
     fun isWharton(
-        @Header("Authorization") bearerToken: String?
+        @Header("Authorization") bearerToken: String?,
     ): Observable<WhartonStatus?>
 
     @GET("penndata/news")
@@ -160,7 +160,7 @@ interface StudentLife {
     @POST("portal/polls/browse/")
     fun browsePolls(
         @Header("Authorization") bearerToken: String,
-        @Field("id_hash") idHash: String
+        @Field("id_hash") idHash: String,
     ): Observable<List<Poll?>?>
 
     @FormUrlEncoded
@@ -176,12 +176,12 @@ interface StudentLife {
 
     @GET("dining/menus/{day}")
     fun getMenus(
-        @Path("day") day: String?
+        @Path("day") day: String?,
     ): Observable<List<DiningHall.Menu?>?>
 
     @GET("dining/weekly_menu/{id}")
-    fun daily_menu(
-        @Path("id") id: Int
+    fun dailyMenu(
+        @Path("id") id: Int,
     ): Observable<DiningHall?>
 
     @GET("gsr/locations")
@@ -192,17 +192,16 @@ interface StudentLife {
 
     @GET("gsr/reservations")
     fun getGsrReservations(
-        @Header("Authorization") bearerToken: String?
+        @Header("Authorization") bearerToken: String?,
     ): Observable<List<GSRReservation?>?>
 
     @GET("laundry/preferences")
     fun getLaundryPrefObservable(
-        @Header("Authorization") bearerToken: String
+        @Header("Authorization") bearerToken: String,
     ): Observable<LaundryPreferences?>
 
     @GET("portal/posts/browse/")
     fun validPostsList(
-        @Header("Authorization") bearerToken: String?
+        @Header("Authorization") bearerToken: String?,
     ): Observable<List<Post?>?>
 }
-
