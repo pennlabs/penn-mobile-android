@@ -149,7 +149,6 @@ class HomeFragment : Fragment() {
             return
         }
 
-        val studentLife = MainActivity.studentLifeInstance
         val studentLifeRf2 = MainActivity.studentLifeInstanceRf2
         mActivity.mNetworkManager.getAccessToken {
             val sp = sharedPreferences
@@ -162,7 +161,6 @@ class HomeFragment : Fragment() {
                 // set adapter if it is null
                 if (binding.homeCellsRv.adapter == null) {
                     homepageViewModel.populateHomePageCells(
-                        studentLife,
                         studentLifeRf2,
                         isLoggedIn,
                         bearerToken,
@@ -177,7 +175,6 @@ class HomeFragment : Fragment() {
                 } else { // otherwise, call updateHomePageCells which only updates the cells that are changed
                     val updatedIndices =
                         homepageViewModel.updateHomePageCells(
-                            studentLife,
                             studentLifeRf2,
                             isLoggedIn,
                             bearerToken,

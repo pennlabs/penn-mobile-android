@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.dining.fragments
 
+import StudentLifeRf2
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
@@ -17,26 +18,26 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.databinding.FragmentDiningBinding
 import com.pennapps.labs.pennmobile.dining.adapters.DiningAdapter
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 import com.pennapps.labs.pennmobile.dining.classes.Venue
 import com.pennapps.labs.pennmobile.isOnline
 import rx.Observable
+import rx.schedulers.Schedulers
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class DiningFragment : Fragment() {
     private lateinit var mActivity: MainActivity
-    private lateinit var mStudentLife: StudentLife
+    private lateinit var mStudentLifeRf2: StudentLifeRf2
 
     private var _binding: FragmentDiningBinding? = null
     val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mStudentLife = MainActivity.studentLifeInstance
+        mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()
         setHasOptionsMenu(true)
@@ -155,12 +156,15 @@ class DiningFragment : Fragment() {
 
         // Map each item in the list of venues to a Venue Observable, then map each Venue to a DiningHall Observable
         try {
-            mStudentLife
+            mStudentLifeRf2
                 .venues()
+                .subscribeOn(Schedulers.io())
                 .flatMap { venues -> Observable.from(venues) }
                 .flatMap { venue ->
-                    val hall = createHall(venue)
-                    Observable.just(hall)
+                    venue?.let {
+                       val hall = createHall(it)
+                       Observable.just(hall)
+                    } ?: Observable.empty()
                 }.toList()
                 .subscribe({ diningHalls ->
                     mActivity.runOnUiThread {
@@ -232,14 +236,18 @@ class DiningFragment : Fragment() {
                 val current = LocalDateTime.now()
                 val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
                 val formatted = current.format(formatter)
-                val studentLife = MainActivity.studentLifeInstance
-                studentLife.getMenus(formatted).subscribe({ menus ->
-                    menus.forEach { menu ->
-                        val id = menu.venue?.venueId
-                        val diningHall = idVenueMap[id]
-                        val diningHallMenus = diningHall?.menus ?: mutableListOf()
-                        diningHallMenus.add(menu)
-                        diningHall?.sortMeals(diningHallMenus)
+                val studentLife = MainActivity.studentLifeInstanceRf2
+                studentLife.getMenus(formatted)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ menus ->
+                    menus?.filterNotNull()?.forEach { menu ->
+                        menu.venue?.let { venue ->
+                            idVenueMap[venue.venueId]?.let { diningHall ->
+                                val diningHallMenus = diningHall.menus
+                                diningHallMenus.add(menu)
+                                diningHall.sortMeals(diningHallMenus)
+                            }
+                        }
                     }
                 }, { throwable ->
                     Log.e("DiningFragment", "Error getting Menus", throwable)

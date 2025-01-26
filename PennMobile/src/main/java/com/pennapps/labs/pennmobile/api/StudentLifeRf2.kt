@@ -1,16 +1,22 @@
 import com.pennapps.labs.pennmobile.api.classes.AccessTokenResponse
+import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 import com.pennapps.labs.pennmobile.dining.classes.DiningPreferences
 import com.pennapps.labs.pennmobile.dining.classes.DiningRequest
+import com.pennapps.labs.pennmobile.dining.classes.Venue
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessPreferences
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRequest
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRoom
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRoomUsage
+import com.pennapps.labs.pennmobile.fling.classes.FlingEvent
 import com.pennapps.labs.pennmobile.gsr.classes.GSR
 import com.pennapps.labs.pennmobile.gsr.classes.GSRBookingResult
+import com.pennapps.labs.pennmobile.gsr.classes.GSRLocation
+import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
 import com.pennapps.labs.pennmobile.gsr.classes.WhartonStatus
 import com.pennapps.labs.pennmobile.home.classes.Article
 import com.pennapps.labs.pennmobile.home.classes.CalendarEvent
 import com.pennapps.labs.pennmobile.home.classes.Poll
+import com.pennapps.labs.pennmobile.home.classes.Post
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryPreferences
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRequest
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom
@@ -158,11 +164,45 @@ interface StudentLifeRf2 {
     ): Observable<List<Poll?>?>
 
     @FormUrlEncoded
-    @POST("/portal/votes/")
+    @POST("portal/votes/")
     suspend fun createPollVote(
         @Header("Authorization") bearerToken: String,
         @Field("id_hash") idHash: String,
         @Field("poll_options") pollOptions: ArrayList<Int>,
     ): Response<ResponseBody>
+
+    @GET("dining/venues")
+    fun venues(): Observable<List<Venue?>?>
+
+    @GET("dining/menus/{day}")
+    fun getMenus(
+        @Path("day") day: String?
+    ): Observable<List<DiningHall.Menu?>?>
+
+    @GET("dining/weekly_menu/{id}")
+    fun daily_menu(
+        @Path("id") id: Int
+    ): Observable<DiningHall?>
+
+    @GET("gsr/locations")
+    fun location(): Observable<List<GSRLocation?>?>
+
+    @GET("events/fling")
+    fun getFlingEvents(): Observable<List<FlingEvent?>?>
+
+    @GET("gsr/reservations")
+    fun getGsrReservations(
+        @Header("Authorization") bearerToken: String?
+    ): Observable<List<GSRReservation?>?>
+
+    @GET("laundry/preferences")
+    fun getLaundryPrefObservable(
+        @Header("Authorization") bearerToken: String
+    ): Observable<LaundryPreferences?>
+
+    @GET("portal/posts/browse/")
+    fun validPostsList(
+        @Header("Authorization") bearerToken: String?
+    ): Observable<List<Post?>?>
 }
 

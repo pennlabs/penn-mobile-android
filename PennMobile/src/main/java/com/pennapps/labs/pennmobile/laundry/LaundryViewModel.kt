@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRequest
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoomFavorites
@@ -108,10 +109,10 @@ class LaundryViewModel : ViewModel() {
             addUsage.join()
 
             if (addUsageSuccess && !addRoomSuccess) {
-                usages.removeLast()
+                usages.removeAt(usages.lastIndex)
             }
             if (!addUsageSuccess && addRoomSuccess) {
-                rooms.removeLast()
+                rooms.removeAt(rooms.lastIndex)
             }
         }
         replaceFavorites(rooms, usages)
@@ -202,14 +203,12 @@ class LaundryViewModel : ViewModel() {
         var diff = false
         runBlocking {
             favoritesMutex.withLock {
-                if (_favoriteRooms.value == null) {
-                    return@runBlocking
-                }
-                if (_favoriteRooms.value!!.favoriteRooms.size != curToggled.size) {
+                val v = _favoriteRooms.value ?: return@runBlocking
+                if (v.favoriteRooms.size != curToggled.size) {
                     diff = true
                     return@runBlocking
                 }
-                for (room in _favoriteRooms.value!!.favoriteRooms) {
+                for (room in v.favoriteRooms) {
                     if (!curToggled.contains(room.id)) {
                         diff = true
                         return@runBlocking
@@ -254,7 +253,7 @@ class LaundryViewModel : ViewModel() {
 
     fun setToggled() {
         curToggled.clear()
-        runBlocking {
+        viewModelScope.launch {
             favoritesMutex.withLock {
                 for (room in _favoriteRooms.value!!.favoriteRooms) {
                     curToggled.add(room.id)

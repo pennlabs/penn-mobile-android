@@ -20,7 +20,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentPottruckBinding
 import com.pennapps.labs.pennmobile.fitness.FitnessPreferenceViewModel
@@ -34,7 +33,6 @@ import rx.schedulers.Schedulers
 
 class PottruckFragment : Fragment() {
     private lateinit var mActivity: MainActivity
-    private lateinit var mStudentLife: StudentLife
     private lateinit var mStudentLifeRf2: StudentLifeRf2
 
     private lateinit var mView: View
@@ -52,7 +50,6 @@ class PottruckFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mStudentLife = MainActivity.studentLifeInstance
         mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
         mActivity = activity as MainActivity
     }

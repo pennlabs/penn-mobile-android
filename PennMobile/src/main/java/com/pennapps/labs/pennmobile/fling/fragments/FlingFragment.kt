@@ -16,6 +16,8 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.FragmentFlingBinding
 import com.pennapps.labs.pennmobile.fling.adapters.FlingRecyclerViewAdapter
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 
 class FlingFragment : Fragment() {
     private lateinit var mActivity: MainActivity
@@ -64,26 +66,27 @@ class FlingFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentFlingBinding.inflate(inflater, container, false)
         val view = binding.root
-        val labs = MainActivity.studentLifeInstance
+        val labs = MainActivity.studentLifeInstanceRf2
         try {
-            labs.flingEvents.subscribe(
+            labs.getFlingEvents()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
                 { flingEvents ->
-                    activity?.runOnUiThread {
+                    flingEvents?.filterNotNull()?.let {
                         binding.flingFragmentRecyclerview.layoutManager =
                             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                         binding.flingFragmentRecyclerview.adapter =
-                            FlingRecyclerViewAdapter(context, flingEvents)
+                            FlingRecyclerViewAdapter(context, it)
                     }
                 },
                 {
-                    activity?.runOnUiThread {
-                        Toast
-                            .makeText(
-                                activity,
-                                "Could not retrieve Spring Fling schedule",
-                                Toast.LENGTH_LONG,
-                            ).show()
-                    }
+                    Toast
+                        .makeText(
+                            activity,
+                            "Could not retrieve Spring Fling schedule",
+                            Toast.LENGTH_LONG,
+                        ).show()
                 },
             )
         } catch (e: Exception) {

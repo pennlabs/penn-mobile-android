@@ -113,8 +113,10 @@ class LaundryFragment : Fragment() {
             roomsData.sortWith { usage1, usage2 -> usage2.id - usage1.id }
             laundryRooms.sortWith { room1, room2 -> room2.id - room1.id }
 
-            for (pos in 0 until LaundryViewModel.MAX_NUM_ROOMS) {
-                mAdapter!!.notifyItemChanged(pos)
+            mAdapter?.let {
+                for (pos in 0 until LaundryViewModel.MAX_NUM_ROOMS) {
+                    it.notifyItemChanged(pos)
+                }
             }
 
             binding.loadingPanel.root.visibility = View.GONE

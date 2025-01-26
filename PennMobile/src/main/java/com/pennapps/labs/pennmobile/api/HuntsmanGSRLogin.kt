@@ -29,7 +29,6 @@ class HuntsmanGSRLogin : Fragment() {
     private lateinit var roomName: String
     private var gid: Int = 0
 
-    private lateinit var mStudentLife: StudentLife
     private lateinit var mStudentLifeRf2: StudentLifeRf2
     private lateinit var mActivity: MainActivity
 
@@ -38,7 +37,6 @@ class HuntsmanGSRLogin : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mStudentLife = MainActivity.studentLifeInstance
         mStudentLifeRf2= MainActivity.studentLifeInstanceRf2
         mActivity = activity as MainActivity
         arguments?.let { arguments ->

@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.dining.adapters
 
+import StudentLifeRf2
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -15,11 +16,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.databinding.DiningListItemBinding
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 import com.pennapps.labs.pennmobile.dining.fragments.MenuFragment
 import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 
 class DiningCardAdapter(
     halls: ArrayList<DiningHall>,
@@ -32,7 +33,7 @@ class DiningCardAdapter(
 
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
-    private lateinit var mStudentLife: StudentLife
+    private lateinit var mStudentLifeRf2: StudentLifeRf2
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -40,7 +41,7 @@ class DiningCardAdapter(
     ): ViewHolder {
         mContext = parent.context
         mActivity = mContext as MainActivity
-        mStudentLife = MainActivity.studentLifeInstance
+        mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
         val itemBinding = DiningListItemBinding.inflate(LayoutInflater.from(mContext), parent, false)
         itemBinding.diningProgress.visibility = GONE
         return ViewHolder(itemBinding)
@@ -89,11 +90,14 @@ class DiningCardAdapter(
         // Load the menu for each dining hall
         if (currentHall.isResidential) {
             try {
-                mStudentLife
+                mStudentLifeRf2
                     .daily_menu(currentHall.id)
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ newDiningHall ->
-                        currentHall.sortMeals(newDiningHall.menus)
+                        newDiningHall?.let {
+                            currentHall.sortMeals(it.menus)
+                        }
                     }, {
                         Log.e("DiningCard", "Error loading menus", it)
                         Toast.makeText(mContext, "Error loading menus", Toast.LENGTH_SHORT).show()

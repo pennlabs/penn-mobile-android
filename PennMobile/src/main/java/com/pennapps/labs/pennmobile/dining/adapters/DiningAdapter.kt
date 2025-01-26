@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.dining.adapters
 
+import StudentLifeRf2
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,18 +16,18 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.databinding.DiningListItemBinding
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 import com.pennapps.labs.pennmobile.dining.fragments.MenuFragment
 import com.squareup.picasso.Picasso
 import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import java.util.Collections
 
 class DiningAdapter(
     private var diningHalls: List<DiningHall>,
 ) : RecyclerView.Adapter<DiningAdapter.DiningViewHolder>() {
-    private lateinit var mStudentLife: StudentLife
+    private lateinit var mStudentLifeRf2: StudentLifeRf2
     private lateinit var loaded: BooleanArray
     private lateinit var sortBy: String
     private lateinit var context: Context
@@ -36,7 +37,7 @@ class DiningAdapter(
         viewType: Int,
     ): DiningViewHolder {
         val itemBinding = DiningListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        mStudentLife = MainActivity.studentLifeInstance
+        mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
         loaded = BooleanArray(diningHalls.size)
         context = parent.context
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
@@ -85,14 +86,17 @@ class DiningAdapter(
             if (diningHall.isResidential && !loaded[position]) {
                 holder.progressBar.visibility = View.VISIBLE
                 try {
-                    mStudentLife
+                    mStudentLifeRf2
                         .daily_menu(diningHall.id)
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ newDiningHall ->
-                            diningHall.sortMeals(newDiningHall.menus)
-                            holder.progressBar.visibility = View.INVISIBLE
-                            holder.menuArrow.visibility = View.VISIBLE
-                            loaded[position] = true
+                            newDiningHall?.menus?.let { menus ->
+                                diningHall.sortMeals(menus)
+                                holder.progressBar.visibility = View.INVISIBLE
+                                holder.menuArrow.visibility = View.VISIBLE
+                                loaded[position] = true
+                            }
                         }, {
                             holder.progressBar.visibility = View.VISIBLE
                             holder.menuArrow.visibility = View.GONE

@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.dining.classes.DiningCell
 import com.pennapps.labs.pennmobile.gsr.classes.GSRCell
 import com.pennapps.labs.pennmobile.home.classes.CalendarCell
@@ -119,14 +118,13 @@ class HomepageViewModel :
      */
     @Synchronized
     fun updateHomePageCells(
-        studentLife: StudentLife,
         studentLifeRf2: StudentLifeRf2,
         isLoggedIn: Boolean,
         bearerToken: String,
         deviceID: String,
     ): List<Int> {
         val prevList = homepageCells.toList()
-        populateHomePageCells(studentLife, studentLifeRf2, isLoggedIn, bearerToken, deviceID)
+        populateHomePageCells(studentLifeRf2, isLoggedIn, bearerToken, deviceID)
 
         val updatedIndices = mutableListOf<Int>()
 
@@ -148,7 +146,6 @@ class HomepageViewModel :
      */
     @Synchronized
     fun populateHomePageCells(
-        studentLife: StudentLife,
         studentLifeRf2: StudentLifeRf2,
         isLoggedIn: Boolean,
         bearerToken: String,
@@ -159,10 +156,10 @@ class HomepageViewModel :
             getPolls(studentLifeRf2, bearerToken, deviceID, latch)
             getNews(studentLifeRf2, latch)
             getCalendar(studentLifeRf2, latch)
-            getLaundry(studentLife, bearerToken, latch)
-            getPosts(studentLife, bearerToken, latch)
+            getLaundry(studentLifeRf2, bearerToken, latch)
+            getPosts(studentLifeRf2, bearerToken, latch)
             getDiningPrefs(studentLifeRf2, bearerToken, latch)
-            getGSRReservations(studentLife, bearerToken, latch)
+            getGSRReservations(studentLifeRf2, bearerToken, latch)
             // waits until all of the network calls are processed
             latch.await()
         } else {
@@ -282,19 +279,26 @@ class HomepageViewModel :
     }
 
     private fun getLaundry(
-        studentLife: StudentLife,
+        studentLife: StudentLifeRf2,
         bearerToken: String,
         latch: CountDownLatch,
     ) {
         try {
-            studentLife.getLaundryPref(bearerToken).subscribe({ preferences ->
-                val laundryCell =
-                    if (preferences.isNullOrEmpty()) HomeCell() else LaundryCell(preferences[0])
+            studentLife.getLaundryPrefObservable(bearerToken)
+                .subscribeOn(Schedulers.io())
+                .subscribe({ preferences ->
+                    val prefList = preferences?.rooms ?: emptyList()
+                    val laundryCell =
+                        if (prefList.isEmpty()) {
+                            HomeCell()
+                        } else {
+                            LaundryCell(prefList[0])
+                        }
 
-                Log.i(TAG, "Loaded laundry")
+                    Log.i(TAG, "Loaded laundry")
 
-                addCell(laundryCell, LAUNDRY_POS)
-                latch.countDown()
+                    addCell(laundryCell, LAUNDRY_POS)
+                    latch.countDown()
             }, { throwable ->
                 Log.i(TAG, "Could not load laundry")
                 throwable.printStackTrace()
@@ -306,23 +310,26 @@ class HomepageViewModel :
     }
 
     private fun getPosts(
-        studentLife: StudentLife,
+        studentLife: StudentLifeRf2,
         bearerToken: String,
         latch: CountDownLatch,
     ) {
         try {
-            studentLife.validPostsList(bearerToken).subscribe({ post ->
-                if (post.size >= 1) { // there exists a post
-                    val postCell = PostCell(post[0])
+            studentLife.validPostsList(bearerToken)
+                .subscribeOn(Schedulers.io())
+                .subscribe({ post ->
+                    val postList = post?.filterNotNull() ?: emptyList()
+                    if (postList.isNotEmpty() ) { // there exists a post
+                        val postCell = PostCell(postList[0])
 
-                    addCell(postCell, POST_POS)
-                } else {
-                    setPostBlurView(true)
-                }
+                        addCell(postCell, POST_POS)
+                    } else {
+                        setPostBlurView(true)
+                    }
 
-                Log.i(TAG, "Loaded posts")
+                    Log.i(TAG, "Loaded posts")
 
-                latch.countDown()
+                    latch.countDown()
             }, { throwable ->
                 Log.i(TAG, "Could not load posts")
                 setPostBlurView(true)
@@ -365,20 +372,24 @@ class HomepageViewModel :
     }
 
     private fun getGSRReservations(
-        studentLife: StudentLife,
+        studentLife: StudentLifeRf2,
         bearerToken: String,
         latch: CountDownLatch,
     ) {
         try {
-            studentLife.getGsrReservations(bearerToken).subscribe({ reservationsList ->
-                if (reservationsList.isEmpty()) {
-                    addCell(HomeCell(), GSR_POS)
-                } else {
-                    val gsrCell = GSRCell(reservationsList)
-                    Log.i(TAG, "Loaded GSR Reservations")
-                    addCell(gsrCell, GSR_POS)
-                }
-                latch.countDown()
+            studentLife.getGsrReservations(bearerToken)
+                .subscribeOn(Schedulers.io())
+                .subscribe({ reservationsList ->
+                    reservationsList?.let {
+                        if (reservationsList.isEmpty()) {
+                            addCell(HomeCell(), GSR_POS)
+                        } else {
+                            val gsrCell = GSRCell(reservationsList.filterNotNull())
+                            Log.i(TAG, "Loaded GSR Reservations")
+                            addCell(gsrCell, GSR_POS)
+                        }
+                    }
+                    latch.countDown()
             }, { throwable ->
                 Log.i(TAG, "Could not load GSR reservations")
                 throwable.printStackTrace()

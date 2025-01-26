@@ -18,23 +18,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.databinding.FragmentDiningPreferencesBinding
 import com.pennapps.labs.pennmobile.dining.adapters.DiningSettingsAdapter
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 import com.pennapps.labs.pennmobile.dining.classes.DiningRequest
+import com.pennapps.labs.pennmobile.dining.fragments.DiningFragment.Companion.createHall
 import com.pennapps.labs.pennmobile.home.classes.HomepageDataModel
 import kotlinx.coroutines.launch
-import retrofit.ResponseCallback
-import retrofit.RetrofitError
-import retrofit.client.Response
 import rx.Observable
+import rx.schedulers.Schedulers
 
 class DiningSettingsFragment(
     private val dataModel: HomepageDataModel,
 ) : Fragment() {
     private lateinit var mActivity: MainActivity
-    private lateinit var mStudentLife: StudentLife
     private lateinit var mStudentLifeRf2: StudentLifeRf2
 
     private lateinit var halls: List<DiningHall>
@@ -50,7 +47,6 @@ class DiningSettingsFragment(
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         mActivity = activity as MainActivity
-        mStudentLife = MainActivity.studentLifeInstance
         mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
     }
 
@@ -110,12 +106,15 @@ class DiningSettingsFragment(
         // Map each item in the list of venues to a Venue Observable, then map each Venue to a DiningHall Observable
         originalPreferences = dataModel.getDiningHallPrefs()
         try {
-            mStudentLife
+            mStudentLifeRf2
                 .venues()
+                .subscribeOn(Schedulers.io())
                 .flatMap { venues -> Observable.from(venues) }
                 .flatMap { venue ->
-                    val hall = DiningFragment.createHall(venue)
-                    Observable.just(hall)
+                    venue?.let {
+                        val hall = createHall(it)
+                        Observable.just(hall)
+                    } ?: Observable.empty()
                 }.toList()
                 .subscribe({ diningHalls ->
                     mActivity.runOnUiThread {

@@ -31,7 +31,6 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessAdapterDataModel
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRoom
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRoomUsage

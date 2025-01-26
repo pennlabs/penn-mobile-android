@@ -35,7 +35,6 @@ import com.bumptech.glide.Glide
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.components.sneaker.Utils.convertToDp
 import com.pennapps.labs.pennmobile.databinding.HomeBaseCardBinding
 import com.pennapps.labs.pennmobile.databinding.HomeGsrCardBinding
@@ -74,9 +73,6 @@ import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit.ResponseCallback
-import retrofit.RetrofitError
-import retrofit.client.Response
 import rx.Observable
 import rx.schedulers.Schedulers
 
@@ -85,7 +81,6 @@ class HomeAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
-    private lateinit var mStudentLife: StudentLife
     private lateinit var mStudentLifeRf2: StudentLifeRf2
 
     private var mCustomTabsClient: CustomTabsClient? = null
@@ -116,7 +111,6 @@ class HomeAdapter(
         viewType: Int,
     ): RecyclerView.ViewHolder {
         mContext = parent.context
-        mStudentLife = MainActivity.studentLifeInstance
         mStudentLifeRf2 = MainActivity.studentLifeInstanceRf2
         mActivity = mContext as MainActivity
 
@@ -291,19 +285,22 @@ class HomeAdapter(
                 .commit()
         }
         try {
-            mStudentLife
+            mStudentLifeRf2
                 .venues()
+                .subscribeOn(Schedulers.io())
                 .flatMap { venues -> Observable.from(venues) }
                 .flatMap { venue ->
-                    val hall = DiningFragment.createHall(venue)
-                    Observable.just(hall)
+                    venue?.let {
+                        val hall = DiningFragment.createHall(venue)
+                        Observable.just(hall)
+                    } ?: Observable.empty()
                 }.toList()
                 .subscribe { diningHalls ->
                     mActivity.runOnUiThread {
                         val favorites: ArrayList<DiningHall> = arrayListOf()
-                        val favoritesIdList: List<Int>? = cell.venues
+                        val favoritesIdList: List<Int> = cell.venues
                         diningHalls.forEach {
-                            if (favoritesIdList?.contains(it.id) == true) {
+                            if (favoritesIdList.contains(it.id)) {
                                 favorites.add(it)
                             }
                         }
