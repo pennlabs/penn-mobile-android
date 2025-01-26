@@ -57,7 +57,7 @@ class OfferViewModel (private val activity: Activity, private val studentLife: S
                 "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
             Log.i("Offer view model", "in network request")
-            studentLife.createOffer(bearerToken, id.toString(), offer, object : Callback<Offeree> {
+            studentLife.createOffer(bearerToken, id, offer, object : Callback<Offeree> {
                 override fun success(t: Offeree?, response: Response?) {
                     Log.i("offer View Model", "offer added")
                     callback(offer)
