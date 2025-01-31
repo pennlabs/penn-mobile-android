@@ -46,17 +46,16 @@ class SublesseeInterestForm (var sublet: Sublet): Fragment() {
         //Need data validation
         interestButton.setOnClickListener {
             val offer = Offeree(
-                phoneNumber = "test",
+                phoneNumber = "+110000000000",
                 email = "",
                 message = "",
-                sublet = sublet.id!!
             )
 
             val dataModel = OfferViewModel(mActivity, mStudentLife)
 
             dataModel.makeOffer(mActivity, sublet.id!!, offer) { postedOffer ->
                 if (offer != null) {
-                    Log.i("Interest form", "Offer ID: ${offer.sublet}")
+                    Log.i("Interest form", "Offer ID: ${sublet.id}")
                     Toast.makeText(mActivity, "Your message has been sent!", Toast.LENGTH_LONG).show()
                 } else {
                     // Handle failure to post sublet

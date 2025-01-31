@@ -251,7 +251,7 @@ public interface StudentLife {
             @Header("Authorization") String bearerToken);
 
     @Headers({"Content-Type: application/json"})
-    @POST("/sublet/properties/{sublet_id}/favorites/")
+    @POST("/sublet/properties/{sublet_id}/favorites")
     void addFavoriteSublet(
             @Header("Authorization") String bearerToken,
             @Path("sublet_id") int id,
