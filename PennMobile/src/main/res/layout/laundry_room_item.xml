@@ -25,8 +25,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/laundry_info_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/fav_laundry_room_name"
@@ -46,7 +45,6 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="20dp"
-                android:layout_marginLeft="20dp"
                 android:layout_marginTop="16dp"
                 android:text="Harnwell"
                 app:layout_constraintStart_toStartOf="parent"
@@ -54,8 +52,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/washer_layout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/fav_laundry_room_name">
@@ -88,8 +86,8 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
                     android:layout_marginStart="12dp"
                     android:layout_marginLeft="12dp"
                     android:layout_marginTop="2dp"
@@ -107,16 +105,16 @@
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/laundry_washer_machine_list"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp" />
                 </androidx.cardview.widget.CardView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/dryer_layout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/washer_layout">
@@ -149,8 +147,8 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardView2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
                     android:layout_marginStart="12dp"
                     android:layout_marginLeft="12dp"
                     android:layout_marginTop="2dp"
@@ -168,15 +166,15 @@
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/laundry_dryer_machine_list"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp" />
                 </androidx.cardview.widget.CardView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/laundry_availability_chart"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"

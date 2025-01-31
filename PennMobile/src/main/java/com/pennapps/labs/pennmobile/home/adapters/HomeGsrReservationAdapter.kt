@@ -7,7 +7,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.databinding.GsrListItemBinding
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
 import com.pennapps.labs.pennmobile.gsr.fragments.GsrTabbedFragment
@@ -22,7 +21,6 @@ class HomeGsrReservationAdapter(
 
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
-    private lateinit var mStudentLife: StudentLife
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -30,7 +28,6 @@ class HomeGsrReservationAdapter(
     ): GSRReservationViewHolder {
         mContext = parent.context
         mActivity = mContext as MainActivity
-        mStudentLife = MainActivity.studentLifeInstance
 
         val itemBinding = GsrListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 

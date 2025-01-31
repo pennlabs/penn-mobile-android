@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.api.fragments
 
+import StudentLife
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.security.keystore.KeyGenParameterSpec
@@ -17,6 +18,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -24,15 +26,10 @@ import com.pennapps.labs.pennmobile.BuildConfig
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.Platform
-import com.pennapps.labs.pennmobile.api.Platform.platformBaseUrl
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.api.classes.AccessTokenResponse
 import com.pennapps.labs.pennmobile.api.classes.Account
-import com.pennapps.labs.pennmobile.api.classes.GetUserResponse
+import kotlinx.coroutines.launch
 import org.apache.commons.lang3.RandomStringUtils
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
 import java.nio.charset.Charset
 import java.security.MessageDigest
 import java.util.Base64
@@ -65,7 +62,7 @@ class LoginWebviewFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mStudentLife = MainActivity.studentLifeInstance
-        mPlatform = MainActivity.platformInstance
+        mPlatform = MainActivity.platformInstance2
         arguments?.let {
             user = arguments?.getSerializable("user") as Account
         }
@@ -78,7 +75,7 @@ class LoginWebviewFragment : Fragment() {
         redirectUri = BuildConfig.PLATFORM_REDIRECT_URI
         codeVerifier = RandomStringUtils.randomAlphanumeric(64)
         codeChallenge = getCodeChallenge(codeVerifier)
-        platformAuthUrl = platformBaseUrl + "/accounts/authorize/?response_type=code&client_id=" +
+        platformAuthUrl = Platform.platformBaseUrl + "accounts/authorize/?response_type=code&client_id=" +
             clientID + "&redirect_uri=" + redirectUri + "&code_challenge_method=S256" +
             "&code_challenge=" + codeChallenge + "&scope=read+introspection&state="
     }
@@ -180,55 +177,65 @@ class LoginWebviewFragment : Fragment() {
     }
 
     private fun initiateAuthentication(authCode: String) {
-        mStudentLife.getAccessToken(
-            authCode,
-            "authorization_code",
-            clientID,
-            redirectUri,
-            codeVerifier,
-            object : Callback<AccessTokenResponse> {
-                override fun success(
-                    t: AccessTokenResponse?,
-                    response: Response?,
-                ) {
-                    if (response?.status == 200) {
-                        FirebaseAnalytics.getInstance(mActivity).logEvent("LoginEvent", null)
+        mActivity.lifecycleScope.launch {
+            try {
+                val response =
+                    mStudentLife.getAccessToken(
+                        authCode,
+                        "authorization_code",
+                        clientID,
+                        redirectUri,
+                        codeVerifier,
+                    )
 
-                        val accessToken = t?.accessToken
-                        val editor = sp.edit()
-                        editor.putString(getString(R.string.access_token), accessToken)
-                        editor.putString(getString(R.string.refresh_token), t?.refreshToken)
-                        editor.putString(getString(R.string.expires_in), t?.expiresIn)
+                if (response.isSuccessful) {
+                    val t: AccessTokenResponse? = response.body()
+                    FirebaseAnalytics.getInstance(mActivity).logEvent("LoginEvent", null)
 
-                        val expiresInInt = t?.expiresIn!!.toInt() * 1000
-                        Log.i("LoginWebview", "Expires In: $expiresInInt")
-                        val currentTime = Calendar.getInstance().timeInMillis
-                        editor.putLong(getString(R.string.token_expires_at), currentTime + expiresInInt)
-                        editor.apply()
-                        getUser(accessToken)
-                    }
-                }
+                    val accessToken = t?.accessToken
+                    val editor = sp.edit()
+                    editor.putString(getString(R.string.access_token), accessToken)
+                    editor.putString(getString(R.string.refresh_token), t?.refreshToken)
+                    editor.putString(getString(R.string.expires_in), t?.expiresIn)
 
-                override fun failure(error: RetrofitError) {
-                    FirebaseCrashlytics.getInstance().recordException(error)
-                    Log.e("Accounts", "Error fetching access token $error", error)
+                    val expiresInInt = t?.expiresIn!!.toInt() * 1000
+                    Log.i("LoginWebview", "Expires In: $expiresInInt")
+                    val currentTime = Calendar.getInstance().timeInMillis
+                    editor.putLong(getString(R.string.token_expires_at), currentTime + expiresInInt)
+                    editor.apply()
+                    getUser(accessToken)
+                } else {
+                    val error = response.errorBody()
+                    val exception = Exception(error?.string() ?: "Unknown Error")
+
+                    FirebaseCrashlytics.getInstance().recordException(exception)
+                    Log.e("Accounts", "Error fetching access token", exception)
                     Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
                     mActivity.startLoginFragment()
                 }
-            },
-        )
+            } catch (e: Exception) {
+                e.printStackTrace()
+
+                FirebaseCrashlytics.getInstance().recordException(e)
+                Log.e("Accounts", "Error fetching access token", e)
+                Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
+                mActivity.startLoginFragment()
+            }
+        }
     }
 
     private fun getUser(accessToken: String?) {
-        try {
-            mPlatform?.getUser(
-                "Bearer $accessToken",
-                accessToken,
-                object : Callback<GetUserResponse> {
-                    override fun success(
-                        t: GetUserResponse?,
-                        response: Response?,
-                    ) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                mPlatform?.let {
+                    val response =
+                        it.getUser(
+                            "Bearer $accessToken",
+                            accessToken,
+                        )
+
+                    if (response.isSuccessful) {
+                        val t = response.body()
                         val user = t?.user
                         val editor = sp.edit()
                         editor.putString(getString(R.string.first_name), user?.firstName)
@@ -244,19 +251,16 @@ class LoginWebviewFragment : Fragment() {
                         editor.putString(getString(R.string.pennkey), user?.username)
                         editor.apply()
                         mActivity.startHomeFragment()
-                        // saveAccount(Account(user?.firstName, user?.lastName,
-                        //        user?.username, user?.pennid, user?.email, user?.affiliation), user?.username.toString(), accessToken)
-                    }
-
-                    override fun failure(error: RetrofitError) {
+                    } else {
+                        val error = Exception(response.errorBody()?.string() ?: "Unknown Error")
                         Log.e("Accounts", "Error getting user $error")
                         Toast.makeText(mActivity, "Error logging in", Toast.LENGTH_SHORT).show()
                         mActivity.startLoginFragment()
                     }
-                },
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

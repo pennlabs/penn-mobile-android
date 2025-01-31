@@ -19,6 +19,8 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.FragmentGsrReservationsBinding
 import com.pennapps.labs.pennmobile.gsr.adapters.GsrReservationsAdapter
 import com.pennapps.labs.pennmobile.isOnline
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 
 class GsrReservationsFragment : Fragment() {
     private lateinit var mActivity: MainActivity
@@ -104,37 +106,43 @@ class GsrReservationsFragment : Fragment() {
             val email = sp.getString(getString(R.string.email_address), "")
             val token = sp.getString(getString(R.string.access_token), "")
             try {
-                labs.getGsrReservations("Bearer $token").subscribe({ reservations ->
-                    mActivity.runOnUiThread {
+                labs
+                    .getGsrReservations("Bearer $token")
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ reservations ->
                         binding.loadingPanel.root.visibility = View.GONE
-
                         try {
-                            binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList(reservations))
-                            if (reservations.size > 0) {
-                                binding.gsrNoReservations.visibility = View.GONE
-                            } else {
-                                binding.gsrNoReservations.visibility = View.VISIBLE
+                            reservations?.let {
+                                binding.gsrReservationsRv.adapter =
+                                    GsrReservationsAdapter(
+                                        ArrayList(it.filterNotNull()),
+                                    )
+                                if (it.isNotEmpty()) {
+                                    binding.gsrNoReservations.visibility = View.GONE
+                                } else {
+                                    binding.gsrNoReservations.visibility = View.VISIBLE
+                                }
                             }
                             // stop refreshing
                             binding.gsrReservationsRefreshLayout.isRefreshing = false
                         } catch (e: Exception) {
                             FirebaseCrashlytics.getInstance().recordException(e)
                         }
-                    }
-                }, { throwable ->
-                    mActivity.runOnUiThread {
-                        Log.e("GsrReservationsFragment", "Error getting reservations", throwable)
-                        throwable.printStackTrace()
-                        binding.loadingPanel.root.visibility = View.GONE
-                        try {
-                            binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList())
-                            binding.gsrNoReservations.visibility = View.VISIBLE
-                            binding.gsrReservationsRefreshLayout.isRefreshing = false
-                        } catch (e: Exception) {
-                            FirebaseCrashlytics.getInstance().recordException(e)
+                    }, { throwable ->
+                        mActivity.runOnUiThread {
+                            Log.e("GsrReservationsFragment", "Error getting reservations", throwable)
+                            throwable.printStackTrace()
+                            binding.loadingPanel.root.visibility = View.GONE
+                            try {
+                                binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList())
+                                binding.gsrNoReservations.visibility = View.VISIBLE
+                                binding.gsrReservationsRefreshLayout.isRefreshing = false
+                            } catch (e: Exception) {
+                                FirebaseCrashlytics.getInstance().recordException(e)
+                            }
                         }
-                    }
-                })
+                    })
             } catch (e: Exception) {
                 FirebaseCrashlytics.getInstance().recordException(e)
                 e.printStackTrace()

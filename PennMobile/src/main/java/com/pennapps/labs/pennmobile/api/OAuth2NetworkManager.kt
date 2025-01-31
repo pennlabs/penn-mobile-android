@@ -8,11 +8,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.BuildConfig
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.api.classes.AccessTokenResponse
 import kotlinx.coroutines.launch
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
 import java.util.Calendar
 
 class OAuth2NetworkManager(
@@ -62,49 +58,49 @@ class OAuth2NetworkManager(
         }
     }
 
-    @Synchronized
-    private fun refreshAccessToken(
+    private suspend fun refreshAccessToken(
         function: () -> Unit,
         unlockMutex: () -> Unit,
     ) {
-        val refreshToken = sp.getString(mActivity.getString(R.string.refresh_token), "")
+        val refreshToken = sp.getString(mActivity.getString(R.string.refresh_token), "") ?: ""
         val clientID = BuildConfig.PLATFORM_CLIENT_ID
 
-        mStudentLife.refreshAccessToken(
-            refreshToken,
-            "refresh_token",
-            clientID,
-            object : Callback<AccessTokenResponse> {
-                override fun success(
-                    t: AccessTokenResponse?,
-                    response: Response?,
-                ) {
-                    if (response?.status == 200) {
-                        val editor = sp.edit()
-                        editor.putString(mActivity.getString(R.string.access_token), t?.accessToken)
-                        editor.putString(mActivity.getString(R.string.refresh_token), t?.refreshToken)
-                        editor.putString(mActivity.getString(R.string.expires_in), t?.expiresIn)
-                        val expiresIn = t?.expiresIn
-                        val expiresInInt = (expiresIn!!.toInt() * 1000)
-                        val currentTime = Calendar.getInstance().timeInMillis
-                        editor.putLong(mActivity.getString(R.string.token_expires_at), currentTime + expiresInInt)
-                        editor.apply()
-                        unlockMutex.invoke()
-                        function.invoke()
-                        Log.i("Accounts", "Reloaded Homepage")
-                    }
-                }
+        try {
+            val response =
+                mStudentLife.refreshAccessToken(
+                    refreshToken,
+                    "refresh_token",
+                    clientID,
+                )
 
-                override fun failure(error: RetrofitError) {
-                    FirebaseCrashlytics.getInstance().recordException(error)
-                    Log.e("Accounts", "Error refreshing access token $error")
+            val t = response.body()
 
-                    if (error.response != null && error.response.status == 400) {
-                        mActivity.startLoginFragment()
-                        unlockMutex.invoke()
-                    }
+            if (response.isSuccessful && t != null) {
+                val editor = sp.edit()
+                editor.putString(mActivity.getString(R.string.access_token), t.accessToken)
+                editor.putString(mActivity.getString(R.string.refresh_token), t.refreshToken)
+                editor.putString(mActivity.getString(R.string.expires_in), t.expiresIn)
+                val expiresIn = t.expiresIn
+                val expiresInInt = (expiresIn!!.toInt() * 1000)
+                val currentTime = Calendar.getInstance().timeInMillis
+                editor.putLong(mActivity.getString(R.string.token_expires_at), currentTime + expiresInInt)
+                editor.apply()
+
+                unlockMutex.invoke()
+                function.invoke()
+            } else {
+                val error = response.errorBody()!!
+
+                FirebaseCrashlytics.getInstance().recordException(Exception(error.string()))
+
+                if (response.code() == 400) {
+                    mActivity.startLoginFragment()
+                    unlockMutex.invoke()
                 }
-            },
-        )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            FirebaseCrashlytics.getInstance().recordException(e)
+        }
     }
 }

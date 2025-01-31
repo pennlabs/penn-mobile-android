@@ -72,11 +72,14 @@ class LaundryMachineAdapter(
         var timeTextView: TextView? = itemBinding.minLeftTime
         var notificationBell: LottieAnimationView = itemBinding.bellNotificationIcon
         var alarmSwitch: SwitchCompat = itemBinding.laundryAlarmSwitch
+        val animated = AnimatedVectorDrawableCompat.create(context, R.drawable.ic_washer_in_use)
 
         fun bind(position: Int) {
             with(itemBinding.root) {
                 val detail = mMachineDetails[position]
-                alarmSwitch.visibility = View.GONE
+                if (alarmSwitch.visibility != View.GONE) {
+                    alarmSwitch.visibility = View.GONE
+                }
 
                 when (val timeRemaining = detail.timeRemaining) {
                     NOT_AVAILABLE_LABEL -> {
@@ -102,8 +105,6 @@ class LaundryMachineAdapter(
                     }
                     else -> {
                         if (mMachineType == context.getString(R.string.washer)) {
-                            // holder.machineView!!.setImageResource(R.drawable.ic_washer_in_use)
-                            val animated = AnimatedVectorDrawableCompat.create(context, R.drawable.ic_washer_in_use)
                             animated?.registerAnimationCallback(
                                 object : Animatable2Compat.AnimationCallback() {
                                     override fun onAnimationEnd(drawable: Drawable?) {

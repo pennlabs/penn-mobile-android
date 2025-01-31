@@ -16,6 +16,8 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.FragmentFlingBinding
 import com.pennapps.labs.pennmobile.fling.adapters.FlingRecyclerViewAdapter
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 
 class FlingFragment : Fragment() {
     private lateinit var mActivity: MainActivity
@@ -66,26 +68,28 @@ class FlingFragment : Fragment() {
         val view = binding.root
         val labs = MainActivity.studentLifeInstance
         try {
-            labs.flingEvents.subscribe(
-                { flingEvents ->
-                    activity?.runOnUiThread {
-                        binding.flingFragmentRecyclerview.layoutManager =
-                            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                        binding.flingFragmentRecyclerview.adapter =
-                            FlingRecyclerViewAdapter(context, flingEvents)
-                    }
-                },
-                {
-                    activity?.runOnUiThread {
+            labs
+                .getFlingEvents()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { flingEvents ->
+                        flingEvents?.filterNotNull()?.let {
+                            binding.flingFragmentRecyclerview.layoutManager =
+                                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                            binding.flingFragmentRecyclerview.adapter =
+                                FlingRecyclerViewAdapter(context, it)
+                        }
+                    },
+                    {
                         Toast
                             .makeText(
                                 activity,
                                 "Could not retrieve Spring Fling schedule",
                                 Toast.LENGTH_LONG,
                             ).show()
-                    }
-                },
-            )
+                    },
+                )
         } catch (e: Exception) {
             e.printStackTrace()
         }

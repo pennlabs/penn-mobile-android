@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.dining.adapters
 
+import StudentLife
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,12 +16,12 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.databinding.DiningListItemBinding
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 import com.pennapps.labs.pennmobile.dining.fragments.MenuFragment
 import com.squareup.picasso.Picasso
 import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import java.util.Collections
 
 class DiningAdapter(
@@ -86,13 +87,16 @@ class DiningAdapter(
                 holder.progressBar.visibility = View.VISIBLE
                 try {
                     mStudentLife
-                        .daily_menu(diningHall.id)
+                        .dailyMenu(diningHall.id)
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ newDiningHall ->
-                            diningHall.sortMeals(newDiningHall.menus)
-                            holder.progressBar.visibility = View.INVISIBLE
-                            holder.menuArrow.visibility = View.VISIBLE
-                            loaded[position] = true
+                            newDiningHall?.menus?.let { menus ->
+                                diningHall.sortMeals(menus)
+                                holder.progressBar.visibility = View.INVISIBLE
+                                holder.menuArrow.visibility = View.VISIBLE
+                                loaded[position] = true
+                            }
                         }, {
                             holder.progressBar.visibility = View.VISIBLE
                             holder.menuArrow.visibility = View.GONE

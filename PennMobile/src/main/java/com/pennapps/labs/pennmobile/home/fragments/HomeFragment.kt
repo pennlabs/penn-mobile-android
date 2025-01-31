@@ -160,7 +160,12 @@ class HomeFragment : Fragment() {
             lifecycleScope.launch(Dispatchers.Default) {
                 // set adapter if it is null
                 if (binding.homeCellsRv.adapter == null) {
-                    homepageViewModel.populateHomePageCells(studentLife, isLoggedIn, bearerToken, deviceID)
+                    homepageViewModel.populateHomePageCells(
+                        studentLife,
+                        isLoggedIn,
+                        bearerToken,
+                        deviceID,
+                    )
                     withContext(Dispatchers.Main) {
                         binding.homeCellsRv.adapter = HomeAdapter(homepageViewModel)
                         binding.homeCellsRv.visibility = View.INVISIBLE
