@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.gsr.fragments
 
+import StudentLife
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,7 +20,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentPottruckBinding
 import com.pennapps.labs.pennmobile.fitness.FitnessPreferenceViewModel
@@ -29,6 +29,7 @@ import com.pennapps.labs.pennmobile.fitness.fragments.CloseListener
 import com.pennapps.labs.pennmobile.fitness.fragments.FitnessPreferencesFragment
 import com.pennapps.labs.pennmobile.isOnline
 import com.pennapps.labs.pennmobile.utils.Utils
+import rx.schedulers.Schedulers
 
 class PottruckFragment : Fragment() {
     private lateinit var mActivity: MainActivity
@@ -95,52 +96,58 @@ class PottruckFragment : Fragment() {
         if (!getConnected()) return
 
         try {
-            mStudentLife.fitnessRooms
-                .subscribe({ fitnessRooms ->
-                    for (room in fitnessRooms) {
-                        Log.i("Fitness Room${room.roomId}", "${room.roomName}")
-                    }
-                    val sortedRooms = fitnessRooms.sortedBy { it.roomName }
+            mStudentLife.getFitnessRooms().subscribeOn(Schedulers.io()).subscribe({ fitnessRooms ->
+                val rooms = fitnessRooms?.filterNotNull().orEmpty()
+                for (room in rooms) {
+                    Log.i("Fitness Room${room.roomId}", "${room.roomName}")
+                }
 
-                    dataModel = FitnessPreferenceViewModel(mStudentLife, sortedRooms)
+                val sortedRooms = rooms.sortedBy { it.roomName }
 
-                    mActivity.runOnUiThread {
-                        mActivity.mNetworkManager.getAccessToken {
-                            val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
-                            val context = mActivity.applicationContext
-                            val bearerToken =
-                                "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
+                dataModel = FitnessPreferenceViewModel(mStudentLife, sortedRooms)
 
-                            mStudentLife.getFitnessPreferences(bearerToken).subscribe({ favorites ->
-                                mActivity.runOnUiThread {
-                                    for (roomId in favorites) {
-                                        dataModel.addId(roomId)
-                                    }
-                                    dataModel.updatePositionMap()
+                mActivity.mNetworkManager.getAccessToken {
+                    val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
+                    val context = mActivity.applicationContext
+                    val bearerToken =
+                        "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
-                                    setAdapters()
-                                }
-                            }, { throwable ->
-                                mActivity.runOnUiThread {
-                                    // empty preferences
-                                    setAdapters()
-                                    Log.e(
-                                        "Pottruck Fragment",
-                                        "Could not load Fitness Preferences",
-                                        throwable,
-                                    )
-                                }
-                            })
-                        }
-                    }
-                }, {
-                    Log.e("PottruckFragment", "Error getting fitness rooms", it)
-                    mActivity.runOnUiThread {
-                        Log.e("Fitness", "Could not load Pottruck page", it)
-                        binding.loadingPanel.root.visibility = View.GONE
-                        swipeRefresh.isRefreshing = false
-                    }
-                })
+                    mStudentLife
+                        .getFitnessPreferences(bearerToken)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ favorites ->
+
+                            val favoriteRooms = favorites?.rooms?.filterNotNull().orEmpty()
+
+                            for (roomId in favoriteRooms) {
+                                dataModel.addId(roomId)
+                            }
+                            dataModel.updatePositionMap()
+
+                            mActivity.runOnUiThread {
+                                setAdapters()
+                            }
+                        }, { throwable ->
+
+                            mActivity.runOnUiThread {
+                                // empty preferences
+                                setAdapters()
+                                Log.e(
+                                    "Pottruck Fragment",
+                                    "Could not load Fitness Preferences",
+                                    throwable,
+                                )
+                            }
+                        })
+                }
+            }, {
+                Log.e("PottruckFragment", "Error getting fitness rooms", it)
+                mActivity.runOnUiThread {
+                    Log.e("Fitness", "Could not load Pottruck page", it)
+                    binding.loadingPanel.root.visibility = View.GONE
+                    swipeRefresh.isRefreshing = false
+                }
+            })
         } catch (e: Exception) {
             e.printStackTrace()
         }

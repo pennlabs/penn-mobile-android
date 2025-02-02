@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.home.adapters
 
+import StudentLife
 import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
@@ -34,7 +35,6 @@ import com.bumptech.glide.Glide
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.components.sneaker.Utils.convertToDp
 import com.pennapps.labs.pennmobile.databinding.HomeBaseCardBinding
 import com.pennapps.labs.pennmobile.databinding.HomeGsrCardBinding
@@ -72,10 +72,9 @@ import com.pennapps.labs.pennmobile.utils.Utils
 import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit.ResponseCallback
-import retrofit.RetrofitError
-import retrofit.client.Response
+import kotlinx.coroutines.withContext
 import rx.Observable
+import rx.schedulers.Schedulers
 
 class HomeAdapter(
     private val dataModel: HomepageDataModel,
@@ -252,10 +251,10 @@ class HomeAdapter(
         holder.homeRv.layoutParams = params
 
         try {
-            mStudentLife.room(roomID).subscribe({ room ->
+            mStudentLife.roomObservable(roomID).subscribeOn(Schedulers.io()).subscribe({ room ->
                 mActivity.runOnUiThread {
-                    holder.homeTitle.text = room.name
-                    val rooms = arrayListOf(room)
+                    holder.homeTitle.text = room?.name ?: ""
+                    val rooms = room?.let { arrayListOf(it) } ?: arrayListOf()
                     holder.homeRv.adapter =
                         LaundryRoomAdapter(
                             mContext,
@@ -288,17 +287,20 @@ class HomeAdapter(
         try {
             mStudentLife
                 .venues()
+                .subscribeOn(Schedulers.io())
                 .flatMap { venues -> Observable.from(venues) }
                 .flatMap { venue ->
-                    val hall = DiningFragment.createHall(venue)
-                    Observable.just(hall)
+                    venue?.let {
+                        val hall = DiningFragment.createHall(venue)
+                        Observable.just(hall)
+                    } ?: Observable.empty()
                 }.toList()
                 .subscribe { diningHalls ->
                     mActivity.runOnUiThread {
                         val favorites: ArrayList<DiningHall> = arrayListOf()
-                        val favoritesIdList: List<Int>? = cell.venues
+                        val favoritesIdList: List<Int> = cell.venues
                         diningHalls.forEach {
-                            if (favoritesIdList?.contains(it.id) == true) {
+                            if (favoritesIdList.contains(it.id)) {
                                 favorites.add(it)
                             }
                         }
@@ -380,12 +382,13 @@ class HomeAdapter(
         var accentColor: Int = getColor(mContext, R.color.black)
         mActivity.lifecycleScope.launch(Dispatchers.Default) {
             val bitmap =
-                Glide
-                    .with(mContext)
-                    .load(post.imageUrl)
-                    .submit()
-                    .get()
-                    .toBitmap()
+                withContext(Dispatchers.IO) {
+                    Glide
+                        .with(mContext)
+                        .load(post.imageUrl)
+                        .submit()
+                        .get()
+                }.toBitmap()
 
             // Create palette from bitmap
             fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
@@ -426,7 +429,7 @@ class HomeAdapter(
             .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))
             .setBlurRadius(25f)
         /** Post clicking logic if there exists a URL **/
-        val url = post?.postUrl ?: return
+        val url = post.postUrl ?: return
         holder.homePostCard.setOnClickListener {
             val connection = NewsCustomTabsServiceConnection()
             builder = CustomTabsIntent.Builder()
@@ -516,23 +519,28 @@ class HomeAdapter(
                     val bearerToken =
                         "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
 
-                    try {
-                        mStudentLife.createPollVote(
-                            bearerToken,
-                            idHash,
-                            selectedOptions,
-                            object : ResponseCallback() {
-                                override fun success(response: Response?) {
-                                    Log.i("HomeAdapter", "Successfully voted for poll!")
-                                }
+                    (mContext as MainActivity).lifecycleScope.launch {
+                        try {
+                            val response =
+                                mStudentLife.createPollVote(
+                                    bearerToken,
+                                    idHash,
+                                    selectedOptions,
+                                )
 
-                                override fun failure(error: RetrofitError?) {
-                                    Log.e("HomeAdapter", "Error voting for poll", error)
-                                }
-                            },
-                        )
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+                            if (response.isSuccessful) {
+                                Log.i("HomeAdapter", "Successfully voted for poll!")
+                            } else {
+                                val error =
+                                    Exception(
+                                        response.errorBody()?.string()
+                                            ?: "Unknown Error",
+                                    )
+                                Log.e("HomeAdapter", "Error voting for poll", error)
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
                 }
             }
@@ -578,7 +586,7 @@ class HomeAdapter(
 
         Glide
             .with(mContext)
-            .load(article?.imageUrl)
+            .load(article.imageUrl)
             .fitCenter()
             .centerCrop()
             .into(holder.homeNewsImageView)
@@ -587,12 +595,13 @@ class HomeAdapter(
         var accentColor: Int = getColor(mContext, R.color.black)
         mActivity.lifecycleScope.launch(Dispatchers.Default) {
             val bitmap =
-                Glide
-                    .with(mContext)
-                    .load(article?.imageUrl)
-                    .submit()
-                    .get()
-                    .toBitmap()
+                withContext(Dispatchers.IO) {
+                    Glide
+                        .with(mContext)
+                        .load(article.imageUrl)
+                        .submit()
+                        .get()
+                }.toBitmap()
 
             // Create palette from bitmap
             fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
