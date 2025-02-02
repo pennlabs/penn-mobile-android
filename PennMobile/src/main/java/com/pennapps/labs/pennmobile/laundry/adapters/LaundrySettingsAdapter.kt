@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import android.widget.ImageView
-import android.widget.Switch
 import android.widget.TextView
+import androidx.appcompat.widget.SwitchCompat
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.laundry.LaundryViewModel
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoomSimple
@@ -20,7 +20,7 @@ class LaundrySettingsAdapter(
     private val mContext: Context,
     private val dataModel: LaundryViewModel,
 ) : BaseExpandableListAdapter() {
-    private val switches: MutableList<Switch> = ArrayList()
+    private val switches: MutableList<SwitchCompat> = ArrayList()
 
     init {
         dataModel.setToggled()
@@ -65,7 +65,7 @@ class LaundrySettingsAdapter(
         val textView = view.findViewById<TextView>(R.id.laundry_building_name)
         textView.text = laundryHallName
         val imageView = view.findViewById<ImageView>(R.id.laundry_building_dropdown)
-        val buildingSwitch = view.findViewById<Switch>(R.id.laundry_building_favorite_switch)
+        val buildingSwitch = view.findViewById<SwitchCompat>(R.id.laundry_building_favorite_switch)
 
         // if there is only one laundry room in the building, don't have dropdown
         if (dataModel.getRooms(laundryHallName)!!.size == 1) {
@@ -122,7 +122,7 @@ class LaundrySettingsAdapter(
         val textView = view.findViewById<TextView>(R.id.laundry_room_name)
         val name = laundryRoom.name
         textView.text = name
-        val favoriteSwitch = view.findViewById<Switch>(R.id.laundry_favorite_switch)
+        val favoriteSwitch = view.findViewById<SwitchCompat>(R.id.laundry_favorite_switch)
 
         val roomId: Int = laundryRoom.id!!
 
@@ -153,7 +153,7 @@ class LaundrySettingsAdapter(
 
     private fun updateSwitches() {
         if (dataModel.isFull()) {
-            val iter: Iterator<Switch> = switches.iterator()
+            val iter: MutableIterator<SwitchCompat> = switches.iterator()
             while (iter.hasNext()) {
                 val nextSwitch = iter.next()
                 if (!nextSwitch.isChecked) {
@@ -161,7 +161,7 @@ class LaundrySettingsAdapter(
                 }
             }
         } else {
-            val iter: Iterator<Switch> = switches.iterator()
+            val iter: MutableIterator<SwitchCompat> = switches.iterator()
             while (iter.hasNext()) {
                 val nextSwitch = iter.next()
                 nextSwitch.isEnabled = true
