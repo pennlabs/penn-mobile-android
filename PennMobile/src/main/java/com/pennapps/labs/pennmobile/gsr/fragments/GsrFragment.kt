@@ -425,7 +425,6 @@ class GsrFragment : Fragment() {
                         },
                     )
             } catch (e: Exception) {
-                Log.i("WHAT THE HELL", "asdf")
                 e.printStackTrace()
             }
         }
