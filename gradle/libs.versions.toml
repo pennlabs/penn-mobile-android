@@ -1,7 +1,7 @@
 [versions]
 adapterRxjava = "2.11.0"
 activityCompose = "1.8.0"
-agp = "8.7.0"
+agp = "8.8.0"
 androidRss = "master-SNAPSHOT"
 annotation = "1.7.0"
 blurview = "version-2.0.6"
