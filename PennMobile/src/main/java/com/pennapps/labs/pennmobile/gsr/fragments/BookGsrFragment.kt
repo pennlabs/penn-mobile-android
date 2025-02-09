@@ -2,7 +2,9 @@ package com.pennapps.labs.pennmobile.gsr.fragments
 
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
+import android.appwidget.AppWidgetManager
 import android.content.ComponentName
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -21,6 +23,7 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.databinding.GsrDetailsBookBinding
 import com.pennapps.labs.pennmobile.gsr.classes.GSRBookingResult
+import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidgetJobService
 import retrofit.Callback
 import retrofit.RetrofitError
@@ -170,21 +173,10 @@ class BookGsrFragment : Fragment() {
                             if (result.getDetail().equals("success")) {
                                 Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
 
-                                val jobScheduler = getSystemService(context!!, JobScheduler::class.java)
-                                val jobService = ComponentName(context!!, GsrReservationWidgetJobService::class.java)
-                                val jobInfo =
-                                    JobInfo
-                                        .Builder(1, jobService)
-                                        .setRequiresCharging(false)
-                                        .setMinimumLatency(5_000)
-                                        .build()
-
-                                val result = jobScheduler?.schedule(jobInfo)
-                                if (result == JobScheduler.RESULT_SUCCESS) {
-                                    Log.d("BookGsr", "Job scheduled successfully!")
-                                } else {
-                                    Log.d("BookGsr", "Job scheduling failed!")
+                                val intent = Intent(context, GsrReservationWidget::class.java).apply {
+                                    action = GsrReservationWidget.UPDATE_GSR_WIDGET
                                 }
+                                context?.sendBroadcast(intent)
 
                                 // Save user info in shared preferences
                                 val sp = PreferenceManager.getDefaultSharedPreferences(activity)

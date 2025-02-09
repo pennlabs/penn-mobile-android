@@ -1,8 +1,11 @@
 package com.pennapps.labs.pennmobile.gsr.widget
 
 import android.appwidget.AppWidgetManager
+import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
@@ -10,11 +13,13 @@ import android.os.Looper
 import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.GsrReservationsRequest
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
+import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget.Companion.UPDATE_GSR_WIDGET
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import rx.Observable
@@ -27,7 +32,7 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
     class GsrReservationWidgetFactory(
         private val context: Context,
         intent: Intent,
-    ) : RemoteViewsFactory {
+    ) : RemoteViewsFactory, BroadcastReceiver() {
         private var mGsrReservationsRequest: GsrReservationsRequest? = null
         private var appWidgetId: Int =
             intent.getIntExtra(
@@ -36,9 +41,21 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
             )
         private var dataSet: MutableList<GSRReservation> = mutableListOf()
         private var sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        private var updateCounter = 0
+
+        override fun onReceive(context: Context?, intent: Intent?) {
+            TODO("Not yet implemented")
+        }
 
         override fun onCreate() {
+            // Register BroadcastReceiver
+            val filter = IntentFilter(UPDATE_GSR_WIDGET)
+            ContextCompat.registerReceiver(
+                context,
+                broadcastReceiver,
+                filter,
+                ContextCompat.RECEIVER_EXPORTED
+            )
+
             mGsrReservationsRequest = GsrReservationWidget.gsrReservationsRequestInstance
             getWidgetGsrReservations()
             val appWidgetManager: AppWidgetManager =
@@ -51,12 +68,26 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
             }, 5000)
         }
 
+        // List size is not updated in time when cancelling reser
         override fun onDataSetChanged() {
-            mGsrReservationsRequest = GsrReservationWidget.gsrReservationsRequestInstance
-            getWidgetGsrReservations()
+            Log.d("GsrReservationWidgetAdapter", "data changed")
+            // getWidgetGsrReservations()
         }
 
         override fun onDestroy() {
+            context.unregisterReceiver(broadcastReceiver)
+        }
+
+        private val broadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                // Update data and refresh widget when broadcast is received
+                getWidgetGsrReservations()
+                AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(
+                    AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context!!,
+                        GsrReservationWidget::class.java)),
+                    R.id.gsr_reservation_widget_stack_view
+                )
+            }
         }
 
         override fun getCount(): Int = dataSet.size
@@ -64,6 +95,7 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
         override fun getViewAt(index: Int): RemoteViews {
             var i = index
             while (i >= dataSet.size) {
+                Log.d("GsrReservationWidgetAdapter", "index out of bounds")
                 i -= 1
             }
             Log.d("GsrReservationWidgetAdapter", "List size: ${dataSet.size}, Requested index: $i")

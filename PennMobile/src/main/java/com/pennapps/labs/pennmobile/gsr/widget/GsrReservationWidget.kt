@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile.gsr.widget
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -74,6 +75,10 @@ class GsrReservationWidget : AppWidgetProvider() {
         }
     }
 
+    override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
+        super.onDeleted(context, appWidgetIds)
+    }
+
     // onEnabled and onDisabled are typically used for alarmManager testing and logs to check whether
     // appwidget is properly enabled/disabled.
     override fun onEnabled(context: Context) {
@@ -82,8 +87,21 @@ class GsrReservationWidget : AppWidgetProvider() {
     override fun onDisabled(context: Context) {
     }
 
+//    override fun onReceive(context: Context, intent: Intent) {
+//        super.onReceive(context, intent)
+//
+//        if (intent.action == UPDATE_GSR_WIDGET) {
+//            context.applicationContext.sendBroadcast(intent)
+////            appWidgetManager.notifyAppWidgetViewDataChanged(
+////                ids,
+////                R.id.gsr_reservation_widget_stack_view,
+////            )
+//        }
+//    }
+
     companion object {
         private var mGSRReservationsRequest: GsrReservationsRequest? = null
+        const val UPDATE_GSR_WIDGET = "com.pennapps.labs.pennmobile.UPDATE_GSR_WIDGET"
 
         @JvmStatic
         val gsrReservationsRequestInstance: GsrReservationsRequest
