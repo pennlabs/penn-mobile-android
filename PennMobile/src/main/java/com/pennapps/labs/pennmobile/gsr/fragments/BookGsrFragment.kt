@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile.gsr.fragments
 import StudentLife
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -168,10 +169,10 @@ class BookGsrFragment : Fragment() {
                         if (result.getDetail().equals("success")) {
                             Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
 
-                                val ids = AppWidgetManager.getInstance(context).getAppWidgetIds(
-                                    ComponentName(requireContext(), GsrReservationWidget::class.java)
-                                )
-                                GsrReservationWidget().onUpdate(requireContext(), AppWidgetManager.getInstance(context), ids)
+                                val intent = Intent(context, GsrReservationWidget::class.java).apply {
+                                    action = GsrReservationWidget.UPDATE_GSR_WIDGET
+                                }
+                                context?.sendBroadcast(intent)
 
                                 // Save user info in shared preferences
                                 val sp = PreferenceManager.getDefaultSharedPreferences(activity)

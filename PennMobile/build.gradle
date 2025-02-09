@@ -48,6 +48,18 @@ android {
 }
 
 dependencies {
+//    // Kotlin
+//    implementation(libs.androidx.core.ktx)
+//
+//    // To use RoleManagerCompat
+//    implementation(libs.androidx.core.role)
+//
+//    // To use the Animator APIs
+//    implementation(libs.androidx.core.animation)
+//
+//    // To test the Animator APIs
+//    androidTestImplementation(libs.androidx.core.animation.testing)
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     androidTestImplementation libs.androidx.espresso.core
