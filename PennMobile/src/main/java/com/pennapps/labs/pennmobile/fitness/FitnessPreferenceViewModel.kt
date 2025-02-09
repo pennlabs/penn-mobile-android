@@ -1,16 +1,17 @@
 package com.pennapps.labs.pennmobile.fitness
 
+import StudentLife
 import android.util.Log
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessAdapterDataModel
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRequest
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRoom
-import retrofit.ResponseCallback
-import retrofit.RetrofitError
-import retrofit.client.Response
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class FitnessPreferenceViewModel(
     private val studentLife: StudentLife,
@@ -96,27 +97,32 @@ class FitnessPreferenceViewModel(
             val bearerToken =
                 "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
-            try {
-                studentLife.sendFitnessPref(
-                    bearerToken,
-                    FitnessRequest(ArrayList(favoriteRooms)),
-                    object : ResponseCallback() {
-                        override fun success(response: Response) {
-                            Log.i("Fitness Preference View Model", "fitness preferences saved")
-                        }
+            // Global since this is not a real view model. (yes, I was naive and dumb)
+            // Also, this is only used for sending preferences (not critical) and there is no actual
+            // logic being executed on callback beyond logging
+            @OptIn(DelicateCoroutinesApi::class)
+            GlobalScope.launch(Dispatchers.IO) {
+                try {
+                    val response =
+                        studentLife.sendFitnessPref(
+                            bearerToken,
+                            FitnessRequest(ArrayList(favoriteRooms)),
+                        )
 
-                        override fun failure(error: RetrofitError) {
-                            Log.e(
-                                "Fitness Preference View Model",
-                                "Error saving fitness " +
-                                    "preferences: $error",
-                                error,
-                            )
-                        }
-                    },
-                )
-            } catch (e: Exception) {
-                e.printStackTrace()
+                    if (response.isSuccessful) {
+                        Log.i("Fitness Preference View Model", "fitness preferences saved")
+                    } else {
+                        val errorBody = response.errorBody()?.string() ?: "Unknown Error"
+                        Log.e(
+                            "Fitness Preference View Model",
+                            "Error saving fitness " +
+                                "preferences: $errorBody",
+                            Exception(errorBody),
+                        )
+                    }
+                } catch (e: Exception) {
+                    Log.e("FitnessPreference", "Network call failed", e)
+                }
             }
         }
     }

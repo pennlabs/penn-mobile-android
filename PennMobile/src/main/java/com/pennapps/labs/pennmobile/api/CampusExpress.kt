@@ -3,10 +3,10 @@ package com.pennapps.labs.pennmobile.api
 import com.pennapps.labs.pennmobile.api.classes.CampusExpressAccessTokenResponse
 import com.pennapps.labs.pennmobile.dining.classes.DiningBalances
 import com.pennapps.labs.pennmobile.dining.classes.DiningBalancesList
-import retrofit.Callback
-import retrofit.http.GET
-import retrofit.http.Header
-import retrofit.http.Query
+import retrofit2.Response
+import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.Query
 import rx.Observable
 
 /**
@@ -14,22 +14,21 @@ import rx.Observable
  * Retrofit interface to the Campus Express API
  */
 interface CampusExpress {
-    @GET("/oauth/token")
-    fun getAccessToken(
+    @GET("oauth/token")
+    suspend fun getAccessToken(
         @Query("code") authCode: String?,
         @Query("grant_type") grantType: String?,
         @Query("client_id") clientID: String?,
         @Query("redirect_uri") redirectURI: String?,
         @Query("code_verifier") codeVerifier: String?,
-        callback: Callback<CampusExpressAccessTokenResponse>,
-    )
+    ): Response<CampusExpressAccessTokenResponse>
 
-    @GET("/dining/currentBalance")
+    @GET("dining/currentBalance")
     fun getCurrentDiningBalances(
         @Header("x-authorization") bearerToken: String?,
     ): Observable<DiningBalances>
 
-    @GET("/dining/pastBalances")
+    @GET("dining/pastBalances")
     fun getPastDiningBalances(
         @Header("x-authorization") bearerToken: String?,
         @Query("start_date") startDate: String?,
