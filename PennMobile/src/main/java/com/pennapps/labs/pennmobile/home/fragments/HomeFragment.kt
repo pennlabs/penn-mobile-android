@@ -152,7 +152,7 @@ class HomeFragment : Fragment() {
         val studentLife = MainActivity.studentLifeInstance
         mActivity.mNetworkManager.getAccessToken {
             val sp = sharedPreferences
-            val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
+            val deviceID = mActivity.mNetworkManager.getDeviceId()
             val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
 
             val isLoggedIn = !sp.getBoolean(mActivity.getString(R.string.guest_mode), false)

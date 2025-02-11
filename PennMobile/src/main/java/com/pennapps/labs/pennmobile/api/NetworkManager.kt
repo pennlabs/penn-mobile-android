@@ -15,7 +15,7 @@ import kotlinx.coroutines.sync.withLock
 import java.util.Calendar
 
 enum class AuthError {
-    REFRESH_ERROR
+    REFRESH_400,
 }
 
 sealed class NetworkResult<out T> {
@@ -84,12 +84,15 @@ class NetworkManager (
                     FirebaseCrashlytics.getInstance().recordException(error)
                     Log.e("NetworkManager", "Error refreshing access token: ", error)
 
-                    authErrorChannel.send(AuthError.REFRESH_ERROR)
+                    if (response.data.code() == 404) {
+                        authErrorChannel.send(AuthError.REFRESH_400)
+                    }
+
                     return NetworkResult.Error(error)
                 }
             }
+
             is NetworkResult.Error -> {
-                authErrorChannel.send(AuthError.REFRESH_ERROR)
                 return response
             }
         }

@@ -512,7 +512,7 @@ class HomeAdapter(
                         selectedOptions.add(it.id)
                     }
                 }
-                val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
+                val deviceID = mActivity.mNetworkManager.getDeviceId()
                 val idHash = Utils.getSha256Hash(deviceID)
                 mActivity.mNetworkManager.getAccessToken {
                     val sp = PreferenceManager.getDefaultSharedPreferences(mContext)

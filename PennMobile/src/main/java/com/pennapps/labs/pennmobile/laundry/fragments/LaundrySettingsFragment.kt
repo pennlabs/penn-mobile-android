@@ -102,18 +102,13 @@ class LaundrySettingsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        if (laundryViewModel.existsDiff()) {
-            mActivity.mNetworkManager.getAccessToken {
-                val bearerToken =
-                    "Bearer " +
-                        sharedPreferences
-                            .getString(getString(R.string.access_token), "")
-                            .toString()
-                laundryViewModel.setFavoritesFromToggled(mStudentLife, bearerToken)
-            }
-        }
         mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
         toolbar.visibility = View.GONE
         _binding = null
+        if (laundryViewModel.existsDiff()) {
+            mActivity.mNetworkManager.getAccessToken { token ->
+                laundryViewModel.setFavoritesFromToggled(mStudentLife, token)
+            }
+        }
     }
 }

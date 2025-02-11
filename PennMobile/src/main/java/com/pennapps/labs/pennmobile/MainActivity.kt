@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
@@ -34,7 +35,9 @@ import com.google.android.material.tabs.TabLayout
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.pennapps.labs.pennmobile.api.AuthError
 import com.pennapps.labs.pennmobile.api.CampusExpress
+import com.pennapps.labs.pennmobile.api.NetworkManager
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Serializer
@@ -53,6 +56,7 @@ import com.pennapps.labs.pennmobile.more.classes.Contact
 import com.pennapps.labs.pennmobile.more.fragments.SaveContactsFragment
 import com.pennapps.labs.pennmobile.utils.Utils
 import eightbitlab.com.blurview.BlurView
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -68,15 +72,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mSharedPrefs: SharedPreferences
     private lateinit var binding: ActivityMainBinding
 
-    val tokenMutex = Mutex()
     private lateinit var mFirebaseAnalytics: FirebaseAnalytics
-    val mNetworkManager by lazy { OAuth2NetworkManager(this) }
+    lateinit var networkManager: NetworkManager
+    lateinit var mNetworkManager: OAuth2NetworkManager // Old, Oauth2 network manager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (Build.VERSION.SDK_INT > 28) {
             setTheme(R.style.DarkModeApi29)
         }
         super.onCreate(savedInstanceState)
+
+        val networkContainer = (application as PennMobileApplication).networkContainer
+        networkManager = networkContainer.networkManager
+        mNetworkManager = OAuth2NetworkManager(networkManager)
+
         setTheme(R.style.AppTheme)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -124,6 +133,15 @@ class MainActivity : AppCompatActivity() {
         }
         if (diningWidgetBroadCast != -1) {
             setTab(DINING_ID)
+        }
+
+        // collect flow from network manager
+        lifecycleScope.launch {
+            for (authError in NetworkManager.authErrorChannel) {
+                if (authError == AuthError.REFRESH_400) {
+                    startLoginFragment()
+                }
+            }
         }
     }
 
