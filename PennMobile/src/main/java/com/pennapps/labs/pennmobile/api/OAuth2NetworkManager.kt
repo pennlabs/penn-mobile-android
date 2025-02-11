@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.api
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,7 +20,14 @@ class OAuth2NetworkManager(
             val result = networkManager.getAccessToken()
             if (result is NetworkResult.Success) {
                withContext(Dispatchers.Main) {
-                    function.invoke(result.data)
+                   // NOTE: This is actually quite dangerous because the coroutine is not
+                   // lifecycle aware. There is a reason why this is being deprecated.
+                   try {
+                       function.invoke(result.data)
+                   } catch (e: Exception) {
+                       FirebaseCrashlytics.getInstance().recordException(e)
+                       e.printStackTrace()
+                   }
                }
             }
         }
