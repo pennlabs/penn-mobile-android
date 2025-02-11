@@ -14,6 +14,7 @@ import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.registerReceiver
 import androidx.preference.PreferenceManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.R
@@ -32,7 +33,7 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
     class GsrReservationWidgetFactory(
         private val context: Context,
         intent: Intent,
-    ) : RemoteViewsFactory, BroadcastReceiver() {
+    ) : RemoteViewsFactory {
         private var mGsrReservationsRequest: GsrReservationsRequest? = null
         private var appWidgetId: Int =
             intent.getIntExtra(
@@ -41,18 +42,27 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
             )
         private var dataSet: MutableList<GSRReservation> = mutableListOf()
         private var sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        private val gsrReservationWidgetReceiver = GsrReservationWidgetReceiver()
 
-        override fun onReceive(context: Context?, intent: Intent?) {
-            TODO("Not yet implemented")
+        inner class GsrReservationWidgetReceiver : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                if (intent?.action == UPDATE_GSR_WIDGET) {
+                    getWidgetGsrReservations()
+                    AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(
+                        AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context!!,
+                            GsrReservationWidget::class.java)),
+                        R.id.gsr_reservation_widget_stack_view
+                    )
+                }
+            }
         }
 
         override fun onCreate() {
             // Register BroadcastReceiver
-            val filter = IntentFilter(UPDATE_GSR_WIDGET)
-            ContextCompat.registerReceiver(
+            registerReceiver(
                 context,
-                broadcastReceiver,
-                filter,
+                gsrReservationWidgetReceiver,
+                IntentFilter(UPDATE_GSR_WIDGET),
                 ContextCompat.RECEIVER_EXPORTED
             )
 
@@ -65,29 +75,15 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
                     appWidgetId,
                     R.id.gsr_reservation_widget_stack_view,
                 )
-            }, 5000)
+            }, 3000)
         }
 
         // List size is not updated in time when cancelling reser
         override fun onDataSetChanged() {
-            Log.d("GsrReservationWidgetAdapter", "data changed")
-            // getWidgetGsrReservations()
         }
 
         override fun onDestroy() {
-            context.unregisterReceiver(broadcastReceiver)
-        }
-
-        private val broadcastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                // Update data and refresh widget when broadcast is received
-                getWidgetGsrReservations()
-                AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(
-                    AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context!!,
-                        GsrReservationWidget::class.java)),
-                    R.id.gsr_reservation_widget_stack_view
-                )
-            }
+            context.unregisterReceiver(gsrReservationWidgetReceiver)
         }
 
         override fun getCount(): Int = dataSet.size
@@ -151,7 +147,7 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
 
         override fun hasStableIds(): Boolean = true
 
-        private fun getWidgetGsrReservations() {
+        fun getWidgetGsrReservations() {
             try {
                 if (mGsrReservationsRequest != null) {
                     val token =

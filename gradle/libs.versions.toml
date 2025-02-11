@@ -15,6 +15,10 @@ converterGson = "2.9.0"
 converterMoshi = "2.9.0"
 converterScalars = "2.9.0"
 coordinatorlayout = "1.2.0"
+coreAnimation = "1.0.0"
+coreAnimationTesting = "1.0.0"
+coreKtx = "1.14.0"
+coreRole = "1.0.0"
 customalertviewdialogue = "a1fc69d54d"
 espressoCore = "3.5.0"
 exifinterface = "1.3.6"
@@ -67,6 +71,11 @@ androidx-cardview = { module = "androidx.cardview:cardview", version.ref = "card
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
 androidx-coordinatorlayout = { module = "androidx.coordinatorlayout:coordinatorlayout", version.ref = "coordinatorlayout" }
+androidx-core = { module = "androidx.core:core", version.ref = "coreKtx" }
+androidx-core-animation = { module = "androidx.core:core-animation", version.ref = "coreAnimation" }
+androidx-core-animation-testing = { module = "androidx.core:core-animation-testing", version.ref = "coreAnimationTesting" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+androidx-core-role = { module = "androidx.core:core-role", version.ref = "coreRole" }
 androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
 androidx-exifinterface = { module = "androidx.exifinterface:exifinterface", version.ref = "exifinterface" }
 androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glanceAppwidget" }
