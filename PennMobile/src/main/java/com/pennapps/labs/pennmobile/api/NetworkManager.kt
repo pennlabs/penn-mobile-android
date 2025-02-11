@@ -84,7 +84,7 @@ class NetworkManager (
                     FirebaseCrashlytics.getInstance().recordException(error)
                     Log.e("NetworkManager", "Error refreshing access token: ", error)
 
-                    if (response.data.code() == 404) {
+                    if (response.data.code() == 400) {
                         authErrorChannel.send(AuthError.REFRESH_400)
                     }
 
