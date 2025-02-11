@@ -7,6 +7,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.widget.RemoteViews
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -87,17 +88,13 @@ class GsrReservationWidget : AppWidgetProvider() {
     override fun onDisabled(context: Context) {
     }
 
-//    override fun onReceive(context: Context, intent: Intent) {
-//        super.onReceive(context, intent)
-//
-//        if (intent.action == UPDATE_GSR_WIDGET) {
-//            context.applicationContext.sendBroadcast(intent)
-////            appWidgetManager.notifyAppWidgetViewDataChanged(
-////                ids,
-////                R.id.gsr_reservation_widget_stack_view,
-////            )
-//        }
-//    }
+    override fun onReceive(context: Context, intent: Intent) {
+        super.onReceive(context, intent)
+
+        if (intent.action == UPDATE_GSR_WIDGET) {
+            Log.d("intent received", "yay")
+        }
+    }
 
     companion object {
         private var mGSRReservationsRequest: GsrReservationsRequest? = null

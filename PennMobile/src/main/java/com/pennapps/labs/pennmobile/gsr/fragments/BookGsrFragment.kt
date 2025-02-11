@@ -173,10 +173,7 @@ class BookGsrFragment : Fragment() {
                             if (result.getDetail().equals("success")) {
                                 Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
 
-                                val intent = Intent(context, GsrReservationWidget::class.java).apply {
-                                    action = GsrReservationWidget.UPDATE_GSR_WIDGET
-                                }
-                                context?.sendBroadcast(intent)
+                                context?.sendBroadcast(Intent(GsrReservationWidget.UPDATE_GSR_WIDGET))
 
                                 // Save user info in shared preferences
                                 val sp = PreferenceManager.getDefaultSharedPreferences(activity)

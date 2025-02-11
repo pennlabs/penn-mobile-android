@@ -107,10 +107,7 @@ class GsrReservationsAdapter(
                                         reservations.removeAt(position)
                                     }
                                     run {
-                                        val intent = Intent(mContext, GsrReservationWidget::class.java).apply {
-                                            action = GsrReservationWidget.UPDATE_GSR_WIDGET
-                                        }
-                                        mContext.sendBroadcast(intent)
+                                        mContext.sendBroadcast(Intent(GsrReservationWidget.UPDATE_GSR_WIDGET))
 
                                         if (reservations.size == 0) {
                                             var intent = Intent("refresh")
