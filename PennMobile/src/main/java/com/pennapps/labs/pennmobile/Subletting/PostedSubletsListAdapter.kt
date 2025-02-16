@@ -45,6 +45,7 @@ class PostedSubletsListAdapter(private val dataModel: SublettingViewModel):
 
         Glide.with(mContext) // Use mContext here instead of context
             .load(mSublettingCard.images?.get(0)?.imageUrl) // Access the first image URL from the list
+            // crashes when there are no images
             .centerCrop() // optional - adjust as needed
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(holder.listingImage)
