@@ -25,7 +25,7 @@ class FitnessPreferenceViewModel(
     private val prevFavoriteRooms: HashSet<Int> = hashSetOf()
 
     // hashmap that maps position --> position in array
-    private val positionMap: Array<Int> = (0 until roomTot).toList().toTypedArray()
+    private var positionMap: Array<Int> = (0 until roomTot).toList().toTypedArray()
 
     override fun flipState(roomId: Int): Boolean {
         if (favoriteRooms.contains(roomId)) {
@@ -139,8 +139,10 @@ class FitnessPreferenceViewModel(
                     val sortedRooms = rooms.sortedBy { it.roomName }
                     roomList = sortedRooms
                     roomTot = roomList.size
+                    positionMap = (0 until roomTot).toList().toTypedArray()
 
-                    mActivity.runOnUiThread {
+
+                mActivity.runOnUiThread {
                         mActivity.mNetworkManager.getAccessToken {
                             val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
                             val context = mActivity.applicationContext
