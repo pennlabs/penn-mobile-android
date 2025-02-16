@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile
 
 import StudentLife
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -47,6 +48,7 @@ import com.pennapps.labs.pennmobile.dining.classes.Venue
 import com.pennapps.labs.pennmobile.fling.classes.FlingEvent
 import com.pennapps.labs.pennmobile.gsr.classes.GSRLocation
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
+import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import com.pennapps.labs.pennmobile.home.classes.Post
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.more.classes.Contact
@@ -198,6 +200,7 @@ class MainActivity : AppCompatActivity() {
         editor.apply()
         val currentFragment = fragmentManager.findFragmentById(R.id.content_frame)
         val fragment: Fragment = LoginFragment()
+        sendBroadcast(Intent(GsrReservationWidget.UPDATE_GSR_WIDGET))
 
         // change the fragment only if we're not already on the login fragment
         if (currentFragment == null || currentFragment::class != fragment::class) {

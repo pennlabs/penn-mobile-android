@@ -149,12 +149,12 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
 
         fun getWidgetGsrReservations() {
             try {
-                if (mGsrReservationsRequest != null) {
-                    val token =
-                        sharedPreferences.getString(
-                            context.getString(R.string.access_token),
-                            "",
-                        )
+                val token =
+                    sharedPreferences.getString(
+                        context.getString(R.string.access_token),
+                        "",
+                    )
+                if (mGsrReservationsRequest != null && token != "") {
                     mGsrReservationsRequest!!
                         .getGsrReservations("Bearer $token")
                         .flatMap { reservations -> Observable.from(reservations) }
@@ -164,6 +164,8 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
                         .subscribe { reservations ->
                             dataSet = reservations
                         }
+                } else if (token == "") {
+                    dataSet = mutableListOf()
                 }
             } catch (e: Exception) {
                 FirebaseCrashlytics.getInstance().recordException(e)

@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile.more.fragments
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +18,7 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 
 class SettingsFragment : PreferenceFragmentCompat() {
     private var accountSettings: Preference? = null
