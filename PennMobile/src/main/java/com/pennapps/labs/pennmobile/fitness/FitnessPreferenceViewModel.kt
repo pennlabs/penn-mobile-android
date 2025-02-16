@@ -12,9 +12,10 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import rx.schedulers.Schedulers
 
 class FitnessPreferenceViewModel(
-    private val studentLife: StudentLife,
+    private val mStudentLife: StudentLife,
 ) : FitnessAdapterDataModel {
     private lateinit var roomList: List<FitnessRoom>
     private var roomTot: Int = 0
@@ -104,7 +105,7 @@ class FitnessPreferenceViewModel(
             GlobalScope.launch(Dispatchers.IO) {
                 try {
                     val response =
-                        studentLife.sendFitnessPref(
+                        mStudentLife.sendFitnessPref(
                             bearerToken,
                             FitnessRequest(ArrayList(favoriteRooms)),
                         )
@@ -129,12 +130,13 @@ class FitnessPreferenceViewModel(
 
     fun getFitnessRooms(mActivity: MainActivity) {
         try {
-            studentLife.fitnessRooms
-                .subscribe({ fitnessRooms ->
-                    for (room in fitnessRooms) {
+            mStudentLife.getFitnessRooms().subscribeOn(Schedulers.io()).subscribe({ fitnessRooms ->
+                val rooms = fitnessRooms?.filterNotNull().orEmpty()
+
+                for (room in rooms) {
                         Log.i("Fitness Room${room.roomId}", "${room.roomName}")
                     }
-                    val sortedRooms = fitnessRooms.sortedBy { it.roomName }
+                    val sortedRooms = rooms.sortedBy { it.roomName }
                     roomList = sortedRooms
                     roomTot = roomList.size
 
@@ -145,14 +147,17 @@ class FitnessPreferenceViewModel(
                             val bearerToken =
                                 "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
-                            studentLife.getFitnessPreferences(bearerToken).subscribe({ favorites ->
-                                mActivity.runOnUiThread {
-                                    for (roomId in favorites) {
+                            mStudentLife
+                                .getFitnessPreferences(bearerToken)
+                                .subscribeOn(Schedulers.io())
+                                .subscribe({ favorites ->
+                                    val favoriteRooms = favorites?.rooms?.filterNotNull().orEmpty()
+                                    for (roomId in favoriteRooms) {
                                         addId(roomId)
                                     }
+
                                     updatePositionMap()
-                                }
-                            }, { throwable ->
+                                }, { throwable ->
                                 mActivity.runOnUiThread {
                                     // call setAdapters
                                     Log.e(
