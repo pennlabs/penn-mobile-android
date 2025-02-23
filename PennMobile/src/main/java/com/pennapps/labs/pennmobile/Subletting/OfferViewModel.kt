@@ -29,7 +29,7 @@ class OfferViewModel (private val activity: Activity, private val studentLife: S
 
             studentLife.getSubletOffers(bearerToken, id).subscribe({ offers ->
                 mActivity.runOnUiThread {
-                    offersList.value = offers as ArrayList<Offer>
+                    offersList.value = offers as ArrayList<Offer>?
                 }
             }, { throwable ->
                 mActivity.runOnUiThread {
@@ -47,7 +47,7 @@ class OfferViewModel (private val activity: Activity, private val studentLife: S
         return offersList.value?.get(position) ?: Offer() // Provide a default value if needed
     }
 
-    fun makeOffer(mActivity: MainActivity, id: Int, offer: Offeree, callback: (Offeree?) -> Unit) {
+    fun makeOffer(mActivity: MainActivity, id: Int, offer: Offer, callback: (List<Offer>?) -> Unit) {
         val context = activity.applicationContext
         val sp = PreferenceManager.getDefaultSharedPreferences(activity)
 
@@ -57,14 +57,14 @@ class OfferViewModel (private val activity: Activity, private val studentLife: S
                 "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
 
             Log.i("Offer view model", "in network request")
-            studentLife.createOffer(bearerToken, id, offer, object : Callback<Offeree> {
-                override fun success(t: Offeree?, response: Response?) {
+            studentLife.createOffer(bearerToken, id, Offeree(offer.phoneNumber, offer.email, offer.message), object : Callback<List<Offer>> {
+                override fun success(t: List<Offer>?, response: Response?) {
                     Log.i("offer View Model", "offer added")
-                    callback(offer)
+                    callback(offersList.value)
                 }
 
                 override fun failure(error: RetrofitError?) {
-                    Log.e("offer View Model interest", "Error making offer on sublet $id", error)
+                    Log.e("offer View Model interest", "Error making offer on sublet $id with phone number ${offer.phoneNumber}", error)
                     Toast.makeText(activity, "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
                 }
             })

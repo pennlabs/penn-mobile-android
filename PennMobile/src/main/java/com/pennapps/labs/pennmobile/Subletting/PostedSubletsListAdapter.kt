@@ -43,12 +43,16 @@ class PostedSubletsListAdapter(private val dataModel: SublettingViewModel):
     override fun onBindViewHolder(holder: SublettingCardViewHolder, position: Int) {
         val mSublettingCard: Sublet = dataModel.getSublet(position) // dataModel.getSublet(position)
 
-        Glide.with(mContext) // Use mContext here instead of context
-            .load(mSublettingCard.images?.get(0)?.imageUrl) // Access the first image URL from the list
-            // crashes when there are no images
-            .centerCrop() // optional - adjust as needed
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .into(holder.listingImage)
+        // check if there are images - data validation?
+        if (mSublettingCard.images!!.isNotEmpty()) {
+            Glide.with(mContext) // Use mContext here instead of context
+                .load(mSublettingCard.images[0].imageUrl) // Access the first image URL from the list
+                // crashes when there are no images
+                .centerCrop() // optional - adjust as needed
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(holder.listingImage)
+        }
+
 
         holder.listingTitle.text = mSublettingCard.title
 

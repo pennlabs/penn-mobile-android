@@ -35,7 +35,7 @@ class SublesseeInterestForm (var sublet: Sublet): Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
         _binding = FragmentSublesseeInterestFormBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -43,11 +43,11 @@ class SublesseeInterestForm (var sublet: Sublet): Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         interestButton = binding.sublesseeInterestSendButton
 
-        //Need data validation
+        //Need data validation, set to default data right now (need to change)
         interestButton.setOnClickListener {
-            val offer = Offeree(
-                phoneNumber = "+110000000000",
-                email = "",
+            val offer = Offer(
+                phoneNumber = "+11234567890",
+                email = "trini@seas.upenn.edu",
                 message = "",
             )
 

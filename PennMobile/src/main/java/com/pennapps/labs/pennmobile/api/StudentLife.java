@@ -263,12 +263,13 @@ public interface StudentLife {
     Observable<List<Sublet>> getSubletFavorites(
             @Header("Authorization") String bearerToken);
 
+    // POST callbacks list
     @Headers({"Content-Type: application/json"})
-    @POST("/sublet/properties/{sublet_id}/offers/")
+    @POST("/sublet/properties/{sublet_id}/offers")
     void createOffer(
             @Header("Authorization") String bearerToken,
             @Path("sublet_id") int id,
             @Body Offeree offer,
-            Callback<Offeree> callback);
+            Callback<List<Offer>> callback);
 }
 

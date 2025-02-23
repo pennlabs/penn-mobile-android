@@ -7,4 +7,4 @@ data class Offeree(@SerializedName("phone_number")
                     @SerializedName("email")
                     val email: String = "",
                    @SerializedName("message")
-                   val message: String? = "")
+                   val message: String = "")
