@@ -2,7 +2,6 @@ package com.pennapps.labs.pennmobile.gsr.widget
 
 import android.appwidget.AppWidgetManager
 import android.content.BroadcastReceiver
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -48,11 +47,6 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 if (intent?.action == UPDATE_GSR_WIDGET) {
                     getWidgetGsrReservations()
-                    AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(
-                        AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context!!,
-                            GsrReservationWidget::class.java)),
-                        R.id.gsr_reservation_widget_stack_view
-                    )
                 }
             }
         }
@@ -163,6 +157,10 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
                         }.toList()
                         .subscribe { reservations ->
                             dataSet = reservations
+                            val appWidgetManager: AppWidgetManager =
+                                AppWidgetManager.getInstance(context)
+                            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId,
+                                R.id.gsr_reservation_widget_stack_view)
                         }
                 } else if (token == "") {
                     dataSet = mutableListOf()
