@@ -22,6 +22,7 @@ import retrofit.client.OkClient
 import retrofit.converter.GsonConverter
 import java.util.concurrent.TimeUnit
 
+
 class GsrReservationWidget : AppWidgetProvider() {
     override fun onUpdate(
         context: Context,
@@ -82,23 +83,37 @@ class GsrReservationWidget : AppWidgetProvider() {
 
     // onEnabled and onDisabled are typically used for alarmManager testing and logs to check whether
     // appwidget is properly enabled/disabled.
-    override fun onEnabled(context: Context) {
-    }
+//    override fun onEnabled(context: Context) {
+//        // start alarm
+//        val appWidgetAlarm = AppWidgetAlarm(context.applicationContext)
+//        appWidgetAlarm.startAlarm()
+//    }
+//
+//    override fun onDisabled(context: Context) {
+//        val appWidgetManager = AppWidgetManager.getInstance(context)
+//        val componentName = ComponentName(context.packageName, GsrReservationWidget::class.java.name)
+//        val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
+//
+//        if (appWidgetIds.isEmpty()) {
+//            // stop alarm
+//            val appWidgetAlarm = AppWidgetAlarm(context.applicationContext)
+//            appWidgetAlarm.stopAlarm()
+//        }
+//    }
 
-    override fun onDisabled(context: Context) {
-    }
-
-    override fun onReceive(context: Context, intent: Intent) {
-        super.onReceive(context, intent)
-
-        if (intent.action == UPDATE_GSR_WIDGET) {
-            Log.d("intent received", "yay")
-        }
-    }
+//    override fun onReceive(context: Context, intent: Intent) {
+//        super.onReceive(context, intent)
+//
+//        if (intent.action == ACTION_AUTO_UPDATE) {
+//            Log.d("intent received", "yay")
+//            context.sendBroadcast(Intent(UPDATE_GSR_WIDGET))
+//        }
+//    }
 
     companion object {
         private var mGSRReservationsRequest: GsrReservationsRequest? = null
         const val UPDATE_GSR_WIDGET = "com.pennapps.labs.pennmobile.UPDATE_GSR_WIDGET"
+        const val ACTION_AUTO_UPDATE = "AUTO_UPDATE"
 
         @JvmStatic
         val gsrReservationsRequestInstance: GsrReservationsRequest

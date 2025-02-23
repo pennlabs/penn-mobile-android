@@ -1,18 +1,18 @@
-package com.pennapps.labs.pennmobile.dining.widget
+package com.pennapps.labs.pennmobile.gsr.widget
 
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
+import android.util.Log
 import java.util.Calendar
 
 // An AlarmManager for app widget testing (Shortens the update time)
 class AppWidgetAlarm(
     private val mContext: Context,
 ) {
-    val alarmId: Int = 0
-    val internalMillis: Int = 100000
+    private val alarmId: Int = 0
+    private val internalMillis: Int = 60000
 
     fun startAlarm() {
         val calendar: Calendar = Calendar.getInstance()
@@ -27,6 +27,7 @@ class AppWidgetAlarm(
             internalMillis.toLong(),
             pendingIntent,
         )
+        Log.d("Alarm Class", "Alarm started")
     }
 
     fun stopAlarm() {
