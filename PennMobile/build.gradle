@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.firebase.crashlytics)
     id 'jacoco'
     id 'kotlin-parcelize'
+    id 'com.google.dagger.hilt.android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -30,6 +32,10 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     defaultConfig {
         minSdkVersion 26
@@ -107,7 +113,14 @@ dependencies {
     implementation libs.bundles.ui
     implementation libs.bundles.google
 
+    implementation libs.hilt.android
+    kapt libs.hilt.compiler
+
     testImplementation libs.junit
+}
+
+kapt {
+    correctErrorTypes true
 }
 
 String getPlatformClientID() {
