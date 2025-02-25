@@ -32,39 +32,20 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
 import com.pennapps.labs.pennmobile.api.AuthError
 import com.pennapps.labs.pennmobile.api.CampusExpress
 import com.pennapps.labs.pennmobile.api.NetworkManager
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.Platform
-import com.pennapps.labs.pennmobile.api.Serializer
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.api.classes.Account
 import com.pennapps.labs.pennmobile.api.fragments.LoginFragment
 import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
 import com.pennapps.labs.pennmobile.databinding.ActivityMainBinding
-import com.pennapps.labs.pennmobile.dining.classes.DiningHall
-import com.pennapps.labs.pennmobile.dining.classes.Venue
-import com.pennapps.labs.pennmobile.fling.classes.FlingEvent
-import com.pennapps.labs.pennmobile.gsr.classes.GSRLocation
-import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
-import com.pennapps.labs.pennmobile.home.classes.Post
-import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom
-import com.pennapps.labs.pennmobile.more.classes.Contact
 import com.pennapps.labs.pennmobile.more.fragments.SaveContactsFragment
 import com.pennapps.labs.pennmobile.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
 import eightbitlab.com.blurview.BlurView
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.scalars.ScalarsConverterFactory
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -333,119 +314,31 @@ class MainActivity : AppCompatActivity() {
         private var mPlatform: Platform? = null
         private var mCampusExpress: CampusExpress? = null
 
+        fun initializeRetrofit(
+            studentLife: StudentLife,
+            platform: Platform,
+            campusExpress: CampusExpress,
+        ) {
+            mStudentLife = studentLife
+            mPlatform = platform
+            mCampusExpress = campusExpress
+        }
+
         @JvmStatic
         val campusExpressInstance: CampusExpress
             get() {
-                if (mCampusExpress == null) {
-                    val retrofit =
-                        Retrofit
-                            .Builder()
-                            .baseUrl(Platform.campusExpressBaseUrl)
-                            .client(OkHttpClient.Builder().build())
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                            .build()
-
-                    mCampusExpress = retrofit.create(CampusExpress::class.java)
-                }
                 return mCampusExpress!!
             }
 
         @JvmStatic
-        val platformInstance2: Platform
+        val platformInstance: Platform
             get() {
-                if (mPlatform == null) {
-                    val retrofit =
-                        Retrofit
-                            .Builder()
-                            .baseUrl(Platform.platformBaseUrl)
-                            .client(OkHttpClient.Builder().build())
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                            .build()
-
-                    mPlatform = retrofit.create(Platform::class.java)
-                }
                 return mPlatform!!
             }
 
         @JvmStatic
         val studentLifeInstance: StudentLife
             get() {
-                if (mStudentLife == null) {
-                    val gsonBuilder = GsonBuilder()
-
-                    gsonBuilder.registerTypeAdapter(
-                        object : TypeToken<MutableList<Contact?>?>() {}.type,
-                        Serializer.DataSerializer<Any?>(),
-                    )
-
-                    gsonBuilder.registerTypeAdapter(
-                        object : TypeToken<MutableList<Venue?>?>() {}.type,
-                        Serializer.VenueSerializer(),
-                    )
-                    gsonBuilder.registerTypeAdapter(
-                        DiningHall::class.java,
-                        Serializer.MenuSerializer(),
-                    )
-                    // gets room
-                    gsonBuilder.registerTypeAdapter(
-                        object : TypeToken<LaundryRoom?>() {}.type,
-                        Serializer.LaundryRoomSerializer(),
-                    )
-
-                    gsonBuilder.registerTypeAdapter(
-                        object : TypeToken<MutableList<GSRLocation?>?>() {}.type,
-                        Serializer.GsrLocationSerializer(),
-                    )
-
-                    gsonBuilder.registerTypeAdapter(
-                        object : TypeToken<MutableList<FlingEvent?>?>() {}.type,
-                        Serializer.FlingEventSerializer(),
-                    )
-
-                    // gets gsr reservations
-                    gsonBuilder.registerTypeAdapter(
-                        object : TypeToken<MutableList<GSRReservation?>?>() {}.type,
-                        Serializer.GsrReservationSerializer(),
-                    )
-                    // gets user
-                    gsonBuilder.registerTypeAdapter(
-                        Account::class.java,
-                        Serializer.UserSerializer(),
-                    )
-                    // gets posts
-                    gsonBuilder.registerTypeAdapter(
-                        object : TypeToken<MutableList<Post?>?>() {}.type,
-                        Serializer.PostsSerializer(),
-                    )
-
-                    val gson = gsonBuilder.create()
-
-                    val logging =
-                        HttpLoggingInterceptor().apply {
-                            level = HttpLoggingInterceptor.Level.BODY
-                        }
-                    val okHttpClient =
-                        OkHttpClient
-                            .Builder()
-                            .connectTimeout(35, TimeUnit.SECONDS)
-                            .readTimeout(35, TimeUnit.SECONDS)
-                            .writeTimeout(35, TimeUnit.SECONDS)
-                            .addInterceptor(logging)
-                            .build()
-
-                    val retrofit =
-                        Retrofit
-                            .Builder()
-                            .baseUrl("https://pennmobile.org/api/")
-                            .client(okHttpClient)
-                            .addConverterFactory(ScalarsConverterFactory.create())
-                            .addConverterFactory(GsonConverterFactory.create(gson))
-                            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                            .build()
-                    mStudentLife = retrofit.create(StudentLife::class.java)
-                }
                 return mStudentLife!!
             }
     }

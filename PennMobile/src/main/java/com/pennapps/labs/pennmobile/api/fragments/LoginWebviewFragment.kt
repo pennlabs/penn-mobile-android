@@ -62,7 +62,7 @@ class LoginWebviewFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mStudentLife = MainActivity.studentLifeInstance
-        mPlatform = MainActivity.platformInstance2
+        mPlatform = MainActivity.platformInstance
         arguments?.let {
             user = arguments?.getSerializable("user") as Account
         }
