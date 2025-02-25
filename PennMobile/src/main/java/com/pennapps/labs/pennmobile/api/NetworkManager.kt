@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile.api
 
-import StudentLife
 import android.content.Context
 import android.content.SharedPreferences
 import android.provider.Settings

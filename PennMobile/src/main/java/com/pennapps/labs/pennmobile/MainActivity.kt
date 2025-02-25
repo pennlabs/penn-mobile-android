@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile
 
-import StudentLife
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -41,6 +40,7 @@ import com.pennapps.labs.pennmobile.api.NetworkManager
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Serializer
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.api.classes.Account
 import com.pennapps.labs.pennmobile.api.fragments.LoginFragment
 import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
@@ -55,9 +55,9 @@ import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.more.classes.Contact
 import com.pennapps.labs.pennmobile.more.fragments.SaveContactsFragment
 import com.pennapps.labs.pennmobile.utils.Utils
+import dagger.hilt.android.AndroidEntryPoint
 import eightbitlab.com.blurview.BlurView
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -65,15 +65,18 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private var tabShowed = false
     private lateinit var fragmentManager: FragmentManager
     private lateinit var mSharedPrefs: SharedPreferences
     private lateinit var binding: ActivityMainBinding
 
+    @Inject lateinit var networkManager: NetworkManager
+
     private lateinit var mFirebaseAnalytics: FirebaseAnalytics
-    lateinit var networkManager: NetworkManager
     lateinit var mNetworkManager: OAuth2NetworkManager // Old, Oauth2 network manager
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,8 +85,6 @@ class MainActivity : AppCompatActivity() {
         }
         super.onCreate(savedInstanceState)
 
-        val networkContainer = (application as PennMobileApplication).networkContainer
-        networkManager = networkContainer.networkManager
         mNetworkManager = OAuth2NetworkManager(networkManager)
 
         setTheme(R.style.AppTheme)

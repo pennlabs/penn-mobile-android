@@ -12,6 +12,11 @@ import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
 import com.pennapps.labs.pennmobile.home.classes.Post
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.more.classes.Contact
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -20,22 +25,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 
-class NetworkContainer(
-    context: Context
-) {
-
-    private val campusExpress: CampusExpress = buildCampusExpress()
-    private val platform: Platform = buildPlatform()
-    private val studentLife: StudentLife = buildStudentLife()
-
-    val networkManager = NetworkManager(
-        campusExpress,
-        platform,
-        studentLife,
-        context
-    )
-
-    private fun buildCampusExpress(): CampusExpress {
+@Module
+@InstallIn(SingletonComponent::class)
+object NetworkModule {
+    @Provides
+    fun provideCampusExpress(): CampusExpress {
         val retrofit =
             Retrofit
                 .Builder()
@@ -48,7 +42,8 @@ class NetworkContainer(
         return retrofit.create(CampusExpress::class.java)
     }
 
-    private fun buildPlatform(): Platform {
+    @Provides
+    fun providePlatform(): Platform {
         val retrofit =
             Retrofit
                 .Builder()
@@ -61,7 +56,8 @@ class NetworkContainer(
         return retrofit.create(Platform::class.java)
     }
 
-    private fun buildStudentLife(): StudentLife {
+    @Provides
+    fun provideStudentLife(): StudentLife {
 
         val gsonBuilder = GsonBuilder()
 
@@ -137,4 +133,14 @@ class NetworkContainer(
         return retrofit.create(StudentLife::class.java)
     }
 
+    @Provides
+    fun provideNetworkManager(
+        campusExpress: CampusExpress,
+        platform: Platform,
+        studentLife: StudentLife,
+        @ApplicationContext context: Context
+    ): NetworkManager {
+        return NetworkManager(campusExpress, platform, studentLife, context)
+    }
 }
+

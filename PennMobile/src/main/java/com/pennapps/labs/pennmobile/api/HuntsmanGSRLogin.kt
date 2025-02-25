@@ -17,8 +17,11 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.FragmentHuntsmanGsrloginBinding
 import com.pennapps.labs.pennmobile.gsr.fragments.GsrTabbedFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class HuntsmanGSRLogin : Fragment() {
     // gsr details
     private lateinit var gsrID: String
@@ -28,7 +31,7 @@ class HuntsmanGSRLogin : Fragment() {
     private lateinit var roomName: String
     private var gid: Int = 0
 
-    private lateinit var mStudentLife: StudentLife
+    @Inject lateinit var mStudentLife: StudentLife
     private lateinit var mActivity: MainActivity
 
     private var _binding: FragmentHuntsmanGsrloginBinding? = null
@@ -36,7 +39,6 @@ class HuntsmanGSRLogin : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mStudentLife = MainActivity.studentLifeInstance
         mActivity = activity as MainActivity
         arguments?.let { arguments ->
             gsrID = arguments.getString("gsrID") ?: ""
