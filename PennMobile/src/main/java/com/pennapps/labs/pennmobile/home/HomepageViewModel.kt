@@ -1,11 +1,11 @@
 package com.pennapps.labs.pennmobile.home
 
-import StudentLife
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.dining.classes.DiningCell
 import com.pennapps.labs.pennmobile.gsr.classes.GSRCell
 import com.pennapps.labs.pennmobile.home.classes.CalendarCell

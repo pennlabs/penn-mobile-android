@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile.api.fragments
 
-import StudentLife
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.security.keystore.KeyGenParameterSpec
@@ -26,6 +25,7 @@ import com.pennapps.labs.pennmobile.BuildConfig
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.Platform
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.api.classes.AccessTokenResponse
 import com.pennapps.labs.pennmobile.api.classes.Account
 import kotlinx.coroutines.launch

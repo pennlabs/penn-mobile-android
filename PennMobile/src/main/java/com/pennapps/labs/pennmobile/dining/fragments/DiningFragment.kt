@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile.dining.fragments
 
-import StudentLife
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +17,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.databinding.FragmentDiningBinding
 import com.pennapps.labs.pennmobile.dining.adapters.DiningAdapter
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall

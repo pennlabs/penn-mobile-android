@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile.home.adapters
 
-import StudentLife
 import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
@@ -35,6 +34,7 @@ import com.bumptech.glide.Glide
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.components.sneaker.Utils.convertToDp
 import com.pennapps.labs.pennmobile.databinding.HomeBaseCardBinding
 import com.pennapps.labs.pennmobile.databinding.HomeGsrCardBinding
