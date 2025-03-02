@@ -1,8 +1,6 @@
 package com.pennapps.labs.pennmobile.gsr.fragments
 
 import StudentLife
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -16,7 +14,6 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.glance.appwidget.action.actionSendBroadcast
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
