@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile.gsr.fragments
 
 import android.content.Intent
+import StudentLife
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -12,16 +13,17 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.databinding.GsrDetailsBookBinding
 import com.pennapps.labs.pennmobile.gsr.classes.GSRBookingResult
 import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
+import kotlinx.coroutines.launch
 
 class BookGsrFragment : Fragment() {
     private var _binding: GsrDetailsBookBinding? = null
@@ -61,6 +63,7 @@ class BookGsrFragment : Fragment() {
             roomName = arguments.getString("roomName") ?: ""
         }
         mStudentLife = MainActivity.studentLifeInstance
+
         mActivity = activity as MainActivity
         mActivity.setTitle(R.string.gsr)
     }
@@ -191,11 +194,50 @@ class BookGsrFragment : Fragment() {
                             Toast.makeText(activity, "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
                             binding.loading.loadingPanel.visibility = View.GONE
                             activity?.onBackPressed()
+            viewLifecycleOwner.lifecycleScope.launch {
+                try {
+                    val response =
+                        mStudentLife.bookGSR(
+                            // Passing the values
+                            bearerToken,
+                            startTime,
+                            endTime,
+                            gid,
+                            roomId,
+                            roomName,
+                        )
+
+                    val result = response.body()
+                    if (response.isSuccessful && result != null) {
+                        // Displaying the output as a toast and go back to GSR fragment
+                        if (result.getDetail().equals("success")) {
+                            Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
+
+                            // Save user info in shared preferences
+                            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
+                            val editor = sp.edit()
+                            editor.putString(getString(R.string.first_name), firstNameEt.text.toString())
+                            editor.putString(getString(R.string.last_name), lastNameEt.text.toString())
+                            editor.putString(getString(R.string.email_address), emailEt.text.toString())
+                            editor.apply()
+                        } else {
+                            Toast.makeText(activity, "GSR booking failed", Toast.LENGTH_LONG).show()
+                            Log.e("BookGsrFragment", "GSR booking failed with " + result.getError())
                         }
-                    },
-                )
-            } catch (e: Exception) {
-                e.printStackTrace()
+                        // go back to GSR fragment
+                        binding.loading.loadingPanel.visibility = View.GONE
+                        activity?.onBackPressed()
+                    } else {
+                        val error = Exception(response.errorBody()?.string() ?: "Unknown Error")
+                        // If any error occurred displaying the error as toast
+                        Log.e("BookGSRFragment", "Error booking gsr", error)
+                        Toast.makeText(activity, "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
+                        binding.loading.loadingPanel.visibility = View.GONE
+                        activity?.onBackPressed()
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
     }

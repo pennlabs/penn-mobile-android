@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.dining.fragments
 
+import StudentLife
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,30 +12,30 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.databinding.FragmentDiningPreferencesBinding
 import com.pennapps.labs.pennmobile.dining.adapters.DiningSettingsAdapter
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 import com.pennapps.labs.pennmobile.dining.classes.DiningRequest
+import com.pennapps.labs.pennmobile.dining.fragments.DiningFragment.Companion.createHall
 import com.pennapps.labs.pennmobile.home.classes.HomepageDataModel
-import retrofit.ResponseCallback
-import retrofit.RetrofitError
-import retrofit.client.Response
+import kotlinx.coroutines.launch
 import rx.Observable
+import rx.schedulers.Schedulers
 
 class DiningSettingsFragment(
-    dataModel: HomepageDataModel,
+    private val dataModel: HomepageDataModel,
 ) : Fragment() {
     private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
+
     private lateinit var halls: List<DiningHall>
     private lateinit var toolbar: Toolbar
-    private val dataModel: HomepageDataModel = dataModel
 
     private var _binding: FragmentDiningPreferencesBinding? = null
     val binding get() = _binding!!
@@ -46,7 +47,6 @@ class DiningSettingsFragment(
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         mActivity = activity as MainActivity
-        mStudentLife = MainActivity.studentLifeInstance
         mStudentLife = MainActivity.studentLifeInstance
     }
 
@@ -108,10 +108,13 @@ class DiningSettingsFragment(
         try {
             mStudentLife
                 .venues()
+                .subscribeOn(Schedulers.io())
                 .flatMap { venues -> Observable.from(venues) }
                 .flatMap { venue ->
-                    val hall = DiningFragment.createHall(venue)
-                    Observable.just(hall)
+                    venue?.let {
+                        val hall = createHall(it)
+                        Observable.just(hall)
+                    } ?: Observable.empty()
                 }.toList()
                 .subscribe({ diningHalls ->
                     mActivity.runOnUiThread {
@@ -163,29 +166,31 @@ class DiningSettingsFragment(
         mActivity.mNetworkManager.getAccessToken {
             val bearerToken =
                 "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
-            try {
-                mStudentLife.sendDiningPref(
-                    bearerToken,
-                    DiningRequest(favoriteDiningHalls),
-                    object : ResponseCallback() {
-                        override fun success(response: Response) {
-                            Log.i("Dining", "Dining preferences saved")
-                            mActivity.onBackPressed()
-                        }
 
-                        override fun failure(error: RetrofitError) {
-                            Log.e("Dining", "Error saving dining preferences: $error")
-                            Toast
-                                .makeText(
-                                    mActivity,
-                                    "Error saving dining preferences",
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                        }
-                    },
-                )
-            } catch (e: Exception) {
-                e.printStackTrace()
+            viewLifecycleOwner.lifecycleScope.launch {
+                try {
+                    val response =
+                        mStudentLife.sendDiningPref(
+                            bearerToken,
+                            DiningRequest(favoriteDiningHalls),
+                        )
+
+                    if (response.isSuccessful) {
+                        Log.i("Dining", "Dining preferences saved")
+                        mActivity.onBackPressed()
+                    } else {
+                        val error = Exception(response.body()?.string() ?: "Unknown Error")
+                        Log.e("Dining", "Error saving dining preferences: $error")
+                        Toast
+                            .makeText(
+                                mActivity,
+                                "Error saving dining preferences",
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
     }
