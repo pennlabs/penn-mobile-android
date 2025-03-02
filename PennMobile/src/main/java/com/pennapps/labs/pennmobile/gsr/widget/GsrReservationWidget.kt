@@ -3,11 +3,9 @@ package com.pennapps.labs.pennmobile.gsr.widget
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import android.widget.RemoteViews
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -21,7 +19,6 @@ import retrofit.RestAdapter
 import retrofit.client.OkClient
 import retrofit.converter.GsonConverter
 import java.util.concurrent.TimeUnit
-
 
 class GsrReservationWidget : AppWidgetProvider() {
     override fun onUpdate(
@@ -77,7 +74,10 @@ class GsrReservationWidget : AppWidgetProvider() {
         }
     }
 
-    override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
+    override fun onDeleted(
+        context: Context?,
+        appWidgetIds: IntArray?,
+    ) {
         super.onDeleted(context, appWidgetIds)
     }
 

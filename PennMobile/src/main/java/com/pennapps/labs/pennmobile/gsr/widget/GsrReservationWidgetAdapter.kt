@@ -44,7 +44,10 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
         private val gsrReservationWidgetReceiver = GsrReservationWidgetReceiver()
 
         inner class GsrReservationWidgetReceiver : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
+            override fun onReceive(
+                context: Context?,
+                intent: Intent?,
+            ) {
                 if (intent?.action == UPDATE_GSR_WIDGET) {
                     getWidgetGsrReservations()
                 }
@@ -57,7 +60,7 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
                 context,
                 gsrReservationWidgetReceiver,
                 IntentFilter(UPDATE_GSR_WIDGET),
-                ContextCompat.RECEIVER_EXPORTED
+                ContextCompat.RECEIVER_EXPORTED,
             )
 
             mGsrReservationsRequest = GsrReservationWidget.gsrReservationsRequestInstance
@@ -159,8 +162,10 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
                             dataSet = reservations
                             val appWidgetManager: AppWidgetManager =
                                 AppWidgetManager.getInstance(context)
-                            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId,
-                                R.id.gsr_reservation_widget_stack_view)
+                            appWidgetManager.notifyAppWidgetViewDataChanged(
+                                appWidgetId,
+                                R.id.gsr_reservation_widget_stack_view,
+                            )
                         }
                 } else if (token == "") {
                     dataSet = mutableListOf()
