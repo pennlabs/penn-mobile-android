@@ -1,10 +1,5 @@
 package com.pennapps.labs.pennmobile.gsr.adapters
 
-import android.app.PendingIntent
-import android.app.job.JobInfo
-import android.app.job.JobScheduler
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -13,16 +8,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
-import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.GsrReservationBinding
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
 import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
-import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidgetJobService
 import com.squareup.picasso.Picasso
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter

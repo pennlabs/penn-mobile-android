@@ -1,9 +1,5 @@
 package com.pennapps.labs.pennmobile.gsr.fragments
 
-import android.app.job.JobInfo
-import android.app.job.JobScheduler
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -15,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
@@ -24,7 +19,6 @@ import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.databinding.GsrDetailsBookBinding
 import com.pennapps.labs.pennmobile.gsr.classes.GSRBookingResult
 import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
-import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidgetJobService
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
