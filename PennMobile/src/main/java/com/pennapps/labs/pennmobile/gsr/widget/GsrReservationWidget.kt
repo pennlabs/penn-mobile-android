@@ -20,7 +20,6 @@ import retrofit.client.OkClient
 import retrofit.converter.GsonConverter
 import java.util.concurrent.TimeUnit
 
-
 class GsrReservationWidget : AppWidgetProvider() {
     override fun onUpdate(
         context: Context,
