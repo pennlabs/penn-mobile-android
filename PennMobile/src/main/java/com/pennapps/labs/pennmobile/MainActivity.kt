@@ -20,6 +20,7 @@ import android.view.inputmethod.InputMethodManager
 import android.webkit.CookieManager
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.ColorUtils
@@ -73,6 +74,7 @@ class MainActivity : AppCompatActivity() {
     val mNetworkManager by lazy { OAuth2NetworkManager(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         if (Build.VERSION.SDK_INT > 28) {
             setTheme(R.style.DarkModeApi29)
         }

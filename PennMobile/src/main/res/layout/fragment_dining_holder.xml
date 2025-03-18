@@ -14,7 +14,9 @@
         android:background="@color/white"
         android:elevation="0dp"
         android:theme="@style/AppTheme.AppBarOverlay"
+        android:fitsSystemWindows="true"
         app:elevation="0dp">
+
 
         <FrameLayout
             android:id="@+id/appbar_container"

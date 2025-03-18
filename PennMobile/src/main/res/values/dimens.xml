@@ -10,7 +10,7 @@
     <dimen name="gym_imageview_width">150dp</dimen>
     <dimen name="card_imageview_padding">5dp</dimen>
     <dimen name="bottom_nav_icon_size">24dp</dimen>
-    <dimen name="nav_bar_height">65dp</dimen>
+    <dimen name="nav_bar_height">80dp</dimen>
     <dimen name="app_bar_height">80dp</dimen>
 
     <!--
