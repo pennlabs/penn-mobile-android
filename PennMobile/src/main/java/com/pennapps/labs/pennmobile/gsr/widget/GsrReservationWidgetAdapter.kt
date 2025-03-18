@@ -169,6 +169,12 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
                         }
                 } else if (token == "") {
                     dataSet = mutableListOf()
+                    val appWidgetManager: AppWidgetManager =
+                        AppWidgetManager.getInstance(context)
+                    appWidgetManager.notifyAppWidgetViewDataChanged(
+                        appWidgetId,
+                        R.id.gsr_reservation_widget_stack_view,
+                    )
                 }
             } catch (e: Exception) {
                 FirebaseCrashlytics.getInstance().recordException(e)
