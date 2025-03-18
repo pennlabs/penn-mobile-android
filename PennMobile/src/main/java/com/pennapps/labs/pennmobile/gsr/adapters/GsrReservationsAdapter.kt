@@ -1,7 +1,5 @@
 package com.pennapps.labs.pennmobile.gsr.adapters
 
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.util.Log

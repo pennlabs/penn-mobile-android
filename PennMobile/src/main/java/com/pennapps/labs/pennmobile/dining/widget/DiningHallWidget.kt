@@ -14,10 +14,10 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.DiningRequest
 import com.pennapps.labs.pennmobile.api.Serializer
 import com.pennapps.labs.pennmobile.dining.classes.Venue
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
+import com.squareup.okhttp.OkHttpClient
+import retrofit.RestAdapter
+import retrofit.client.OkClient
+import retrofit.converter.GsonConverter
 import java.util.concurrent.TimeUnit
 
 /**
@@ -106,24 +106,19 @@ class DiningHallWidget : AppWidgetProvider() {
                     )
 
                     val gson = gsonBuilder.create()
+                    val okHttpClient = OkHttpClient()
+                    okHttpClient.setConnectTimeout(35, TimeUnit.SECONDS) // Connection timeout
+                    okHttpClient.setReadTimeout(35, TimeUnit.SECONDS) // Read timeout
+                    okHttpClient.setWriteTimeout(35, TimeUnit.SECONDS) // Write timeout
 
-                    val okHttpClient =
-                        OkHttpClient
+                    val restAdapter =
+                        RestAdapter
                             .Builder()
-                            .connectTimeout(35, TimeUnit.SECONDS)
-                            .readTimeout(35, TimeUnit.SECONDS)
-                            .writeTimeout(35, TimeUnit.SECONDS)
+                            .setConverter(GsonConverter(gson))
+                            .setClient(OkClient(okHttpClient))
+                            .setEndpoint("https://pennmobile.org/api")
                             .build()
-
-                    val retrofit =
-                        Retrofit
-                            .Builder()
-                            .baseUrl("https://pennmobile.org/api/")
-                            .client(okHttpClient)
-                            .addConverterFactory(GsonConverterFactory.create(gson))
-                            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                            .build()
-                    mDiningRequest = retrofit.create(DiningRequest::class.java)
+                    mDiningRequest = restAdapter.create(DiningRequest::class.java)
                 }
                 return mDiningRequest!!
             }

@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile.fitness.adapters
 
-import StudentLife
 import android.app.Activity
 import android.content.Context
 import android.graphics.Color
@@ -31,11 +30,11 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessAdapterDataModel
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRoom
 import com.pennapps.labs.pennmobile.fitness.classes.FitnessRoomUsage
 import com.pennapps.labs.pennmobile.fitness.classes.RoundedBarChartRenderer
-import rx.schedulers.Schedulers
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -82,22 +81,19 @@ class FitnessAdapter(
             if (hasExtraData) return
             room.roomId?.let {
                 try {
-                    studentLife
-                        .getFitnessRoomUsage(it, 3, "week")
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(
-                            { roomUsage ->
-                                createBarChart(context, roomUsage!!)
-                                activity.runOnUiThread {
-                                    hasExtraData = true
-                                    showExtra()
-                                }
-                            },
-                            {
-                                Log.e("Fitness Adapter", "Error loading room usage", it)
-                                Toast.makeText(context, "Error loading room", Toast.LENGTH_SHORT).show()
-                            },
-                        )
+                    studentLife.getFitnessRoomUsage(it, 3, "week").subscribe(
+                        { roomUsage ->
+                            createBarChart(context, roomUsage)
+                            activity.runOnUiThread {
+                                hasExtraData = true
+                                showExtra()
+                            }
+                        },
+                        {
+                            Log.e("Fitness Adapter", "Error loading room usage", it)
+                            Toast.makeText(context, "Error loading room", Toast.LENGTH_SHORT).show()
+                        },
+                    )
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

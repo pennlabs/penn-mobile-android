@@ -13,7 +13,6 @@ import com.pennapps.labs.pennmobile.api.DiningRequest
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 import com.pennapps.labs.pennmobile.dining.classes.Venue
 import rx.Observable
-import rx.schedulers.Schedulers
 
 // For detailed documentation about app widgets using xml layout, check out this link below:
 // https://programmer.group/app-widgets-details-four-remoteviews-remoteviews-service-and-remoteviews-factory.html
@@ -110,7 +109,6 @@ class DiningHallWidgetAdapter : RemoteViewsService() {
                 if (mDiningRequest != null) {
                     mDiningRequest!!
                         .venues()
-                        .subscribeOn(Schedulers.io())
                         .flatMap { venues -> Observable.from(venues) }
                         .flatMap { venue ->
                             val hall = createHall(venue)

@@ -63,7 +63,27 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
 
     @Override
     public void onBindViewHolder(LaundryRoomAdapter.CustomViewHolder holder, int position) {
+
         LaundryRoom room = mRooms.get(position);
+
+        if (isHome) {
+            holder.name.setVisibility(View.GONE);
+            holder.title.setVisibility(View.GONE);
+            holder.lineChart.setVisibility(View.GONE);
+            holder.layout.setBackgroundResource(0);
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.layout.getLayoutParams();
+            layoutParams.setMargins(0, 0, 0, 0);
+            layoutParams.setMarginStart(0);
+            holder.layout.setLayoutParams(layoutParams);
+            CardView container = (CardView) holder.dryerRecyclerView.getParent();
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) container.getLayoutParams();
+            params.setMargins(0,0,0,0);
+            container.setLayoutParams(params);
+            container = (CardView) holder.washerRecyclerView.getParent();
+            params = (ConstraintLayout.LayoutParams) container.getLayoutParams();
+            params.setMargins(0,0,0,0);
+            container.setLayoutParams(params);
+        }
 
         // update name of laundry room and type of machine
         int hall_no = room.getId();
@@ -89,11 +109,13 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
         // add washer info
         // recycler view for the time remaining
         LaundryMachineAdapter washerAdapter = new LaundryMachineAdapter(mContext, washers, mContext.getString(R.string.washer), roomName);
+        holder.washerRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         holder.washerRecyclerView.setAdapter(washerAdapter);
 
         // add dryer info
         // recycler view for the time remaining
         LaundryMachineAdapter adapter = new LaundryMachineAdapter(mContext, dryers, mContext.getString(R.string.dryer), roomName);
+        holder.dryerRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         holder.dryerRecyclerView.setAdapter(adapter);
 
         // overview of how many machines are available
@@ -113,7 +135,7 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
         int totalDryers = openDryers + runningDryers + offlineDryers + outOfOrderDryers;
         holder.dryerAvailability.setText(openDryers + " of " + totalDryers + " Open");
 
-        if (!isHome && mRoomsData != null) {
+        if (mRoomsData != null) {
             if (mRoomsData.size() > position) createLaundryChart(holder, position);
         }
 
@@ -188,6 +210,7 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
     public class CustomViewHolder extends RecyclerView.ViewHolder {
 
         Context mContext;
+        ArrayList<LaundryRoom> mRooms;
 
         //@BindView(R.id.laundry_room_title)
         TextView name;
@@ -210,6 +233,7 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
             super(view);
 
             mContext = context;
+            mRooms = rooms;
 
             //@BindView(R.id.laundry_room_title)
             name = view.findViewById(R.id.laundry_room_title);
@@ -227,30 +251,6 @@ public class LaundryRoomAdapter extends RecyclerView.Adapter<LaundryRoomAdapter.
             lineChart = view.findViewById(R.id.laundry_availability_chart);
             //@BindView(R.id.laundry_card)
             layout = view.findViewById(R.id.laundry_card);
-
-            washerRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
-            dryerRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
-
-            if (isHome) {
-                name.setVisibility(View.GONE);
-                title.setVisibility(View.GONE);
-                lineChart.setVisibility(View.GONE);
-                layout.setBackgroundResource(0);
-                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) layout.getLayoutParams();
-                layoutParams.setMargins(0, 0, 0, 0);
-                layoutParams.setMarginStart(0);
-                layout.setLayoutParams(layoutParams);
-                CardView container = (CardView) dryerRecyclerView.getParent();
-                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) container.getLayoutParams();
-                params.setMargins(0,0,0,0);
-                container.setLayoutParams(params);
-                container = (CardView) washerRecyclerView.getParent();
-                params = (ConstraintLayout.LayoutParams) container.getLayoutParams();
-                params.setMargins(0,0,0,0);
-                container.setLayoutParams(params);
-            }
-            washerRecyclerView.setHasFixedSize(true);
-            dryerRecyclerView.setHasFixedSize(true);
         }
     }
 }

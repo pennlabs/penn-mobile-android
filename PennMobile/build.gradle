@@ -71,6 +71,7 @@ dependencies {
 
     debugImplementation libs.leakcanary.android
 
+    implementation libs.rxandroid
     implementation libs.androidx.annotation
     implementation (libs.androidx.lifecycle.extensions) {
         transitive = true
@@ -99,9 +100,9 @@ dependencies {
     implementation libs.logging.interceptor
     implementation libs.okhttp
     implementation libs.picasso
-    implementation libs.adapter.rxjava
+    implementation libs.adapter.rxjava2
+    implementation libs.squareup.retrofit
     implementation libs.reactivex.rxandroid
-    implementation libs.rxjava
     implementation libs.joda.time
     implementation libs.commons.lang3
     implementation libs.kotlinx.coroutines.core

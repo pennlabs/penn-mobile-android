@@ -11,11 +11,11 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <androidx.appcompat.widget.SwitchCompat
+    <Switch
         android:id="@+id/laundry_building_favorite_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:visibility="gone" />
 
     <ImageView

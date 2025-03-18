@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile.dining.fragments
 
-import StudentLife
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
@@ -18,13 +17,13 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.databinding.FragmentDiningBinding
 import com.pennapps.labs.pennmobile.dining.adapters.DiningAdapter
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 import com.pennapps.labs.pennmobile.dining.classes.Venue
 import com.pennapps.labs.pennmobile.isOnline
 import rx.Observable
-import rx.schedulers.Schedulers
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -158,13 +157,10 @@ class DiningFragment : Fragment() {
         try {
             mStudentLife
                 .venues()
-                .subscribeOn(Schedulers.io())
                 .flatMap { venues -> Observable.from(venues) }
                 .flatMap { venue ->
-                    venue?.let {
-                        val hall = createHall(it)
-                        Observable.just(hall)
-                    } ?: Observable.empty()
+                    val hall = createHall(venue)
+                    Observable.just(hall)
                 }.toList()
                 .subscribe({ diningHalls ->
                     mActivity.runOnUiThread {
@@ -237,22 +233,17 @@ class DiningFragment : Fragment() {
                 val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
                 val formatted = current.format(formatter)
                 val studentLife = MainActivity.studentLifeInstance
-                studentLife
-                    .getMenus(formatted)
-                    .subscribeOn(Schedulers.io())
-                    .subscribe({ menus ->
-                        menus?.filterNotNull()?.forEach { menu ->
-                            menu.venue?.let { venue ->
-                                idVenueMap[venue.venueId]?.let { diningHall ->
-                                    val diningHallMenus = diningHall.menus
-                                    diningHallMenus.add(menu)
-                                    diningHall.sortMeals(diningHallMenus)
-                                }
-                            }
-                        }
-                    }, { throwable ->
-                        Log.e("DiningFragment", "Error getting Menus", throwable)
-                    })
+                studentLife.getMenus(formatted).subscribe({ menus ->
+                    menus.forEach { menu ->
+                        val id = menu.venue?.venueId
+                        val diningHall = idVenueMap[id]
+                        val diningHallMenus = diningHall?.menus ?: mutableListOf()
+                        diningHallMenus.add(menu)
+                        diningHall?.sortMeals(diningHallMenus)
+                    }
+                }, { throwable ->
+                    Log.e("DiningFragment", "Error getting Menus", throwable)
+                })
             } catch (e: Exception) {
                 e.printStackTrace()
             }

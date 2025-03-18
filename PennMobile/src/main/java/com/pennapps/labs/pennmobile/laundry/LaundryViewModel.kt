@@ -1,11 +1,10 @@
 package com.pennapps.labs.pennmobile.laundry
 
-import StudentLife
+import StudentLifeRf2
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRequest
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoomFavorites
@@ -60,7 +59,7 @@ class LaundryViewModel : ViewModel() {
 
     private suspend fun populateFavorites(
         context: CoroutineContext,
-        studentLife: StudentLife,
+        studentLife: StudentLifeRf2,
         favoriteIdList: List<Int>,
     ) {
         val rooms = ArrayList<LaundryRoom>()
@@ -109,10 +108,10 @@ class LaundryViewModel : ViewModel() {
             addUsage.join()
 
             if (addUsageSuccess && !addRoomSuccess) {
-                usages.removeAt(usages.lastIndex)
+                usages.removeLast()
             }
             if (!addUsageSuccess && addRoomSuccess) {
-                rooms.removeAt(rooms.lastIndex)
+                rooms.removeLast()
             }
         }
         replaceFavorites(rooms, usages)
@@ -120,7 +119,7 @@ class LaundryViewModel : ViewModel() {
     }
 
     fun getFavorites(
-        studentLife: StudentLife,
+        studentLife: StudentLifeRf2,
         bearerToken: String,
     ) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -128,8 +127,8 @@ class LaundryViewModel : ViewModel() {
                 val favoriteIdList: MutableList<Int> = mutableListOf()
                 val response = studentLife.getLaundryPref(bearerToken)
                 if (response.isSuccessful) {
-                    val prefs = response.body()?.rooms ?: emptyList()
-                    for (room in prefs) {
+                    val prefs = response.body()!!.rooms
+                    for (room in prefs!!) {
                         favoriteIdList.add(room)
                     }
                 } else {
@@ -142,7 +141,7 @@ class LaundryViewModel : ViewModel() {
         }
     }
 
-    fun getHalls(studentLife: StudentLife) {
+    fun getHalls(studentLife: StudentLifeRf2) {
         if (_loadedRooms.value!!) {
             return
         }
@@ -203,12 +202,14 @@ class LaundryViewModel : ViewModel() {
         var diff = false
         runBlocking {
             favoritesMutex.withLock {
-                val v = _favoriteRooms.value ?: return@runBlocking
-                if (v.favoriteRooms.size != curToggled.size) {
+                if (_favoriteRooms.value == null) {
+                    return@runBlocking
+                }
+                if (_favoriteRooms.value!!.favoriteRooms.size != curToggled.size) {
                     diff = true
                     return@runBlocking
                 }
-                for (room in v.favoriteRooms) {
+                for (room in _favoriteRooms.value!!.favoriteRooms) {
                     if (!curToggled.contains(room.id)) {
                         diff = true
                         return@runBlocking
@@ -220,7 +221,7 @@ class LaundryViewModel : ViewModel() {
     }
 
     private suspend fun sendPreferences(
-        studentLife: StudentLife,
+        studentLife: StudentLifeRf2,
         bearerToken: String,
         favoriteIdList: List<Int>,
     ) {
@@ -238,7 +239,7 @@ class LaundryViewModel : ViewModel() {
     }
 
     fun setFavoritesFromToggled(
-        studentLife: StudentLife,
+        studentLife: StudentLifeRf2,
         bearerToken: String,
     ) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -253,7 +254,7 @@ class LaundryViewModel : ViewModel() {
 
     fun setToggled() {
         curToggled.clear()
-        viewModelScope.launch {
+        runBlocking {
             favoritesMutex.withLock {
                 for (room in _favoriteRooms.value!!.favoriteRooms) {
                     curToggled.add(room.id)
