@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile
 
-import StudentLife
+import StudentLifeRf2
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -39,6 +39,7 @@ import com.pennapps.labs.pennmobile.api.CampusExpress
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Serializer
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.api.classes.Account
 import com.pennapps.labs.pennmobile.api.fragments.LoginFragment
 import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
@@ -57,12 +58,16 @@ import com.pennapps.labs.pennmobile.utils.Utils
 import eightbitlab.com.blurview.BlurView
 import kotlinx.coroutines.sync.Mutex
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
+import retrofit.RestAdapter
+import retrofit.android.AndroidLog
+import retrofit.client.OkClient
+import retrofit.converter.GsonConverter
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
+import com.squareup.okhttp.OkHttpClient as SquareOkHttpClient
 
 class MainActivity : AppCompatActivity() {
     private var tabShowed = false
@@ -323,6 +328,7 @@ class MainActivity : AppCompatActivity() {
         val DINING_ID = R.id.nav_dining
 
         private var mStudentLife: StudentLife? = null
+        private var mStudentLifeRf2: StudentLifeRf2? = null
         private var mPlatform: Platform? = null
         private var mCampusExpress: CampusExpress? = null
 
@@ -330,36 +336,63 @@ class MainActivity : AppCompatActivity() {
         val campusExpressInstance: CampusExpress
             get() {
                 if (mCampusExpress == null) {
-                    val retrofit =
-                        Retrofit
+                    val gsonBuilder = GsonBuilder()
+                    val gson = gsonBuilder.create()
+                    val restAdapter =
+                        RestAdapter
                             .Builder()
-                            .baseUrl(Platform.campusExpressBaseUrl)
-                            .client(OkHttpClient.Builder().build())
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                            .setConverter(GsonConverter(gson))
+                            .setLogLevel(RestAdapter.LogLevel.FULL)
+                            .setLog(AndroidLog("Campus Express"))
+                            .setEndpoint(Platform.campusExpressBaseUrl)
                             .build()
-
-                    mCampusExpress = retrofit.create(CampusExpress::class.java)
+                    mCampusExpress = restAdapter.create(CampusExpress::class.java)
                 }
                 return mCampusExpress!!
             }
 
         @JvmStatic
-        val platformInstance2: Platform
+        val platformInstance: Platform
             get() {
                 if (mPlatform == null) {
+                    val gsonBuilder = GsonBuilder()
+                    val gson = gsonBuilder.create()
+                    val restAdapter =
+                        RestAdapter
+                            .Builder()
+                            .setConverter(GsonConverter(gson))
+                            .setLogLevel(RestAdapter.LogLevel.FULL)
+                            .setLog(AndroidLog("Platform"))
+                            .setEndpoint(Platform.platformBaseUrl)
+                            .build()
+                    mPlatform = restAdapter.create(Platform::class.java)
+                }
+                return mPlatform!!
+            }
+
+        val studentLifeInstanceRf2: StudentLifeRf2
+            get() {
+                if (mStudentLifeRf2 == null) {
+                    val okHttpClient =
+                        OkHttpClient
+                            .Builder()
+                            .connectTimeout(35, TimeUnit.SECONDS)
+                            .readTimeout(35, TimeUnit.SECONDS)
+                            .writeTimeout(35, TimeUnit.SECONDS)
+                            .build()
+
                     val retrofit =
                         Retrofit
                             .Builder()
-                            .baseUrl(Platform.platformBaseUrl)
-                            .client(OkHttpClient.Builder().build())
+                            .baseUrl("https://pennmobile.org/api/")
+                            .client(okHttpClient)
+                            .addConverterFactory(ScalarsConverterFactory.create())
                             .addConverterFactory(GsonConverterFactory.create())
-                            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                             .build()
-
-                    mPlatform = retrofit.create(Platform::class.java)
+                    mStudentLifeRf2 = retrofit.create(StudentLifeRf2::class.java)
                 }
-                return mPlatform!!
+                return mStudentLifeRf2!!
             }
 
         @JvmStatic
@@ -367,12 +400,10 @@ class MainActivity : AppCompatActivity() {
             get() {
                 if (mStudentLife == null) {
                     val gsonBuilder = GsonBuilder()
-
                     gsonBuilder.registerTypeAdapter(
                         object : TypeToken<MutableList<Contact?>?>() {}.type,
                         Serializer.DataSerializer<Any?>(),
                     )
-
                     gsonBuilder.registerTypeAdapter(
                         object : TypeToken<MutableList<Venue?>?>() {}.type,
                         Serializer.VenueSerializer(),
@@ -386,17 +417,19 @@ class MainActivity : AppCompatActivity() {
                         object : TypeToken<LaundryRoom?>() {}.type,
                         Serializer.LaundryRoomSerializer(),
                     )
-
                     gsonBuilder.registerTypeAdapter(
                         object : TypeToken<MutableList<GSRLocation?>?>() {}.type,
                         Serializer.GsrLocationSerializer(),
                     )
-
+                    // gets laundry preferences (used only for testing)
+                    gsonBuilder.registerTypeAdapter(
+                        object : TypeToken<MutableList<Int?>?>() {}.type,
+                        Serializer.LaundryPrefSerializer(),
+                    )
                     gsonBuilder.registerTypeAdapter(
                         object : TypeToken<MutableList<FlingEvent?>?>() {}.type,
                         Serializer.FlingEventSerializer(),
                     )
-
                     // gets gsr reservations
                     gsonBuilder.registerTypeAdapter(
                         object : TypeToken<MutableList<GSRReservation?>?>() {}.type,
@@ -412,32 +445,19 @@ class MainActivity : AppCompatActivity() {
                         object : TypeToken<MutableList<Post?>?>() {}.type,
                         Serializer.PostsSerializer(),
                     )
-
                     val gson = gsonBuilder.create()
-
-                    val logging =
-                        HttpLoggingInterceptor().apply {
-                            level = HttpLoggingInterceptor.Level.BODY
-                        }
-                    val okHttpClient =
-                        OkHttpClient
+                    val okHttpClient = SquareOkHttpClient()
+                    okHttpClient.setConnectTimeout(35, TimeUnit.SECONDS) // Connection timeout
+                    okHttpClient.setReadTimeout(35, TimeUnit.SECONDS) // Read timeout
+                    okHttpClient.setWriteTimeout(35, TimeUnit.SECONDS) // Write timeout
+                    val restAdapter =
+                        RestAdapter
                             .Builder()
-                            .connectTimeout(35, TimeUnit.SECONDS)
-                            .readTimeout(35, TimeUnit.SECONDS)
-                            .writeTimeout(35, TimeUnit.SECONDS)
-                            .addInterceptor(logging)
+                            .setConverter(GsonConverter(gson))
+                            .setClient(OkClient(okHttpClient))
+                            .setEndpoint("https://pennmobile.org/api")
                             .build()
-
-                    val retrofit =
-                        Retrofit
-                            .Builder()
-                            .baseUrl("https://pennmobile.org/api/")
-                            .client(okHttpClient)
-                            .addConverterFactory(ScalarsConverterFactory.create())
-                            .addConverterFactory(GsonConverterFactory.create(gson))
-                            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                            .build()
-                    mStudentLife = retrofit.create(StudentLife::class.java)
+                    mStudentLife = restAdapter.create(StudentLife::class.java)
                 }
                 return mStudentLife!!
             }

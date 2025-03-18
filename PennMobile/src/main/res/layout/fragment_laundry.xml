@@ -15,7 +15,7 @@
         android:elevation="0dp"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:elevation="0dp"
-        >
+        tools:targetApi="lollipop">
 
         <FrameLayout
             android:id="@+id/appbar_container"
@@ -29,6 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|top"
                 android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
                 android:layout_marginTop="24dp" />
 
             <TextView
@@ -38,6 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|bottom"
                 android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
                 android:layout_marginBottom="4dp"
                 android:maxLines="1"
                 />
@@ -49,7 +51,7 @@
                 android:layout_gravity="center_vertical|end"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="36dp"
-                >
+                android:layout_marginRight="36dp">
 
                 <ImageView
                     android:id="@+id/laundry_preferences"
@@ -101,7 +103,7 @@
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/laundry_machine_refresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
     <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -113,7 +115,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/favorite_laundry_list"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:scrollbars="none" />
 
         <LinearLayout

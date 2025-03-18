@@ -16,15 +16,17 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.CampusExpress
 import com.pennapps.labs.pennmobile.api.classes.Account
+import com.pennapps.labs.pennmobile.api.classes.CampusExpressAccessTokenResponse
 import com.pennapps.labs.pennmobile.dining.fragments.DiningInsightsFragment
-import kotlinx.coroutines.launch
 import org.apache.commons.lang3.RandomStringUtils
+import retrofit.Callback
+import retrofit.RetrofitError
+import retrofit.client.Response
 import java.security.MessageDigest
 import java.util.Base64
 import java.util.Date
@@ -142,20 +144,18 @@ class CampusExpressLoginFragment : Fragment() {
     }
 
     private fun initiateAuthentication(authCode: String) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            mCampusExpress?.let {
-                try {
-                    val response =
-                        it.getAccessToken(
-                            authCode,
-                            "authorization_code",
-                            clientID,
-                            redirectUri,
-                            codeVerifier,
-                        )
-
-                    if (response.isSuccessful) {
-                        val t = response.body()
+        mCampusExpress?.getAccessToken(
+            authCode,
+            "authorization_code",
+            clientID,
+            redirectUri,
+            codeVerifier,
+            object : Callback<CampusExpressAccessTokenResponse> {
+                override fun success(
+                    t: CampusExpressAccessTokenResponse?,
+                    response: Response?,
+                ) {
+                    if (response?.status == 200) {
                         val accessToken = t?.accessToken
                         val expiresIn = t?.expiresIn
                         val editor = sp.edit()
@@ -170,22 +170,21 @@ class CampusExpressLoginFragment : Fragment() {
                         }
                         editor.apply()
                         goToDiningInsights(true)
-                    } else {
-                        val error = Exception(response.errorBody()?.string() ?: "Unknown Error")
-                        Log.e("Campus Webview", "Error fetching access token $error")
-                        Toast
-                            .makeText(
-                                context,
-                                "Error getting campus express authorization",
-                                Toast.LENGTH_SHORT,
-                            ).show()
-                        goToDiningInsights(false)
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
                 }
-            }
-        }
+
+                override fun failure(error: RetrofitError) {
+                    Log.e("Campus Webview", "Error fetching access token $error")
+                    Toast
+                        .makeText(
+                            context,
+                            "Error getting campus express authorization",
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                    goToDiningInsights(false)
+                }
+            },
+        )
     }
 
     private fun getCodeChallenge(codeVerifier: String): String {

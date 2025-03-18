@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile.dining.adapters
 
-import StudentLife
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -16,11 +15,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.databinding.DiningListItemBinding
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 import com.pennapps.labs.pennmobile.dining.fragments.MenuFragment
 import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 
 class DiningCardAdapter(
     halls: ArrayList<DiningHall>,
@@ -91,13 +90,10 @@ class DiningCardAdapter(
         if (currentHall.isResidential) {
             try {
                 mStudentLife
-                    .dailyMenu(currentHall.id)
-                    .subscribeOn(Schedulers.io())
+                    .daily_menu(currentHall.id)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ newDiningHall ->
-                        newDiningHall?.let {
-                            currentHall.sortMeals(it.menus)
-                        }
+                        currentHall.sortMeals(newDiningHall.menus)
                     }, {
                         Log.e("DiningCard", "Error loading menus", it)
                         Toast.makeText(mContext, "Error loading menus", Toast.LENGTH_SHORT).show()

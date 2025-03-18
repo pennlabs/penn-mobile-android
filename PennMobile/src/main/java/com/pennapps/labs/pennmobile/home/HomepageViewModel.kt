@@ -1,11 +1,11 @@
 package com.pennapps.labs.pennmobile.home
 
-import StudentLife
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.dining.classes.DiningCell
 import com.pennapps.labs.pennmobile.gsr.classes.GSRCell
 import com.pennapps.labs.pennmobile.home.classes.CalendarCell
@@ -24,7 +24,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import rx.schedulers.Schedulers
 import java.util.concurrent.CountDownLatch
 
 /**
@@ -204,25 +203,21 @@ class HomepageViewModel :
     ) {
         val idHash = getSha256Hash(deviceID)
         try {
-            studentLife
-                .browsePolls(bearerToken, idHash)
-                .subscribeOn(Schedulers.io())
-                .subscribe({ poll ->
-                    val pollList = poll?.filterNotNull() ?: emptyList()
-                    if (pollList.isNotEmpty()) {
-                        val pollCell = PollCell(pollList[0])
-                        pollCell.poll.options.forEach { pollCell.poll.totalVotes += it.voteCount }
-                        addCell(pollCell, POLL_POS)
-                    }
+            studentLife.browsePolls(bearerToken, idHash).subscribe({ poll ->
+                if (poll.size > 0) {
+                    val pollCell = PollCell(poll[0])
+                    pollCell.poll.options.forEach { pollCell.poll.totalVotes += it.voteCount }
+                    addCell(pollCell, POLL_POS)
+                }
 
-                    Log.i(TAG, "Loaded polls")
+                Log.i(TAG, "Loaded polls")
 
-                    latch.countDown()
-                }, { throwable ->
-                    Log.i(TAG, "Could not load polls")
-                    throwable.printStackTrace()
-                    latch.countDown()
-                })
+                latch.countDown()
+            }, { throwable ->
+                Log.i(TAG, "Could not load polls")
+                throwable.printStackTrace()
+                latch.countDown()
+            })
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -233,23 +228,19 @@ class HomepageViewModel :
         latch: CountDownLatch,
     ) {
         try {
-            studentLife
-                .getNews()
-                .subscribeOn(Schedulers.io())
-                .subscribe({ article ->
-                    val newsCell = article?.let { NewsCell(it) } ?: HomeCell()
-                    addCell(newsCell, NEWS_POS)
+            studentLife.news.subscribe({ article ->
+                val newsCell = NewsCell(article)
+                addCell(newsCell, NEWS_POS)
 
-                    Log.i(TAG, "Loaded news")
+                Log.i(TAG, "Loaded news")
 
-                    latch.countDown()
-                }, { throwable ->
-                    Log.i(TAG, "Could not load news")
-                    throwable.printStackTrace()
-                    latch.countDown()
-                })
+                latch.countDown()
+            }, { throwable ->
+                Log.i(TAG, "Could not load news")
+                throwable.printStackTrace()
+                latch.countDown()
+            })
         } catch (e: Exception) {
-            Log.i(TAG, "Could not load calendar")
             e.printStackTrace()
         }
     }
@@ -259,22 +250,18 @@ class HomepageViewModel :
         latch: CountDownLatch,
     ) {
         try {
-            studentLife
-                .getCalendar()
-                .subscribeOn(Schedulers.io())
-                .subscribe({ events ->
-                    val calendarCell = events?.let { CalendarCell(it.filterNotNull()) } ?: HomeCell()
+            studentLife.calendar.subscribe({ events ->
+                val calendarCell = CalendarCell(events)
 
-                    Log.i(TAG, "Loaded calendar")
+                Log.i(TAG, "Loaded calendar")
 
-                    addCell(calendarCell, CALENDAR_POS)
-                    latch.countDown()
-                }, { throwable ->
-                    setNewsBlurView(true)
-                    Log.i(TAG, "Could not load calendar")
-                    throwable.printStackTrace()
-                    latch.countDown()
-                })
+                addCell(calendarCell, CALENDAR_POS)
+                latch.countDown()
+            }, { throwable ->
+                Log.i(TAG, "Could not load calendar")
+                throwable.printStackTrace()
+                latch.countDown()
+            })
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -286,27 +273,20 @@ class HomepageViewModel :
         latch: CountDownLatch,
     ) {
         try {
-            studentLife
-                .getLaundryPrefObservable(bearerToken)
-                .subscribeOn(Schedulers.io())
-                .subscribe({ preferences ->
-                    val prefList = preferences?.rooms ?: emptyList()
-                    val laundryCell =
-                        if (prefList.isEmpty()) {
-                            HomeCell()
-                        } else {
-                            LaundryCell(prefList[0])
-                        }
+            studentLife.getLaundryPref(bearerToken).subscribe({ preferences ->
+                val laundryCell =
+                    if (preferences.isNullOrEmpty()) LaundryCell(0) else LaundryCell(preferences[0])
 
-                    Log.i(TAG, "Loaded laundry")
+                Log.i(TAG, "Loaded laundry")
 
-                    addCell(laundryCell, LAUNDRY_POS)
-                    latch.countDown()
-                }, { throwable ->
-                    Log.i(TAG, "Could not load laundry")
-                    throwable.printStackTrace()
-                    latch.countDown()
-                })
+                addCell(laundryCell, LAUNDRY_POS)
+                latch.countDown()
+            }, { throwable ->
+                setNewsBlurView(true)
+                Log.i(TAG, "Could not load laundry")
+                throwable.printStackTrace()
+                latch.countDown()
+            })
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -318,28 +298,24 @@ class HomepageViewModel :
         latch: CountDownLatch,
     ) {
         try {
-            studentLife
-                .validPostsList(bearerToken)
-                .subscribeOn(Schedulers.io())
-                .subscribe({ post ->
-                    val postList = post?.filterNotNull() ?: emptyList()
-                    if (postList.isNotEmpty()) { // there exists a post
-                        val postCell = PostCell(postList[0])
+            studentLife.validPostsList(bearerToken).subscribe({ post ->
+                if (post.size >= 1) { // there exists a post
+                    val postCell = PostCell(post[0])
 
-                        addCell(postCell, POST_POS)
-                    } else {
-                        setPostBlurView(true)
-                    }
-
-                    Log.i(TAG, "Loaded posts")
-
-                    latch.countDown()
-                }, { throwable ->
-                    Log.i(TAG, "Could not load posts")
+                    addCell(postCell, POST_POS)
+                } else {
                     setPostBlurView(true)
-                    throwable.printStackTrace()
-                    latch.countDown()
-                })
+                }
+
+                Log.i(TAG, "Loaded posts")
+
+                latch.countDown()
+            }, { throwable ->
+                Log.i(TAG, "Could not load posts")
+                setPostBlurView(true)
+                throwable.printStackTrace()
+                latch.countDown()
+            })
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -351,28 +327,30 @@ class HomepageViewModel :
         latch: CountDownLatch,
     ) {
         try {
-            studentLife
-                .getDiningPreferences(bearerToken)
-                .subscribeOn(Schedulers.io())
-                .subscribe({ preferences ->
-                    val venues =
-                        preferences
-                            ?.preferences
-                            ?.mapNotNull { it.id }
-                            ?.toMutableList()
-                            ?: mutableListOf(593, 1442, 636)
+            studentLife.getDiningPreferences(bearerToken).subscribe({ preferences ->
+                val list = preferences.preferences
+                val venues = mutableListOf<Int>()
+                if (list.isNullOrEmpty()) {
+                    venues.add(593)
+                    venues.add(1442)
+                    venues.add(636)
+                } else {
+                    list.forEach {
+                        it.id?.let { it1 -> venues.add(it1) }
+                    }
+                }
 
-                    val diningCell = DiningCell(venues)
-                    addCell(diningCell, DINING_POS)
+                val diningCell = DiningCell(venues)
+                addCell(diningCell, DINING_POS)
 
-                    Log.i(TAG, "Loaded dining")
+                Log.i(TAG, "Loaded dining")
 
-                    latch.countDown()
-                }, { throwable ->
-                    Log.i(TAG, "Could not load dining")
-                    throwable.printStackTrace()
-                    latch.countDown()
-                })
+                latch.countDown()
+            }, { throwable ->
+                Log.i(TAG, "Could not load dining")
+                throwable.printStackTrace()
+                latch.countDown()
+            })
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -384,25 +362,20 @@ class HomepageViewModel :
         latch: CountDownLatch,
     ) {
         try {
-            studentLife
-                .getGsrReservations(bearerToken)
-                .subscribeOn(Schedulers.io())
-                .subscribe({ reservationsList ->
-                    reservationsList?.let {
-                        if (reservationsList.isEmpty()) {
-                            addCell(HomeCell(), GSR_POS)
-                        } else {
-                            val gsrCell = GSRCell(reservationsList.filterNotNull())
-                            Log.i(TAG, "Loaded GSR Reservations")
-                            addCell(gsrCell, GSR_POS)
-                        }
-                    }
-                    latch.countDown()
-                }, { throwable ->
-                    Log.i(TAG, "Could not load GSR reservations")
-                    throwable.printStackTrace()
-                    latch.countDown()
-                })
+            studentLife.getGsrReservations(bearerToken).subscribe({ reservationsList ->
+                if (reservationsList.isEmpty()) {
+                    addCell(HomeCell(), GSR_POS)
+                } else {
+                    val gsrCell = GSRCell(reservationsList)
+                    Log.i(TAG, "Loaded GSR Reservations")
+                    addCell(gsrCell, GSR_POS)
+                }
+                latch.countDown()
+            }, { throwable ->
+                Log.i(TAG, "Could not load GSR reservations")
+                throwable.printStackTrace()
+                latch.countDown()
+            })
         } catch (e: Exception) {
             e.printStackTrace()
         }

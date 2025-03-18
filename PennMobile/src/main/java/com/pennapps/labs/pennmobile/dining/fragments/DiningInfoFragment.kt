@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 import com.pennapps.labs.pennmobile.dining.classes.VenueInterval
 import org.joda.time.format.DateTimeFormat
@@ -22,11 +23,13 @@ class DiningInfoFragment : Fragment() {
     private lateinit var menuParent: RelativeLayout
     private var mDiningHall: DiningHall? = null
     private lateinit var mActivity: MainActivity
+    private lateinit var mStudentLife: StudentLife
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mDiningHall = arguments?.getParcelable("DiningHall")
         mActivity = activity as MainActivity
+        mStudentLife = MainActivity.studentLifeInstance
     }
 
     override fun onCreateView(

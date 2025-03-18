@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile.gsr.fragments
 
-import StudentLife
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
@@ -23,6 +22,7 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.databinding.FragmentGsrBinding
 import com.pennapps.labs.pennmobile.gsr.adapters.GsrBuildingAdapter
 import com.pennapps.labs.pennmobile.gsr.classes.GSRContainer
@@ -31,8 +31,6 @@ import com.pennapps.labs.pennmobile.gsr.classes.GSRSlot
 import com.pennapps.labs.pennmobile.isOnline
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import java.util.Calendar
 import java.util.Date
 
@@ -259,10 +257,9 @@ class GsrFragment : Fragment() {
                         mStudentLife
                             .isWharton(
                                 "Bearer $bearerToken",
-                            ).subscribeOn(Schedulers.io())
-                            .subscribe(
+                            )?.subscribe(
                                 { status ->
-                                    isWharton = status?.isWharton ?: false
+                                    isWharton = status.isWharton
                                 },
                                 {
                                     Log.e("GsrFragment", "Error getting Wharton status", it)
@@ -353,15 +350,14 @@ class GsrFragment : Fragment() {
                         location,
                         gId,
                         adjustedDateString,
-                    ).subscribeOn(Schedulers.io())
-                    .subscribe(
+                    )?.subscribe(
                         { gsr ->
                             activity?.let { activity ->
                                 activity.runOnUiThread {
-                                    val gsrRooms = gsr?.rooms
+                                    val gsrRooms = gsr.rooms
                                     var timeSlotLengthZero = true
 
-                                    if (gsrRooms.isNullOrEmpty()) {
+                                    if (gsrRooms == null) {
                                         // a certification error causes "room" field to remain null
                                         showNoResults()
                                     } else {
@@ -492,57 +488,55 @@ class GsrFragment : Fragment() {
         try {
             mStudentLife
                 .location()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
+                ?.subscribe(
                     { locations ->
                         activity?.let { activity ->
                             populatedDropDownGSR = true
-                            // reset the drop down
-                            val emptyArray = arrayOfNulls<String>(0)
-                            val emptyAdapter =
-                                ArrayAdapter<String>(
-                                    activity,
-                                    android.R.layout.simple_spinner_dropdown_item,
-                                    emptyArray,
-                                )
-                            gsrLocationDropDown.adapter = emptyAdapter
-
-                            val locationList = locations?.filterNotNull() ?: emptyList()
-
-                            val numLocations = locationList.size
-                            var i = 0
-                            // go through all the rooms
-                            while (i < numLocations) {
-                                val locationName = locationList[i].name ?: ""
-                                if (locationName.isEmpty()) {
-                                    Log.w(
-                                        "Empty location name",
-                                        locationList[i].id ?: locationList[i].gid.toString(),
+                            activity.runOnUiThread {
+                                // reset the drop down
+                                val emptyArray = arrayOfNulls<String>(0)
+                                val emptyAdapter =
+                                    ArrayAdapter<String>(
+                                        activity,
+                                        android.R.layout.simple_spinner_dropdown_item,
+                                        emptyArray,
                                     )
+                                gsrLocationDropDown.adapter = emptyAdapter
+
+                                val numLocations = locations.size
+                                var i = 0
+                                // go through all the rooms
+                                while (i < numLocations) {
+                                    val locationName = locations[i]?.name ?: ""
+                                    if (locationName.isEmpty()) {
+                                        Log.w(
+                                            "Empty location name",
+                                            locations[i].id ?: locations[i].gid.toString(),
+                                        )
+                                    }
+                                    gsrHashMap[locationName] = locations[i].id
+                                    gsrGIDHashMap[locationName] = locations[i].gid
+                                    i++
                                 }
-                                gsrHashMap[locationName] = locationList[i].id
-                                gsrGIDHashMap[locationName] = locationList[i].gid
-                                i++
+
+                                val gsrs = gsrHashMap.keys.toList().toTypedArray()
+
+                                val adapter =
+                                    ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
+                                gsrLocationDropDown.adapter = adapter
+
+                                durationDropDown.adapter =
+                                    if (gsrLocationDropDown.selectedItem.toString() == "Huntsman" ||
+                                        gsrLocationDropDown.selectedItem.toString() == "Academic Research"
+                                    ) {
+                                        whartonDurationAdapter
+                                    } else if (gsrLocationDropDown.selectedItem.toString() == "Biomedical") {
+                                        biotechDurationAdapter
+                                    } else {
+                                        durationAdapter
+                                    }
+                                searchForGSR(false)
                             }
-
-                            val gsrs = gsrHashMap.keys.toList().toTypedArray()
-
-                            val adapter =
-                                ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
-                            gsrLocationDropDown.adapter = adapter
-
-                            durationDropDown.adapter =
-                                if (gsrLocationDropDown.selectedItem.toString() == "Huntsman" ||
-                                    gsrLocationDropDown.selectedItem.toString() == "Academic Research"
-                                ) {
-                                    whartonDurationAdapter
-                                } else if (gsrLocationDropDown.selectedItem.toString() == "Biomedical") {
-                                    biotechDurationAdapter
-                                } else {
-                                    durationAdapter
-                                }
-                            searchForGSR(false)
                         }
                     },
                     {

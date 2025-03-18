@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.laundry.fragments
 
-import StudentLife
+import StudentLifeRf2
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
@@ -28,7 +27,7 @@ import com.pennapps.labs.pennmobile.utils.Utils
 class LaundryFragment : Fragment() {
     private lateinit var mActivity: MainActivity
 
-    private lateinit var mStudentLife: StudentLife
+    private lateinit var mStudentLife: StudentLifeRf2
     private lateinit var mContext: Context
 
     private lateinit var sharedPreferences: SharedPreferences
@@ -49,7 +48,7 @@ class LaundryFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mStudentLife = MainActivity.studentLifeInstance
+        mStudentLife = MainActivity.studentLifeInstanceRf2
         mActivity = activity as MainActivity
         mContext = mActivity
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity)
@@ -90,13 +89,6 @@ class LaundryFragment : Fragment() {
         mActivity.removeTabs()
         mActivity.setTitle(R.string.laundry)
 
-        binding.favoriteLaundryList.setRecycledViewPool(
-            RecyclerView.RecycledViewPool().apply {
-                setMaxRecycledViews(0, LaundryViewModel.MAX_NUM_ROOMS)
-            },
-        )
-        binding.favoriteLaundryList.itemAnimator = null
-
         mAdapter =
             LaundryRoomAdapter(
                 mContext,
@@ -121,10 +113,8 @@ class LaundryFragment : Fragment() {
             roomsData.sortWith { usage1, usage2 -> usage2.id - usage1.id }
             laundryRooms.sortWith { room1, room2 -> room2.id - room1.id }
 
-            mAdapter?.let {
-                for (pos in 0 until LaundryViewModel.MAX_NUM_ROOMS) {
-                    it.notifyItemChanged(pos)
-                }
+            for (pos in 0 until LaundryViewModel.MAX_NUM_ROOMS) {
+                mAdapter!!.notifyItemChanged(pos)
             }
 
             binding.loadingPanel.root.visibility = View.GONE
