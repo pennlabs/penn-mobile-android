@@ -1,7 +1,7 @@
 package com.pennapps.labs.pennmobile.api.fragments
 
-import android.content.Intent
 import StudentLife
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.security.keystore.KeyGenParameterSpec
