@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:theme="@style/Theme.Pennmobileandroid.AppWidgetContainer"
+    android:clickable="true"
+    android:id="@+id/gsr_reservation_widget_root"
+    android:background="@android:color/transparent">
+    <FrameLayout
+        android:id="@+id/widgetframe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.Pennmobileandroid.AppWidgetContainer"
+        >
+        <ListView
+            android:id="@+id/gsr_reservation_widget_stack_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:loopViews="true"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="8dp"
+            android:clickable="true"
+            />
+
+        <!--        <ImageView-->
+        <!--            android:contentDescription="Penn Logo"-->
+        <!--            android:id="@+id/gsr_reservation_widget_empty_view"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            android:layout_gravity="center"-->
+        <!--            android:background="@drawable/app_widget_background"-->
+        <!--            android:scaleType="centerCrop"-->
+        <!--            android:src="@drawable/splash_screen435"-->
+        <!--            />-->
+
+        <TextView
+            android:id="@+id/gsr_reservation_widget_empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="You have no reservations or are logged out"
+            android:textSize="32sp"
+            android:textColor="@color/black"
+            android:background="@color/white"
+            />
+    </FrameLayout>
+</LinearLayout>

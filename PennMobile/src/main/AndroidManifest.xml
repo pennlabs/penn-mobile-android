@@ -40,6 +40,20 @@
                 android:resource="@xml/dining_hall_widget_info" />
         </receiver>
 
+        <receiver
+            android:name="com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.ACTION_CLICK" />
+                <action android:name="AUTO_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/gsr_reservation_widget_info" />
+        </receiver>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -54,7 +68,11 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
+
         <service android:name=".dining.widget.DiningHallWidgetAdapter"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <service android:name=".gsr.widget.GsrReservationWidgetAdapter"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <meta-data

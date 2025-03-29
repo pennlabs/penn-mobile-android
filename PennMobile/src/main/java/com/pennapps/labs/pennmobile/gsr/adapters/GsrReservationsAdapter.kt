@@ -16,6 +16,7 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.GsrReservationBinding
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
+import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 import org.joda.time.format.DateTimeFormat
@@ -102,6 +103,8 @@ class GsrReservationsAdapter(
                                     reservations.removeAt(position)
                                 }
                                 run {
+                                    // Sends request to gsr reservation widget
+                                    mContext.sendBroadcast(Intent(GsrReservationWidget.UPDATE_GSR_WIDGET))
                                     if (reservations.size == 0) {
                                         var intent = Intent("refresh")
                                         LocalBroadcastManager
