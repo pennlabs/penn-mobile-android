@@ -9,7 +9,7 @@ import retrofit2.http.Header;
 import rx.Observable;
 
 public interface GsrReservationsRequest {
-    @GET("/gsr/reservations")
+    @GET("gsr/reservations")
     Observable<List<GSRReservation>> getGsrReservations(
             @Header("Authorization") String bearerToken
     );

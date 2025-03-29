@@ -79,7 +79,7 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
 
         // List size is not updated in time when cancelling reser
         override fun onDataSetChanged() {
-            Log.d("GsrReservationWidgetAdapter", "Sanity Check: List size: ${dataSet.size}")
+            // Log.d("GsrReservationWidgetAdapter", "Sanity Check: List size: ${dataSet.size}")
         }
 
         override fun onDestroy() {
@@ -89,6 +89,7 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
         override fun getCount(): Int = dataSet.size
 
         override fun getViewAt(index: Int): RemoteViews {
+            Log.d("gsrreservationwidget", "Size is ${dataSet.size}")
             var i = index
             while (i >= dataSet.size) {
                 Log.d("GsrReservationWidgetAdapter", "index out of bounds")
@@ -157,7 +158,7 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
                 if (mGsrReservationsRequest != null && token != "") {
                     mGsrReservationsRequest!!
                         .getGsrReservations("Bearer $token")
-                        .subscribeOn(Schedulers.io())
+                        .subscribeOn(Schedulers.io()) // Ask Baron what this does
                         .flatMap { reservations -> Observable.from(reservations) }
                         .flatMap { reservation ->
                             Observable.just(reservation)
