@@ -14,11 +14,11 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.GsrReservationsRequest
 import com.pennapps.labs.pennmobile.api.Serializer
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
-import okhttp3.OkHttpClient
 
 class GsrReservationWidget : AppWidgetProvider() {
     override fun onUpdate(
