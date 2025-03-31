@@ -32,6 +32,8 @@ import com.pennapps.labs.pennmobile.dining.viewholders.DiningPredictionsHolder
 import com.pennapps.labs.pennmobile.dining.viewholders.DiningSpentHolder
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -137,6 +139,25 @@ class DiningInsightsCardAdapter(
                 prevBalance <= 0f ||
                 nextBalance <= 0f
         }
+    }
+
+    private fun switchBalances(values: List<Entry>): List<Entry> {
+        var max = 0f
+
+        for (v in values) {
+            if (v.y > max) {
+                max = v.y
+            }
+        }
+
+        Log.i("swipes", max.toString())
+
+        for (v in values) {
+            v.y = max - v.y
+            Log.i("new swipes", v.y.toString())
+        }
+
+        return values
     }
 
     private fun bindDollarsSpentReservationsCell(
@@ -310,7 +331,14 @@ class DiningInsightsCardAdapter(
         amounts.forEachIndexed { index, amount ->
             values.add(Entry(index.toFloat(), amount))
         }
-        val filteredValues = filterPastBalances(values)
+        val current = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val formattedCurrentDate = current.format(formatter)
+
+        var filteredValues = filterPastBalances(values)
+        if (formattedCurrentDate.equals("2025-04-01")) { // April Fool's
+            filteredValues = switchBalances(filteredValues)
+        }
         if (filteredValues.isEmpty()) {
             return
         }
