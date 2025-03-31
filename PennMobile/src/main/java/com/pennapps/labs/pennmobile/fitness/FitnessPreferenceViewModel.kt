@@ -12,19 +12,20 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import rx.schedulers.Schedulers
 
 class FitnessPreferenceViewModel(
-    private val studentLife: StudentLife,
-    private val roomList: List<FitnessRoom>,
+    private val mStudentLife: StudentLife,
 ) : FitnessAdapterDataModel {
-    private val roomTot = roomList.size
+    private lateinit var roomList: List<FitnessRoom>
+    private var roomTot: Int = 0
 
     // hashset of the favorite room ids
     private val favoriteRooms: HashSet<Int> = hashSetOf()
     private val prevFavoriteRooms: HashSet<Int> = hashSetOf()
 
     // hashmap that maps position --> position in array
-    private val positionMap: Array<Int> = (0 until roomTot).toList().toTypedArray()
+    private var positionMap: Array<Int> = (0 until roomTot).toList().toTypedArray()
 
     override fun flipState(roomId: Int): Boolean {
         if (favoriteRooms.contains(roomId)) {
@@ -104,7 +105,7 @@ class FitnessPreferenceViewModel(
             GlobalScope.launch(Dispatchers.IO) {
                 try {
                     val response =
-                        studentLife.sendFitnessPref(
+                        mStudentLife.sendFitnessPref(
                             bearerToken,
                             FitnessRequest(ArrayList(favoriteRooms)),
                         )
@@ -124,6 +125,55 @@ class FitnessPreferenceViewModel(
                     Log.e("FitnessPreference", "Network call failed", e)
                 }
             }
+        }
+    }
+
+    fun getFitnessRooms(mActivity: MainActivity) {
+        try {
+            mStudentLife.getFitnessRooms().subscribeOn(Schedulers.io()).subscribe({ fitnessRooms ->
+                val rooms = fitnessRooms?.filterNotNull().orEmpty()
+
+                for (room in rooms) {
+                        Log.i("Fitness Room${room.roomId}", "${room.roomName}")
+                    }
+                    val sortedRooms = rooms.sortedBy { it.roomName }
+                    roomList = sortedRooms
+                    roomTot = roomList.size
+                    positionMap = (0 until roomTot).toList().toTypedArray()
+
+
+                mActivity.runOnUiThread {
+                        mActivity.mNetworkManager.getAccessToken {
+                            val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
+                            val context = mActivity.applicationContext
+                            val bearerToken =
+                                "Bearer " + sp.getString(context.getString(R.string.access_token), "").toString()
+
+                            mStudentLife
+                                .getFitnessPreferences(bearerToken)
+                                .subscribeOn(Schedulers.io())
+                                .subscribe({ favorites ->
+                                    val favoriteRooms = favorites?.rooms?.filterNotNull().orEmpty()
+                                    for (roomId in favoriteRooms) {
+                                        addId(roomId)
+                                    }
+
+                                    updatePositionMap()
+                                }, { throwable ->
+                                mActivity.runOnUiThread {
+                                    // call setAdapters
+                                    Log.e(
+                                        "Pottruck Fragment",
+                                        "Could not load Fitness Preferences",
+                                        throwable,
+                                    )
+                                }
+                            })
+                        }
+                    }
+                })
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }
