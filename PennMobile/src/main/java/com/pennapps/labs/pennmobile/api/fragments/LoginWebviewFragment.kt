@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile.api.fragments
 
 import StudentLife
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.security.keystore.KeyGenParameterSpec
@@ -28,6 +29,7 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.classes.AccessTokenResponse
 import com.pennapps.labs.pennmobile.api.classes.Account
+import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.RandomStringUtils
 import java.nio.charset.Charset
@@ -250,6 +252,7 @@ class LoginWebviewFragment : Fragment() {
                         editor.putString(getString(R.string.email_address), user?.email)
                         editor.putString(getString(R.string.pennkey), user?.username)
                         editor.apply()
+                        context?.sendBroadcast(Intent(GsrReservationWidget.UPDATE_GSR_WIDGET))
                         mActivity.startHomeFragment()
                     } else {
                         val error = Exception(response.errorBody()?.string() ?: "Unknown Error")
