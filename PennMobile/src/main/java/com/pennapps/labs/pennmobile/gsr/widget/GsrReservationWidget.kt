@@ -3,9 +3,11 @@ package com.pennapps.labs.pennmobile.gsr.widget
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.widget.RemoteViews
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -13,6 +15,7 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.GsrReservationsRequest
 import com.pennapps.labs.pennmobile.api.Serializer
+import com.pennapps.labs.pennmobile.dining.widget.DiningHallWidget.Companion.ACTION_AUTO_UPDATE
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -83,35 +86,36 @@ class GsrReservationWidget : AppWidgetProvider() {
 
     // onEnabled and onDisabled are typically used for alarmManager testing and logs to check whether
     // appwidget is properly enabled/disabled.
-//    override fun onEnabled(context: Context) {
-//        // start alarm
-//        val appWidgetAlarm = AppWidgetAlarm(context.applicationContext)
-//        appWidgetAlarm.startAlarm()
-//    }
-//
-//    override fun onDisabled(context: Context) {
-//        val appWidgetManager = AppWidgetManager.getInstance(context)
-//        val componentName = ComponentName(context.packageName, GsrReservationWidget::class.java.name)
-//        val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
-//
-//        if (appWidgetIds.isEmpty()) {
-//            // stop alarm
-//            val appWidgetAlarm = AppWidgetAlarm(context.applicationContext)
-//            appWidgetAlarm.stopAlarm()
-//        }
-//    }
+    override fun onEnabled(context: Context) {
+        // start alarm
+        val appWidgetAlarm = GsrReservationWidgetAlarm(context.applicationContext)
+        appWidgetAlarm.startAlarm()
+    }
 
-//    override fun onReceive(context: Context, intent: Intent) {
-//        super.onReceive(context, intent)
-//
-//        if (intent.action == ACTION_AUTO_UPDATE) {
-//            Log.d("intent received", "yay")
-//            context.sendBroadcast(Intent(UPDATE_GSR_WIDGET))
-//        }
-//    }
+    override fun onDisabled(context: Context) {
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        val componentName = ComponentName(context.packageName, GsrReservationWidget::class.java.name)
+        val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
+
+        if (appWidgetIds.isEmpty()) {
+            // stop alarm
+            val appWidgetAlarm = GsrReservationWidgetAlarm(context.applicationContext)
+            appWidgetAlarm.stopAlarm()
+        }
+    }
+
+    override fun onReceive(context: Context, intent: Intent) {
+        super.onReceive(context, intent)
+
+        if (intent.action == ACTION_AUTO_UPDATE) {
+            Log.d("intent received", "yay")
+            context.sendBroadcast(Intent(UPDATE_GSR_WIDGET))
+        }
+    }
 
     companion object {
         private var mGSRReservationsRequest: GsrReservationsRequest? = null
+        const val ACTION_AUTO_UPDATE = "AUTO_UPDATE"
         const val UPDATE_GSR_WIDGET = "com.pennapps.labs.pennmobile.UPDATE_GSR_WIDGET"
 
         @JvmStatic
