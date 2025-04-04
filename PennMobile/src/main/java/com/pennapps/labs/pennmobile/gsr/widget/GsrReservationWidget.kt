@@ -104,7 +104,10 @@ class GsrReservationWidget : AppWidgetProvider() {
         }
     }
 
-    override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(
+        context: Context,
+        intent: Intent,
+    ) {
         super.onReceive(context, intent)
 
         if (intent.action == ACTION_AUTO_UPDATE) {

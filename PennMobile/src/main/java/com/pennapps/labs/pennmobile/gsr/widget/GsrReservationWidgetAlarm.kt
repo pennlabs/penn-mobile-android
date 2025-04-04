@@ -6,7 +6,8 @@ import android.content.Context
 import android.content.Intent
 import java.util.Calendar
 
-class GsrReservationWidgetAlarm(private val mContext: Context,
+class GsrReservationWidgetAlarm(
+    private val mContext: Context,
 ) {
     private val alarmId: Int = 0
     // val internalMillis: Int = 60000
