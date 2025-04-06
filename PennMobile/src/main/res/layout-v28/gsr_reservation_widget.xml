@@ -10,7 +10,7 @@
     <FrameLayout
         android:id="@+id/widgetframe"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:theme="@style/Theme.Pennmobileandroid.AppWidgetContainer"
         >
         <ListView
@@ -39,9 +39,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:textFontWeight="200"
+            android:textFontWeight="600"
             android:text="@string/you_have_no_reservations_or_are_logged_out"
-            android:textSize="30sp"
+            android:textSize="28sp"
             android:textColor="@color/black"
             android:background="@color/white"
             android:padding="10dp"
