@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile.gsr.fragments
 
 import StudentLife
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -17,6 +18,7 @@ import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.GsrDetailsBookBinding
+import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import kotlinx.coroutines.launch
 
 class BookGsrFragment : Fragment() {
@@ -163,6 +165,9 @@ class BookGsrFragment : Fragment() {
                         // Displaying the output as a toast and go back to GSR fragment
                         if (result.getDetail().equals("success")) {
                             Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
+
+                            // Sends request to gsr reservation widget
+                            context?.sendBroadcast(Intent(GsrReservationWidget.UPDATE_GSR_WIDGET))
 
                             // Save user info in shared preferences
                             val sp = PreferenceManager.getDefaultSharedPreferences(activity)
