@@ -3,12 +3,11 @@ package com.pennapps.labs.pennmobile.gsr.widget
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import android.widget.RemoteViews
+import androidx.core.net.toUri
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.pennapps.labs.pennmobile.MainActivity
@@ -24,6 +23,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 class GsrReservationWidget : AppWidgetProvider() {
+    private lateinit var appWidgetAlarm: GsrReservationWidgetAlarm
+
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -51,7 +52,7 @@ class GsrReservationWidget : AppWidgetProvider() {
             // setData allows the system to distinguish between different service intents. Without
             // setData, onGetViewFactory is called only once for multiple widgets and send
             // the same intent to all of them.
-            serviceIntent.setData(Uri.parse(serviceIntent.toUri(Intent.URI_INTENT_SCHEME)))
+            serviceIntent.setData(serviceIntent.toUri(Intent.URI_INTENT_SCHEME).toUri())
 
             // Setting up the widget remoteViews; change cardview to something else
             val views = RemoteViews(context.packageName, R.layout.gsr_reservation_widget)
@@ -82,26 +83,29 @@ class GsrReservationWidget : AppWidgetProvider() {
         appWidgetIds: IntArray?,
     ) {
         super.onDeleted(context, appWidgetIds)
+        appWidgetAlarm.stopAlarm()
     }
 
     // onEnabled and onDisabled are typically used for alarmManager testing and logs to check whether
     // appwidget is properly enabled/disabled.
     override fun onEnabled(context: Context) {
         // start alarm
-        val appWidgetAlarm = GsrReservationWidgetAlarm(context.applicationContext)
+        super.onEnabled(context)
+        appWidgetAlarm = GsrReservationWidgetAlarm(context.applicationContext)
         appWidgetAlarm.startAlarm()
     }
 
     override fun onDisabled(context: Context) {
-        val appWidgetManager = AppWidgetManager.getInstance(context)
-        val componentName = ComponentName(context.packageName, GsrReservationWidget::class.java.name)
-        val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
-
-        if (appWidgetIds.isEmpty()) {
-            // stop alarm
-            val appWidgetAlarm = GsrReservationWidgetAlarm(context.applicationContext)
-            appWidgetAlarm.stopAlarm()
-        }
+//        val appWidgetManager = AppWidgetManager.getInstance(context)
+//        val componentName = ComponentName(context.packageName, GsrReservationWidget::class.java.name)
+//        val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
+//
+//        if (appWidgetIds.isEmpty()) {
+//            // stop alarm
+//            appWidgetAlarm.stopAlarm()
+//        }
+        super.onDisabled(context)
+        appWidgetAlarm.stopAlarm()
     }
 
     override fun onReceive(
