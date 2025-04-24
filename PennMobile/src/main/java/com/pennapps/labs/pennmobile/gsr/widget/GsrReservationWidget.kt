@@ -14,7 +14,6 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.GsrReservationsRequest
 import com.pennapps.labs.pennmobile.api.Serializer
-import com.pennapps.labs.pennmobile.dining.widget.DiningHallWidget.Companion.ACTION_AUTO_UPDATE
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -23,8 +22,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 class GsrReservationWidget : AppWidgetProvider() {
-    private lateinit var appWidgetAlarm: GsrReservationWidgetAlarm
-
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -75,7 +72,9 @@ class GsrReservationWidget : AppWidgetProvider() {
                 R.id.gsr_reservation_widget_stack_view,
             )
             appWidgetManager.updateAppWidget(appWidgetId, views)
+            Log.d("GsrReservationWidget", "onUpdate is called")
         }
+        context.sendBroadcast(Intent(UPDATE_GSR_WIDGET))
     }
 
     override fun onDeleted(
@@ -83,29 +82,6 @@ class GsrReservationWidget : AppWidgetProvider() {
         appWidgetIds: IntArray?,
     ) {
         super.onDeleted(context, appWidgetIds)
-        appWidgetAlarm.stopAlarm()
-    }
-
-    // onEnabled and onDisabled are typically used for alarmManager testing and logs to check whether
-    // appwidget is properly enabled/disabled.
-    override fun onEnabled(context: Context) {
-        // start alarm
-        super.onEnabled(context)
-        appWidgetAlarm = GsrReservationWidgetAlarm(context.applicationContext)
-        appWidgetAlarm.startAlarm()
-    }
-
-    override fun onDisabled(context: Context) {
-//        val appWidgetManager = AppWidgetManager.getInstance(context)
-//        val componentName = ComponentName(context.packageName, GsrReservationWidget::class.java.name)
-//        val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
-//
-//        if (appWidgetIds.isEmpty()) {
-//            // stop alarm
-//            appWidgetAlarm.stopAlarm()
-//        }
-        super.onDisabled(context)
-        appWidgetAlarm.stopAlarm()
     }
 
     override fun onReceive(
