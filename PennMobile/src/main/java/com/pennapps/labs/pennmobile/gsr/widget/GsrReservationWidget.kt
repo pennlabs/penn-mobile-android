@@ -84,21 +84,8 @@ class GsrReservationWidget : AppWidgetProvider() {
         super.onDeleted(context, appWidgetIds)
     }
 
-    override fun onReceive(
-        context: Context,
-        intent: Intent,
-    ) {
-        super.onReceive(context, intent)
-
-        if (intent.action == ACTION_AUTO_UPDATE) {
-            Log.d("intent received", "yay")
-            context.sendBroadcast(Intent(UPDATE_GSR_WIDGET))
-        }
-    }
-
     companion object {
         private var mGSRReservationsRequest: GsrReservationsRequest? = null
-        const val ACTION_AUTO_UPDATE = "AUTO_UPDATE"
         const val UPDATE_GSR_WIDGET = "com.pennapps.labs.pennmobile.UPDATE_GSR_WIDGET"
 
         @JvmStatic
