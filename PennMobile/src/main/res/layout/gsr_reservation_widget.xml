@@ -23,17 +23,6 @@
             android:clickable="true"
             />
 
-        <!--        <ImageView-->
-        <!--            android:contentDescription="Penn Logo"-->
-        <!--            android:id="@+id/gsr_reservation_widget_empty_view"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="match_parent"-->
-        <!--            android:layout_gravity="center"-->
-        <!--            android:background="@drawable/app_widget_background"-->
-        <!--            android:scaleType="centerCrop"-->
-        <!--            android:src="@drawable/splash_screen435"-->
-        <!--            />-->
-
         <TextView
             android:id="@+id/gsr_reservation_widget_empty_view"
             android:layout_width="match_parent"
