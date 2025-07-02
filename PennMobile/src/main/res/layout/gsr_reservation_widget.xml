@@ -26,14 +26,14 @@
         <TextView
             android:id="@+id/gsr_reservation_widget_empty_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="102dp"
             android:gravity="center"
-            android:textFontWeight="200"
+            android:textFontWeight="400"
             android:text="@string/you_have_no_reservations_or_are_logged_out"
-            android:textSize="30sp"
-            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textColor="@color/gray"
             android:background="@color/white"
-            android:padding="10dp"
+            android:padding="30dp"
             />
     </FrameLayout>
 </LinearLayout>
