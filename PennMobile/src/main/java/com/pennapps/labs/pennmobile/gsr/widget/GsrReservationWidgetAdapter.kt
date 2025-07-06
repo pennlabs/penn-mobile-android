@@ -164,7 +164,7 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
                             Observable.just(reservation)
                         }.toList()
                         .subscribe { reservations ->
-                            dataSet = reservations
+                            dataSet = reservations.sortedBy { it.fromDate }
                             val appWidgetManager: AppWidgetManager =
                                 AppWidgetManager.getInstance(context)
                             appWidgetManager.notifyAppWidgetViewDataChanged(
