@@ -30,7 +30,7 @@
     </style>
 
     <style name="AppTheme.Launcher">
-        <item name="android:windowBackground">@drawable/splash_screen</item>
+        <item name="android:windowBackground">@drawable/login_background</item>
     </style>
 
     <style name="Widget.AppTheme.Launcher.ListView" parent="android:Widget.ListView">

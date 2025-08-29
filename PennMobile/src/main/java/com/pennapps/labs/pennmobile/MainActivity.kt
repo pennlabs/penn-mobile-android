@@ -21,6 +21,7 @@ import android.view.inputmethod.InputMethodManager
 import android.webkit.CookieManager
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.ColorUtils
@@ -79,6 +80,9 @@ class MainActivity : AppCompatActivity() {
             setTheme(R.style.DarkModeApi29)
         }
         super.onCreate(savedInstanceState)
+
+        enableEdgeToEdge()
+
         setTheme(R.style.AppTheme)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
