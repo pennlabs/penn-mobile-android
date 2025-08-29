@@ -172,8 +172,7 @@ class DiningFragment : Fragment() {
                     } else {
                         diningHall1.name?.compareTo(diningHall2.name.orEmpty(), ignoreCase = true)
                     }
-                }
-                .subscribe({ diningHalls ->
+                }.subscribe({ diningHalls ->
                     mActivity.runOnUiThread {
                         getMenus(diningHalls)
                         val adapter = DiningAdapter(diningHalls)
