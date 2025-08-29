@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:theme="@style/Theme.Pennmobileandroid.AppWidgetContainer"
+    android:clickable="true"
+    android:id="@+id/gsr_reservation_widget_root"
+    android:background="@android:color/transparent">
+    <FrameLayout
+        android:id="@+id/widgetframe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.Pennmobileandroid.AppWidgetContainer"
+        >
+        <ListView
+            android:id="@+id/gsr_reservation_widget_stack_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:loopViews="true"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="8dp"
+            android:clickable="true"
+            />
+
+        <TextView
+            android:id="@+id/gsr_reservation_widget_empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="102dp"
+            android:gravity="center"
+            android:textFontWeight="400"
+            android:text="@string/you_have_no_reservations_or_are_logged_out"
+            android:textSize="15sp"
+            android:textColor="@color/gray"
+            android:background="@color/white"
+            android:padding="30dp"
+            />
+    </FrameLayout>
+</LinearLayout>

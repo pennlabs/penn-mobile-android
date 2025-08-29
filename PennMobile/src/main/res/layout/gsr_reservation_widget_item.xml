@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:minWidth="245dp"
+    android:layout_width = "match_parent"
+    android:minHeight="60dp"
+    android:layout_height = "102dp"
+    android:orientation="horizontal"
+    android:background="#ffffff"
+    android:id="@+id/gsr_reservation_widget_item_root">
+
+    <ImageView
+        android:id="@+id/gsr_reservation_widget_item_iv"
+        android:contentDescription="Gsr Image"
+        android:layout_width="130dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="13dp"
+        android:scaleType="centerCrop"
+        app:srcCompat="@color/browser_actions_bg_grey" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id=
+                "@+id/gsr_reservation_widget_item_location_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="13dp"
+            android:layout_marginEnd="16dp"
+            android:maxLines = "2"
+            android:minLines="1"
+            android:text="VP Weigle Room 110 oiwejfoiwjeof ihu wefwefwefwefwef"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/gsr_reservation_widget_item_time_tv"
+            style="@style/Menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:text="Wednesday September 30 \n2:00pm-3:00 pm"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/gsr_reservation_iv"
+            app:layout_constraintTop_toBottomOf="@+id/gsr_reservation_location_tv" />
+    </LinearLayout>
+
+</LinearLayout>

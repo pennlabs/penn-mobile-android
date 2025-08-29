@@ -113,7 +113,8 @@ class GsrReservationsFragment : Fragment() {
                     .subscribe({ reservations ->
                         binding.loadingPanel.root.visibility = View.GONE
                         try {
-                            reservations?.let {
+                            val sortedReservations = reservations?.sortedBy { it?.fromDate }
+                            sortedReservations?.let {
                                 binding.gsrReservationsRv.adapter =
                                     GsrReservationsAdapter(
                                         ArrayList(it.filterNotNull()),
