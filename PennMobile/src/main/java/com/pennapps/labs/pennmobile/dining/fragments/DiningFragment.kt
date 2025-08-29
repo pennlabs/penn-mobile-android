@@ -165,8 +165,14 @@ class DiningFragment : Fragment() {
                         val hall = createHall(it)
                         Observable.just(hall)
                     } ?: Observable.empty()
-                }.toList()
-                .subscribe({ diningHalls ->
+                }.toSortedList { diningHall1, diningHall2 ->
+                    val openCompare = diningHall2.isOpen.compareTo(diningHall1.isOpen)
+                    if (openCompare != 0) {
+                        openCompare
+                    } else {
+                        diningHall1.name?.compareTo(diningHall2.name.orEmpty(), ignoreCase = true)
+                    }
+                }.subscribe({ diningHalls ->
                     mActivity.runOnUiThread {
                         getMenus(diningHalls)
                         val adapter = DiningAdapter(diningHalls)
