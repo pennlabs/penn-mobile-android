@@ -30,7 +30,7 @@
                 android:id="@+id/cancel_button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Cancel"
+                android:text="@string/cancel"
                 android:layout_weight="2"
                 android:layout_marginLeft="5dp"
                 android:textSize="15sp"
