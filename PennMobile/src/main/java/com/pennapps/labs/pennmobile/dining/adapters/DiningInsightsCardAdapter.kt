@@ -54,7 +54,7 @@ class DiningInsightsCardAdapter(
         private const val DINING_DOLLARS_PREDICTIONS = 2
         private const val DINING_SWIPES_PREDICTIONS = 3
 
-        const val START_DAY_OF_SEMESTER = "2025-01-15"
+        const val START_DAY_OF_SEMESTER = "2025-08-26"
         private const val DAYS_IN_SEMESTER = 117f
     }
 
