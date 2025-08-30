@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:no-wildcard-imports")
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,6 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+@Suppress("ktlint:standard:function-naming")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationSettingsList(settingsList: List<Pair<String, Boolean>>) {
@@ -25,22 +28,23 @@ fun NotificationSettingsList(settingsList: List<Pair<String, Boolean>>) {
         topBar = {
             Column {
                 CenterAlignedTopAppBar(
-                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                        containerColor = Color.White,
-                        titleContentColor = MaterialTheme.colorScheme.onBackground,
-                    ),
+                    colors =
+                        TopAppBarDefaults.centerAlignedTopAppBarColors(
+                            containerColor = Color.White,
+                            titleContentColor = MaterialTheme.colorScheme.onBackground,
+                        ),
                     title = {
                         Text(
                             "Notification Settings",
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
                         )
                     },
                     navigationIcon = {
                         IconButton(onClick = { /* handle back */ }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Go Back"
+                                contentDescription = "Go Back",
                             )
                         }
                     },
@@ -48,60 +52,71 @@ fun NotificationSettingsList(settingsList: List<Pair<String, Boolean>>) {
                         IconButton(onClick = { saveNotificationSettings() }) {
                             Icon(
                                 imageVector = Icons.Filled.Save,
-                                contentDescription = "Save"
+                                contentDescription = "Save",
                             )
                         }
                     },
                     scrollBehavior = scrollBehavior,
                 )
-                HorizontalDivider(thickness = 1.dp, color = Color.LightGray,
-                    modifier = Modifier.padding(horizontal = 24.dp))
+                HorizontalDivider(
+                    thickness = 1.dp,
+                    color = Color.LightGray,
+                    modifier = Modifier.padding(horizontal = 24.dp),
+                )
             }
         },
         content = { innerPadding ->
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = Color.White)
-                    .padding(innerPadding)
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(color = Color.White)
+                        .padding(innerPadding),
             ) {
                 Text(
                     text = "Alerts",
-                    modifier = Modifier
-                        .padding(start = 32.dp, top = 32.dp, end = 32.dp, bottom = 4.dp),
-                    color = Color(0xFF339FE6)
+                    modifier =
+                        Modifier
+                            .padding(start = 32.dp, top = 32.dp, end = 32.dp, bottom = 4.dp),
+                    color = Color(0xFF339FE6),
                 )
                 LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
+                    modifier =
+                        Modifier
+                            .fillMaxSize(),
                 ) {
                     items(settingsList) { setting ->
                         NotificationSettingRow(
                             label = setting.first,
-                            isEnabledInitial = setting.second
+                            isEnabledInitial = setting.second,
                         )
                     }
                 }
             }
-        }
+        },
     )
 }
 
+@Suppress("ktlint:standard:function-naming")
 @Composable
-fun NotificationSettingRow(label: String, isEnabledInitial: Boolean) {
+fun NotificationSettingRow(
+    label: String,
+    isEnabledInitial: Boolean,
+) {
     var isEnabled by remember { mutableStateOf(isEnabledInitial) }
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 32.dp, vertical = 4.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
             text = label,
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onBackground,
         )
 
         Switch(
@@ -109,31 +124,33 @@ fun NotificationSettingRow(label: String, isEnabledInitial: Boolean) {
             onCheckedChange = { isChecked ->
                 isEnabled = isChecked
             },
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = Color.White,
-                uncheckedThumbColor = Color.Gray.copy(alpha = 0.5f),
-                checkedTrackColor = Color(0xFF6ED668),
-                uncheckedTrackColor = Color.LightGray.copy(alpha = 0.5f),
-                checkedBorderColor = Color.Transparent,
-                uncheckedBorderColor = Color.Transparent
-            )
+            colors =
+                SwitchDefaults.colors(
+                    checkedThumbColor = Color.White,
+                    uncheckedThumbColor = Color.Gray.copy(alpha = 0.5f),
+                    checkedTrackColor = Color(0xFF6ED668),
+                    uncheckedTrackColor = Color.LightGray.copy(alpha = 0.5f),
+                    checkedBorderColor = Color.Transparent,
+                    uncheckedBorderColor = Color.Transparent,
+                ),
         )
     }
 }
 
 // Do later
 fun saveNotificationSettings() {
-
 }
 
+@Suppress("ktlint:standard:function-naming")
 @Preview(showBackground = true)
 @Composable
 fun AppWithListPreview() {
-    var settingsList = listOf(
-        "Penn Course Alert" to false,
-        "Laundry" to true,
-        "GSR Bookings" to true,
-        "OHQ" to true
-    )
+    var settingsList =
+        listOf(
+            "Penn Course Alert" to false,
+            "Laundry" to true,
+            "GSR Bookings" to true,
+            "OHQ" to true,
+        )
     NotificationSettingsList(settingsList)
 }
