@@ -18,6 +18,8 @@ import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
@@ -44,7 +46,9 @@ class LoginWebviewFragment : Fragment() {
     lateinit var webView: WebView
     lateinit var headerLayout: LinearLayout
     lateinit var cancelButton: Button
+    lateinit var status: View
     lateinit var user: Account
+    lateinit var root: LinearLayout
     private lateinit var mStudentLife: StudentLife
     private var mPlatform: Platform? = null
     private lateinit var mActivity: MainActivity
@@ -87,9 +91,22 @@ class LoginWebviewFragment : Fragment() {
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
+
+        root = view.findViewById(R.id.root)
+        status = view.findViewById(R.id.statusBarInset)
         webView = view.findViewById(R.id.webView)
         headerLayout = view.findViewById(R.id.linear_layout)
         cancelButton = view.findViewById(R.id.cancel_button)
+
+        ViewCompat.setOnApplyWindowInsetsListener(root) { v, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            status.layoutParams =
+                status.layoutParams.apply {
+                    height = bars.top
+                }
+            v.setPadding(bars.left, v.paddingTop, bars.right, v.paddingBottom)
+            insets
+        }
 
         webView.loadUrl(platformAuthUrl)
         val webSettings = webView.settings

@@ -92,6 +92,7 @@ class DiningInsightsFragment : Fragment() {
                 .commit()
         }
         getInsights(accessToken)
+        Log.d("Campus Express", "$accessToken")
         // Inflate the layout for this fragment
         return view
     }

@@ -14,6 +14,7 @@
         android:elevation="0dp"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:elevation="0dp"
+        android:fitsSystemWindows="true"
         tools:targetApi="lollipop">
 
         <FrameLayout

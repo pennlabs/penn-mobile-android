@@ -7,23 +7,30 @@
     tools:context=".api.fragments.LoginWebviewFragment">
 
     <LinearLayout
+        android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="#FFF">
 
+        <View
+            android:id="@+id/statusBarInset"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+
         <LinearLayout
             android:id="@+id/linear_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="13"
-            android:orientation="horizontal">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:elevation="8dp">
 
             <Button
                 android:id="@+id/cancel_button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Cancel"
+                android:text="@string/cancel"
                 android:layout_weight="2"
                 android:layout_marginLeft="5dp"
                 android:textSize="15sp"
@@ -49,8 +56,8 @@
         <WebView
             android:id="@+id/webView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:layout_weight="12"
             android:background="#00FFFDFD" />
 
     </LinearLayout>
