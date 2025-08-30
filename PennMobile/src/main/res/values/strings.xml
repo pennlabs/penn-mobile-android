@@ -240,4 +240,7 @@
     <string name="add_widget">Add widget</string>
     <string name="app_widget_description">This is an app widget description</string>
     <string name="you_have_no_reservations_or_are_logged_out">You have no reservations or are logged out</string>
+    <string name="login_background">Login Background</string>
+    <string name="penn_mobile_icon">Penn Mobile Icon</string>
+    <string name="cancel">Cancel</string>
 </resources>

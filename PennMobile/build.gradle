@@ -20,7 +20,7 @@ android {
         }
         release {}
     }
-    compileSdk 34
+    compileSdk 35
     buildFeatures {
         viewBinding true
         compose true
@@ -33,7 +33,7 @@ android {
     }
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 34
+        targetSdkVersion 35
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         buildConfigField ("String", "PLATFORM_REDIRECT_URI", getPlatformRedirectUri())
