@@ -55,6 +55,7 @@ import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.more.classes.Contact
 import com.pennapps.labs.pennmobile.more.fragments.SaveContactsFragment
 import com.pennapps.labs.pennmobile.utils.Utils
+import dagger.hilt.android.AndroidEntryPoint
 import eightbitlab.com.blurview.BlurView
 import kotlinx.coroutines.sync.Mutex
 import okhttp3.OkHttpClient
@@ -65,6 +66,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private var tabShowed = false
     private lateinit var fragmentManager: FragmentManager

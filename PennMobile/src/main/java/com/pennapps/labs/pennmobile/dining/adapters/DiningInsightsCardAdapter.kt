@@ -20,7 +20,6 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
-import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.DiningBalancesCardBinding
 import com.pennapps.labs.pennmobile.databinding.DiningPredictionsCardBinding
@@ -44,7 +43,6 @@ class DiningInsightsCardAdapter(
     private var cells: ArrayList<DiningInsightCell>,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var mContext: Context
-    private lateinit var mActivity: MainActivity
 
     companion object {
         // Types of Home Cells
@@ -63,7 +61,6 @@ class DiningInsightsCardAdapter(
         viewType: Int,
     ): RecyclerView.ViewHolder {
         mContext = parent.context
-        mActivity = mContext as MainActivity
 
         return when (viewType) {
             DINING_BALANCE -> {
@@ -460,6 +457,12 @@ class DiningInsightsCardAdapter(
             }
         }
         return Utils.addDaysToDateMMMdd(START_DAY_OF_SEMESTER, actualValuesSize + i)
+    }
+
+    fun updateCells(newCells: List<DiningInsightCell>) {
+        cells.clear()
+        cells.addAll(newCells)
+        notifyDataSetChanged()
     }
 
     class ClaimsXAxisValueFormatter(

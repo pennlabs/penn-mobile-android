@@ -1,7 +1,7 @@
 [versions]
 adapterRxjava = "2.11.0"
 activityCompose = "1.8.0"
-agp = "8.8.0"
+agp = "8.12.2"
 androidRss = "master-SNAPSHOT"
 annotation = "1.7.0"
 blurview = "version-2.0.6"
@@ -9,8 +9,18 @@ browser = "1.5.0"
 cardview = "1.0.0"
 commonsLang3 = "3.13.0"
 compiler = "4.11.0"
+compose = "2.1.3"
 composeBom = "2024.10.01"
+composeChart = "1.11.0"
+composeChartBase = "1.11.0"
+composeCharts = "latest_version"
+composeM2 = "2.1.3"
+composeM2Version = "2.1.3"
+composeM3 = "2.1.3"
+composeM3Version = "2.1.3"
+composeVersion = "2.1.3"
 constraintlayout = "2.1.4"
+constraintlayoutCompose = "1.1.1"
 converterGson = "2.9.0"
 converterMoshi = "2.9.0"
 converterScalars = "2.9.0"
@@ -23,13 +33,24 @@ firebaseCrashlyticsKtx = "18.6.0"
 firebaseCrashalytics = "2.9.9"
 glanceAppwidget = "1.1.0"
 glide = "4.11.0"
+googleHiltAndroid = "2.57.1"
+googleHiltCompiler = "2.57.1"
 googleMapsServices = "2.2.0"
 googleServices = "4.4.0"
+gradle = "8.12.2"
+hiltAndroid = "2.57.1"
+hiltAndroidCompiler = "2.57.1"
+hiltAndroidCompilerVersion = "2.57.1"
+hiltAndroidVersion = "2.57.1"
+hiltCompiler = "1.2.0"
+hiltCompilerVersion = "2.57.1"
+hiltLifecycleViewmodel = "1.0.0-alpha03"
+hiltNavigationCompose = "1.2.0"
 jodaTime = "2.12.5"
 jsoup = "1.16.2"
 junit = "1.1.5"
 kaspresso = "1.5.3"
-kotlin = "1.9.24"
+kotlin = "2.0.21"
 junitVersion = "4.13.2"
 kotlinxCoroutinesCore = "1.7.3"
 leakcanaryAndroid = "3.0-alpha-1"
@@ -45,6 +66,8 @@ mpandroidchart = "v3.1.0"
 multidex = "2.0.1"
 okhttp = "2.7.5"
 paletteKtx = "1.0.0"
+patrykandpatpatrickCompose = "2.1.3"
+patrykandpatpatrickComposeM3 = "2.1.3"
 percentlayout = "1.0.0"
 picasso = "2.71828"
 playServicesLocation = "21.0.1"
@@ -55,6 +78,7 @@ retrofit = "2.9.0"
 rxandroidVersion = "1.2.1"
 rxjava1 = "1.3.8"
 testng = "7.8.0"
+vico = "2.1.3"
 
 [libraries]
 
@@ -66,12 +90,16 @@ androidx-browser = { module = "androidx.browser:browser", version.ref = "browser
 androidx-cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
+androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 androidx-coordinatorlayout = { module = "androidx.coordinatorlayout:coordinatorlayout", version.ref = "coordinatorlayout" }
 androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
 androidx-exifinterface = { module = "androidx.exifinterface:exifinterface", version.ref = "exifinterface" }
 androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glanceAppwidget" }
 androidx-glance-material = { module = "androidx.glance:glance-material", version.ref = "glanceAppwidget" }
 androidx-glance-material3 = { module = "androidx.glance:glance-material3", version.ref = "glanceAppwidget" }
+androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltCompiler" }
+androidx-hilt-lifecycle-viewmodel = { module = "androidx.hilt:hilt-lifecycle-viewmodel", version.ref = "hiltLifecycleViewmodel" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-junit = { module = "androidx.test.ext:junit", version.ref = "junit" }
 androidx-legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacySupportV4" }
 androidx-lifecycle-extensions = { module = "androidx.lifecycle:lifecycle-extensions", version.ref = "lifecycleExtensions" }
@@ -94,6 +122,12 @@ androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview
 blurview = { module = "com.github.Dimezis:BlurView", version.ref = "blurview" }
 commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commonsLang3" }
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
+compose = { module = "com.patrykandpatryk.vico:compose", version.ref = "compose" }
+compose-chart = { module = "io.github.vico:compose-chart", version.ref = "composeChart" }
+compose-chart-base = { module = "io.github.vico:compose-chart-base", version.ref = "composeChartBase" }
+compose-charts = { module = "io.github.ehsannarmani:compose-charts", version.ref = "composeCharts" }
+compose-m2 = { module = "com.patrykandpatryk.vico:compose-m2", version.ref = "composeM2" }
+compose-m3 = { module = "com.patrykandpatryk.vico:compose-m3", version.ref = "composeM3" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "converterMoshi" }
 converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "converterScalars" }
@@ -104,6 +138,14 @@ firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx", version.ref = "firebaseCrashlyticsKtx" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 google-maps-services = { module = "com.google.maps:google-maps-services", version.ref = "googleMapsServices" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
+hilt-android-compiler-v248 = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompilerVersion" }
+hilt-android-v248 = { module = "com.google.dagger:hilt-android", version.ref = "googleHiltAndroid" }
+hilt-android-v2562 = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroidVersion" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltCompilerVersion" }
+hilt-compiler-v2562 = { module = "com.google.dagger:hilt-compiler", version.ref = "googleHiltCompiler" }
 joda-time = { module = "joda-time:joda-time", version.ref = "jodaTime" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 junit = { module = "junit:junit", version.ref = "junitVersion" }
@@ -116,6 +158,8 @@ lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
 okhttp = { module = "com.squareup.okhttp:okhttp", version.ref = "okhttp" }
+patrykandpatpatrick-compose = { module = "com.patrykandpatpatrick.vico:compose", version.ref = "patrykandpatpatrickCompose" }
+patrykandpatpatrick-compose-m3 = { module = "com.patrykandpatpatrick.vico:compose-m3", version.ref = "patrykandpatpatrickComposeM3" }
 picasso = { module = "com.squareup.picasso:picasso", version.ref = "picasso" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
@@ -123,12 +167,21 @@ reactivex-rxandroid = { module = "io.reactivex:rxandroid", version.ref = "rxandr
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 rxjava = { module = "io.reactivex:rxjava", version.ref = "rxjava1" }
 testng = { module = "org.testng:testng", version.ref = "testng" }
+# For Jetpack Compose.
+vico-compose = { group = "com.patrykandpatrick.vico", name = "compose", version.ref = "vico" }
+
+# For Material 2 theming in Jetpack Compose.
+vico-compose-m2 = { group = "com.patrykandpatrick.vico", name = "compose-m2", version.ref = "vico" }
+
+# For Material 3 theming in Jetpack Compose.
+vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices"}
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashalytics"}
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 
 [bundles]

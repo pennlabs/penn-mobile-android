@@ -7,7 +7,6 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query
-import rx.Observable
 
 /**
  * Created by Julius Snipes on 09/23/2022.
@@ -24,14 +23,14 @@ interface CampusExpress {
     ): Response<CampusExpressAccessTokenResponse>
 
     @GET("dining/currentBalance")
-    fun getCurrentDiningBalances(
+    suspend fun getCurrentDiningBalances(
         @Header("x-authorization") bearerToken: String?,
-    ): Observable<DiningBalances>
+    ): DiningBalances
 
     @GET("dining/pastBalances")
-    fun getPastDiningBalances(
+    suspend fun getPastDiningBalances(
         @Header("x-authorization") bearerToken: String?,
         @Query("start_date") startDate: String?,
         @Query("end_date") endDate: String?,
-    ): Observable<DiningBalancesList>
+    ): DiningBalancesList
 }
