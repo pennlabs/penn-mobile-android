@@ -67,7 +67,7 @@
             android:resource="@array/preloaded_fonts" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDFOB7fgIQubKyOjjrmsgNoDt-xRvlBDrk"/>
+            android:value="AIzaSyAd5NMwzNv081dvKbwzs0vVRpzlyzrIeWs"/>
 
         <receiver
             android:name=".LaundryBroadcastReceiver"
