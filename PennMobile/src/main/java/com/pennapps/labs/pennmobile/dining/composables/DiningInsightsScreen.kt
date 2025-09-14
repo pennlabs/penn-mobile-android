@@ -40,7 +40,11 @@ fun DiningInsightsScreen(
         modifier = modifier
             .fillMaxSize()
             .padding(vertical = 16.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp),
+        contentPadding = PaddingValues(
+            start = 16.dp,
+            end = 16.dp,
+            bottom = 32.dp // 👈 extra space at the bottom
+        ),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Log.d("DiningInsightsScreen", "cells: $cells")
@@ -58,9 +62,6 @@ fun DiningInsightsScreen(
                     DiningPredictionCard(
                         title = "Dining Dollars Predictions",
                         cell = cell,
-                        extraLabel = "Extra Balance",
-                        extraAmount = "$${cell.diningBalances?.diningDollars ?: "0.00"}",
-                        extraNote = "Projected usage"
                     )
                 }
 
@@ -68,9 +69,6 @@ fun DiningInsightsScreen(
                     DiningPredictionCard(
                         title = "Dining Swipes Predictions",
                         cell = cell,
-                        extraLabel = "Extra Swipes",
-                        extraAmount = "${cell.diningBalances?.regularVisits ?: 0}",
-                        extraNote = "Projected usage"
                     )
                 }
             }
