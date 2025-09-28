@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -20,17 +21,17 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentHomeBinding
+import com.pennapps.labs.pennmobile.fragments.HomeSlidingToolbar
+import com.pennapps.labs.pennmobile.gsr.fragments.PottruckFragment
 import com.pennapps.labs.pennmobile.home.HomepageViewModel
 import com.pennapps.labs.pennmobile.home.adapters.HomeAdapter
 import com.pennapps.labs.pennmobile.isOnline
+import com.pennapps.labs.pennmobile.more.fragments.SupportFragment
 import com.pennapps.labs.pennmobile.utils.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
-import com.pennapps.labs.pennmobile.fragments.HomeSlidingToolbar
-import androidx.fragment.app.FragmentTransaction
-import com.pennapps.labs.pennmobile.adapters.MainPagerAdapter
 
 class HomeFragment : Fragment() {
     private lateinit var mActivity: MainActivity
