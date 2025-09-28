@@ -2,6 +2,8 @@ package com.pennapps.labs.pennmobile.dining.composables.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -12,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.Box
 
 @Composable
 fun DiningBalancesCard(
@@ -22,35 +25,29 @@ fun DiningBalancesCard(
 ) {
     Row(
         modifier = modifier
-            .fillMaxWidth()
-            .height(80.dp)
-            .background(
-                color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(12.dp)
-            )
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // Dining Dollars
         BalanceItem(
-            label = "Dining Dollars",
-            amount = diningDollars,
-            indicatorColor = Color(0xFFBADFB8) // Greenish
+            "Dining Dollars",
+            diningDollars,
+            Color(0xFFBADFB8),
+            modifier = Modifier.weight(1f)
         )
 
-        // Swipes
         BalanceItem(
-            label = "Swipes",
-            amount = swipes.toString(),
-            indicatorColor = Color(0xFF99BCF7) // Blue
+            "Swipes",
+            swipes.toString(),
+            Color(0xFF99BCF7),
+            modifier = Modifier.weight(1f)
         )
 
-        // Guest Swipes
         BalanceItem(
-            label = "Guest Swipes",
-            amount = guestSwipes.toString(),
-            indicatorColor = Color(0xFFFED994) // Yellow
+            "Guest Swipes",
+            guestSwipes.toString(),
+            Color(0xFFFED994),
+            modifier = Modifier.weight(1f)
         )
     }
 }
@@ -59,26 +56,44 @@ fun DiningBalancesCard(
 private fun BalanceItem(
     label: String,
     amount: String,
-    indicatorColor: Color
+    indicatorColor: Color,
+    modifier: Modifier
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Box(
+        modifier = Modifier
+            .width(112.dp)
+            .height(64.dp)
+            .background(
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(12.dp)
+            )
+            .padding(8.dp)
+    ) {
+        // Label - top start
+        Text(
+            text = label,
+            fontSize = 12.sp,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.align(Alignment.TopStart)
+        )
+
+        // Amount - center
+        Text(
+            text = amount,
+            fontSize = 16.sp,
+            color = indicatorColor,
+            modifier = Modifier
+                .align(Alignment.Center)
+                .offset(y = 4.dp)
+        )
+
+        // Dot - bottom end
         Box(
             modifier = Modifier
                 .size(12.dp)
                 .background(color = indicatorColor, shape = CircleShape)
+                .padding(8.dp)
+                .align(Alignment.BottomEnd)
         )
-        Spacer(modifier = Modifier.width(8.dp))
-        Column {
-            Text(
-                text = label,
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                text = amount,
-                fontSize = 16.sp,
-                color = indicatorColor
-            )
-        }
     }
 }

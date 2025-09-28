@@ -1,13 +1,20 @@
 package com.pennapps.labs.pennmobile.dining.composables.components
 
 import android.content.Context
+import android.widget.Toast
 import android.graphics.Color as AndroidColor
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -22,12 +29,15 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.pennapps.labs.pennmobile.dining.classes.DiningInsightCell
 import com.pennapps.labs.pennmobile.dining.utils.smoothBalances
 import java.text.SimpleDateFormat
 import java.util.*
 import androidx.core.graphics.toColorInt
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.highlight.Highlight
+import kotlin.math.roundToInt
 
 val diningGreen: Int = "#BADFB8".toColorInt()
 val diningBlue: Int = "#99BCF7".toColorInt()
@@ -36,11 +46,12 @@ val diningGrey: ComposeColor = ComposeColor("#F5F5F5".toColorInt())
 fun DiningPredictionCard(
     title: String,
     cell: DiningInsightCell,
+    modifier: Modifier = Modifier,
     semesterStart: String = "2025-01-15",  // TODO: replace with actual semester start date
-    semesterEnd: String = "2025-05-23",    // TODO: replace with actual semester end date
-    modifier: Modifier = Modifier
+    semesterEnd: String = "2025-04-23",    // TODO: replace with actual semester end date
 ) {
     val context: Context = LocalContext.current
+    var selectedInfo by remember { mutableStateOf<String?>(null) }
     val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
     val startDate = sdf.parse(semesterStart)!!
     val endDate = sdf.parse(semesterEnd)!!
@@ -93,13 +104,21 @@ fun DiningPredictionCard(
             time = startDate
             add(Calendar.DAY_OF_YEAR, days)
         }
-        SimpleDateFormat("MMM d", Locale.US).format(cal.time)
+        SimpleDateFormat("MMM. d", Locale.US).format(cal.time)
     }
+
+    val predictedEndBalance: Float? = if (entries.size >= 2) {
+        val first = entries.first()
+        val last = entries.last()
+        val slope = (last.y - first.y) / (last.x - first.x)
+        val intercept = first.y - slope * first.x
+        val endX = ((endDate.time - startDate.time) / (1000 * 60 * 60 * 24)).toFloat()
+        slope * endX + intercept
+    } else null
 
     Card (
         modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+            .fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = diningGrey
         ),
@@ -164,6 +183,24 @@ fun DiningPredictionCard(
                             textSize = 12f
                         }
                         xAxis.addLimitLine(ll)
+                        xAxis.axisMaximum = endX
+
+                        actualSet.isHighlightEnabled = true
+                        setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+                            override fun onValueSelected(e: Entry?, h: Highlight?) {
+                                e?.let { entry ->
+                                    val cal = Calendar.getInstance().apply {
+                                        time = startDate
+                                        add(Calendar.DAY_OF_YEAR, entry.x.toInt())
+                                    }
+                                    val formattedDate = SimpleDateFormat("MMM d", Locale.US).format(cal.time)
+                                    val amount = entry.y
+                                    selectedInfo = "$formattedDate → $amount"
+                                }
+                            }
+
+                            override fun onNothingSelected() {}
+                        })
 
                         // Style chart
                         description = Description().apply { text = "" }
@@ -175,6 +212,7 @@ fun DiningPredictionCard(
                         axisLeft.setDrawGridLines(false)
                         axisLeft.axisMinimum = 0f
                         legend.isEnabled = false
+                        isDoubleTapToZoomEnabled = false
 
                         invalidate()
                     }
@@ -185,12 +223,51 @@ fun DiningPredictionCard(
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-            if (outOfFundsDate != null) {
-                Text(text = "Out of ${if (cell.type!!.contains("dollars")) "Dollars" else "Swipes"} $outOfFundsDate")
-            } else {
-                Text(text = "Balance lasts through end of term")
+
+            selectedInfo?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (outOfFundsDate != null) {
+                    Column(modifier = Modifier.weight(0.4f)) {
+                        Text(text = "Out of ${if (cell.type!!.contains("dollars")) "Dollars" else "Swipes"}")
+                        Text(text = outOfFundsDate, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    }
+                    Text(modifier = Modifier
+                        .weight(0.6f),
+                        fontSize = 12.sp,
+                        text = "Based on your current balance and past behavior, " +
+                            "we project you'll run out on this date.")
+                } else {
+                    Column(modifier = Modifier.weight(0.4f)) {
+                        var balanceFormatted: String = String.format(Locale.US, "%d" + " Swipes",
+                            predictedEndBalance?.coerceAtLeast(0f)
+                                ?.roundToInt()
+                        )
+                        if (cell.type!!.contains("dollars")) {
+                            balanceFormatted = "$" + String.format(Locale.US, "%.2f", predictedEndBalance)
+                        }
+                        Text(text = "Extra ${if (cell.type!!.contains("dollars")) "Balance" else "Swipes"}")
+                        Text(text = balanceFormatted, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    }
+                    Text(modifier = Modifier
+                        .weight(0.6f),
+                        fontSize = 12.sp,
+                        text = "Based on your current balance and past behavior, " +
+                                "we project you'll have this many extra " +
+                                "${if (cell.type!!.contains("dollars")) "dollars" else "swipes"}.")
+                }
             }
         }
-        Spacer(modifier = Modifier.height(16.dp))
     }
 }

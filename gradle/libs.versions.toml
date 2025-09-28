@@ -79,6 +79,7 @@ rxandroidVersion = "1.2.1"
 rxjava1 = "1.3.8"
 testng = "7.8.0"
 vico = "2.1.3"
+foundationLayout = "1.9.1"
 
 [libraries]
 
@@ -175,6 +176,7 @@ vico-compose-m2 = { group = "com.patrykandpatrick.vico", name = "compose-m2", ve
 
 # For Material 3 theming in Jetpack Compose.
 vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
+androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
