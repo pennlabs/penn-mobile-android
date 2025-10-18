@@ -598,11 +598,11 @@ class HomeAdapter(
         holder.homeNewsTimestamp.text = article.timestamp?.trim()
 
         Glide
-                .with(mContext)
-                .load(article.imageUrl)
-                .fitCenter()
-                .centerCrop()
-                .into(holder.homeNewsImageView)
+            .with(mContext)
+            .load(article.imageUrl)
+            .fitCenter()
+            .centerCrop()
+            .into(holder.homeNewsImageView)
 
         /** Adds dynamically generated accent color from the fetched image to the news card */
         var accentColor: Int = getColor(mContext, R.color.black)
@@ -615,7 +615,6 @@ class HomeAdapter(
                         .submit()
                         .get()
                 }.toBitmap()
-
 
             // Create palette from bitmap
             fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
