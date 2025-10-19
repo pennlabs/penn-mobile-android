@@ -580,8 +580,21 @@ class HomeAdapter(
         cell: NewsCell,
     ) {
         val article = cell.article
+
+        if (article.imageUrl.isNullOrEmpty()) {
+            holder.itemView.visibility = View.GONE
+            holder.newsCardContainer.visibility = View.GONE
+            holder.homeNewsImageView.setImageDrawable(null)
+            holder.homeNewsTitle.text = ""
+            holder.homeNewsSubtitle.text = ""
+            holder.homeNewsTimestamp.text = ""
+            dataModel.notifyNewsBlurLoaded()
+            return
+        }
+
         holder.homeNewsTitle.text = article.title
         holder.homeNewsSubtitle.text = article.subtitle
+
         holder.homeNewsTimestamp.text = article.timestamp?.trim()
 
         Glide
