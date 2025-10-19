@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile.dining.composables.components
 
 import android.content.Context
+import com.pennapps.labs.pennmobile.R
 import android.widget.Toast
 import android.graphics.Color as AndroidColor
 import androidx.compose.foundation.layout.*
@@ -37,6 +38,7 @@ import java.util.*
 import androidx.core.graphics.toColorInt
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
+import com.pennapps.labs.pennmobile.dining.classes.DiningMarkerView
 import kotlin.math.roundToInt
 
 val diningGreen: Int = "#BADFB8".toColorInt()
@@ -185,6 +187,11 @@ fun DiningPredictionCard(
                         xAxis.addLimitLine(ll)
                         xAxis.axisMaximum = endX
 
+                        val marker = DiningMarkerView(context, R.layout.dining_marker_view)
+                        marker.setGraphType(if (cell.type!!.contains("dollars")) 2 else 3)
+                        this.marker = marker
+                        setDrawMarkers(true)
+
                         actualSet.isHighlightEnabled = true
                         setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                             override fun onValueSelected(e: Entry?, h: Highlight?) {
@@ -196,10 +203,19 @@ fun DiningPredictionCard(
                                     val formattedDate = SimpleDateFormat("MMM d", Locale.US).format(cal.time)
                                     val amount = entry.y
                                     selectedInfo = "$formattedDate → $amount"
+
+                                    if (h != null) {
+                                        marker.refreshContent(entry, h)
+                                        invalidate() // redraw chart to show marker
+                                    }
                                 }
                             }
 
-                            override fun onNothingSelected() {}
+                            override fun onNothingSelected() {
+                                this@apply.marker = null
+                                selectedInfo = null
+                                invalidate()
+                            }
                         })
 
                         // Style chart
@@ -223,14 +239,6 @@ fun DiningPredictionCard(
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-
-            selectedInfo?.let {
-                Text(
-                    text = it,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium
-                )
-            }
 
             Row (
                 modifier = Modifier

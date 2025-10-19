@@ -53,10 +53,10 @@ class DiningMarkerView(
                 append(diningData)
             }
         if (typeId == DINING_SWIPES_PREDICTIONS) {
-            textView.setTextColor(context.getColor(R.color.diningBlue))
+            textView.setTextColor(context.getColor(R.color.black))
             point.setColorFilter(context.getColor(R.color.diningBlue))
         } else {
-            textView.setTextColor(context.getColor(R.color.diningGreen))
+            textView.setTextColor(context.getColor(R.color.black))
             point.setColorFilter(context.getColor(R.color.diningGreen))
         }
     }
