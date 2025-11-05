@@ -15,6 +15,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.Box
+import com.pennapps.labs.pennmobile.ui.theme.DiningBlue
+import com.pennapps.labs.pennmobile.ui.theme.DiningGreen
 
 @Composable
 fun DiningBalancesCard(
@@ -32,14 +34,14 @@ fun DiningBalancesCard(
         BalanceItem(
             "Dining Dollars",
             diningDollars,
-            Color(0xFFBADFB8),
+            DiningGreen,
             modifier = Modifier.weight(1f)
         )
 
         BalanceItem(
             "Swipes",
             swipes.toString(),
-            Color(0xFF99BCF7),
+            DiningBlue,
             modifier = Modifier.weight(1f)
         )
 
@@ -57,10 +59,10 @@ private fun BalanceItem(
     label: String,
     amount: String,
     indicatorColor: Color,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .width(112.dp)
             .height(64.dp)
             .background(
@@ -69,30 +71,23 @@ private fun BalanceItem(
             )
             .padding(8.dp)
     ) {
-        // Label - top start
         Text(
             text = label,
-            fontSize = 12.sp,
+            style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.align(Alignment.TopStart)
         )
 
-        // Amount - center
         Text(
             text = amount,
-            fontSize = 16.sp,
-            color = indicatorColor,
-            modifier = Modifier
-                .align(Alignment.Center)
-                .offset(y = 4.dp)
+            style = MaterialTheme.typography.headlineMedium.copy(color = indicatorColor),
+            modifier = Modifier.align(Alignment.Center)
         )
 
-        // Dot - bottom end
         Box(
             modifier = Modifier
                 .size(12.dp)
                 .background(color = indicatorColor, shape = CircleShape)
-                .padding(8.dp)
                 .align(Alignment.BottomEnd)
         )
     }

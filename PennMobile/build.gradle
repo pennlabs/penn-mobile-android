@@ -53,6 +53,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation libs.androidx.compose.foundation.layout
+    implementation libs.androidx.compose.material3
 
     androidTestImplementation libs.androidx.espresso.core
     androidTestImplementation libs.androidx.junit
