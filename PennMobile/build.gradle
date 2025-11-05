@@ -5,6 +5,9 @@ plugins {
     alias(libs.plugins.firebase.crashlytics)
     id 'jacoco'
     id 'kotlin-parcelize'
+
+    id 'com.google.devtools.ksp'
+    id 'com.google.dagger.hilt.android'
 }
 
 android {
@@ -27,6 +30,10 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.14"
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -106,6 +113,10 @@ dependencies {
     implementation libs.bundles.retrofit2
     implementation libs.bundles.ui
     implementation libs.bundles.google
+
+    // Edit later
+    implementation libs.hilt.android
+    ksp libs.hilt.android.compiler
 
     testImplementation libs.junit
 }

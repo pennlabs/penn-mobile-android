@@ -25,6 +25,8 @@ glanceAppwidget = "1.1.0"
 glide = "4.11.0"
 googleMapsServices = "2.2.0"
 googleServices = "4.4.0"
+hiltAndroid = "2.51.1"
+hiltAndroidCompiler = "2.51.1"
 jodaTime = "2.12.5"
 jsoup = "1.16.2"
 junit = "1.1.5"
@@ -104,6 +106,8 @@ firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx", version.ref = "firebaseCrashlyticsKtx" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 google-maps-services = { module = "com.google.maps:google-maps-services", version.ref = "googleMapsServices" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
 joda-time = { module = "joda-time:joda-time", version.ref = "jodaTime" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 junit = { module = "junit:junit", version.ref = "junitVersion" }
