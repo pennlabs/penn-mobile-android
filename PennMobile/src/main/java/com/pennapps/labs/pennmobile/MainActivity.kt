@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity() {
 
     val tokenMutex = Mutex()
     private lateinit var mFirebaseAnalytics: FirebaseAnalytics
-//    val mNetworkManager by lazy { OAuth2NetworkManager(this) }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (Build.VERSION.SDK_INT > 28) {

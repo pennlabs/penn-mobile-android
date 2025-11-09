@@ -69,7 +69,6 @@ import com.pennapps.labs.pennmobile.laundry.adapters.LaundryRoomAdapter
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryCell
 import com.pennapps.labs.pennmobile.utils.Utils
 import eightbitlab.com.blurview.RenderScriptBlur
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -78,7 +77,6 @@ import rx.schedulers.Schedulers
 
 class HomeAdapter(
     private val mActivity: MainActivity,
-    private val uiScope: CoroutineScope,
     private val dataModel: HomepageDataModel,
     private val mNetworkManager: OAuth2NetworkManager
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

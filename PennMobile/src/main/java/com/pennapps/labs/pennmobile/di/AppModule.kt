@@ -37,11 +37,11 @@ object AppModule {
      */
     @Singleton
     @Provides
-    @MainScope
-    fun providesMainCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    @AppScope
+    fun providesAppCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
 }
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
-annotation class MainScope
+annotation class AppScope

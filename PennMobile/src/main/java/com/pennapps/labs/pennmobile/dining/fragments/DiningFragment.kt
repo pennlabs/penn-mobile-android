@@ -1,12 +1,10 @@
 package com.pennapps.labs.pennmobile.dining.fragments
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
@@ -34,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntSize
@@ -42,7 +41,6 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.google.android.material.snackbar.Snackbar
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.StudentLife
@@ -83,54 +81,18 @@ class DiningFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        _binding = FragmentDiningBinding.inflate(inflater, container, false)
-        val v = binding.root
-//        binding.diningSwiperefresh.setColorSchemeResources(
-//            R.color.color_accent,
-//            R.color.color_primary,
-//        )
-//
-//        binding.diningHallsRecyclerView.layoutManager =
-//            LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false)
-//        binding.diningSwiperefresh.setOnRefreshListener { getDiningHalls() }
-//
-//        binding.diningHallsRecyclerView.visibility = View.GONE
-        // initAppBar(v)
-        return v
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?,
-    ) {
-        super.onViewCreated(view, savedInstanceState)
-
-//        binding.internetConnectionDining.visibility = View.GONE
-//        binding.loadingPanel.root.visibility = View.GONE
-
-        binding.diningCompose.setContent {
-            AppTheme {
-                DiningHallListScreen()
+        return ComposeView(requireContext()).apply {
+            setContent {
+                AppTheme {
+                    DiningHallListScreen()
+                }
             }
         }
-
-
-//        getDiningHalls()
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -241,69 +203,6 @@ class DiningFragment : Fragment() {
             .commitAllowingStateLoss()
     }
 
-    private fun getDiningHalls() {
-        // displays banner if not connected
-
-        // TODO: FIX THIS
-//        if (!isOnline(context)) {
-//            binding.internetConnectionDining.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
-//            binding.internetConnectionMessageDining.text = "Not Connected to Internet"
-//            binding.internetConnectionDining.visibility = View.VISIBLE
-//        } else {
-//            binding.internetConnectionDining.visibility = View.GONE
-//        }
-
-        // Map each item in the list of venues to a Venue Observable, then map each Venue to a DiningHall Observable
-//        try {
-//            mStudentLife
-//                .venues()
-//                .subscribeOn(Schedulers.io())
-//                .flatMap { venues -> Observable.from(venues) }
-//                .flatMap { venue ->
-//                    venue?.let {
-//                        val hall = createHall(it)
-//                        Observable.just(hall)
-//                    } ?: Observable.empty()
-//                }.toSortedList { diningHall1, diningHall2 ->
-//                    compareDiningHallsForSort(diningHall1, diningHall2)
-//                }.subscribe({ diningHalls ->
-//                    mActivity.runOnUiThread {
-//
-//                        Log.d("DiningFragment", "Dining Halls: $diningHalls")
-//                        _diningHalls.value = diningHalls
-//
-//                        getMenus(diningHalls)
-//                        val adapter = DiningAdapter(diningHalls)
-//                        binding.loadingPanel.root.visibility = View.GONE
-//                        if (diningHalls.size > 0) {
-//                            binding.noResults.root.visibility = View.GONE
-//                        }
-//
-//                        // Log non-fatal error to crashyltics if null
-//                        // this error should not really be happening
-//                        // it is *possible* but be rare: ideally network stuff
-//                        // is decoupled with UI updates
-//                        try {
-//                            binding.diningHallsRecyclerView.adapter = adapter
-//                            binding.diningSwiperefresh.isRefreshing = false
-//                        } catch (e: Exception) {
-//                            FirebaseCrashlytics.getInstance().recordException(e)
-//                        }
-//                        view?.let { displaySnack("Just Updated") }
-//                    }
-//                }, {
-//                    Log.e("DiningFragment", "Error getting dining halls", it)
-//                    mActivity.runOnUiThread {
-//                        Log.e("Dining", "Could not load Dining page", it)
-//                        binding.loadingPanel.root.visibility = View.GONE
-//                        binding.diningSwiperefresh.isRefreshing = false
-//                    }
-//                })
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
-    }
-
     override fun onResume() {
         super.onResume()
         mActivity.removeTabs()
@@ -311,25 +210,25 @@ class DiningFragment : Fragment() {
         mActivity.setSelectedTab(MainActivity.DINING)
     }
 
-    /**
-     * Shows SnackBar message right below the app bar
-     */
-    @SuppressLint("RestrictedApi")
-    private fun displaySnack(text: String) {
-        val snackBar = Snackbar.make(binding.snackBarDining, text, Snackbar.LENGTH_SHORT)
-        snackBar.setTextColor(resources.getColor(R.color.white, context?.theme))
-        snackBar.setBackgroundTint(resources.getColor(R.color.penn_mobile_grey, context?.theme))
-        // SnackBar message and action TextViews are placed inside a LinearLayout
-        val snackBarLayout = snackBar.view as Snackbar.SnackbarLayout
-        for (i in 0 until snackBarLayout.childCount) {
-            val parent = snackBarLayout.getChildAt(i)
-            if (parent is LinearLayout) {
-                parent.rotation = 180F
-                break
-            }
-        }
-        snackBar.show()
-    }
+//    /**
+//     * Shows SnackBar message right below the app bar
+//     */
+//    @SuppressLint("RestrictedApi")
+//    private fun displaySnack(text: String) {
+//        val snackBar = Snackbar.make(binding.snackBarDining, text, Snackbar.LENGTH_SHORT)
+//        snackBar.setTextColor(resources.getColor(R.color.white, context?.theme))
+//        snackBar.setBackgroundTint(resources.getColor(R.color.penn_mobile_grey, context?.theme))
+//        // SnackBar message and action TextViews are placed inside a LinearLayout
+//        val snackBarLayout = snackBar.view as Snackbar.SnackbarLayout
+//        for (i in 0 until snackBarLayout.childCount) {
+//            val parent = snackBarLayout.getChildAt(i)
+//            if (parent is LinearLayout) {
+//                parent.rotation = 180F
+//                break
+//            }
+//        }
+//        snackBar.show()
+//    }
 
     companion object {
         // Gets the dining hall menus

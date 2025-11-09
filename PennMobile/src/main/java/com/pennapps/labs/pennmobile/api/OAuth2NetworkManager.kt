@@ -8,7 +8,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.BuildConfig
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.classes.AuthEvent
-import com.pennapps.labs.pennmobile.di.MainScope
+import com.pennapps.labs.pennmobile.di.AppScope
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 class OAuth2NetworkManager @Inject constructor(
     @ApplicationContext private val context: Context,
-    @MainScope private val mainScope: CoroutineScope,
+    @AppScope private val appScope: CoroutineScope,
     private val sp: SharedPreferences,
     private val mStudentLife: StudentLife,
 ) {
@@ -46,7 +46,7 @@ class OAuth2NetworkManager @Inject constructor(
             return
         }
 
-        mainScope.launch {
+        appScope.launch {
             tokenMutex.lock()
 
             val expiresIn = sp.getString(context.getString(R.string.expires_in), "")

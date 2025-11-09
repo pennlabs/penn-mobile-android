@@ -176,7 +176,6 @@ class HomeFragment : Fragment() {
                     withContext(Dispatchers.Main) {
                         binding.homeCellsRv.adapter = HomeAdapter(
                             requireActivity() as MainActivity,
-                            lifecycleScope,
                             homepageViewModel,
                             mNetworkManager
                         )

@@ -32,14 +32,14 @@ object RepoModule {
     fun providesDiningRepo(
         sharedPreferences: SharedPreferences,
         @ApplicationContext applicationContext: Context,
-        @MainScope mainScope: CoroutineScope,
+        @AppScope appScope: CoroutineScope,
         studentLife: StudentLife,
         oAuth2NetworkManager: OAuth2NetworkManager
     ): DiningRepo =
         DiningRepoImpl(
             sharedPreferences,
             applicationContext,
-            mainScope,
+            appScope,
             studentLife,
             oAuth2NetworkManager
         )

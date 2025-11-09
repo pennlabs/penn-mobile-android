@@ -6,7 +6,7 @@ import android.util.Log
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
-import com.pennapps.labs.pennmobile.di.MainScope
+import com.pennapps.labs.pennmobile.di.AppScope
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 import com.pennapps.labs.pennmobile.dining.classes.DiningRequest
 import com.pennapps.labs.pennmobile.dining.fragments.DiningFragment.Companion.createHall
@@ -25,7 +25,7 @@ import javax.inject.Inject
 class DiningRepoImpl @Inject constructor(
     private val sharedPreferences: SharedPreferences,
     @ApplicationContext private val applicationContext: Context,
-    @MainScope private val mainScope: CoroutineScope,
+    @AppScope private val appScope: CoroutineScope,
     private val studentLife: StudentLife,
     private val oAuth2NetworkManager: OAuth2NetworkManager
 ) : DiningRepo {
@@ -74,7 +74,7 @@ class DiningRepoImpl @Inject constructor(
                     " "
                 )
 
-            mainScope.launch(Dispatchers.IO) {
+            appScope.launch(Dispatchers.IO) {
                 val response = studentLife.sendDiningPref(
                     bearerToken = bearerToken,
                     body = DiningRequest(favouriteDiningHalls)

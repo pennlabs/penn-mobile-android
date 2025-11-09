@@ -106,7 +106,6 @@ dependencies {
     implementation libs.bundles.material
     implementation libs.bundles.firebase
     implementation libs.bundles.runtime
-    implementation libs.bundles.room
     implementation libs.bundles.retrofit2
     implementation libs.bundles.ui
     implementation libs.bundles.google
