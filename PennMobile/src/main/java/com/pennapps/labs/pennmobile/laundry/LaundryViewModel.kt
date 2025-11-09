@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.laundry
 
-import StudentLife
+import com.pennapps.labs.pennmobile.api.StudentLife
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

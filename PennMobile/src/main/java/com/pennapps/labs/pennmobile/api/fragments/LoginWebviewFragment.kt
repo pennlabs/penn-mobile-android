@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.api.fragments
 
-import StudentLife
+import com.pennapps.labs.pennmobile.api.StudentLife
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle

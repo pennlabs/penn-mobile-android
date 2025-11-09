@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.fitness
 
-import StudentLife
+import com.pennapps.labs.pennmobile.api.StudentLife
 import android.util.Log
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity

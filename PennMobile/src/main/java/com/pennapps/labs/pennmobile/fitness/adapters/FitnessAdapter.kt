@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.fitness.adapters
 
-import StudentLife
+import com.pennapps.labs.pennmobile.api.StudentLife
 import android.app.Activity
 import android.content.Context
 import android.graphics.Color

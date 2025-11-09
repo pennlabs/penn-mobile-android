@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.api
 
-import StudentLife
+import com.pennapps.labs.pennmobile.api.StudentLife
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater

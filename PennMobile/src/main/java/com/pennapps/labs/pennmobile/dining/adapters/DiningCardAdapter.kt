@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile.dining.adapters
 
-import StudentLife
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.databinding.DiningListItemBinding
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 import com.pennapps.labs.pennmobile.dining.fragments.MenuFragment
@@ -23,16 +23,19 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 
 class DiningCardAdapter(
+    val mActivity: MainActivity,
     halls: ArrayList<DiningHall>,
 ) : RecyclerView.Adapter<DiningCardAdapter.ViewHolder>() {
     private var favoriteHalls: ArrayList<DiningHall> = halls
+
+    private lateinit var itemFavouriteIcon: ImageView
     private lateinit var itemImage: ImageView
     private lateinit var itemName: TextView
     private lateinit var itemStatus: TextView
     private lateinit var itemHours: TextView
 
     private lateinit var mContext: Context
-    private lateinit var mActivity: MainActivity
+//    private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
 
     override fun onCreateViewHolder(
@@ -40,7 +43,7 @@ class DiningCardAdapter(
         viewType: Int,
     ): ViewHolder {
         mContext = parent.context
-        mActivity = mContext as MainActivity
+//        mActivity = mContext as MainActivity
         mStudentLife = MainActivity.studentLifeInstance
         val itemBinding = DiningListItemBinding.inflate(LayoutInflater.from(mContext), parent, false)
         itemBinding.diningProgress.visibility = GONE
@@ -132,6 +135,7 @@ class DiningCardAdapter(
         init {
             itemImage = itemBinding.itemDiningImage
             itemName = itemBinding.itemDiningName
+            itemFavouriteIcon = itemBinding.itemToggleFavouriteBtn
             itemStatus = itemBinding.itemDiningStatus
             itemHours = itemBinding.itemDiningHours
         }

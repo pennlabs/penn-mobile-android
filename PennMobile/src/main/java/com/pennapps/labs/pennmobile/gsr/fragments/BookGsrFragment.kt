@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.gsr.fragments
 
-import StudentLife
+import com.pennapps.labs.pennmobile.api.StudentLife
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff

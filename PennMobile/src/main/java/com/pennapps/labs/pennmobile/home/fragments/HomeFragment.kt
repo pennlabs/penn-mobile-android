@@ -24,15 +24,21 @@ import com.pennapps.labs.pennmobile.home.HomepageViewModel
 import com.pennapps.labs.pennmobile.home.adapters.HomeAdapter
 import com.pennapps.labs.pennmobile.isOnline
 import com.pennapps.labs.pennmobile.utils.Utils
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
     private lateinit var mActivity: MainActivity
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var toolbar: Toolbar
+
+    @Inject
+    lateinit var mNetworkManager: OAuth2NetworkManager
 
     private var _binding: FragmentHomeBinding? = null
     val binding get() = _binding!!
@@ -152,8 +158,9 @@ class HomeFragment : Fragment() {
         val studentLife = MainActivity.studentLifeInstance
         mActivity.mNetworkManager.getAccessToken {
             val sp = sharedPreferences
-            val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
-            val bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
+            val deviceID = mNetworkManager.getDeviceId()
+            val bearerToken =
+                "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
 
             val isLoggedIn = !sp.getBoolean(mActivity.getString(R.string.guest_mode), false)
 
@@ -167,7 +174,12 @@ class HomeFragment : Fragment() {
                         deviceID,
                     )
                     withContext(Dispatchers.Main) {
-                        binding.homeCellsRv.adapter = HomeAdapter(homepageViewModel)
+                        binding.homeCellsRv.adapter = HomeAdapter(
+                            requireActivity() as MainActivity,
+                            lifecycleScope,
+                            homepageViewModel,
+                            mNetworkManager
+                        )
                         binding.homeCellsRv.visibility = View.INVISIBLE
                         binding.internetConnectionHome.visibility = View.GONE
                         binding.homeRefreshLayout.isRefreshing = false
@@ -228,9 +240,9 @@ class HomeFragment : Fragment() {
             binding.dateView.text = Utils.getCurrentSystemTime()
         }
         (
-            binding.appbarHome.layoutParams
-                as CoordinatorLayout.LayoutParams
-        ).behavior = ToolbarBehavior()
+                binding.appbarHome.layoutParams
+                        as CoordinatorLayout.LayoutParams
+                ).behavior = ToolbarBehavior()
         binding.profile.setOnClickListener {
             // TODO: Account Settings
         }

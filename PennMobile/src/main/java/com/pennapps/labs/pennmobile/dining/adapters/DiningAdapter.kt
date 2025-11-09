@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.dining.adapters
 
-import StudentLife
+import com.pennapps.labs.pennmobile.api.StudentLife
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -66,6 +66,7 @@ class DiningAdapter(
                 .centerCrop()
                 .into(holder.hallImage)
 
+            //TODO: ADd this
             if (diningHall.isOpen) {
                 holder.hallStatus.background = ContextCompat.getDrawable(context, R.drawable.label_green)
                 if (diningHall.openMeal() != "all" && diningHall.openMeal() != null) {

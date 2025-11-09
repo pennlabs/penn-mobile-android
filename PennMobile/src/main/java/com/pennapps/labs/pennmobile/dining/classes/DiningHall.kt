@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile.dining.classes
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import com.pennapps.labs.pennmobile.R
 import org.joda.time.DateTime
 import org.joda.time.Interval
 
@@ -155,6 +156,45 @@ open class DiningHall : Parcelable {
     }
 
     /**
+     * Returns the current status of the dining hall as a string resource.
+     * If the dining hall is open, returns the meal that it is open for.
+     * If it is closed, returns Closed
+     */
+    fun getCurrentDiningHallStatus(): Int =
+        if (isOpen) getOpenStatusLabel()
+        else R.string.dining_hall_closed
+
+    /**
+     * Returns the current status of the dining hall as a string resource.
+     * If the dining hall is open, returns the meal that it is open for.
+     * If it is closed, returns Closed
+     */
+    fun getDiningHours(): Int =
+        if (isOpen) getOpenStatusLabel()
+        else R.string.dining_hall_closed
+
+
+    /**
+     * Returns the open hours of the dining hall for that particular day.
+     * If the dining hall is closed, show 'Closed today'
+     * If the dining hall was, is or will reopen later in the day, show the open hours for that day.
+     */
+    fun getCurrentDiningOpenHours(): String {
+        val openTimes = openTimes()
+
+        return if (isOpen)
+            openTimes.lowercase()
+        else {
+            if (openTimes.isEmpty()) {
+                "Closed today"
+            } else {
+                openTimes.lowercase()
+            }
+        }
+    }
+
+
+    /**
      * Created by Adel on 12/18/14.
      * Class for a single menu, ie. Lunch, Dinner
      */
@@ -221,3 +261,14 @@ open class DiningHall : Parcelable {
         override fun newArray(size: Int): Array<DiningHall?> = arrayOfNulls(size)
     }
 }
+
+
+fun DiningHall.getOpenStatusLabel(): Int =
+    when (openMeal()) {
+        "Breakfast" -> R.string.dining_hall_breakfast
+        "Brunch" -> R.string.dining_hall_brunch
+        "Lunch" -> R.string.dining_hall_lunch
+        "Dinner" -> R.string.dining_hall_dinner
+        "Late Night" -> R.string.dining_hall_late_night
+        else -> R.string.dining_hall_open
+    }

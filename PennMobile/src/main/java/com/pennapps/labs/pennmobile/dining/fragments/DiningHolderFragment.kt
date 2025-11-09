@@ -13,7 +13,9 @@ import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentDiningHolderBinding
 import com.pennapps.labs.pennmobile.dining.adapters.DiningPagerAdapter
 import com.pennapps.labs.pennmobile.utils.Utils
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DiningHolderFragment : Fragment() {
     lateinit var pagerAdapter: DiningPagerAdapter
     private lateinit var mActivity: MainActivity

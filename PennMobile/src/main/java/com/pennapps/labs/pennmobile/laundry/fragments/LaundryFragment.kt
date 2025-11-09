@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.laundry.fragments
 
-import StudentLife
+import com.pennapps.labs.pennmobile.api.StudentLife
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle

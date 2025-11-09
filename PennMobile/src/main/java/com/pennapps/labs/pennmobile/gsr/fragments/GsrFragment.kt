@@ -1,6 +1,6 @@
 package com.pennapps.labs.pennmobile.gsr.fragments
 
-import StudentLife
+import com.pennapps.labs.pennmobile.api.StudentLife
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context

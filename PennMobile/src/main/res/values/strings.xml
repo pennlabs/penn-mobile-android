@@ -73,6 +73,13 @@
     <string name="extra_dining_swipes_message">Based on your past behavior, we project you\'ll end the semester with swipes to spare.</string>
     <string name="dining_graph_point">Date Filler Text \n Swipes Filler Text</string>
 
+    <!-- Sort Options -->
+    <string-array name="dining_sort_options">
+        <item>Newest</item>
+        <item>Oldest</item>
+        <item>Most Popular</item>
+    </string-array>
+
     <!-- LaundryRoom -->
     <string name="laundry_washer">Washers</string>
     <string name="laundry_dryer">Dryers</string>
@@ -243,4 +250,6 @@
     <string name="login_background">Login Background</string>
     <string name="penn_mobile_icon">Penn Mobile Icon</string>
     <string name="cancel">Cancel</string>
+    <string name="all_dining_halls">All Dining Halls</string>
+    <string name="favorites">Favorites</string>
 </resources>
