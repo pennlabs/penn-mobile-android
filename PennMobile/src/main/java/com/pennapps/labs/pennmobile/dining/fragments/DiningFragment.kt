@@ -47,7 +47,6 @@ import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.compose.presentation.theme.AppColors
 import com.pennapps.labs.pennmobile.compose.presentation.theme.AppTheme
 import com.pennapps.labs.pennmobile.compose.presentation.theme.GilroyFontFamily
-import com.pennapps.labs.pennmobile.databinding.FragmentDiningBinding
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 import com.pennapps.labs.pennmobile.dining.classes.DiningHallSortOrder
 import com.pennapps.labs.pennmobile.dining.classes.Venue
@@ -60,18 +59,11 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
-/**
- * TODO: Andrew Project
- * Create sort functionality in dining halls: Sort by Favorites
- *
- */
 @AndroidEntryPoint
 class DiningFragment : Fragment() {
     private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
 
-    private var _binding: FragmentDiningBinding? = null
-    val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
