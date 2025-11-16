@@ -217,7 +217,7 @@ class MainActivity : AppCompatActivity() {
         binding.include.mainViewPager.visibility = View.VISIBLE
         binding.include.expandableBottomBar.visibility = View.VISIBLE
 
-        setTab(DINING_ID)
+        setTab(HOME_ID)
     }
 
     fun startLoginFragment() {

@@ -95,7 +95,6 @@ dependencies {
     implementation libs.joda.time
     implementation libs.commons.lang3
     implementation libs.kotlinx.coroutines.core
-//    implementation libs.kotlinx.coroutines.rxConverter
     implementation libs.jsoup
     implementation platform(libs.androidx.compose.bom)
     testImplementation platform(libs.androidx.compose.bom)
