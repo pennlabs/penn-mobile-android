@@ -48,7 +48,7 @@ class HomeFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mActivity = activity as MainActivity
+        mActivity = requireActivity() as MainActivity
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity)
     }
 
@@ -175,11 +175,14 @@ class HomeFragment : Fragment() {
                     )
                     withContext(Dispatchers.Main) {
                         binding.homeCellsRv.adapter = HomeAdapter(
-                            requireActivity() as MainActivity,
+                            mActivity,
                             homepageViewModel,
                             mNetworkManager
                         )
-                        binding.homeCellsRv.visibility = View.INVISIBLE
+
+                        binding.homeCellsRv.visibility = View.VISIBLE
+                        binding.loadingPanel.root.visibility = View.GONE
+
                         binding.internetConnectionHome.visibility = View.GONE
                         binding.homeRefreshLayout.isRefreshing = false
                     }

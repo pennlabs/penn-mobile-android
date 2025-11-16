@@ -5,11 +5,14 @@ import android.util.Log
 import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pennapps.labs.pennmobile.compose.utils.Result
+import com.pennapps.labs.pennmobile.compose.utils.SnackBarEvent
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 import com.pennapps.labs.pennmobile.dining.classes.DiningHallSortOrder
 import com.pennapps.labs.pennmobile.dining.classes.DiningHallUtils
 import com.pennapps.labs.pennmobile.dining.repo.DiningRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -33,6 +36,10 @@ class DiningViewModel @Inject constructor(
     private val _allDiningHalls = MutableStateFlow<List<DiningHall>>(emptyList())
     val allDiningHalls: StateFlow<List<DiningHall>> = _allDiningHalls
 
+    private val _snackBarEvent = MutableStateFlow<SnackBarEvent>(SnackBarEvent.None)
+    val snackBarEvent: StateFlow<SnackBarEvent> = _snackBarEvent
+
+
     private val _favouriteDiningHalls = diningRepo.favouriteDiningHalls.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(),
@@ -40,8 +47,9 @@ class DiningViewModel @Inject constructor(
     )
 
     val favouriteDiningHalls = _favouriteDiningHalls
-        .map { favouriteIDs -> allDiningHalls.value.filter { diningHall -> favouriteIDs.contains(diningHall.id)  }
-    }
+        .map { favouriteIDs ->
+            allDiningHalls.value.filter { diningHall -> favouriteIDs.contains(diningHall.id) }
+        }
 
     init {
         fetchSortOrder()
@@ -63,9 +71,16 @@ class DiningViewModel @Inject constructor(
             _isRefreshing.value = true
             fetchSortOrder()
 
+
+            Log.d("DiningViewModel", "Refreshing data: ${isRefreshing.value}")
             diningRepo.fetchAllDiningHalls()
             diningRepo.fetchFavouriteDiningHalls()
+
+            // Simulate a delay for the refresh operation. This delay has to be there otherwise, our refresh call won't work
+            // TODO: Remove this delay by making the fetch operations suspend
+            delay(1000)
             _isRefreshing.value = false
+            Log.d("DiningViewModel", "DoneRefreshing data: ${isRefreshing.value}")
         }
     }
 
@@ -94,11 +109,29 @@ class DiningViewModel @Inject constructor(
     fun isFavourite(diningHall: DiningHall) = _favouriteDiningHalls.value.contains(diningHall.id)
 
     fun toggleFavourite(diningHall: DiningHall) = viewModelScope.launch {
-        if (isFavourite(diningHall)) {
+        val isFavourite = isFavourite(diningHall)
+
+        val networkResult = if (isFavourite) {
             diningRepo.removeFromFavouriteDiningHalls(diningHall.id)
         } else {
             diningRepo.addToFavouriteDiningHalls(diningHall.id)
         }
+
+        Log.d("DiningViewModel", "Toggling favourite: networkResult is $networkResult")
+
+        if (networkResult.isSuccessful) {
+            _snackBarEvent.value = SnackBarEvent.Success(
+                message =
+                    if (isFavourite) "${diningHall.name} removed from favourites"
+                    else "${diningHall.name} added to favourites"
+            )
+        } else if (networkResult is Result.Error) {
+            _snackBarEvent.value = SnackBarEvent.Error(networkResult.message)
+        }
+    }
+
+    fun resetSnackBarEvent() {
+        _snackBarEvent.value = SnackBarEvent.None
     }
 
 

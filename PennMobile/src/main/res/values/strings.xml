@@ -55,6 +55,11 @@
     <string name="dining_dollars">Dining Dollars</string>
     <string name="dining_swipes">Swipes</string>
     <string name="dining_guest_swipes">Guest Swipes</string>
+
+    <string name="all_dining_halls">All Dining Halls</string>
+    <string name="favorites">Favorites</string>
+    <string name="log_in">Log In</string>
+
     <string name="money">$</string>
     <string name="average_dining_dollars_spent">Average Dining Dollars Spent</string>
     <string name="past_week">this past week</string>
@@ -250,6 +255,5 @@
     <string name="login_background">Login Background</string>
     <string name="penn_mobile_icon">Penn Mobile Icon</string>
     <string name="cancel">Cancel</string>
-    <string name="all_dining_halls">All Dining Halls</string>
-    <string name="favorites">Favorites</string>
+
 </resources>

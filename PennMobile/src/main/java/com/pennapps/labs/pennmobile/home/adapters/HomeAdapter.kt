@@ -110,58 +110,58 @@ class HomeAdapter(
         parent: ViewGroup,
         viewType: Int,
     ): RecyclerView.ViewHolder {
-        mContext = parent.context
+        mContext = mActivity
         mStudentLife = MainActivity.studentLifeInstance
 
         return when (viewType) {
             DINING -> {
-                val itemBinding = HomeBaseCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
+                val itemBinding = HomeBaseCardBinding.inflate(LayoutInflater.from(mActivity), parent, false)
                 return HomeDiningHolder(itemBinding)
             }
 
             CALENDAR -> {
-                val itemBinding = HomeBaseCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
+                val itemBinding = HomeBaseCardBinding.inflate(LayoutInflater.from(mActivity), parent, false)
                 return HomeCalendarHolder(itemBinding)
             }
 
             LAUNDRY -> {
-                val itemBinding = HomeBaseCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
+                val itemBinding = HomeBaseCardBinding.inflate(LayoutInflater.from(mActivity), parent, false)
                 return HomeLaundryHolder(itemBinding)
             }
 
             NEWS -> {
-                val itemBinding = HomeNewsCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
+                val itemBinding = HomeNewsCardBinding.inflate(LayoutInflater.from(mActivity), parent, false)
                 return HomeNewsCardHolder(itemBinding)
             }
 
             POST -> {
-                val itemBinding = HomePostCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
+                val itemBinding = HomePostCardBinding.inflate(LayoutInflater.from(mActivity), parent, false)
                 return HomePostHolder(itemBinding)
             }
 
             FEATURE -> {
-                val itemBinding = HomePostCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
+                val itemBinding = HomePostCardBinding.inflate(LayoutInflater.from(mActivity), parent, false)
                 return HomePostHolder(itemBinding)
             }
 
             POLL -> {
-                val itemBinding = PollCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
+                val itemBinding = PollCardBinding.inflate(LayoutInflater.from(mActivity), parent, false)
                 return HomePollHolder(itemBinding)
             }
 
             GSR_BOOKING -> {
-                val itemBinding = HomeGsrCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
+                val itemBinding = HomeGsrCardBinding.inflate(LayoutInflater.from(mActivity), parent, false)
                 return HomeGSRHolder(itemBinding)
             }
 
             NOT_SUPPORTED -> {
                 ViewHolder(
-                    LayoutInflater.from(mContext).inflate(R.layout.empty_view, parent, false),
+                    LayoutInflater.from(mActivity).inflate(R.layout.empty_view, parent, false),
                 )
             }
 
             else -> {
-                val itemBinding = HomeBaseCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
+                val itemBinding = HomeBaseCardBinding.inflate(LayoutInflater.from(mActivity), parent, false)
                 return HomeBaseHolder(itemBinding)
             }
         }

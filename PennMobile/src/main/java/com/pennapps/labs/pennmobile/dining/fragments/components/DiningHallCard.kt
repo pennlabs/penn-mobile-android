@@ -6,10 +6,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -57,10 +59,10 @@ fun DiningHallCard(
     openDiningHallMenu: (DiningHall) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val cardHeight = 120.dp
+    val cardHeight = 130.dp
 
     Card(
-        modifier = modifier.height(cardHeight),
+        modifier = modifier.heightIn(cardHeight),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
             contentColor = MaterialTheme.colorScheme.onSurface
@@ -71,28 +73,30 @@ fun DiningHallCard(
     ) {
         Row(
             Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
+                .fillMaxWidth(),
         ) {
             Image(
                 painter = painterResource(diningHall.image),
                 contentDescription = null,
                 modifier = Modifier
                     .width(150.dp)
-                    .fillMaxHeight()
+                    .aspectRatio(4/3f)
+                    .requiredHeightIn(min = cardHeight)
                     .clip(RoundedCornerShape(6.dp)),
                 contentScale = ContentScale.Crop
             )
 
             Column(
                 modifier = Modifier
-                    .padding(top = 10.dp)
+                    .padding(top = 10.dp, bottom = 12.dp)
                     .padding(horizontal = 10.dp)
                     .weight(1f)
             ) {
                 Text(
                     text = diningHall.name ?: "",
                     fontFamily = sfProFontFamily,
+                    fontSize = 15.sp,
+                    lineHeight = 17.sp,
                     fontWeight = FontWeight.Medium
                 )
 

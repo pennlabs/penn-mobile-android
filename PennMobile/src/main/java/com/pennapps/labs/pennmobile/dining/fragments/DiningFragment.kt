@@ -11,7 +11,9 @@ import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,12 +21,18 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,10 +52,14 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.api.StudentLife
+import com.pennapps.labs.pennmobile.compose.presentation.components.AppSnackBar
 import com.pennapps.labs.pennmobile.compose.presentation.theme.AppColors
+import com.pennapps.labs.pennmobile.compose.presentation.theme.AppColors.LabelGreen
+import com.pennapps.labs.pennmobile.compose.presentation.theme.AppColors.LabelRed
 import com.pennapps.labs.pennmobile.compose.presentation.theme.AppTheme
 import com.pennapps.labs.pennmobile.compose.presentation.theme.GilroyFontFamily
+import com.pennapps.labs.pennmobile.compose.utils.NetworkUtils
+import com.pennapps.labs.pennmobile.compose.utils.SnackBarEvent
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 import com.pennapps.labs.pennmobile.dining.classes.DiningHallSortOrder
 import com.pennapps.labs.pennmobile.dining.classes.Venue
@@ -54,6 +67,7 @@ import com.pennapps.labs.pennmobile.dining.fragments.components.AnimatedPushDrop
 import com.pennapps.labs.pennmobile.dining.fragments.components.DiningHallCard
 import com.pennapps.labs.pennmobile.dining.fragments.components.FavouriteDiningHalls
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import rx.schedulers.Schedulers
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -62,15 +76,12 @@ import java.time.format.DateTimeFormatter
 @AndroidEntryPoint
 class DiningFragment : Fragment() {
     private lateinit var mActivity: MainActivity
-    private lateinit var mStudentLife: StudentLife
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mStudentLife = MainActivity.studentLifeInstance
         mActivity = activity as MainActivity
         mActivity.closeKeyboard()
-        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
@@ -91,93 +102,178 @@ class DiningFragment : Fragment() {
     @Composable
     fun DiningHallListScreen(viewModel: DiningViewModel = hiltViewModel()) {
 
-        val isRefreshing by viewModel.isRefreshing.collectAsState()
+
+        val pullToRefreshState = rememberPullToRefreshState()
+        val isDataRefreshing by viewModel.isRefreshing.collectAsState()
         val allDiningHalls by viewModel.allDiningHalls.collectAsState()
         val favouriteDiningHalls by viewModel.favouriteDiningHalls.collectAsState(listOf())
 
         var isSortMenuExpanded by remember { mutableStateOf(false) }
         val currentSortOption by viewModel.sortOrder.collectAsState()
 
-        val pullToRefreshState = rememberPullToRefreshState()
+        val snackBarHostState = remember { SnackbarHostState() }
+        val snackBarEvent by viewModel.snackBarEvent.collectAsState()
 
-        PullToRefreshBox(
-            isRefreshing = isRefreshing,
-            onRefresh = {
-                viewModel.refreshData()
-            },
-            indicator = {
-                Indicator(
-                    modifier = Modifier.align(Alignment.TopCenter),
-                    isRefreshing = isRefreshing,
-                    state = pullToRefreshState,
-                    containerColor = MaterialTheme.colorScheme.background,
-                    color = AppColors.SelectedTabBlue
+        val snackBarContainerColor by remember(snackBarEvent) {
+            derivedStateOf {
+                when (snackBarEvent) {
+                    is SnackBarEvent.Success -> LabelGreen
+                    is SnackBarEvent.Error -> LabelRed
+                    is SnackBarEvent.None -> Color.Transparent
+                }
+            }
+        }
+
+        Scaffold(
+            snackbarHost = {
+                SnackbarHost(
+                    hostState = snackBarHostState,
+                    modifier = Modifier
+                        .padding(bottom = 42.dp)
+                        .fillMaxWidth()
                 )
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            LazyColumn(
+                { snackbarData ->
+                    AppSnackBar(
+                        snackBarContainerColor = snackBarContainerColor,
+                        snackBarContentColor = Color.White,
+                        message = snackbarData.visuals.message,
+                        snackBarActionLabel = snackbarData.visuals.actionLabel,
+                        performSnackBarAction = { snackbarData.performAction() },
+                        dismiss = { snackbarData.dismiss() }
+                    )
+
+                }
+            }
+        ) { paddingValues ->
+
+            val snackBarActionLabel = stringResource(R.string.log_in)
+
+            LaunchedEffect(snackBarEvent) {
+                /**
+                 * Message only has a value if the event is a Success or Error.
+                 * In None, the message is null
+                 */
+                val message = snackBarEvent.message ?: return@LaunchedEffect
+                Log.d("DiningFragment", "Snackbar message: $message")
+
+                val shouldLogIn =
+                    snackBarEvent is SnackBarEvent.Error && snackBarEvent.message == NetworkUtils.LOG_IN_TO_FAVOURITES
+
+                val result = snackBarHostState.showSnackbar(
+                    message = message,
+                    actionLabel = if (shouldLogIn) snackBarActionLabel else null
+                )
+
+                if (result == SnackbarResult.ActionPerformed) {
+                    mActivity.startLoginFragment()
+                    viewModel.resetSnackBarEvent()
+                } else if (result == SnackbarResult.Dismissed) {
+                    viewModel.resetSnackBarEvent()
+                }
+            }
+
+            LaunchedEffect(isDataRefreshing) {
+                Log.d("DiningFragment", "PullToRefreshState: isDataRefreshing is $isDataRefreshing")
+                if (isDataRefreshing) {
+                    // When the ViewModel starts refreshing, tell the UI to animate
+                    // the indicator into view.
+                    pullToRefreshState.animateToThreshold()
+                } else {
+                    // When the ViewModel stops refreshing, tell the UI to hide
+                    // the indicator.
+                    pullToRefreshState.animateToHidden()
+                }
+                Log.d("DiningFragment", "End ofPullToRefreshState: isDataRefreshing is $isDataRefreshing")
+            }
+
+
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(horizontal = 6.dp)
-                    .padding(top = 12.dp, bottom = 60.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                    .fillMaxSize()
+                    .padding(paddingValues)
             ) {
-
-                item {
-                    FavouriteDiningHalls(
-                        diningHalls = favouriteDiningHalls,
-                        toggleFavourite = { viewModel.toggleFavourite(it) },
-                        openDiningHallMenu = { hall -> navigateToMenuFragment(hall) },
+                PullToRefreshBox(
+                    isRefreshing = isDataRefreshing,
+                    state = pullToRefreshState,
+                    onRefresh = {
+                        viewModel.refreshData()
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    indicator = {
+                        Indicator(
+                            modifier = Modifier.align(Alignment.TopCenter),
+                            isRefreshing = isDataRefreshing,
+                            state = pullToRefreshState,
+                            containerColor = MaterialTheme.colorScheme.background,
+                            color = AppColors.SelectedTabBlue
+                        )
+                    }
+                ) {
+                    LazyColumn(
                         modifier = Modifier
-                            .padding(top = 6.dp)
-                            .clip(RoundedCornerShape(4.dp))
+                            .fillMaxWidth()
+                            .fillMaxHeight()
                             .background(MaterialTheme.colorScheme.background)
-                            .animateContentSize(
-                                spring(
-                                    stiffness = Spring.StiffnessLow,
-                                    visibilityThreshold = IntSize.VisibilityThreshold,
-                                )
+                            .padding(horizontal = 6.dp)
+                            .padding(bottom = 42.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+
+                        item {
+                            FavouriteDiningHalls(
+                                diningHalls = favouriteDiningHalls,
+                                toggleFavourite = { viewModel.toggleFavourite(it) },
+                                openDiningHallMenu = { hall -> navigateToMenuFragment(hall) },
+                                modifier = Modifier
+                                    .padding(top = 6.dp)
+                                    .clip(RoundedCornerShape(4.dp))
+                                    .background(MaterialTheme.colorScheme.background)
+                                    .animateContentSize(
+                                        spring(
+                                            stiffness = Spring.StiffnessLow,
+                                            visibilityThreshold = IntSize.VisibilityThreshold,
+                                        )
+                                    )
                             )
-                    )
-                }
-
-                item {
-                    Text(
-                        stringResource(R.string.all_dining_halls),
-                        fontFamily = GilroyFontFamily,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontSize = 21.sp,
-                        modifier = Modifier.padding(top = 20.dp)
-                    )
-
-                    AnimatedPushDropdown(
-                        modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
-                        sortMenuExpanded = isSortMenuExpanded,
-                        toggleExpandedMode = { isSortMenuExpanded = !isSortMenuExpanded },
-                        currentSortOption = currentSortOption,
-                        sortOptions = DiningHallSortOrder.entries,
-                        changeSortOption = { option ->
-                            viewModel.setSortByMethod(option)
-                            isSortMenuExpanded = false
                         }
-                    )
-                }
 
-                items(allDiningHalls) { diningHall ->
-                    DiningHallCard(
-                        diningHall = diningHall,
-                        isFavourite = favouriteDiningHalls.contains(diningHall),
-                        toggleFavourite = { viewModel.toggleFavourite(diningHall) },
-                        openDiningHallMenu = { hall -> navigateToMenuFragment(hall) }
-                    )
+                        item {
+                            Text(
+                                stringResource(R.string.all_dining_halls),
+                                fontFamily = GilroyFontFamily,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontSize = 21.sp,
+                                modifier = Modifier.padding(top = 20.dp)
+                            )
+
+                            AnimatedPushDropdown(
+                                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
+                                sortMenuExpanded = isSortMenuExpanded,
+                                toggleExpandedMode = { isSortMenuExpanded = !isSortMenuExpanded },
+                                currentSortOption = currentSortOption,
+                                sortOptions = DiningHallSortOrder.entries,
+                                changeSortOption = { option ->
+                                    viewModel.setSortByMethod(option)
+                                    isSortMenuExpanded = false
+                                }
+                            )
+                        }
+
+                        items(allDiningHalls) { diningHall ->
+                            DiningHallCard(
+                                diningHall = diningHall,
+                                isFavourite = favouriteDiningHalls.contains(diningHall),
+                                toggleFavourite = { viewModel.toggleFavourite(diningHall) },
+                                openDiningHallMenu = { hall -> navigateToMenuFragment(hall) }
+                            )
+                        }
+                    }
                 }
             }
         }
     }
+
 
     private fun navigateToMenuFragment(diningHall: DiningHall) {
         val fragment = MenuFragment()
@@ -201,26 +297,6 @@ class DiningFragment : Fragment() {
         mActivity.setTitle(R.string.dining)
         mActivity.setSelectedTab(MainActivity.DINING)
     }
-
-//    /**
-//     * Shows SnackBar message right below the app bar
-//     */
-//    @SuppressLint("RestrictedApi")
-//    private fun displaySnack(text: String) {
-//        val snackBar = Snackbar.make(binding.snackBarDining, text, Snackbar.LENGTH_SHORT)
-//        snackBar.setTextColor(resources.getColor(R.color.white, context?.theme))
-//        snackBar.setBackgroundTint(resources.getColor(R.color.penn_mobile_grey, context?.theme))
-//        // SnackBar message and action TextViews are placed inside a LinearLayout
-//        val snackBarLayout = snackBar.view as Snackbar.SnackbarLayout
-//        for (i in 0 until snackBarLayout.childCount) {
-//            val parent = snackBarLayout.getChildAt(i)
-//            if (parent is LinearLayout) {
-//                parent.rotation = 180F
-//                break
-//            }
-//        }
-//        snackBar.show()
-//    }
 
     companion object {
         // Gets the dining hall menus
