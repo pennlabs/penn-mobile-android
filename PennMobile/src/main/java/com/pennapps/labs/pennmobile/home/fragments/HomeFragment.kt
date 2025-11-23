@@ -174,11 +174,12 @@ class HomeFragment : Fragment() {
                         deviceID,
                     )
                     withContext(Dispatchers.Main) {
-                        binding.homeCellsRv.adapter = HomeAdapter(
-                            mActivity,
-                            homepageViewModel,
-                            mNetworkManager
-                        )
+                        binding.homeCellsRv.adapter =
+                            HomeAdapter(
+                                mActivity,
+                                homepageViewModel,
+                                mNetworkManager,
+                            )
 
                         binding.homeCellsRv.visibility = View.VISIBLE
                         binding.loadingPanel.root.visibility = View.GONE
@@ -242,9 +243,9 @@ class HomeFragment : Fragment() {
             binding.dateView.text = Utils.getCurrentSystemTime()
         }
         (
-                binding.appbarHome.layoutParams
-                        as CoordinatorLayout.LayoutParams
-                ).behavior = ToolbarBehavior()
+            binding.appbarHome.layoutParams
+                as CoordinatorLayout.LayoutParams
+        ).behavior = ToolbarBehavior()
         binding.profile.setOnClickListener {
             // TODO: Account Settings
         }

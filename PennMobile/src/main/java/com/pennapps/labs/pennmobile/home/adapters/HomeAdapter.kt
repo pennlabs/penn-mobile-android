@@ -79,7 +79,7 @@ import rx.schedulers.Schedulers
 class HomeAdapter(
     private val mActivity: MainActivity,
     private val dataModel: HomepageDataModel,
-    private val mNetworkManager: OAuth2NetworkManager
+    private val mNetworkManager: OAuth2NetworkManager,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var mContext: Context
     private lateinit var mStudentLife: StudentLife

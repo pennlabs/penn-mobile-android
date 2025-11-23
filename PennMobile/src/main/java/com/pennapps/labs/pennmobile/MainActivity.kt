@@ -85,7 +85,6 @@ class MainActivity : AppCompatActivity() {
     val tokenMutex = Mutex()
     private lateinit var mFirebaseAnalytics: FirebaseAnalytics
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         if (Build.VERSION.SDK_INT > 28) {
             setTheme(R.style.DarkModeApi29)
