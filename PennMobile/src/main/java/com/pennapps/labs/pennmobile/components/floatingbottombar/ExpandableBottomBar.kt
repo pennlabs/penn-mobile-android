@@ -210,6 +210,7 @@ class ExpandableBottomBar
                             menuItemVerticalMargin,
                         )
                     }
+
                     lastItemId -> {
                         viewController.attachTo(
                             this,
@@ -221,6 +222,7 @@ class ExpandableBottomBar
                             menuItemVerticalMargin,
                         )
                     }
+
                     else -> {
                         viewController.attachTo(
                             this,

@@ -7,13 +7,13 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 object DiningHallUtils {
-
-    private val RESIDENTIAL_HALLS = listOf(
-        "Hill House",
-        "Lauder College House",
-        "English House",
-        "McClelland Express"
-    )
+    private val RESIDENTIAL_HALLS =
+        listOf(
+            "Hill House",
+            "Lauder College House",
+            "English House",
+            "McClelland Express",
+        )
 
     /**
      * Adds menus to the dining halls.
@@ -52,7 +52,6 @@ object DiningHallUtils {
         }
     }
 
-
     /**
      * A sort comparator for dining halls based on the selected sort order.
      * We use this in diningHalls.sortedWith{ } to give us our desired sorted list of dining
@@ -65,9 +64,9 @@ object DiningHallUtils {
     fun compareDiningHallsForSort(
         sortOrder: DiningHallSortOrder,
         diningHall1: DiningHall,
-        diningHall2: DiningHall
-    ): Int {
-        return when (sortOrder) {
+        diningHall2: DiningHall,
+    ): Int =
+        when (sortOrder) {
             DiningHallSortOrder.Residential -> {
                 // Check if each hall's name is in your list
                 val isResidential1 = RESIDENTIAL_HALLS.contains(diningHall1.name.orEmpty())
@@ -82,7 +81,8 @@ object DiningHallUtils {
                     residentialCompare
                 } else {
                     // Otherwise (both are residential OR both are not), tie-break alphabetically.
-                    diningHall1.name.orEmpty()
+                    diningHall1.name
+                        .orEmpty()
                         .compareTo(diningHall2.name.orEmpty(), ignoreCase = true)
                 }
             }
@@ -92,17 +92,20 @@ object DiningHallUtils {
                 val openCompare = diningHall2.isOpen.compareTo(diningHall1.isOpen)
 
                 // Use name as a tie-breaker (just like your original code)
-                if (openCompare != 0) openCompare else {
-                    diningHall1.name.orEmpty()
+                if (openCompare != 0) {
+                    openCompare
+                } else {
+                    diningHall1.name
+                        .orEmpty()
                         .compareTo(diningHall2.name.orEmpty(), ignoreCase = true)
                 }
             }
 
-            DiningHallSortOrder.Name-> {
+            DiningHallSortOrder.Name -> {
                 // "alphabetic too"
-                diningHall1.name.orEmpty()
+                diningHall1.name
+                    .orEmpty()
                     .compareTo(diningHall2.name.orEmpty(), ignoreCase = true)
             }
         }
-    }
 }

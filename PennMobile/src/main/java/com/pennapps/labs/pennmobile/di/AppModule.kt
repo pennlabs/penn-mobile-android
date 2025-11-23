@@ -25,12 +25,11 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
     @Singleton
     @Provides
-    fun providesSharedPreferences(@ApplicationContext context: Context): SharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(context)
-
+    fun providesSharedPreferences(
+        @ApplicationContext context: Context,
+    ): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     /**
      * Provides a coroutine scope that is tied to the application lifecycle
@@ -39,7 +38,6 @@ object AppModule {
     @Provides
     @AppScope
     fun providesAppCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
-
 }
 
 @Qualifier

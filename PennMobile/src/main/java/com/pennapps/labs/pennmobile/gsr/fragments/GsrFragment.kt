@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile.gsr.fragments
 
-import com.pennapps.labs.pennmobile.api.StudentLife
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
@@ -23,6 +22,7 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.databinding.FragmentGsrBinding
 import com.pennapps.labs.pennmobile.gsr.adapters.GsrBuildingAdapter
 import com.pennapps.labs.pennmobile.gsr.classes.GSRContainer

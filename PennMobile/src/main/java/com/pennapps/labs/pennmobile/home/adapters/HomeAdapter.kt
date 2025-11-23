@@ -424,7 +424,8 @@ class HomeAdapter(
                 dataModel.notifyPostBlurLoaded()
             }
         }
-        /** Sets up blur view on post card */
+
+        // Sets up blur view on post card
         holder.postBlurView
             .setupWith(holder.homePostContainer, RenderScriptBlur(mContext))
             .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))
@@ -652,7 +653,7 @@ class HomeAdapter(
             }
         }
 
-        /** Logic for the more info button on the news card */
+        // Logic for the more info button on the news card
         holder.newsInfoIcon.setOnClickListener {
             when (holder.homeNewsSubtitle.visibility) {
                 View.GONE -> {
@@ -671,7 +672,7 @@ class HomeAdapter(
             }
         }
 
-        /** Sets up blur view on news card */
+        // Sets up blur view on news card
         holder.newsBlurView
             .setupWith(holder.newsCardContainer, RenderScriptBlur(mContext))
             .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))

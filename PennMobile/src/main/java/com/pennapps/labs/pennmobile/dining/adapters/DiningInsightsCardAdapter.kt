@@ -70,21 +70,26 @@ class DiningInsightsCardAdapter(
                 val itemBinding = DiningBalancesCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
                 DiningBalancesCardHolder(itemBinding)
             }
+
             DINING_DOLLARS_SPENT -> {
                 val itemBinding = DiningSpentCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
                 DiningSpentHolder(itemBinding)
             }
+
             DINING_DOLLARS_PREDICTIONS -> {
                 val itemBinding = DiningPredictionsCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
                 DiningPredictionsHolder(itemBinding)
             }
+
             DINING_SWIPES_PREDICTIONS -> {
                 val itemBinding = DiningPredictionsCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
                 DiningPredictionsHolder(itemBinding)
             }
+
             NOT_SUPPORTED -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.empty_view, parent, false))
             }
+
             else -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.empty_view, parent, false))
             }

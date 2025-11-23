@@ -35,6 +35,7 @@ class DiningCardAdapter(
     private lateinit var itemHours: TextView
 
     private lateinit var mContext: Context
+
 //    private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
 

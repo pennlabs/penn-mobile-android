@@ -57,19 +57,20 @@ fun DiningHallCard(
     isFavourite: Boolean,
     toggleFavourite: (Boolean) -> Unit,
     openDiningHallMenu: (DiningHall) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val cardHeight = 130.dp
 
     Card(
         modifier = modifier.heightIn(cardHeight),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.onSurface
-        ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+            ),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         shape = RoundedCornerShape(8.dp),
-        onClick = { openDiningHallMenu(diningHall) }
+        onClick = { openDiningHallMenu(diningHall) },
     ) {
         Row(
             Modifier
@@ -78,41 +79,46 @@ fun DiningHallCard(
             Image(
                 painter = painterResource(diningHall.image),
                 contentDescription = null,
-                modifier = Modifier
-                    .width(150.dp)
-                    .aspectRatio(4/3f)
-                    .requiredHeightIn(min = cardHeight)
-                    .clip(RoundedCornerShape(6.dp)),
-                contentScale = ContentScale.Crop
+                modifier =
+                    Modifier
+                        .width(150.dp)
+                        .aspectRatio(4 / 3f)
+                        .requiredHeightIn(min = cardHeight)
+                        .clip(RoundedCornerShape(6.dp)),
+                contentScale = ContentScale.Crop,
             )
 
             Column(
-                modifier = Modifier
-                    .padding(top = 10.dp, bottom = 12.dp)
-                    .padding(horizontal = 10.dp)
-                    .weight(1f)
+                modifier =
+                    Modifier
+                        .padding(top = 10.dp, bottom = 12.dp)
+                        .padding(horizontal = 10.dp)
+                        .weight(1f),
             ) {
                 Text(
                     text = diningHall.name ?: "",
                     fontFamily = sfProFontFamily,
                     fontSize = 15.sp,
                     lineHeight = 17.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
                 )
 
                 Text(
                     text = stringResource(diningHall.getCurrentDiningHallStatus()),
                     color = Color.White,
-                    modifier = Modifier
-                        .padding(vertical = 4.dp)
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(
-                            if (diningHall.isOpen) AppColors.LabelGreen.copy(alpha = 0.9f)
-                            else AppColors.LabelRed.copy(alpha = 0.9f)
-                        )
-                        .padding(vertical = 1.dp, horizontal = 6.dp),
+                    modifier =
+                        Modifier
+                            .padding(vertical = 4.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(
+                                if (diningHall.isOpen) {
+                                    AppColors.LabelGreen.copy(alpha = 0.9f)
+                                } else {
+                                    AppColors.LabelRed.copy(alpha = 0.9f)
+                                },
+                            ).padding(vertical = 1.dp, horizontal = 6.dp),
                     fontSize = 13.sp,
-                    fontFamily = GilroyFontFamily
+                    fontFamily = GilroyFontFamily,
                 )
 
                 Text(
@@ -121,27 +127,32 @@ fun DiningHallCard(
                     modifier = Modifier.padding(top = 4.dp),
                     fontSize = 12.sp,
                     fontFamily = GilroyFontFamily,
-                    lineHeight = 14.sp
+                    lineHeight = 14.sp,
                 )
             }
 
             Box(
-                modifier = Modifier.fillMaxHeight()
+                modifier = Modifier.fillMaxHeight(),
             ) {
                 CompositionLocalProvider(LocalRippleConfiguration provides pinkRippleConfiguration) {
                     Icon(
-                        imageVector = if (isFavourite) Icons.Filled.Favorite
-                        else Icons.Filled.FavoriteBorder,
+                        imageVector =
+                            if (isFavourite) {
+                                Icons.Filled.Favorite
+                            } else {
+                                Icons.Filled.FavoriteBorder
+                            },
                         contentDescription = null,
                         tint = if (isFavourite) BrightRed else MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier
-                            .align(Alignment.TopCenter)
-                            .size(36.dp)
-                            .clip(CircleShape)
-                            .padding(1.dp)
-                            .clickable { toggleFavourite(!isFavourite) }
-                            .padding(horizontal = 6.dp)
-                            .padding(top = 10.dp)
+                        modifier =
+                            Modifier
+                                .align(Alignment.TopCenter)
+                                .size(36.dp)
+                                .clip(CircleShape)
+                                .padding(1.dp)
+                                .clickable { toggleFavourite(!isFavourite) }
+                                .padding(horizontal = 6.dp)
+                                .padding(top = 10.dp),
                     )
                 }
             }
@@ -153,22 +164,25 @@ fun DiningHallCard(
 @Composable
 private fun PreviewDiningHallCard() {
     DiningHallCard(
-        diningHall = DiningHall(
-            id = 1,
-            name = "1920 Commons",
-            residential = true,
-            hours = hashMapOf(
-                "11 AM - 3 PM" to Interval(
-                    Instant.now().millis,
-                    Instant.now().millis + 1000
-                )
+        diningHall =
+            DiningHall(
+                id = 1,
+                name = "1920 Commons",
+                residential = true,
+                hours =
+                    hashMapOf(
+                        "11 AM - 3 PM" to
+                            Interval(
+                                Instant.now().millis,
+                                Instant.now().millis + 1000,
+                            ),
+                    ),
+                venue = Venue(),
+                image = R.drawable.dining_commons,
             ),
-            venue = Venue(),
-            image = R.drawable.dining_commons
-        ),
         isFavourite = true,
         toggleFavourite = { },
         openDiningHallMenu = {},
-        modifier = Modifier
+        modifier = Modifier,
     )
 }

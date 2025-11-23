@@ -52,21 +52,24 @@ fun AnimatedPushDropdown(
     )
 
     Card(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier =
+            modifier
+                .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
-        colors = CardDefaults.cardColors(
-            contentColor = MaterialTheme.colorScheme.onSurface,
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        shape = RoundedCornerShape(6.dp)
+        colors =
+            CardDefaults.cardColors(
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+        shape = RoundedCornerShape(6.dp),
     ) {
-        Column() {
+        Column {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { toggleExpandedMode() }
-                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable { toggleExpandedMode() }
+                        .padding(horizontal = 12.dp, vertical = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
@@ -75,7 +78,7 @@ fun AnimatedPushDropdown(
                     fontFamily = GilroyFontFamily,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
                 )
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
@@ -87,21 +90,28 @@ fun AnimatedPushDropdown(
 
             AnimatedVisibility(
                 visible = sortMenuExpanded,
-                enter = expandVertically(animationSpec = tween(800)) + fadeIn(
-                    animationSpec = tween(
-                        800
-                    )
-                ),
-                exit = shrinkVertically(animationSpec = tween(800)) + fadeOut(
-                    animationSpec = tween(
-                        800
-                    )
-                ),
+                enter =
+                    expandVertically(animationSpec = tween(800)) +
+                        fadeIn(
+                            animationSpec =
+                                tween(
+                                    800,
+                                ),
+                        ),
+                exit =
+                    shrinkVertically(animationSpec = tween(800)) +
+                        fadeOut(
+                            animationSpec =
+                                tween(
+                                    800,
+                                ),
+                        ),
             ) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
                 ) {
                     sortOptions.forEach { orderOption ->
                         Text(
@@ -109,16 +119,15 @@ fun AnimatedPushDropdown(
                             color = MaterialTheme.colorScheme.onBackground,
                             fontFamily = GilroyFontFamily,
                             fontWeight = FontWeight.Normal,
-                            modifier = Modifier
-                                .clickable {
-                                    changeSortOption(orderOption)
-                                    // onExpandedChange() // This would also work
-                                }
-                                .padding(
-                                    vertical = 6.dp,
-                                    horizontal = 8.dp
-                                )
-                                .fillMaxWidth(),
+                            modifier =
+                                Modifier
+                                    .clickable {
+                                        changeSortOption(orderOption)
+                                        // onExpandedChange() // This would also work
+                                    }.padding(
+                                        vertical = 6.dp,
+                                        horizontal = 8.dp,
+                                    ).fillMaxWidth(),
                         )
                     }
                 }
@@ -127,20 +136,20 @@ fun AnimatedPushDropdown(
     }
 }
 
-
 @Preview
 @Composable
-private fun PreviewAnimatedPushDropdown() = AppTheme {
-    Column {
-        var sortMenuExpanded by remember { mutableStateOf(false) }
-        var sortOption by remember { mutableStateOf(DiningHallSortOrder.Residential) }
+private fun PreviewAnimatedPushDropdown() =
+    AppTheme {
+        Column {
+            var sortMenuExpanded by remember { mutableStateOf(false) }
+            var sortOption by remember { mutableStateOf(DiningHallSortOrder.Residential) }
 
-        AnimatedPushDropdown(
-            sortMenuExpanded,
-            toggleExpandedMode = { sortMenuExpanded =!sortMenuExpanded },
-            currentSortOption = sortOption,
-            sortOptions = DiningHallSortOrder.entries,
-            changeSortOption = { sortOption = it }
-        )
+            AnimatedPushDropdown(
+                sortMenuExpanded,
+                toggleExpandedMode = { sortMenuExpanded = !sortMenuExpanded },
+                currentSortOption = sortOption,
+                sortOptions = DiningHallSortOrder.entries,
+                changeSortOption = { sortOption = it },
+            )
+        }
     }
-}

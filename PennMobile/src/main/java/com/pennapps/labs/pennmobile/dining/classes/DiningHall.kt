@@ -161,8 +161,11 @@ open class DiningHall : Parcelable {
      * If it is closed, returns Closed
      */
     fun getCurrentDiningHallStatus(): Int =
-        if (isOpen) getOpenStatusLabel()
-        else R.string.dining_hall_closed
+        if (isOpen) {
+            getOpenStatusLabel()
+        } else {
+            R.string.dining_hall_closed
+        }
 
     /**
      * Returns the current status of the dining hall as a string resource.
@@ -170,9 +173,11 @@ open class DiningHall : Parcelable {
      * If it is closed, returns Closed
      */
     fun getDiningHours(): Int =
-        if (isOpen) getOpenStatusLabel()
-        else R.string.dining_hall_closed
-
+        if (isOpen) {
+            getOpenStatusLabel()
+        } else {
+            R.string.dining_hall_closed
+        }
 
     /**
      * Returns the open hours of the dining hall for that particular day.
@@ -182,9 +187,9 @@ open class DiningHall : Parcelable {
     fun getCurrentDiningOpenHours(): String {
         val openTimes = openTimes()
 
-        return if (isOpen)
+        return if (isOpen) {
             openTimes.lowercase()
-        else {
+        } else {
             if (openTimes.isEmpty()) {
                 "Closed today"
             } else {
@@ -192,7 +197,6 @@ open class DiningHall : Parcelable {
             }
         }
     }
-
 
     /**
      * Created by Adel on 12/18/14.
@@ -261,7 +265,6 @@ open class DiningHall : Parcelable {
         override fun newArray(size: Int): Array<DiningHall?> = arrayOfNulls(size)
     }
 }
-
 
 fun DiningHall.getOpenStatusLabel(): Int =
     when (openMeal()) {

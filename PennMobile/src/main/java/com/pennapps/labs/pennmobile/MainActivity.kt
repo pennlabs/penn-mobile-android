@@ -163,7 +163,7 @@ class MainActivity : AppCompatActivity() {
     private fun setUpAuthStateListener() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                mNetworkManager.authEvent.collect { authState ->
+                mNetworkManager.authEvents.collect { authState ->
                     if (authState == AuthEvent.RequiresLogin) {
                         startLoginFragment()
                     }
@@ -491,10 +491,12 @@ fun isOnline(context: Context?): Boolean {
                 Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
                 return true
             }
+
             capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
                 Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
                 return true
             }
+
             capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
                 Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
                 return true

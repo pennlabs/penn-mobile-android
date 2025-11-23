@@ -38,17 +38,17 @@ fun FavouriteDiningHalls(
     diningHalls: List<DiningHall>,
     toggleFavourite: (DiningHall) -> Unit,
     openDiningHallMenu: (DiningHall) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .clip(RoundedCornerShape(4.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(horizontal = 8.dp)
-            .padding(top = 10.dp, bottom = 16.dp)
-            .animateContentSize()
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(4.dp))
+                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .padding(horizontal = 8.dp)
+                .padding(top = 10.dp, bottom = 16.dp)
+                .animateContentSize(),
     ) {
-
         Text(
             text = stringResource(R.string.favorites),
             fontFamily = GilroyFontFamily,
@@ -59,17 +59,19 @@ fun FavouriteDiningHalls(
 
         if (diningHalls.isEmpty()) {
             Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(140.dp)
-                    .padding(top = 12.dp, bottom = 12.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(140.dp)
+                        .padding(top = 12.dp, bottom = 12.dp),
                 color = MaterialTheme.colorScheme.background,
-                shape = RoundedCornerShape(6.dp)
+                shape = RoundedCornerShape(6.dp),
             ) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .fillMaxSize(),
+                    contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         text = "Add your favourite dining halls to see them here 🫶🏾",
@@ -77,7 +79,7 @@ fun FavouriteDiningHalls(
                         modifier = Modifier.fillMaxWidth(0.6f),
                         textAlign = TextAlign.Center,
                         fontFamily = GilroyFontFamily,
-                        lineHeight = 17.sp
+                        lineHeight = 17.sp,
                     )
                 }
             }
@@ -86,14 +88,14 @@ fun FavouriteDiningHalls(
                 Modifier
                     .fillMaxWidth()
                     .padding(top = 12.dp, bottom = 4.dp),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
+                verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 diningHalls.forEach { diningHall ->
                     DiningHallCard(
                         diningHall = diningHall,
                         isFavourite = true,
                         toggleFavourite = { toggleFavourite(diningHall) },
-                        openDiningHallMenu = openDiningHallMenu
+                        openDiningHallMenu = openDiningHallMenu,
                     )
                 }
             }
@@ -101,43 +103,47 @@ fun FavouriteDiningHalls(
     }
 }
 
-
-val TEST_DINING_HALL = DiningHall(
-    10,
-    "Lauder College House",
-    true,
-    hashMapOf(),
-    venue = Venue(),
-    image = 12
-)
+val TEST_DINING_HALL =
+    DiningHall(
+        10,
+        "Lauder College House",
+        true,
+        hashMapOf(),
+        venue = Venue(),
+        image = 12,
+    )
 val TEST_LIST_OF_DINING_HALLS = listOf(TEST_DINING_HALL, TEST_DINING_HALL, TEST_DINING_HALL)
 
 @Preview
 @Composable
-private fun PreviewEmptyFavouriteDiningHalls() = AppTheme {
-    Column {
-        FavouriteDiningHalls(
-            listOf(),
-            openDiningHallMenu = {},
-            toggleFavourite = { hall -> }
-        )
+private fun PreviewEmptyFavouriteDiningHalls() =
+    AppTheme {
+        Column {
+            FavouriteDiningHalls(
+                listOf(),
+                openDiningHallMenu = {},
+                toggleFavourite = { hall -> },
+            )
+        }
     }
-}
-
 
 @Preview
 @Composable
-private fun PreviewFavouriteDiningHalls() = AppTheme {
-    Column {
-        var diningHalls by remember { mutableStateOf(TEST_LIST_OF_DINING_HALLS) }
-        FavouriteDiningHalls(
-            diningHalls,
-            openDiningHallMenu = {},
-            toggleFavourite = { hall ->
-                diningHalls = if (diningHalls.contains(hall))
-                    diningHalls.filterNot { hall.id == it.id }
-                else
-                    diningHalls + hall
-            })
+private fun PreviewFavouriteDiningHalls() =
+    AppTheme {
+        Column {
+            var diningHalls by remember { mutableStateOf(TEST_LIST_OF_DINING_HALLS) }
+            FavouriteDiningHalls(
+                diningHalls,
+                openDiningHallMenu = {},
+                toggleFavourite = { hall ->
+                    diningHalls =
+                        if (diningHalls.contains(hall)) {
+                            diningHalls.filterNot { hall.id == it.id }
+                        } else {
+                            diningHalls + hall
+                        }
+                },
+            )
+        }
     }
-}

@@ -34,7 +34,6 @@ import com.pennapps.labs.pennmobile.compose.presentation.theme.GilroyFontFamily
 import com.pennapps.labs.pennmobile.compose.presentation.theme.sfProFontFamily
 import kotlinx.coroutines.delay
 
-
 /**
  *
  * The default implementation of a snackbar.
@@ -55,17 +54,18 @@ fun AppSnackBar(
     snackBarActionLabel: String? = null,
     performSnackBarAction: (() -> Unit)? = null,
     duration: SnackbarDuration = SnackbarDuration.Short,
-    actionButtonColors: ButtonColors = ButtonDefaults.buttonColors(
-        containerColor = Color.White,
-        contentColor = AppColors.TabTextBlue
-    )
+    actionButtonColors: ButtonColors =
+        ButtonDefaults.buttonColors(
+            containerColor = Color.White,
+            contentColor = AppColors.TabTextBlue,
+        ),
 ) {
-
-    val duration = when (duration) {
-        SnackbarDuration.Short -> 3000L
-        SnackbarDuration.Long -> 5000L
-        SnackbarDuration.Indefinite -> Long.MAX_VALUE
-    }
+    val duration =
+        when (duration) {
+            SnackbarDuration.Short -> 3000L
+            SnackbarDuration.Long -> 5000L
+            SnackbarDuration.Indefinite -> Long.MAX_VALUE
+        }
 
     LaunchedEffect(message) {
         Log.d("AppSnackBar", "message: $message")
@@ -77,26 +77,27 @@ fun AppSnackBar(
     }
 
     Card(
-        colors = CardDefaults.cardColors(
-            containerColor = snackBarContainerColor,
-            contentColor = snackBarContentColor
-        ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = snackBarContainerColor,
+                contentColor = snackBarContentColor,
+            ),
         shape = RoundedCornerShape(6.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp)
-    ) {
-
-        Row(
-            modifier = Modifier
+        modifier =
+            modifier
                 .fillMaxWidth()
-                .heightIn(min = 45.dp)
-                .padding(vertical = 6.dp, horizontal = 10.dp),
+                .padding(horizontal = 8.dp),
+    ) {
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 45.dp)
+                    .padding(vertical = 6.dp, horizontal = 10.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-
             Text(
                 text = message,
                 color = snackBarContentColor,
@@ -104,7 +105,7 @@ fun AppSnackBar(
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.weight(1f),
-                lineHeight = 17.sp
+                lineHeight = 17.sp,
             )
 
             if (snackBarActionLabel != null && performSnackBarAction != null) {
@@ -114,33 +115,30 @@ fun AppSnackBar(
                         dismiss()
                     },
                     colors = actionButtonColors,
-                    contentPadding = PaddingValues(horizontal = 24.dp, vertical = 2.dp)
+                    contentPadding = PaddingValues(horizontal = 24.dp, vertical = 2.dp),
                 ) {
                     Text(
                         text = snackBarActionLabel,
                         fontSize = 14.sp,
                         fontFamily = sfProFontFamily,
                         fontWeight = FontWeight.Medium,
-                        maxLines = 1
+                        maxLines = 1,
                     )
                 }
             }
         }
-
     }
-
 }
-
 
 @Preview
 @Composable
-private fun PreviewAppSnackBar() = AppTheme {
-
-    Box(
-        Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
+private fun PreviewAppSnackBar() =
+    AppTheme {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+        ) {
 //        AppSnackBar(
 //            snackBarContainerColor = AppColors.LabelRed,
 //            snackBarContentColor = Color.White,
@@ -152,15 +150,15 @@ private fun PreviewAppSnackBar() = AppTheme {
 //            modifier = Modifier.align(Alignment.BottomCenter)
 //        )
 
-        AppSnackBar(
-            snackBarContainerColor = AppColors.LabelRed,
-            snackBarContentColor = Color.White,
-            message = "Log in to add dining halls to favourites",
-            snackBarActionLabel = null,
-            dismiss = {},
-            performSnackBarAction = { },
-            duration = SnackbarDuration.Short,
-            modifier = Modifier.align(Alignment.BottomCenter)
-        )
+            AppSnackBar(
+                snackBarContainerColor = AppColors.LabelRed,
+                snackBarContentColor = Color.White,
+                message = "Log in to add dining halls to favourites",
+                snackBarActionLabel = null,
+                dismiss = {},
+                performSnackBarAction = { },
+                duration = SnackbarDuration.Short,
+                modifier = Modifier.align(Alignment.BottomCenter),
+            )
+        }
     }
-}

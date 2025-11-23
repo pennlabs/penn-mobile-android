@@ -42,7 +42,11 @@ class Article {
                     this.subtitle == other.subtitle &&
                     this.timestamp == other.timestamp &&
                     this.articleUrl == other.articleUrl
-            } else -> false
+            }
+
+            else -> {
+                false
+            }
         }
 
     override fun hashCode(): Int {

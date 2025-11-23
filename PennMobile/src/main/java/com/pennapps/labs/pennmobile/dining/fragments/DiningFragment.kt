@@ -72,11 +72,9 @@ import rx.schedulers.Schedulers
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-
 @AndroidEntryPoint
 class DiningFragment : Fragment() {
     private lateinit var mActivity: MainActivity
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,21 +86,18 @@ class DiningFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View {
-        return ComposeView(requireContext()).apply {
+    ): View =
+        ComposeView(requireContext()).apply {
             setContent {
                 AppTheme {
                     DiningHallListScreen()
                 }
             }
         }
-    }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun DiningHallListScreen(viewModel: DiningViewModel = hiltViewModel()) {
-
-
         val pullToRefreshState = rememberPullToRefreshState()
         val isDataRefreshing by viewModel.isRefreshing.collectAsState()
         val allDiningHalls by viewModel.allDiningHalls.collectAsState()
@@ -128,9 +123,10 @@ class DiningFragment : Fragment() {
             snackbarHost = {
                 SnackbarHost(
                     hostState = snackBarHostState,
-                    modifier = Modifier
-                        .padding(bottom = 42.dp)
-                        .fillMaxWidth()
+                    modifier =
+                        Modifier
+                            .padding(bottom = 42.dp)
+                            .fillMaxWidth(),
                 )
                 { snackbarData ->
                     AppSnackBar(
@@ -139,11 +135,10 @@ class DiningFragment : Fragment() {
                         message = snackbarData.visuals.message,
                         snackBarActionLabel = snackbarData.visuals.actionLabel,
                         performSnackBarAction = { snackbarData.performAction() },
-                        dismiss = { snackbarData.dismiss() }
+                        dismiss = { snackbarData.dismiss() },
                     )
-
                 }
-            }
+            },
         ) { paddingValues ->
 
             val snackBarActionLabel = stringResource(R.string.log_in)
@@ -159,10 +154,11 @@ class DiningFragment : Fragment() {
                 val shouldLogIn =
                     snackBarEvent is SnackBarEvent.Error && snackBarEvent.message == NetworkUtils.LOG_IN_TO_FAVOURITES
 
-                val result = snackBarHostState.showSnackbar(
-                    message = message,
-                    actionLabel = if (shouldLogIn) snackBarActionLabel else null
-                )
+                val result =
+                    snackBarHostState.showSnackbar(
+                        message = message,
+                        actionLabel = if (shouldLogIn) snackBarActionLabel else null,
+                    )
 
                 if (result == SnackbarResult.ActionPerformed) {
                     mActivity.startLoginFragment()
@@ -186,11 +182,11 @@ class DiningFragment : Fragment() {
                 Log.d("DiningFragment", "End ofPullToRefreshState: isDataRefreshing is $isDataRefreshing")
             }
 
-
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
             ) {
                 PullToRefreshBox(
                     isRefreshing = isDataRefreshing,
@@ -205,35 +201,36 @@ class DiningFragment : Fragment() {
                             isRefreshing = isDataRefreshing,
                             state = pullToRefreshState,
                             containerColor = MaterialTheme.colorScheme.background,
-                            color = AppColors.SelectedTabBlue
+                            color = AppColors.SelectedTabBlue,
                         )
-                    }
+                    },
                 ) {
                     LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight()
-                            .background(MaterialTheme.colorScheme.background)
-                            .padding(horizontal = 6.dp)
-                            .padding(bottom = 42.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight()
+                                .background(MaterialTheme.colorScheme.background)
+                                .padding(horizontal = 6.dp)
+                                .padding(bottom = 42.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-
                         item {
                             FavouriteDiningHalls(
                                 diningHalls = favouriteDiningHalls,
                                 toggleFavourite = { viewModel.toggleFavourite(it) },
                                 openDiningHallMenu = { hall -> navigateToMenuFragment(hall) },
-                                modifier = Modifier
-                                    .padding(top = 6.dp)
-                                    .clip(RoundedCornerShape(4.dp))
-                                    .background(MaterialTheme.colorScheme.background)
-                                    .animateContentSize(
-                                        spring(
-                                            stiffness = Spring.StiffnessLow,
-                                            visibilityThreshold = IntSize.VisibilityThreshold,
-                                        )
-                                    )
+                                modifier =
+                                    Modifier
+                                        .padding(top = 6.dp)
+                                        .clip(RoundedCornerShape(4.dp))
+                                        .background(MaterialTheme.colorScheme.background)
+                                        .animateContentSize(
+                                            spring(
+                                                stiffness = Spring.StiffnessLow,
+                                                visibilityThreshold = IntSize.VisibilityThreshold,
+                                            ),
+                                        ),
                             )
                         }
 
@@ -244,7 +241,7 @@ class DiningFragment : Fragment() {
                                 fontWeight = FontWeight.ExtraBold,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 fontSize = 21.sp,
-                                modifier = Modifier.padding(top = 20.dp)
+                                modifier = Modifier.padding(top = 20.dp),
                             )
 
                             AnimatedPushDropdown(
@@ -256,7 +253,7 @@ class DiningFragment : Fragment() {
                                 changeSortOption = { option ->
                                     viewModel.setSortByMethod(option)
                                     isSortMenuExpanded = false
-                                }
+                                },
                             )
                         }
 
@@ -265,7 +262,7 @@ class DiningFragment : Fragment() {
                                 diningHall = diningHall,
                                 isFavourite = favouriteDiningHalls.contains(diningHall),
                                 toggleFavourite = { viewModel.toggleFavourite(diningHall) },
-                                openDiningHallMenu = { hall -> navigateToMenuFragment(hall) }
+                                openDiningHallMenu = { hall -> navigateToMenuFragment(hall) },
                             )
                         }
                     }
@@ -273,7 +270,6 @@ class DiningFragment : Fragment() {
             }
         }
     }
-
 
     private fun navigateToMenuFragment(diningHall: DiningHall) {
         val fragment = MenuFragment()

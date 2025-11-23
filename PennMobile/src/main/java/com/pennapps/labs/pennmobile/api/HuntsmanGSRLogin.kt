@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile.api
 
-import com.pennapps.labs.pennmobile.api.StudentLife
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.databinding.FragmentHuntsmanGsrloginBinding
 import com.pennapps.labs.pennmobile.gsr.fragments.GsrTabbedFragment
 import kotlinx.coroutines.launch
