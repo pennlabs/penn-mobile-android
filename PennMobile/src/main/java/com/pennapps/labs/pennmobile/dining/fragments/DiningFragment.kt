@@ -67,7 +67,6 @@ import com.pennapps.labs.pennmobile.dining.fragments.components.AnimatedPushDrop
 import com.pennapps.labs.pennmobile.dining.fragments.components.DiningHallCard
 import com.pennapps.labs.pennmobile.dining.fragments.components.FavouriteDiningHalls
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import rx.schedulers.Schedulers
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -127,8 +126,7 @@ class DiningFragment : Fragment() {
                         Modifier
                             .padding(bottom = 42.dp)
                             .fillMaxWidth(),
-                )
-                { snackbarData ->
+                ) { snackbarData ->
                     AppSnackBar(
                         snackBarContainerColor = snackBarContainerColor,
                         snackBarContentColor = Color.White,
