@@ -22,6 +22,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.lifecycleScope
@@ -593,63 +594,63 @@ class HomeAdapter(
 
 //        /** Adds dynamically generated accent color from the fetched image to the news card */
         var accentColor: Int = getColor(mContext, R.color.black)
-//        mActivity.lifecycleScope.launch(Dispatchers.Default) {
-//            Log.d("HomeAdapter", "Image Url is ${article.imageUrl}")
-//            val bitmap =
-//                withContext(Dispatchers.IO) {
-//                    Glide
-//                        .with(mContext)
-//                        .load(article.imageUrl)
-//                        .submit()
-//                        .get()
-//                }.toBitmap()
-//
-//            // Create palette from bitmap
-//            fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
-//            val vibrantSwatch: Palette.Swatch? = createPaletteSync(bitmap).darkVibrantSwatch
-//            vibrantSwatch?.rgb?.let { accentColor = it }
-//
-//            mActivity.runOnUiThread {
-//                // Change all the components to match the accent color palette
-//                vibrantSwatch?.titleTextColor?.let {
-//                    DrawableCompat.setTint(
-//                        DrawableCompat.wrap(holder.newsCardLogo.drawable),
-//                        ColorUtils.setAlphaComponent(it, 150),
-//                    )
-//                    DrawableCompat.setTint(
-//                        DrawableCompat.wrap(holder.newsInfoIcon.drawable),
-//                        it,
-//                    )
-//                    DrawableCompat.setTint(
-//                        DrawableCompat.wrap(holder.dotDivider.drawable),
-//                        it,
-//                    )
-//                    holder.newsButton.setTextColor(ColorUtils.setAlphaComponent(it, 150))
-//                    DrawableCompat.setTint(
-//                        DrawableCompat.wrap(holder.newsButton.background),
-//                        it,
-//                    )
-//                    holder.homeNewsTitle.setTextColor(
-//                        ColorUtils.setAlphaComponent(
-//                            it,
-//                            150,
-//                        ),
-//                    )
-//                    holder.homeNewsSubtitle.setTextColor(it)
-//                    holder.homeNewsTimestamp.setTextColor(it)
-//                }
-//                holder.newsCardContainer.background =
-//                    BitmapDrawable(
-//                        holder.itemBinding.root.resources,
-//                        bitmap,
-//                    )
-//                holder.newsBlurView
-//                    .setOverlayColor(ColorUtils.setAlphaComponent(accentColor, 150))
-//
-//                // tell model that the news blur view has been loaded
-//                dataModel.notifyNewsBlurLoaded()
-//            }
-//        }
+        mActivity.lifecycleScope.launch(Dispatchers.Default) {
+            Log.d("HomeAdapter", "Image Url is ${article.imageUrl}")
+            val bitmap =
+                withContext(Dispatchers.IO) {
+                    Glide
+                        .with(mContext)
+                        .load(article.imageUrl)
+                        .submit()
+                        .get()
+                }.toBitmap()
+
+            // Create palette from bitmap
+            fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
+            val vibrantSwatch: Palette.Swatch? = createPaletteSync(bitmap).darkVibrantSwatch
+            vibrantSwatch?.rgb?.let { accentColor = it }
+
+            mActivity.runOnUiThread {
+                // Change all the components to match the accent color palette
+                vibrantSwatch?.titleTextColor?.let {
+                    DrawableCompat.setTint(
+                        DrawableCompat.wrap(holder.newsCardLogo.drawable),
+                        ColorUtils.setAlphaComponent(it, 150),
+                    )
+                    DrawableCompat.setTint(
+                        DrawableCompat.wrap(holder.newsInfoIcon.drawable),
+                        it,
+                    )
+                    DrawableCompat.setTint(
+                        DrawableCompat.wrap(holder.dotDivider.drawable),
+                        it,
+                    )
+                    holder.newsButton.setTextColor(ColorUtils.setAlphaComponent(it, 150))
+                    DrawableCompat.setTint(
+                        DrawableCompat.wrap(holder.newsButton.background),
+                        it,
+                    )
+                    holder.homeNewsTitle.setTextColor(
+                        ColorUtils.setAlphaComponent(
+                            it,
+                            150,
+                        ),
+                    )
+                    holder.homeNewsSubtitle.setTextColor(it)
+                    holder.homeNewsTimestamp.setTextColor(it)
+                }
+                holder.newsCardContainer.background =
+                    BitmapDrawable(
+                        holder.itemBinding.root.resources,
+                        bitmap,
+                    )
+                holder.newsBlurView
+                    .setOverlayColor(ColorUtils.setAlphaComponent(accentColor, 150))
+
+                // tell model that the news blur view has been loaded
+                dataModel.notifyNewsBlurLoaded()
+            }
+        }
 
         /** Logic for the more info button on the news card */
         holder.newsInfoIcon.setOnClickListener {
