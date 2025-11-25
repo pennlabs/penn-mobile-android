@@ -150,6 +150,14 @@ fun DiningPredictionCard(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
+//            Text(
+//                text = title,
+//                fontFamily = GilroyExtraBold,
+//                fontSize = 20.sp
+//            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
             val colorScheme = MaterialTheme.colorScheme
             val isDark = isSystemInDarkTheme()
             var textColor = colorScheme.onSurface.toArgb()

@@ -206,7 +206,13 @@ class HomeFragment : Fragment() {
                     (R.drawable.ic_guest_avatar, context?.theme),
             )
         }
+
+        // Force update the bottom nav selection
         mActivity.setSelectedTab(MainActivity.HOME)
+
+        // Alternative: If setSelectedTab isn't working, directly access the bottom nav
+        // mActivity.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.selectedItemId = R.id.navigation_home
+
         mActivity.showBottomBar()
     }
 
@@ -217,10 +223,13 @@ class HomeFragment : Fragment() {
     private fun initAppBar(view: View) {
         val firstName = sharedPreferences.getString(getString(R.string.first_name), null)
         firstName?.let {
-            binding.dateView.text = "Welcome, $it!".toUpperCase(Locale.getDefault())
+            binding.dateView.text = "Welcome, $it!".uppercase(Locale.getDefault())
             Handler().postDelayed(
                 {
-                    binding.dateView.text = Utils.getCurrentSystemTime()
+                    // Check if binding is still valid before accessing it
+                    _binding?.let { binding ->
+                        binding.dateView.text = Utils.getCurrentSystemTime()
+                    }
                 },
                 4000,
             )
@@ -228,9 +237,9 @@ class HomeFragment : Fragment() {
             binding.dateView.text = Utils.getCurrentSystemTime()
         }
         (
-            binding.appbarHome.layoutParams
-                as CoordinatorLayout.LayoutParams
-        ).behavior = ToolbarBehavior()
+                binding.appbarHome.layoutParams
+                        as CoordinatorLayout.LayoutParams
+                ).behavior = ToolbarBehavior()
         binding.profile.setOnClickListener {
             // TODO: Account Settings
         }

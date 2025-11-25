@@ -174,31 +174,33 @@ class DiningFragment : Fragment() {
                     }
                 }.subscribe({ diningHalls ->
                     mActivity.runOnUiThread {
-                        getMenus(diningHalls)
-                        val adapter = DiningAdapter(diningHalls)
-                        binding.loadingPanel.root.visibility = View.GONE
-                        if (diningHalls.size > 0) {
-                            binding.noResults.root.visibility = View.GONE
-                        }
+                        // Check if binding is still valid before using it
+                        _binding?.let { binding ->
+                            getMenus(diningHalls)
+                            val adapter = DiningAdapter(diningHalls)
+                            binding.loadingPanel.root.visibility = View.GONE
+                            if (diningHalls.size > 0) {
+                                binding.noResults.root.visibility = View.GONE
+                            }
 
-                        // Log non-fatal error to crashyltics if null
-                        // this error should not really be happening
-                        // it is *possible* but be rare: ideally network stuff
-                        // is decoupled with UI updates
-                        try {
-                            binding.diningHallsRecyclerView.adapter = adapter
-                            binding.diningSwiperefresh.isRefreshing = false
-                        } catch (e: Exception) {
-                            FirebaseCrashlytics.getInstance().recordException(e)
+                            try {
+                                binding.diningHallsRecyclerView.adapter = adapter
+                                binding.diningSwiperefresh.isRefreshing = false
+                            } catch (e: Exception) {
+                                FirebaseCrashlytics.getInstance().recordException(e)
+                            }
+                            view?.let { displaySnack("Just Updated") }
                         }
-                        view?.let { displaySnack("Just Updated") }
                     }
                 }, {
                     Log.e("DiningFragment", "Error getting dining halls", it)
                     mActivity.runOnUiThread {
-                        Log.e("Dining", "Could not load Dining page", it)
-                        binding.loadingPanel.root.visibility = View.GONE
-                        binding.diningSwiperefresh.isRefreshing = false
+                        // Check if binding is still valid before using it
+                        _binding?.let { binding ->
+                            Log.e("Dining", "Could not load Dining page", it)
+                            binding.loadingPanel.root.visibility = View.GONE
+                            binding.diningSwiperefresh.isRefreshing = false
+                        }
                     }
                 })
         } catch (e: Exception) {

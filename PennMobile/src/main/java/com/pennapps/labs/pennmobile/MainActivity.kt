@@ -12,6 +12,8 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.StrictMode
 import android.util.Log
 import android.view.LayoutInflater
@@ -32,6 +34,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.preference.PreferenceManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.GsonBuilder
@@ -144,6 +147,29 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+
+        // Post with delay to ensure ViewPager is fully restored
+        Handler(Looper.getMainLooper()).postDelayed({
+            // Get current ViewPager position
+            val currentPosition = binding.include.mainViewPager.currentItem
+
+            // Map position to menu item ID
+            val menuItemId = when (currentPosition) {
+                MainPagerAdapter.HOME_POSITION -> R.id.nav_home
+                MainPagerAdapter.DINING_POSITION -> R.id.nav_dining
+                MainPagerAdapter.GSR_POSITION -> R.id.nav_gsr
+                MainPagerAdapter.LAUNDRY_POSITION -> R.id.nav_laundry
+                MainPagerAdapter.MORE_POSITION -> R.id.nav_more
+                else -> R.id.nav_home
+            }
+
+            // Force update the bottom nav to match ViewPager
+            binding.include.expandableBottomBar.selectedItemId = menuItemId
+        }, 100)
+    }
+
     private fun onExpandableBottomNavigationItemSelected() {
         binding.include.expandableBottomBar.setOnNavigationItemSelectedListener { item ->
             val position =
@@ -164,7 +190,19 @@ class MainActivity : AppCompatActivity() {
         binding.include.expandableBottomBar.selectedItemId = id
     }
 
-    fun setSelectedTab(id: Int) {}
+    fun setSelectedTab(id: Int) {
+        val menuItemId = when (id) {
+            HOME -> R.id.nav_home
+            DINING -> R.id.nav_dining
+            GSR -> R.id.nav_gsr
+            LAUNDRY -> R.id.nav_laundry
+            MORE -> R.id.nav_more
+            else -> R.id.nav_home
+        }
+
+        // Set the bottom nav selected item
+        binding.include.expandableBottomBar.selectedItemId = menuItemId
+    }
 
     fun closeKeyboard() {
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
