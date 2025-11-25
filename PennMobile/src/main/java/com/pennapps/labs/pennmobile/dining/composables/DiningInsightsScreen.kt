@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.dining.composables
 
+import GilroyExtraBold
 import PennMobileTheme
 import android.util.Log
 import androidx.compose.foundation.layout.*
@@ -54,7 +55,7 @@ fun DiningInsightsScreen(
             item {
                 Text(
                     text = "Dining Balance",
-                    style = MaterialTheme.typography.titleMedium,
+                    fontFamily = GilroyExtraBold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
             }
@@ -73,7 +74,7 @@ fun DiningInsightsScreen(
             item {
                 Text(
                     text = "Dining Dollars Predictions",
-                    style = MaterialTheme.typography.titleMedium,
+                    fontFamily = GilroyExtraBold,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
@@ -92,7 +93,7 @@ fun DiningInsightsScreen(
             item {
                 Text(
                     text = "Swipes Predictions",
-                    style = MaterialTheme.typography.titleMedium,
+                    fontFamily = GilroyExtraBold,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(bottom = 4.dp)
                 )

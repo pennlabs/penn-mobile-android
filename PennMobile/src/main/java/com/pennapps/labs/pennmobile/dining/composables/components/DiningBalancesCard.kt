@@ -29,7 +29,7 @@ fun DiningBalancesCard(
         modifier = modifier
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         BalanceItem(
             "Dining Dollars",
@@ -63,7 +63,6 @@ private fun BalanceItem(
 ) {
     Box(
         modifier = modifier
-            .width(112.dp)
             .height(64.dp)
             .background(
                 color = MaterialTheme.colorScheme.surface,
@@ -71,24 +70,31 @@ private fun BalanceItem(
             )
             .padding(8.dp)
     ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.align(Alignment.TopStart)
-        )
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
 
-        Text(
-            text = amount,
-            style = MaterialTheme.typography.headlineMedium.copy(color = indicatorColor),
-            modifier = Modifier.align(Alignment.Center)
-        )
+            Text(
+                text = amount,
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    color = indicatorColor,
+                    fontSize = 20.sp
+                ),
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
 
-        Box(
-            modifier = Modifier
-                .size(12.dp)
-                .background(color = indicatorColor, shape = CircleShape)
-                .align(Alignment.BottomEnd)
-        )
+            Box(
+                modifier = Modifier
+                    .size(12.dp)
+                    .background(color = indicatorColor, shape = CircleShape)
+                    .align(Alignment.End)
+            )
+        }
     }
 }
