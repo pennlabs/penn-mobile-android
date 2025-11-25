@@ -51,7 +51,7 @@ fun DiningPredictionCard(
     cell: DiningInsightCell,
     modifier: Modifier = Modifier,
     semesterStart: String = "2025-01-15",
-    semesterEnd: String = "2025-05-20",
+    semesterEnd: String = "2025-05-13",
 ) {
     val context: Context = LocalContext.current
     var selectedInfo by remember { mutableStateOf<String?>(null) }
@@ -96,8 +96,15 @@ fun DiningPredictionCard(
             null
         } ?: return@mapIndexedNotNull null
 
+        // Filter out dates after semester end
+        if (date.after(endDate)) return@mapIndexedNotNull null
+
         if (index >= smoothedValues.size) return@mapIndexedNotNull null
         val daysFromStart = ((date.time - startDate.time) / (1000 * 60 * 60 * 24)).toFloat()
+
+        // Also filter out negative days (dates before semester start)
+        if (daysFromStart < 0) return@mapIndexedNotNull null
+
         Entry(daysFromStart, smoothedValues[index])
     } ?: emptyList()
 
@@ -150,14 +157,6 @@ fun DiningPredictionCard(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-//            Text(
-//                text = title,
-//                fontFamily = GilroyExtraBold,
-//                fontSize = 20.sp
-//            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
             val colorScheme = MaterialTheme.colorScheme
             val isDark = isSystemInDarkTheme()
             var textColor = colorScheme.onSurface.toArgb()
@@ -168,6 +167,7 @@ fun DiningPredictionCard(
                     LineChart(context).apply {
                         chartInstance = this
                         setBackgroundColor(bgColor)
+                        clipToPadding = false
 
                         xAxis.textColor = textColor
                         axisLeft.textColor = textColor
