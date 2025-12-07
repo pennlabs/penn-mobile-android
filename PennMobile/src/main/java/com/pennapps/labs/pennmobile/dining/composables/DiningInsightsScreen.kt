@@ -3,7 +3,10 @@ package com.pennapps.labs.pennmobile.dining.composables
 import GilroyExtraBold
 import PennMobileTheme
 import android.util.Log
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +22,7 @@ import com.pennapps.labs.pennmobile.dining.composables.components.DiningBalances
 import com.pennapps.labs.pennmobile.dining.composables.components.DiningPredictionCard
 import com.pennapps.labs.pennmobile.dining.viewmodels.DiningInsightsViewModel
 
+@Suppress("ktlint:standard:function-naming")
 @Composable
 fun DiningInsightsScreen(
     modifier: Modifier = Modifier,

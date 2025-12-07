@@ -6,12 +6,22 @@ import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
@@ -37,7 +47,9 @@ import com.pennapps.labs.pennmobile.dining.classes.DiningInsightCell
 import com.pennapps.labs.pennmobile.dining.classes.DiningMarkerView
 import com.pennapps.labs.pennmobile.dining.utils.smoothBalances
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 import kotlin.math.roundToInt
 import android.graphics.Color as AndroidColor
 import androidx.compose.ui.graphics.Color as ComposeColor
@@ -46,6 +58,7 @@ val diningGreen: Int = "#BADFB8".toColorInt()
 val diningBlue: Int = "#99BCF7".toColorInt()
 val diningGrey: ComposeColor = ComposeColor("#F5F5F5".toColorInt())
 
+@Suppress("ktlint:standard:function-naming")
 @Composable
 fun DiningPredictionCard(
     cell: DiningInsightCell,
