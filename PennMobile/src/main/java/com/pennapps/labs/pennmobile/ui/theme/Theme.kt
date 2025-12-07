@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.pennapps.labs.pennmobile.ui.theme.*
+import com.pennapps.labs.pennmobile.ui.theme.DarkColors
+import com.pennapps.labs.pennmobile.ui.theme.LightColors
 
+@Suppress("ktlint:standard:function-naming")
 @Composable
 fun PennMobileTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

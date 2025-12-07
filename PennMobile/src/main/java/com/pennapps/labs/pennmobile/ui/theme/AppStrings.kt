@@ -1,3 +1,5 @@
+package com.pennapps.labs.pennmobile.ui.theme
+
 object AppStrings {
     // General
     const val APP_NAME = "Penn Mobile"
@@ -129,8 +131,10 @@ object AppStrings {
     const val HI_WE_ARE_LABS =
         "Hi, we're Penn Labs: a team of student software engineers, product designers, and business developers."
     const val LABS_MISSION =
-        "Penn Labs empowers others to make connections: connections to resources, connections to people, and connections to the greater Penn community.\n\n" +
-            "Our ultimate goal is improving the Penn community. We aim to do so not only by creating high quality products, but also by giving back to the community with educational resources and technical support."
+        "Penn Labs empowers others to make connections: connections to resources," + "" +
+            " connections to people, and connections to the greater Penn community.\n\n" +
+            "Our ultimate goal is improving the Penn community. We aim to do so not only by creating" +
+            " high quality products, but also by giving back to the community with educational resources and technical support."
     const val LEARN_MORE = "LEARN MORE"
     const val FEEDBACK = "FEEDBACK"
     const val FEEDBACK_TXT = "Click below to give us feedback!"
