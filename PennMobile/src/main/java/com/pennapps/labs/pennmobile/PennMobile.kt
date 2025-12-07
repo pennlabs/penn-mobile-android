@@ -5,7 +5,9 @@ import android.os.StrictMode
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.multidex.MultiDexApplication
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class PennMobile : MultiDexApplication() {
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate() {
@@ -18,7 +20,6 @@ class PennMobile : MultiDexApplication() {
                     .Builder()
                     .detectUnsafeIntentLaunch()
                     .penaltyLog()
-                    .penaltyDeath()
                     .build(),
             )
         }

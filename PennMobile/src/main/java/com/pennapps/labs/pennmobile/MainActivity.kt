@@ -12,6 +12,8 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.StrictMode
 import android.util.Log
 import android.view.LayoutInflater
@@ -55,6 +57,7 @@ import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.more.classes.Contact
 import com.pennapps.labs.pennmobile.more.fragments.SaveContactsFragment
 import com.pennapps.labs.pennmobile.utils.Utils
+import dagger.hilt.android.AndroidEntryPoint
 import eightbitlab.com.blurview.BlurView
 import kotlinx.coroutines.sync.Mutex
 import okhttp3.OkHttpClient
@@ -65,6 +68,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private var tabShowed = false
     private lateinit var fragmentManager: FragmentManager
@@ -142,6 +146,27 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+
+        // Delay so that UI is properly rendered. Force consistency
+        Handler(Looper.getMainLooper()).postDelayed({
+            val currentPosition = binding.include.mainViewPager.currentItem
+
+            val menuItemId =
+                when (currentPosition) {
+                    MainPagerAdapter.HOME_POSITION -> R.id.nav_home
+                    MainPagerAdapter.DINING_POSITION -> R.id.nav_dining
+                    MainPagerAdapter.GSR_POSITION -> R.id.nav_gsr
+                    MainPagerAdapter.LAUNDRY_POSITION -> R.id.nav_laundry
+                    MainPagerAdapter.MORE_POSITION -> R.id.nav_more
+                    else -> R.id.nav_home
+                }
+
+            binding.include.expandableBottomBar.selectedItemId = menuItemId
+        }, 100)
+    }
+
     private fun onExpandableBottomNavigationItemSelected() {
         binding.include.expandableBottomBar.setOnNavigationItemSelectedListener { item ->
             val position =
@@ -162,7 +187,20 @@ class MainActivity : AppCompatActivity() {
         binding.include.expandableBottomBar.selectedItemId = id
     }
 
-    fun setSelectedTab(id: Int) {}
+    fun setSelectedTab(id: Int) {
+        val menuItemId =
+            when (id) {
+                HOME -> R.id.nav_home
+                DINING -> R.id.nav_dining
+                GSR -> R.id.nav_gsr
+                LAUNDRY -> R.id.nav_laundry
+                MORE -> R.id.nav_more
+                else -> R.id.nav_home
+            }
+
+        // Set the bottom nav selected item
+        binding.include.expandableBottomBar.selectedItemId = menuItemId
+    }
 
     fun closeKeyboard() {
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
