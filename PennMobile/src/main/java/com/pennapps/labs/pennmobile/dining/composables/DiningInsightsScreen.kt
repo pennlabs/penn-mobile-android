@@ -83,7 +83,6 @@ fun DiningInsightsScreen(
             // Dining Dollars Prediction cards
             items(cells.filter { it.type == "dining_dollars_predictions" }) { cell ->
                 DiningPredictionCard(
-                    title = "Dining Dollars Predictions",
                     cell = cell,
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
@@ -102,7 +101,6 @@ fun DiningInsightsScreen(
             // Swipes Prediction cards
             items(cells.filter { it.type == "dining_swipes_predictions" }) { cell ->
                 DiningPredictionCard(
-                    title = "Swipes Predictions",
                     cell = cell
                 )
             }

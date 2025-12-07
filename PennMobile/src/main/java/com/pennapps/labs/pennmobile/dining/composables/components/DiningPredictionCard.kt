@@ -34,6 +34,8 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.dining.adapters.DiningInsightsCardAdapter.Companion.DAYS_IN_SEMESTER
+import com.pennapps.labs.pennmobile.dining.adapters.DiningInsightsCardAdapter.Companion.START_DAY_OF_SEMESTER
 import com.pennapps.labs.pennmobile.dining.classes.DiningInsightCell
 import com.pennapps.labs.pennmobile.dining.classes.DiningMarkerView
 import com.pennapps.labs.pennmobile.dining.utils.smoothBalances
@@ -47,11 +49,8 @@ val diningGrey: ComposeColor = ComposeColor("#F5F5F5".toColorInt())
 
 @Composable
 fun DiningPredictionCard(
-    title: String,
     cell: DiningInsightCell,
     modifier: Modifier = Modifier,
-    semesterStart: String = "2025-01-15",
-    semesterEnd: String = "2025-05-13",
 ) {
     val context: Context = LocalContext.current
     var selectedInfo by remember { mutableStateOf<String?>(null) }
@@ -60,8 +59,11 @@ fun DiningPredictionCard(
     val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US).apply {
         timeZone = TimeZone.getTimeZone("UTC")
     }
-    val startDate = sdf.parse(semesterStart)!!
-    val endDate = sdf.parse(semesterEnd)!!
+    val startDate = sdf.parse(START_DAY_OF_SEMESTER)!!
+    val endDate = Calendar.getInstance().apply {
+        time = startDate
+        add(Calendar.DAY_OF_YEAR, DAYS_IN_SEMESTER.toInt())
+    }.time
 
     val rawValues = cell.diningBalancesList?.diningBalancesList?.mapNotNull { balance ->
         when (cell.type) {
@@ -102,12 +104,13 @@ fun DiningPredictionCard(
         if (index >= smoothedValues.size) return@mapIndexedNotNull null
         val daysFromStart = ((date.time - startDate.time) / (1000 * 60 * 60 * 24)).toFloat()
 
-        // Also filter out negative days (dates before semester start)
+        // Also filter out negative days
         if (daysFromStart < 0) return@mapIndexedNotNull null
 
         Entry(daysFromStart, smoothedValues[index])
     } ?: emptyList()
 
+    // Simple prediction based on slope between first and last entries
     val predictionEntries: List<Entry> = if (entries.size >= 2) {
         val first = entries.first()
         val last = entries.last()
@@ -127,6 +130,7 @@ fun DiningPredictionCard(
         SimpleDateFormat("MMM. d", Locale.US).format(cal.time)
     }
 
+    // Simple prediction based on slope between first and last entries
     val predictedEndBalance: Float? = if (entries.size >= 2) {
         val first = entries.first()
         val last = entries.last()
@@ -144,7 +148,6 @@ fun DiningPredictionCard(
                 interactionSource = remember { MutableInteractionSource() }
             ) {
                 chartInstance?.highlightValue(null)
-                selectedInfo = null
             },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
@@ -219,17 +222,6 @@ fun DiningPredictionCard(
                         setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                             override fun onValueSelected(e: Entry?, h: Highlight?) {
                                 e?.let { entry ->
-                                    val cal = Calendar.getInstance().apply {
-                                        timeZone = TimeZone.getTimeZone("UTC")
-                                        time = startDate
-                                        add(Calendar.DAY_OF_YEAR, entry.x.toInt())
-                                    }
-                                    val formattedDate = SimpleDateFormat("MMM d", Locale.US).apply {
-                                        timeZone = TimeZone.getTimeZone("UTC")
-                                    }.format(cal.time)
-                                    val amount = entry.y
-                                    selectedInfo = "$formattedDate → $amount"
-
                                     if (h != null) {
                                         marker.refreshContent(entry, h)
                                         invalidate()
@@ -238,7 +230,6 @@ fun DiningPredictionCard(
                             }
 
                             override fun onNothingSelected() {
-                                selectedInfo = null
                             }
                         })
 

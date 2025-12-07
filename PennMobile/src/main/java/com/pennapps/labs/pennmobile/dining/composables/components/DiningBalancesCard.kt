@@ -107,7 +107,7 @@ private fun BalanceItem(
                 Spacer(modifier = Modifier.height(4.dp))
             }
 
-            // Bottom right indicator/icon
+            // Bottom right indicator
             when (iconType) {
                 BalanceIconType.DOLLAR -> {
                     Icon(

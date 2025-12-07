@@ -53,7 +53,7 @@ class DiningInsightsCardAdapter(
         private const val DINING_SWIPES_PREDICTIONS = 3
 
         const val START_DAY_OF_SEMESTER = "2025-01-15"
-        private const val DAYS_IN_SEMESTER = 117f
+        const val DAYS_IN_SEMESTER = 119f
     }
 
     override fun onCreateViewHolder(
@@ -457,12 +457,6 @@ class DiningInsightsCardAdapter(
             }
         }
         return Utils.addDaysToDateMMMdd(START_DAY_OF_SEMESTER, actualValuesSize + i)
-    }
-
-    fun updateCells(newCells: List<DiningInsightCell>) {
-        cells.clear()
-        cells.addAll(newCells)
-        notifyDataSetChanged()
     }
 
     class ClaimsXAxisValueFormatter(

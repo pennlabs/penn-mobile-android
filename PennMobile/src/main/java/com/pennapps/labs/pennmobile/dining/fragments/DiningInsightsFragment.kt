@@ -47,21 +47,5 @@ class DiningInsightsFragment : Fragment() {
         }
 
         return view
-
-        // Convert this into a xml view
-//        return ComposeView(requireContext()).apply {
-//            setContent {
-//                DiningInsightsScreen(
-//                    onLoginRequired = {
-//                        parentFragmentManager
-//                            .beginTransaction()
-//                            .replace(R.id.dining_insights_page, CampusExpressLoginFragment())
-//                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-//                            .addToBackStack("DiningInsightsFragment")
-//                            .commit()
-//                    }
-//                )
-//            }
-//        }
     }
 }

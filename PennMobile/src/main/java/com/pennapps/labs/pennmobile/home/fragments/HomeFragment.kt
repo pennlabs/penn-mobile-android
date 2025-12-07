@@ -207,12 +207,8 @@ class HomeFragment : Fragment() {
             )
         }
 
-        // Force update the bottom nav selection
+        // Force update the bottom nav selection since we default to that page
         mActivity.setSelectedTab(MainActivity.HOME)
-
-        // Alternative: If setSelectedTab isn't working, directly access the bottom nav
-        // mActivity.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.selectedItemId = R.id.navigation_home
-
         mActivity.showBottomBar()
     }
 

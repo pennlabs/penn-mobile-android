@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile.di
 
 import android.content.Context
-import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.api.CampusExpressNetworkManager
 import dagger.Module
 import dagger.Provides

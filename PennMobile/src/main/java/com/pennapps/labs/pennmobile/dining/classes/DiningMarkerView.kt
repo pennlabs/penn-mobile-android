@@ -71,7 +71,7 @@ class DiningMarkerView(
         this.typeId = typeId
     }
 
-    // This is used to reposition the marker
+    // This is used to reposition the marker. Please fix if we want this to be visible
     override fun getOffset(): MPPointF {
         // Center horizontally: -(width / 2)
         // Position closer to the point: reduce the padding

@@ -546,7 +546,7 @@ class GsrFragment : Fragment() {
                         }
                     },
                     {
-                        Log.e("Gsr Fragment", "Error getting gsr locations (cooked)", it)
+                        Log.e("Gsr Fragment", "Error getting gsr locations", it)
                         activity?.let { activity ->
                             activity.runOnUiThread {
                                 // hard coded in case runs into error

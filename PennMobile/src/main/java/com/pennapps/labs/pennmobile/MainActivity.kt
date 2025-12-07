@@ -150,12 +150,10 @@ class MainActivity : AppCompatActivity() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
 
-        // Post with delay to ensure ViewPager is fully restored
+        // Delay so that UI is properly rendered. Force consistency
         Handler(Looper.getMainLooper()).postDelayed({
-            // Get current ViewPager position
             val currentPosition = binding.include.mainViewPager.currentItem
 
-            // Map position to menu item ID
             val menuItemId = when (currentPosition) {
                 MainPagerAdapter.HOME_POSITION -> R.id.nav_home
                 MainPagerAdapter.DINING_POSITION -> R.id.nav_dining
@@ -165,7 +163,6 @@ class MainActivity : AppCompatActivity() {
                 else -> R.id.nav_home
             }
 
-            // Force update the bottom nav to match ViewPager
             binding.include.expandableBottomBar.selectedItemId = menuItemId
         }, 100)
     }
