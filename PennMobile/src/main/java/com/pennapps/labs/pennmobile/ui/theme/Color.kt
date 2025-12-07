@@ -79,24 +79,26 @@ val LightBlue200 = Color(0xFF81D4FA)
 val LightBlue600 = Color(0xFF039BE5)
 val LightBlue900 = Color(0xFF01579B)
 
-val LightColors = lightColorScheme(
-    primary = ColorPrimary,
-    onPrimary = White,
-    secondary = ColorAccent,
-    onSecondary = White,
-    background = WindowBackground,
-    onBackground = TextColor,
-    surface = WindowBackground,
-    onSurface = TextColor
-)
+val LightColors =
+    lightColorScheme(
+        primary = ColorPrimary,
+        onPrimary = White,
+        secondary = ColorAccent,
+        onSecondary = White,
+        background = WindowBackground,
+        onBackground = TextColor,
+        surface = WindowBackground,
+        onSurface = TextColor,
+    )
 
-val DarkColors = darkColorScheme(
-    primary = ColorPrimary,
-    onPrimary = White,
-    secondary = ColorAccent,
-    onSecondary = White,
-    background = Color(0xFF000000),
-    onBackground = White,
-    surface = Color(0xFF121212),
-    onSurface = White
-)
+val DarkColors =
+    darkColorScheme(
+        primary = ColorPrimary,
+        onPrimary = White,
+        secondary = ColorAccent,
+        onSecondary = White,
+        background = Color(0xFF000000),
+        onBackground = White,
+        surface = Color(0xFF121212),
+        onSurface = White,
+    )

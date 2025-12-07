@@ -23,7 +23,7 @@ import com.pennapps.labs.pennmobile.dining.viewmodels.DiningInsightsViewModel
 fun DiningInsightsScreen(
     modifier: Modifier = Modifier,
     viewModel: DiningInsightsViewModel = hiltViewModel(),
-    onLoginRequired: () -> Unit
+    onLoginRequired: () -> Unit,
 ) {
     PennMobileTheme {
         LaunchedEffect(Unit) {
@@ -39,15 +39,17 @@ fun DiningInsightsScreen(
 
         val cells by viewModel.cells.collectAsState()
         LazyColumn(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(vertical = 16.dp),
-            contentPadding = PaddingValues(
-                start = 16.dp,
-                end = 16.dp,
-                bottom = 64.dp
-            ),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            modifier =
+                modifier
+                    .fillMaxSize()
+                    .padding(vertical = 16.dp),
+            contentPadding =
+                PaddingValues(
+                    start = 16.dp,
+                    end = 16.dp,
+                    bottom = 64.dp,
+                ),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Log.d("DiningInsightsScreen", "cells: $cells")
 
@@ -56,7 +58,7 @@ fun DiningInsightsScreen(
                 Text(
                     text = "Dining Balance",
                     fontFamily = GilroyExtraBold,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
             }
 
@@ -66,7 +68,7 @@ fun DiningInsightsScreen(
                     diningDollars = "$${cell.diningBalances?.diningDollars ?: "0.00"}",
                     swipes = cell.diningBalances?.regularVisits ?: 0,
                     guestSwipes = cell.diningBalances?.guestVisits ?: 0,
-                    modifier = Modifier.padding(bottom = 12.dp)
+                    modifier = Modifier.padding(bottom = 12.dp),
                 )
             }
 
@@ -76,7 +78,7 @@ fun DiningInsightsScreen(
                     text = "Dining Dollars Predictions",
                     fontFamily = GilroyExtraBold,
                     color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(bottom = 4.dp)
+                    modifier = Modifier.padding(bottom = 4.dp),
                 )
             }
 
@@ -84,7 +86,7 @@ fun DiningInsightsScreen(
             items(cells.filter { it.type == "dining_dollars_predictions" }) { cell ->
                 DiningPredictionCard(
                     cell = cell,
-                    modifier = Modifier.padding(bottom = 12.dp)
+                    modifier = Modifier.padding(bottom = 12.dp),
                 )
             }
 
@@ -94,14 +96,14 @@ fun DiningInsightsScreen(
                     text = "Swipes Predictions",
                     fontFamily = GilroyExtraBold,
                     color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(bottom = 4.dp)
+                    modifier = Modifier.padding(bottom = 4.dp),
                 )
             }
 
             // Swipes Prediction cards
             items(cells.filter { it.type == "dining_swipes_predictions" }) { cell ->
                 DiningPredictionCard(
-                    cell = cell
+                    cell = cell,
                 )
             }
         }

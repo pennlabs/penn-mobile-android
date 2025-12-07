@@ -16,14 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.pennapps.labs.pennmobile.ui.theme.DiningBlue
 import com.pennapps.labs.pennmobile.ui.theme.DiningGreen
 
 enum class BalanceIconType {
     DOLLAR,
     SWIPE,
-    GUEST
+    GUEST,
 }
 
 @Composable
@@ -31,19 +30,19 @@ fun DiningBalancesCard(
     diningDollars: String,
     swipes: Int,
     guestSwipes: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         BalanceItem(
             "Dining Dollars",
             diningDollars,
             DiningGreen,
             iconType = BalanceIconType.DOLLAR,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         )
 
         BalanceItem(
@@ -51,7 +50,7 @@ fun DiningBalancesCard(
             swipes.toString(),
             DiningBlue,
             iconType = BalanceIconType.SWIPE,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         )
 
         BalanceItem(
@@ -59,7 +58,7 @@ fun DiningBalancesCard(
             guestSwipes.toString(),
             Color(0xFFFED994),
             iconType = BalanceIconType.GUEST,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         )
     }
 }
@@ -70,38 +69,41 @@ private fun BalanceItem(
     amount: String,
     indicatorColor: Color,
     iconType: BalanceIconType,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier.height(64.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.SpaceBetween
+                verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
                     text = label,
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
 
                 Text(
                     text = amount,
-                    style = MaterialTheme.typography.bodyLarge .copy(
-                        color = indicatorColor,
-                        // fontSize = 16.sp
-                    ),
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    style =
+                        MaterialTheme.typography.bodyLarge.copy(
+                            color = indicatorColor,
+                            // fontSize = 16.sp
+                        ),
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -114,9 +116,10 @@ private fun BalanceItem(
                         imageVector = Icons.Filled.AttachMoney,
                         contentDescription = "Dollar icon",
                         tint = indicatorColor,
-                        modifier = Modifier
-                            .size(16.dp)
-                            .align(Alignment.BottomEnd)
+                        modifier =
+                            Modifier
+                                .size(16.dp)
+                                .align(Alignment.BottomEnd),
                     )
                 }
                 BalanceIconType.SWIPE -> {
@@ -124,9 +127,10 @@ private fun BalanceItem(
                         imageVector = Icons.Filled.CreditCard,
                         contentDescription = "Swipe icon",
                         tint = indicatorColor,
-                        modifier = Modifier
-                            .size(16.dp)
-                            .align(Alignment.BottomEnd)
+                        modifier =
+                            Modifier
+                                .size(16.dp)
+                                .align(Alignment.BottomEnd),
                     )
                 }
                 BalanceIconType.GUEST -> {
@@ -134,9 +138,10 @@ private fun BalanceItem(
                         imageVector = Icons.Filled.Group,
                         contentDescription = "Guest icon",
                         tint = indicatorColor,
-                        modifier = Modifier
-                            .size(16.dp)
-                            .align(Alignment.BottomEnd)
+                        modifier =
+                            Modifier
+                                .size(16.dp)
+                                .align(Alignment.BottomEnd),
                     )
                 }
             }

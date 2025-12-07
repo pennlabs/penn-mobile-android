@@ -5,29 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
+import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.fragments.CampusExpressLoginFragment
 import com.pennapps.labs.pennmobile.dining.composables.DiningInsightsScreen
-import com.pennapps.labs.pennmobile.dining.viewmodels.DiningInsightsViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import com.pennapps.labs.pennmobile.R
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class DiningInsightsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val view = inflater.inflate(R.layout.fragment_dining_insights, container, false)
         val composeView = view.findViewById<ComposeView>(R.id.dining_insights_compose_view)
@@ -37,12 +29,13 @@ class DiningInsightsFragment : Fragment() {
             DiningInsightsScreen(
                 onLoginRequired = {
                     fragmentContainer.visibility = View.VISIBLE
-                    parentFragmentManager.beginTransaction()
+                    parentFragmentManager
+                        .beginTransaction()
                         .replace(R.id.dining_insights_container, CampusExpressLoginFragment())
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .addToBackStack(null)
                         .commit()
-                }
+                },
             )
         }
 

@@ -233,9 +233,9 @@ class HomeFragment : Fragment() {
             binding.dateView.text = Utils.getCurrentSystemTime()
         }
         (
-                binding.appbarHome.layoutParams
-                        as CoordinatorLayout.LayoutParams
-                ).behavior = ToolbarBehavior()
+            binding.appbarHome.layoutParams
+                as CoordinatorLayout.LayoutParams
+        ).behavior = ToolbarBehavior()
         binding.profile.setOnClickListener {
             // TODO: Account Settings
         }

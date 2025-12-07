@@ -1,10 +1,8 @@
 package com.pennapps.labs.pennmobile.dining.composables.components
 
 import GilroyBold
-import GilroyExtraBold
 import GilroyLight
 import android.content.Context
-import android.graphics.Color as AndroidColor
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -16,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color as ComposeColor
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -42,6 +39,8 @@ import com.pennapps.labs.pennmobile.dining.utils.smoothBalances
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
+import android.graphics.Color as AndroidColor
+import androidx.compose.ui.graphics.Color as ComposeColor
 
 val diningGreen: Int = "#BADFB8".toColorInt()
 val diningBlue: Int = "#99BCF7".toColorInt()
@@ -56,109 +55,130 @@ fun DiningPredictionCard(
     var selectedInfo by remember { mutableStateOf<String?>(null) }
     var chartInstance by remember { mutableStateOf<LineChart?>(null) }
 
-    val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US).apply {
-        timeZone = TimeZone.getTimeZone("UTC")
-    }
+    val sdf =
+        SimpleDateFormat("yyyy-MM-dd", Locale.US).apply {
+            timeZone = TimeZone.getTimeZone("UTC")
+        }
     val startDate = sdf.parse(START_DAY_OF_SEMESTER)!!
-    val endDate = Calendar.getInstance().apply {
-        time = startDate
-        add(Calendar.DAY_OF_YEAR, DAYS_IN_SEMESTER.toInt())
-    }.time
-
-    val rawValues = cell.diningBalancesList?.diningBalancesList?.mapNotNull { balance ->
-        when (cell.type) {
-            "dining_dollars_predictions" -> balance.diningDollars?.toFloat()
-            "dining_swipes_predictions" -> balance.regularVisits?.toFloat()
-            else -> null
-        }
-    } ?: emptyList()
-
-    val dateFormatter = object : ValueFormatter() {
-        private val displayFormat = SimpleDateFormat("MMM. d", Locale.US)
-
-        override fun getFormattedValue(value: Float): String {
-            val cal = Calendar.getInstance().apply {
+    val endDate =
+        Calendar
+            .getInstance()
+            .apply {
                 time = startDate
-                add(Calendar.DAY_OF_YEAR, value.toInt())
+                add(Calendar.DAY_OF_YEAR, DAYS_IN_SEMESTER.toInt())
+            }.time
+
+    val rawValues =
+        cell.diningBalancesList?.diningBalancesList?.mapNotNull { balance ->
+            when (cell.type) {
+                "dining_dollars_predictions" -> balance.diningDollars?.toFloat()
+                "dining_swipes_predictions" -> balance.regularVisits?.toFloat()
+                else -> null
             }
-            return displayFormat.format(cal.time)
+        } ?: emptyList()
+
+    val dateFormatter =
+        object : ValueFormatter() {
+            private val displayFormat = SimpleDateFormat("MMM. d", Locale.US)
+
+            override fun getFormattedValue(value: Float): String {
+                val cal =
+                    Calendar.getInstance().apply {
+                        time = startDate
+                        add(Calendar.DAY_OF_YEAR, value.toInt())
+                    }
+                return displayFormat.format(cal.time)
+            }
         }
-    }
 
     val smoothedValues = smoothBalances(rawValues)
 
-    val entries = cell.diningBalancesList?.diningBalancesList?.mapIndexedNotNull { index, balance ->
-        val dateString = balance.date ?: return@mapIndexedNotNull null
-        val date = try {
-            SimpleDateFormat("yyyy-MM-dd", Locale.US).apply {
-                timeZone = TimeZone.getTimeZone("UTC")
-                isLenient = false
-            }.parse(dateString)
-        } catch (e: Exception) {
+    val entries =
+        cell.diningBalancesList?.diningBalancesList?.mapIndexedNotNull { index, balance ->
+            val dateString = balance.date ?: return@mapIndexedNotNull null
+            val date =
+                try {
+                    SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                        .apply {
+                            timeZone = TimeZone.getTimeZone("UTC")
+                            isLenient = false
+                        }.parse(dateString)
+                } catch (e: Exception) {
+                    null
+                } ?: return@mapIndexedNotNull null
+
+            // Filter out dates after semester end
+            if (date.after(endDate)) return@mapIndexedNotNull null
+
+            if (index >= smoothedValues.size) return@mapIndexedNotNull null
+            val daysFromStart = ((date.time - startDate.time) / (1000 * 60 * 60 * 24)).toFloat()
+
+            // Also filter out negative days
+            if (daysFromStart < 0) return@mapIndexedNotNull null
+
+            Entry(daysFromStart, smoothedValues[index])
+        } ?: emptyList()
+
+    // Simple prediction based on slope between first and last entries
+    val predictionEntries: List<Entry> =
+        if (entries.size >= 2) {
+            val first = entries.first()
+            val last = entries.last()
+            val slope = (last.y - first.y) / (last.x - first.x)
+            val intercept = first.y - slope * first.x
+            val endX = ((endDate.time - startDate.time) / (1000 * 60 * 60 * 24)).toInt()
+            (last.x.toInt()..endX).map { day ->
+                Entry(day.toFloat(), slope * day + intercept)
+            }
+        } else {
+            emptyList()
+        }
+
+    val outOfFundsDate: String? =
+        predictionEntries.firstOrNull { it.y <= 0 }?.x?.toInt()?.let { days ->
+            val cal =
+                Calendar.getInstance().apply {
+                    time = startDate
+                    add(Calendar.DAY_OF_YEAR, days)
+                }
+            SimpleDateFormat("MMM. d", Locale.US).format(cal.time)
+        }
+
+    // Simple prediction based on slope between first and last entries
+    val predictedEndBalance: Float? =
+        if (entries.size >= 2) {
+            val first = entries.first()
+            val last = entries.last()
+            val slope = (last.y - first.y) / (last.x - first.x)
+            val intercept = first.y - slope * first.x
+            val endX = ((endDate.time - startDate.time) / (1000 * 60 * 60 * 24)).toFloat()
+            slope * endX + intercept
+        } else {
             null
-        } ?: return@mapIndexedNotNull null
-
-        // Filter out dates after semester end
-        if (date.after(endDate)) return@mapIndexedNotNull null
-
-        if (index >= smoothedValues.size) return@mapIndexedNotNull null
-        val daysFromStart = ((date.time - startDate.time) / (1000 * 60 * 60 * 24)).toFloat()
-
-        // Also filter out negative days
-        if (daysFromStart < 0) return@mapIndexedNotNull null
-
-        Entry(daysFromStart, smoothedValues[index])
-    } ?: emptyList()
-
-    // Simple prediction based on slope between first and last entries
-    val predictionEntries: List<Entry> = if (entries.size >= 2) {
-        val first = entries.first()
-        val last = entries.last()
-        val slope = (last.y - first.y) / (last.x - first.x)
-        val intercept = first.y - slope * first.x
-        val endX = ((endDate.time - startDate.time) / (1000 * 60 * 60 * 24)).toInt()
-        (last.x.toInt()..endX).map { day ->
-            Entry(day.toFloat(), slope * day + intercept)
         }
-    } else emptyList()
-
-    val outOfFundsDate: String? = predictionEntries.firstOrNull { it.y <= 0 }?.x?.toInt()?.let { days ->
-        val cal = Calendar.getInstance().apply {
-            time = startDate
-            add(Calendar.DAY_OF_YEAR, days)
-        }
-        SimpleDateFormat("MMM. d", Locale.US).format(cal.time)
-    }
-
-    // Simple prediction based on slope between first and last entries
-    val predictedEndBalance: Float? = if (entries.size >= 2) {
-        val first = entries.first()
-        val last = entries.last()
-        val slope = (last.y - first.y) / (last.x - first.x)
-        val intercept = first.y - slope * first.x
-        val endX = ((endDate.time - startDate.time) / (1000 * 60 * 60 * 24)).toFloat()
-        slope * endX + intercept
-    } else null
 
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() }
-            ) {
-                chartInstance?.highlightValue(null)
-            },
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() },
+                ) {
+                    chartInstance?.highlightValue(null)
+                },
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
         shape = MaterialTheme.shapes.medium,
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
         ) {
             val colorScheme = MaterialTheme.colorScheme
             val isDark = isSystemInDarkTheme()
@@ -186,30 +206,33 @@ fun DiningPredictionCard(
                         xAxis.valueFormatter = dateFormatter
                         xAxis.labelRotationAngle = -45f
 
-                        val actualSet = LineDataSet(entries, "Actual").apply {
-                            color = if (cell.type!!.contains("dollars")) diningGreen else diningBlue
-                            setDrawCircles(false)
-                            setDrawValues(false)
-                            lineWidth = 4f
-                        }
+                        val actualSet =
+                            LineDataSet(entries, "Actual").apply {
+                                color = if (cell.type!!.contains("dollars")) diningGreen else diningBlue
+                                setDrawCircles(false)
+                                setDrawValues(false)
+                                lineWidth = 4f
+                            }
 
-                        val predictionSet = LineDataSet(predictionEntries, "Prediction").apply {
-                            color = AndroidColor.GRAY
-                            setDrawCircles(false)
-                            setDrawValues(false)
-                            enableDashedLine(10f, 5f, 0f)
-                            lineWidth = 4f
-                        }
+                        val predictionSet =
+                            LineDataSet(predictionEntries, "Prediction").apply {
+                                color = AndroidColor.GRAY
+                                setDrawCircles(false)
+                                setDrawValues(false)
+                                enableDashedLine(10f, 5f, 0f)
+                                lineWidth = 4f
+                            }
 
                         data = LineData(actualSet, predictionSet)
 
                         val endX = ((endDate.time - startDate.time) / (1000 * 60 * 60 * 24)).toFloat()
-                        val ll = LimitLine(endX, "End of Term").apply {
-                            lineColor = AndroidColor.RED
-                            lineWidth = 2f
-                            textColor = AndroidColor.RED
-                            textSize = 12f
-                        }
+                        val ll =
+                            LimitLine(endX, "End of Term").apply {
+                                lineColor = AndroidColor.RED
+                                lineWidth = 2f
+                                textColor = AndroidColor.RED
+                                textSize = 12f
+                            }
                         xAxis.addLimitLine(ll)
                         xAxis.axisMaximum = endX
 
@@ -219,19 +242,24 @@ fun DiningPredictionCard(
                         setDrawMarkers(true)
 
                         actualSet.isHighlightEnabled = true
-                        setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-                            override fun onValueSelected(e: Entry?, h: Highlight?) {
-                                e?.let { entry ->
-                                    if (h != null) {
-                                        marker.refreshContent(entry, h)
-                                        invalidate()
+                        setOnChartValueSelectedListener(
+                            object : OnChartValueSelectedListener {
+                                override fun onValueSelected(
+                                    e: Entry?,
+                                    h: Highlight?,
+                                ) {
+                                    e?.let { entry ->
+                                        if (h != null) {
+                                            marker.refreshContent(entry, h)
+                                            invalidate()
+                                        }
                                     }
                                 }
-                            }
 
-                            override fun onNothingSelected() {
-                            }
-                        })
+                                override fun onNothingSelected() {
+                                }
+                            },
+                        )
 
                         description = Description().apply { text = "" }
                         setTouchEnabled(true)
@@ -247,9 +275,10 @@ fun DiningPredictionCard(
                         invalidate()
                     }
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -257,19 +286,19 @@ fun DiningPredictionCard(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 if (outOfFundsDate != null) {
                     Column(modifier = Modifier.weight(0.4f)) {
                         Text(
                             text = "Out of ${if (cell.type!!.contains("dollars")) "Dollars" else "Swipes"}",
                             fontFamily = GilroyLight,
-                            fontSize = 14.sp
+                            fontSize = 14.sp,
                         )
                         Text(
                             text = outOfFundsDate,
                             fontFamily = GilroyBold,
-                            fontSize = 20.sp
+                            fontSize = 20.sp,
                         )
                     }
                     Text(
@@ -278,33 +307,42 @@ fun DiningPredictionCard(
                         fontSize = 11.sp,
                         softWrap = true,
                         lineHeight = 13.sp,
-                        text = "Based on your current balance and past behavior, we project you'll run out on this date."
+                        text = "Based on your current balance and past behavior, we project you'll run out on this date.",
                     )
                 } else {
                     Column(modifier = Modifier.weight(0.4f)) {
-                        val balanceFormatted: String = if (cell.type!!.contains("dollars")) {
-                            "$" + String.format(Locale.US, "%.2f", predictedEndBalance)
-                        } else {
-                            String.format(Locale.US, "%d Swipes", predictedEndBalance?.coerceAtLeast(0f)?.roundToInt())
-                        }
+                        val balanceFormatted: String =
+                            if (cell.type!!.contains("dollars")) {
+                                "$" + String.format(Locale.US, "%.2f", predictedEndBalance)
+                            } else {
+                                String.format(Locale.US, "%d Swipes", predictedEndBalance?.coerceAtLeast(0f)?.roundToInt())
+                            }
                         Text(
                             text = "Extra ${if (cell.type!!.contains("dollars")) "Balance" else "Swipes"}",
                             fontFamily = GilroyLight,
-                            fontSize = 14.sp
+                            fontSize = 14.sp,
                         )
                         Text(
                             text = balanceFormatted,
                             fontFamily = GilroyBold,
-                            fontSize = 20.sp
+                            fontSize = 20.sp,
                         )
                     }
                     Text(
                         modifier = Modifier.weight(0.6f).fillMaxWidth(),
-                        text = "Based on your current balance and past behavior, we project you'll have this many extra ${if (cell.type!!.contains("dollars")) "dollars" else "swipes"}.",
+                        text = "Based on your current balance and past behavior, we project you'll have this many extra ${if (cell.type!!
+                                .contains(
+                                    "dollars",
+                                )
+                        ) {
+                            "dollars"
+                        } else {
+                            "swipes"
+                        }}.",
                         fontFamily = GilroyLight,
                         fontSize = 11.sp,
                         softWrap = true,
-                        lineHeight = 13.sp
+                        lineHeight = 13.sp,
                     )
                 }
             }

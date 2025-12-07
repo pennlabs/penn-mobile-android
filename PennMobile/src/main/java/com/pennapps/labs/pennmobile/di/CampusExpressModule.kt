@@ -15,16 +15,14 @@ import javax.inject.Singleton
 object CampusExpressModule {
     @Provides
     @Singleton
-    fun provideRetrofit(): Retrofit {
-        return Retrofit.Builder()
+    fun provideRetrofit(): Retrofit =
+        Retrofit
+            .Builder()
             .baseUrl(Platform.campusExpressBaseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-    }
 
     @Provides
     @Singleton
-    fun provideCampusExpress(retrofit: Retrofit): CampusExpress {
-        return retrofit.create(CampusExpress::class.java)
-    }
+    fun provideCampusExpress(retrofit: Retrofit): CampusExpress = retrofit.create(CampusExpress::class.java)
 }

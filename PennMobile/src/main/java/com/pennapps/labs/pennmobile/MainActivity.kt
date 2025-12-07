@@ -34,7 +34,6 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.preference.PreferenceManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.GsonBuilder
@@ -154,14 +153,15 @@ class MainActivity : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed({
             val currentPosition = binding.include.mainViewPager.currentItem
 
-            val menuItemId = when (currentPosition) {
-                MainPagerAdapter.HOME_POSITION -> R.id.nav_home
-                MainPagerAdapter.DINING_POSITION -> R.id.nav_dining
-                MainPagerAdapter.GSR_POSITION -> R.id.nav_gsr
-                MainPagerAdapter.LAUNDRY_POSITION -> R.id.nav_laundry
-                MainPagerAdapter.MORE_POSITION -> R.id.nav_more
-                else -> R.id.nav_home
-            }
+            val menuItemId =
+                when (currentPosition) {
+                    MainPagerAdapter.HOME_POSITION -> R.id.nav_home
+                    MainPagerAdapter.DINING_POSITION -> R.id.nav_dining
+                    MainPagerAdapter.GSR_POSITION -> R.id.nav_gsr
+                    MainPagerAdapter.LAUNDRY_POSITION -> R.id.nav_laundry
+                    MainPagerAdapter.MORE_POSITION -> R.id.nav_more
+                    else -> R.id.nav_home
+                }
 
             binding.include.expandableBottomBar.selectedItemId = menuItemId
         }, 100)
@@ -188,14 +188,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setSelectedTab(id: Int) {
-        val menuItemId = when (id) {
-            HOME -> R.id.nav_home
-            DINING -> R.id.nav_dining
-            GSR -> R.id.nav_gsr
-            LAUNDRY -> R.id.nav_laundry
-            MORE -> R.id.nav_more
-            else -> R.id.nav_home
-        }
+        val menuItemId =
+            when (id) {
+                HOME -> R.id.nav_home
+                DINING -> R.id.nav_dining
+                GSR -> R.id.nav_gsr
+                LAUNDRY -> R.id.nav_laundry
+                MORE -> R.id.nav_more
+                else -> R.id.nav_home
+            }
 
         // Set the bottom nav selected item
         binding.include.expandableBottomBar.selectedItemId = menuItemId

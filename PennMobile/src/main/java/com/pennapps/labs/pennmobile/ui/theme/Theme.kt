@@ -10,19 +10,20 @@ import com.pennapps.labs.pennmobile.ui.theme.*
 @Composable
 fun PennMobileTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val colors = if (darkTheme) DarkColors else LightColors
 
     MaterialTheme(
         colorScheme = colors,
         typography = AppTypography,
-        shapes = AppShapes
+        shapes = AppShapes,
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(colors.background)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(colors.background),
         ) {
             content()
         }

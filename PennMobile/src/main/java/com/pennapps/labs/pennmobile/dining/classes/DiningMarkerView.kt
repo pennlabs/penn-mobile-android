@@ -54,8 +54,11 @@ class DiningMarkerView(
                 append("\n")
                 append(diningData)
             }
-        val isDark = (context.resources.configuration.uiMode
-                and android.content.res.Configuration.UI_MODE_NIGHT_MASK) ==
+        val isDark =
+            (
+                context.resources.configuration.uiMode
+                    and android.content.res.Configuration.UI_MODE_NIGHT_MASK
+            ) ==
                 android.content.res.Configuration.UI_MODE_NIGHT_YES
         val textColor = if (isDark) android.graphics.Color.WHITE else android.graphics.Color.BLACK
         textView.setTextColor(textColor)
@@ -75,6 +78,6 @@ class DiningMarkerView(
     override fun getOffset(): MPPointF {
         // Center horizontally: -(width / 2)
         // Position closer to the point: reduce the padding
-        return MPPointF(-(width / 2f), (-(height/6)).toFloat())
+        return MPPointF(-(width / 2f), (-(height / 6)).toFloat())
     }
 }
