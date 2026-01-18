@@ -18,7 +18,7 @@ import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.components.dialog.CustomAlertDialogue
-import com.pennapps.labs.pennmobile.gsr.fragments.PottruckFragment
+import com.pennapps.labs.pennmobile.fitness.fragments.PottruckFragment
 import com.pennapps.labs.pennmobile.home.fragments.NewsFragment
 import com.pennapps.labs.pennmobile.showSneakerToast
 

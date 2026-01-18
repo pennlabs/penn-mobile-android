@@ -2,7 +2,7 @@ package com.pennapps.labs.pennmobile.fitness.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.pennapps.labs.pennmobile.gsr.fragments.PottruckFragment
+import com.pennapps.labs.pennmobile.fitness.fragments.PottruckFragment
 
 class FitnessPagerAdapter(
     fragment: Fragment,
