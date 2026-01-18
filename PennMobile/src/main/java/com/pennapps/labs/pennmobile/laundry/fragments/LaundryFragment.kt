@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile.laundry.fragments
 
-import StudentLife
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -16,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentLaundryBinding
 import com.pennapps.labs.pennmobile.isOnline

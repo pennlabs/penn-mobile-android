@@ -86,7 +86,10 @@ class Post {
                     this.status == other.status &&
                     this.targetPopulations == other.targetPopulations
             }
-            else -> false
+
+            else -> {
+                false
+            }
         }
     }
 

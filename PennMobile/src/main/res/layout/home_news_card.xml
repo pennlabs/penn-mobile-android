@@ -40,7 +40,6 @@
                 android:layout_gravity="bottom"
                 android:elevation="8dp"
                 android:outlineProvider="bounds"
-
                 tools:targetApi="lollipop">
 
                 <androidx.constraintlayout.widget.ConstraintLayout

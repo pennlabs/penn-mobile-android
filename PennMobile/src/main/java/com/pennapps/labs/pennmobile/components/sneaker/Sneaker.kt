@@ -100,9 +100,18 @@ class Sneaker(
                     isActivity = true
                     targetView.window?.decorView as ViewGroup
                 }
-                is Fragment -> targetView.view as ViewGroup
-                is ViewGroup -> targetView
-                else -> null
+
+                is Fragment -> {
+                    targetView.view as ViewGroup
+                }
+
+                is ViewGroup -> {
+                    targetView
+                }
+
+                else -> {
+                    null
+                }
             }
     }
 

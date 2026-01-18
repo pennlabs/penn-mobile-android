@@ -11,7 +11,9 @@ class GsrPagerAdapter(
         return when (position) {
             0 -> {
                 GsrFragment()
-            } else -> {
+            }
+
+            else -> {
                 return GsrReservationsFragment()
             }
         }
@@ -21,7 +23,10 @@ class GsrPagerAdapter(
 
     override fun getPageTitle(position: Int): CharSequence {
         return when (position) {
-            0 -> "Book a Room"
+            0 -> {
+                "Book a Room"
+            }
+
             else -> {
                 return "My Reservations"
             }

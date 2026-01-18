@@ -91,6 +91,7 @@ class LaundryMachineAdapter(
                         timeTextView!!.setText(R.string.not_updating_status)
                         alarmSwitch.visibility = View.GONE
                     }
+
                     OPEN_LABEL -> {
                         if (mMachineType == context.getString(R.string.washer)) {
                             machineView!!.setImageResource(R.drawable.ic_washer_available)
@@ -103,6 +104,7 @@ class LaundryMachineAdapter(
                         val id = detail.id
                         setSwitchState(time, id)
                     }
+
                     else -> {
                         if (mMachineType == context.getString(R.string.washer)) {
                             animated?.registerAnimationCallback(
@@ -241,6 +243,7 @@ class LaundryMachineAdapter(
                         timeTextView!!.setText(R.string.not_updating_status)
                         alarmSwitch.visibility = View.GONE
                     }
+
                     OPEN_LABEL -> {
                         if (mMachineType == context.getString(R.string.washer)) {
                             machineView!!.setImageResource(R.drawable.ic_washer_available)
@@ -253,6 +256,7 @@ class LaundryMachineAdapter(
                         val id = detail.id
                         setSwitchState(time, id)
                     }
+
                     else -> {
                         if (mMachineType == context.getString(R.string.washer)) {
                             // holder.machineView!!.setImageResource(R.drawable.ic_washer_in_use)

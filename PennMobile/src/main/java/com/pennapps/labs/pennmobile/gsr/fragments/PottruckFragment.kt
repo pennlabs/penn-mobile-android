@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile.gsr.fragments
 
-import StudentLife
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,6 +19,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentPottruckBinding
 import com.pennapps.labs.pennmobile.fitness.FitnessPreferenceViewModel

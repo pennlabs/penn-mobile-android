@@ -1,3 +1,5 @@
+package com.pennapps.labs.pennmobile.api
+
 import com.pennapps.labs.pennmobile.api.classes.AccessTokenResponse
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 import com.pennapps.labs.pennmobile.dining.classes.DiningPreferences

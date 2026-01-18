@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile.gsr.fragments
 
-import StudentLife
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -17,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.databinding.GsrDetailsBookBinding
 import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import kotlinx.coroutines.launch

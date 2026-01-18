@@ -16,7 +16,11 @@ class CalendarEvent {
         when (other) {
             is CalendarEvent -> {
                 this.name == other.name && this.date == other.date
-            } else -> false
+            }
+
+            else -> {
+                false
+            }
         }
 
     override fun hashCode(): Int {
