@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile.home.adapters
 
-import StudentLife
 import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
@@ -35,6 +34,7 @@ import com.bumptech.glide.Glide
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.components.sneaker.Utils.convertToDp
 import com.pennapps.labs.pennmobile.databinding.HomeBaseCardBinding
 import com.pennapps.labs.pennmobile.databinding.HomeGsrCardBinding
@@ -77,10 +77,11 @@ import rx.Observable
 import rx.schedulers.Schedulers
 
 class HomeAdapter(
+    private val mActivity: MainActivity,
     private val dataModel: HomepageDataModel,
+    private val mNetworkManager: OAuth2NetworkManager,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var mContext: Context
-    private lateinit var mActivity: MainActivity
     private lateinit var mStudentLife: StudentLife
 
     private var mCustomTabsClient: CustomTabsClient? = null
@@ -110,59 +111,58 @@ class HomeAdapter(
         parent: ViewGroup,
         viewType: Int,
     ): RecyclerView.ViewHolder {
-        mContext = parent.context
+        mContext = mActivity
         mStudentLife = MainActivity.studentLifeInstance
-        mActivity = mContext as MainActivity
 
         return when (viewType) {
             DINING -> {
-                val itemBinding = HomeBaseCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
+                val itemBinding = HomeBaseCardBinding.inflate(LayoutInflater.from(mActivity), parent, false)
                 return HomeDiningHolder(itemBinding)
             }
 
             CALENDAR -> {
-                val itemBinding = HomeBaseCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
+                val itemBinding = HomeBaseCardBinding.inflate(LayoutInflater.from(mActivity), parent, false)
                 return HomeCalendarHolder(itemBinding)
             }
 
             LAUNDRY -> {
-                val itemBinding = HomeBaseCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
+                val itemBinding = HomeBaseCardBinding.inflate(LayoutInflater.from(mActivity), parent, false)
                 return HomeLaundryHolder(itemBinding)
             }
 
             NEWS -> {
-                val itemBinding = HomeNewsCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
+                val itemBinding = HomeNewsCardBinding.inflate(LayoutInflater.from(mActivity), parent, false)
                 return HomeNewsCardHolder(itemBinding)
             }
 
             POST -> {
-                val itemBinding = HomePostCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
+                val itemBinding = HomePostCardBinding.inflate(LayoutInflater.from(mActivity), parent, false)
                 return HomePostHolder(itemBinding)
             }
 
             FEATURE -> {
-                val itemBinding = HomePostCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
+                val itemBinding = HomePostCardBinding.inflate(LayoutInflater.from(mActivity), parent, false)
                 return HomePostHolder(itemBinding)
             }
 
             POLL -> {
-                val itemBinding = PollCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
+                val itemBinding = PollCardBinding.inflate(LayoutInflater.from(mActivity), parent, false)
                 return HomePollHolder(itemBinding)
             }
 
             GSR_BOOKING -> {
-                val itemBinding = HomeGsrCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
+                val itemBinding = HomeGsrCardBinding.inflate(LayoutInflater.from(mActivity), parent, false)
                 return HomeGSRHolder(itemBinding)
             }
 
             NOT_SUPPORTED -> {
                 ViewHolder(
-                    LayoutInflater.from(mContext).inflate(R.layout.empty_view, parent, false),
+                    LayoutInflater.from(mActivity).inflate(R.layout.empty_view, parent, false),
                 )
             }
 
             else -> {
-                val itemBinding = HomeBaseCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
+                val itemBinding = HomeBaseCardBinding.inflate(LayoutInflater.from(mActivity), parent, false)
                 return HomeBaseHolder(itemBinding)
             }
         }
@@ -252,6 +252,7 @@ class HomeAdapter(
 
         try {
             mStudentLife.roomObservable(roomID).subscribeOn(Schedulers.io()).subscribe({ room ->
+
                 mActivity.runOnUiThread {
                     holder.homeTitle.text = room?.name ?: ""
                     val rooms = room?.let { arrayListOf(it) } ?: arrayListOf()
@@ -311,7 +312,7 @@ class HomeAdapter(
                                 LinearLayoutManager.VERTICAL,
                                 false,
                             )
-                        holder.homeRv.adapter = DiningCardAdapter(favorites)
+                        holder.homeRv.adapter = DiningCardAdapter(mActivity, favorites)
                     }
                 }
         } catch (e: Exception) {
@@ -423,7 +424,8 @@ class HomeAdapter(
                 dataModel.notifyPostBlurLoaded()
             }
         }
-        /** Sets up blur view on post card */
+
+        // Sets up blur view on post card
         holder.postBlurView
             .setupWith(holder.homePostContainer, RenderScriptBlur(mContext))
             .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))
@@ -512,7 +514,7 @@ class HomeAdapter(
                         selectedOptions.add(it.id)
                     }
                 }
-                val deviceID = OAuth2NetworkManager(mActivity).getDeviceId()
+                val deviceID = mNetworkManager.getDeviceId()
                 val idHash = Utils.getSha256Hash(deviceID)
                 mActivity.mNetworkManager.getAccessToken {
                     val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
@@ -604,9 +606,10 @@ class HomeAdapter(
             .centerCrop()
             .into(holder.homeNewsImageView)
 
-        /** Adds dynamically generated accent color from the fetched image to the news card */
+//        /** Adds dynamically generated accent color from the fetched image to the news card */
         var accentColor: Int = getColor(mContext, R.color.black)
         mActivity.lifecycleScope.launch(Dispatchers.Default) {
+            Log.d("HomeAdapter", "Image Url is ${article.imageUrl}")
             val bitmap =
                 withContext(Dispatchers.IO) {
                     Glide
@@ -663,7 +666,7 @@ class HomeAdapter(
             }
         }
 
-        /** Logic for the more info button on the news card */
+        // Logic for the more info button on the news card
         holder.newsInfoIcon.setOnClickListener {
             when (holder.homeNewsSubtitle.visibility) {
                 View.GONE -> {
@@ -682,7 +685,7 @@ class HomeAdapter(
             }
         }
 
-        /** Sets up blur view on news card */
+        // Sets up blur view on news card
         holder.newsBlurView
             .setupWith(holder.newsCardContainer, RenderScriptBlur(mContext))
             .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))

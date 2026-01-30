@@ -65,6 +65,7 @@ class PollOptionAdapter(
                     startX = event.x
                     startY = event.y
                 }
+
                 MotionEvent.ACTION_UP -> {
                     val endX = event.x
                     val endY = event.y

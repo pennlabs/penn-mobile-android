@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile
 
-import StudentLife
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -29,6 +28,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.preference.PreferenceManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
@@ -40,7 +42,9 @@ import com.pennapps.labs.pennmobile.api.CampusExpress
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.Platform
 import com.pennapps.labs.pennmobile.api.Serializer
+import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.api.classes.Account
+import com.pennapps.labs.pennmobile.api.classes.AuthEvent
 import com.pennapps.labs.pennmobile.api.fragments.LoginFragment
 import com.pennapps.labs.pennmobile.components.sneaker.Sneaker
 import com.pennapps.labs.pennmobile.databinding.ActivityMainBinding
@@ -55,7 +59,9 @@ import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.more.classes.Contact
 import com.pennapps.labs.pennmobile.more.fragments.SaveContactsFragment
 import com.pennapps.labs.pennmobile.utils.Utils
+import dagger.hilt.android.AndroidEntryPoint
 import eightbitlab.com.blurview.BlurView
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -64,16 +70,20 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private var tabShowed = false
     private lateinit var fragmentManager: FragmentManager
     private lateinit var mSharedPrefs: SharedPreferences
     private lateinit var binding: ActivityMainBinding
 
+    @Inject
+    lateinit var mNetworkManager: OAuth2NetworkManager
+
     val tokenMutex = Mutex()
     private lateinit var mFirebaseAnalytics: FirebaseAnalytics
-    val mNetworkManager by lazy { OAuth2NetworkManager(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (Build.VERSION.SDK_INT > 28) {
@@ -122,6 +132,8 @@ class MainActivity : AppCompatActivity() {
             startHomeFragment()
         }
 
+        setUpAuthStateListener()
+
         // Did diningWidgetIntentSetup not as separate function as for some reason when
         // diningWidgetBroadcast out of onCreate setTab does not trigger.
         var diningWidgetBroadCast = 0
@@ -139,6 +151,24 @@ class MainActivity : AppCompatActivity() {
         }
         if (gsrReservationWidgetBroadCast != -1) {
             setTab(GSR_ID)
+        }
+    }
+
+    /**
+     * Sets up an auth state listener. The authState is RequiresLogin when the user's access token
+     * is expired. As a result, we need to start the Login Fragment.
+     *
+     * @see OAuth2NetworkManager
+     */
+    private fun setUpAuthStateListener() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mNetworkManager.authEvents.collect { authState ->
+                    if (authState == AuthEvent.RequiresLogin) {
+                        startLoginFragment()
+                    }
+                }
+            }
         }
     }
 
@@ -185,6 +215,7 @@ class MainActivity : AppCompatActivity() {
         binding.include.mainViewPager.offscreenPageLimit = 5
         binding.include.mainViewPager.visibility = View.VISIBLE
         binding.include.expandableBottomBar.visibility = View.VISIBLE
+
         setTab(HOME_ID)
     }
 
@@ -460,10 +491,12 @@ fun isOnline(context: Context?): Boolean {
                 Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
                 return true
             }
+
             capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
                 Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
                 return true
             }
+
             capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
                 Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
                 return true

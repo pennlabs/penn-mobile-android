@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.firebase.crashlytics)
     id 'jacoco'
     id 'kotlin-parcelize'
+    id 'com.google.devtools.ksp'
+    id 'com.google.dagger.hilt.android'
 }
 
 android {
@@ -106,6 +108,10 @@ dependencies {
     implementation libs.bundles.retrofit2
     implementation libs.bundles.ui
     implementation libs.bundles.google
+    implementation libs.bundles.hilt
+
+    ksp libs.androidx.room.compiler
+    ksp libs.androidx.hilt.compiler
 
     testImplementation libs.junit
 }

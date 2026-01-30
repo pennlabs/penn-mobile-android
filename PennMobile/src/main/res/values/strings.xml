@@ -55,6 +55,11 @@
     <string name="dining_dollars">Dining Dollars</string>
     <string name="dining_swipes">Swipes</string>
     <string name="dining_guest_swipes">Guest Swipes</string>
+
+    <string name="all_dining_halls">All Dining Halls</string>
+    <string name="favorites">Favorites</string>
+    <string name="log_in">Log In</string>
+
     <string name="money">$</string>
     <string name="average_dining_dollars_spent">Average Dining Dollars Spent</string>
     <string name="past_week">this past week</string>
@@ -72,6 +77,13 @@
     <string name="out_of_dining_swipes_prediction_message">Based on your current balance and past behavior, we project you\'ll run out on this date.</string>
     <string name="extra_dining_swipes_message">Based on your past behavior, we project you\'ll end the semester with swipes to spare.</string>
     <string name="dining_graph_point">Date Filler Text \n Swipes Filler Text</string>
+
+    <!-- Sort Options -->
+    <string-array name="dining_sort_options">
+        <item>Newest</item>
+        <item>Oldest</item>
+        <item>Most Popular</item>
+    </string-array>
 
     <!-- LaundryRoom -->
     <string name="laundry_washer">Washers</string>
@@ -243,4 +255,5 @@
     <string name="login_background">Login Background</string>
     <string name="penn_mobile_icon">Penn Mobile Icon</string>
     <string name="cancel">Cancel</string>
+
 </resources>
