@@ -9,11 +9,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeightIn
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -59,10 +57,10 @@ fun DiningHallCard(
     openDiningHallMenu: (DiningHall) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val cardHeight = 130.dp
+    val cardHeight = 110.dp
 
     Card(
-        modifier = modifier.heightIn(cardHeight),
+        modifier = modifier.requiredHeight(cardHeight),
         colors =
             CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface,
@@ -81,10 +79,16 @@ fun DiningHallCard(
                 contentDescription = null,
                 modifier =
                     Modifier
-                        .width(150.dp)
+                        .fillMaxHeight()
                         .aspectRatio(4 / 3f)
-                        .requiredHeightIn(min = cardHeight)
-                        .clip(RoundedCornerShape(6.dp)),
+                        .clip(
+                            RoundedCornerShape(
+                                topStart = 0.dp,
+                                bottomStart = 0.dp,
+                                topEnd = 6.dp,
+                                bottomEnd = 8.dp
+                            )
+                        ),
                 contentScale = ContentScale.Crop,
             )
 
@@ -116,7 +120,8 @@ fun DiningHallCard(
                                 } else {
                                     AppColors.LabelRed.copy(alpha = 0.9f)
                                 },
-                            ).padding(vertical = 1.dp, horizontal = 6.dp),
+                            )
+                            .padding(vertical = 1.dp, horizontal = 6.dp),
                     fontSize = 13.sp,
                     fontFamily = GilroyFontFamily,
                 )
@@ -160,7 +165,12 @@ fun DiningHallCard(
     }
 }
 
-@Preview
+@Preview(name = "Light Mode", showBackground = true)
+@Preview(
+    name = "Dark Mode",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun PreviewDiningHallCard() {
     DiningHallCard(
@@ -172,17 +182,16 @@ private fun PreviewDiningHallCard() {
                 hours =
                     hashMapOf(
                         "11 AM - 3 PM" to
-                            Interval(
-                                Instant.now().millis,
-                                Instant.now().millis + 1000,
-                            ),
+                                Interval(
+                                    Instant.now().millis,
+                                    Instant.now().millis + 1000,
+                                ),
                     ),
                 venue = Venue(),
                 image = R.drawable.dining_commons,
             ),
         isFavourite = true,
         toggleFavourite = { },
-        openDiningHallMenu = {},
-        modifier = Modifier,
+        openDiningHallMenu = {}
     )
 }

@@ -1,3 +1,13 @@
+/**
+ * @file NetworkModule.kt
+ * @brief Hilt module for providing network-related singleton components.
+ *
+ * This module is responsible for setting up and providing all dependencies required for
+ * network operations throughout the application. It includes the configuration for Gson,
+ * OkHttpClient, Retrofit, and the specific API service interfaces. All dependencies
+ * provided here are scoped as singletons to ensure a single, shared instance is used
+ * across the app.
+ */
 package com.pennapps.labs.pennmobile.di
 
 import com.google.gson.Gson
@@ -32,6 +42,11 @@ import javax.inject.Singleton
 object NetworkModule {
     private const val PENN_MOBILE_BASE_URL = "https://pennmobile.org/api/"
 
+    /**
+     * Provides a customized [Gson] instance for Retrofit.
+     * This instance is configured with several custom type adapters to handle the specific
+     * JSON structures from the Penn Mobile API.
+     */
     @Provides
     @Singleton
     fun provideGson(): Gson =
@@ -84,6 +99,11 @@ object NetworkModule {
                 )
             }.create()
 
+    /**
+     * Provides an [HttpLoggingInterceptor] for debugging network requests.
+     * This interceptor is configured to log the body of network requests and responses,
+     * which is invaluable for debugging during development.
+     */
     @Provides
     @Singleton
     fun provideLoggingInterceptor(): HttpLoggingInterceptor =
@@ -91,6 +111,12 @@ object NetworkModule {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
+    /**
+     * Provides the application-wide [OkHttpClient].
+     * This client is configured with connection timeouts and the logging interceptor.
+     *
+     * @param logging The [HttpLoggingInterceptor] to be added for network debugging.
+     */
     @Provides
     @Singleton
     fun provideOkHttpClient(logging: HttpLoggingInterceptor): OkHttpClient =
@@ -102,6 +128,14 @@ object NetworkModule {
             .addInterceptor(logging)
             .build()
 
+    /**
+     * Provides the application-wide [Retrofit] instance.
+     * This instance is configured with the base URL, the custom OkHttpClient, and
+     * multiple converter factories to handle different response types.
+     *
+     * @param gson The custom [Gson] instance for JSON serialization/deserialization.
+     * @param client The configured [OkHttpClient] for making requests.
+     */
     @Provides
     @Singleton
     fun providesRetrofit(
@@ -117,6 +151,12 @@ object NetworkModule {
             .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
             .build()
 
+    /**
+     * Provides the [StudentLife] API service interface.
+     * Retrofit creates an implementation of this interface to handle API calls.
+     *
+     * @param retrofit The configured [Retrofit] instance.
+     */
     @Provides
     @Singleton
     fun providesStudentLife(retrofit: Retrofit): StudentLife = retrofit.create(StudentLife::class.java)
