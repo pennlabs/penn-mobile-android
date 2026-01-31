@@ -1,3 +1,12 @@
+/**
+ * @file DiningHallCard.kt
+ * @brief Renders a stateless card component for a single dining hall.
+ *
+ * This file contains the `DiningHallCard` composable, a UI component that displays
+ * key information about a dining hall, such as its image, name, open status, hours,
+ * and whether it is a user favorite.
+ *
+ */
 package com.pennapps.labs.pennmobile.dining.fragments.components
 
 import androidx.compose.foundation.Image
@@ -48,6 +57,15 @@ import com.pennapps.labs.pennmobile.dining.classes.Venue
 import org.joda.time.Instant
 import org.joda.time.Interval
 
+/**
+ * A card component that displays information about a single dining hall.
+ *
+ * @param diningHall State representing the [DiningHall] data to display.
+ * @param isFavourite State representing whether this dining hall is marked as a favorite.
+ * @param toggleFavourite Event lambda invoked when the user taps the favorite icon.
+ * @param openDiningHallMenu Event lambda invoked when the user taps on the card.
+ * @param modifier The [Modifier] to be applied to the Card container.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiningHallCard(
@@ -57,7 +75,7 @@ fun DiningHallCard(
     openDiningHallMenu: (DiningHall) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val cardHeight = 110.dp
+    val cardHeight = 130.dp
 
     Card(
         modifier = modifier.requiredHeight(cardHeight),
@@ -81,14 +99,7 @@ fun DiningHallCard(
                     Modifier
                         .fillMaxHeight()
                         .aspectRatio(4 / 3f)
-                        .clip(
-                            RoundedCornerShape(
-                                topStart = 0.dp,
-                                bottomStart = 0.dp,
-                                topEnd = 6.dp,
-                                bottomEnd = 8.dp
-                            )
-                        ),
+                        .clip(RoundedCornerShape(6.dp)),
                 contentScale = ContentScale.Crop,
             )
 
@@ -120,8 +131,7 @@ fun DiningHallCard(
                                 } else {
                                     AppColors.LabelRed.copy(alpha = 0.9f)
                                 },
-                            )
-                            .padding(vertical = 1.dp, horizontal = 6.dp),
+                            ).padding(vertical = 1.dp, horizontal = 6.dp),
                     fontSize = 13.sp,
                     fontFamily = GilroyFontFamily,
                 )
@@ -165,6 +175,12 @@ fun DiningHallCard(
     }
 }
 
+/**
+ * Provides a preview of the [DiningHallCard] component for development purposes.
+ *
+ * This composable is annotated with `@Preview` and sets up the [DiningHallCard] with
+ * sample data to be rendered in Android Studio's preview pane, for both light and dark themes.
+ */
 @Preview(name = "Light Mode", showBackground = true)
 @Preview(
     name = "Dark Mode",

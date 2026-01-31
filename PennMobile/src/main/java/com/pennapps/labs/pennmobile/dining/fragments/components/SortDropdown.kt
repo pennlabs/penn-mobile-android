@@ -1,3 +1,14 @@
+/**
+ * @file SortDropdown.kt
+ * @brief Renders a stateless dropdown menu component for selecting a sort order.
+ *
+ * This file contains the `SortDropdown` composable, a UI component that allows users
+ * to view the current sort option and expand a list to select a new one. It is designed
+ * to be stateless, receiving its state and event handlers from a parent ViewModel.
+ *
+ * It utilizes the generic `AnimatedPushDropdown` to manage its animation and layout.
+ * This file also includes preview functions for both light and dark modes.
+ */
 package com.pennapps.labs.pennmobile.dining.fragments.components
 
 import androidx.compose.foundation.clickable
@@ -24,6 +35,19 @@ import com.pennapps.labs.pennmobile.compose.presentation.theme.GilroyFontFamily
 import com.pennapps.labs.pennmobile.compose.presentation.theme.googleSansFontFamily
 import com.pennapps.labs.pennmobile.dining.classes.DiningHallSortOrder
 
+/**
+ * A dropdown component that displays sorting options for the dining hall list.
+ *
+ * It displays the currently selected sort order and, when tapped, expands to show a list of
+ * available sorting options.
+ *
+ * @param sortMenuExpanded State representing whether the dropdown is currently expanded.
+ * @param toggleExpandedMode Event lambda to be invoked when the user taps to expand or collapse the dropdown.
+ * @param currentSortOption State representing the currently selected [DiningHallSortOrder].
+ * @param sortOptions The list of all available [DiningHallSortOrder] options to display.
+ * @param changeSortOption Event lambda to be invoked when the user selects a new sort option.
+ * @param modifier The [Modifier] to be applied to this component.
+ */
 @Composable
 fun SortDropdown(
     sortMenuExpanded: Boolean,
@@ -87,7 +111,12 @@ fun SortDropdown(
     )
 }
 
-
+/**
+ * Provides a preview of the [SortDropdown] component for development purposes.
+ *
+ * This composable is annotated with `@Preview` and sets up the [SortDropdown] with
+ * sample state to be rendered in Android Studio's preview pane.
+ */
 @Preview(name = "Light Mode", showBackground = true)
 @Preview(
     name = "Dark Mode",
@@ -112,4 +141,3 @@ private fun PreviewSortDropdown() =
             )
         }
     }
-
