@@ -221,6 +221,8 @@ class HomeFragment : Fragment() {
                     (R.drawable.ic_guest_avatar, context?.theme),
             )
         }
+
+        // Force update the bottom nav selection since we default to that page
         mActivity.setSelectedTab(MainActivity.HOME)
         mActivity.showBottomBar()
     }
@@ -232,10 +234,13 @@ class HomeFragment : Fragment() {
     private fun initAppBar(view: View) {
         val firstName = sharedPreferences.getString(getString(R.string.first_name), null)
         firstName?.let {
-            binding.dateView.text = "Welcome, $it!".toUpperCase(Locale.getDefault())
+            binding.dateView.text = "Welcome, $it!".uppercase(Locale.getDefault())
             Handler().postDelayed(
                 {
-                    binding.dateView.text = Utils.getCurrentSystemTime()
+                    // Check if binding is still valid before accessing it
+                    _binding?.let { binding ->
+                        binding.dateView.text = Utils.getCurrentSystemTime()
+                    }
                 },
                 4000,
             )

@@ -85,6 +85,9 @@ class GsrReservationsFragment : Fragment() {
     }
 
     private fun getReservations() {
+        // Early return if binding is null
+        _binding ?: return
+
         if (!isOnline(context)) {
             binding.internetConnectionGSRReservations.setBackgroundColor(resources.getColor(R.color.darkRedBackground))
             binding.internetConnectionMessageGsrReservations.text = "Not Connected to Internet"
@@ -111,36 +114,42 @@ class GsrReservationsFragment : Fragment() {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ reservations ->
-                        binding.loadingPanel.root.visibility = View.GONE
-                        try {
-                            val sortedReservations = reservations?.sortedBy { it?.fromDate }
-                            sortedReservations?.let {
-                                binding.gsrReservationsRv.adapter =
-                                    GsrReservationsAdapter(
-                                        ArrayList(it.filterNotNull()),
-                                    )
-                                if (it.isNotEmpty()) {
-                                    binding.gsrNoReservations.visibility = View.GONE
-                                } else {
-                                    binding.gsrNoReservations.visibility = View.VISIBLE
-                                }
-                            }
-                            // stop refreshing
-                            binding.gsrReservationsRefreshLayout.isRefreshing = false
-                        } catch (e: Exception) {
-                            FirebaseCrashlytics.getInstance().recordException(e)
-                        }
-                    }, { throwable ->
-                        mActivity.runOnUiThread {
-                            Log.e("GsrReservationsFragment", "Error getting reservations", throwable)
-                            throwable.printStackTrace()
+                        // Check if binding is still valid
+                        _binding?.let { binding ->
                             binding.loadingPanel.root.visibility = View.GONE
                             try {
-                                binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList())
-                                binding.gsrNoReservations.visibility = View.VISIBLE
+                                val sortedReservations = reservations?.sortedBy { it?.fromDate }
+                                sortedReservations?.let {
+                                    binding.gsrReservationsRv.adapter =
+                                        GsrReservationsAdapter(
+                                            ArrayList(it.filterNotNull()),
+                                        )
+                                    if (it.isNotEmpty()) {
+                                        binding.gsrNoReservations.visibility = View.GONE
+                                    } else {
+                                        binding.gsrNoReservations.visibility = View.VISIBLE
+                                    }
+                                }
+                                // stop refreshing
                                 binding.gsrReservationsRefreshLayout.isRefreshing = false
                             } catch (e: Exception) {
                                 FirebaseCrashlytics.getInstance().recordException(e)
+                            }
+                        }
+                    }, { throwable ->
+                        mActivity.runOnUiThread {
+                            // Check if binding is still valid
+                            _binding?.let { binding ->
+                                Log.e("GsrReservationsFragment", "Error getting reservations", throwable)
+                                throwable.printStackTrace()
+                                binding.loadingPanel.root.visibility = View.GONE
+                                try {
+                                    binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList())
+                                    binding.gsrNoReservations.visibility = View.VISIBLE
+                                    binding.gsrReservationsRefreshLayout.isRefreshing = false
+                                } catch (e: Exception) {
+                                    FirebaseCrashlytics.getInstance().recordException(e)
+                                }
                             }
                         }
                     })
