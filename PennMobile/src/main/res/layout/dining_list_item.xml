@@ -122,16 +122,25 @@
       />
 
   <ImageView
+      android:id="@+id/item_toggle_favourite_btn"
+      android:layout_width="20dp"
+      android:layout_height="20dp"
+      android:contentDescription="Add to Favourite"
+      android:src="@drawable/ic_star_border_24dp"
+      app:layout_constraintBottom_toBottomOf="@+id/item_dining_name"
+      app:layout_constraintEnd_toEndOf="@+id/dining_hall_menu_indicator"
+      app:layout_constraintStart_toStartOf="@+id/dining_hall_menu_indicator"
+      app:layout_constraintTop_toTopOf="@+id/item_dining_name" />
+
+  <ImageView
       android:id="@+id/dining_hall_menu_indicator"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginEnd="2dp"
-      android:layout_marginRight="2dp"
       android:src="@drawable/ic_chevron_right_black_24dp"
-      android:tint="@color/settings_grey"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      />
+      app:tint="@color/settings_grey" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

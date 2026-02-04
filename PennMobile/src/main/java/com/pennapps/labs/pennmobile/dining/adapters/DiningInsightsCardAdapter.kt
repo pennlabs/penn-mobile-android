@@ -53,7 +53,7 @@ class DiningInsightsCardAdapter(
         private const val DINING_SWIPES_PREDICTIONS = 3
 
         const val START_DAY_OF_SEMESTER = "2026-01-14"
-        const val DAYS_IN_SEMESTER = 119f
+        private const val DAYS_IN_SEMESTER = 117f
     }
 
     override fun onCreateViewHolder(
@@ -67,21 +67,26 @@ class DiningInsightsCardAdapter(
                 val itemBinding = DiningBalancesCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
                 DiningBalancesCardHolder(itemBinding)
             }
+
             DINING_DOLLARS_SPENT -> {
                 val itemBinding = DiningSpentCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
                 DiningSpentHolder(itemBinding)
             }
+
             DINING_DOLLARS_PREDICTIONS -> {
                 val itemBinding = DiningPredictionsCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
                 DiningPredictionsHolder(itemBinding)
             }
+
             DINING_SWIPES_PREDICTIONS -> {
                 val itemBinding = DiningPredictionsCardBinding.inflate(LayoutInflater.from(mContext), parent, false)
                 DiningPredictionsHolder(itemBinding)
             }
+
             NOT_SUPPORTED -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.empty_view, parent, false))
             }
+
             else -> {
                 ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.empty_view, parent, false))
             }
