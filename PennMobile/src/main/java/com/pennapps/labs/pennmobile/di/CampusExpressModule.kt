@@ -8,13 +8,16 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object CampusExpressModule {
+
     @Provides
     @Singleton
+    @Named("CampusExpressRetrofit") // Tag this specific instance
     fun provideRetrofit(): Retrofit =
         Retrofit
             .Builder()
@@ -24,5 +27,7 @@ object CampusExpressModule {
 
     @Provides
     @Singleton
-    fun provideCampusExpress(retrofit: Retrofit): CampusExpress = retrofit.create(CampusExpress::class.java)
+    fun provideCampusExpress(
+        @Named("CampusExpressRetrofit") retrofit: Retrofit // Tell Hilt to use the tagged instance
+    ): CampusExpress = retrofit.create(CampusExpress::class.java)
 }
