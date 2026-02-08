@@ -50,6 +50,7 @@ class AboutAdapter(
                 "Joe MacDougall" -> R.drawable.joe
                 "Baron Ping-Yeh Hsieh" -> R.drawable.baron
                 "David Fu" -> R.drawable.david
+                "Andrew Chelimo" -> R.drawable.andrew
                 "Kaushik Akula" -> R.drawable.kaushik
                 else -> null
             }
