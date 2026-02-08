@@ -20,7 +20,6 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
-import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.DiningBalancesCardBinding
 import com.pennapps.labs.pennmobile.databinding.DiningPredictionsCardBinding
@@ -44,7 +43,6 @@ class DiningInsightsCardAdapter(
     private var cells: ArrayList<DiningInsightCell>,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var mContext: Context
-    private lateinit var mActivity: MainActivity
 
     companion object {
         // Types of Home Cells
@@ -55,7 +53,7 @@ class DiningInsightsCardAdapter(
         private const val DINING_SWIPES_PREDICTIONS = 3
 
         const val START_DAY_OF_SEMESTER = "2026-01-14"
-        private const val DAYS_IN_SEMESTER = 117f
+        const val DAYS_IN_SEMESTER = 117f
     }
 
     override fun onCreateViewHolder(
@@ -63,7 +61,6 @@ class DiningInsightsCardAdapter(
         viewType: Int,
     ): RecyclerView.ViewHolder {
         mContext = parent.context
-        mActivity = mContext as MainActivity
 
         return when (viewType) {
             DINING_BALANCE -> {

@@ -23,6 +23,7 @@ class DiningMarkerView(
 
     private val textView: TextView = findViewById(R.id.dining_marker_text)
     private val point: ImageView = findViewById(R.id.dining_marker_point)
+
     private var xValue: Float = 0.0F
     private var yValue: Float = 0.0F
     private var typeId: Int = 0
@@ -32,6 +33,7 @@ class DiningMarkerView(
         entry: Entry,
         highlight: Highlight,
     ) {
+        point.visibility = GONE // Remove this once it's properly aligned
         xValue = entry.x
         yValue = entry.y
         // convert entry.x to date
@@ -52,11 +54,18 @@ class DiningMarkerView(
                 append("\n")
                 append(diningData)
             }
+        val isDark =
+            (
+                context.resources.configuration.uiMode
+                    and android.content.res.Configuration.UI_MODE_NIGHT_MASK
+            ) ==
+                android.content.res.Configuration.UI_MODE_NIGHT_YES
+        val textColor = if (isDark) android.graphics.Color.WHITE else android.graphics.Color.BLACK
+        textView.setTextColor(textColor)
+
         if (typeId == DINING_SWIPES_PREDICTIONS) {
-            textView.setTextColor(context.getColor(R.color.diningBlue))
             point.setColorFilter(context.getColor(R.color.diningBlue))
         } else {
-            textView.setTextColor(context.getColor(R.color.diningGreen))
             point.setColorFilter(context.getColor(R.color.diningGreen))
         }
     }
@@ -65,6 +74,10 @@ class DiningMarkerView(
         this.typeId = typeId
     }
 
-    // This is used to reposition the marker
-    override fun getOffset(): MPPointF = MPPointF(0.0F, (-height / 6).toFloat())
+    // This is used to reposition the marker. Please fix if we want this to be visible
+    override fun getOffset(): MPPointF {
+        // Center horizontally: -(width / 2)
+        // Position closer to the point: reduce the padding
+        return MPPointF(-(width / 2f), (-(height / 6)).toFloat())
+    }
 }

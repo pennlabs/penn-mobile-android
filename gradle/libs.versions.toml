@@ -64,7 +64,6 @@ rxJavaCoroutineConverter = "1.8.0"
 testng = "7.8.0"
 
 [libraries]
-
 adapter-rxjava = { module = "com.squareup.retrofit2:adapter-rxjava", version.ref = "adapterRxjava" }
 android-rss = { module = "com.github.ahorn:android-rss", version.ref = "androidRss" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -92,7 +91,6 @@ androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-
 androidx-material-icons-core = { module = "androidx.compose.material:material-icons-core" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-material3-android = { module = "androidx.compose.material3:material3" }
-#androidx-material3-pullRefresh = { module = "androidx.compose.material3:material3-pull-refresh", version.ref = "pullRefresh"}
 androidx-multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
 androidx-palette-ktx = { module = "androidx.palette:palette-ktx", version.ref = "paletteKtx" }
 androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preferenceKtx" }
@@ -125,7 +123,6 @@ jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 junit = { module = "junit:junit", version.ref = "junitVersion" }
 kaspresso = { module = "com.kaspersky.android-components:kaspresso", version.ref = "kaspresso" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
-#kotlinx-coroutines-rxConverter = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-rx", version.ref ="rxJavaCoroutineConverter" }
 leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanaryAndroid" }
 library = { module = "com.daimajia.swipelayout:library", version.ref = "library" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
@@ -148,9 +145,9 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices"}
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashalytics"}
 ksp = { id = "com.google.devtools.ksp", version.ref = "kotlinKSP"}
-
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
-
+# Added this to match the accessor in build.gradle
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 
 [bundles]
@@ -167,7 +164,6 @@ material = [
     "androidx-glance-material3",
     "androidx-material-icons-core",
     "androidx-material-icons-extended",
-#    "androidx-material3-pullRefresh",
     "material"
 ]
 

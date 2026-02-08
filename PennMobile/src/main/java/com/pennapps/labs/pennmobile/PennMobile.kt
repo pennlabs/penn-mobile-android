@@ -20,7 +20,6 @@ class PennMobile : MultiDexApplication() {
                     .Builder()
                     .detectUnsafeIntentLaunch()
                     .penaltyLog()
-                    .penaltyDeath()
                     .build(),
             )
         }
