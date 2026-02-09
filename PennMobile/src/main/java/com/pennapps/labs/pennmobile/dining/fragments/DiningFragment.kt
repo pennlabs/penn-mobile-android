@@ -173,6 +173,12 @@ class DiningFragment : Fragment() {
 
             LaunchedEffect(isDataRefreshing) {
                 Log.d("DiningFragment", "PullToRefreshState: isDataRefreshing is $isDataRefreshing")
+
+                // Check online status during refresh
+                val isOnlineStatus = isOnline(requireContext())
+                Log.d("DiningFragment", "isOnline: $isOnlineStatus")
+                isOnline = isOnlineStatus
+
                 if (isDataRefreshing) {
                     // When the ViewModel starts refreshing, tell the UI to animate
                     // the indicator into view.
