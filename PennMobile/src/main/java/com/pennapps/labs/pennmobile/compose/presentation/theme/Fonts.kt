@@ -14,6 +14,26 @@ val provider =
         certificates = R.array.com_google_android_gms_fonts_certs,
     )
 
+// Define the GoogleFont references
+private val CabinFont = GoogleFont("Cabin")
+private val GoogleSansFont = GoogleFont("Google Sans")
+
+// Cabin Font Family
+val cabinFontFamily =
+    FontFamily(
+        androidx.compose.ui.text.googlefonts.Font(googleFont = CabinFont, fontProvider = provider, weight = FontWeight.Normal), // Regular
+        androidx.compose.ui.text.googlefonts.Font(googleFont = CabinFont, fontProvider = provider, weight = FontWeight.Medium),
+        androidx.compose.ui.text.googlefonts.Font(googleFont = CabinFont, fontProvider = provider, weight = FontWeight.SemiBold),
+    )
+
+// Google Sans Font Family
+val googleSansFontFamily =
+    FontFamily(
+        androidx.compose.ui.text.googlefonts.Font(googleFont = GoogleSansFont, fontProvider = provider, weight = FontWeight.Normal), // Regular
+        androidx.compose.ui.text.googlefonts.Font(googleFont = GoogleSansFont, fontProvider = provider, weight = FontWeight.Medium),
+        androidx.compose.ui.text.googlefonts.Font(googleFont = GoogleSansFont, fontProvider = provider, weight = FontWeight.SemiBold),
+    )
+
 val GilroyFontFamily =
     FontFamily(
         Font(R.font.gilroy_light, FontWeight.Normal),

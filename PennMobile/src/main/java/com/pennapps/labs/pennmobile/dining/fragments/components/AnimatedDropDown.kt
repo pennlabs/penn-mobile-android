@@ -1,3 +1,14 @@
+/**
+ * @file AnimatedDropDown.kt
+ * @brief Provides a generic, stateless, animated dropdown component.
+ *
+ * This file contains the `AnimatedPushDropdown` composable, a reusable UI component
+ * designed to display a title and expandable content. The expansion and collapse are
+ * animated, and the arrow icon rotates to indicate the current state.
+ *
+ * As a stateless component, it hoists its `expanded` state and relies on event callbacks,
+ * making it highly reusable throughout the application.
+ */
 package com.pennapps.labs.pennmobile.dining.fragments.components
 
 import androidx.compose.animation.AnimatedVisibility
@@ -20,34 +31,37 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.pennapps.labs.pennmobile.compose.presentation.theme.AppTheme
-import com.pennapps.labs.pennmobile.compose.presentation.theme.GilroyFontFamily
-import com.pennapps.labs.pennmobile.dining.classes.DiningHallSortOrder
 
+
+/**
+ * A generic, animated dropdown card component.
+ *
+ * This composable displays a title row that, when clicked, expands or collapses to reveal
+ * the content area. The transition is animated, and a dropdown arrow icon rotates to
+ * reflect the current state.
+ *
+ * @param expanded State representing whether the dropdown is currently expanded.
+ * @param toggleExpandedMode Event lambda invoked when the title row is clicked.
+ * @param title The composable content to display in the header row of the dropdown.
+ * @param content The composable content to display in the expandable area.
+ * @param modifier The [Modifier] to be applied to the Card container.
+ */
 @Composable
 fun AnimatedPushDropdown(
-    sortMenuExpanded: Boolean,
+    expanded: Boolean,
     toggleExpandedMode: () -> Unit,
-    currentSortOption: DiningHallSortOrder,
-    sortOptions: List<DiningHallSortOrder>,
-    changeSortOption: (DiningHallSortOrder) -> Unit,
+    title: @Composable () -> Unit,
+    content: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val rotationAngle by animateFloatAsState(
-        targetValue = if (sortMenuExpanded) 180f else 0f,
+        targetValue = if (expanded) 180f else 0f,
         label = "Dropdown Arrow Rotation",
     )
 
@@ -58,8 +72,8 @@ fun AnimatedPushDropdown(
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors =
             CardDefaults.cardColors(
-                contentColor = MaterialTheme.colorScheme.onSurface,
                 containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onSurface,
             ),
         shape = RoundedCornerShape(6.dp),
     ) {
@@ -73,13 +87,8 @@ fun AnimatedPushDropdown(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Text(
-                    text = "Sort by ${currentSortOption.toDisplayString()}",
-                    fontFamily = GilroyFontFamily,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 16.sp,
-                )
+                title()
+
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
                     contentDescription = "Toggle Sort Menu",
@@ -89,7 +98,7 @@ fun AnimatedPushDropdown(
             }
 
             AnimatedVisibility(
-                visible = sortMenuExpanded,
+                visible = expanded,
                 enter =
                     expandVertically(animationSpec = tween(800)) +
                         fadeIn(
@@ -106,50 +115,7 @@ fun AnimatedPushDropdown(
                                     800,
                                 ),
                         ),
-            ) {
-                Column(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp),
-                ) {
-                    sortOptions.forEach { orderOption ->
-                        Text(
-                            text = orderOption.key,
-                            color = MaterialTheme.colorScheme.onBackground,
-                            fontFamily = GilroyFontFamily,
-                            fontWeight = FontWeight.Normal,
-                            modifier =
-                                Modifier
-                                    .clickable {
-                                        changeSortOption(orderOption)
-                                        // onExpandedChange() // This would also work
-                                    }.padding(
-                                        vertical = 6.dp,
-                                        horizontal = 8.dp,
-                                    ).fillMaxWidth(),
-                        )
-                    }
-                }
-            }
+            ) { content() }
         }
     }
 }
-
-@Preview
-@Composable
-private fun PreviewAnimatedPushDropdown() =
-    AppTheme {
-        Column {
-            var sortMenuExpanded by remember { mutableStateOf(false) }
-            var sortOption by remember { mutableStateOf(DiningHallSortOrder.Residential) }
-
-            AnimatedPushDropdown(
-                sortMenuExpanded,
-                toggleExpandedMode = { sortMenuExpanded = !sortMenuExpanded },
-                currentSortOption = sortOption,
-                sortOptions = DiningHallSortOrder.entries,
-                changeSortOption = { sortOption = it },
-            )
-        }
-    }
