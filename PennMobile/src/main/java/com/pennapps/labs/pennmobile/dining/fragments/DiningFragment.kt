@@ -184,10 +184,9 @@ class DiningFragment : Fragment() {
                 }
                 Log.d(
                     "DiningFragment",
-                    "End ofPullToRefreshState: isDataRefreshing is $isDataRefreshing"
+                    "End ofPullToRefreshState: isDataRefreshing is $isDataRefreshing",
                 )
             }
-
 
             LaunchedEffect(Unit) {
                 val isOnlineStatus = isOnline(requireContext())
@@ -222,19 +221,21 @@ class DiningFragment : Fragment() {
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .fillMaxHeight()
+                                .fillMaxHeight(),
                     ) {
                         AnimatedVisibility(isOnline == false) {
                             Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(AppColors.LabelRed),
-                                horizontalArrangement = Arrangement.Center
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .background(AppColors.LabelRed),
+                                horizontalArrangement = Arrangement.Center,
                             ) {
                                 Text(
                                     "Not Connected to the Internet",
                                     fontSize = 14.sp,
-                                    fontFamily = sfProFontFamily
+                                    fontFamily = sfProFontFamily,
+                                    color = Color.White,
                                 )
                             }
                         }
@@ -249,7 +250,6 @@ class DiningFragment : Fragment() {
                                     .padding(bottom = 42.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
-
                             item {
                                 SortDropdown(
                                     modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
@@ -289,7 +289,7 @@ class DiningFragment : Fragment() {
                                 Text(
                                     stringResource(R.string.all_dining_halls),
                                     modifier = Modifier.padding(top = 20.dp).padding(start = 6.dp),
-                                    style = CustomTextStyles.DiningHallsHeader()
+                                    style = CustomTextStyles.DiningHallsHeader(),
                                 )
                             }
 
