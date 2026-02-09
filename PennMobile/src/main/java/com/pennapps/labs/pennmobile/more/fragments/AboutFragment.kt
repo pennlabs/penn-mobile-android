@@ -91,6 +91,8 @@ class AboutFragment : Fragment() {
                 "David Fu",
                 "Kaushik Akula",
                 "Veer Kakar",
+                "Cassie Mai",
+                "Ronnie Wang",
             )
         val alumni =
             arrayListOf(
