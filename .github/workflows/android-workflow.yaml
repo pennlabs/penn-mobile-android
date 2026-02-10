@@ -172,11 +172,7 @@ jobs:
         - name: Run ktlint
           run: |
             set -o pipefail
-            ktlint --reporter=plain > ktlint_errors.txt
-
-        - name: Check for ktlint errors
-          if: ${{ failure() || steps.run_ktlint.exitCode == 1 }}
-          run: cat ktlint_errors.txt
+            ktlint --reporter=plain | tee ktlint_errors.txt
     
   # Publish to Firebase App Distribution
   # https://github.com/wzieba/Firebase-Distribution-Github-Action
