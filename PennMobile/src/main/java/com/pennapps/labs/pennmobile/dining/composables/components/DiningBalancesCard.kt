@@ -106,7 +106,7 @@ private fun BalanceItem(
                     text = label,
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurface,
-                    fontWeight = FontWeight.W900
+                    fontWeight = FontWeight.W900,
                 )
 
                 Text(
@@ -117,7 +117,7 @@ private fun BalanceItem(
                             // fontSize = 16.sp
                         ),
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                    fontWeight = FontWeight.W900
+                    fontWeight = FontWeight.W900,
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -136,6 +136,7 @@ private fun BalanceItem(
                                 .align(Alignment.BottomEnd),
                     )
                 }
+
                 BalanceIconType.SWIPE -> {
                     Icon(
                         imageVector = Icons.Filled.CreditCard,
@@ -147,6 +148,7 @@ private fun BalanceItem(
                                 .align(Alignment.BottomEnd),
                     )
                 }
+
                 BalanceIconType.GUEST -> {
                     Icon(
                         imageVector = Icons.Filled.Group,
