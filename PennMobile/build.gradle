@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.ktlint)
     // Removed problematic compose compiler alias for Kotlin 1.9.x compatibility
     id 'jacoco'
     id 'kotlin-parcelize'
@@ -11,24 +12,24 @@ plugins {
 }
 
 android {
-    namespace 'com.pennapps.labs.pennmobile'
+    namespace = 'com.pennapps.labs.pennmobile'
 
     buildFeatures {
         buildConfig = true
-        viewBinding true
-        compose true
+        viewBinding = true
+        compose = true
     }
 
     buildTypes {
         debug {
             matchingFallbacks = ['qa', 'release']
-            enableUnitTestCoverage true
-            enableAndroidTestCoverage true
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
         }
         release {}
     }
 
-    compileSdk 35
+    compileSdk = 35
 
     composeOptions {
         // Matches Kotlin 1.9.24 defined in your libs.versions.toml
@@ -43,7 +44,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 35
         vectorDrawables.useSupportLibrary = true
-        multiDexEnabled true
+        multiDexEnabled = true
         buildConfigField ("String", "PLATFORM_REDIRECT_URI", getPlatformRedirectUri())
         buildConfigField ("String", "PLATFORM_CLIENT_ID", getPlatformClientID())
     }
@@ -56,12 +57,28 @@ android {
     }
 }
 
+ktlint {
+    version.set("1.8.0")
+    android.set(true)
+    ignoreFailures.set(false)
+    verbose.set(true)
+    outputToConsole.set(true)
+    coloredOutput.set(true)
+
+    filter {
+        exclude("**/build/**")
+        exclude("**/generated/**")
+    }
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 // If you want the foundation layout, use the bundle or the specific activity compose you have defined
     implementation libs.androidx.activity.compose
     implementation libs.androidx.material3.android
 //    implementation libs.androidx.foundation.layout
+
+    ktlintRuleset libs.ktlint
 
     androidTestImplementation libs.androidx.espresso.core
     androidTestImplementation libs.androidx.junit
