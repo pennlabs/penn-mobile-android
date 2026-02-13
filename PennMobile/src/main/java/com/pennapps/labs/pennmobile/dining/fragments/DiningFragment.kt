@@ -98,7 +98,8 @@ class DiningFragment : Fragment() {
     @Composable
     fun DiningHallListScreen(
         modifier: Modifier = Modifier,
-        viewModel: DiningViewModel = hiltViewModel()) {
+        viewModel: DiningViewModel = hiltViewModel(),
+    ) {
         val pullToRefreshState = rememberPullToRefreshState()
         val isDataRefreshing by viewModel.isRefreshing.collectAsState()
         val allDiningHalls by viewModel.allDiningHalls.collectAsState()

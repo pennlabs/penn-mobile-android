@@ -22,8 +22,10 @@ import androidx.compose.ui.unit.dp
 @Suppress("ktlint:standard:function-naming")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotificationSettingsList(settingsList: List<Pair<String, Boolean>>,
-                             modifier: Modifier = Modifier) {
+fun NotificationSettingsList(
+    settingsList: List<Pair<String, Boolean>>,
+    modifier: Modifier = Modifier,
+) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
@@ -105,7 +107,7 @@ fun NotificationSettingsList(settingsList: List<Pair<String, Boolean>>,
 fun NotificationSettingRow(
     label: String,
     isEnabledInitial: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var isEnabled by remember { mutableStateOf(isEnabledInitial) }
 

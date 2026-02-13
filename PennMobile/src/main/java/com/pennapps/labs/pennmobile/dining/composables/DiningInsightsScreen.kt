@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile.dining.composables
 
 import GilroyExtraBold
-import com.pennapps.labs.pennmobile.ui.theme.PennMobileTheme
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,13 +21,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pennapps.labs.pennmobile.dining.composables.components.DiningBalancesCard
 import com.pennapps.labs.pennmobile.dining.composables.components.DiningPredictionCard
 import com.pennapps.labs.pennmobile.dining.viewmodels.DiningInsightsViewModel
+import com.pennapps.labs.pennmobile.ui.theme.PennMobileTheme
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun DiningInsightsScreen(
     onLoginRequirement: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: DiningInsightsViewModel = hiltViewModel()
+    viewModel: DiningInsightsViewModel = hiltViewModel(),
 ) {
     val currentOnLoginRequirement by rememberUpdatedState(onLoginRequirement)
 
