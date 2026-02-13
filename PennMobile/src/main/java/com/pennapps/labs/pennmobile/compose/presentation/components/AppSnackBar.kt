@@ -21,6 +21,8 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -60,6 +62,8 @@ fun AppSnackBar(
             contentColor = AppColors.TabTextBlue,
         ),
 ) {
+    val currentDismiss by rememberUpdatedState(dismiss)
+
     val duration =
         when (duration) {
             SnackbarDuration.Short -> 3000L
@@ -72,7 +76,7 @@ fun AppSnackBar(
 
         if (duration != Long.MAX_VALUE) {
             delay(duration)
-            dismiss()
+            currentDismiss()
         }
     }
 
@@ -139,17 +143,6 @@ private fun PreviewAppSnackBar() =
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
         ) {
-//        AppSnackBar(
-//            snackBarContainerColor = AppColors.LabelRed,
-//            snackBarContentColor = Color.White,
-//            message = "Log in to add dining halls to favourites",
-//            snackBarActionLabel = "Log In",
-//            dismiss = {},
-//            performSnackBarAction = { },
-//            duration = SnackbarDuration.Short,
-//            modifier = Modifier.align(Alignment.BottomCenter)
-//        )
-
             AppSnackBar(
                 snackBarContainerColor = AppColors.LabelRed,
                 snackBarContentColor = Color.White,

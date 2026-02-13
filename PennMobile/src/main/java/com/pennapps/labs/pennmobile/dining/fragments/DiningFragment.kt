@@ -96,7 +96,10 @@ class DiningFragment : Fragment() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun DiningHallListScreen(viewModel: DiningViewModel = hiltViewModel()) {
+    fun DiningHallListScreen(
+        modifier: Modifier = Modifier,
+        viewModel: DiningViewModel = hiltViewModel(),
+    ) {
         val pullToRefreshState = rememberPullToRefreshState()
         val isDataRefreshing by viewModel.isRefreshing.collectAsState()
         val allDiningHalls by viewModel.allDiningHalls.collectAsState()
@@ -119,6 +122,7 @@ class DiningFragment : Fragment() {
         }
 
         Scaffold(
+            modifier = modifier,
             snackbarHost = {
                 SnackbarHost(
                     hostState = snackBarHostState,
