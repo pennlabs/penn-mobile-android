@@ -17,7 +17,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.pennapps.labs.pennmobile.dining.composables.components.DiningBalancesCard
 import com.pennapps.labs.pennmobile.dining.composables.components.DiningPredictionCard
 import com.pennapps.labs.pennmobile.dining.viewmodels.DiningInsightsViewModel
@@ -28,7 +29,15 @@ import com.pennapps.labs.pennmobile.ui.theme.PennMobileTheme
 fun DiningInsightsScreen(
     onLoginRequirement: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: DiningInsightsViewModel = hiltViewModel(),
+    viewModel: DiningInsightsViewModel =
+        hiltViewModel(
+            checkNotNull(
+                LocalViewModelStoreOwner.current,
+            ) {
+                "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+            },
+            null,
+        ),
 ) {
     val currentOnLoginRequirement by rememberUpdatedState(onLoginRequirement)
 

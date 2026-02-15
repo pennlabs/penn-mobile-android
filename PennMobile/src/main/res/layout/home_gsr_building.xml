@@ -59,10 +59,9 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:src="@drawable/ic_chevron_right_black_24dp"
-        android:tint="@color/settings_grey"
         app:layout_constraintBottom_toBottomOf="@+id/home_gsr_building_tv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/home_gsr_building_tv"
-        />
+        app:tint="@color/settings_grey" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

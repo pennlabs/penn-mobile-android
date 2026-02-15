@@ -64,7 +64,7 @@ fun AppSnackBar(
 ) {
     val currentDismiss by rememberUpdatedState(dismiss)
 
-    val duration =
+    val durationMillis =
         when (duration) {
             SnackbarDuration.Short -> 3000L
             SnackbarDuration.Long -> 5000L
@@ -74,8 +74,8 @@ fun AppSnackBar(
     LaunchedEffect(message) {
         Log.d("AppSnackBar", "message: $message")
 
-        if (duration != Long.MAX_VALUE) {
-            delay(duration)
+        if (durationMillis != Long.MAX_VALUE) {
+            delay(durationMillis)
             currentDismiss()
         }
     }
