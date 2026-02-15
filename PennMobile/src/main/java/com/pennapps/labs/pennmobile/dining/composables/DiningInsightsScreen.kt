@@ -1,7 +1,6 @@
 package com.pennapps.labs.pennmobile.dining.composables
 
 import GilroyExtraBold
-import PennMobileTheme
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,20 +14,33 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.pennapps.labs.pennmobile.dining.composables.components.DiningBalancesCard
 import com.pennapps.labs.pennmobile.dining.composables.components.DiningPredictionCard
 import com.pennapps.labs.pennmobile.dining.viewmodels.DiningInsightsViewModel
+import com.pennapps.labs.pennmobile.ui.theme.PennMobileTheme
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun DiningInsightsScreen(
+    onLoginRequirement: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: DiningInsightsViewModel = hiltViewModel(),
-    onLoginRequired: () -> Unit,
+    viewModel: DiningInsightsViewModel =
+        hiltViewModel(
+            checkNotNull(
+                LocalViewModelStoreOwner.current,
+            ) {
+                "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+            },
+            null,
+        ),
 ) {
+    val currentOnLoginRequirement by rememberUpdatedState(onLoginRequirement)
+
     PennMobileTheme {
         LaunchedEffect(Unit) {
             viewModel.checkTokenAndFetch()
@@ -37,7 +49,7 @@ fun DiningInsightsScreen(
         val loginRequired by viewModel.loginRequired.collectAsState()
         LaunchedEffect(loginRequired) {
             if (loginRequired) {
-                onLoginRequired()
+                currentOnLoginRequirement()
             }
         }
 

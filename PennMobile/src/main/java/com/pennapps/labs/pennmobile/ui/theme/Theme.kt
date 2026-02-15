@@ -1,3 +1,7 @@
+package com.pennapps.labs.pennmobile.ui.theme
+
+import AppShapes
+import AppTypography
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -5,12 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.pennapps.labs.pennmobile.ui.theme.DarkColors
-import com.pennapps.labs.pennmobile.ui.theme.LightColors
 
-@Suppress("ktlint:standard:function-naming")
 @Composable
 fun PennMobileTheme(
+    modifier: Modifier = Modifier,
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
@@ -23,7 +25,7 @@ fun PennMobileTheme(
     ) {
         Box(
             modifier =
-                Modifier
+                modifier
                     .fillMaxSize()
                     .background(colors.background),
         ) {
