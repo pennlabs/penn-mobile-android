@@ -476,163 +476,177 @@ class GsrFragment : Fragment() {
     }
 
     private fun populateDropDownGSR() {
-        try {
-            val bearerToken: String =
-                sharedPreferences.getString(
-                    getString(R.string.access_token),
-                    "",
-                ) ?: ""
-            mStudentLife
-                .location(
-                    "Bearer $bearerToken",
-                ).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    { locations ->
-                        activity?.let { activity ->
-                            populatedDropDownGSR = true
-                            // reset the drop down
-                            val emptyArray = arrayOfNulls<String>(0)
-                            val emptyAdapter =
-                                ArrayAdapter<String>(
-                                    activity,
-                                    android.R.layout.simple_spinner_dropdown_item,
-                                    emptyArray,
-                                )
-                            gsrLocationDropDown.adapter = emptyAdapter
+        mActivity.mNetworkManager.getAccessToken {
+            checkIfFragmentAttached {
+                val bearerToken: String =
+                    sharedPreferences.getString(
+                        getString(R.string.access_token),
+                        "",
+                    ) ?: ""
 
-                            val locationList = locations?.filterNotNull() ?: emptyList()
+                // Handle the rare case where they aren't logged in at all
+                if (bearerToken.isEmpty()) {
+                    return@checkIfFragmentAttached
+                }
+                try {
+                    mStudentLife
+                        .location(
+                            "Bearer $bearerToken",
+                        ).subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                            { locations ->
+                                activity?.let { activity ->
+                                    populatedDropDownGSR = true
+                                    // reset the drop down
+                                    val emptyArray = arrayOfNulls<String>(0)
+                                    val emptyAdapter =
+                                        ArrayAdapter<String>(
+                                            activity,
+                                            android.R.layout.simple_spinner_dropdown_item,
+                                            emptyArray,
+                                        )
+                                    gsrLocationDropDown.adapter = emptyAdapter
 
-                            val numLocations = locationList.size
-                            var i = 0
-                            // go through all the rooms
-                            while (i < numLocations) {
-                                val locationName = locationList[i].name ?: ""
-                                if (locationName.isEmpty()) {
-                                    Log.w(
-                                        "Empty location name",
-                                        locationList[i].id ?: locationList[i].gid.toString(),
-                                    )
+                                    val locationList = locations?.filterNotNull() ?: emptyList()
+
+                                    val numLocations = locationList.size
+                                    var i = 0
+                                    // go through all the rooms
+                                    while (i < numLocations) {
+                                        val locationName = locationList[i].name ?: ""
+                                        if (locationName.isEmpty()) {
+                                            Log.w(
+                                                "Empty location name",
+                                                locationList[i].id
+                                                    ?: locationList[i].gid.toString(),
+                                            )
+                                        }
+                                        gsrHashMap[locationName] = locationList[i].id
+                                        gsrGIDHashMap[locationName] = locationList[i].gid
+                                        i++
+                                    }
+
+                                    val gsrs = gsrHashMap.keys.toList().toTypedArray()
+
+                                    val adapter =
+                                        ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
+                                    gsrLocationDropDown.adapter = adapter
+
+                                    durationDropDown.adapter =
+                                        if (gsrLocationDropDown.selectedItem.toString() == "Huntsman" ||
+                                            gsrLocationDropDown.selectedItem.toString() == "Academic Research"
+                                        ) {
+                                            whartonDurationAdapter
+                                        } else if (gsrLocationDropDown.selectedItem.toString() == "Biomedical") {
+                                            biotechDurationAdapter
+                                        } else {
+                                            durationAdapter
+                                        }
+                                    searchForGSR(false)
                                 }
-                                gsrHashMap[locationName] = locationList[i].id
-                                gsrGIDHashMap[locationName] = locationList[i].gid
-                                i++
+                            },
+                            {
+                                Log.e("Gsr Fragment", "Error getting gsr locations", it)
+                                activity?.let { activity ->
+                                    activity.runOnUiThread {
+                                        // hard coded in case runs into error
+                                        gsrHashMap["VP Ground Floor"] = "1086"
+                                        gsrHashMap["Weigle"] = "1086"
+                                        gsrHashMap["Lippincott"] = "2587"
+                                        gsrHashMap["Edu Commons"] = "2495"
+                                        gsrHashMap["Biotech Commons"] = "2683"
+                                        gsrHashMap["Fisher"] = "2637"
+                                        gsrHashMap["Levin Building"] = "1090"
+                                        gsrHashMap["Museum Library"] = "2634"
+                                        gsrHashMap["VP Seminar"] = "2636"
+                                        gsrHashMap["VP Special Use"] = "2611"
+                                        gsrHashMap["Huntsman Hall"] = "JMHH"
+                                        gsrHashMap["Academic Research"] = "ARB"
+                                        gsrHashMap["PCPSE Building"] = "4370"
+                                        gsrGIDHashMap["PCPSE Building"] = 7426
+                                        val gsrs = gsrHashMap.keys.toList().toTypedArray()
+                                        val adapter =
+                                            ArrayAdapter(
+                                                activity,
+                                                R.layout.gsr_spinner_item,
+                                                gsrs,
+                                            )
+                                        gsrLocationDropDown.adapter = adapter
+
+                                        durationDropDown.adapter =
+                                            if (gsrLocationDropDown.selectedItem.toString() == "Huntsman" ||
+                                                gsrLocationDropDown.selectedItem.toString() == "Academic Research"
+                                            ) {
+                                                whartonDurationAdapter
+                                            } else if (gsrLocationDropDown.selectedItem.toString() == "Biotech Commons") {
+                                                biotechDurationAdapter
+                                            } else {
+                                                durationAdapter
+                                            }
+                                        searchForGSR(false)
+                                    }
+                                }
+                            },
+                        )
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+                gsrLocationDropDown.onItemSelectedListener =
+                    object : OnItemSelectedListener {
+                        override fun onItemSelected(
+                            adapterView: AdapterView<*>,
+                            view: View?,
+                            i: Int,
+                            l: Long,
+                        ) {
+                            // change possible durations depending on the location
+                            var durationPos = durationDropDown.selectedItemPosition
+                            if (durationPos >= 3 &&
+                                (
+                                    gsrLocationDropDown.selectedItem.toString() == "Huntsman" ||
+                                        gsrLocationDropDown.selectedItem.toString() == "Academic Research"
+                                )
+                            ) {
+                                durationPos = 2
+                            } else if (durationPos > 3 && gsrLocationDropDown.selectedItem.toString() != "Biotech Commons") {
+                                durationPos = 3
                             }
-
-                            val gsrs = gsrHashMap.keys.toList().toTypedArray()
-
-                            val adapter =
-                                ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
-                            gsrLocationDropDown.adapter = adapter
-
                             durationDropDown.adapter =
                                 if (gsrLocationDropDown.selectedItem.toString() == "Huntsman" ||
                                     gsrLocationDropDown.selectedItem.toString() == "Academic Research"
                                 ) {
                                     whartonDurationAdapter
-                                } else if (gsrLocationDropDown.selectedItem.toString() == "Biomedical") {
+                                } else if (gsrLocationDropDown.selectedItem.toString() == "Biotech Commons") {
                                     biotechDurationAdapter
                                 } else {
                                     durationAdapter
                                 }
+                            durationDropDown.setSelection(durationPos)
                             searchForGSR(false)
                         }
-                    },
-                    {
-                        Log.e("Gsr Fragment", "Error getting gsr locations", it)
-                        activity?.let { activity ->
-                            activity.runOnUiThread {
-                                // hard coded in case runs into error
-                                gsrHashMap["VP Ground Floor"] = "1086"
-                                gsrHashMap["Weigle"] = "1086"
-                                gsrHashMap["Lippincott"] = "2587"
-                                gsrHashMap["Edu Commons"] = "2495"
-                                gsrHashMap["Biotech Commons"] = "2683"
-                                gsrHashMap["Fisher"] = "2637"
-                                gsrHashMap["Levin Building"] = "1090"
-                                gsrHashMap["Museum Library"] = "2634"
-                                gsrHashMap["VP Seminar"] = "2636"
-                                gsrHashMap["VP Special Use"] = "2611"
-                                gsrHashMap["Huntsman Hall"] = "JMHH"
-                                gsrHashMap["Academic Research"] = "ARB"
-                                gsrHashMap["PCPSE Building"] = "4370"
-                                gsrGIDHashMap["PCPSE Building"] = 7426
-                                val gsrs = gsrHashMap.keys.toList().toTypedArray()
-                                val adapter =
-                                    ArrayAdapter(activity, R.layout.gsr_spinner_item, gsrs)
-                                gsrLocationDropDown.adapter = adapter
 
-                                durationDropDown.adapter =
-                                    if (gsrLocationDropDown.selectedItem.toString() == "Huntsman" ||
-                                        gsrLocationDropDown.selectedItem.toString() == "Academic Research"
-                                    ) {
-                                        whartonDurationAdapter
-                                    } else if (gsrLocationDropDown.selectedItem.toString() == "Biotech Commons") {
-                                        biotechDurationAdapter
-                                    } else {
-                                        durationAdapter
-                                    }
-                                searchForGSR(false)
-                            }
+                        override fun onNothingSelected(adapterView: AdapterView<*>) {
                         }
-                    },
-                )
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        gsrLocationDropDown.onItemSelectedListener =
-            object : OnItemSelectedListener {
-                override fun onItemSelected(
-                    adapterView: AdapterView<*>,
-                    view: View?,
-                    i: Int,
-                    l: Long,
-                ) {
-                    // change possible durations depending on the location
-                    var durationPos = durationDropDown.selectedItemPosition
-                    if (durationPos >= 3 &&
-                        (
-                            gsrLocationDropDown.selectedItem.toString() == "Huntsman" ||
-                                gsrLocationDropDown.selectedItem.toString() == "Academic Research"
-                        )
-                    ) {
-                        durationPos = 2
-                    } else if (durationPos > 3 && gsrLocationDropDown.selectedItem.toString() != "Biotech Commons") {
-                        durationPos = 3
                     }
-                    durationDropDown.adapter =
-                        if (gsrLocationDropDown.selectedItem.toString() == "Huntsman" ||
-                            gsrLocationDropDown.selectedItem.toString() == "Academic Research"
+
+                durationDropDown.onItemSelectedListener =
+                    object : OnItemSelectedListener {
+                        override fun onItemSelected(
+                            p0: AdapterView<*>?,
+                            p1: View?,
+                            pos: Int,
+                            p3: Long,
                         ) {
-                            whartonDurationAdapter
-                        } else if (gsrLocationDropDown.selectedItem.toString() == "Biotech Commons") {
-                            biotechDurationAdapter
-                        } else {
-                            durationAdapter
+                            searchForGSR(false)
                         }
-                    durationDropDown.setSelection(durationPos)
-                    searchForGSR(false)
-                }
 
-                override fun onNothingSelected(adapterView: AdapterView<*>) {
-                }
+                        override fun onNothingSelected(p0: AdapterView<*>?) {
+                            // Account did not change the duration
+                        }
+                    }
             }
-
-        durationDropDown.onItemSelectedListener =
-            object : OnItemSelectedListener {
-                override fun onItemSelected(
-                    p0: AdapterView<*>?,
-                    p1: View?,
-                    pos: Int,
-                    p3: Long,
-                ) {
-                    searchForGSR(false)
-                }
-
-                override fun onNothingSelected(p0: AdapterView<*>?) {
-                    // Account did not change the duration
-                }
-            }
+        }
     }
 
     private fun showNoResults() {
