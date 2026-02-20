@@ -35,7 +35,6 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.Calendar
 import java.util.Date
-import androidx.core.content.edit
 
 class GsrFragment : Fragment() {
     // ui components
@@ -478,13 +477,15 @@ class GsrFragment : Fragment() {
 
     private fun populateDropDownGSR() {
         try {
-            val bearerToken: String = sharedPreferences.getString(
-                getString(R.string.access_token), "") ?: ""
+            val bearerToken: String =
+                sharedPreferences.getString(
+                    getString(R.string.access_token),
+                    "",
+                ) ?: ""
             mStudentLife
                 .location(
                     "Bearer $bearerToken",
-                )
-                .subscribeOn(Schedulers.io())
+                ).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     { locations ->
