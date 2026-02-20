@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pennapps.labs.pennmobile.compose.presentation.theme.AppColors
 import com.pennapps.labs.pennmobile.compose.presentation.theme.AppTheme
-import com.pennapps.labs.pennmobile.compose.presentation.theme.GilroyFontFamily
+import com.pennapps.labs.pennmobile.compose.presentation.theme.cabinFontFamily
 import com.pennapps.labs.pennmobile.compose.presentation.theme.sfProFontFamily
 import kotlinx.coroutines.delay
 
@@ -105,7 +105,7 @@ fun AppSnackBar(
             Text(
                 text = message,
                 color = snackBarContentColor,
-                fontFamily = GilroyFontFamily,
+                fontFamily = cabinFontFamily,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.weight(1f),

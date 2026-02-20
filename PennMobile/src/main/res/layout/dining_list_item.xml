@@ -121,16 +121,6 @@
       app:layout_constraintTop_toTopOf="parent"
       />
 
-  <ImageView
-      android:id="@+id/item_toggle_favourite_btn"
-      android:layout_width="20dp"
-      android:layout_height="20dp"
-      android:contentDescription="Add to Favourite"
-      android:src="@drawable/ic_star_border_24dp"
-      app:layout_constraintBottom_toBottomOf="@+id/item_dining_name"
-      app:layout_constraintEnd_toEndOf="@+id/dining_hall_menu_indicator"
-      app:layout_constraintStart_toStartOf="@+id/dining_hall_menu_indicator"
-      app:layout_constraintTop_toTopOf="@+id/item_dining_name" />
 
   <ImageView
       android:id="@+id/dining_hall_menu_indicator"

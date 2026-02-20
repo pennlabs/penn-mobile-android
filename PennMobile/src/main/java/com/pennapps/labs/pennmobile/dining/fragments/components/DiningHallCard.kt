@@ -1,3 +1,12 @@
+/**
+ * @file DiningHallCard.kt
+ * @brief Renders a stateless card component for a single dining hall.
+ *
+ * This file contains the `DiningHallCard` composable, a UI component that displays
+ * key information about a dining hall, such as its image, name, open status, hours,
+ * and whether it is a user favorite.
+ *
+ */
 package com.pennapps.labs.pennmobile.dining.fragments.components
 
 import androidx.compose.foundation.Image
@@ -9,11 +18,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeightIn
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -50,6 +57,15 @@ import com.pennapps.labs.pennmobile.dining.classes.Venue
 import org.joda.time.Instant
 import org.joda.time.Interval
 
+/**
+ * A card component that displays information about a single dining hall.
+ *
+ * @param diningHall State representing the [DiningHall] data to display.
+ * @param isFavourite State representing whether this dining hall is marked as a favorite.
+ * @param toggleFavourite Event lambda invoked when the user taps the favorite icon.
+ * @param openDiningHallMenu Event lambda invoked when the user taps on the card.
+ * @param modifier The [Modifier] to be applied to the Card container.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiningHallCard(
@@ -62,7 +78,7 @@ fun DiningHallCard(
     val cardHeight = 130.dp
 
     Card(
-        modifier = modifier.heightIn(cardHeight),
+        modifier = modifier.requiredHeight(cardHeight),
         colors =
             CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface,
@@ -81,9 +97,8 @@ fun DiningHallCard(
                 contentDescription = null,
                 modifier =
                     Modifier
-                        .width(150.dp)
+                        .fillMaxHeight()
                         .aspectRatio(4 / 3f)
-                        .requiredHeightIn(min = cardHeight)
                         .clip(RoundedCornerShape(6.dp)),
                 contentScale = ContentScale.Crop,
             )
@@ -160,7 +175,18 @@ fun DiningHallCard(
     }
 }
 
-@Preview
+/**
+ * Provides a preview of the [DiningHallCard] component for development purposes.
+ *
+ * This composable is annotated with `@Preview` and sets up the [DiningHallCard] with
+ * sample data to be rendered in Android Studio's preview pane, for both light and dark themes.
+ */
+@Preview(name = "Light Mode", showBackground = true)
+@Preview(
+    name = "Dark Mode",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun PreviewDiningHallCard() {
     DiningHallCard(
@@ -172,17 +198,16 @@ private fun PreviewDiningHallCard() {
                 hours =
                     hashMapOf(
                         "11 AM - 3 PM" to
-                            Interval(
-                                Instant.now().millis,
-                                Instant.now().millis + 1000,
-                            ),
+                                Interval(
+                                    Instant.now().millis,
+                                    Instant.now().millis + 1000,
+                                ),
                     ),
                 venue = Venue(),
                 image = R.drawable.dining_commons,
             ),
         isFavourite = true,
         toggleFavourite = { },
-        openDiningHallMenu = {},
-        modifier = Modifier,
+        openDiningHallMenu = {}
     )
 }

@@ -1,10 +1,12 @@
 package com.pennapps.labs.pennmobile.dining.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
@@ -12,6 +14,8 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -43,7 +47,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,18 +57,18 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.compose.presentation.components.AppSnackBar
 import com.pennapps.labs.pennmobile.compose.presentation.theme.AppColors
-import com.pennapps.labs.pennmobile.compose.presentation.theme.AppColors.LabelGreen
-import com.pennapps.labs.pennmobile.compose.presentation.theme.AppColors.LabelRed
 import com.pennapps.labs.pennmobile.compose.presentation.theme.AppTheme
-import com.pennapps.labs.pennmobile.compose.presentation.theme.GilroyFontFamily
+import com.pennapps.labs.pennmobile.compose.presentation.theme.CustomTextStyles
+import com.pennapps.labs.pennmobile.compose.presentation.theme.sfProFontFamily
 import com.pennapps.labs.pennmobile.compose.utils.NetworkUtils
 import com.pennapps.labs.pennmobile.compose.utils.SnackBarEvent
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall
 import com.pennapps.labs.pennmobile.dining.classes.DiningHallSortOrder
 import com.pennapps.labs.pennmobile.dining.classes.Venue
-import com.pennapps.labs.pennmobile.dining.fragments.components.AnimatedPushDropdown
 import com.pennapps.labs.pennmobile.dining.fragments.components.DiningHallCard
 import com.pennapps.labs.pennmobile.dining.fragments.components.FavouriteDiningHalls
+import com.pennapps.labs.pennmobile.dining.fragments.components.SortDropdown
+import com.pennapps.labs.pennmobile.isOnline
 import dagger.hilt.android.AndroidEntryPoint
 import rx.schedulers.Schedulers
 import java.time.LocalDateTime
@@ -95,6 +98,7 @@ class DiningFragment : Fragment() {
         }
 
     @OptIn(ExperimentalMaterial3Api::class)
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @Composable
     fun DiningHallListScreen(
         modifier: Modifier = Modifier,
@@ -105,6 +109,7 @@ class DiningFragment : Fragment() {
         val allDiningHalls by viewModel.allDiningHalls.collectAsState()
         val favouriteDiningHalls by viewModel.favouriteDiningHalls.collectAsState(listOf())
 
+        var isOnline by remember { mutableStateOf<Boolean?>(null) }
         var isSortMenuExpanded by remember { mutableStateOf(false) }
         val currentSortOption by viewModel.sortOrder.collectAsState()
 
@@ -114,8 +119,8 @@ class DiningFragment : Fragment() {
         val snackBarContainerColor by remember(snackBarEvent) {
             derivedStateOf {
                 when (snackBarEvent) {
-                    is SnackBarEvent.Success -> LabelGreen
-                    is SnackBarEvent.Error -> LabelRed
+                    is SnackBarEvent.Success -> AppColors.SelectedTabBlue
+                    is SnackBarEvent.Error -> AppColors.LabelRed
                     is SnackBarEvent.None -> Color.Transparent
                 }
             }
@@ -141,7 +146,7 @@ class DiningFragment : Fragment() {
                     )
                 }
             },
-        ) { paddingValues ->
+        ) { _ ->
 
             val snackBarActionLabel = stringResource(R.string.log_in)
 
@@ -172,6 +177,12 @@ class DiningFragment : Fragment() {
 
             LaunchedEffect(isDataRefreshing) {
                 Log.d("DiningFragment", "PullToRefreshState: isDataRefreshing is $isDataRefreshing")
+
+                // Check online status during refresh
+                val isOnlineStatus = isOnline(requireContext())
+                Log.d("DiningFragment", "isOnline: $isOnlineStatus")
+                isOnline = isOnlineStatus
+
                 if (isDataRefreshing) {
                     // When the ViewModel starts refreshing, tell the UI to animate
                     // the indicator into view.
@@ -181,14 +192,23 @@ class DiningFragment : Fragment() {
                     // the indicator.
                     pullToRefreshState.animateToHidden()
                 }
-                Log.d("DiningFragment", "End ofPullToRefreshState: isDataRefreshing is $isDataRefreshing")
+                Log.d(
+                    "DiningFragment",
+                    "End ofPullToRefreshState: isDataRefreshing is $isDataRefreshing",
+                )
+            }
+
+            LaunchedEffect(Unit) {
+                val isOnlineStatus = isOnline(requireContext())
+                Log.d("DiningFragment", "isOnline: $isOnlineStatus")
+                isOnline = isOnlineStatus
             }
 
             Box(
                 modifier =
                     Modifier
                         .fillMaxSize()
-                        .padding(paddingValues),
+                        .padding(),
             ) {
                 PullToRefreshBox(
                     isRefreshing = isDataRefreshing,
@@ -207,65 +227,90 @@ class DiningFragment : Fragment() {
                         )
                     },
                 ) {
-                    LazyColumn(
+                    Column(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .fillMaxHeight()
-                                .background(MaterialTheme.colorScheme.background)
-                                .padding(horizontal = 6.dp)
-                                .padding(bottom = 42.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                                .fillMaxHeight(),
                     ) {
-                        item {
-                            FavouriteDiningHalls(
-                                diningHalls = favouriteDiningHalls,
-                                toggleFavourite = { viewModel.toggleFavourite(it) },
-                                openDiningHallMenu = { hall -> navigateToMenuFragment(hall) },
+                        AnimatedVisibility(isOnline == false) {
+                            Row(
                                 modifier =
                                     Modifier
-                                        .padding(top = 6.dp)
-                                        .clip(RoundedCornerShape(4.dp))
-                                        .background(MaterialTheme.colorScheme.background)
-                                        .animateContentSize(
-                                            spring(
-                                                stiffness = Spring.StiffnessLow,
-                                                visibilityThreshold = IntSize.VisibilityThreshold,
+                                        .fillMaxWidth()
+                                        .background(AppColors.LabelRed),
+                                horizontalArrangement = Arrangement.Center,
+                            ) {
+                                Text(
+                                    "Not Connected to the Internet",
+                                    fontSize = 14.sp,
+                                    fontFamily = sfProFontFamily,
+                                    color = Color.White,
+                                )
+                            }
+                        }
+
+                        LazyColumn(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f)
+                                    .background(MaterialTheme.colorScheme.background)
+                                    .padding(horizontal = 6.dp)
+                                    .padding(bottom = 42.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            item {
+                                SortDropdown(
+                                    modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
+                                    sortMenuExpanded = isSortMenuExpanded,
+                                    toggleExpandedMode = {
+                                        isSortMenuExpanded = !isSortMenuExpanded
+                                    },
+                                    currentSortOption = currentSortOption,
+                                    sortOptions = DiningHallSortOrder.entries,
+                                    changeSortOption = { option ->
+                                        viewModel.setSortByMethod(option)
+                                        isSortMenuExpanded = false
+                                    },
+                                )
+                            }
+
+                            item {
+                                FavouriteDiningHalls(
+                                    diningHalls = favouriteDiningHalls,
+                                    toggleFavourite = { viewModel.toggleFavourite(it) },
+                                    openDiningHallMenu = { hall -> navigateToMenuFragment(hall) },
+                                    modifier =
+                                        Modifier
+                                            .padding(top = 6.dp)
+                                            .clip(RoundedCornerShape(4.dp))
+                                            .background(MaterialTheme.colorScheme.background)
+                                            .animateContentSize(
+                                                spring(
+                                                    stiffness = Spring.StiffnessLow,
+                                                    visibilityThreshold = IntSize.VisibilityThreshold,
+                                                ),
                                             ),
-                                        ),
-                            )
-                        }
+                                )
+                            }
 
-                        item {
-                            Text(
-                                stringResource(R.string.all_dining_halls),
-                                fontFamily = GilroyFontFamily,
-                                fontWeight = FontWeight.ExtraBold,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                fontSize = 21.sp,
-                                modifier = Modifier.padding(top = 20.dp),
-                            )
+                            item {
+                                Text(
+                                    stringResource(R.string.all_dining_halls),
+                                    modifier = Modifier.padding(top = 20.dp).padding(start = 6.dp),
+                                    style = CustomTextStyles.DiningHallsHeader(),
+                                )
+                            }
 
-                            AnimatedPushDropdown(
-                                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
-                                sortMenuExpanded = isSortMenuExpanded,
-                                toggleExpandedMode = { isSortMenuExpanded = !isSortMenuExpanded },
-                                currentSortOption = currentSortOption,
-                                sortOptions = DiningHallSortOrder.entries,
-                                changeSortOption = { option ->
-                                    viewModel.setSortByMethod(option)
-                                    isSortMenuExpanded = false
-                                },
-                            )
-                        }
-
-                        items(allDiningHalls) { diningHall ->
-                            DiningHallCard(
-                                diningHall = diningHall,
-                                isFavourite = favouriteDiningHalls.contains(diningHall),
-                                toggleFavourite = { viewModel.toggleFavourite(diningHall) },
-                                openDiningHallMenu = { hall -> navigateToMenuFragment(hall) },
-                            )
+                            items(allDiningHalls) { diningHall ->
+                                DiningHallCard(
+                                    diningHall = diningHall,
+                                    isFavourite = favouriteDiningHalls.contains(diningHall),
+                                    toggleFavourite = { viewModel.toggleFavourite(diningHall) },
+                                    openDiningHallMenu = { hall -> navigateToMenuFragment(hall) },
+                                )
+                            }
                         }
                     }
                 }
