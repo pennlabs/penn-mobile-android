@@ -24,10 +24,7 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.databinding.FragmentGsrBinding
-import com.pennapps.labs.pennmobile.gsr.adapters.GsrBuildingAdapter
 import com.pennapps.labs.pennmobile.gsr.classes.GSRContainer
-import com.pennapps.labs.pennmobile.gsr.classes.GSRRoom
-import com.pennapps.labs.pennmobile.gsr.classes.GSRSlot
 import com.pennapps.labs.pennmobile.isOnline
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
@@ -35,7 +32,6 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.Calendar
 import java.util.Date
-import androidx.core.content.edit
 
 class GsrFragment : Fragment() {
     // ui components
@@ -307,185 +303,6 @@ class GsrFragment : Fragment() {
                     loadingPanel.visibility = View.VISIBLE
                     binding.gsrRoomsList.visibility = View.GONE
                 }
-
-                // Surely delete stuff from here
-                if (!isWharton && (location == "ARB" || location == "JMHH")) {
-                    showNoResults()
-                    if (!calledByRefreshLayout) {
-                        Toast
-                            .makeText(
-                                activity,
-                                "You need to have a Wharton pennkey to access Wharton GSRs",
-                                Toast.LENGTH_LONG,
-                            ).show()
-                    }
-                } else {
-                    noResultsPanel.visibility = View.GONE
-                    binding.gsrNoRooms.visibility = View.GONE
-                    // get the hours
-                    getTimes(location, gid)
-                }
-            }
-        }
-    }
-
-    // Performs GET request and fetches the rooms and availability
-    private fun getTimes(
-        location: String,
-        gId: Int,
-    ) {
-        val adjustedDateString = selectedDateTime.toString(adjustedDateFormat)
-        selectDateButton.isClickable = false
-        selectTimeButton.isClickable = false
-        gsrLocationDropDown.isEnabled = false
-        durationDropDown.isEnabled = false
-        sortingSwitch.isClickable = false
-
-        mActivity.mNetworkManager.getAccessToken {
-            val bearerToken =
-                sharedPreferences.getString(getString(R.string.access_token), "").toString()
-
-            Log.i("GsrFragment", "Bearer Token: $bearerToken")
-            Log.i("GsrFragment", "Wharton Status: $isWharton")
-
-            try {
-                mStudentLife
-                    .gsrRoom(
-                        "Bearer $bearerToken",
-                        location,
-                        gId,
-                        adjustedDateString,
-                    ).subscribeOn(Schedulers.io())
-                    .subscribe(
-                        { gsr ->
-                            activity?.let { activity ->
-                                activity.runOnUiThread {
-                                    val gsrRooms = gsr?.rooms
-                                    var timeSlotLengthZero = true
-
-                                    if (gsrRooms.isNullOrEmpty()) {
-                                        // a certification error causes "room" field to remain null
-                                        showNoResults()
-                                    } else {
-                                        for (i in gsrRooms.indices) {
-                                            val gsrRoom = gsrRooms[i]
-                                            val gsrTimeSlots = gsrRoom.slots
-                                            // checks if the time slots are ever nonzero
-                                            val size = gsrTimeSlots?.size ?: 0
-                                            if (size > 0) {
-                                                timeSlotLengthZero = false
-                                            }
-                                            if (gsrTimeSlots != null) {
-                                                filterInsertTimeSlots(gsrRoom, gsrTimeSlots, gId)
-                                            }
-                                        }
-                                    }
-                                    // remove loading icon
-                                    loadingPanel.visibility = View.GONE
-                                    noResultsPanel.visibility = View.GONE
-                                    // stop refreshing
-                                    binding.gsrRoomsList.visibility = View.VISIBLE
-                                    binding.gsrRefreshLayout.isRefreshing = false
-
-                                    if (timeSlotLengthZero) {
-                                        binding.gsrNoRooms.visibility = View.VISIBLE
-                                    }
-
-                                    binding.gsrRoomsList.adapter = (
-                                        context?.let {
-                                            GsrBuildingAdapter(
-                                                it,
-                                                mGSRS,
-                                                location,
-                                                (durationDropDown.selectedItemPosition + 1) * 30,
-                                                sortByTime,
-                                            )
-                                        }
-                                    )
-
-                                    mGSRS = ArrayList()
-                                    selectDateButton.isClickable = true
-                                    selectTimeButton.isClickable = true
-                                    gsrLocationDropDown.isEnabled = true
-                                    durationDropDown.isEnabled = true
-                                    sortingSwitch.isClickable = true
-                                }
-                            }
-                        },
-                        {
-                            Log.e("GsrFragment", "Error getting gsr times", it)
-                            activity?.let { activity ->
-                                activity.runOnUiThread {
-                                    showNoResults()
-                                    selectDateButton.isClickable = true
-                                    selectTimeButton.isClickable = true
-                                    gsrLocationDropDown.isEnabled = true
-                                    durationDropDown.isEnabled = true
-                                    sortingSwitch.isClickable = true
-                                }
-                            }
-                        },
-                    )
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    private fun filterInsertTimeSlots(
-        gsrRoom: GSRRoom,
-        timeSlots: Array<GSRSlot>,
-        gid: Int,
-    ) {
-        val availableSlotsAfterSelectedTime = ArrayList<GSRSlot>()
-
-        // Filter time slots so only available slots occurring after selected time are used
-        for (pos in timeSlots.indices) {
-            val currSlot = timeSlots[pos]
-            if (currSlot.isAvailable) {
-                val startString = currSlot.startTime
-                val endString = currSlot.endTime
-
-                if (startString != null && endString != null) {
-                    val endTime = gsrSlotFormatter.parseDateTime(endString)
-                    if (endTime.isAfter(selectedDateTime)) {
-                        availableSlotsAfterSelectedTime.add(currSlot)
-                    }
-                }
-            }
-        }
-        val duration = (durationDropDown.selectedItemPosition + 1) * 30
-
-        // Insert GSR slots that meet the specified duration
-        for (pos in 0 until availableSlotsAfterSelectedTime.size - durationDropDown.selectedItemPosition) {
-            // starting time and slot
-            val startingSlot = availableSlotsAfterSelectedTime[pos]
-            val startTime = gsrSlotFormatter.parseDateTime(startingSlot.startTime)
-
-            // ending time and slot
-            val endingSlot =
-                availableSlotsAfterSelectedTime[pos + durationDropDown.selectedItemPosition]
-            val endTime = gsrSlotFormatter.parseDateTime(endingSlot.endTime)
-
-            // if start time + duration = end time then these slots meet the duration requirement
-            if (startTime.plusMinutes(duration).isEqual(endTime)) {
-                val stringStartTime = startTime.toString(timeFormatter)
-                val stringEndTime = endTime.toString(timeFormatter)
-                val start = startingSlot.startTime ?: ""
-                // note that end uses ending slot to account for 30+ min booking times
-                val end = endingSlot.endTime ?: ""
-                val gsrName = gsrRoom.name ?: ""
-                val gsrRoomId = gsrRoom.roomId ?: 0
-                insertGSRSlot(
-                    gsrName,
-                    "$stringStartTime-$stringEndTime",
-                    startTime,
-                    gsrRoomId.toString(),
-                    gid,
-                    gsrRoomId,
-                    start,
-                    end,
-                )
             }
         }
     }
