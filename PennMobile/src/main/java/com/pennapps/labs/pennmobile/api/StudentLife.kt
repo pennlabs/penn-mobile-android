@@ -189,6 +189,11 @@ interface StudentLife {
     @GET("gsr/locations")
     fun location(): Observable<List<GSRLocation?>?>
 
+    @GET("gsr/user-locations")
+    fun location(
+        @Header("Authorization") bearerToken: String?,
+    ): Observable<List<GSRLocation?>?>
+
     @GET("events/fling")
     fun getFlingEvents(): Observable<List<FlingEvent?>?>
 
