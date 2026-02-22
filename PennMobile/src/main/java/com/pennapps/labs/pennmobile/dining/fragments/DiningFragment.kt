@@ -55,7 +55,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.compose.presentation.components.AppSnackBar
+import com.pennapps.labs.pennmobile.compose.presentation.components.snackbar.AppSnackBar
 import com.pennapps.labs.pennmobile.compose.presentation.theme.AppColors
 import com.pennapps.labs.pennmobile.compose.presentation.theme.AppTheme
 import com.pennapps.labs.pennmobile.compose.presentation.theme.CustomTextStyles
