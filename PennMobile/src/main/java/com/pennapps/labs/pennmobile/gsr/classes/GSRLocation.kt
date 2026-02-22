@@ -27,4 +27,9 @@ class GSRLocation {
     @Expose
     @JvmField
     var kind: String? = null
+
+    @SerializedName("bookable_days")
+    @Expose
+    @JvmField
+    var bookableDays: Int = 7
 }

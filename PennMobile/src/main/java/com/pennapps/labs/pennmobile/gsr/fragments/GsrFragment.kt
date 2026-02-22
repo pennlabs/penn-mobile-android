@@ -58,6 +58,10 @@ class GsrFragment : Fragment() {
     // list that holds all GSR rooms and their gids
     private val gsrGIDHashMap = HashMap<String, Int>()
 
+    // list that holds all GSR rooms and their bookable days
+
+    private val gsrBookableDaysHashMap = HashMap<String, Int>()
+
     // all the gsrs
     private var mGSRS = ArrayList<GSRContainer>()
 
@@ -190,6 +194,9 @@ class GsrFragment : Fragment() {
             val mMonth = c.get(Calendar.MONTH)
             val mDay = c.get(Calendar.DAY_OF_MONTH)
 
+            val selectedBuilding = gsrLocationDropDown.selectedItem.toString()
+            val daysInAdvance = gsrBookableDaysHashMap[selectedBuilding]
+
             val datePickerDialog =
                 DatePickerDialog(
                     mActivity,
@@ -222,7 +229,7 @@ class GsrFragment : Fragment() {
             val minDate = c.time.time
 
             c.time = today
-            c.add(Calendar.DAY_OF_MONTH, +6)
+            c.add(Calendar.DAY_OF_MONTH, daysInAdvance?.minus(1) ?: 6)
             val maxDate = c.time.time
 
             datePickerDialog.datePicker.maxDate = maxDate
@@ -498,7 +505,7 @@ class GsrFragment : Fragment() {
                             { locations ->
                                 activity?.let { activity ->
                                     populatedDropDownGSR = true
-                                    // reset the drop down
+                                    // reset the drop-down
                                     val emptyArray = arrayOfNulls<String>(0)
                                     val emptyAdapter =
                                         ArrayAdapter<String>(
@@ -524,6 +531,7 @@ class GsrFragment : Fragment() {
                                         }
                                         gsrHashMap[locationName] = locationList[i].id
                                         gsrGIDHashMap[locationName] = locationList[i].gid
+                                        gsrBookableDaysHashMap[locationName] = locationList[i].bookableDays
                                         i++
                                     }
 
