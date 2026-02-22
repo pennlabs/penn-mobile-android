@@ -1,13 +1,3 @@
-/**
- * @file NetworkModule.kt
- * @brief Hilt module for providing network-related singleton components.
- *
- * This module is responsible for setting up and providing all dependencies required for
- * network operations throughout the application. It includes the configuration for Gson,
- * OkHttpClient, Retrofit, and the specific API service interfaces. All dependencies
- * provided here are scoped as singletons to ensure a single, shared instance is used
- * across the app.
- */
 package com.pennapps.labs.pennmobile.di
 
 import com.google.gson.Gson
@@ -37,6 +27,15 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
+/**
+ * @brief Hilt module for providing network-related singleton components.
+ *
+ * This module is responsible for setting up and providing all dependencies required for
+ * network operations throughout the application. It includes the configuration for Gson,
+ * OkHttpClient, Retrofit, and the specific API service interfaces. All dependencies
+ * provided here are scoped as singletons to ensure a single, shared instance is used
+ * across the app.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {

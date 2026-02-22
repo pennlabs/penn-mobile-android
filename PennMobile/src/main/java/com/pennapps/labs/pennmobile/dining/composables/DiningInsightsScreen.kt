@@ -20,10 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import com.pennapps.labs.pennmobile.compose.presentation.components.error.ErrorCard
+import com.pennapps.labs.pennmobile.compose.presentation.components.error.UserDisplayErrors
 import com.pennapps.labs.pennmobile.dining.composables.components.DiningBalancesCard
 import com.pennapps.labs.pennmobile.dining.composables.components.DiningPredictionCard
-import com.pennapps.labs.pennmobile.compose.presentation.components.error.ErrorCard
-import com.pennapps.labs.pennmobile.dining.composables.components.UserDisplayErrors
 import com.pennapps.labs.pennmobile.dining.viewmodels.DiningInsightsViewModel
 import com.pennapps.labs.pennmobile.ui.theme.PennMobileTheme
 
@@ -59,7 +59,6 @@ fun DiningInsightsScreen(
         val cells by viewModel.cells.collectAsState()
         val pastBalances by viewModel.pastBalances.collectAsState()
 
-
         LazyColumn(
             modifier =
                 modifier
@@ -94,17 +93,18 @@ fun DiningInsightsScreen(
                 )
             }
 
-            /**
+            /*
              * Whenever Campus Express has an issue, it returns a diningBalancesList
              * that has a size of 1
              */
             if (pastBalances?.diningBalancesList?.size == 1) {
                 item {
                     ErrorCard(
-                        modifier = Modifier
-                            .padding(vertical = 12.dp)
-                            .fillMaxWidth(0.95f),
-                        errorMessage = UserDisplayErrors.CampusExpressDown
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp)
+                                .fillMaxWidth(0.95f),
+                        errorMessage = UserDisplayErrors.CAMPUS_EXPRESS_DOWN,
                     )
                 }
             } else {

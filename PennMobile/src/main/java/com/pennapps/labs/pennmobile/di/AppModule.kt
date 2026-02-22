@@ -1,15 +1,3 @@
-/**
- * @file AppModule.kt
- * @brief Hilt module for providing application-wide singleton dependencies.
- *
- * First ever Dagger Hilt module written for Penn Mobile.
- *
- * This module is responsible for providing foundational objects that are used across
- * the entire application lifecycle, such as SharedPreferences and a global CoroutineScope.
- * All dependencies provided here are scoped as singletons.
- *
- * Created by Andrew Chelimo on 2/11/2025
- */
 package com.pennapps.labs.pennmobile.di
 
 import android.content.Context
@@ -26,6 +14,17 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
+/**
+ * @brief Hilt module for providing application-wide singleton dependencies.
+ *
+ * First ever Dagger Hilt module written for Penn Mobile.
+ *
+ * This module is responsible for providing foundational objects that are used across
+ * the entire application lifecycle, such as SharedPreferences and a global CoroutineScope.
+ * All dependencies provided here are scoped as singletons.
+ *
+ * Created by Andrew Chelimo on 2/11/2025
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {

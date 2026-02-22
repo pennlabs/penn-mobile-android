@@ -17,49 +17,53 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pennapps.labs.pennmobile.compose.presentation.theme.AppTheme
 
-
 @Composable
-fun ErrorCard(modifier: Modifier = Modifier, errorMessage: String) {
+fun ErrorCard(
+    errorMessage: String,
+    modifier: Modifier = Modifier,
+) {
     Card(
         modifier = modifier,
         shape = MaterialTheme.shapes.small,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.onBackground
-        )
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onBackground,
+            ),
     ) {
         Text(
             text = errorMessage,
             color = MaterialTheme.colorScheme.onBackground,
             fontFamily = SFProDisplayMedium,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally)
-                .padding(vertical = 24.dp, horizontal = 12.dp),
-            textAlign = TextAlign.Center
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+                    .padding(vertical = 24.dp, horizontal = 12.dp),
+            textAlign = TextAlign.Center,
         )
     }
 }
 
-
 @Preview(
     name = "Light Mode",
     showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
 )
 @Preview(
     name = "Dark Mode",
     showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Composable
 private fun PreviewErrorCard() {
     AppTheme {
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
             ErrorCard(
+                UserDisplayErrors.CAMPUS_EXPRESS_DOWN,
                 Modifier
                     .padding(vertical = 12.dp)
-                    .fillMaxWidth(0.95f), UserDisplayErrors.CampusExpressDown
+                    .fillMaxWidth(0.95f),
             )
         }
     }
