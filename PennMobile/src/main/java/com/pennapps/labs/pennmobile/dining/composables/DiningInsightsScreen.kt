@@ -97,50 +97,52 @@ fun DiningInsightsScreen(
              * Whenever Campus Express has an issue, it returns a diningBalancesList
              * that has a size of 1
              */
-            if (pastBalances?.diningBalancesList?.size == 1) {
-                item {
-                    ErrorCard(
-                        modifier =
-                            Modifier
-                                .padding(vertical = 12.dp)
-                                .fillMaxWidth(0.95f),
-                        errorMessage = UserDisplayErrors.CAMPUS_EXPRESS_DOWN,
-                    )
-                }
-            } else {
-                // Header for Dining Dollars Predictions
-                item {
-                    Text(
-                        text = "Dining Dollars Predictions",
-                        fontFamily = GilroyExtraBold,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.padding(bottom = 4.dp),
-                    )
-                }
+            pastBalances?.diningBalancesList?.size?.let {
+                if (it <= 1) {
+                    item {
+                        ErrorCard(
+                            modifier =
+                                Modifier
+                                    .padding(vertical = 12.dp)
+                                    .fillMaxWidth(0.95f),
+                            errorMessage = UserDisplayErrors.CAMPUS_EXPRESS_DOWN,
+                        )
+                    }
+                } else {
+                    // Header for Dining Dollars Predictions
+                    item {
+                        Text(
+                            text = "Dining Dollars Predictions",
+                            fontFamily = GilroyExtraBold,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.padding(bottom = 4.dp),
+                        )
+                    }
 
-                // Dining Dollars Prediction cards
-                items(cells.filter { it.type == "dining_dollars_predictions" }) { cell ->
-                    DiningPredictionCard(
-                        cell = cell,
-                        modifier = Modifier.padding(bottom = 12.dp),
-                    )
-                }
+                    // Dining Dollars Prediction cards
+                    items(cells.filter { it.type == "dining_dollars_predictions" }) { cell ->
+                        DiningPredictionCard(
+                            cell = cell,
+                            modifier = Modifier.padding(bottom = 12.dp),
+                        )
+                    }
 
-                // Header for Swipes Predictions
-                item {
-                    Text(
-                        text = "Swipes Predictions",
-                        fontFamily = GilroyExtraBold,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.padding(bottom = 4.dp),
-                    )
-                }
+                    // Header for Swipes Predictions
+                    item {
+                        Text(
+                            text = "Swipes Predictions",
+                            fontFamily = GilroyExtraBold,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.padding(bottom = 4.dp),
+                        )
+                    }
 
-                // Swipes Prediction cards
-                items(cells.filter { it.type == "dining_swipes_predictions" }) { cell ->
-                    DiningPredictionCard(
-                        cell = cell,
-                    )
+                    // Swipes Prediction cards
+                    items(cells.filter { it.type == "dining_swipes_predictions" }) { cell ->
+                        DiningPredictionCard(
+                            cell = cell,
+                        )
+                    }
                 }
             }
         }
