@@ -141,7 +141,7 @@ jobs:
 
       # Run JaCoCo, generate Test Report
       - name: Check Code Coverage
-        run: ./gradlew jacocoTestReport --stacktrace
+        run: ./gradlew testDebugUnitTest jacocoTestReport --stacktrace
 
       # Upload reports to GitHub Actions
       - name: Upload Reports
