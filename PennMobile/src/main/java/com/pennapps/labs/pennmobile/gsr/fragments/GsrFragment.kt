@@ -188,11 +188,11 @@ class GsrFragment : Fragment() {
 
         // day for gsr
         selectDateButton.setOnClickListener {
-            // Get Current Date
+            // Get previously selected date
             val c = Calendar.getInstance()
-            val mYear = c.get(Calendar.YEAR)
-            val mMonth = c.get(Calendar.MONTH)
-            val mDay = c.get(Calendar.DAY_OF_MONTH)
+            val mYear = selectedDateTime.year
+            val mMonth = selectedDateTime.monthOfYear - 1
+            val mDay = selectedDateTime.dayOfMonth
 
             val selectedBuilding = gsrLocationDropDown.selectedItem.toString()
             val daysInAdvance = gsrBookableDaysHashMap[selectedBuilding]
