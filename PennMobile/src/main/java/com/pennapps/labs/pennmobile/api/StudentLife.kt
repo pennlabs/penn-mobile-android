@@ -186,6 +186,9 @@ interface StudentLife {
         @Path("id") id: Int,
     ): Observable<DiningHall?>
 
+    @GET("gsr/locations")
+    fun locationUnfiltered(): Observable<List<GSRLocation?>?>
+
     @GET("gsr/user-locations")
     fun location(
         @Header("Authorization") bearerToken: String?,
