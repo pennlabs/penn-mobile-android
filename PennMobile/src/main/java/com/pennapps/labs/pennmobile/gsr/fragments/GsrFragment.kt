@@ -154,10 +154,9 @@ class GsrFragment : Fragment() {
 
         // set start time button
         selectTimeButton.setOnClickListener {
-            // Get Current Time
-            val c = Calendar.getInstance()
-            val mHour = c.get(Calendar.HOUR_OF_DAY)
-            val mMinute = c.get(Calendar.MINUTE)
+            // Get previously selected time
+            val mHour = selectedDateTime.hourOfDay
+            val mMinute = selectedDateTime.minuteOfHour
 
             // Launch Time Picker Dialog
             val timePickerDialog =
