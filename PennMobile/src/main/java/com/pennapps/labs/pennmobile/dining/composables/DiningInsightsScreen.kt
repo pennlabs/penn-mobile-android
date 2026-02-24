@@ -109,14 +109,13 @@ fun DiningInsightsScreen(
                                     .fillMaxWidth(0.95f),
                             errorMessage =
                                 when (balanceListSize) {
-                                    0 -> UserDisplayErrors.CAMPUS_EXPRESS_DOWN
-                                    1 -> UserDisplayErrors.PAST_BALANCES_NOT_AVAILABLE
+                                    0 -> UserDisplayErrors.PAST_BALANCES_NOT_AVAILABLE
+                                    1 -> UserDisplayErrors.CAMPUS_EXPRESS_DOWN
                                     else -> "Error occurred"
                                 },
                         )
                     }
-                }
-                else {
+                } else {
                     // Header for Dining Dollars Predictions
                     item {
                         Text(
