@@ -115,8 +115,7 @@ fun DiningInsightsScreen(
                                 },
                         )
                     }
-                }
-                else {
+                } else {
                     // Header for Dining Dollars Predictions
                     item {
                         Text(
