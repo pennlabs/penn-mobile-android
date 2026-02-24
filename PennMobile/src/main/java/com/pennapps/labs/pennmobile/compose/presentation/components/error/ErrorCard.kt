@@ -60,7 +60,7 @@ private fun PreviewErrorCard() {
     AppTheme {
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
             ErrorCard(
-                UserDisplayErrors.CAMPUS_EXPRESS_DOWN,
+                UserDisplayErrors.PAST_BALANCES_NOT_AVAILABLE,
                 Modifier
                     .padding(vertical = 12.dp)
                     .fillMaxWidth(0.95f),

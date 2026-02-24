@@ -94,21 +94,29 @@ fun DiningInsightsScreen(
             }
 
             /*
-             * Whenever Campus Express has an issue, it returns a diningBalancesList
-             * that has a size of 1
+             * When the pastBalances list size is:
+             * a) 0 -> The user is either a junior/senior not on a dining plan or an RA who has a plan but for RAs, we never get the plan balances at all
+             * b) 1 -> The user is a normal student on a plan. However, Campus Express currently has an issue
+             * c) 2 or more -> Everything is alright. Render the balances graph.
              */
-            pastBalances?.diningBalancesList?.size?.let {
-                if (it <= 1) {
+            pastBalances?.diningBalancesList?.size?.let { balanceListSize ->
+                if (balanceListSize == 0 || balanceListSize == 1) {
                     item {
                         ErrorCard(
                             modifier =
                                 Modifier
                                     .padding(vertical = 12.dp)
                                     .fillMaxWidth(0.95f),
-                            errorMessage = UserDisplayErrors.CAMPUS_EXPRESS_DOWN,
+                            errorMessage =
+                                when (balanceListSize) {
+                                    0 -> UserDisplayErrors.CAMPUS_EXPRESS_DOWN
+                                    1 -> UserDisplayErrors.PAST_BALANCES_NOT_AVAILABLE
+                                    else -> "Error occurred"
+                                },
                         )
                     }
-                } else {
+                }
+                else {
                     // Header for Dining Dollars Predictions
                     item {
                         Text(
