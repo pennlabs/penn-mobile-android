@@ -1,12 +1,3 @@
-/**
- * @file DiningHallCard.kt
- * @brief Renders a stateless card component for a single dining hall.
- *
- * This file contains the `DiningHallCard` composable, a UI component that displays
- * key information about a dining hall, such as its image, name, open status, hours,
- * and whether it is a user favorite.
- *
- */
 package com.pennapps.labs.pennmobile.dining.fragments.components
 
 import androidx.compose.foundation.Image
@@ -185,7 +176,7 @@ fun DiningHallCard(
 @Preview(
     name = "Dark Mode",
     showBackground = true,
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES,
 )
 @Composable
 private fun PreviewDiningHallCard() {
@@ -198,16 +189,16 @@ private fun PreviewDiningHallCard() {
                 hours =
                     hashMapOf(
                         "11 AM - 3 PM" to
-                                Interval(
-                                    Instant.now().millis,
-                                    Instant.now().millis + 1000,
-                                ),
+                            Interval(
+                                Instant.now().millis,
+                                Instant.now().millis + 1000,
+                            ),
                     ),
                 venue = Venue(),
                 image = R.drawable.dining_commons,
             ),
         isFavourite = true,
         toggleFavourite = { },
-        openDiningHallMenu = {}
+        openDiningHallMenu = {},
     )
 }

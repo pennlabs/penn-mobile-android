@@ -57,14 +57,13 @@ fun FavouriteDiningHalls(
         label = "Dropdown Arrow Rotation",
     )
 
-
     Column(
         modifier =
             modifier
                 .clip(RoundedCornerShape(4.dp))
                 .background(MaterialTheme.colorScheme.surfaceContainer)
                 .padding(horizontal = 8.dp)
-                .padding(top = 10.dp, bottom = 16.dp)
+                .padding(top = 10.dp, bottom = 16.dp),
     ) {
         Row(
             Modifier
@@ -72,17 +71,17 @@ fun FavouriteDiningHalls(
                 .fillMaxWidth()
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
-                    indication = null // Removes the ripple effect
+                    indication = null, // Removes the ripple effect
                 ) {
                     expanded = !expanded
                 },
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
                 text = stringResource(R.string.favorites),
                 modifier = Modifier.weight(1f),
-                style = CustomTextStyles.DiningHallsHeader()
+                style = CustomTextStyles.DiningHallsHeader(),
             )
 
             Icon(
@@ -141,7 +140,6 @@ fun FavouriteDiningHalls(
     }
 }
 
-
 val TEST_DINING_HALL =
     DiningHall(
         10,
@@ -157,7 +155,7 @@ val TEST_LIST_OF_DINING_HALLS = listOf(TEST_DINING_HALL, TEST_DINING_HALL, TEST_
 @Preview(
     name = "Dark Mode",
     showBackground = true,
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES,
 )
 @Composable
 private fun PreviewEmptyFavouriteDiningHalls() =
@@ -175,7 +173,7 @@ private fun PreviewEmptyFavouriteDiningHalls() =
 @Preview(
     name = "Dark Mode",
     showBackground = true,
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES,
 )
 @Composable
 private fun PreviewFavouriteDiningHalls() =

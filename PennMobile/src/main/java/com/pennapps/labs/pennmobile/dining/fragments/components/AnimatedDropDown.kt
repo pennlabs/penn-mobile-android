@@ -1,14 +1,3 @@
-/**
- * @file AnimatedDropDown.kt
- * @brief Provides a generic, stateless, animated dropdown component.
- *
- * This file contains the `AnimatedPushDropdown` composable, a reusable UI component
- * designed to display a title and expandable content. The expansion and collapse are
- * animated, and the arrow icon rotates to indicate the current state.
- *
- * As a stateless component, it hoists its `expanded` state and relies on event callbacks,
- * making it highly reusable throughout the application.
- */
 package com.pennapps.labs.pennmobile.dining.fragments.components
 
 import androidx.compose.animation.AnimatedVisibility
@@ -38,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
 
-
 /**
  * A generic, animated dropdown card component.
  *
@@ -57,8 +45,8 @@ fun AnimatedPushDropdown(
     expanded: Boolean,
     toggleExpandedMode: () -> Unit,
     title: @Composable () -> Unit,
-    content: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
 ) {
     val rotationAngle by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f,
@@ -67,8 +55,7 @@ fun AnimatedPushDropdown(
 
     Card(
         modifier =
-            modifier
-                .fillMaxWidth(),
+            modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors =
             CardDefaults.cardColors(

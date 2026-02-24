@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile.compose.presentation.components
+package com.pennapps.labs.pennmobile.compose.presentation.components.snackbar
 
 import android.util.Log
 import androidx.compose.foundation.background
