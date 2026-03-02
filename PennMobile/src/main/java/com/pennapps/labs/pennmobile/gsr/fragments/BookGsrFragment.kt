@@ -161,6 +161,7 @@ class BookGsrFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        (activity as? MainActivity)?.showBottomBar()
         _binding = null
     }
 
