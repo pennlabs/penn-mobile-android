@@ -280,7 +280,6 @@ class LaundryFragment : Fragment() {
                             .Builder()
                             .putString("monitor_mode", mode)
                             .putLong("start_time", System.currentTimeMillis())
-                            .putString("bearer_token", bearerToken)
                             .build()
 
                     val workRequest =
