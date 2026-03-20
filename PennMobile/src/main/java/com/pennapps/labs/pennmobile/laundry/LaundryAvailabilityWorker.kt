@@ -24,10 +24,17 @@ class LaundryAvailabilityWorker(
     override suspend fun doWork(): Result {
         val mode = inputData.getString("monitor_mode") ?: return Result.failure()
         val startTime = inputData.getLong("start_time", 0L)
-        val bearerToken = inputData.getString("bearer_token") ?: return Result.failure()
+
+        // Read the token fresh from SharedPreferences
+        val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val bearerToken = "Bearer " + (sharedPrefs.getString(context.getString(R.string.access_token), "") ?: "")
 
         // Stop after 1 hour
-        if (System.currentTimeMillis() - startTime >= ONE_HOUR_MS) {
+//        if (System.currentTimeMillis() - startTime >= ONE_HOUR_MS) {
+//            resetMonitorMode()
+//            return Result.success()
+//        }
+        if (System.currentTimeMillis() - startTime >= TEST_MS) {
             resetMonitorMode()
             return Result.success()
         }
@@ -46,7 +53,6 @@ class LaundryAvailabilityWorker(
                 .Builder()
                 .putString("monitor_mode", mode)
                 .putLong("start_time", startTime)
-                .putString("bearer_token", bearerToken)
                 .build()
 
         val nextWork =
@@ -139,6 +145,7 @@ class LaundryAvailabilityWorker(
 
     companion object {
         private const val ONE_HOUR_MS = 60 * 60 * 1000L
+        private const val TEST_MS = 10 * 60 * 1000L
         private const val POLL_INTERVAL_MINUTES = 3L
         private const val NOTIFICATION_ID = 1001
     }
