@@ -1,13 +1,19 @@
 package com.pennapps.labs.pennmobile.laundry.fragments
 
+import android.Manifest
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material3.Icon
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -19,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
@@ -70,6 +77,14 @@ class LaundryFragment : Fragment() {
     val binding get() = _binding!!
 
     private val laundryViewModel: LaundryViewModel by activityViewModels()
+
+    // Runtime notification permission launcher
+    private val notificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            if (!granted) {
+                Toast.makeText(mContext, "We need notification permission to alert you", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -209,8 +224,7 @@ class LaundryFragment : Fragment() {
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()
         }
-        // remember(monitoringMode) reinitializes selectedIndex whenever monitoringMode
-        // changes
+        // remember(monitoringMode) updates selectedIndex when monitoringMode changes
         binding.laundrySegmentedButton.setContent {
             var selectedIndex by remember(monitoringMode) {
                 mutableIntStateOf(
@@ -222,10 +236,26 @@ class LaundryFragment : Fragment() {
                 )
             }
             val options = listOf("OFF", "WASHERS", "DRYERS")
+            val totalItems = options.size + 1
 
             SingleChoiceSegmentedButtonRow {
+                // bell icon label, signals this row controls notifications
+                SegmentedButton(
+                    modifier = Modifier.weight(0.5f),
+                    selected = false,
+                    onClick = {},
+                    enabled = false,
+                    shape = SegmentedButtonDefaults.itemShape(0, totalItems),
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Notifications,
+                        contentDescription = null,
+                    )
+                }
+
                 options.forEachIndexed { index, label ->
                     SegmentedButton(
+                        modifier = Modifier.weight(1f),
                         selected = index == selectedIndex,
                         onClick = {
                             val newMode =
@@ -238,7 +268,7 @@ class LaundryFragment : Fragment() {
                             monitoringMode = newMode
                             onMonitoringModeChanged(newMode)
                         },
-                        shape = SegmentedButtonDefaults.itemShape(index, options.size),
+                        shape = SegmentedButtonDefaults.itemShape(index + 1, totalItems),
                     ) {
                         Text(label)
                     }
@@ -253,6 +283,14 @@ class LaundryFragment : Fragment() {
         if (mode == "OFF") {
             workManager.cancelUniqueWork("laundry_availability_monitor")
             return
+        }
+
+        // Request POST_NOTIFICATIONS permission
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(mContext, Manifest.permission.POST_NOTIFICATIONS) !=
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
 
         // check if any already available before polling
@@ -285,7 +323,7 @@ class LaundryFragment : Fragment() {
                     val workRequest =
                         OneTimeWorkRequest
                             .Builder(LaundryAvailabilityWorker::class.java)
-                            .setInitialDelay(4, TimeUnit.MINUTES)
+                            .setInitialDelay(3, TimeUnit.MINUTES)
                             .setInputData(inputData)
                             .build()
 
@@ -324,16 +362,10 @@ class LaundryFragment : Fragment() {
                 val response = mStudentLife.room(roomId)
                 if (response.isSuccessful) {
                     val room = response.body() ?: continue
-                    val machines = room.machines?.machineDetailList ?: continue
-                    val targetType = if (mode == "WASHERS") "washer" else "dryer"
-                    val hasAvailable =
-                        machines.any {
-                            it.type == targetType &&
-                                it.timeRemaining == 0 &&
-                                it.status != getString(R.string.status_out_of_order) &&
-                                it.status != getString(R.string.status_not_online)
-                        }
-                    if (hasAvailable) return true
+                    // use the server computed count
+                    val machineList =
+                        if (mode == "WASHERS") room.machines?.washers else room.machines?.dryers
+                    if ((machineList?.open ?: 0) > 0) return true
                 }
             } catch (e: Exception) {
                 continue

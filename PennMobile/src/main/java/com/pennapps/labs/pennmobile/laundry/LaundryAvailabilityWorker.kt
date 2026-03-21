@@ -30,11 +30,7 @@ class LaundryAvailabilityWorker(
         val bearerToken = "Bearer " + (sharedPrefs.getString(context.getString(R.string.access_token), "") ?: "")
 
         // Stop after 1 hour
-//        if (System.currentTimeMillis() - startTime >= ONE_HOUR_MS) {
-//            resetMonitorMode()
-//            return Result.success()
-//        }
-        if (System.currentTimeMillis() - startTime >= TEST_MS) {
+        if (System.currentTimeMillis() - startTime >= ONE_HOUR_MS) {
             resetMonitorMode()
             return Result.success()
         }
@@ -47,7 +43,7 @@ class LaundryAvailabilityWorker(
             return Result.success()
         }
 
-        // Re enqueue self with delay preserving the original start_time
+        // re enqueue self with delay preserving the original start_time
         val nextInput =
             Data
                 .Builder()
@@ -76,7 +72,6 @@ class LaundryAvailabilityWorker(
         mode: String,
     ): Boolean {
         val studentLife = MainActivity.studentLifeInstance
-        val targetType = if (mode == "WASHERS") "washer" else "dryer"
 
         return try {
             val prefResponse = studentLife.getLaundryPref(bearerToken)
@@ -87,15 +82,10 @@ class LaundryAvailabilityWorker(
                 try {
                     val roomResponse = studentLife.room(roomId)
                     if (roomResponse.isSuccessful) {
-                        val machines = roomResponse.body()?.machines?.machineDetailList ?: continue
-                        val hasAvailable =
-                            machines.any {
-                                it.type == targetType &&
-                                    it.timeRemaining == 0 &&
-                                    it.status != "Out of order" &&
-                                    it.status != "Not online"
-                            }
-                        if (hasAvailable) return true
+                        val roomMachines = roomResponse.body()?.machines ?: continue
+                        // use the server computed open count
+                        val machineList = if (mode == "WASHERS") roomMachines.washers else roomMachines.dryers
+                        if ((machineList?.open ?: 0) > 0) return true
                     }
                 } catch (e: Exception) {
                     continue
@@ -134,7 +124,7 @@ class LaundryAvailabilityWorker(
                 .Builder(context, channelId)
                 .setSmallIcon(R.drawable.ic_bottom_nav_laundry_grey)
                 .setContentTitle(context.getString(R.string.app_name))
-                .setContentText("A $machineType in your favorite rooms is available!")
+                .setContentText("A $machineType in your selected rooms is available!")
                 .setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_SOUND or Notification.DEFAULT_VIBRATE)
                 .setColor(ContextCompat.getColor(context, R.color.color_primary))
@@ -145,7 +135,6 @@ class LaundryAvailabilityWorker(
 
     companion object {
         private const val ONE_HOUR_MS = 60 * 60 * 1000L
-        private const val TEST_MS = 10 * 60 * 1000L
         private const val POLL_INTERVAL_MINUTES = 3L
         private const val NOTIFICATION_ID = 1001
     }
