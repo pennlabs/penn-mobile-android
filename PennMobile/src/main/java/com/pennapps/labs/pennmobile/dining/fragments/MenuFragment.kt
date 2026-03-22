@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.dining.fragments
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,20 +9,33 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.Toolbar
+import android.widget.Button
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
+import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.tabs.TabLayout
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall
+import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 
 class MenuFragment : Fragment() {
     private lateinit var mActivity: MainActivity
-    private lateinit var toolBar: Toolbar
+    private lateinit var viewModel: DiningViewModel
 
     private var mDiningHall: DiningHall? = null
     private var pageAdapter: PagerAdapter? = null
@@ -92,7 +106,9 @@ class MenuFragment : Fragment() {
         super.onCreate(savedInstanceState)
         mDiningHall = arguments?.getParcelable("DiningHall")
         mActivity = activity as MainActivity
+        viewModel = ViewModelProvider(requireActivity())[DiningViewModel::class.java]
         setHasOptionsMenu(true)
+        viewModel.refreshData()
     }
 
     override fun onCreateView(
@@ -106,7 +122,11 @@ class MenuFragment : Fragment() {
         val pager: ViewPager = v.findViewById(R.id.menu_pager)
         pager.adapter = pageAdapter
         v.setBackgroundColor(Color.WHITE)
-        mActivity.addTabs(pageAdapter as TabAdapter, pager, true)
+
+        val tabLayout = v.findViewById<TabLayout>(R.id.dining_tab_layout)
+        tabLayout.setupWithViewPager(pager)
+        tabLayout.setTabTextColors(Color.WHITE, Color.WHITE)
+
         return v
     }
 
@@ -114,9 +134,82 @@ class MenuFragment : Fragment() {
         view: View,
         savedInstanceState: Bundle?,
     ) {
-        super.onViewCreated(view, savedInstanceState)
-        toolBar = mActivity.findViewById(R.id.toolbar)
-        toolBar.visibility = View.VISIBLE
+        WindowInsetsControllerCompat(requireActivity().window, requireView()).isAppearanceLightStatusBars = false
+
+        val localToolbar = view.findViewById<MaterialToolbar>(R.id.dining_toolbar)
+        (activity as AppCompatActivity).setSupportActionBar(localToolbar)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        localToolbar.navigationIcon?.setTint(Color.WHITE)
+
+        // set image
+        val imageView = view.findViewById<ImageView>(R.id.dining_header_image)
+        imageView.setImageResource(mDiningHall?.image ?: 0)
+
+        // set title
+        view.findViewById<CollapsingToolbarLayout>(R.id.collapsing_toolbar).title = mDiningHall?.name
+        view.findViewById<CollapsingToolbarLayout>(R.id.collapsing_toolbar).setExpandedTitleColor(Color.WHITE)
+        view.findViewById<CollapsingToolbarLayout>(R.id.collapsing_toolbar).setCollapsedTitleTextColor(Color.WHITE)
+
+        // set toolbar buttons
+        view.findViewById<ImageButton>(R.id.dining_location).setOnClickListener {
+            val location =
+                when (mDiningHall?.name) {
+                    "Accenture Café" -> "Towne Building"
+                    "Cafe West" -> "Gutmann College House"
+                    "Falk Kosher Dining" -> "Penn Hillel"
+                    "Joe's Café" -> "3620 Locust Walk"
+                    "McClelland Express" -> "3700 Spruce Street"
+                    "Pret a Manger Locust", "Pret a Manger MBA" -> "3730 Walnut St, Philadelphia, PA 19104"
+                    else -> mDiningHall?.name
+                }
+            val diningHallMapUrl = "https://maps.google.com/?q=$location"
+            val intent = Intent(Intent.ACTION_VIEW, diningHallMapUrl.toUri())
+            startActivity(intent)
+        }
+
+        view.findViewById<ImageButton>(R.id.dining_website).setOnClickListener {
+            val website =
+                when (mDiningHall?.name) {
+                    "Falk Kosher Dining" -> "Falk Dining Commons"
+                    "Accenture Café" -> "Accenture Cafe"
+                    "Joe's Café" -> "Joes Cafe"
+                    "English House" -> "kings court english house"
+                    "McClelland Express" -> "pdss"
+                    "Pret a Manger Locust" -> "Pret a Manger Lower"
+                    "Pret a Manger MBA" -> "Pret a Manger Upper"
+                    else -> mDiningHall?.name
+                }
+            val formattedDiningName = website?.lowercase()?.replace(" ", "-")
+            val diningHallMenuUrl = "https://university-of-pennsylvania.cafebonappetit.com/cafe/$formattedDiningName/"
+            val intent = Intent(Intent.ACTION_VIEW, diningHallMenuUrl.toUri())
+            startActivity(intent)
+        }
+
+        val favoriteButton = view.findViewById<ImageButton>(R.id.favorite_dining)
+
+        fun updateFavoriteButton(isFavourite: Boolean) {
+            val icon =
+                if (isFavourite) {
+                    R.drawable.ic_star_24dp
+                } else {
+                    R.drawable.ic_star_border_24dp
+                }
+            favoriteButton.setImageResource(icon)
+            favoriteButton.setColorFilter(ContextCompat.getColor(requireContext(), android.R.color.holo_orange_light))
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.favouriteDiningHallIds.collect { favoriteIds ->
+                updateFavoriteButton(favoriteIds.contains(mDiningHall?.id))
+            }
+        }
+
+        favoriteButton.setOnClickListener {
+            mDiningHall?.let { hall ->
+                viewModel.toggleFavourite(hall)
+                updateFavoriteButton(viewModel.isFavourite(hall))
+            }
+        }
         mActivity.hideBottomBar()
     }
 
@@ -150,13 +243,11 @@ class MenuFragment : Fragment() {
             val pager: ViewPager = requireView().findViewById(R.id.menu_pager)
             pager.adapter = null
         }
+        WindowInsetsControllerCompat(requireActivity().window, requireView()).isAppearanceLightStatusBars = true
 
         super.onDestroyView()
-        mActivity.removeTabs()
-        if (mActivity.supportActionBar != null) {
-            mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        }
         mActivity.supportActionBar?.hide()
+        mActivity.showBottomBar()
     }
 
     override fun onDestroy() {

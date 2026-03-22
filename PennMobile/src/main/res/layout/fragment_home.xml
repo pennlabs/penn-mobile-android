@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,8 +13,7 @@
         android:elevation="0dp"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:elevation="0dp"
-        android:fitsSystemWindows="true"
-        tools:targetApi="lollipop">
+        android:fitsSystemWindows="true">
 
         <FrameLayout
             android:id="@+id/appbar_container"
@@ -29,13 +27,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|top"
                 android:layout_marginStart="24dp"
-                android:layout_marginLeft="24dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="95dp"
-                android:layout_marginRight="95dp"
                 android:ellipsize="marquee"
-                android:singleLine="true"
-                android:text="SUNDAY, JAN 2019" />
+                android:singleLine="true" />
 
             <TextView
                 android:id="@+id/title_view"
@@ -44,10 +39,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|bottom"
                 android:layout_marginStart="24dp"
-                android:layout_marginLeft="24dp"
                 android:layout_marginBottom="4dp"
                 android:maxLines="1"
-                android:text="Activity"
                 />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -57,7 +50,7 @@
                 android:layout_gravity="center_vertical|end"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="36dp"
-                android:layout_marginRight="36dp">
+                >
 
                 <ImageView
                     android:id="@+id/profile_background"

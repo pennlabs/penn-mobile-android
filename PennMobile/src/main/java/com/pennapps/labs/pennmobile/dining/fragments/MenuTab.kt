@@ -45,6 +45,7 @@ class MenuTab : Fragment() {
                 )
             },
         )
+        // v - breakfast, lunch, dinner
         v.setBackgroundColor(Color.WHITE)
         return v
     }

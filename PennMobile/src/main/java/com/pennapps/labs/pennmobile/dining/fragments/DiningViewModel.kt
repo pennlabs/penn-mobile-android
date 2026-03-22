@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile.dining.fragments
 
 import android.content.SharedPreferences
 import android.util.Log
+import androidx.compose.runtime.State
 import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,6 +17,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -47,11 +49,17 @@ class DiningViewModel
                 emptyList(),
             )
 
+        val favouriteDiningHallIds: StateFlow<List<Int>> = _favouriteDiningHalls
+
         val favouriteDiningHalls =
             _favouriteDiningHalls
-                .map { favouriteIDs ->
-                    allDiningHalls.value.filter { diningHall -> favouriteIDs.contains(diningHall.id) }
+                .combine(allDiningHalls) { favouriteIDs, halls ->
+                    halls.filter { diningHall -> favouriteIDs.contains(diningHall.id) }
                 }
+        // when refreshed, wiped out the hearts in the all-dining-halls list
+//                .map { favouriteIDs ->
+//                    allDiningHalls.value.filter { diningHall -> favouriteIDs.contains(diningHall.id) }
+//                }
 
         init {
             fetchSortOrder()
