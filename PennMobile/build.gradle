@@ -61,6 +61,7 @@ dependencies {
 // If you want the foundation layout, use the bundle or the specific activity compose you have defined
     implementation libs.androidx.activity.compose
     implementation libs.androidx.material3.android
+    implementation libs.androidx.compose.ui.tooling.preview
 //    implementation libs.androidx.foundation.layout
 
     androidTestImplementation libs.androidx.espresso.core
@@ -120,6 +121,7 @@ dependencies {
     implementation libs.bundles.ui
     implementation libs.bundles.google
     implementation libs.bundles.hilt
+    debugImplementation libs.androidx.compose.ui.tooling
 
     ksp libs.androidx.room.compiler
     ksp libs.androidx.hilt.compiler
@@ -129,6 +131,8 @@ dependencies {
 
     implementation libs.androidx.hilt.android
     ksp libs.androidx.hilt.compiler
+
+    implementation libs.coil.compose
 }
 
 String getPlatformClientID() {

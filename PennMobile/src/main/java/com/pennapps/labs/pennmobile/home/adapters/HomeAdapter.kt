@@ -18,6 +18,7 @@ import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.browser.customtabs.CustomTabsServiceConnection
 import androidx.browser.customtabs.CustomTabsSession
+import androidx.compose.ui.platform.ComposeView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.ContextCompat.startActivity
@@ -57,6 +58,7 @@ import com.pennapps.labs.pennmobile.home.classes.Poll
 import com.pennapps.labs.pennmobile.home.classes.PollCell
 import com.pennapps.labs.pennmobile.home.classes.Post
 import com.pennapps.labs.pennmobile.home.classes.PostCell
+import com.pennapps.labs.pennmobile.home.classes.newsComposableComponent
 import com.pennapps.labs.pennmobile.home.fragments.NewsFragment
 import com.pennapps.labs.pennmobile.home.viewholders.HomeBaseHolder
 import com.pennapps.labs.pennmobile.home.viewholders.HomeCalendarHolder
@@ -583,149 +585,10 @@ class HomeAdapter(
     ) {
         val article = cell.article
 
-        if (article.imageUrl.isNullOrEmpty()) {
-            holder.itemView.visibility = View.GONE
-            holder.newsCardContainer.visibility = View.GONE
-            holder.homeNewsImageView.setImageDrawable(null)
-            holder.homeNewsTitle.text = ""
-            holder.homeNewsSubtitle.text = ""
-            holder.homeNewsTimestamp.text = ""
-            dataModel.notifyNewsBlurLoaded()
-            return
-        }
-
-        holder.homeNewsTitle.text = article.title
-        holder.homeNewsSubtitle.text = article.subtitle
-
-        holder.homeNewsTimestamp.text = article.timestamp?.trim()
-
-        Glide
-            .with(mContext)
-            .load(article.imageUrl)
-            .fitCenter()
-            .centerCrop()
-            .into(holder.homeNewsImageView)
-
-//        /** Adds dynamically generated accent color from the fetched image to the news card */
-        var accentColor: Int = getColor(mContext, R.color.black)
-        mActivity.lifecycleScope.launch(Dispatchers.Default) {
-            Log.d("HomeAdapter", "Image Url is ${article.imageUrl}")
-            val bitmap =
-                withContext(Dispatchers.IO) {
-                    Glide
-                        .with(mContext)
-                        .load(article.imageUrl)
-                        .submit()
-                        .get()
-                }.toBitmap()
-
-            // Create palette from bitmap
-            fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
-            val vibrantSwatch: Palette.Swatch? = createPaletteSync(bitmap).darkVibrantSwatch
-            vibrantSwatch?.rgb?.let { accentColor = it }
-
-            mActivity.runOnUiThread {
-                // Change all the components to match the accent color palette
-                vibrantSwatch?.titleTextColor?.let {
-                    DrawableCompat.setTint(
-                        DrawableCompat.wrap(holder.newsCardLogo.drawable),
-                        ColorUtils.setAlphaComponent(it, 150),
-                    )
-                    DrawableCompat.setTint(
-                        DrawableCompat.wrap(holder.newsInfoIcon.drawable),
-                        it,
-                    )
-                    DrawableCompat.setTint(
-                        DrawableCompat.wrap(holder.dotDivider.drawable),
-                        it,
-                    )
-                    holder.newsButton.setTextColor(ColorUtils.setAlphaComponent(it, 150))
-                    DrawableCompat.setTint(
-                        DrawableCompat.wrap(holder.newsButton.background),
-                        it,
-                    )
-                    holder.homeNewsTitle.setTextColor(
-                        ColorUtils.setAlphaComponent(
-                            it,
-                            150,
-                        ),
-                    )
-                    holder.homeNewsSubtitle.setTextColor(it)
-                    holder.homeNewsTimestamp.setTextColor(it)
-                }
-                holder.newsCardContainer.background =
-                    BitmapDrawable(
-                        holder.itemBinding.root.resources,
-                        bitmap,
-                    )
-                holder.newsBlurView
-                    .setOverlayColor(ColorUtils.setAlphaComponent(accentColor, 150))
-
-                // tell model that the news blur view has been loaded
-                dataModel.notifyNewsBlurLoaded()
-            }
-        }
-
-        // Logic for the more info button on the news card
-        holder.newsInfoIcon.setOnClickListener {
-            when (holder.homeNewsSubtitle.visibility) {
-                View.GONE -> {
-                    holder.homeNewsSubtitle.visibility = View.VISIBLE
-                    holder.homeNewsTitle.setPadding(0, 0, 0, 0)
-                    holder.newsBlurView
-                        .setOverlayColor(ColorUtils.setAlphaComponent(accentColor, 250))
-                }
-
-                View.VISIBLE -> {
-                    holder.homeNewsSubtitle.visibility = View.GONE
-                    holder.homeNewsTitle.setPadding(0, 0, 0, convertToDp(mContext, 8f))
-                    holder.newsBlurView
-                        .setOverlayColor(ColorUtils.setAlphaComponent(accentColor, 150))
-                }
-            }
-        }
-
-        // Sets up blur view on news card
-        holder.newsBlurView
-            .setupWith(holder.newsCardContainer, RenderScriptBlur(mContext))
-            .setFrameClearDrawable(ColorDrawable(getColor(mContext, R.color.white)))
-            .setBlurRadius(25f)
-
-        holder.newsButton.setOnClickListener {
-            val url = article?.articleUrl
-
-            val connection = NewsCustomTabsServiceConnection()
-            builder = CustomTabsIntent.Builder()
-            share = Intent(Intent.ACTION_SEND)
-            share?.type = "text/plain"
-            builder?.setToolbarColor(0x3E50B4)
-            builder?.setStartAnimations(
-                mContext,
-                androidx.appcompat.R.anim.abc_popup_enter,
-                androidx.appcompat.R.anim.abc_popup_exit,
-            )
-            CustomTabsClient.bindCustomTabsService(
-                mContext,
-                NewsFragment.CUSTOM_TAB_PACKAGE_NAME,
-                connection,
-            )
-
-            if (mContext.isChromeCustomTabsSupported()) {
-                share?.putExtra(Intent.EXTRA_TEXT, url)
-                builder?.addMenuItem(
-                    "Share",
-                    PendingIntent.getActivity(
-                        mContext,
-                        0,
-                        share,
-                        PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-                    ),
-                )
-                customTabsIntent = builder?.build()
-                customTabsIntent?.launchUrl(mActivity, Uri.parse(url))
-            } else {
-                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                startActivity(mContext, browserIntent, null)
+        val composeView = holder.itemView.findViewById<ComposeView>(R.id.news_compose_view)
+        composeView.apply {
+            setContent {
+                newsComposableComponent(article)
             }
         }
     }
