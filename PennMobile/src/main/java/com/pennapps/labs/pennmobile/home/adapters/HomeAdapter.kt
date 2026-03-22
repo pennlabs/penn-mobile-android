@@ -54,11 +54,11 @@ import com.pennapps.labs.pennmobile.home.classes.CalendarCell
 import com.pennapps.labs.pennmobile.home.classes.CalendarEvent
 import com.pennapps.labs.pennmobile.home.classes.HomepageDataModel
 import com.pennapps.labs.pennmobile.home.classes.NewsCell
+import com.pennapps.labs.pennmobile.home.classes.NewsComposableComponent
 import com.pennapps.labs.pennmobile.home.classes.Poll
 import com.pennapps.labs.pennmobile.home.classes.PollCell
 import com.pennapps.labs.pennmobile.home.classes.Post
 import com.pennapps.labs.pennmobile.home.classes.PostCell
-import com.pennapps.labs.pennmobile.home.classes.newsComposableComponent
 import com.pennapps.labs.pennmobile.home.fragments.NewsFragment
 import com.pennapps.labs.pennmobile.home.viewholders.HomeBaseHolder
 import com.pennapps.labs.pennmobile.home.viewholders.HomeCalendarHolder
@@ -588,7 +588,7 @@ class HomeAdapter(
         val composeView = holder.itemView.findViewById<ComposeView>(R.id.news_compose_view)
         composeView.apply {
             setContent {
-                newsComposableComponent(article)
+                NewsComposableComponent(article)
             }
         }
     }

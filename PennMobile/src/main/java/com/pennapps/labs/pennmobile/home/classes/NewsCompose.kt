@@ -30,7 +30,10 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 
 @Composable
-fun newsComposableComponent(article: Article) {
+fun NewsComposableComponent(
+    article: Article,
+    modifier: Modifier = Modifier,
+) {
     val uriHandler = LocalUriHandler.current
     var url = "https://www.thedp.com/"
     article.articleUrl?.let {
@@ -43,8 +46,8 @@ fun newsComposableComponent(article: Article) {
                 .fillMaxWidth()
                 .aspectRatio(1f)
                 .padding(16.dp)
-                .clickable { uriHandler.openUri(url) }
-                .clip(RoundedCornerShape(16.dp)),
+                .clip(RoundedCornerShape(16.dp))
+                .clickable { uriHandler.openUri(url) },
     ) {
         Box(
             modifier =
