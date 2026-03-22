@@ -153,6 +153,7 @@ public class Serializer {
                 location.gid = jsonLocation.get("gid").getAsInt();
                 location.name = jsonLocation.get("name").getAsString();
                 location.kind = jsonLocation.get("kind").getAsString();
+                location.bookableDays = jsonLocation.get("bookable_days").getAsInt();
                 locations.add(location);
             }
             return locations;

@@ -255,5 +255,6 @@
     <string name="login_background">Login Background</string>
     <string name="penn_mobile_icon">Penn Mobile Icon</string>
     <string name="cancel">Cancel</string>
+    <string name="sort_by_dining_halls">Sort by %1$s</string>
 
 </resources>

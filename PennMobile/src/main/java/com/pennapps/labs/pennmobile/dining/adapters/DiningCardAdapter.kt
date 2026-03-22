@@ -28,7 +28,6 @@ class DiningCardAdapter(
 ) : RecyclerView.Adapter<DiningCardAdapter.ViewHolder>() {
     private var favoriteHalls: ArrayList<DiningHall> = halls
 
-    private lateinit var itemFavouriteIcon: ImageView
     private lateinit var itemImage: ImageView
     private lateinit var itemName: TextView
     private lateinit var itemStatus: TextView
@@ -136,7 +135,6 @@ class DiningCardAdapter(
         init {
             itemImage = itemBinding.itemDiningImage
             itemName = itemBinding.itemDiningName
-            itemFavouriteIcon = itemBinding.itemToggleFavouriteBtn
             itemStatus = itemBinding.itemDiningStatus
             itemHours = itemBinding.itemDiningHours
         }

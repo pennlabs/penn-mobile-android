@@ -51,6 +51,7 @@ class AboutAdapter(
                 "Baron Ping-Yeh Hsieh" -> R.drawable.baron
                 "David Fu" -> R.drawable.david
                 "Kaushik Akula" -> R.drawable.kaushik
+                "Andrew Chelimo" -> R.drawable.andrew
                 "Veer Kakar" -> R.drawable.vkakar
                 "Cassie Mai" -> R.drawable.cassieym
                 "Ronnie Wang" -> R.drawable.ronwang

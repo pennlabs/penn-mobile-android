@@ -36,12 +36,13 @@ kotlin = "1.9.24"
 kotlinKSP = "1.9.24-1.0.20"
 junitVersion = "4.13.2"
 kotlinxCoroutinesCore = "1.7.3"
+ktlintVersion = "0.5.6"
 leakcanaryAndroid = "3.0-alpha-1"
 legacySupportV4 = "1.0.0"
 library = "1.2.0"
 lifecycleExtensions = "2.2.0"
 lifecycleRuntimeKtx = "2.4.0"
-lifecycleViewmodelCompose = "2.8.6"
+lifecycleViewmodelCompose = "2.8.7"
 loggingInterceptor = "5.0.0-alpha.11"
 lottie = "5.2.0"
 material = "1.6.1"
@@ -65,6 +66,7 @@ testng = "7.8.0"
 uiToolingPreview = "1.10.2"
 uiTooling = "1.10.2"
 coil = "2.6.0"
+ktlint = "14.0.1"
 
 
 [libraries]
@@ -127,6 +129,7 @@ jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 junit = { module = "junit:junit", version.ref = "junitVersion" }
 kaspresso = { module = "com.kaspersky.android-components:kaspresso", version.ref = "kaspresso" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
+ktlint = { module = "io.nlopez.compose.rules:ktlint", version.ref = "ktlintVersion" }
 leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanaryAndroid" }
 library = { module = "com.daimajia.swipelayout:library", version.ref = "library" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
@@ -154,6 +157,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "kotlinKSP"}
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
 # Added this to match the accessor in build.gradle
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 
 
 [bundles]

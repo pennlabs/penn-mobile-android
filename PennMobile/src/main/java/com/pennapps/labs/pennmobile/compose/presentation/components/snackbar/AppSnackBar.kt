@@ -1,4 +1,4 @@
-package com.pennapps.labs.pennmobile.compose.presentation.components
+package com.pennapps.labs.pennmobile.compose.presentation.components.snackbar
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -21,6 +21,8 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pennapps.labs.pennmobile.compose.presentation.theme.AppColors
 import com.pennapps.labs.pennmobile.compose.presentation.theme.AppTheme
-import com.pennapps.labs.pennmobile.compose.presentation.theme.GilroyFontFamily
+import com.pennapps.labs.pennmobile.compose.presentation.theme.cabinFontFamily
 import com.pennapps.labs.pennmobile.compose.presentation.theme.sfProFontFamily
 import kotlinx.coroutines.delay
 
@@ -60,7 +62,9 @@ fun AppSnackBar(
             contentColor = AppColors.TabTextBlue,
         ),
 ) {
-    val duration =
+    val currentDismiss by rememberUpdatedState(dismiss)
+
+    val durationMillis =
         when (duration) {
             SnackbarDuration.Short -> 3000L
             SnackbarDuration.Long -> 5000L
@@ -70,9 +74,9 @@ fun AppSnackBar(
     LaunchedEffect(message) {
         Log.d("AppSnackBar", "message: $message")
 
-        if (duration != Long.MAX_VALUE) {
-            delay(duration)
-            dismiss()
+        if (durationMillis != Long.MAX_VALUE) {
+            delay(durationMillis)
+            currentDismiss()
         }
     }
 
@@ -101,7 +105,7 @@ fun AppSnackBar(
             Text(
                 text = message,
                 color = snackBarContentColor,
-                fontFamily = GilroyFontFamily,
+                fontFamily = cabinFontFamily,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.weight(1f),
@@ -139,17 +143,6 @@ private fun PreviewAppSnackBar() =
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
         ) {
-//        AppSnackBar(
-//            snackBarContainerColor = AppColors.LabelRed,
-//            snackBarContentColor = Color.White,
-//            message = "Log in to add dining halls to favourites",
-//            snackBarActionLabel = "Log In",
-//            dismiss = {},
-//            performSnackBarAction = { },
-//            duration = SnackbarDuration.Short,
-//            modifier = Modifier.align(Alignment.BottomCenter)
-//        )
-
             AppSnackBar(
                 snackBarContainerColor = AppColors.LabelRed,
                 snackBarContentColor = Color.White,

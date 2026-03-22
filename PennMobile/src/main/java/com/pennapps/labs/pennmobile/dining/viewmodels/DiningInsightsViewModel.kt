@@ -61,7 +61,7 @@ class DiningInsightsViewModel
                     Log.d("DiningInsightsViewModel", "Attempting getting value")
                     _currentBalances.value = api.getCurrentDiningBalances(bearer)
 
-                    Log.d("DiningInsightsViewModel", "Value: ${_currentBalances.value}")
+                    Log.d("DiningInsightsViewModel", "Dining Dollars: ${_currentBalances.value?.diningDollars}")
                     val now = LocalDate.now()
                     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
                     _pastBalances.value =
@@ -70,6 +70,7 @@ class DiningInsightsViewModel
                             DiningInsightsCardAdapter.START_DAY_OF_SEMESTER,
                             now.format(formatter),
                         )
+                    Log.d("DiningInsightsViewModel", "Past Balances: ${_pastBalances.value?.diningBalancesList?.size}")
                 } catch (e: Exception) {
                     Log.d("DiningInsightsViewModel", "Failed catch getting value")
                     Log.d("DiningInsightsViewModel", "Error: $e")
@@ -113,6 +114,8 @@ class DiningInsightsViewModel
                         },
                     )
                 }
+
+                Log.d("DiningInsightsViewModel", "cells: $result")
 
                 result
             }.stateIn(
