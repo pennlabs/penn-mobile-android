@@ -29,7 +29,7 @@ class BookGsrFragment : Fragment() {
 
     // By removing the _viewModel / viewModel pair and using a single internal
     // variable, we avoid the ktlint naming error while keeping manual init.
-    private var viewModel: GsrViewModel? = null
+    private lateinit var viewModel: GsrViewModel
     private lateinit var mActivity: MainActivity
 
     private var startTime: String? = null
