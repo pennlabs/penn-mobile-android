@@ -4,70 +4,50 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.preference.PreferenceManager
+import androidx.lifecycle.repeatOnLifecycle
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
-import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.databinding.GsrDetailsBookBinding
+import com.pennapps.labs.pennmobile.gsr.viewmodels.GsrViewModel
 import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class BookGsrFragment : Fragment() {
+    // Making this public allows the _binding backing property pattern to pass ktlint
     private var _binding: GsrDetailsBookBinding? = null
     val binding get() = _binding!!
 
+    // By removing the _viewModel / viewModel pair and using a single internal
+    // variable, we avoid the ktlint naming error while keeping manual init.
+    private lateinit var viewModel: GsrViewModel
     private lateinit var mActivity: MainActivity
 
-    // fields for booking
-    internal lateinit var firstNameEt: EditText
-    internal lateinit var lastNameEt: EditText
-    internal lateinit var emailEt: EditText
-
-    // submit button
-    private lateinit var submit: Button
-
-    private lateinit var mStudentLife: StudentLife
-
-    // gsr details
-    private lateinit var gsrID: String
-    private lateinit var gsrLocationCode: String
-    private lateinit var startTime: String
-    private lateinit var endTime: String
+    private var startTime: String? = null
+    private var endTime: String? = null
     private var gid: Int = 0
     private var roomId: Int = 0
-    private lateinit var roomName: String
+    private var roomName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        arguments?.let { arguments ->
-            gsrID = arguments.getString("gsrID") ?: ""
-            gsrLocationCode = arguments.getString("gsrLocationCode") ?: ""
-            startTime = arguments.getString("startTime") ?: ""
-            endTime = arguments.getString("endTime") ?: ""
-            gid = arguments.getInt("gid")
-            roomId = arguments.getInt("id")
-            roomName = arguments.getString("roomName") ?: ""
+        arguments?.let {
+            startTime = it.getString("startTime")
+            endTime = it.getString("endTime")
+            gid = it.getInt("gid")
+            roomId = it.getInt("id")
+            roomName = it.getString("roomName") ?: ""
         }
-        mStudentLife = MainActivity.studentLifeInstance
-
         mActivity = activity as MainActivity
-        mActivity.setTitle(R.string.gsr)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        val mActivity: MainActivity = activity as MainActivity
-        mActivity.setTitle(R.string.gsr)
     }
 
     override fun onCreateView(
@@ -76,126 +56,113 @@ class BookGsrFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         _binding = GsrDetailsBookBinding.inflate(inflater, container, false)
-        val view = binding.root
+        return binding.root
+    }
 
-        firstNameEt = binding.firstName
-        lastNameEt = binding.lastName
-        emailEt = binding.gsrEmail
-        submit = binding.submitGsr
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
+        super.onViewCreated(view, savedInstanceState)
 
-        // get user email and name from shared preferences if it's already saved
-        val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-        val email = sp.getString(getString(R.string.email_address), "")
-        val firstName = sp.getString(getString(R.string.first_name), "")
-        val lastName = sp.getString(getString(R.string.last_name), "")
+        // Manual initialization here ensures the Fragment is attached
+        // to the Activity before Hilt tries to find the SavedStateRegistry.
+        viewModel = ViewModelProvider(this)[GsrViewModel::class.java]
 
-        firstNameEt.setText(firstName)
-        lastNameEt.setText(lastName)
-        emailEt.setText(email)
-
-        submit.setOnClickListener {
-            if (firstNameEt.text.toString().matches("".toRegex()) ||
-                lastNameEt.text.toString().matches("".toRegex()) ||
-                emailEt.text.toString().matches("".toRegex())
-            ) {
-                Toast
-                    .makeText(
-                        activity,
-                        "Please fill in all fields before booking",
-                        Toast.LENGTH_LONG,
-                    ).show()
-            } else if (!emailEt.text.toString().matches("""\w+@(seas\.|sas\.|wharton\.|nursing\.)?upenn\.edu""".toRegex())) {
-                Toast.makeText(activity, "Please enter a valid Penn email", Toast.LENGTH_LONG).show()
-            } else {
-                submit.isClickable = false
-                submit.background.setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY)
-                binding.loading.loadingPanel.visibility = View.VISIBLE
-                bookGSR(Integer.parseInt(gsrID), gsrLocationCode, startTime, endTime, gid, roomId, roomName)
-            }
+        (activity as? MainActivity)?.apply {
+            setTitle(R.string.gsr)
+            hideBottomBar()
         }
 
-        mActivity.hideBottomBar()
+        setupInitialUI()
+        observeViewModel()
+        setupClickListeners()
+    }
 
-        return view
+    private fun setupInitialUI() {
+        // Use the safe call or non-null assertion since it was just initialized
+        val (first, last, email) = viewModel?.savedUserInfo ?: return
+        binding.firstName.setText(first)
+        binding.lastName.setText(last)
+        binding.gsrEmail.setText(email)
+    }
+
+    private fun setupClickListeners() {
+        binding.submitGsr.setOnClickListener {
+            val firstName =
+                binding.firstName.text
+                    .toString()
+                    .trim()
+            val lastName =
+                binding.lastName.text
+                    .toString()
+                    .trim()
+            val email =
+                binding.gsrEmail.text
+                    .toString()
+                    .trim()
+
+            if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()) {
+                Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            viewModel?.bookGsr(
+                firstName = firstName,
+                lastName = lastName,
+                email = email,
+                startTime = startTime ?: return@setOnClickListener,
+                endTime = endTime ?: return@setOnClickListener,
+                gid = gid,
+                roomId = roomId,
+                roomName = roomName,
+            )
+        }
+    }
+
+    private fun observeViewModel() {
+        val vm = viewModel ?: return
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    vm.isBooking.collect { isBooking ->
+                        setLoadingState(isBooking)
+                    }
+                }
+                launch {
+                    vm.bookingSuccess.collect { success ->
+                        if (success) {
+                            Toast.makeText(requireContext(), "GSR successfully booked", Toast.LENGTH_LONG).show()
+                            requireContext().sendBroadcast(Intent(GsrReservationWidget.UPDATE_GSR_WIDGET))
+                            parentFragmentManager.popBackStack()
+                        }
+                    }
+                }
+                launch {
+                    vm.error.collect { error ->
+                        error?.let {
+                            Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setLoadingState(isLoading: Boolean) {
+        binding.loading.loadingPanel.visibility = if (isLoading) View.VISIBLE else View.GONE
+        binding.submitGsr.isEnabled = !isLoading
+        if (isLoading) {
+            binding.submitGsr.background.setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY)
+        } else {
+            binding.submitGsr.background.clearColorFilter()
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        (activity as? MainActivity)?.showBottomBar()
         _binding = null
-    }
-
-    private fun bookGSR(
-        gsrId: Int,
-        gsrLocationCode: String,
-        startTime: String?,
-        endTime: String?,
-        gid: Int,
-        roomId: Int,
-        roomName: String,
-    ) {
-        mActivity.mNetworkManager.getAccessToken {
-            var bearerToken = ""
-            activity?.let { activity ->
-                val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                bearerToken = "Bearer " + sp.getString(getString(R.string.access_token), "").toString()
-                Log.i("BookGSRFragment", bearerToken)
-            }
-            Log.i("BookGSRFragment", "Bearer $bearerToken")
-            Log.i("BookGSRFragment", "Start $startTime")
-            Log.i("BookGSRFragment", "End $endTime")
-            Log.i("BookGSRFragment", "GID $gid")
-            Log.i("BookGSRFragment", "ID $roomId")
-            Log.i("BookGSRFragment", "Room Name $roomName")
-
-            viewLifecycleOwner.lifecycleScope.launch {
-                try {
-                    val response =
-                        mStudentLife.bookGSR(
-                            // Passing the values
-                            bearerToken,
-                            startTime,
-                            endTime,
-                            gid,
-                            roomId,
-                            roomName,
-                        )
-
-                    val result = response.body()
-                    if (response.isSuccessful && result != null) {
-                        // Displaying the output as a toast and go back to GSR fragment
-                        if (result.getDetail().equals("success")) {
-                            Toast.makeText(activity, "GSR successfully booked", Toast.LENGTH_LONG).show()
-
-                            // Sends request to gsr reservation widget
-                            context?.sendBroadcast(Intent(GsrReservationWidget.UPDATE_GSR_WIDGET))
-
-                            // Save user info in shared preferences
-                            val sp = PreferenceManager.getDefaultSharedPreferences(activity)
-                            val editor = sp.edit()
-                            editor.putString(getString(R.string.first_name), firstNameEt.text.toString())
-                            editor.putString(getString(R.string.last_name), lastNameEt.text.toString())
-                            editor.putString(getString(R.string.email_address), emailEt.text.toString())
-                            editor.apply()
-                        } else {
-                            Toast.makeText(activity, "GSR booking failed", Toast.LENGTH_LONG).show()
-                            Log.e("BookGsrFragment", "GSR booking failed with " + result.getError())
-                        }
-                        // go back to GSR fragment
-                        binding.loading.loadingPanel.visibility = View.GONE
-                        activity?.onBackPressed()
-                    } else {
-                        val error = Exception(response.errorBody()?.string() ?: "Unknown Error")
-                        // If any error occurred displaying the error as toast
-                        Log.e("BookGSRFragment", "Error booking gsr", error)
-                        Toast.makeText(activity, "An error has occurred. Please try again.", Toast.LENGTH_LONG).show()
-                        binding.loading.loadingPanel.visibility = View.GONE
-                        activity?.onBackPressed()
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        }
     }
 
     companion object {
@@ -207,18 +174,18 @@ class BookGsrFragment : Fragment() {
             gid: Int,
             roomId: Int,
             roomName: String,
-        ): BookGsrFragment {
-            val fragment = BookGsrFragment()
-            val args = Bundle()
-            args.putString("gsrID", gsrID)
-            args.putString("gsrLocationCode", gsrLocationCode)
-            args.putString("startTime", startTime)
-            args.putString("endTime", endTime)
-            args.putInt("gid", gid)
-            args.putInt("id", roomId)
-            args.putString("roomName", roomName)
-            fragment.arguments = args
-            return fragment
-        }
+        ): BookGsrFragment =
+            BookGsrFragment().apply {
+                arguments =
+                    Bundle().apply {
+                        putString("gsrID", gsrID)
+                        putString("gsrLocationCode", gsrLocationCode)
+                        putString("startTime", startTime)
+                        putString("endTime", endTime)
+                        putInt("gid", gid)
+                        putInt("id", roomId)
+                        putString("roomName", roomName)
+                    }
+            }
     }
 }
