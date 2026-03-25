@@ -144,6 +144,24 @@ class GsrReservationsAdapter(
 
             builder.show()
         }
+
+        holder.gsrReservationShareButton.setOnClickListener {
+            val bookingId = reservation.bookingId
+
+            // Create Deep Link
+            val deepLink = "pennmobile://gsr/reservation/${reservation.bookingId}"
+
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_SUBJECT, "GSR Booking: $roomName")
+                putExtra(
+                    Intent.EXTRA_TEXT,
+                    "Join my GSR booking!\n$roomName\n$day, $fromHour - $toHour\n\n$deepLink"
+                )
+            }
+
+            mContext.startActivity(Intent.createChooser(shareIntent, "Share Reservation"))
+        }
     }
 
     override fun getItemCount(): Int = reservations.size
@@ -152,6 +170,7 @@ class GsrReservationsAdapter(
         itemBinding: GsrReservationBinding,
     ) : RecyclerView.ViewHolder(itemBinding.root) {
         val gsrReservationCancelButton = itemBinding.gsrReservationCancelBtn
+        val gsrReservationShareButton = itemBinding.gsrReservationShareBtn
         val gsrReservationLocationTv = itemBinding.gsrReservationLocationTv
         val gsrReservationDateTv = itemBinding.gsrReservationDateTv
         val gsrReservationIv = itemBinding.gsrReservationIv
