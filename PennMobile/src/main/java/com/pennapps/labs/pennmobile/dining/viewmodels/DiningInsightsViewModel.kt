@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -42,6 +43,16 @@ class DiningInsightsViewModel
 
         private val _loginRequired = MutableStateFlow(false)
         val loginRequired: StateFlow<Boolean> = _loginRequired.asStateFlow()
+
+
+        val isAprilFoolsDay = LocalDate.now().let {
+            it.dayOfMonth == 1 && it.monthValue == 4 && it.year == 2026
+        }
+
+        private val _showAprilPranks = MutableStateFlow(true)
+        val showAprilPranks: StateFlow<Boolean> = _showAprilPranks.map { showPranks -> showPranks && isAprilFoolsDay  }.stateIn(viewModelScope, SharingStarted.Lazily, false)
+
+
 
         fun checkTokenAndFetch() {
             val token = tokenManager.getAccessToken()
@@ -123,4 +134,10 @@ class DiningInsightsViewModel
                 SharingStarted.Lazily,
                 emptyList(),
             )
+
+        fun setAprilPranks(show: Boolean) {
+            _showAprilPranks.value = show
+        }
     }
+
+

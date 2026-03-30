@@ -63,6 +63,7 @@ val diningGrey: ComposeColor = ComposeColor("#F5F5F5".toColorInt())
 fun DiningPredictionCard(
     cell: DiningInsightCell,
     modifier: Modifier = Modifier,
+    showPranks: Boolean
 ) {
     val context: Context = LocalContext.current
     var selectedInfo by remember { mutableStateOf<String?>(null) }
@@ -134,7 +135,16 @@ fun DiningPredictionCard(
 
     // Simple prediction based on slope between first and last entries
     val predictionEntries: List<Entry> =
-        if (entries.size >= 2) {
+        if (showPranks) {
+            // April Fools: tank the prediction straight to 0
+            val last = entries.lastOrNull()
+            if (last != null) {
+//                val endX = ((endDate.time - startDate.time) / (1000 * 60 * 60 * 24)).toInt()
+                listOf(last, Entry(last.x + 10f, 0f) )
+            } else {
+                emptyList()
+            }
+        } else if (entries.size >= 2) {
             val first = entries.first()
             val last = entries.last()
             val slope = (last.y - first.y) / (last.x - first.x)
@@ -159,7 +169,9 @@ fun DiningPredictionCard(
 
     // Simple prediction based on slope between first and last entries
     val predictedEndBalance: Float? =
-        if (entries.size >= 2) {
+        if (showPranks) {
+            0f
+        } else if (entries.size >= 2) {
             val first = entries.first()
             val last = entries.last()
             val slope = (last.y - first.y) / (last.x - first.x)
@@ -219,25 +231,6 @@ fun DiningPredictionCard(
                         xAxis.valueFormatter = dateFormatter
                         xAxis.labelRotationAngle = -45f
 
-                        val actualSet =
-                            LineDataSet(entries, "Actual").apply {
-                                color = if (cell.type!!.contains("dollars")) diningGreen else diningBlue
-                                setDrawCircles(false)
-                                setDrawValues(false)
-                                lineWidth = 4f
-                            }
-
-                        val predictionSet =
-                            LineDataSet(predictionEntries, "Prediction").apply {
-                                color = AndroidColor.GRAY
-                                setDrawCircles(false)
-                                setDrawValues(false)
-                                enableDashedLine(10f, 5f, 0f)
-                                lineWidth = 4f
-                            }
-
-                        data = LineData(actualSet, predictionSet)
-
                         val endX = ((endDate.time - startDate.time) / (1000 * 60 * 60 * 24)).toFloat()
                         val ll =
                             LimitLine(endX, "End of Term").apply {
@@ -254,26 +247,6 @@ fun DiningPredictionCard(
                         this.marker = marker
                         setDrawMarkers(true)
 
-                        actualSet.isHighlightEnabled = true
-                        setOnChartValueSelectedListener(
-                            object : OnChartValueSelectedListener {
-                                override fun onValueSelected(
-                                    e: Entry?,
-                                    h: Highlight?,
-                                ) {
-                                    e?.let { entry ->
-                                        if (h != null) {
-                                            marker.refreshContent(entry, h)
-                                            invalidate()
-                                        }
-                                    }
-                                }
-
-                                override fun onNothingSelected() {
-                                }
-                            },
-                        )
-
                         description = Description().apply { text = "" }
                         setTouchEnabled(true)
                         setPinchZoom(true)
@@ -284,9 +257,44 @@ fun DiningPredictionCard(
                         axisLeft.axisMinimum = 0f
                         legend.isEnabled = false
                         isDoubleTapToZoomEnabled = false
-
-                        invalidate()
                     }
+                },
+                // ADD THIS:
+                update = { chart ->
+                    val actualSet =
+                        LineDataSet(entries, "Actual").apply {
+                            color = if (cell.type!!.contains("dollars")) diningGreen else diningBlue
+                            setDrawCircles(false)
+                            setDrawValues(false)
+                            lineWidth = 4f
+                        }
+
+                    val predictionSet =
+                        LineDataSet(predictionEntries, "Prediction").apply {
+                            color = AndroidColor.GRAY
+                            setDrawCircles(false)
+                            setDrawValues(false)
+                            enableDashedLine(10f, 5f, 0f)
+                            lineWidth = 4f
+                        }
+
+                    chart.data = LineData(actualSet, predictionSet)
+
+                    chart.setOnChartValueSelectedListener(
+                        object : OnChartValueSelectedListener {
+                            override fun onValueSelected(e: Entry?, h: Highlight?) {
+                                e?.let { entry ->
+                                    if (h != null) {
+                                        (chart.marker as? DiningMarkerView)?.refreshContent(entry, h)
+                                        chart.invalidate()
+                                    }
+                                }
+                            }
+                            override fun onNothingSelected() {}
+                        },
+                    )
+
+                    chart.invalidate()
                 },
                 modifier =
                     Modifier
@@ -324,12 +332,24 @@ fun DiningPredictionCard(
                     )
                 } else {
                     Column(modifier = Modifier.weight(0.4f)) {
+
+//                        //TODO: Remove the April Fools if-checks
+//                        val balanceFormatted: String =
+//                            if (cell.type!!.contains("dollars")) {
+//                                "$" + String.format(Locale.US, "%.2f", predictedEndBalance?.let { if (isAprilFoolsDay) -it else it } ?: 0)
+//                            } else {
+//                                String.format(Locale.US, "%d Swipes", predictedEndBalance?.coerceAtLeast(0f)?.roundToInt()?.let {
+//                                    if (isAprilFoolsDay) -it else it
+//                                })
+//                            }
+
                         val balanceFormatted: String =
                             if (cell.type!!.contains("dollars")) {
-                                "$" + String.format(Locale.US, "%.2f", predictedEndBalance)
+                                "$" + String.format(Locale.US, "%.2f", predictedEndBalance?.coerceAtLeast(0f) ?: 0f)
                             } else {
-                                String.format(Locale.US, "%d Swipes", predictedEndBalance?.coerceAtLeast(0f)?.roundToInt())
+                                String.format(Locale.US, "%d Swipes", predictedEndBalance?.coerceAtLeast(0f)?.roundToInt() ?: 0)
                             }
+
                         Text(
                             text = "Extra ${if (cell.type!!.contains("dollars")) "Balance" else "Swipes"}",
                             fontFamily = GilroyLight,

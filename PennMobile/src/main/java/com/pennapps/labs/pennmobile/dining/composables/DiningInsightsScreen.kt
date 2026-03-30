@@ -22,6 +22,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.pennapps.labs.pennmobile.compose.presentation.components.error.ErrorCard
 import com.pennapps.labs.pennmobile.compose.presentation.components.error.UserDisplayErrors
+import com.pennapps.labs.pennmobile.dining.composables.components.AprilFoolsCard
 import com.pennapps.labs.pennmobile.dining.composables.components.DiningBalancesCard
 import com.pennapps.labs.pennmobile.dining.composables.components.DiningPredictionCard
 import com.pennapps.labs.pennmobile.dining.viewmodels.DiningInsightsViewModel
@@ -43,6 +44,8 @@ fun DiningInsightsScreen(
         ),
 ) {
     val currentOnLoginRequirement by rememberUpdatedState(onLoginRequirement)
+
+    val showPranks by viewModel.showAprilPranks.collectAsState()
 
     PennMobileTheme {
         LaunchedEffect(Unit) {
@@ -83,14 +86,38 @@ fun DiningInsightsScreen(
                 )
             }
 
+
             // Dining Balance cards
             items(cells.filter { it.type == "dining_balance" }) { cell ->
+                val diningDollars = cell.diningBalances?.diningDollars?.let { dollars ->
+                    "$${if (showPranks) "-" else ""}$dollars"
+                } ?: "0.00"
+
+                val regularVisits = cell.diningBalances?.regularVisits?.let { visits ->
+                    if (showPranks) -visits else visits
+                } ?: 0
+
+                val guestVisits = cell.diningBalances?.guestVisits?.let {
+                    if (showPranks) -it else it
+                } ?: 0
+
                 DiningBalancesCard(
-                    diningDollars = "$${cell.diningBalances?.diningDollars ?: "0.00"}",
-                    swipes = cell.diningBalances?.regularVisits ?: 0,
-                    guestSwipes = cell.diningBalances?.guestVisits ?: 0,
+                    diningDollars = diningDollars,
+                    swipes = regularVisits,
+                    guestSwipes = guestVisits,
                     modifier = Modifier.padding(bottom = 12.dp),
                 )
+            }
+
+
+            if (viewModel.isAprilFoolsDay) {
+                item {
+                    AprilFoolsCard(
+                        allowPrank = showPranks,
+                        onPrankListener = { viewModel.setAprilPranks(it) },
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
             }
 
             /*
@@ -131,6 +158,7 @@ fun DiningInsightsScreen(
                         DiningPredictionCard(
                             cell = cell,
                             modifier = Modifier.padding(bottom = 12.dp),
+                            showPranks = showPranks
                         )
                     }
 
@@ -148,6 +176,7 @@ fun DiningInsightsScreen(
                     items(cells.filter { it.type == "dining_swipes_predictions" }) { cell ->
                         DiningPredictionCard(
                             cell = cell,
+                            showPranks = showPranks
                         )
                     }
                 }

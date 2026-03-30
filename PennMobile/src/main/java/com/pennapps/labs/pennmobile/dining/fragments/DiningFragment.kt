@@ -119,7 +119,7 @@ class DiningFragment : Fragment() {
         val snackBarContainerColor by remember(snackBarEvent) {
             derivedStateOf {
                 when (snackBarEvent) {
-                    is SnackBarEvent.Success -> AppColors.SelectedTabBlue
+                    is SnackBarEvent.Success -> AppColors.LabsLightBlue
                     is SnackBarEvent.Error -> AppColors.LabelRed
                     is SnackBarEvent.None -> Color.Transparent
                 }
@@ -223,7 +223,7 @@ class DiningFragment : Fragment() {
                             isRefreshing = isDataRefreshing,
                             state = pullToRefreshState,
                             containerColor = MaterialTheme.colorScheme.background,
-                            color = AppColors.SelectedTabBlue,
+                            color = AppColors.LabsLightBlue,
                         )
                     },
                 ) {
