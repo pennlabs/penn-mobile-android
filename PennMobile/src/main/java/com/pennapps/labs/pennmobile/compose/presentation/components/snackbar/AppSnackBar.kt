@@ -59,7 +59,7 @@ fun AppSnackBar(
     actionButtonColors: ButtonColors =
         ButtonDefaults.buttonColors(
             containerColor = Color.White,
-            contentColor = AppColors.TabTextBlue,
+            contentColor = AppColors.LabsDarkBlue,
         ),
 ) {
     val currentDismiss by rememberUpdatedState(dismiss)

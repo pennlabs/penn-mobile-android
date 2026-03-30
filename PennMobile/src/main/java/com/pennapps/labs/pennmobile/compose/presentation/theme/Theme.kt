@@ -21,7 +21,7 @@ private val lightColorScheme =
         surface = Color.White,
         onBackground = Color.Black,
         onSurface = Color.Black,
-        onSurfaceVariant = AppColors.TabTextBlue,
+        onSurfaceVariant = AppColors.LabsDarkBlue,
         error = AppColors.BrightRed,
         onError = Color.White,
     )
@@ -32,7 +32,7 @@ private val darkColorScheme =
         secondary = Color(0xFF41c0ee),
         onPrimary = Color.White,
         onSecondary = Color.White,
-        background = Color(0x0F000000),
+        background = Color(0xFF000000),
         surfaceContainer = Color(0x0F030303),
         surface = AppColors.Gray,
         onSurfaceVariant = Color.White,
@@ -45,7 +45,7 @@ private val darkColorScheme =
 @OptIn(ExperimentalMaterial3Api::class)
 val rippleConfiguration =
     RippleConfiguration(
-        color = AppColors.TabTextBlue,
+        color = AppColors.LabsDarkBlue,
         rippleAlpha = RippleAlpha(draggedAlpha = 0.2f, focusedAlpha = 0.2f, hoveredAlpha = 0.2f, pressedAlpha = 0.2f),
     )
 
