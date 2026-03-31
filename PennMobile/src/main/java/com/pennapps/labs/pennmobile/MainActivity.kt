@@ -166,10 +166,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleIntent(intent: Intent) {
         if (intent.action == Intent.ACTION_VIEW) {
-            val bookingId = intent.data?.lastPathSegment ?: return
+            val shareCode = intent.data?.getQueryParameter("data") ?: return
             binding.include.mainViewPager.visibility = View.GONE
             hideBottomBar()
-            fragmentTransact(GsrReservationDetailFragment.newInstance(bookingId), false)
+            fragmentTransact(GsrReservationDetailFragment.newInstance(shareCode), false)
         }
     }
 

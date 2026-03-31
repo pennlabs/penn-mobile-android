@@ -67,14 +67,13 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
 
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="pennmobile"
-                    android:host="gsr"
-                    android:pathPrefix="/reservation" />
+                <data android:scheme="https"
+                    android:host="pennmobile.org"
+                    android:pathPrefix="/gsr/share" />
             </intent-filter>
         </activity>
 

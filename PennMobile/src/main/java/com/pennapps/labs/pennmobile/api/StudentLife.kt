@@ -14,6 +14,9 @@ import com.pennapps.labs.pennmobile.gsr.classes.GSR
 import com.pennapps.labs.pennmobile.gsr.classes.GSRBookingResult
 import com.pennapps.labs.pennmobile.gsr.classes.GSRLocation
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
+import com.pennapps.labs.pennmobile.gsr.classes.GSRShareResponse
+import com.pennapps.labs.pennmobile.gsr.classes.ShareCodeRequest
+import com.pennapps.labs.pennmobile.gsr.classes.ShareCodeResponse
 import com.pennapps.labs.pennmobile.gsr.classes.WhartonStatus
 import com.pennapps.labs.pennmobile.home.classes.Article
 import com.pennapps.labs.pennmobile.home.classes.CalendarEvent
@@ -201,6 +204,18 @@ interface StudentLife {
     fun getGsrReservations(
         @Header("Authorization") bearerToken: String?,
     ): Observable<List<GSRReservation?>?>
+
+    @POST("gsr/share/")
+    fun getGsrShareCode(
+        @Header("Authorization") bearerToken: String,
+        @Body body: ShareCodeRequest
+    ): Observable<ShareCodeResponse>
+
+    @GET("gsr/share/{code}/")
+    fun getReservationFromShareCode(
+        @Header("Authorization") bearerToken: String,
+        @Path("code") shareCode: String
+    ): Observable<GSRShareResponse>
 
     @GET("laundry/preferences")
     fun getLaundryPrefObservable(
