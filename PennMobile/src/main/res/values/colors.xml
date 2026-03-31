@@ -44,6 +44,7 @@
     <color name="star_color_on">#f4b400</color>
 
     <color name="color_background">#FFFFFF</color>
+    <color name="color_background_dark">#1b1b1b</color>
     <color name="avail_color_green">#8BC34A</color>
     <color name="avail_color_red">#F44336</color>
 
