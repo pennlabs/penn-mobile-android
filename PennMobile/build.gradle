@@ -146,6 +146,7 @@ dependencies {
 
     implementation libs.androidx.hilt.android
     ksp libs.androidx.hilt.compiler
+    implementation libs.androidx.work.runtime.ktx
 }
 
 String getPlatformClientID() {
