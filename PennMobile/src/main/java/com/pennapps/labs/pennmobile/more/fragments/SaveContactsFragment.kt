@@ -141,7 +141,7 @@ class SaveContactsFragment : ListFragment() {
                     .build(),
             )
             try {
-                val results = mActivity.contentResolver.applyBatch(ContactsContract.AUTHORITY, ops)
+                mActivity.contentResolver.applyBatch(ContactsContract.AUTHORITY, ops)
                 currentNames.add(p.name)
                 currentNumbers.add(p.phone)
             } catch (e: RemoteException) {
@@ -194,13 +194,14 @@ class SaveContactsFragment : ListFragment() {
         val cursor =
             mActivity.contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null)
                 ?: return
-        if (cursor.moveToFirst()) {
-            do {
-                val name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
+
+        cursor.use { c ->
+            while (c.moveToNext()) {
+                val nameIndex = c.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME)
+                val name = c.getString(nameIndex)
                 currentNames.add(name)
-            } while (cursor.moveToNext())
+            }
         }
-        cursor.close()
     }
 
     companion object {

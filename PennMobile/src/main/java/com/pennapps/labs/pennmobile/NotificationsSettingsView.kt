@@ -1,5 +1,7 @@
 @file:Suppress("ktlint:standard:no-wildcard-imports")
 
+package com.pennapps.labs.pennmobile
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,11 +22,14 @@ import androidx.compose.ui.unit.dp
 @Suppress("ktlint:standard:function-naming")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotificationSettingsList(settingsList: List<Pair<String, Boolean>>) {
+fun NotificationSettingsList(
+    settingsList: List<Pair<String, Boolean>>,
+    modifier: Modifier = Modifier,
+) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             Column {
                 CenterAlignedTopAppBar(
@@ -102,12 +107,13 @@ fun NotificationSettingsList(settingsList: List<Pair<String, Boolean>>) {
 fun NotificationSettingRow(
     label: String,
     isEnabledInitial: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     var isEnabled by remember { mutableStateOf(isEnabledInitial) }
 
     Row(
         modifier =
-            Modifier
+            modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -141,11 +147,10 @@ fun NotificationSettingRow(
 fun saveNotificationSettings() {
 }
 
-@Suppress("ktlint:standard:function-naming")
 @Preview(showBackground = true)
 @Composable
-fun AppWithListPreview() {
-    var settingsList =
+private fun AppWithListPreview() {
+    val settingsList =
         listOf(
             "Penn Course Alert" to false,
             "Laundry" to true,

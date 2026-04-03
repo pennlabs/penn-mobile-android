@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -43,6 +44,16 @@ class DiningInsightsViewModel
         private val _loginRequired = MutableStateFlow(false)
         val loginRequired: StateFlow<Boolean> = _loginRequired.asStateFlow()
 
+
+        val isAprilFoolsDay = LocalDate.now().let {
+            it.dayOfMonth == 1 && it.monthValue == 4 && it.year == 2026
+        }
+
+        private val _showAprilPranks = MutableStateFlow(true)
+        val showAprilPranks: StateFlow<Boolean> = _showAprilPranks.map { showPranks -> showPranks && isAprilFoolsDay  }.stateIn(viewModelScope, SharingStarted.Lazily, false)
+
+
+
         fun checkTokenAndFetch() {
             val token = tokenManager.getAccessToken()
             if (token.isNullOrEmpty()) {
@@ -61,7 +72,7 @@ class DiningInsightsViewModel
                     Log.d("DiningInsightsViewModel", "Attempting getting value")
                     _currentBalances.value = api.getCurrentDiningBalances(bearer)
 
-                    Log.d("DiningInsightsViewModel", "Value: ${_currentBalances.value}")
+                    Log.d("DiningInsightsViewModel", "Dining Dollars: ${_currentBalances.value?.diningDollars}")
                     val now = LocalDate.now()
                     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
                     _pastBalances.value =
@@ -70,6 +81,7 @@ class DiningInsightsViewModel
                             DiningInsightsCardAdapter.START_DAY_OF_SEMESTER,
                             now.format(formatter),
                         )
+                    Log.d("DiningInsightsViewModel", "Past Balances: ${_pastBalances.value?.diningBalancesList?.size}")
                 } catch (e: Exception) {
                     Log.d("DiningInsightsViewModel", "Failed catch getting value")
                     Log.d("DiningInsightsViewModel", "Error: $e")
@@ -114,10 +126,18 @@ class DiningInsightsViewModel
                     )
                 }
 
+                Log.d("DiningInsightsViewModel", "cells: $result")
+
                 result
             }.stateIn(
                 viewModelScope,
                 SharingStarted.Lazily,
                 emptyList(),
             )
+
+        fun setAprilPranks(show: Boolean) {
+            _showAprilPranks.value = show
+        }
     }
+
+

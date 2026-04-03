@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pennapps.labs.pennmobile.ui.theme.DiningBlue
 import com.pennapps.labs.pennmobile.ui.theme.DiningGreen
@@ -105,6 +106,7 @@ private fun BalanceItem(
                     text = label,
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.W900,
                 )
 
                 Text(
@@ -115,6 +117,7 @@ private fun BalanceItem(
                             // fontSize = 16.sp
                         ),
                     modifier = Modifier.align(Alignment.CenterHorizontally),
+                    fontWeight = FontWeight.W900,
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -133,6 +136,7 @@ private fun BalanceItem(
                                 .align(Alignment.BottomEnd),
                     )
                 }
+
                 BalanceIconType.SWIPE -> {
                     Icon(
                         imageVector = Icons.Filled.CreditCard,
@@ -144,6 +148,7 @@ private fun BalanceItem(
                                 .align(Alignment.BottomEnd),
                     )
                 }
+
                 BalanceIconType.GUEST -> {
                     Icon(
                         imageVector = Icons.Filled.Group,

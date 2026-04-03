@@ -14,7 +14,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object CampusExpressModule {
-
     @Provides
     @Singleton
     @Named("CampusExpressRetrofit") // Tag this specific instance
@@ -25,9 +24,10 @@ object CampusExpressModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
+    // Tell Hilt to use the tagged instance
     @Provides
     @Singleton
     fun provideCampusExpress(
-        @Named("CampusExpressRetrofit") retrofit: Retrofit // Tell Hilt to use the tagged instance
+        @Named("CampusExpressRetrofit") retrofit: Retrofit,
     ): CampusExpress = retrofit.create(CampusExpress::class.java)
 }

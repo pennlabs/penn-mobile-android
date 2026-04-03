@@ -15,16 +15,24 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 
 /**
+ * @brief Hilt module for providing application-wide singleton dependencies.
+ *
  * First ever Dagger Hilt module written for Penn Mobile.
  *
- * It is responsible for providing foundational objects
- * like SharedPreferences and a main-thread CoroutineScope.
+ * This module is responsible for providing foundational objects that are used across
+ * the entire application lifecycle, such as SharedPreferences and a global CoroutineScope.
+ * All dependencies provided here are scoped as singletons.
  *
  * Created by Andrew Chelimo on 2/11/2025
  */
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+    /**
+     * Provides a singleton instance of [SharedPreferences].
+     *
+     * @param context The application context, used to get the default SharedPreferences.
+     */
     @Singleton
     @Provides
     fun providesSharedPreferences(
@@ -32,7 +40,9 @@ object AppModule {
     ): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     /**
-     * Provides a coroutine scope that is tied to the application lifecycle
+     * Provides a coroutine scope that is tied to the application lifecycle.
+     * This scope is configured with a SupervisorJob, ensuring that the failure of one
+     * child coroutine does not cancel the entire scope. It uses the Main dispatcher.
      */
     @Singleton
     @Provides
@@ -40,6 +50,9 @@ object AppModule {
     fun providesAppCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 }
 
+/**
+ * Qualifier to distinguish the application-level CoroutineScope from other scopes.
+ */
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
 annotation class AppScope

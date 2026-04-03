@@ -141,7 +141,7 @@ jobs:
 
       # Run JaCoCo, generate Test Report
       - name: Check Code Coverage
-        run: ./gradlew jacocoTestReport --stacktrace
+        run: ./gradlew testDebugUnitTest jacocoTestReport --stacktrace
 
       # Upload reports to GitHub Actions
       - name: Upload Reports
@@ -163,20 +163,11 @@ jobs:
             java-version: '17'
             distribution: 'temurin'
   
-        - name: Install ktlint
-          run: |
-            curl -sSLO https://github.com/pinterest/ktlint/releases/download/1.3.1/ktlint
-            chmod a+x ktlint
-            sudo mv ktlint /usr/local/bin/
+        - name: Grant execute permission for gradlew
+          run: chmod +x ./gradlew
   
         - name: Run ktlint
-          run: |
-            set -o pipefail
-            ktlint --reporter=plain > ktlint_errors.txt
-
-        - name: Check for ktlint errors
-          if: ${{ failure() || steps.run_ktlint.exitCode == 1 }}
-          run: cat ktlint_errors.txt
+          run: ./gradlew ktlintCheck
     
   # Publish to Firebase App Distribution
   # https://github.com/wzieba/Firebase-Distribution-Github-Action

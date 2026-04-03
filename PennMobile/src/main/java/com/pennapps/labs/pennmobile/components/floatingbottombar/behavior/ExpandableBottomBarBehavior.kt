@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.components.floatingbottombar.behavior
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
@@ -12,6 +13,7 @@ open class ExpandableBottomBarBehavior<V : View> : CoordinatorLayout.Behavior<V>
 
     constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet)
 
+    @SuppressLint("RestrictedApi")
     override fun layoutDependsOn(
         parent: CoordinatorLayout,
         child: V,
@@ -23,6 +25,7 @@ open class ExpandableBottomBarBehavior<V : View> : CoordinatorLayout.Behavior<V>
         return super.layoutDependsOn(parent, child, dependency)
     }
 
+    @SuppressLint("RestrictedApi")
     private fun updateSnackBar(
         child: View,
         snackBarLayout: Snackbar.SnackbarLayout,

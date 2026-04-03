@@ -1,11 +1,11 @@
 package com.pennapps.labs.pennmobile.dining.composables
 
 import GilroyExtraBold
-import PennMobileTheme
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -15,20 +15,38 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import com.pennapps.labs.pennmobile.compose.presentation.components.error.ErrorCard
+import com.pennapps.labs.pennmobile.compose.presentation.components.error.UserDisplayErrors
+import com.pennapps.labs.pennmobile.dining.composables.components.AprilFoolsCard
 import com.pennapps.labs.pennmobile.dining.composables.components.DiningBalancesCard
 import com.pennapps.labs.pennmobile.dining.composables.components.DiningPredictionCard
 import com.pennapps.labs.pennmobile.dining.viewmodels.DiningInsightsViewModel
+import com.pennapps.labs.pennmobile.ui.theme.PennMobileTheme
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun DiningInsightsScreen(
+    onLoginRequirement: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: DiningInsightsViewModel = hiltViewModel(),
-    onLoginRequired: () -> Unit,
+    viewModel: DiningInsightsViewModel =
+        hiltViewModel(
+            checkNotNull(
+                LocalViewModelStoreOwner.current,
+            ) {
+                "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+            },
+            null,
+        ),
 ) {
+    val currentOnLoginRequirement by rememberUpdatedState(onLoginRequirement)
+
+    val showPranks by viewModel.showAprilPranks.collectAsState()
+
     PennMobileTheme {
         LaunchedEffect(Unit) {
             viewModel.checkTokenAndFetch()
@@ -37,11 +55,13 @@ fun DiningInsightsScreen(
         val loginRequired by viewModel.loginRequired.collectAsState()
         LaunchedEffect(loginRequired) {
             if (loginRequired) {
-                onLoginRequired()
+                currentOnLoginRequirement()
             }
         }
 
         val cells by viewModel.cells.collectAsState()
+        val pastBalances by viewModel.pastBalances.collectAsState()
+
         LazyColumn(
             modifier =
                 modifier
@@ -66,49 +86,100 @@ fun DiningInsightsScreen(
                 )
             }
 
+
             // Dining Balance cards
             items(cells.filter { it.type == "dining_balance" }) { cell ->
+                val diningDollars = cell.diningBalances?.diningDollars?.let { dollars ->
+                    "$${if (showPranks) "-" else ""}$dollars"
+                } ?: "0.00"
+
+                val regularVisits = cell.diningBalances?.regularVisits?.let { visits ->
+                    if (showPranks) -visits else visits
+                } ?: 0
+
+                val guestVisits = cell.diningBalances?.guestVisits?.let {
+                    if (showPranks) -it else it
+                } ?: 0
+
                 DiningBalancesCard(
-                    diningDollars = "$${cell.diningBalances?.diningDollars ?: "0.00"}",
-                    swipes = cell.diningBalances?.regularVisits ?: 0,
-                    guestSwipes = cell.diningBalances?.guestVisits ?: 0,
+                    diningDollars = diningDollars,
+                    swipes = regularVisits,
+                    guestSwipes = guestVisits,
                     modifier = Modifier.padding(bottom = 12.dp),
                 )
             }
 
-            // Header for Dining Dollars Predictions
-            item {
-                Text(
-                    text = "Dining Dollars Predictions",
-                    fontFamily = GilroyExtraBold,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(bottom = 4.dp),
-                )
+
+            if (viewModel.isAprilFoolsDay) {
+                item {
+                    AprilFoolsCard(
+                        allowPrank = showPranks,
+                        onPrankListener = { viewModel.setAprilPranks(it) },
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
             }
 
-            // Dining Dollars Prediction cards
-            items(cells.filter { it.type == "dining_dollars_predictions" }) { cell ->
-                DiningPredictionCard(
-                    cell = cell,
-                    modifier = Modifier.padding(bottom = 12.dp),
-                )
-            }
+            /*
+             * When the pastBalances list size is:
+             * a) 0 -> The user is either a junior/senior not on a dining plan or an RA who has a plan but for RAs, we never get the plan balances at all
+             * b) 1 -> The user is a normal student on a plan. However, Campus Express currently has an issue
+             * c) 2 or more -> Everything is alright. Render the balances graph.
+             */
+            pastBalances?.diningBalancesList?.size?.let { balanceListSize ->
+                if (balanceListSize == 0 || balanceListSize == 1) {
+                    item {
+                        ErrorCard(
+                            modifier =
+                                Modifier
+                                    .padding(vertical = 12.dp)
+                                    .fillMaxWidth(0.95f),
+                            errorMessage =
+                                when (balanceListSize) {
+                                    0 -> UserDisplayErrors.PAST_BALANCES_NOT_AVAILABLE
+                                    1 -> UserDisplayErrors.CAMPUS_EXPRESS_DOWN
+                                    else -> "Error occurred"
+                                },
+                        )
+                    }
+                } else {
+                    // Header for Dining Dollars Predictions
+                    item {
+                        Text(
+                            text = "Dining Dollars Predictions",
+                            fontFamily = GilroyExtraBold,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.padding(bottom = 4.dp),
+                        )
+                    }
 
-            // Header for Swipes Predictions
-            item {
-                Text(
-                    text = "Swipes Predictions",
-                    fontFamily = GilroyExtraBold,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(bottom = 4.dp),
-                )
-            }
+                    // Dining Dollars Prediction cards
+                    items(cells.filter { it.type == "dining_dollars_predictions" }) { cell ->
+                        DiningPredictionCard(
+                            cell = cell,
+                            modifier = Modifier.padding(bottom = 12.dp),
+                            showPranks = showPranks
+                        )
+                    }
 
-            // Swipes Prediction cards
-            items(cells.filter { it.type == "dining_swipes_predictions" }) { cell ->
-                DiningPredictionCard(
-                    cell = cell,
-                )
+                    // Header for Swipes Predictions
+                    item {
+                        Text(
+                            text = "Swipes Predictions",
+                            fontFamily = GilroyExtraBold,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.padding(bottom = 4.dp),
+                        )
+                    }
+
+                    // Swipes Prediction cards
+                    items(cells.filter { it.type == "dining_swipes_predictions" }) { cell ->
+                        DiningPredictionCard(
+                            cell = cell,
+                            showPranks = showPranks
+                        )
+                    }
+                }
             }
         }
     }

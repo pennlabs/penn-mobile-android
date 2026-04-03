@@ -104,12 +104,12 @@ class LaundrySettingsFragment : Fragment() {
         super.onDestroyView()
         if (laundryViewModel.existsDiff()) {
             mActivity.mNetworkManager.getAccessToken {
-                val bearerToken =
-                    "Bearer " +
-                        sharedPreferences
-                            .getString(getString(R.string.access_token), "")
-                            .toString()
-                laundryViewModel.setFavoritesFromToggled(mStudentLife, bearerToken)
+                // Check if the fragment is still attached before accessing resources
+                if (isAdded) {
+                    val tokenKey = getString(R.string.access_token)
+                    val bearerToken = "Bearer " + sharedPreferences.getString(tokenKey, "").toString()
+                    laundryViewModel.setFavoritesFromToggled(mStudentLife, bearerToken)
+                }
             }
         }
         mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
