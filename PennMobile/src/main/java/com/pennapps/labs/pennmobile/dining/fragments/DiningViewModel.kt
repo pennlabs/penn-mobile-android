@@ -63,10 +63,6 @@ class DiningViewModel
                 .combine(allDiningHalls) { favouriteIDs, halls ->
                     halls.filter { diningHall -> favouriteIDs.contains(diningHall.id) }
                 }
-        // when refreshed, wiped out the hearts in the all-dining-halls list
-        //                .map { favouriteIDs ->
-        //                    allDiningHalls.value.filter { diningHall -> favouriteIDs.contains(diningHall.id) }
-        //                }
 
         init {
             fetchSortOrder()

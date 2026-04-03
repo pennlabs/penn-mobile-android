@@ -25,7 +25,6 @@ class DiningInfoFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        mDiningHall = arguments?.getParcelable("DiningHall") // removed
         mActivity = activity as MainActivity
     }
 
