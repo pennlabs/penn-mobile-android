@@ -33,7 +33,7 @@ class MenuTab : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         val root =
             LinearLayout(requireContext()).apply {
                 orientation = LinearLayout.VERTICAL
