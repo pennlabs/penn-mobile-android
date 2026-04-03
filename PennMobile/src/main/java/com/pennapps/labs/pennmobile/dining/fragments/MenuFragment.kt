@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -30,6 +31,7 @@ import com.google.android.material.tabs.TabLayout
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall
+import com.pennapps.labs.pennmobile.dining.classes.VenueInterval
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 
@@ -40,20 +42,23 @@ class MenuFragment : Fragment() {
     private var mDiningHall: DiningHall? = null
     private var pageAdapter: PagerAdapter? = null
 
-    inner class TabAdapter(
+    private var availableDays: List<VenueInterval> = emptyList()
+    private var selectedDayIndex: Int = 0
+    private lateinit var pager: ViewPager
+    private lateinit var tabLayout: TabLayout
+    private lateinit var dateHoursRow: View
+
+    inner class MenuTabAdapter(
         fm: FragmentManager,
+        private val menus: List<DiningHall.Menu>,
+        private val hallName: String?,
     ) : FragmentStatePagerAdapter(fm) {
-        // for each meal: {name of station: arraylist of foods at the station}
         var foods: ArrayList<HashMap<String, ArrayList<String>>> = ArrayList()
 
         var headers: ArrayList<String> = ArrayList()
         var name: String? = null
 
-        fun addTabs(hall: DiningHall?) {
-            val menus = hall?.menus ?: ArrayList()
-            name = hall?.name
-            headers.add("HOURS")
-            foods.add(HashMap()) // first menu is empty for dining hall info tab
+        init {
             for (menu in menus) {
                 val stations = HashMap<String, ArrayList<String>>()
                 headers.add(menu.name)
@@ -76,30 +81,72 @@ class MenuFragment : Fragment() {
         }
 
         override fun getItem(position: Int): Fragment {
-            val myFragment: Fragment
-            if (position == 0) {
-                myFragment = DiningInfoFragment()
-                val args = Bundle()
-                args.putParcelable("DiningHall", mDiningHall)
-                args.putString(getString(R.string.menu_arg_name), name)
-                myFragment.arguments = args
-            } else {
-                myFragment = MenuTab()
-                val args = Bundle()
-                args.putString(getString(R.string.menu_arg_name), name)
-                args.putStringArrayList(getString(R.string.menu_arg_stations), ArrayList(foods[position].keys))
-                val stations = foods[position]
-                for (station in stations.keys) {
-                    args.putStringArrayList(station, stations[station])
-                }
-                myFragment.arguments = args
+            val myFragment = MenuTab()
+            val args = Bundle()
+            args.putString(getString(R.string.menu_arg_name), name)
+            args.putStringArrayList(getString(R.string.menu_arg_stations), ArrayList(foods[position].keys))
+            val stations = foods[position]
+            for (station in stations.keys) {
+                args.putStringArrayList(station, stations[station])
             }
+            myFragment.arguments = args
             return myFragment
         }
 
         override fun getPageTitle(position: Int): CharSequence = headers[position]
 
         override fun getCount(): Int = foods.size
+    }
+
+    /**
+     * Adapter used when a dining hall has no menu data for a specific date.
+     */
+    inner class NoMenuDataAdapter(
+        fm: FragmentManager,
+    ) : FragmentStatePagerAdapter(fm) {
+        override fun getItem(position: Int): Fragment = NoMenuDataFragment()
+
+        override fun getPageTitle(position: Int): CharSequence = "NO MENU"
+
+        override fun getCount(): Int = 1
+    }
+
+    class NoMenuDataFragment : Fragment() {
+        override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?,
+        ): View =
+            TextView(requireContext()).apply {
+                text = "No menu data available for this date."
+                setTextColor(Color.GRAY)
+                textSize = 15f
+                gravity = android.view.Gravity.CENTER
+                layoutParams =
+                    ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                    )
+                setBackgroundColor(Color.WHITE)
+            }
+    }
+
+    /**
+     * Adapter used when the hall has no menu (i.e. joe's cafe)
+     */
+    inner class HoursOnlyTabAdapter(
+        fm: FragmentManager,
+    ) : FragmentStatePagerAdapter(fm) {
+        override fun getItem(position: Int): Fragment {
+            // Pass venue data directly without parceling to avoid venue being null
+            val fragment = DiningInfoFragment()
+            fragment.mDiningHall = mDiningHall
+            return fragment
+        }
+
+        override fun getPageTitle(position: Int): CharSequence = "HOURS"
+
+        override fun getCount(): Int = 1
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -117,16 +164,36 @@ class MenuFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
         val v = inflater.inflate(R.layout.fragment_menu, container, false)
-        pageAdapter = TabAdapter(mActivity.supportFragmentManager)
-        (pageAdapter as TabAdapter).addTabs(mDiningHall)
-        val pager: ViewPager = v.findViewById(R.id.menu_pager)
-        pager.adapter = pageAdapter
+        pager = v.findViewById(R.id.menu_pager)
+        tabLayout = v.findViewById(R.id.dining_tab_layout)
+        dateHoursRow = v.findViewById(R.id.dining_date_hours_row)
+        tabLayout.setTabTextColors(Color.WHITE, Color.WHITE)
         v.setBackgroundColor(Color.WHITE)
 
-        val tabLayout = v.findViewById<TabLayout>(R.id.dining_tab_layout)
-        tabLayout.setupWithViewPager(pager)
-        tabLayout.setTabTextColors(Color.WHITE, Color.WHITE)
+        val hasAnyMenus = MENU_HALLS.contains(mDiningHall?.name)
 
+        if (hasAnyMenus) {
+            // date & hours row, tabs = meal types
+            dateHoursRow.visibility = View.VISIBLE
+            mDiningHall?.let { viewModel.fetchMenusForWeek(it) }
+
+            // refresh tabs whenever the selected date's data arrives
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.menusByDate.collect { menusByDate ->
+                    val dateStr = selectedDateString()
+                    val menus = menusByDate[dateStr]
+                    rebuildMenuTabs(menus ?: emptyList())
+                }
+            }
+        } else {
+            // No menu data: hide date picker row, only show HOURS tab
+            dateHoursRow.visibility = View.GONE
+            val adapter = HoursOnlyTabAdapter(mActivity.supportFragmentManager)
+            pageAdapter = adapter
+            pager.adapter = adapter
+            tabLayout.setupWithViewPager(pager)
+            tabLayout.setTabTextColors(Color.WHITE, Color.WHITE)
+        }
         return v
     }
 
@@ -150,7 +217,6 @@ class MenuFragment : Fragment() {
         view.findViewById<CollapsingToolbarLayout>(R.id.collapsing_toolbar).setExpandedTitleColor(Color.WHITE)
         view.findViewById<CollapsingToolbarLayout>(R.id.collapsing_toolbar).setCollapsedTitleTextColor(Color.WHITE)
 
-        // set toolbar buttons
         view.findViewById<ImageButton>(R.id.dining_location).setOnClickListener {
             val location =
                 when (mDiningHall?.name) {
@@ -210,7 +276,123 @@ class MenuFragment : Fragment() {
                 updateFavoriteButton(viewModel.isFavourite(hall))
             }
         }
+
+        // Date picker + hours row (only shows up when hall has menus)
+        val allDays =
+            (mDiningHall?.venue?.allHours() ?: emptyList())
+                .filter { it.meals.isNotEmpty() }
+        val todayStr =
+            org.joda.time.LocalDate
+                .now()
+                .toString("yyyy-MM-dd")
+
+        // append td's menu if missing
+        availableDays =
+            if (allDays.none { it.date == todayStr }) {
+                val todayInterval = VenueInterval().also { it.date = todayStr }
+                listOf(todayInterval) + allDays
+            } else {
+                allDays
+            }
+        selectedDayIndex = findTodayIndex()
+
+        val datePickerButton = view.findViewById<Button>(R.id.dining_date_picker_button)
+        val hoursText = view.findViewById<TextView>(R.id.dining_hours_text)
+
+        fun renderDateRow(dayIndex: Int) {
+            val day = availableDays.getOrNull(dayIndex)
+            datePickerButton.text = formatDayLabel(dayIndex) + " ▼"
+            hoursText.text = day?.meals?.joinToString(" | ") { meal ->
+                val o = meal.open?.let { meal.getFormattedHour(it) } ?: ""
+                val c = meal.close?.let { meal.getFormattedHour(it) } ?: ""
+                "$o–$c"
+            } ?: "Closed"
+        }
+
+        datePickerButton.setOnClickListener { anchor ->
+            val popup = PopupMenu(mActivity, anchor)
+            availableDays.forEachIndexed { index, _ ->
+                popup.menu.add(0, index, index, formatDayLabel(index))
+            }
+            popup.setOnMenuItemClickListener { item ->
+                selectedDayIndex = item.itemId
+                renderDateRow(selectedDayIndex)
+                val dateStr = selectedDateString()
+                val cached = viewModel.menusByDate.value[dateStr]
+                if (!cached.isNullOrEmpty()) {
+                    rebuildMenuTabs(cached)
+                } else {
+                    rebuildMenuTabs(emptyList())
+                }
+                true
+            }
+            popup.show()
+        }
+
+        renderDateRow(selectedDayIndex)
+
         mActivity.hideBottomBar()
+    }
+
+    private fun rebuildMenuTabs(menus: List<DiningHall.Menu>) {
+        if (menus.isEmpty()) {
+            // No menu data fetched yet for this date — show a placeholder tab
+            val adapter = NoMenuDataAdapter(mActivity.supportFragmentManager)
+            pageAdapter = adapter
+            pager.adapter = adapter
+            tabLayout.setupWithViewPager(pager)
+            tabLayout.setTabTextColors(Color.WHITE, Color.WHITE)
+        } else {
+            val adapter = MenuTabAdapter(mActivity.supportFragmentManager, menus, mDiningHall?.name)
+            pageAdapter = adapter
+            pager.adapter = adapter
+            tabLayout.setupWithViewPager(pager)
+            tabLayout.setTabTextColors(Color.WHITE, Color.WHITE)
+        }
+    }
+
+    private fun selectedDateString(): String =
+        availableDays.getOrNull(selectedDayIndex)?.date
+            ?: org.joda.time.LocalDate
+                .now()
+                .toString("yyyy-MM-dd")
+
+    private fun findTodayIndex(): Int {
+        val today =
+            org.joda.time.LocalDate
+                .now()
+        availableDays.forEachIndexed { i, day ->
+            if (day.date == today.toString("yyyy-MM-dd")) {
+                return i
+            }
+        }
+        return 0
+    }
+
+    private fun formatDayLabel(index: Int): String {
+        if (index == findTodayIndex()) return "Today"
+        val day = availableDays.getOrNull(index) ?: return ""
+        val dt =
+            org.joda.time.LocalDate
+                .parse(day.date) // no timezone
+        return dt.dayOfWeek().asText + ", " +
+            dt.monthOfYear().asShortText + " " +
+            dt.dayOfMonth().asText
+    }
+
+    companion object {
+        // Halls that have full food menus
+        val MENU_HALLS =
+            listOf(
+                "Hill House",
+                "Lauder College House",
+                "English House",
+                "Falk Kosher Dining",
+                "1920 Commons",
+                "Accenture Café",
+                "Joe's Café",
+                "Houston Market",
+            )
     }
 
     override fun onCreateOptionsMenu(

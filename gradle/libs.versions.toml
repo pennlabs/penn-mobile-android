@@ -62,6 +62,8 @@ rxandroidVersion = "1.2.1"
 rxjava1 = "1.3.8"
 rxJavaCoroutineConverter = "1.8.0"
 testng = "7.8.0"
+materialVersion = "1.13.0"
+places = "3.3.0"
 
 [libraries]
 adapter-rxjava = { module = "com.squareup.retrofit2:adapter-rxjava", version.ref = "adapterRxjava" }
@@ -137,6 +139,8 @@ reactivex-rxandroid = { module = "io.reactivex:rxandroid", version.ref = "rxandr
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 rxjava = { module = "io.reactivex:rxjava", version.ref = "rxjava1" }
 testng = { module = "org.testng:testng", version.ref = "testng" }
+google-material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
+places = { group = "com.google.android.libraries.places", name = "places", version.ref = "places" }
 
 
 [plugins]

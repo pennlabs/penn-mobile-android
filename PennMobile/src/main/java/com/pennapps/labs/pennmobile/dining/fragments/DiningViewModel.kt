@@ -2,10 +2,10 @@ package com.pennapps.labs.pennmobile.dining.fragments
 
 import android.content.SharedPreferences
 import android.util.Log
-import androidx.compose.runtime.State
 import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.compose.utils.Result
 import com.pennapps.labs.pennmobile.compose.utils.SnackBarEvent
 import com.pennapps.labs.pennmobile.dining.classes.DiningHall
@@ -18,9 +18,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import rx.schedulers.Schedulers
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,6 +45,10 @@ class DiningViewModel
         private val _snackBarEvent = MutableStateFlow<SnackBarEvent>(SnackBarEvent.None)
         val snackBarEvent: StateFlow<SnackBarEvent> = _snackBarEvent
 
+        private val _menusByDate =
+            MutableStateFlow<Map<String, List<DiningHall.Menu>>>(emptyMap())
+        val menusByDate: StateFlow<Map<String, List<DiningHall.Menu>>> = _menusByDate
+
         private val _favouriteDiningHalls =
             diningRepo.favouriteDiningHalls.stateIn(
                 viewModelScope,
@@ -57,9 +64,9 @@ class DiningViewModel
                     halls.filter { diningHall -> favouriteIDs.contains(diningHall.id) }
                 }
         // when refreshed, wiped out the hearts in the all-dining-halls list
-//                .map { favouriteIDs ->
-//                    allDiningHalls.value.filter { diningHall -> favouriteIDs.contains(diningHall.id) }
-//                }
+        //                .map { favouriteIDs ->
+        //                    allDiningHalls.value.filter { diningHall -> favouriteIDs.contains(diningHall.id) }
+        //                }
 
         init {
             fetchSortOrder()
@@ -93,6 +100,42 @@ class DiningViewModel
                     Log.d("DiningViewModel", "DoneRefreshing data: ${isRefreshing.value}")
                 }
             }
+
+        fun fetchMenusForWeek(hall: DiningHall) {
+            _menusByDate.value = emptyMap()
+            val fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            val today = LocalDate.now()
+            val mealOrder = listOf("Breakfast", "Brunch", "Lunch", "Dinner", "Express")
+
+            for (offset in 0..6) {
+                val dateStr = today.plusDays(offset.toLong()).format(fmt)
+                try {
+                    MainActivity.studentLifeInstance
+                        .getMenus(dateStr)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ menus ->
+                            val dayMenus =
+                                menus
+                                    ?.filterNotNull()
+                                    ?.filter { it.venue?.venueId == hall.id }
+                                    ?.sortedWith { a, b ->
+                                        mealOrder.indexOf(a.name) - mealOrder.indexOf(b.name)
+                                    }
+                                    ?: emptyList()
+
+                            if (dayMenus.isNotEmpty()) {
+                                _menusByDate.update { current ->
+                                    current + (dateStr to dayMenus)
+                                }
+                            }
+                        }, { throwable ->
+                            Log.e("DiningViewModel", "Error fetching menus for $dateStr", throwable)
+                        })
+                } catch (e: Exception) {
+                    Log.e("DiningViewModel", "Exception fetching menus for $dateStr", e)
+                }
+            }
+        }
 
         private fun fetchSortOrder() {
             _sortOrder.value =

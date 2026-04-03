@@ -69,7 +69,41 @@
             </com.google.android.material.appbar.MaterialToolbar>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
+        <!-- Date picker + hours row -->
+        <LinearLayout
+            android:id="@+id/dining_date_hours_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:background="?attr/colorPrimary"
+            android:gravity="center_vertical">
 
+            <Button
+                android:id="@+id/dining_date_picker_button"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Today ▼"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                app:strokeColor="@android:color/white"
+                app:strokeWidth="1dp"
+                app:backgroundTint="@android:color/transparent"
+                app:rippleColor="@android:color/white"
+                app:cornerRadius="8dp" />
+
+            <TextView
+                android:id="@+id/dining_hours_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" />
+        </LinearLayout>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/dining_tab_layout"
@@ -86,15 +120,3 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
-<!--<androidx.viewpager.widget.ViewPager-->
-<!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--    android:id="@+id/menu_pager"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:layout_marginTop="120dp"-->
-<!--    android:background="@android:color/background_light"-->
-<!--    app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
-<!--</androidx.viewpager.widget.ViewPager>-->
