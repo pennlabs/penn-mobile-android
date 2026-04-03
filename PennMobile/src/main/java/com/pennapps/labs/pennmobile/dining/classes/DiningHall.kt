@@ -22,6 +22,11 @@ open class DiningHall : Parcelable {
     var image: Int
         private set
 
+    // key date string "yyyy-MM-dd"
+    // populated by DiningFragment.getMenusForWeek() for today + 6 days.
+    @Transient
+    val menusByDate: MutableMap<String, MutableList<Menu>> = HashMap()
+
     @SerializedName("tblDayPart")
     var menus: MutableList<Menu> = ArrayList()
 
@@ -53,6 +58,16 @@ open class DiningHall : Parcelable {
         val mealOrder = listOf("Breakfast", "Brunch", "Lunch", "Dinner", "Express")
         val comparator = Comparator { lhs: Menu, rhs: Menu -> mealOrder.indexOf(lhs.name) - mealOrder.indexOf(rhs.name) }
         this.menus.sortedWith(comparator)
+    }
+
+    // Sort and store menus for a specific date in menusByDate.
+    fun sortMealsForDate(
+        date: String,
+        menus: MutableList<Menu>,
+    ) {
+        val mealOrder = listOf("Breakfast", "Brunch", "Lunch", "Dinner", "Express")
+        val sorted = menus.sortedBy { mealOrder.indexOf(it.name) }
+        menusByDate[date] = sorted.toMutableList()
     }
 
     override fun describeContents(): Int = 0

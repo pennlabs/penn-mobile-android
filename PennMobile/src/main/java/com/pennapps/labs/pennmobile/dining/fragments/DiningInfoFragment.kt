@@ -20,12 +20,11 @@ import org.joda.time.format.DateTimeFormat
  */
 class DiningInfoFragment : Fragment() {
     private lateinit var menuParent: RelativeLayout
-    private var mDiningHall: DiningHall? = null
+    var mDiningHall: DiningHall? = null
     private lateinit var mActivity: MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mDiningHall = arguments?.getParcelable("DiningHall")
         mActivity = activity as MainActivity
     }
 
