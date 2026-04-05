@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -26,6 +28,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 
@@ -62,7 +65,8 @@ fun NewsComposableComponent(
                 modifier =
                     Modifier
                         .matchParentSize()
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .fillMaxHeight(),
             )
         }
         Box(
@@ -91,7 +95,7 @@ fun NewsComposableComponent(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(12.dp),
+                        .padding(16.dp),
             ) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(6.dp),
@@ -118,14 +122,15 @@ fun NewsComposableComponent(
                         text = title,
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
+                        fontSize = 16.sp,
+                        lineHeight = 1.25.em,
                     )
 
                     var description = "sample description here"
                     article.subtitle?.let {
                         description = article.subtitle
                     }
-                    Text(text = description, color = Color.White)
+                    Text(text = description, color = Color.White, lineHeight = 1.15.em)
                 }
             }
         }
