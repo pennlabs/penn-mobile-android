@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.gsr.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -59,6 +60,17 @@ class GsrReservationDetailFragment : Fragment() {
                             from.toString("h:mm a") + " - " +
                             to.toString("h:mm a")
                 binding.gsrDetailBookingIdTv.text = reservation.ownerName
+
+                binding.gsrCalendarButton.setOnClickListener {
+                    // Intent to open calendar and create new event
+                    val calIntent = Intent(Intent.ACTION_INSERT)
+                    calIntent.type = "vnd.android.cursor.item/event"
+                    calIntent.putExtra(android.provider.CalendarContract.Events.TITLE, "${reservation.gsr.name} - ${reservation.roomName}")
+                    calIntent.putExtra(android.provider.CalendarContract.Events.EVENT_LOCATION, reservation.gsr.name)
+                    calIntent.putExtra(android.provider.CalendarContract.EXTRA_EVENT_BEGIN_TIME, from.millis)
+                    calIntent.putExtra(android.provider.CalendarContract.EXTRA_EVENT_END_TIME, to.millis)
+                    startActivity(calIntent)
+                }
 
                 Picasso.get().load(reservation.gsr.imageUrl).fit().centerCrop().into(binding.gsrDetailIv)
 
