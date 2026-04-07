@@ -208,13 +208,13 @@ interface StudentLife {
     @POST("gsr/share/")
     fun getGsrShareCode(
         @Header("Authorization") bearerToken: String,
-        @Body body: ShareCodeRequest
+        @Body body: ShareCodeRequest,
     ): Observable<ShareCodeResponse>
 
     @GET("gsr/share/{code}/")
     fun getReservationFromShareCode(
         @Header("Authorization") bearerToken: String,
-        @Path("code") shareCode: String
+        @Path("code") shareCode: String,
     ): Observable<GSRShareResponse>
 
     @GET("laundry/preferences")

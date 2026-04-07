@@ -4,8 +4,13 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 // for GSR sharing
-data class ShareCodeRequest(@SerializedName("booking_id") val bookingId: String)
-data class ShareCodeResponse(val code: String)
+data class ShareCodeRequest(
+    @SerializedName("booking_id") val bookingId: String,
+)
+
+data class ShareCodeResponse(
+    val code: String,
+)
 
 data class GSRShareResponse(
     @SerializedName("booking_id") val bookingId: String,
@@ -14,12 +19,12 @@ data class GSRShareResponse(
     @SerializedName("end") val end: String,
     @SerializedName("is_valid") val isValid: Boolean,
     @SerializedName("owner_name") val ownerName: String,
-    @SerializedName("gsr") val gsr: GSRInfo
+    @SerializedName("gsr") val gsr: GSRInfo,
 )
 
 data class GSRInfo(
     @SerializedName("name") val name: String,
-    @SerializedName("image_url") val imageUrl: String
+    @SerializedName("image_url") val imageUrl: String,
 )
 
 class GSRReservation {

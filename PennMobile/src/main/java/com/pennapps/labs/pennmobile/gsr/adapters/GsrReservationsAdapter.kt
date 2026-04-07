@@ -147,25 +147,30 @@ class GsrReservationsAdapter(
         }
 
         holder.gsrReservationShareButton.setOnClickListener {
-            val bearerToken = "Bearer " + PreferenceManager
-                .getDefaultSharedPreferences(mContext)
-                .getString(mContext.getString(R.string.access_token), "")
+            val bearerToken =
+                "Bearer " +
+                    PreferenceManager
+                        .getDefaultSharedPreferences(mContext)
+                        .getString(mContext.getString(R.string.access_token), "")
 
             MainActivity.studentLifeInstance
                 .getGsrShareCode(bearerToken, ShareCodeRequest(reservation.bookingId ?: return@setOnClickListener))
                 .subscribeOn(rx.schedulers.Schedulers.io())
-                .observeOn(rx.android.schedulers.AndroidSchedulers.mainThread())
-                .subscribe({ response ->
+                .observeOn(
+                    rx.android.schedulers.AndroidSchedulers
+                        .mainThread(),
+                ).subscribe({ response ->
                     val deepLink = "https://pennmobile.org/gsr/share?data=${response.code}"
 
-                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                        type = "text/plain"
-                        putExtra(Intent.EXTRA_SUBJECT, "GSR Booking: $roomName")
-                        putExtra(
-                            Intent.EXTRA_TEXT,
-                            "Join my GSR booking!\n$roomName\n$day, $fromHour - $toHour\n\n$deepLink"
-                        )
-                    }
+                    val shareIntent =
+                        Intent(Intent.ACTION_SEND).apply {
+                            type = "text/plain"
+                            putExtra(Intent.EXTRA_SUBJECT, "GSR Booking: $roomName")
+                            putExtra(
+                                Intent.EXTRA_TEXT,
+                                "Join my GSR booking!\n$roomName\n$day, $fromHour - $toHour\n\n$deepLink",
+                            )
+                        }
                     mContext.startActivity(Intent.createChooser(shareIntent, "Share Reservation"))
                 }, { error ->
                     error.printStackTrace()
