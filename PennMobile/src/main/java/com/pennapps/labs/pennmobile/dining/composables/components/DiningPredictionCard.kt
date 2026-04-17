@@ -62,8 +62,8 @@ val diningGrey: ComposeColor = ComposeColor("#F5F5F5".toColorInt())
 @Composable
 fun DiningPredictionCard(
     cell: DiningInsightCell,
-    modifier: Modifier = Modifier,
     showPranks: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     val context: Context = LocalContext.current
     var selectedInfo by remember { mutableStateOf<String?>(null) }

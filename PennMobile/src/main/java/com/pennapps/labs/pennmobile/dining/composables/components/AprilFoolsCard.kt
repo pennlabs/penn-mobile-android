@@ -31,9 +31,9 @@ import com.pennapps.labs.pennmobile.compose.presentation.theme.cabinFontFamily
  */
 @Composable
 fun AprilFoolsCard(
-    modifier: Modifier = Modifier,
     allowPrank: Boolean,
     onPrankListener: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background),
