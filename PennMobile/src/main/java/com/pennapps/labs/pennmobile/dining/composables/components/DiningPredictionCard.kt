@@ -63,7 +63,7 @@ val diningGrey: ComposeColor = ComposeColor("#F5F5F5".toColorInt())
 fun DiningPredictionCard(
     cell: DiningInsightCell,
     modifier: Modifier = Modifier,
-    showPranks: Boolean
+    showPranks: Boolean,
 ) {
     val context: Context = LocalContext.current
     var selectedInfo by remember { mutableStateOf<String?>(null) }
@@ -140,7 +140,7 @@ fun DiningPredictionCard(
             val last = entries.lastOrNull()
             if (last != null) {
 //                val endX = ((endDate.time - startDate.time) / (1000 * 60 * 60 * 24)).toInt()
-                listOf(last, Entry(last.x + 10f, 0f) )
+                listOf(last, Entry(last.x + 10f, 0f))
             } else {
                 emptyList()
             }
@@ -282,7 +282,10 @@ fun DiningPredictionCard(
 
                     chart.setOnChartValueSelectedListener(
                         object : OnChartValueSelectedListener {
-                            override fun onValueSelected(e: Entry?, h: Highlight?) {
+                            override fun onValueSelected(
+                                e: Entry?,
+                                h: Highlight?,
+                            ) {
                                 e?.let { entry ->
                                     if (h != null) {
                                         (chart.marker as? DiningMarkerView)?.refreshContent(entry, h)
@@ -290,6 +293,7 @@ fun DiningPredictionCard(
                                     }
                                 }
                             }
+
                             override fun onNothingSelected() {}
                         },
                     )
@@ -332,7 +336,6 @@ fun DiningPredictionCard(
                     )
                 } else {
                     Column(modifier = Modifier.weight(0.4f)) {
-
 //                        //TODO: Remove the April Fools if-checks
 //                        val balanceFormatted: String =
 //                            if (cell.type!!.contains("dollars")) {

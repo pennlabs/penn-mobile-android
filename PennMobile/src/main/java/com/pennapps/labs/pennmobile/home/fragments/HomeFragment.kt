@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -23,6 +25,8 @@ import com.pennapps.labs.pennmobile.databinding.FragmentHomeBinding
 import com.pennapps.labs.pennmobile.home.HomepageViewModel
 import com.pennapps.labs.pennmobile.home.adapters.HomeAdapter
 import com.pennapps.labs.pennmobile.isOnline
+import com.pennapps.labs.pennmobile.studentresources.StudentResourcesEntryCard
+import com.pennapps.labs.pennmobile.studentresources.StudentResourcesFragment
 import com.pennapps.labs.pennmobile.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -99,6 +103,19 @@ class HomeFragment : Fragment() {
                 false,
             )
 
+        // Entry-point card for the Student Resources page. Tapping it pushes
+        // StudentResourcesFragment onto the back stack.
+        binding.studentResourcesEntry.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialTheme {
+                    StudentResourcesEntryCard(
+                        onClick = { openStudentResources() },
+                    )
+                }
+            }
+        }
+
         binding.homeRefreshLayout
             .setColorSchemeResources(R.color.color_accent, R.color.color_primary)
         binding.homeRefreshLayout
@@ -129,6 +146,10 @@ class HomeFragment : Fragment() {
         }
 
         getHomePage()
+    }
+
+    private fun openStudentResources() {
+        mActivity.fragmentTransact(StudentResourcesFragment(), false)
     }
 
     private fun getOnline(): Boolean {
