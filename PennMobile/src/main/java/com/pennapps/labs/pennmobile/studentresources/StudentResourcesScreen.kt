@@ -17,10 +17,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -37,29 +39,21 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pennapps.labs.pennmobile.R
 
-/**
- * Undergraduate Assembly Student Resources Guide screen.
- *
- * Mirrors the mockup: a hero header with the UA logo + description, followed by
- * a list of expandable category cards. Tapping a category reveals the underlying
- * resources with call, website, and location action chips.
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudentResourcesScreen(
@@ -67,6 +61,19 @@ fun StudentResourcesScreen(
     modifier: Modifier = Modifier,
 ) {
     val categories = remember { StudentResourcesContent.categories }
+    var expandedId by remember { mutableStateOf<String?>(null) }
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(expandedId) {
+        val id = expandedId ?: return@LaunchedEffect
+        val categoryIndex = categories.indexOfFirst { it.id == id }
+        if (categoryIndex >= 0) {
+            listState.animateScrollToItem(
+                index = categoryIndex + 1,
+                scrollOffset = -16,
+            )
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -86,37 +93,42 @@ fun StudentResourcesScreen(
         modifier = modifier,
     ) { innerPadding ->
         LazyColumn(
+            state = listState,
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(innerPadding),
+                    .padding(innerPadding)
+                    .navigationBarsPadding(),
             contentPadding =
                 androidx.compose.foundation.layout.PaddingValues(
                     start = 16.dp,
                     end = 16.dp,
                     top = 8.dp,
-                    bottom = 24.dp,
+                    bottom = 96.dp,
                 ),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             item { HeaderCard() }
             categories.forEach { category ->
                 item(key = category.id) {
-                    CategoryCard(category = category)
+                    CategoryCard(
+                        category = category,
+                        expanded = expandedId == category.id,
+                        onToggle = {
+                            expandedId =
+                                if (expandedId == category.id) null else category.id
+                        },
+                    )
                 }
             }
         }
     }
 }
 
-/**
- * Embeddable version for inline use (e.g. at the top of HomeFragment).
- * Uses a plain Column so it can sit inside another scrollable container
- * without nested-scroll measurement errors.
- */
 @Composable
 fun StudentResourcesSection(modifier: Modifier = Modifier) {
     val categories = remember { StudentResourcesContent.categories }
+    var expandedId by remember { mutableStateOf<String?>(null) }
     Column(
         modifier =
             modifier
@@ -126,7 +138,13 @@ fun StudentResourcesSection(modifier: Modifier = Modifier) {
     ) {
         HeaderCard()
         categories.forEach { category ->
-            CategoryCard(category = category)
+            CategoryCard(
+                category = category,
+                expanded = expandedId == category.id,
+                onToggle = {
+                    expandedId = if (expandedId == category.id) null else category.id
+                },
+            )
         }
     }
 }
@@ -143,9 +161,6 @@ private fun HeaderCard(modifier: Modifier = Modifier) {
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Column {
-            // Hero image — swap R.drawable.college_hall for whichever asset you want.
-            // If you don't have one handy, remove this Image block and the design
-            // still looks clean.
             Image(
                 painter = painterResource(id = R.drawable.gym_ringe),
                 contentDescription = null,
@@ -160,20 +175,17 @@ private fun HeaderCard(modifier: Modifier = Modifier) {
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                // UA logo block — placeholder styled tile. Replace with a real
-                // asset (R.drawable.ua_logo) if you have one.
                 Box(
                     modifier =
                         Modifier
                             .size(44.dp)
                             .clip(RoundedCornerShape(6.dp))
-                            .background(Color(0xFF011F5B)),
-                    // Penn navy
+                            .background(MaterialTheme.colorScheme.primary),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         text = "UA",
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp,
                     )
@@ -184,6 +196,7 @@ private fun HeaderCard(modifier: Modifier = Modifier) {
                         text = "Undergraduate Assembly",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                     Text(
                         text = "Student resources",
@@ -214,9 +227,10 @@ private fun HeaderCard(modifier: Modifier = Modifier) {
 @Composable
 private fun CategoryCard(
     category: ResourceCategory,
+    expanded: Boolean,
+    onToggle: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var expanded by rememberSaveable(category.id) { mutableStateOf(false) }
     val rotation by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f,
         label = "chevron-rotation",
@@ -241,7 +255,7 @@ private fun CategoryCard(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .clickable { expanded = !expanded }
+                        .clickable(onClick = onToggle)
                         .padding(horizontal = 16.dp, vertical = 18.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -255,6 +269,7 @@ private fun CategoryCard(
                     text = category.title,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f),
                 )
                 Icon(

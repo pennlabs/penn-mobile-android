@@ -158,23 +158,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-
-        // Delay so that UI is properly rendered. Force consistency
-        Handler(Looper.getMainLooper()).postDelayed({
-            val currentPosition = binding.include.mainViewPager.currentItem
-
-            val menuItemId =
-                when (currentPosition) {
-                    MainPagerAdapter.HOME_POSITION -> R.id.nav_home
-                    MainPagerAdapter.DINING_POSITION -> R.id.nav_dining
-                    MainPagerAdapter.GSR_POSITION -> R.id.nav_gsr
-                    MainPagerAdapter.LAUNDRY_POSITION -> R.id.nav_laundry
-                    MainPagerAdapter.MORE_POSITION -> R.id.nav_more
-                    else -> R.id.nav_home
-                }
-
-            binding.include.expandableBottomBar.selectedItemId = menuItemId
-        }, 100)
     }
 
     /**
@@ -197,6 +180,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun onExpandableBottomNavigationItemSelected() {
         binding.include.expandableBottomBar.setOnNavigationItemSelectedListener { item ->
+            // Only pop the UA fragment if it's on the back stack — leaves other
+            // fragments (dining detail, GSR booking, etc.) untouched.
+            fragmentManager.popBackStack(
+                "student_resources",
+                FragmentManager.POP_BACK_STACK_INCLUSIVE,
+            )
+
             val position =
                 when (item.itemId) {
                     R.id.nav_home -> MainPagerAdapter.HOME_POSITION
@@ -336,6 +326,30 @@ class MainActivity : AppCompatActivity() {
                         .commit()
                 } catch (e: IllegalStateException) {
                     // ignore because the onSaveInstanceState etc states are called when activity is going to background etc
+                }
+            }
+        }
+    }
+
+    fun fragmentTransact(
+        fragment: Fragment?,
+        popBackStack: Boolean,
+        backStackName: String? = null,
+    ) {
+        if (fragment != null) {
+            runOnUiThread {
+                try {
+                    if (popBackStack) {
+                        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    }
+                    fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.content_frame, fragment)
+                        .addToBackStack(backStackName)
+                        .setTransition(FragmentTransaction.TRANSIT_NONE)
+                        .commit()
+                } catch (e: IllegalStateException) {
+                    // ignore
                 }
             }
         }

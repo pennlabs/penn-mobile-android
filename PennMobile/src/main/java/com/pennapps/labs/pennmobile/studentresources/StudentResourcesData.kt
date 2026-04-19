@@ -10,11 +10,7 @@ import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.ui.graphics.vector.ImageVector
 
-/**
- * Data models for the UA Student Resources guide.
- * Content sourced from: https://sites.google.com/view/undergraduate-assembly/home
- */
-
+// UA Resources data from https://sites.google.com/view/undergraduate-assembly/home
 data class ResourceCategory(
     val id: String,
     val title: String,
@@ -31,11 +27,6 @@ data class Resource(
     val bullets: List<String> = emptyList(),
 )
 
-/**
- * A phone contact. [label] is what shows on the chip
- * (e.g. "Call (215) 898-7021 (24/7 help)"). [number] is the
- * dial-able digits only (e.g. "2158987021").
- */
 data class Contact(
     val label: String,
     val number: String,

@@ -24,16 +24,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 
-/**
- * A single resource block: title, description, phone chips, website/location chips,
- * and an optional bullet list of what the resource offers.
- */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ResourceItem(
@@ -53,7 +49,6 @@ fun ResourceItem(
             color = MaterialTheme.colorScheme.onSurface,
         )
 
-        // Phone chips — styled as the blue pills in the mockup.
         if (resource.contacts.isNotEmpty()) {
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -65,7 +60,7 @@ fun ResourceItem(
                         onClick = {
                             val intent =
                                 Intent(Intent.ACTION_DIAL).apply {
-                                    data = Uri.parse("tel:${contact.number}")
+                                    data = "tel:${contact.number}".toUri()
                                 }
                             context.startActivity(intent)
                         },
@@ -74,7 +69,6 @@ fun ResourceItem(
             }
         }
 
-        // Website + location chips — the gray pills.
         if (resource.website != null || resource.locationUrl != null) {
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -129,6 +123,7 @@ fun ResourceItem(
                         Text(
                             text = "•",
                             style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.width(16.dp),
                         )
                         Text(
@@ -151,8 +146,8 @@ private fun PhoneChip(
 ) {
     Surface(
         shape = RoundedCornerShape(8.dp),
-        color = Color(0xFFE6F4FE), // pale blue pill, matches mockup
-        contentColor = Color(0xFF0B6BCB), // readable blue text
+        color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f),
+        contentColor = MaterialTheme.colorScheme.secondary,
         modifier = modifier.clickable(onClick = onClick),
     ) {
         Row(

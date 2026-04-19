@@ -22,15 +22,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-/**
- * Small entry point card shown on the home feed. Tapping it navigates to
- * the full StudentResourcesScreen.
- */
 @Composable
 fun StudentResourcesEntryCard(
     onClick: () -> Unit,
@@ -53,19 +48,17 @@ fun StudentResourcesEntryCard(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            // UA logo tile — Penn navy block with "UA" text. Swap for an
-            // Image(painterResource(R.drawable.ua_logo), ...) if you have an asset.
             Box(
                 modifier =
                     Modifier
                         .size(44.dp)
                         .clip(RoundedCornerShape(6.dp))
-                        .background(Color(0xFF011F5B)),
+                        .background(MaterialTheme.colorScheme.primary),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
                     text = "UA",
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
                 )
@@ -76,6 +69,7 @@ fun StudentResourcesEntryCard(
                     text = "Student Resources",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
                     text = "Support services, hotlines, and help available to Penn students",
