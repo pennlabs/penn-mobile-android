@@ -86,20 +86,22 @@ fun DiningInsightsScreen(
                 )
             }
 
-
             // Dining Balance cards
             items(cells.filter { it.type == "dining_balance" }) { cell ->
-                val diningDollars = cell.diningBalances?.diningDollars?.let { dollars ->
-                    "$${if (showPranks) "-" else ""}$dollars"
-                } ?: "0.00"
+                val diningDollars =
+                    cell.diningBalances?.diningDollars?.let { dollars ->
+                        "$${if (showPranks) "-" else ""}$dollars"
+                    } ?: "0.00"
 
-                val regularVisits = cell.diningBalances?.regularVisits?.let { visits ->
-                    if (showPranks) -visits else visits
-                } ?: 0
+                val regularVisits =
+                    cell.diningBalances?.regularVisits?.let { visits ->
+                        if (showPranks) -visits else visits
+                    } ?: 0
 
-                val guestVisits = cell.diningBalances?.guestVisits?.let {
-                    if (showPranks) -it else it
-                } ?: 0
+                val guestVisits =
+                    cell.diningBalances?.guestVisits?.let {
+                        if (showPranks) -it else it
+                    } ?: 0
 
                 DiningBalancesCard(
                     diningDollars = diningDollars,
@@ -109,13 +111,12 @@ fun DiningInsightsScreen(
                 )
             }
 
-
             if (viewModel.isAprilFoolsDay) {
                 item {
                     AprilFoolsCard(
                         allowPrank = showPranks,
                         onPrankListener = { viewModel.setAprilPranks(it) },
-                        modifier = Modifier.padding(vertical = 8.dp)
+                        modifier = Modifier.padding(vertical = 8.dp),
                     )
                 }
             }
@@ -158,7 +159,7 @@ fun DiningInsightsScreen(
                         DiningPredictionCard(
                             cell = cell,
                             modifier = Modifier.padding(bottom = 12.dp),
-                            showPranks = showPranks
+                            showPranks = showPranks,
                         )
                     }
 
@@ -176,7 +177,7 @@ fun DiningInsightsScreen(
                     items(cells.filter { it.type == "dining_swipes_predictions" }) { cell ->
                         DiningPredictionCard(
                             cell = cell,
-                            showPranks = showPranks
+                            showPranks = showPranks,
                         )
                     }
                 }

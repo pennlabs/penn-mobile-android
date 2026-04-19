@@ -30,7 +30,11 @@ import com.pennapps.labs.pennmobile.compose.presentation.theme.cabinFontFamily
  * @param allowPrank True means enable prank
  */
 @Composable
-fun AprilFoolsCard(modifier: Modifier = Modifier, allowPrank: Boolean, onPrankListener: (Boolean) -> Unit) {
+fun AprilFoolsCard(
+    allowPrank: Boolean,
+    onPrankListener: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Row(
         modifier = modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -39,34 +43,37 @@ fun AprilFoolsCard(modifier: Modifier = Modifier, allowPrank: Boolean, onPrankLi
         Text(
             text = "Enable April Fools Prank",
             fontFamily = cabinFontFamily,
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onBackground,
         )
 
         Switch(
             checked = allowPrank,
             onCheckedChange = onPrankListener,
-            colors = SwitchDefaults.colors(checkedThumbColor = AppColors.LabsLightBlue, uncheckedThumbColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f))
+            colors =
+                SwitchDefaults.colors(
+                    checkedThumbColor = AppColors.LabsLightBlue,
+                    uncheckedThumbColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f),
+                ),
         )
     }
 }
 
-
-
 @Preview(
     name = "Light",
     showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
 )
 @Preview(
     name = "Dark",
     showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Composable
-private fun PreviewAprilFoolsCard() = AppTheme {
-    var allowPrank by remember { mutableStateOf(true) }
+private fun PreviewAprilFoolsCard() =
+    AppTheme {
+        var allowPrank by remember { mutableStateOf(true) }
 
-    Column(Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background).padding(vertical = 12.dp)) {
-        AprilFoolsCard(allowPrank = allowPrank, onPrankListener = {allowPrank = it})
+        Column(Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background).padding(vertical = 12.dp)) {
+            AprilFoolsCard(allowPrank = allowPrank, onPrankListener = { allowPrank = it })
+        }
     }
-}
