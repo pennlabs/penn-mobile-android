@@ -73,6 +73,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import rx.schedulers.Schedulers
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.collections.listOf
+import kotlin.text.get
 
 @AndroidEntryPoint
 class DiningFragment : Fragment() {
@@ -107,7 +109,7 @@ class DiningFragment : Fragment() {
         val pullToRefreshState = rememberPullToRefreshState()
         val isDataRefreshing by viewModel.isRefreshing.collectAsState()
         val allDiningHalls by viewModel.allDiningHalls.collectAsState()
-        val favouriteDiningHalls by viewModel.favouriteDiningHalls.collectAsState(listOf())
+        val favouriteDiningHalls = viewModel.favouriteDiningHalls.collectAsState(initial = listOf<DiningHall>())
 
         var isOnline by remember { mutableStateOf<Boolean?>(null) }
         var isSortMenuExpanded by remember { mutableStateOf(false) }
@@ -278,7 +280,7 @@ class DiningFragment : Fragment() {
 
                             item {
                                 FavouriteDiningHalls(
-                                    diningHalls = favouriteDiningHalls,
+                                    diningHalls = favouriteDiningHalls.value as List<DiningHall>,
                                     toggleFavourite = { viewModel.toggleFavourite(it) },
                                     openDiningHallMenu = { hall -> navigateToMenuFragment(hall) },
                                     modifier =
@@ -306,7 +308,7 @@ class DiningFragment : Fragment() {
                             items(allDiningHalls) { diningHall ->
                                 DiningHallCard(
                                     diningHall = diningHall,
-                                    isFavourite = favouriteDiningHalls.contains(diningHall),
+                                    isFavourite = (favouriteDiningHalls.value as List<DiningHall>).any { it.id == diningHall.id },
                                     toggleFavourite = { viewModel.toggleFavourite(diningHall) },
                                     openDiningHallMenu = { hall -> navigateToMenuFragment(hall) },
                                 )
@@ -342,34 +344,58 @@ class DiningFragment : Fragment() {
     }
 
     companion object {
-        // Gets the dining hall menus
-        fun getMenus(venues: MutableList<DiningHall>) {
-            try {
-                val idVenueMap = mutableMapOf<Int, DiningHall>()
-                venues.forEach { idVenueMap[it.id] = it }
-                val current = LocalDateTime.now()
-                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                val formatted = current.format(formatter)
-                val studentLife = MainActivity.studentLifeInstance
-                studentLife
-                    .getMenus(formatted)
-                    .subscribeOn(Schedulers.io())
-                    .subscribe({ menus ->
-                        menus?.filterNotNull()?.forEach { menu ->
-                            menu.venue?.let { venue ->
-                                idVenueMap[venue.venueId]?.let { diningHall ->
-                                    val diningHallMenus = diningHall.menus
-                                    diningHallMenus.add(menu)
-                                    diningHall.sortMeals(diningHallMenus)
+        private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
+        // Fetch menus for today + next 6 days for all venues (closed and open)
+        fun getMenusForWeek(venues: MutableList<DiningHall>) {
+            val idVenueMap = mutableMapOf<Int, DiningHall>()
+            venues.forEach { idVenueMap[it.id] = it }
+
+            val today = LocalDateTime.now()
+            for (offset in 0..6) {
+                val date = today.plusDays(offset.toLong())
+                val formatted = date.format(dateFormatter)
+
+                try {
+                    val studentLife = MainActivity.studentLifeInstance
+                    studentLife
+                        .getMenus(formatted)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ menus ->
+                            menus?.filterNotNull()?.forEach { menu ->
+                                menu.venue?.let { venue ->
+                                    idVenueMap[venue.venueId]?.let { diningHall ->
+                                        synchronized(diningHall.menusByDate) {
+                                            val dayMenus =
+                                                diningHall.menusByDate
+                                                    .getOrPut(formatted) { ArrayList() }
+                                            (dayMenus as java.util.ArrayList).add(menu)
+                                            diningHall.sortMealsForDate(formatted, dayMenus)
+                                        }
+                                        // Keep today's menus in the legacy .menus field so existing code that reads it still works
+                                        if (offset == 0) {
+                                            synchronized(diningHall) {
+                                                diningHall.sortMeals(
+                                                    diningHall.menusByDate[formatted]
+                                                        ?: ArrayList(),
+                                                )
+                                            }
+                                        }
+                                    }
                                 }
                             }
-                        }
-                    }, { throwable ->
-                        Log.e("DiningFragment", "Error getting Menus", throwable)
-                    })
-            } catch (e: Exception) {
-                e.printStackTrace()
+                        }, { throwable ->
+                            Log.e("DiningFragment", "Error getting menus for $formatted", throwable)
+                        })
+                } catch (e: Exception) {
+                    Log.e("DiningFragment", "Exception fetching menus for $formatted", e)
+                }
             }
+        }
+
+        // single-day fetch
+        fun getMenus(venues: MutableList<DiningHall>) {
+            getMenusForWeek(venues)
         }
 
         // Takes a venue then adds an image and modifies venue name if name is too long
