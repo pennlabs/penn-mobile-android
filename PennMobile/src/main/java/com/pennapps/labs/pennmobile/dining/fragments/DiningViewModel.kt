@@ -81,11 +81,11 @@ class DiningViewModel
         val favouriteDiningHallIds: StateFlow<List<Int>> = _favouriteDiningHalls
         val favouriteDiningHalls =
             _allDiningHalls.combine(_favouriteDiningHalls) { allDiningHalls, favouriteDiningHalls ->
-                sortDiningHalls(
-                    allDiningHalls.filter { diningHall ->
-                        favouriteDiningHalls.contains(diningHall.id)
-                    },
-                )
+                allDiningHalls
+                    .filter { diningHall -> favouriteDiningHalls.contains(diningHall.id) }
+                    .sortedWith { a, b ->
+                        DiningHallUtils.compareDiningHallsForSort(sortOrder.value, a, b)
+                    }
             }
 
         init {

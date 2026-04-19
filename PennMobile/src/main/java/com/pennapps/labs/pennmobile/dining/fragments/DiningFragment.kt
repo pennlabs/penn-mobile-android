@@ -73,6 +73,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import rx.schedulers.Schedulers
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.collections.listOf
 import kotlin.text.get
 
 @AndroidEntryPoint
@@ -108,7 +109,7 @@ class DiningFragment : Fragment() {
         val pullToRefreshState = rememberPullToRefreshState()
         val isDataRefreshing by viewModel.isRefreshing.collectAsState()
         val allDiningHalls by viewModel.allDiningHalls.collectAsState()
-        val favouriteDiningHalls by viewModel.favouriteDiningHalls.collectAsState(listOf())
+        val favouriteDiningHalls = viewModel.favouriteDiningHalls.collectAsState(initial = listOf<DiningHall>())
 
         var isOnline by remember { mutableStateOf<Boolean?>(null) }
         var isSortMenuExpanded by remember { mutableStateOf(false) }
@@ -279,7 +280,7 @@ class DiningFragment : Fragment() {
 
                             item {
                                 FavouriteDiningHalls(
-                                    diningHalls = favouriteDiningHalls,
+                                    diningHalls = favouriteDiningHalls.value as List<DiningHall>,
                                     toggleFavourite = { viewModel.toggleFavourite(it) },
                                     openDiningHallMenu = { hall -> navigateToMenuFragment(hall) },
                                     modifier =
@@ -307,7 +308,7 @@ class DiningFragment : Fragment() {
                             items(allDiningHalls) { diningHall ->
                                 DiningHallCard(
                                     diningHall = diningHall,
-                                    isFavourite = favouriteDiningHalls.contains(diningHall),
+                                    isFavourite = (favouriteDiningHalls.value as List<DiningHall>).any { it.id == diningHall.id },
                                     toggleFavourite = { viewModel.toggleFavourite(diningHall) },
                                     openDiningHallMenu = { hall -> navigateToMenuFragment(hall) },
                                 )
