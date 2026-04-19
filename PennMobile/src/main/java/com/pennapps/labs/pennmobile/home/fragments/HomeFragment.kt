@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -19,10 +20,13 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
+import com.pennapps.labs.pennmobile.compose.presentation.theme.AppTheme
 import com.pennapps.labs.pennmobile.databinding.FragmentHomeBinding
 import com.pennapps.labs.pennmobile.home.HomepageViewModel
 import com.pennapps.labs.pennmobile.home.adapters.HomeAdapter
 import com.pennapps.labs.pennmobile.isOnline
+import com.pennapps.labs.pennmobile.studentresources.StudentResourcesEntryCard
+import com.pennapps.labs.pennmobile.studentresources.StudentResourcesFragment
 import com.pennapps.labs.pennmobile.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -69,28 +73,6 @@ class HomeFragment : Fragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        /* Mildly suspicious idea to hide the RecyclerView until blurviews (for news and posts) are
-        done processing. Processing the blurviews is slow and makes the app looks sloppy. Ideally
-        this is replaced by something less hacky (such as using a ListView instead) though perhaps
-        it is simpler to just remove the blur altogether.
-
-        This takes advantage of a RecyclerView idiosyncracy: when a RecyclerView resides inside a
-        nested scrollview, all of the elements are inflated:
-        https://stackoverflow.com/questions/44453846/recyclerview-inside-nestedscrollview-causes-recyclerview-to-inflate-all-elements
-        https://www.reddit.com/r/androiddev/comments/d8gi9v/recyclerview_inside_nestedscrollview_causes/
-
-        This is can be used to figure out when the blurviews are finished processing.
-
-        Since when the adapter is set in getHomePage, onBindViewHolder() is called for each cell.
-        Thus, for the news and post cells which use blur, when the blur is finished processing,
-        the adapter notifies homepageViewModel. When both blurs are processed, the blurViewsLoaded
-        liveData in the ViewModel is toggled to true which HomeFragment observes.
-
-        If in the future, the homepage is stuck on loading forever, this might be why. To remove
-        this functionality and  stop waiting for the blur views to finish, just remove the observer
-        below and change getHomePage() so that when HomeAdapter is set, homeCellsRv.visibility is
-        set to View.VISIBLE instead of View.INVISIBLE and hide loadingPanel
-         */
         toolbar = mActivity.findViewById(R.id.toolbar)
         binding.homeCellsRv.layoutManager =
             LinearLayoutManager(
@@ -98,6 +80,17 @@ class HomeFragment : Fragment() {
                 LinearLayoutManager.VERTICAL,
                 false,
             )
+
+        binding.studentResourcesEntry.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                AppTheme {
+                    StudentResourcesEntryCard(
+                        onClick = { openStudentResources() },
+                    )
+                }
+            }
+        }
 
         binding.homeRefreshLayout
             .setColorSchemeResources(R.color.color_accent, R.color.color_primary)
@@ -129,6 +122,14 @@ class HomeFragment : Fragment() {
         }
 
         getHomePage()
+    }
+
+    private fun openStudentResources() {
+        mActivity.fragmentTransact(
+            StudentResourcesFragment(),
+            false,
+            backStackName = "student_resources",
+        )
     }
 
     private fun getOnline(): Boolean {
