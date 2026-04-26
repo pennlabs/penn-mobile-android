@@ -48,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -175,21 +176,15 @@ private fun HeaderCard(modifier: Modifier = Modifier) {
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Box(
+                Image(
+                    painter = painterResource(id = R.drawable.ua_logo),
+                    contentDescription = "Undergraduate Assembly logo",
+                    contentScale = ContentScale.Crop,
                     modifier =
                         Modifier
                             .size(44.dp)
-                            .clip(RoundedCornerShape(6.dp))
-                            .background(MaterialTheme.colorScheme.primary),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = "UA",
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
-                    )
-                }
+                            .clip(RoundedCornerShape(6.dp)),
+                )
                 Spacer(Modifier.width(12.dp))
                 Column(Modifier.weight(1f)) {
                     Text(

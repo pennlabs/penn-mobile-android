@@ -125,32 +125,24 @@ class MainActivity : AppCompatActivity() {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
         mFirebaseAnalytics.logEvent("MainActivityStart", null)
 
-        // Show HomeFragment if logged in, otherwise show LoginFragment
-        val pennKey = mSharedPrefs.getString(getString(R.string.pennkey), null)
-        val guestMode = mSharedPrefs.getBoolean(getString(R.string.guest_mode), false)
-        if (pennKey == null && !guestMode) {
-            startLoginFragment()
-        } else {
-            startHomeFragment()
+        if (savedInstanceState == null) {
+            val pennKey = mSharedPrefs.getString(getString(R.string.pennkey), null)
+            val guestMode = mSharedPrefs.getBoolean(getString(R.string.guest_mode), false)
+            if (pennKey == null && !guestMode) {
+                startLoginFragment()
+            } else {
+                startHomeFragment()
+            }
         }
 
         setUpAuthStateListener()
 
-        // Did diningWidgetIntentSetup not as separate function as for some reason when
-        // diningWidgetBroadcast out of onCreate setTab does not trigger.
-        var diningWidgetBroadCast = 0
-        if (intent != null) {
-            diningWidgetBroadCast = intent.getIntExtra("Widget_Tab_Switch", -1)
-        }
+        val diningWidgetBroadCast = intent?.getIntExtra("Widget_Tab_Switch", -1) ?: -1
         if (diningWidgetBroadCast != -1) {
             setTab(DINING_ID)
         }
 
-        var gsrReservationWidgetBroadCast = 0
-        if (intent != null) {
-            gsrReservationWidgetBroadCast =
-                intent.getIntExtra("Gsr_Tab_Switch", -1)
-        }
+        val gsrReservationWidgetBroadCast = intent?.getIntExtra("Gsr_Tab_Switch", -1) ?: -1
         if (gsrReservationWidgetBroadCast != -1) {
             setTab(GSR_ID)
         }
@@ -305,29 +297,6 @@ class MainActivity : AppCompatActivity() {
 
         if (appBar.childCount >= 2) {
             appBar.removeViewAt(1)
-        }
-    }
-
-    fun fragmentTransact(
-        fragment: Fragment?,
-        popBackStack: Boolean,
-    ) {
-        if (fragment != null) {
-            runOnUiThread {
-                try {
-                    if (popBackStack) {
-                        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                    }
-                    fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.content_frame, fragment)
-                        .addToBackStack(null)
-                        .setTransition(FragmentTransaction.TRANSIT_NONE)
-                        .commit()
-                } catch (e: IllegalStateException) {
-                    // ignore because the onSaveInstanceState etc states are called when activity is going to background etc
-                }
-            }
         }
     }
 
