@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.studentresources
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -22,9 +23,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pennapps.labs.pennmobile.R
 
 @Composable
 fun StudentResourcesEntryCard(
@@ -48,21 +52,15 @@ fun StudentResourcesEntryCard(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(
+            Image(
+                painter = painterResource(id = R.drawable.ua_logo),
+                contentDescription = "Undergraduate Assembly logo",
+                contentScale = ContentScale.Crop,
                 modifier =
                     Modifier
                         .size(44.dp)
-                        .clip(RoundedCornerShape(6.dp))
-                        .background(MaterialTheme.colorScheme.primary),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = "UA",
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                )
-            }
+                        .clip(RoundedCornerShape(6.dp)),
+            )
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Text(
