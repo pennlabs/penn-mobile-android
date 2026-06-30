@@ -10,19 +10,19 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.ui.Alignment
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -31,7 +31,10 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun WrappedContainer(viewModel: WrappedViewModel, onClose: () -> Unit) {
+fun WrappedContainer(
+    viewModel: WrappedViewModel,
+    onClose: () -> Unit,
+) {
     val uiState by viewModel.uiState.collectAsState()
     val pages = uiState.pages
     val compositions = uiState.preloadedCompositions
@@ -54,10 +57,11 @@ fun WrappedContainer(viewModel: WrappedViewModel, onClose: () -> Unit) {
 
             progress.animateTo(
                 targetValue = 1f,
-                animationSpec = tween(
-                    durationMillis = (duration * (1f - progress.value)).toInt(),
-                    easing = LinearEasing
-                )
+                animationSpec =
+                    tween(
+                        durationMillis = (duration * (1f - progress.value)).toInt(),
+                        easing = LinearEasing,
+                    ),
             )
 
             if (progress.value == 1f) {
@@ -73,42 +77,43 @@ fun WrappedContainer(viewModel: WrappedViewModel, onClose: () -> Unit) {
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF1A1A1A))
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onPress = { tapOffset ->
-                        val pressStartTime = System.currentTimeMillis()
-                        viewModel.pause()
-                        val released = tryAwaitRelease()
-                        val pressDuration = System.currentTimeMillis() - pressStartTime
-                        viewModel.play()
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color(0xFF1A1A1A))
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onPress = { tapOffset ->
+                            val pressStartTime = System.currentTimeMillis()
+                            viewModel.pause()
+                            val released = tryAwaitRelease()
+                            val pressDuration = System.currentTimeMillis() - pressStartTime
+                            viewModel.play()
 
-                        if (released && pressDuration < 200) {
-                            coroutineScope.launch {
-                                if (tapOffset.x > size.width / 2) {
-                                    if (pagerState.currentPage < pages.lastIndex) {
-                                        pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                            if (released && pressDuration < 200) {
+                                coroutineScope.launch {
+                                    if (tapOffset.x > size.width / 2) {
+                                        if (pagerState.currentPage < pages.lastIndex) {
+                                            pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                                        } else {
+                                            viewModel.finish()
+                                        }
                                     } else {
-                                        viewModel.finish()
-                                    }
-                                } else {
-                                    if (progress.value > 0.2f) {
-                                        progress.snapTo(0f)
-                                    } else if (pagerState.currentPage > 0) {
-                                        pagerState.animateScrollToPage(pagerState.currentPage - 1)
+                                        if (progress.value > 0.2f) {
+                                            progress.snapTo(0f)
+                                        } else if (pagerState.currentPage > 0) {
+                                            pagerState.animateScrollToPage(pagerState.currentPage - 1)
+                                        }
                                     }
                                 }
                             }
-                        }
-                    }
-                )
-            }
+                        },
+                    )
+                },
     ) {
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) { pageIndex ->
             val pageOffset = (pagerState.currentPage - pageIndex) + pagerState.currentPageOffsetFraction
             val unit = pages[pageIndex]
@@ -117,7 +122,7 @@ fun WrappedContainer(viewModel: WrappedViewModel, onClose: () -> Unit) {
                 unit = unit,
                 preloadedComposition = compositions[unit.id],
                 pageOffset = pageOffset,
-                progressFraction = if (pageIndex == pagerState.currentPage) progress.value else 0f
+                progressFraction = if (pageIndex == pagerState.currentPage) progress.value else 0f,
             )
         }
 
@@ -125,20 +130,21 @@ fun WrappedContainer(viewModel: WrappedViewModel, onClose: () -> Unit) {
             pageCount = pages.size,
             currentPageIndex = pagerState.currentPage,
             currentPageProgress = progress.value,
-            modifier = Modifier.padding(top = 48.dp, start = 16.dp, end = 16.dp)
+            modifier = Modifier.padding(top = 48.dp, start = 16.dp, end = 16.dp),
         )
 
         IconButton(
             onClick = onClose,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(top = 40.dp, end = 8.dp)
+            modifier =
+                Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 40.dp, end = 8.dp),
         ) {
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = "Close",
                 tint = Color.White,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(20.dp),
             )
         }
     }

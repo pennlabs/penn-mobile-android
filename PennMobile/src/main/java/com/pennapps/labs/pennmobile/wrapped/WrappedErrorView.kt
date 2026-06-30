@@ -25,24 +25,25 @@ import androidx.compose.ui.unit.sp
 fun WrappedErrorView(
     errorMessage: String,
     onRetry: () -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF1A1A1A)),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color(0xFF1A1A1A)),
+        contentAlignment = Alignment.Center,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(32.dp)
+            modifier = Modifier.padding(32.dp),
         ) {
             Text(
                 text = "Uh oh.",
                 color = Color.White,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.padding(bottom = 16.dp),
             )
 
             Text(
@@ -50,13 +51,13 @@ fun WrappedErrorView(
                 color = Color.LightGray,
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 32.dp)
+                modifier = Modifier.padding(bottom = 32.dp),
             )
 
             Button(
                 onClick = onRetry,
                 colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black),
-                modifier = Modifier.fillMaxWidth().height(50.dp)
+                modifier = Modifier.fillMaxWidth().height(50.dp),
             ) {
                 Text("Try Again", fontWeight = FontWeight.Bold)
             }

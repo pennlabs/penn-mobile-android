@@ -17,27 +17,29 @@ fun WrappedProgressBar(
     pageCount: Int,
     currentPageIndex: Int,
     currentPageProgress: Float,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         for (index in 0 until pageCount) {
-            val segmentProgress = when {
-                index < currentPageIndex -> 1f
-                index == currentPageIndex -> currentPageProgress
-                else -> 0f
-            }
+            val segmentProgress =
+                when {
+                    index < currentPageIndex -> 1f
+                    index == currentPageIndex -> currentPageProgress
+                    else -> 0f
+                }
 
             LinearProgressIndicator(
                 progress = { segmentProgress },
-                modifier = Modifier
-                    .weight(1f)
-                    .height(3.dp)
-                    .clip(RoundedCornerShape(1.5.dp)),
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .height(3.dp)
+                        .clip(RoundedCornerShape(1.5.dp)),
                 color = Color.White,
-                trackColor = Color.White.copy(alpha = 0.3f)
+                trackColor = Color.White.copy(alpha = 0.3f),
             )
         }
     }

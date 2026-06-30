@@ -10,7 +10,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 @Composable
 fun WrappedScreen(
     viewModel: WrappedViewModel = viewModel(),
-    onFinish: () -> Unit
+    onFinish: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -20,14 +20,23 @@ fun WrappedScreen(
     }
 
     when (uiState.state) {
-        ExperienceState.LOADING -> WrappedLoadingView()
-        ExperienceState.ACTIVE -> WrappedContainer(viewModel, onClose = onFinish)
-        ExperienceState.FINISHED -> onFinish()
+        ExperienceState.LOADING -> {
+            WrappedLoadingView()
+        }
+
+        ExperienceState.ACTIVE -> {
+            WrappedContainer(viewModel, onClose = onFinish)
+        }
+
+        ExperienceState.FINISHED -> {
+            onFinish()
+        }
+
         ExperienceState.ERROR -> {
             WrappedErrorView(
                 errorMessage = uiState.errorMessage ?: "An unknown error occurred.",
                 onRetry = { viewModel.loadExperience(context) },
-                onClose = onFinish
+                onClose = onFinish,
             )
         }
     }

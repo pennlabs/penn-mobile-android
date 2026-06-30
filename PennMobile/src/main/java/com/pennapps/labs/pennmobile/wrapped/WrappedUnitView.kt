@@ -16,37 +16,44 @@ fun WrappedUnitView(
     unit: WrappedUnit,
     preloadedComposition: LottieComposition?,
     pageOffset: Float,
-    progressFraction: Float
+    progressFraction: Float,
 ) {
-    val dynamicProperties = rememberLottieDynamicProperties(
-        *unit.values.map { (key, value) ->
-            rememberLottieDynamicProperty(
-                property = LottieProperty.TEXT,
-                value = value,
-                "**", key, "**"
-            )
-        }.toTypedArray()
-    )
+    val dynamicProperties =
+        rememberLottieDynamicProperties(
+            *unit.values
+                .map { (key, value) ->
+                    rememberLottieDynamicProperty(
+                        property = LottieProperty.TEXT,
+                        value = value,
+                        "**",
+                        key,
+                        "**",
+                    )
+                }.toTypedArray(),
+        )
 
     LottieAnimation(
         composition = preloadedComposition,
         progress = { progressFraction },
         dynamicProperties = dynamicProperties,
-        fontMap = mapOf(
-            "Poppins-Bold" to android.graphics.Typeface.DEFAULT_BOLD,
-            "Poppins-Medium" to android.graphics.Typeface.DEFAULT,
-            "Poppins-SemiBold" to android.graphics.Typeface.DEFAULT,
-            "Poppins-Regular" to android.graphics.Typeface.DEFAULT
-        ),
-        modifier = Modifier
-            .fillMaxSize()
-            .graphicsLayer {
-                rotationY = -(pageOffset * 45f)
-                cameraDistance = 12f * density
-                transformOrigin = TransformOrigin(
-                    pivotFractionX = if (pageOffset > 0) 0f else 1f,
-                    pivotFractionY = 0.5f
-                )
-            }
+        fontMap =
+            mapOf(
+                "Poppins-Bold" to android.graphics.Typeface.DEFAULT_BOLD,
+                "Poppins-Medium" to android.graphics.Typeface.DEFAULT,
+                "Poppins-SemiBold" to android.graphics.Typeface.DEFAULT,
+                "Poppins-Regular" to android.graphics.Typeface.DEFAULT,
+            ),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .graphicsLayer {
+                    rotationY = -(pageOffset * 45f)
+                    cameraDistance = 12f * density
+                    transformOrigin =
+                        TransformOrigin(
+                            pivotFractionX = if (pageOffset > 0) 0f else 1f,
+                            pivotFractionY = 0.5f,
+                        )
+                },
     )
 }

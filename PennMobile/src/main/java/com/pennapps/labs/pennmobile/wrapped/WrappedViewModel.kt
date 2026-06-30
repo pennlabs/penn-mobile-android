@@ -29,7 +29,7 @@ data class WrappedUiState(
     val pages: List<WrappedUnit> = emptyList(),
     val preloadedCompositions: Map<Int, LottieComposition> = emptyMap(),
     val isPlaying: Boolean = true,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
 )
 
 class WrappedViewModel : ViewModel() {
@@ -81,8 +81,11 @@ class WrappedViewModel : ViewModel() {
         }
     }
 
-    private suspend fun loadComposition(context: Context, url: String): LottieComposition {
-        return suspendCancellableCoroutine { cont ->
+    private suspend fun loadComposition(
+        context: Context,
+        url: String,
+    ): LottieComposition =
+        suspendCancellableCoroutine { cont ->
             val task = LottieCompositionFactory.fromUrl(context, url)
             task.addListener { composition ->
                 if (cont.isActive) cont.resume(composition)
@@ -91,7 +94,6 @@ class WrappedViewModel : ViewModel() {
                 if (cont.isActive) cont.resumeWithException(e)
             }
         }
-    }
 
     fun loadExperience(context: Context) {
         _uiState.update { it.copy(state = ExperienceState.LOADING, errorMessage = null) }
@@ -128,7 +130,7 @@ class WrappedViewModel : ViewModel() {
                             state = ExperienceState.ACTIVE,
                             pages = sortedPages,
                             preloadedCompositions = compositions,
-                            isPlaying = true
+                            isPlaying = true,
                         )
                     }
 
@@ -163,6 +165,8 @@ class WrappedViewModel : ViewModel() {
     }
 
     fun play() = _uiState.update { it.copy(isPlaying = true) }
+
     fun pause() = _uiState.update { it.copy(isPlaying = false) }
+
     fun finish() = _uiState.update { it.copy(state = ExperienceState.FINISHED) }
 }

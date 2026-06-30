@@ -15,16 +15,17 @@ import com.lottiefiles.dotlottie.core.util.DotLottieSource
 @Composable
 fun WrappedLoadingView() {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF1A1A1A)),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color(0xFF1A1A1A)),
+        contentAlignment = Alignment.Center,
     ) {
         DotLottieAnimation(
             source = DotLottieSource.Asset("wrapped_loading.lottie"),
             autoplay = true,
             loop = true,
-            modifier = Modifier.size(250.dp)
+            modifier = Modifier.size(250.dp),
         )
     }
 }
