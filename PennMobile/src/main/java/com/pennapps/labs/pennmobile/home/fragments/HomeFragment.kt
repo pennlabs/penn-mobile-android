@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.home.fragments
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
@@ -24,6 +25,7 @@ import com.pennapps.labs.pennmobile.home.HomepageViewModel
 import com.pennapps.labs.pennmobile.home.adapters.HomeAdapter
 import com.pennapps.labs.pennmobile.isOnline
 import com.pennapps.labs.pennmobile.utils.Utils
+import com.pennapps.labs.pennmobile.wrapped.WrappedActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -105,6 +107,17 @@ class HomeFragment : Fragment() {
             .setOnRefreshListener {
                 getHomePage()
             }
+
+        binding.wrappedCard.setOnClickListener {
+            startActivity(Intent(mActivity, WrappedActivity::class.java))
+        }
+
+        // Load Lottie animation lazily to reduce peak memory at startup
+        binding.wrappedBannerAnimation.postDelayed({
+            _binding?.wrappedBannerAnimation?.setAnimation("pennwrapped_banner.lottie")
+            _binding?.wrappedBannerAnimation?.playAnimation()
+        }, 500)
+
         homepageViewModel.resetBlurViews()
         homepageViewModel.blurViewsLoaded.observe(viewLifecycleOwner) { loaded ->
             if (loaded) {

@@ -143,6 +143,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             return@setOnPreferenceClickListener true
         }
 
+
         val pennLabsPref: Preference? = findPreference("pref_labs_link")
         pennLabsPref?.setOnPreferenceClickListener {
             openLink(PENNLABS)

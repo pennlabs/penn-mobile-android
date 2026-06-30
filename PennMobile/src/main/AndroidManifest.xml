@@ -74,6 +74,12 @@
         <service android:name=".gsr.widget.GsrReservationWidgetAdapter"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
+        <activity
+            android:name=".wrapped.WrappedActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

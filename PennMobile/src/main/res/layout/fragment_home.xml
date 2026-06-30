@@ -123,12 +123,35 @@
 
             </androidx.appcompat.widget.Toolbar>
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/wrapped_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/internetConnectionHome"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="4dp"
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/wrapped_banner_animation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    app:lottie_loop="true"
+                    app:lottie_cacheComposition="false" />
+
+            </androidx.cardview.widget.CardView>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/home_cells_rv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="none"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_below="@id/wrapped_card"
+                android:scrollbars="none" />
 
             </RelativeLayout>
 
