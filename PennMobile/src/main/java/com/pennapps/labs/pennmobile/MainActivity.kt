@@ -55,6 +55,7 @@ import com.pennapps.labs.pennmobile.dining.classes.Venue
 import com.pennapps.labs.pennmobile.fling.classes.FlingEvent
 import com.pennapps.labs.pennmobile.gsr.classes.GSRLocation
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
+import com.pennapps.labs.pennmobile.gsr.fragments.GsrReservationDetailFragment
 import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import com.pennapps.labs.pennmobile.home.classes.Post
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom
@@ -135,6 +136,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        handleIntent(intent)
+
         setUpAuthStateListener()
 
         val diningWidgetBroadCast = intent?.getIntExtra("Widget_Tab_Switch", -1) ?: -1
@@ -145,6 +148,20 @@ class MainActivity : AppCompatActivity() {
         val gsrReservationWidgetBroadCast = intent?.getIntExtra("Gsr_Tab_Switch", -1) ?: -1
         if (gsrReservationWidgetBroadCast != -1) {
             setTab(GSR_ID)
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent) {
+        if (intent.action == Intent.ACTION_VIEW) {
+            val shareCode = intent.data?.getQueryParameter("data") ?: return
+            binding.include.mainViewPager.visibility = View.GONE
+            hideBottomBar()
+            fragmentTransact(GsrReservationDetailFragment.newInstance(shareCode), false)
         }
     }
 
@@ -347,6 +364,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
+        binding.include.mainViewPager.visibility = View.VISIBLE
         showBottomBar()
     }
 

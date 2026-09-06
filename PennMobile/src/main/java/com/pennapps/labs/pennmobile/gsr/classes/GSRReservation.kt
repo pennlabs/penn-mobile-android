@@ -3,6 +3,30 @@ package com.pennapps.labs.pennmobile.gsr.classes
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
+// for GSR sharing
+data class ShareCodeRequest(
+    @SerializedName("booking_id") val bookingId: String,
+)
+
+data class ShareCodeResponse(
+    val code: String,
+)
+
+data class GSRShareResponse(
+    @SerializedName("booking_id") val bookingId: String,
+    @SerializedName("room_name") val roomName: String,
+    @SerializedName("start") val start: String,
+    @SerializedName("end") val end: String,
+    @SerializedName("is_valid") val isValid: Boolean,
+    @SerializedName("owner_name") val ownerName: String,
+    @SerializedName("gsr") val gsr: GSRInfo,
+)
+
+data class GSRInfo(
+    @SerializedName("name") val name: String,
+    @SerializedName("image_url") val imageUrl: String,
+)
+
 class GSRReservation {
     @SerializedName("booking_id")
     @Expose
