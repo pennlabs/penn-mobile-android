@@ -71,6 +71,34 @@ class GsrRepoImpl
             }
         }
 
+        override suspend fun cancelGsr(
+            bookingId: String?,
+            sessionId: String?,
+        ) {
+            // 1. Get Token (Throw if null so ViewModel catches it)
+            val accessToken =
+                oAuth2NetworkManager.getAccessToken()
+                    ?: throw Exception("Authentication failed. Please log in again.")
+
+            val bearerToken = "Bearer $accessToken"
+
+            // 2. Perform Network Call
+            val response =
+                studentLife.cancelReservation(
+                    bearerToken,
+                    null,
+                    bookingId,
+                    sessionId,
+                )
+
+            // 3. Handle Response
+            if (!response.isSuccessful) {
+                val errorBody = response.errorBody()?.string()
+                Log.e("GsrRepoImpl", "HTTP Error: $errorBody")
+                throw Exception("Error deleting your GSR reservation.")
+            }
+        }
+
         private fun saveUserInfo(
             firstName: String,
             lastName: String,

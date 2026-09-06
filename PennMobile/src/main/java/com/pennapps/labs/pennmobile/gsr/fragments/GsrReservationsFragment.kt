@@ -9,7 +9,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,15 +23,25 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.FragmentGsrReservationsBinding
 import com.pennapps.labs.pennmobile.gsr.adapters.GsrReservationsAdapter
+import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
+import com.pennapps.labs.pennmobile.gsr.viewmodels.GsrViewModel
+import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import com.pennapps.labs.pennmobile.isOnline
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 
+@AndroidEntryPoint
 class GsrReservationsFragment : Fragment() {
     private lateinit var mActivity: MainActivity
+    private lateinit var viewModel: GsrViewModel
 
     private var _binding: FragmentGsrReservationsBinding? = null
     val binding get() = _binding!!
+
+    // Tracks which item is awaiting removal while a cancel request is in flight.
+    private var pendingCancelPosition: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +59,10 @@ class GsrReservationsFragment : Fragment() {
         _binding = FragmentGsrReservationsBinding.inflate(inflater, container, false)
         val view = binding.root
 
+        // Manual init, same reasoning as BookGsrFragment: ensures Fragment is attached
+        // before Hilt looks for the SavedStateRegistry.
+        viewModel = ViewModelProvider(this)[GsrViewModel::class.java]
+
         binding.gsrReservationsRv.layoutManager =
             LinearLayoutManager(
                 context,
@@ -58,6 +77,7 @@ class GsrReservationsFragment : Fragment() {
         binding.gsrReservationsRefreshLayout.setOnRefreshListener { getReservations() }
 
         getReservations()
+        observeViewModel()
 
         return view
     }
@@ -84,6 +104,61 @@ class GsrReservationsFragment : Fragment() {
         }
     }
 
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.cancelSuccess.collect { success ->
+                        if (success) {
+                            onCancelSucceeded()
+                            viewModel.resetCancelSuccess()
+                        }
+                    }
+                }
+                launch {
+                    viewModel.error.collect { error ->
+                        error?.let {
+                            Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Called by the adapter once the user confirms cancellation in the dialog.
+    private fun onCancelRequested(
+        reservation: GSRReservation,
+        position: Int,
+    ) {
+        pendingCancelPosition = position
+
+        val sessionID =
+            if (reservation.info == null) {
+                PreferenceManager
+                    .getDefaultSharedPreferences(mActivity)
+                    .getString(getString(R.string.huntsmanGSR_SessionID), "")
+            } else {
+                null
+            }
+
+        viewModel.cancelGsr(reservation.bookingId, sessionID)
+    }
+
+    private fun onCancelSucceeded() {
+        val position = pendingCancelPosition ?: return
+        pendingCancelPosition = null
+
+        mActivity.sendBroadcast(Intent(GsrReservationWidget.UPDATE_GSR_WIDGET))
+
+        val adapter = binding.gsrReservationsRv.adapter as? GsrReservationsAdapter
+        adapter?.removeAt(position)
+
+        if (adapter?.itemCount == 0) {
+            binding.gsrNoReservations.visibility = View.VISIBLE
+        }
+    }
+
     private fun getReservations() {
         // Early return if binding is null
         _binding ?: return
@@ -93,7 +168,7 @@ class GsrReservationsFragment : Fragment() {
             binding.internetConnectionMessageGsrReservations.text = "Not Connected to Internet"
             binding.internetConnectionGSRReservations.visibility = View.VISIBLE
             binding.gsrReservationsRefreshLayout.isRefreshing = false
-            binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList())
+            binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList(), ::onCancelRequested)
             binding.loadingPanel.root.visibility = View.GONE
             binding.gsrNoReservations.visibility = View.VISIBLE
         } else {
@@ -123,6 +198,7 @@ class GsrReservationsFragment : Fragment() {
                                     binding.gsrReservationsRv.adapter =
                                         GsrReservationsAdapter(
                                             ArrayList(it.filterNotNull()),
+                                            ::onCancelRequested,
                                         )
                                     if (it.isNotEmpty()) {
                                         binding.gsrNoReservations.visibility = View.GONE
@@ -144,7 +220,7 @@ class GsrReservationsFragment : Fragment() {
                                 throwable.printStackTrace()
                                 binding.loadingPanel.root.visibility = View.GONE
                                 try {
-                                    binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList())
+                                    binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList(), ::onCancelRequested)
                                     binding.gsrNoReservations.visibility = View.VISIBLE
                                     binding.gsrReservationsRefreshLayout.isRefreshing = false
                                 } catch (e: Exception) {

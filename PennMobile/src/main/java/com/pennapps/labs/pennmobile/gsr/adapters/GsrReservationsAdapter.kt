@@ -1,29 +1,18 @@
 package com.pennapps.labs.pennmobile.gsr.adapters
 
 import android.content.Context
-import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
-import android.widget.Toast.LENGTH_SHORT
-import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.lifecycleScope
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
-import com.pennapps.labs.pennmobile.MainActivity
-import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.GsrReservationBinding
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
-import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.launch
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 
 class GsrReservationsAdapter(
     private var reservations: ArrayList<GSRReservation>,
+    private val onCancelRequested: (GSRReservation, Int) -> Unit,
 ) : RecyclerView.Adapter<GsrReservationsAdapter.GsrReservationViewHolder>() {
     private lateinit var mContext: Context
 
@@ -64,91 +53,24 @@ class GsrReservationsAdapter(
         holder.gsrReservationDateTv.text = day + "\n" + fromHour + "-" + toHour
 
         holder.gsrReservationCancelButton.setOnClickListener {
-            // create dialog to confirm that you want to cancel reservation
-            val builder = AlertDialog.Builder(mContext)
-            builder.setTitle("Are you sure?")
-            builder.setMessage("Please confirm that you wish to delete this booking.")
-
-            builder.setPositiveButton("Confirm") { _, _ ->
-                val bookingID = reservation.bookingId
-
-                (mContext as MainActivity).mNetworkManager.getAccessToken {
-                    val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
-                    val sessionID =
-                        if (reservation.info == null) {
-                            sp.getString(
-                                mContext.getString(R.string.huntsmanGSR_SessionID),
-                                "",
-                            )
-                        } else {
-                            null
-                        }
-
-                    (mContext as MainActivity).lifecycleScope.launch {
-                        val labs = MainActivity.studentLifeInstance
-                        val bearerToken =
-                            "Bearer " + sp.getString(mContext.getString(R.string.access_token), " ")
-
-                        try {
-                            val response =
-                                labs.cancelReservation(
-                                    bearerToken,
-                                    null,
-                                    bookingID,
-                                    sessionID,
-                                )
-
-                            if (response.isSuccessful) {
-                                if (reservations.size > position) {
-                                    reservations.removeAt(position)
-                                }
-                                run {
-                                    // Sends request to gsr reservation widget
-                                    mContext.sendBroadcast(Intent(GsrReservationWidget.UPDATE_GSR_WIDGET))
-                                    if (reservations.size == 0) {
-                                        var intent = Intent("refresh")
-                                        LocalBroadcastManager
-                                            .getInstance(mContext)
-                                            .sendBroadcast(intent)
-                                    } else {
-                                        notifyItemRemoved(position)
-                                    }
-                                }
-                            } else {
-                                val error =
-                                    Exception(
-                                        response.errorBody()?.string()
-                                            ?: "Unknown error",
-                                    )
-
-                                Log.e(
-                                    "GsrReservationsAdapter",
-                                    "Error canceling gsr reservation",
-                                    error,
-                                )
-                                Toast
-                                    .makeText(
-                                        mContext,
-                                        "Error deleting your GSR reservation.",
-                                        LENGTH_SHORT,
-                                    ).show()
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
-                }
+            // Use the current adapter position at click time, not the position
+            // captured when onBindViewHolder ran, in case the list has shifted.
+            val currentPosition = holder.bindingAdapterPosition
+            if (currentPosition != RecyclerView.NO_POSITION) {
+                onCancelRequested(reservations[currentPosition], currentPosition)
             }
-
-            builder.setNegativeButton("Cancel") { _, _ -> }
-
-            builder.show()
         }
     }
 
     override fun getItemCount(): Int = reservations.size
 
-    inner class GsrReservationViewHolder(
+    fun removeAt(position: Int) {
+        if (position < 0 || position >= reservations.size) return
+        reservations.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    class GsrReservationViewHolder(
         itemBinding: GsrReservationBinding,
     ) : RecyclerView.ViewHolder(itemBinding.root) {
         val gsrReservationCancelButton = itemBinding.gsrReservationCancelBtn
