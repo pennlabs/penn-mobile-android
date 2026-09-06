@@ -12,78 +12,78 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GsrViewModel
-@Inject
-constructor(
-    private val repository: GsrRepo,
-) : ViewModel() {
-    private val _error = MutableStateFlow<Throwable?>(null)
-    val error = _error.asStateFlow()
+    @Inject
+    constructor(
+        private val repository: GsrRepo,
+    ) : ViewModel() {
+        private val _error = MutableStateFlow<Throwable?>(null)
+        val error = _error.asStateFlow()
 
-    private val _isBooking = MutableStateFlow(false)
-    val isBooking = _isBooking.asStateFlow()
+        private val _isBooking = MutableStateFlow(false)
+        val isBooking = _isBooking.asStateFlow()
 
-    private val _bookingSuccess = MutableStateFlow(false)
-    val bookingSuccess = _bookingSuccess.asStateFlow()
+        private val _bookingSuccess = MutableStateFlow(false)
+        val bookingSuccess = _bookingSuccess.asStateFlow()
 
-    private val _isCancelling = MutableStateFlow(false)
-    val isCancelling = _isCancelling.asStateFlow()
+        private val _isCancelling = MutableStateFlow(false)
+        val isCancelling = _isCancelling.asStateFlow()
 
-    private val _cancelSuccess = MutableStateFlow(false)
-    val cancelSuccess = _cancelSuccess.asStateFlow()
+        private val _cancelSuccess = MutableStateFlow(false)
+        val cancelSuccess = _cancelSuccess.asStateFlow()
 
-    val savedUserInfo = repository.getSavedUserInfo()
+        val savedUserInfo = repository.getSavedUserInfo()
 
-    fun bookGsr(
-        startTime: String?,
-        endTime: String?,
-        gid: Int,
-        roomId: Int,
-        roomName: String,
-        firstName: String,
-        lastName: String,
-        email: String,
-    ) {
-        // Validation - standard check
-        if (firstName.isBlank() || lastName.isBlank() || email.isBlank()) {
-            _error.value = Exception("Please fill in all fields before booking")
-            return
-        }
+        fun bookGsr(
+            startTime: String?,
+            endTime: String?,
+            gid: Int,
+            roomId: Int,
+            roomName: String,
+            firstName: String,
+            lastName: String,
+            email: String,
+        ) {
+            // Validation - standard check
+            if (firstName.isBlank() || lastName.isBlank() || email.isBlank()) {
+                _error.value = Exception("Please fill in all fields before booking")
+                return
+            }
 
-        viewModelScope.launch {
-            _isBooking.value = true
-            _error.value = null
-            try {
-                repository.bookGsr(startTime, endTime, gid, roomId, roomName, firstName, lastName, email)
-                _bookingSuccess.value = true
-            } catch (e: Exception) {
-                Log.e("GsrViewModel", "Booking failed", e)
-                _error.value = e
-            } finally {
-                _isBooking.value = false
+            viewModelScope.launch {
+                _isBooking.value = true
+                _error.value = null
+                try {
+                    repository.bookGsr(startTime, endTime, gid, roomId, roomName, firstName, lastName, email)
+                    _bookingSuccess.value = true
+                } catch (e: Exception) {
+                    Log.e("GsrViewModel", "Booking failed", e)
+                    _error.value = e
+                } finally {
+                    _isBooking.value = false
+                }
             }
         }
-    }
 
-    fun cancelGsr(
-        bookingId: String?,
-        sessionId: String?,
-    ) {
-        viewModelScope.launch {
-            _isCancelling.value = true
-            _error.value = null
-            try {
-                repository.cancelGsr(bookingId, sessionId)
-                _cancelSuccess.value = true
-            } catch (e: Exception) {
-                Log.e("GsrViewModel", "Cancellation failed", e)
-                _error.value = e
-            } finally {
-                _isCancelling.value = false
+        fun cancelGsr(
+            bookingId: String?,
+            sessionId: String?,
+        ) {
+            viewModelScope.launch {
+                _isCancelling.value = true
+                _error.value = null
+                try {
+                    repository.cancelGsr(bookingId, sessionId)
+                    _cancelSuccess.value = true
+                } catch (e: Exception) {
+                    Log.e("GsrViewModel", "Cancellation failed", e)
+                    _error.value = e
+                } finally {
+                    _isCancelling.value = false
+                }
             }
         }
-    }
 
-    fun resetCancelSuccess() {
-        _cancelSuccess.value = false
+        fun resetCancelSuccess() {
+            _cancelSuccess.value = false
+        }
     }
-}

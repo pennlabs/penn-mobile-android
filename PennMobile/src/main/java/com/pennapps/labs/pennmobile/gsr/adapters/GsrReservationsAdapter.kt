@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile.gsr.adapters
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.pennapps.labs.pennmobile.databinding.GsrReservationBinding
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
@@ -56,9 +57,18 @@ class GsrReservationsAdapter(
             // Use the current adapter position at click time, not the position
             // captured when onBindViewHolder ran, in case the list has shifted.
             val currentPosition = holder.bindingAdapterPosition
-            if (currentPosition != RecyclerView.NO_POSITION) {
-                onCancelRequested(reservations[currentPosition], currentPosition)
-            }
+            if (currentPosition == RecyclerView.NO_POSITION) return@setOnClickListener
+            val currentReservation = reservations[currentPosition]
+
+            //  val builder = AlertDialog.Builder(mContext)
+            AlertDialog
+                .Builder(mContext)
+                .setTitle("Are you sure?")
+                .setMessage("Please confirm that you wish to delete this booking.")
+                .setPositiveButton("Confirm") { _, _ ->
+                    onCancelRequested(currentReservation, currentPosition)
+                }.setNegativeButton("Cancel", null)
+                .show()
         }
     }
 
@@ -70,7 +80,7 @@ class GsrReservationsAdapter(
         notifyItemRemoved(position)
     }
 
-    class GsrReservationViewHolder(
+    inner class GsrReservationViewHolder(
         itemBinding: GsrReservationBinding,
     ) : RecyclerView.ViewHolder(itemBinding.root) {
         val gsrReservationCancelButton = itemBinding.gsrReservationCancelBtn
