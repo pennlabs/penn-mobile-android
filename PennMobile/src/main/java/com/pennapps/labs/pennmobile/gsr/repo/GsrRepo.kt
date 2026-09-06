@@ -16,6 +16,6 @@ interface GsrRepo {
 
     suspend fun cancelGsr(
         bookingId: String?,
-        sessionId: String?,
+        isHuntsmanReservation: Boolean,
     )
 }

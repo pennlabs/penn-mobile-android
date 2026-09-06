@@ -67,13 +67,20 @@ class GsrRepoImpl
 
         override suspend fun cancelGsr(
             bookingId: String?,
-            sessionId: String?,
+            isHuntsmanReservation: Boolean,
         ) {
             val accessToken =
                 oAuth2NetworkManager.getAccessToken()
                     ?: throw Exception("Authentication failed. Please log in again.")
 
             val bearerToken = "Bearer $accessToken"
+
+            val sessionId =
+                if (isHuntsmanReservation) {
+                    sharedPreferences.getString(context.getString(R.string.huntsmanGSR_SessionID), "")
+                } else {
+                    null
+                }
 
             val response =
                 studentLife.cancelReservation(

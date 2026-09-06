@@ -24,7 +24,7 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.FragmentGsrReservationsBinding
 import com.pennapps.labs.pennmobile.gsr.adapters.GsrReservationsAdapter
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
-import com.pennapps.labs.pennmobile.gsr.viewmodels.GsrViewModel
+import com.pennapps.labs.pennmobile.gsr.viewmodels.GsrReservationsViewModel
 import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import com.pennapps.labs.pennmobile.isOnline
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,7 +35,7 @@ import rx.schedulers.Schedulers
 @AndroidEntryPoint
 class GsrReservationsFragment : Fragment() {
     private lateinit var mActivity: MainActivity
-    private lateinit var viewModel: GsrViewModel
+    private lateinit var viewModel: GsrReservationsViewModel
 
     private var _binding: FragmentGsrReservationsBinding? = null
     val binding get() = _binding!!
@@ -58,7 +58,7 @@ class GsrReservationsFragment : Fragment() {
         _binding = FragmentGsrReservationsBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        viewModel = ViewModelProvider(this)[GsrViewModel::class.java]
+        viewModel = ViewModelProvider(this)[GsrReservationsViewModel::class.java]
 
         binding.gsrReservationsRv.layoutManager =
             LinearLayoutManager(
@@ -123,23 +123,12 @@ class GsrReservationsFragment : Fragment() {
         }
     }
 
-    // Called by the adapter once the user confirms cancellation in the dialog.
     private fun onCancelRequested(
         reservation: GSRReservation,
         position: Int,
     ) {
         pendingCancelPosition = position
-
-        val sessionID =
-            if (reservation.info == null) {
-                PreferenceManager
-                    .getDefaultSharedPreferences(mActivity)
-                    .getString(getString(R.string.huntsmanGSR_SessionID), "")
-            } else {
-                null
-            }
-
-        viewModel.cancelGsr(reservation.bookingId, sessionID)
+        viewModel.cancelGsr(reservation.bookingId, isHuntsmanReservation = reservation.info == null)
     }
 
     private fun onCancelSucceeded() {

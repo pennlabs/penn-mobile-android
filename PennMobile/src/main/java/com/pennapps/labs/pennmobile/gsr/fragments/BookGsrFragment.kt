@@ -16,7 +16,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.GsrDetailsBookBinding
-import com.pennapps.labs.pennmobile.gsr.viewmodels.GsrViewModel
+import com.pennapps.labs.pennmobile.gsr.viewmodels.BookGsrViewModel
 import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -29,7 +29,7 @@ class BookGsrFragment : Fragment() {
 
     // By removing the _viewModel / viewModel pair and using a single internal
     // variable, we avoid the ktlint naming error while keeping manual init.
-    private lateinit var viewModel: GsrViewModel
+    private lateinit var viewModel: BookGsrViewModel
     private lateinit var mActivity: MainActivity
 
     private var startTime: String? = null
@@ -65,9 +65,7 @@ class BookGsrFragment : Fragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Manual initialization here ensures the Fragment is attached
-        // to the Activity before Hilt tries to find the SavedStateRegistry.
-        viewModel = ViewModelProvider(this)[GsrViewModel::class.java]
+        viewModel = ViewModelProvider(this)[BookGsrViewModel::class.java]
 
         (activity as? MainActivity)?.apply {
             setTitle(R.string.gsr)
