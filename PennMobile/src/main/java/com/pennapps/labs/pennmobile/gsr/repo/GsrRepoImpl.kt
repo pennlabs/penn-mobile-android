@@ -34,14 +34,12 @@ class GsrRepoImpl
             lastName: String,
             email: String,
         ) {
-            // 1. Get Token (Throw if null so ViewModel catches it)
             val accessToken =
                 oAuth2NetworkManager.getAccessToken()
                     ?: throw Exception("Authentication failed. Please log in again.")
 
             val bearerToken = "Bearer $accessToken"
 
-            // 2. Perform Network Call
             val response =
                 studentLife.bookGSR(
                     bearerToken,
@@ -52,19 +50,15 @@ class GsrRepoImpl
                     roomName,
                 )
 
-            // 3. Handle Response
             if (response.isSuccessful) {
                 val result = response.body()
                 if (result?.getDetail() == "success") {
-                    // Success: Save user info and return (implicitly returns Unit)
                     saveUserInfo(firstName, lastName, email)
                 } else {
-                    // API-level error (e.g., room already taken)
                     val errorMsg = result?.getError() ?: "GSR booking failed."
                     throw Exception(errorMsg)
                 }
             } else {
-                // HTTP-level error (e.g., 404, 500)
                 val errorBody = response.errorBody()?.string()
                 Log.e("GsrRepoImpl", "HTTP Error: $errorBody")
                 throw Exception("Server returned an error. Please try again.")
@@ -75,14 +69,12 @@ class GsrRepoImpl
             bookingId: String?,
             sessionId: String?,
         ) {
-            // 1. Get Token (Throw if null so ViewModel catches it)
             val accessToken =
                 oAuth2NetworkManager.getAccessToken()
                     ?: throw Exception("Authentication failed. Please log in again.")
 
             val bearerToken = "Bearer $accessToken"
 
-            // 2. Perform Network Call
             val response =
                 studentLife.cancelReservation(
                     bearerToken,
@@ -91,7 +83,6 @@ class GsrRepoImpl
                     sessionId,
                 )
 
-            // 3. Handle Response
             if (!response.isSuccessful) {
                 val errorBody = response.errorBody()?.string()
                 Log.e("GsrRepoImpl", "HTTP Error: $errorBody")
