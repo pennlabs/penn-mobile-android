@@ -54,13 +54,11 @@ class GsrReservationsAdapter(
         holder.gsrReservationDateTv.text = day + "\n" + fromHour + "-" + toHour
 
         holder.gsrReservationCancelButton.setOnClickListener {
-            // Use the current adapter position at click time, not the position
-            // captured when onBindViewHolder ran, in case the list has shifted.
+            // Use correct position in case list shifted from other cancellations
             val currentPosition = holder.bindingAdapterPosition
             if (currentPosition == RecyclerView.NO_POSITION) return@setOnClickListener
             val currentReservation = reservations[currentPosition]
 
-            //  val builder = AlertDialog.Builder(mContext)
             AlertDialog
                 .Builder(mContext)
                 .setTitle("Are you sure?")
@@ -80,7 +78,7 @@ class GsrReservationsAdapter(
         notifyItemRemoved(position)
     }
 
-    inner class GsrReservationViewHolder(
+    class GsrReservationViewHolder(
         itemBinding: GsrReservationBinding,
     ) : RecyclerView.ViewHolder(itemBinding.root) {
         val gsrReservationCancelButton = itemBinding.gsrReservationCancelBtn

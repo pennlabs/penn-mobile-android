@@ -40,7 +40,6 @@ class GsrReservationsFragment : Fragment() {
     private var _binding: FragmentGsrReservationsBinding? = null
     val binding get() = _binding!!
 
-    // Tracks which item is awaiting removal while a cancel request is in flight.
     private var pendingCancelPosition: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,8 +58,6 @@ class GsrReservationsFragment : Fragment() {
         _binding = FragmentGsrReservationsBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        // Manual init, same reasoning as BookGsrFragment: ensures Fragment is attached
-        // before Hilt looks for the SavedStateRegistry.
         viewModel = ViewModelProvider(this)[GsrViewModel::class.java]
 
         binding.gsrReservationsRv.layoutManager =
