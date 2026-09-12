@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class GsrViewModel
+class BookGsrViewModel
     @Inject
     constructor(
         private val repository: GsrRepo,
@@ -50,7 +50,7 @@ class GsrViewModel
                     repository.bookGsr(startTime, endTime, gid, roomId, roomName, firstName, lastName, email)
                     _bookingSuccess.value = true
                 } catch (e: Exception) {
-                    Log.e("GsrViewModel", "Booking failed", e)
+                    Log.e("BookGsrViewModel", "Booking failed", e)
                     _error.value = e
                 } finally {
                     _isBooking.value = false

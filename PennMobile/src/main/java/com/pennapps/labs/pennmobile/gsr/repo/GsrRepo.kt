@@ -13,4 +13,9 @@ interface GsrRepo {
         lastName: String,
         email: String,
     )
+
+    suspend fun cancelGsr(
+        bookingId: String?,
+        isHuntsmanReservation: Boolean,
+    )
 }

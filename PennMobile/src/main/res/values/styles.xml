@@ -4,18 +4,17 @@
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorAccent">@color/color_accent</item>
+        <item name="colorSurface">@color/white</item>
         <item name="android:textColor">@color/text_color</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:textColorSecondary">@color/color_toolbar_text</item>
         <item name="android:fontFamily">@font/sf_pro_display_regular</item>
         <item name="android:windowBackground">@color/windowBackground</item>
-        <item name="android:colorEdgeEffect" tools:targetApi="lollipop">@color/overScrollColor
-        </item>
+        <item name="android:colorEdgeEffect" tools:targetApi="lollipop">@color/overScrollColor</item>
         <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">true</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-        <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent
-        </item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent</item>
     </style>
 
     <style name="DarkModeApi29" tools:targetApi="29">
