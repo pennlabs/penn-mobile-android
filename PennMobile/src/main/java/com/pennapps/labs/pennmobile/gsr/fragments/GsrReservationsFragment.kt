@@ -40,7 +40,7 @@ class GsrReservationsFragment : Fragment() {
     private var _binding: FragmentGsrReservationsBinding? = null
     val binding get() = _binding!!
 
-    private var pendingCancelPosition: Int? = null
+    private var pendingCancelBookingId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,10 +112,12 @@ class GsrReservationsFragment : Fragment() {
                         }
                     }
                 }
+
                 launch {
                     viewModel.error.collect { error ->
-                        error?.let {
-                            Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                        if (error != null) {
+                            pendingCancelBookingId = null
+                            Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
                         }
                     }
                 }
@@ -123,24 +125,26 @@ class GsrReservationsFragment : Fragment() {
         }
     }
 
-    private fun onCancelRequested(
-        reservation: GSRReservation,
-        position: Int,
-    ) {
-        pendingCancelPosition = position
-        viewModel.cancelGsr(reservation.bookingId, isHuntsmanReservation = reservation.info == null)
+    private fun onCancelRequested(reservation: GSRReservation) {
+        pendingCancelBookingId = reservation.bookingId
+        viewModel.cancelGsr(
+            reservation.bookingId,
+            isHuntsmanReservation = reservation.info == null,
+        )
     }
 
     private fun onCancelSucceeded() {
-        val position = pendingCancelPosition ?: return
-        pendingCancelPosition = null
+        val bookingId = pendingCancelBookingId ?: return
+        pendingCancelBookingId = null
 
         mActivity.sendBroadcast(Intent(GsrReservationWidget.UPDATE_GSR_WIDGET))
 
         val adapter = binding.gsrReservationsRv.adapter as? GsrReservationsAdapter
-        adapter?.removeAt(position)
+        val index = adapter?.indexOfBookingId(bookingId) ?: return
 
-        if (adapter?.itemCount == 0) {
+        adapter.removeAt(index)
+
+        if (adapter.itemCount == 0) {
             binding.gsrNoReservations.visibility = View.VISIBLE
         }
     }

@@ -3,8 +3,8 @@ package com.pennapps.labs.pennmobile.gsr.adapters
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.pennapps.labs.pennmobile.databinding.GsrReservationBinding
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
 import com.squareup.picasso.Picasso
@@ -13,7 +13,7 @@ import org.joda.time.format.DateTimeFormatter
 
 class GsrReservationsAdapter(
     private var reservations: ArrayList<GSRReservation>,
-    private val onCancelRequested: (GSRReservation, Int) -> Unit,
+    private val onCancelRequested: (GSRReservation) -> Unit,
 ) : RecyclerView.Adapter<GsrReservationsAdapter.GsrReservationViewHolder>() {
     private lateinit var mContext: Context
 
@@ -54,23 +54,29 @@ class GsrReservationsAdapter(
         holder.gsrReservationDateTv.text = day + "\n" + fromHour + "-" + toHour
 
         holder.gsrReservationCancelButton.setOnClickListener {
-            // Use correct position in case list shifted from other cancellations
             val currentPosition = holder.bindingAdapterPosition
             if (currentPosition == RecyclerView.NO_POSITION) return@setOnClickListener
+
             val currentReservation = reservations[currentPosition]
 
-            AlertDialog
-                .Builder(mContext)
+            MaterialAlertDialogBuilder(holder.itemView.context)
                 .setTitle("Are you sure?")
                 .setMessage("Please confirm that you wish to delete this booking.")
                 .setPositiveButton("Confirm") { _, _ ->
-                    onCancelRequested(currentReservation, currentPosition)
+                    onCancelRequested(currentReservation)
                 }.setNegativeButton("Cancel", null)
                 .show()
         }
     }
 
     override fun getItemCount(): Int = reservations.size
+
+    fun indexOfBookingId(bookingId: String?): Int? {
+        if (bookingId == null) return null
+        return reservations
+            .indexOfFirst { it.bookingId == bookingId }
+            .takeIf { it >= 0 }
+    }
 
     fun removeAt(position: Int) {
         if (position < 0 || position >= reservations.size) return
