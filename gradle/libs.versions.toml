@@ -84,10 +84,11 @@ androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", versi
 androidx-glance-material = { module = "androidx.glance:glance-material", version.ref = "glanceAppwidget" }
 androidx-glance-material3 = { module = "androidx.glance:glance-material3", version.ref = "glanceAppwidget" }
 androidx-junit = { module = "androidx.test.ext:junit", version.ref = "junit" }
-androidx-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroid" }
+dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroid" }
 androidx-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltJetpackVersion" }
 androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltJetpackVersion" }
+androidx-hilt-work-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltJetpackVersion" }
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workVersion" }
 androidx-legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacySupportV4" }
 androidx-lifecycle-extensions = { module = "androidx.lifecycle:lifecycle-extensions", version.ref = "lifecycleExtensions" }
