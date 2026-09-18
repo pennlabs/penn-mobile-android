@@ -4,11 +4,27 @@ import android.os.Build
 import android.os.StrictMode
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.hilt.work.HiltWorkerFactory
 import androidx.multidex.MultiDexApplication
+import androidx.work.Configuration
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
 @HiltAndroidApp
-class PennMobile : MultiDexApplication() {
+class PennMobile :
+    MultiDexApplication(),
+    Configuration.Provider {
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
+    // Must stay a getter. A field initializer would run before Hilt injects workerFactory.
+    override val workManagerConfiguration: Configuration
+        get() =
+            Configuration
+                .Builder()
+                .setWorkerFactory(workerFactory)
+                .build()
+
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate() {
         super.onCreate()
