@@ -6,6 +6,8 @@ import com.pennapps.labs.pennmobile.laundry.notification.AndroidLaundryNotifier
 import com.pennapps.labs.pennmobile.laundry.notification.LaundryNotifier
 import com.pennapps.labs.pennmobile.laundry.repo.LaundryMonitorRepo
 import com.pennapps.labs.pennmobile.laundry.repo.LaundryMonitorRepoImpl
+import com.pennapps.labs.pennmobile.laundry.work.LaundryMonitorScheduler
+import com.pennapps.labs.pennmobile.laundry.work.WorkManagerLaundryScheduler
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -25,4 +27,7 @@ abstract class RepoModule {
 
     @Binds
     abstract fun bindLaundryNotifier(androidLaundryNotifier: AndroidLaundryNotifier): LaundryNotifier
+
+    @Binds
+    abstract fun bindLaundryMonitorScheduler(scheduler: WorkManagerLaundryScheduler): LaundryMonitorScheduler
 }
