@@ -43,11 +43,11 @@ import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentLaundryBinding
 import com.pennapps.labs.pennmobile.isOnline
-import com.pennapps.labs.pennmobile.laundry.LaundryAvailabilityWorker
 import com.pennapps.labs.pennmobile.laundry.LaundryViewModel
 import com.pennapps.labs.pennmobile.laundry.adapters.LaundryRoomAdapter
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryUsage
+import com.pennapps.labs.pennmobile.laundry.work.LaundryAvailabilityWorker
 import com.pennapps.labs.pennmobile.utils.Utils
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
