@@ -1,11 +1,6 @@
 package com.pennapps.labs.pennmobile.laundry
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
-import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import androidx.work.CoroutineWorker
 import androidx.work.Data
@@ -15,6 +10,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.laundry.notification.AndroidLaundryNotifier
 import java.util.concurrent.TimeUnit
 
 class LaundryAvailabilityWorker(
@@ -106,36 +102,12 @@ class LaundryAvailabilityWorker(
     }
 
     private fun sendNotification(mode: String) {
-        val notificationManager =
-            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        val channelId = "pennmobile_laundry_alarm"
-        val channel =
-            NotificationChannel(channelId, "Laundry Alarm", NotificationManager.IMPORTANCE_DEFAULT).apply {
-                description = "Alarm for laundry machine availability"
-                enableLights(true)
-                lightColor = ContextCompat.getColor(context, R.color.color_primary)
-            }
-        notificationManager.createNotificationChannel(channel)
-        // notif builder
-        val machineType = if (mode == "WASHERS") "washer" else "dryer"
-        val notification =
-            NotificationCompat
-                .Builder(context, channelId)
-                .setSmallIcon(R.drawable.ic_bottom_nav_laundry_grey)
-                .setContentTitle(context.getString(R.string.app_name))
-                .setContentText("A $machineType in your selected rooms is available!")
-                .setAutoCancel(true)
-                .setDefaults(Notification.DEFAULT_SOUND or Notification.DEFAULT_VIBRATE)
-                .setColor(ContextCompat.getColor(context, R.color.color_primary))
-                .build()
-
-        notificationManager.notify(NOTIFICATION_ID, notification)
+        val machineLabel = if (mode == "WASHERS") "washer" else "dryer"
+        AndroidLaundryNotifier(context).notifyMonitoredMachineAvailable(machineLabel)
     }
 
     companion object {
         private const val ONE_HOUR_MS = 60 * 60 * 1000L
         private const val POLL_INTERVAL_MINUTES = 3L
-        private const val NOTIFICATION_ID = 1001
     }
 }
