@@ -2,7 +2,6 @@ package com.pennapps.labs.pennmobile.laundry.work
 
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
-import com.pennapps.labs.pennmobile.laundry.LaundryAvailabilityWorker
 import com.pennapps.labs.pennmobile.laundry.domain.MonitorMode
 import java.util.concurrent.TimeUnit
 
