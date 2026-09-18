@@ -97,6 +97,8 @@
     <string name="laundry_notification_snackbar_on">Notification turned on for </string>
     <string name="laundry_notification_snackbar_off">Notification turned off for </string>
     <string name="laundry_switch">Activate switch for notification when complete</string>
+    <string name="laundry_notification_available">A %1$s in %2$s is available!</string>
+    <string name="laundry_notification_monitor_available">A %1$s in your selected rooms is available!</string>
     <string name="laundry_undo">UNDO</string>
     <string name="laundry_hall_no">hall_no</string>
     <string name="laundry_position">position</string>
