@@ -30,6 +30,23 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+
+        <!--
+            WorkManager's default initializer runs before Application.onCreate and would install
+            the default WorkerFactory, so @HiltWorker workers could never be constructed. Remove
+            only its meta-data: emoji2 and ProcessLifecycle share this provider.
+        -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+
         <receiver
             android:name="com.pennapps.labs.pennmobile.dining.widget.DiningHallWidget"
             android:exported="false">
