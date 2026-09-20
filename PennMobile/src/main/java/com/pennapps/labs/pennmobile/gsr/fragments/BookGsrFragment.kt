@@ -13,6 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.GsrDetailsBookBinding
@@ -132,6 +133,10 @@ class BookGsrFragment : Fragment() {
                         if (success) {
                             Toast.makeText(requireContext(), "GSR successfully booked", Toast.LENGTH_LONG).show()
                             requireContext().sendBroadcast(Intent(GsrReservationWidget.UPDATE_GSR_WIDGET))
+                            
+                            LocalBroadcastManager.getInstance(requireContext())
+                                .sendBroadcast(Intent("refresh"))
+                                
                             parentFragmentManager.popBackStack()
                         }
                     }
