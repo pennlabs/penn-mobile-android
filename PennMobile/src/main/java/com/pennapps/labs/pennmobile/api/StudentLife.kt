@@ -198,9 +198,9 @@ interface StudentLife {
     fun getFlingEvents(): Observable<List<FlingEvent?>?>
 
     @GET("gsr/reservations")
-    fun getGsrReservations(
+    suspend fun getGsrReservations(
         @Header("Authorization") bearerToken: String?,
-    ): Observable<List<GSRReservation?>?>
+    ): Response<List<GSRReservation>>
 
     @GET("laundry/preferences")
     fun getLaundryPrefObservable(
