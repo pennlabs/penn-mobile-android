@@ -14,9 +14,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pennapps.labs.pennmobile.MainActivity
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.FragmentGsrReservationsBinding
 import com.pennapps.labs.pennmobile.gsr.adapters.GsrReservationsAdapter
@@ -42,7 +45,12 @@ class GsrReservationsFragment : Fragment() {
 
         mActivity = activity as MainActivity
 
-        LocalBroadcastManager.getInstance(mActivity).registerReceiver(broadcastReceiver, IntentFilter("refresh"))
+        ContextCompat.registerReceiver(
+            mActivity,
+            broadcastReceiver,
+            IntentFilter("refresh"),
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
     }
 
     override fun onCreateView(
@@ -99,65 +107,69 @@ class GsrReservationsFragment : Fragment() {
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    viewModel.cancelSuccess.collect { success ->
+                viewModel.cancelSuccess
+                    .onEach { success ->
                         if (success) {
                             onCancelSucceeded()
                             viewModel.resetCancelSuccess()
                         }
                     }
-                }
+                    .launchIn(this)
 
-                launch {
-                    viewModel.error.collect { error ->
+                viewModel.error
+                    .onEach { error ->
                         if (error != null) {
                             pendingCancelBookingId = null
-                            Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
-
-                            _binding?.let { binding ->
-                                if (binding.gsrReservationsRv.adapter?.itemCount == 0 || binding.gsrReservationsRv.adapter == null) {
-                                    binding.gsrNoReservations.visibility = View.VISIBLE
-                                }
-                            }
+                            Toast.makeText(
+                                requireContext(),
+                                error.message,
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
                     }
+                    .launchIn(this)
+
+                combine(
+                    viewModel.reservations,
+                    viewModel.isLoadingReservations
+                ) { reservations, isLoading ->
+                    reservations to isLoading
                 }
-
-                launch {
-                    viewModel.isLoadingReservations.collect { isLoading ->
-                        _binding?.let { binding ->
-                            if (!isLoading) {
-                                binding.loadingPanel.root.visibility = View.GONE
-                                binding.gsrReservationsRefreshLayout.isRefreshing = false
-                            } else {
-                                if (binding.gsrReservationsRv.adapter?.itemCount == 0 || binding.gsrReservationsRv.adapter == null) {
-                                    binding.loadingPanel.root.visibility = View.VISIBLE
-                                    binding.gsrNoReservations.visibility = View.GONE
-                                }
-                            }
-                        }
+                    .onEach { (reservations, isLoading) ->
+                        renderReservations(reservations, isLoading)
                     }
+                    .launchIn(this)
+            }
+        }
+    }
+
+    private fun renderReservations(reservations: List<GSRReservation>, isLoading: Boolean) {
+        _binding?.let { binding ->
+            if (isLoading) {
+                if (binding.gsrReservationsRv.adapter?.itemCount == 0 || binding.gsrReservationsRv.adapter == null) {
+                    binding.loadingPanel.root.visibility = View.VISIBLE
+                    binding.gsrNoReservations.visibility = View.GONE
                 }
+            } else {
+                binding.loadingPanel.root.visibility = View.GONE
+                binding.gsrReservationsRefreshLayout.isRefreshing = false
+                
+                binding.gsrReservationsRv.adapter =
+                    GsrReservationsAdapter(
+                        ArrayList(reservations),
+                        ::onCancelRequested,
+                    )
 
-                launch {
-                    viewModel.reservations.collect { reservations ->
-                        _binding?.let { binding ->
-                            binding.gsrReservationsRv.adapter =
-                                GsrReservationsAdapter(
-                                    ArrayList(reservations),
-                                    ::onCancelRequested,
-                                )
-                            if (reservations.isNotEmpty()) {
-                                binding.gsrNoReservations.visibility = View.GONE
-                            } else if (!viewModel.isLoadingReservations.value) {
-                                binding.gsrNoReservations.visibility = View.VISIBLE
-                            }
-                        }
-                    }
+                if (reservations.isNotEmpty()) {
+                    binding.gsrNoReservations.visibility = View.GONE
+                } else {
+                    binding.gsrNoReservations.visibility = View.VISIBLE
                 }
             }
         }
     }
+
+
 
     private fun onCancelRequested(reservation: GSRReservation) {
         pendingCancelBookingId = reservation.bookingId
@@ -213,6 +225,6 @@ class GsrReservationsFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(broadcastReceiver)
+        mActivity.unregisterReceiver(broadcastReceiver)
     }
 }
