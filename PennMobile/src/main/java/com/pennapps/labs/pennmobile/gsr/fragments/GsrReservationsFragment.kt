@@ -9,17 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pennapps.labs.pennmobile.MainActivity
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.FragmentGsrReservationsBinding
 import com.pennapps.labs.pennmobile.gsr.adapters.GsrReservationsAdapter
@@ -28,6 +25,9 @@ import com.pennapps.labs.pennmobile.gsr.viewmodels.GsrReservationsViewModel
 import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import com.pennapps.labs.pennmobile.isOnline
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -49,7 +49,7 @@ class GsrReservationsFragment : Fragment() {
             mActivity,
             broadcastReceiver,
             IntentFilter("refresh"),
-            ContextCompat.RECEIVER_NOT_EXPORTED
+            ContextCompat.RECEIVER_NOT_EXPORTED,
         )
     }
 
@@ -113,37 +113,37 @@ class GsrReservationsFragment : Fragment() {
                             onCancelSucceeded()
                             viewModel.resetCancelSuccess()
                         }
-                    }
-                    .launchIn(this)
+                    }.launchIn(this)
 
                 viewModel.error
                     .onEach { error ->
                         if (error != null) {
                             pendingCancelBookingId = null
-                            Toast.makeText(
-                                requireContext(),
-                                error.message,
-                                Toast.LENGTH_LONG
-                            ).show()
+                            Toast
+                                .makeText(
+                                    requireContext(),
+                                    error.message,
+                                    Toast.LENGTH_LONG,
+                                ).show()
                         }
-                    }
-                    .launchIn(this)
+                    }.launchIn(this)
 
                 combine(
                     viewModel.reservations,
-                    viewModel.isLoadingReservations
+                    viewModel.isLoadingReservations,
                 ) { reservations, isLoading ->
                     reservations to isLoading
-                }
-                    .onEach { (reservations, isLoading) ->
-                        renderReservations(reservations, isLoading)
-                    }
-                    .launchIn(this)
+                }.onEach { (reservations, isLoading) ->
+                    renderReservations(reservations, isLoading)
+                }.launchIn(this)
             }
         }
     }
 
-    private fun renderReservations(reservations: List<GSRReservation>, isLoading: Boolean) {
+    private fun renderReservations(
+        reservations: List<GSRReservation>,
+        isLoading: Boolean,
+    ) {
         _binding?.let { binding ->
             if (isLoading) {
                 if (binding.gsrReservationsRv.adapter?.itemCount == 0 || binding.gsrReservationsRv.adapter == null) {
@@ -153,7 +153,7 @@ class GsrReservationsFragment : Fragment() {
             } else {
                 binding.loadingPanel.root.visibility = View.GONE
                 binding.gsrReservationsRefreshLayout.isRefreshing = false
-                
+
                 binding.gsrReservationsRv.adapter =
                     GsrReservationsAdapter(
                         ArrayList(reservations),
@@ -168,8 +168,6 @@ class GsrReservationsFragment : Fragment() {
             }
         }
     }
-
-
 
     private fun onCancelRequested(reservation: GSRReservation) {
         pendingCancelBookingId = reservation.bookingId

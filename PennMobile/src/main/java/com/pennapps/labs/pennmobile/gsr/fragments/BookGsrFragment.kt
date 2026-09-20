@@ -19,6 +19,8 @@ import com.pennapps.labs.pennmobile.databinding.GsrDetailsBookBinding
 import com.pennapps.labs.pennmobile.gsr.viewmodels.BookGsrViewModel
 import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -119,16 +121,15 @@ class BookGsrFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        val vm = viewModel ?: return
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    vm.isBooking.collect { isBooking ->
+                viewModel.isBooking
+                    .onEach { isBooking ->
                         setLoadingState(isBooking)
-                    }
-                }
-                launch {
-                    vm.bookingSuccess.collect { success ->
+                    }.launchIn(this)
+
+                viewModel.bookingSuccess
+                    .onEach { success ->
                         if (success) {
                             Toast.makeText(requireContext(), "GSR successfully booked", Toast.LENGTH_LONG).show()
                             requireContext().sendBroadcast(Intent(GsrReservationWidget.UPDATE_GSR_WIDGET))
@@ -136,15 +137,14 @@ class BookGsrFragment : Fragment() {
 
                             parentFragmentManager.popBackStack()
                         }
-                    }
-                }
-                launch {
-                    vm.error.collect { error ->
+                    }.launchIn(this)
+
+                viewModel.error
+                    .onEach { error ->
                         error?.let {
                             Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
                         }
-                    }
-                }
+                    }.launchIn(this)
             }
         }
     }
