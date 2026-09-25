@@ -5,20 +5,17 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.FragmentGsrReservationsBinding
@@ -28,9 +25,10 @@ import com.pennapps.labs.pennmobile.gsr.viewmodels.GsrReservationsViewModel
 import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import com.pennapps.labs.pennmobile.isOnline
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 
 @AndroidEntryPoint
 class GsrReservationsFragment : Fragment() {
@@ -47,7 +45,12 @@ class GsrReservationsFragment : Fragment() {
 
         mActivity = activity as MainActivity
 
-        LocalBroadcastManager.getInstance(mActivity).registerReceiver(broadcastReceiver, IntentFilter("refresh"))
+        ContextCompat.registerReceiver(
+            mActivity,
+            broadcastReceiver,
+            IntentFilter("refresh"),
+            ContextCompat.RECEIVER_NOT_EXPORTED,
+        )
     }
 
     override fun onCreateView(
@@ -104,22 +107,63 @@ class GsrReservationsFragment : Fragment() {
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    viewModel.cancelSuccess.collect { success ->
+                viewModel.cancelSuccess
+                    .onEach { success ->
                         if (success) {
                             onCancelSucceeded()
                             viewModel.resetCancelSuccess()
                         }
-                    }
-                }
+                    }.launchIn(this)
 
-                launch {
-                    viewModel.error.collect { error ->
+                viewModel.error
+                    .onEach { error ->
                         if (error != null) {
                             pendingCancelBookingId = null
-                            Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
+                            Toast
+                                .makeText(
+                                    requireContext(),
+                                    error.message,
+                                    Toast.LENGTH_LONG,
+                                ).show()
                         }
-                    }
+                    }.launchIn(this)
+
+                combine(
+                    viewModel.reservations,
+                    viewModel.isLoadingReservations,
+                ) { reservations, isLoading ->
+                    reservations to isLoading
+                }.onEach { (reservations, isLoading) ->
+                    renderReservations(reservations, isLoading)
+                }.launchIn(this)
+            }
+        }
+    }
+
+    private fun renderReservations(
+        reservations: List<GSRReservation>,
+        isLoading: Boolean,
+    ) {
+        _binding?.let { binding ->
+            if (isLoading) {
+                if (binding.gsrReservationsRv.adapter?.itemCount == 0 || binding.gsrReservationsRv.adapter == null) {
+                    binding.loadingPanel.root.visibility = View.VISIBLE
+                    binding.gsrNoReservations.visibility = View.GONE
+                }
+            } else {
+                binding.loadingPanel.root.visibility = View.GONE
+                binding.gsrReservationsRefreshLayout.isRefreshing = false
+
+                binding.gsrReservationsRv.adapter =
+                    GsrReservationsAdapter(
+                        ArrayList(reservations),
+                        ::onCancelRequested,
+                    )
+
+                if (reservations.isNotEmpty()) {
+                    binding.gsrNoReservations.visibility = View.GONE
+                } else {
+                    binding.gsrNoReservations.visibility = View.VISIBLE
                 }
             }
         }
@@ -163,66 +207,7 @@ class GsrReservationsFragment : Fragment() {
             binding.gsrNoReservations.visibility = View.VISIBLE
         } else {
             binding.internetConnectionGSRReservations.visibility = View.GONE
-        }
-        // get email and session id from shared preferences
-
-        val labs = MainActivity.studentLifeInstance
-
-        mActivity.mNetworkManager.getAccessToken {
-            val sp = PreferenceManager.getDefaultSharedPreferences(mActivity)
-            val sessionID = sp.getString(getString(R.string.huntsmanGSR_SessionID), "")
-            val email = sp.getString(getString(R.string.email_address), "")
-            val token = sp.getString(getString(R.string.access_token), "")
-            try {
-                labs
-                    .getGsrReservations("Bearer $token")
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ reservations ->
-                        // Check if binding is still valid
-                        _binding?.let { binding ->
-                            binding.loadingPanel.root.visibility = View.GONE
-                            try {
-                                val sortedReservations = reservations?.sortedBy { it?.fromDate }
-                                sortedReservations?.let {
-                                    binding.gsrReservationsRv.adapter =
-                                        GsrReservationsAdapter(
-                                            ArrayList(it.filterNotNull()),
-                                            ::onCancelRequested,
-                                        )
-                                    if (it.isNotEmpty()) {
-                                        binding.gsrNoReservations.visibility = View.GONE
-                                    } else {
-                                        binding.gsrNoReservations.visibility = View.VISIBLE
-                                    }
-                                }
-                                // stop refreshing
-                                binding.gsrReservationsRefreshLayout.isRefreshing = false
-                            } catch (e: Exception) {
-                                FirebaseCrashlytics.getInstance().recordException(e)
-                            }
-                        }
-                    }, { throwable ->
-                        mActivity.runOnUiThread {
-                            // Check if binding is still valid
-                            _binding?.let { binding ->
-                                Log.e("GsrReservationsFragment", "Error getting reservations", throwable)
-                                throwable.printStackTrace()
-                                binding.loadingPanel.root.visibility = View.GONE
-                                try {
-                                    binding.gsrReservationsRv.adapter = GsrReservationsAdapter(ArrayList(), ::onCancelRequested)
-                                    binding.gsrNoReservations.visibility = View.VISIBLE
-                                    binding.gsrReservationsRefreshLayout.isRefreshing = false
-                                } catch (e: Exception) {
-                                    FirebaseCrashlytics.getInstance().recordException(e)
-                                }
-                            }
-                        }
-                    })
-            } catch (e: Exception) {
-                FirebaseCrashlytics.getInstance().recordException(e)
-                e.printStackTrace()
-            }
+            viewModel.fetchReservations()
         }
     }
 
@@ -238,6 +223,6 @@ class GsrReservationsFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(broadcastReceiver)
+        mActivity.unregisterReceiver(broadcastReceiver)
     }
 }

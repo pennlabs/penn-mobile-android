@@ -1,5 +1,7 @@
 package com.pennapps.labs.pennmobile.gsr.repo
 
+import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
+
 interface GsrRepo {
     fun getSavedUserInfo(): Triple<String, String, String>
 
@@ -18,4 +20,6 @@ interface GsrRepo {
         bookingId: String?,
         isHuntsmanReservation: Boolean,
     )
+
+    suspend fun getReservations(): List<GSRReservation>
 }
