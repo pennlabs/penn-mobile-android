@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile.laundry
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -34,16 +35,19 @@ class LaundryViewModel : ViewModel() {
     val loadedFavorites: LiveData<Boolean>
         get() = _loadedFavorites
 
+    val isDataReady: LiveData<Boolean> = MediatorLiveData<Boolean>().apply {
+        addSource(_loadedRooms) { value = (_loadedRooms.value == true && _loadedFavorites.value == true) }
+        addSource(_loadedFavorites) { value = (_loadedRooms.value == true && _loadedFavorites.value == true) }
+    }
+
     private val _favoriteRooms = MutableLiveData(LaundryRoomFavorites())
 
     private val curToggled: MutableSet<Int> = HashSet()
 
-    // Baseline that curToggled is diffed against, so existsDiff() needs no lock.
+
     private var savedFavoriteIds: Set<Int> = emptySet()
 
-    // Non-zero while a preference POST is in flight. Incremented synchronously by
-    // setFavoritesFromToggled so a concurrent getFavorites cannot apply a stale GET
-    // result over the write we are about to make.
+
     @Volatile
     private var pendingPrefWrites: Int = 0
 
@@ -147,17 +151,13 @@ class LaundryViewModel : ViewModel() {
                 } else {
                     Log.i("Laundry", "Failed to get preferences")
                 }
-                // A preference write is in flight; its own populateFavorites call publishes
-                // the authoritative state, so applying this (pre-write) response would
-                // clobber it.
+
                 if (pendingPrefWrites == 0) {
                     populateFavorites(coroutineContext, studentLife, favoriteIdList)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {
-                // Signals "the fetch has been attempted", not "it succeeded" -- a screen
-                // waiting on this must still make progress when the request fails.
                 _loadedFavorites.postValue(true)
             }
         }
@@ -254,14 +254,10 @@ class LaundryViewModel : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                // Send before repopulating: the refetch below reads back per-room data, and
-                // the server must already hold the new selection when it does.
                 if (sendPreferences(studentLife, bearerToken, favoriteIdList)) {
                     savedFavoriteIds = favoriteIdList.toSet()
                     populateFavorites(coroutineContext, studentLife, favoriteIdList)
                 }
-                // On failure nothing local is updated, so the Laundry page and the switches
-                // keep showing the last state the server actually confirmed rather than a
                 // selection that was never persisted.
             } finally {
                 pendingPrefWrites -= 1
