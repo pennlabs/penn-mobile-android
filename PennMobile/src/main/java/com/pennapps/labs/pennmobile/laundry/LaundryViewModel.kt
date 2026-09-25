@@ -2,6 +2,7 @@ package com.pennapps.labs.pennmobile.laundry
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,7 +15,6 @@ import com.pennapps.labs.pennmobile.laundry.classes.LaundryUsage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.CoroutineContext
@@ -31,9 +31,25 @@ class LaundryViewModel : ViewModel() {
     val loadedRooms: LiveData<Boolean>
         get() = _loadedRooms
 
+    private val _loadedFavorites = MutableLiveData(false)
+    val loadedFavorites: LiveData<Boolean>
+        get() = _loadedFavorites
+
+    val isDataReady: LiveData<Boolean> = MediatorLiveData<Boolean>().apply {
+        addSource(_loadedRooms) { value = (_loadedRooms.value == true && _loadedFavorites.value == true) }
+        addSource(_loadedFavorites) { value = (_loadedRooms.value == true && _loadedFavorites.value == true) }
+    }
+
     private val _favoriteRooms = MutableLiveData(LaundryRoomFavorites())
 
     private val curToggled: MutableSet<Int> = HashSet()
+
+
+    private var savedFavoriteIds: Set<Int> = emptySet()
+
+
+    @Volatile
+    private var pendingPrefWrites: Int = 0
 
     val favoriteRooms: LiveData<LaundryRoomFavorites>
         get() = _favoriteRooms
@@ -135,9 +151,14 @@ class LaundryViewModel : ViewModel() {
                 } else {
                     Log.i("Laundry", "Failed to get preferences")
                 }
-                populateFavorites(coroutineContext, studentLife, favoriteIdList)
+
+                if (pendingPrefWrites == 0) {
+                    populateFavorites(coroutineContext, studentLife, favoriteIdList)
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
+            } finally {
+                _loadedFavorites.postValue(true)
             }
         }
     }
@@ -199,67 +220,57 @@ class LaundryViewModel : ViewModel() {
         }
     }
 
-    fun existsDiff(): Boolean {
-        var diff = false
-        runBlocking {
-            favoritesMutex.withLock {
-                val v = _favoriteRooms.value ?: return@runBlocking
-                if (v.favoriteRooms.size != curToggled.size) {
-                    diff = true
-                    return@runBlocking
-                }
-                for (room in v.favoriteRooms) {
-                    if (!curToggled.contains(room.id)) {
-                        diff = true
-                        return@runBlocking
-                    }
-                }
-            }
-        }
-        return diff
-    }
+    fun existsDiff(): Boolean = curToggled != savedFavoriteIds
 
     private suspend fun sendPreferences(
         studentLife: StudentLife,
         bearerToken: String,
         favoriteIdList: List<Int>,
-    ) {
+    ): Boolean {
         try {
             val laundryRequest = LaundryRequest(favoriteIdList)
             val response = studentLife.sendLaundryPref(bearerToken, laundryRequest)
             if (response.isSuccessful) {
                 Log.i("Laundry Preferences", "Successfully updated preferences")
-            } else {
-                Log.i("Laundry Preferences", "Error updating preferences")
+                return true
             }
+            Log.i("Laundry Preferences", "Error updating preferences")
         } catch (e: Exception) {
             e.printStackTrace()
         }
+        return false
     }
 
     fun setFavoritesFromToggled(
         studentLife: StudentLife,
         bearerToken: String,
     ) {
-        CoroutineScope(Dispatchers.IO).launch {
-            // make a copy of the set
-            val favoriteIdList = curToggled.toList()
-            populateFavorites(coroutineContext, studentLife, favoriteIdList)
+        // make a copy of the set
+        val favoriteIdList = curToggled.toList()
 
-            // send
-            sendPreferences(studentLife, bearerToken, favoriteIdList)
+        // Claimed here rather than inside the coroutine so that a getFavorites() racing us
+        // from the Laundry page sees the pending write even if it runs first.
+        pendingPrefWrites += 1
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                if (sendPreferences(studentLife, bearerToken, favoriteIdList)) {
+                    savedFavoriteIds = favoriteIdList.toSet()
+                    populateFavorites(coroutineContext, studentLife, favoriteIdList)
+                }
+                // selection that was never persisted.
+            } finally {
+                pendingPrefWrites -= 1
+            }
         }
     }
 
     fun setToggled() {
         curToggled.clear()
-        viewModelScope.launch {
-            favoritesMutex.withLock {
-                for (room in _favoriteRooms.value!!.favoriteRooms) {
-                    curToggled.add(room.id)
-                }
-            }
+        for (room in _favoriteRooms.value?.favoriteRooms.orEmpty()) {
+            curToggled.add(room.id)
         }
+        savedFavoriteIds = curToggled.toSet()
     }
 
     // returns true if there is a change state
