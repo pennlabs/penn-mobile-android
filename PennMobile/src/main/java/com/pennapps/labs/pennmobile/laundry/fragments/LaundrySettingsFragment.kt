@@ -78,15 +78,12 @@ class LaundrySettingsFragment : Fragment() {
 
         binding.loadingPanel.root.visibility = View.VISIBLE
 
-        // The adapter snapshots the current favorites as its baseline on construction, so it
-        // must not be attached until both the room list and the favorites have arrived.
-        laundryViewModel.loadedRooms.observe(viewLifecycleOwner) { attachAdapterIfLoaded() }
-        laundryViewModel.loadedFavorites.observe(viewLifecycleOwner) { attachAdapterIfLoaded() }
+        laundryViewModel.isDataReady.observe(viewLifecycleOwner) {
+            attachAdapterIfLoaded()
+        }
 
         laundryViewModel.getHalls(mStudentLife)
 
-        // Normally the Laundry page has already fetched these; do it here too so the screen
-        // still resolves if it never got the chance (e.g. it was offline).
         if (laundryViewModel.loadedFavorites.value != true) {
             mActivity.mNetworkManager.getAccessToken {
                 val bearerToken =
@@ -101,8 +98,7 @@ class LaundrySettingsFragment : Fragment() {
 
     private fun attachAdapterIfLoaded() {
         if (_binding == null || adapterAttached) return
-        if (laundryViewModel.loadedRooms.value != true) return
-        if (laundryViewModel.loadedFavorites.value != true) return
+        if (laundryViewModel.isDataReady.value != true) return
 
         adapterAttached = true
         attachAdapter()
@@ -112,8 +108,6 @@ class LaundrySettingsFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
-            // Route through the activity so Up and system Back tear the fragment down
-            // identically -- both then run onDestroyView(), which is where the save lives.
             mActivity.onBackPressed()
             return true
         }
@@ -130,19 +124,11 @@ class LaundrySettingsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         if (laundryViewModel.existsDiff()) {
-            // getAccessToken always defers its callback onto the activity's lifecycleScope,
-            // so it cannot run before this fragment is detached. Everything the callback
-            // touches is therefore activity-scoped (the view model included) rather than
-            // fragment-scoped -- an isAdded check here would drop the save every time.
-            val activity = mActivity
-            val studentLife = mStudentLife
-            val prefs = sharedPreferences
-            val viewModel = laundryViewModel
-            val tokenKey = activity.getString(R.string.access_token)
+            val tokenKey = mActivity.getString(R.string.access_token)
 
-            activity.mNetworkManager.getAccessToken {
-                val bearerToken = "Bearer " + prefs.getString(tokenKey, "").toString()
-                viewModel.setFavoritesFromToggled(studentLife, bearerToken)
+            mActivity.mNetworkManager.getAccessToken {
+                val bearerToken = "Bearer " + sharedPreferences.getString(tokenKey, "").toString()
+                laundryViewModel.setFavoritesFromToggled(mStudentLife, bearerToken)
             }
         }
         mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
