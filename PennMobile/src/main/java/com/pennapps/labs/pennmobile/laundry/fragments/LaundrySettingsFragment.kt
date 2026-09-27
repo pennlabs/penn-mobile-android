@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
@@ -28,10 +29,12 @@ class LaundrySettingsFragment : Fragment() {
     val binding get() = _binding!!
 
     private val laundryViewModel: LaundryViewModel by activityViewModels()
+    private var adapterAttached = false
     private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         mStudentLife = MainActivity.studentLifeInstance
         mActivity = activity as MainActivity
 
@@ -75,22 +78,40 @@ class LaundrySettingsFragment : Fragment() {
 
         binding.loadingPanel.root.visibility = View.VISIBLE
 
-        // if this value is already true, then simply attach adapter
-        if (laundryViewModel.loadedRooms.value != null && laundryViewModel.loadedRooms.value!!) {
-            attachAdapter()
-            binding.loadingPanel.root.visibility = View.GONE
-            binding.noResults.root.visibility = View.GONE
-        } else {
-            // otherwise, wait until the network request is done
-            laundryViewModel.loadedRooms.observe(viewLifecycleOwner) { loaded ->
-                if (loaded) {
-                    attachAdapter()
-                    binding.loadingPanel.root.visibility = View.GONE
-                    binding.noResults.root.visibility = View.GONE
-                }
-            }
-            laundryViewModel.getHalls(mStudentLife)
+        laundryViewModel.isDataReady.observe(viewLifecycleOwner) {
+            attachAdapterIfLoaded()
         }
+
+        laundryViewModel.getHalls(mStudentLife)
+
+        if (laundryViewModel.loadedFavorites.value != true) {
+            mActivity.mNetworkManager.getAccessToken {
+                val bearerToken =
+                    "Bearer " +
+                        sharedPreferences
+                            .getString(mActivity.getString(R.string.access_token), "")
+                            .toString()
+                laundryViewModel.getFavorites(mStudentLife, bearerToken)
+            }
+        }
+    }
+
+    private fun attachAdapterIfLoaded() {
+        if (_binding == null || adapterAttached) return
+        if (laundryViewModel.isDataReady.value != true) return
+
+        adapterAttached = true
+        attachAdapter()
+        binding.loadingPanel.root.visibility = View.GONE
+        binding.noResults.root.visibility = View.GONE
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            mActivity.onBackPressed()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onResume() {
@@ -103,17 +124,16 @@ class LaundrySettingsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         if (laundryViewModel.existsDiff()) {
+            val tokenKey = mActivity.getString(R.string.access_token)
+
             mActivity.mNetworkManager.getAccessToken {
-                // Check if the fragment is still attached before accessing resources
-                if (isAdded) {
-                    val tokenKey = getString(R.string.access_token)
-                    val bearerToken = "Bearer " + sharedPreferences.getString(tokenKey, "").toString()
-                    laundryViewModel.setFavoritesFromToggled(mStudentLife, bearerToken)
-                }
+                val bearerToken = "Bearer " + sharedPreferences.getString(tokenKey, "").toString()
+                laundryViewModel.setFavoritesFromToggled(mStudentLife, bearerToken)
             }
         }
         mActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
         toolbar.visibility = View.GONE
+        adapterAttached = false
         _binding = null
     }
 }
