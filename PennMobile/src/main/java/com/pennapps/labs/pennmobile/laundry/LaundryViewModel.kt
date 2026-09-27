@@ -245,11 +245,8 @@ class LaundryViewModel : ViewModel() {
         studentLife: StudentLife,
         bearerToken: String,
     ) {
-        // make a copy of the set
         val favoriteIdList = curToggled.toList()
 
-        // Claimed here rather than inside the coroutine so that a getFavorites() racing us
-        // from the Laundry page sees the pending write even if it runs first.
         pendingPrefWrites += 1
 
         viewModelScope.launch(Dispatchers.IO) {
