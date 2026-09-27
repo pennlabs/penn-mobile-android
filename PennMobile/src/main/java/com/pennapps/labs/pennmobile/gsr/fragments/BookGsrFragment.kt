@@ -16,9 +16,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.GsrDetailsBookBinding
-import com.pennapps.labs.pennmobile.gsr.viewmodels.GsrViewModel
+import com.pennapps.labs.pennmobile.gsr.viewmodels.BookGsrViewModel
 import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -29,7 +31,7 @@ class BookGsrFragment : Fragment() {
 
     // By removing the _viewModel / viewModel pair and using a single internal
     // variable, we avoid the ktlint naming error while keeping manual init.
-    private lateinit var viewModel: GsrViewModel
+    private lateinit var viewModel: BookGsrViewModel
     private lateinit var mActivity: MainActivity
 
     private var startTime: String? = null
@@ -65,9 +67,7 @@ class BookGsrFragment : Fragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Manual initialization here ensures the Fragment is attached
-        // to the Activity before Hilt tries to find the SavedStateRegistry.
-        viewModel = ViewModelProvider(this)[GsrViewModel::class.java]
+        viewModel = ViewModelProvider(this)[BookGsrViewModel::class.java]
 
         (activity as? MainActivity)?.apply {
             setTitle(R.string.gsr)
@@ -121,30 +121,30 @@ class BookGsrFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        val vm = viewModel ?: return
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    vm.isBooking.collect { isBooking ->
+                viewModel.isBooking
+                    .onEach { isBooking ->
                         setLoadingState(isBooking)
-                    }
-                }
-                launch {
-                    vm.bookingSuccess.collect { success ->
+                    }.launchIn(this)
+
+                viewModel.bookingSuccess
+                    .onEach { success ->
                         if (success) {
                             Toast.makeText(requireContext(), "GSR successfully booked", Toast.LENGTH_LONG).show()
                             requireContext().sendBroadcast(Intent(GsrReservationWidget.UPDATE_GSR_WIDGET))
+                            requireContext().sendBroadcast(Intent("refresh"))
+
                             parentFragmentManager.popBackStack()
                         }
-                    }
-                }
-                launch {
-                    vm.error.collect { error ->
+                    }.launchIn(this)
+
+                viewModel.error
+                    .onEach { error ->
                         error?.let {
                             Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
                         }
-                    }
-                }
+                    }.launchIn(this)
             }
         }
     }

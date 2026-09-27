@@ -383,28 +383,29 @@ class HomepageViewModel :
         bearerToken: String,
         latch: CountDownLatch,
     ) {
-        try {
-            studentLife
-                .getGsrReservations(bearerToken)
-                .subscribeOn(Schedulers.io())
-                .subscribe({ reservationsList ->
+        viewModelScope.launch {
+            try {
+                val response = studentLife.getGsrReservations(bearerToken)
+                if (response.isSuccessful) {
+                    val reservationsList = response.body()
                     reservationsList?.let {
                         if (reservationsList.isEmpty()) {
                             addCell(HomeCell(), GSR_POS)
                         } else {
-                            val gsrCell = GSRCell(reservationsList.filterNotNull())
+                            val gsrCell = GSRCell(reservationsList)
                             Log.i(TAG, "Loaded GSR Reservations")
                             addCell(gsrCell, GSR_POS)
                         }
                     }
-                    latch.countDown()
-                }, { throwable ->
-                    Log.i(TAG, "Could not load GSR reservations")
-                    throwable.printStackTrace()
-                    latch.countDown()
-                })
-        } catch (e: Exception) {
-            e.printStackTrace()
+                } else {
+                    Log.i(TAG, "Could not load GSR reservations: HTTP ${response.code()}")
+                }
+            } catch (e: Exception) {
+                Log.i(TAG, "Could not load GSR reservations")
+                e.printStackTrace()
+            } finally {
+                latch.countDown()
+            }
         }
     }
 
