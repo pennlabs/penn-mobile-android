@@ -35,18 +35,17 @@ class LaundryViewModel : ViewModel() {
     val loadedFavorites: LiveData<Boolean>
         get() = _loadedFavorites
 
-    val isDataReady: LiveData<Boolean> = MediatorLiveData<Boolean>().apply {
-        addSource(_loadedRooms) { value = (_loadedRooms.value == true && _loadedFavorites.value == true) }
-        addSource(_loadedFavorites) { value = (_loadedRooms.value == true && _loadedFavorites.value == true) }
-    }
+    val isDataReady: LiveData<Boolean> =
+        MediatorLiveData<Boolean>().apply {
+            addSource(_loadedRooms) { value = (_loadedRooms.value == true && _loadedFavorites.value == true) }
+            addSource(_loadedFavorites) { value = (_loadedRooms.value == true && _loadedFavorites.value == true) }
+        }
 
     private val _favoriteRooms = MutableLiveData(LaundryRoomFavorites())
 
     private val curToggled: MutableSet<Int> = HashSet()
 
-
     private var savedFavoriteIds: Set<Int> = emptySet()
-
 
     @Volatile
     private var pendingPrefWrites: Int = 0
