@@ -133,7 +133,9 @@ class BookGsrFragment : Fragment() {
                         if (success) {
                             Toast.makeText(requireContext(), "GSR successfully booked", Toast.LENGTH_LONG).show()
                             requireContext().sendBroadcast(Intent(GsrReservationWidget.UPDATE_GSR_WIDGET))
-                            requireContext().sendBroadcast(Intent("refresh"))
+                            requireContext().sendBroadcast(
+                                Intent("refresh").apply { setPackage(requireContext().packageName) },
+                            )
 
                             parentFragmentManager.popBackStack()
                         }
