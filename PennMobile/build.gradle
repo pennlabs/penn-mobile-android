@@ -151,6 +151,7 @@ dependencies {
     ksp libs.androidx.hilt.compiler
 
     implementation libs.coil.compose
+    implementation libs.coil.gif
 }
 
 String getPlatformClientID() {
