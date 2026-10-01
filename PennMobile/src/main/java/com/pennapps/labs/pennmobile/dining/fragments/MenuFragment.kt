@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.WindowInsetsControllerCompat
@@ -188,7 +189,7 @@ class MenuFragment : Fragment() {
         } else {
             // No menu data: hide date picker row, only show HOURS tab
             dateHoursRow.visibility = View.GONE
-            val adapter = HoursOnlyTabAdapter(mActivity.supportFragmentManager)
+            val adapter = HoursOnlyTabAdapter(childFragmentManager)
             pageAdapter = adapter
             pager.adapter = adapter
             tabLayout.setupWithViewPager(pager)
@@ -337,13 +338,13 @@ class MenuFragment : Fragment() {
     private fun rebuildMenuTabs(menus: List<DiningHall.Menu>) {
         if (menus.isEmpty()) {
             // No menu data fetched yet for this date — show a placeholder tab
-            val adapter = NoMenuDataAdapter(mActivity.supportFragmentManager)
+            val adapter = NoMenuDataAdapter(childFragmentManager)
             pageAdapter = adapter
             pager.adapter = adapter
             tabLayout.setupWithViewPager(pager)
             tabLayout.setTabTextColors(Color.WHITE, Color.WHITE)
         } else {
-            val adapter = MenuTabAdapter(mActivity.supportFragmentManager, menus, mDiningHall?.name)
+            val adapter = MenuTabAdapter(childFragmentManager, menus, mDiningHall?.name)
             pageAdapter = adapter
             pager.adapter = adapter
             tabLayout.setupWithViewPager(pager)
@@ -428,7 +429,11 @@ class MenuFragment : Fragment() {
         WindowInsetsControllerCompat(requireActivity().window, requireView()).isAppearanceLightStatusBars = true
 
         super.onDestroyView()
-        mActivity.supportActionBar?.hide()
+        val mainToolbar = mActivity.findViewById<Toolbar>(R.id.toolbar)
+        if (mainToolbar != null) {
+            (mActivity as AppCompatActivity).setSupportActionBar(mainToolbar)
+            mActivity.supportActionBar?.setDisplayShowTitleEnabled(false)
+        }
         mActivity.showBottomBar()
     }
 
