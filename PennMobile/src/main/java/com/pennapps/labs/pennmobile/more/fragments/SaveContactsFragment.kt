@@ -156,7 +156,7 @@ class SaveContactsFragment : ListFragment() {
                 selected.size.toString() + " contact" + (if (selected.size > 1 || selected.size == 0) "s" else "") + " saved",
                 Toast.LENGTH_SHORT,
             ).show()
-        mActivity.onBackPressed()
+        requireActivity().onBackPressedDispatcher.onBackPressed()
     }
 
     override fun onRequestPermissionsResult(
