@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
+import androidx.appcompat.app.AlertDialog
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
@@ -52,10 +54,22 @@ class AboutFragment : Fragment() {
                         onLearnMoreClick = {
                             startActivity(Intent(Intent.ACTION_VIEW, state.pennLabsUrl.toUri()))
                         },
+                        onLicensesClick = ::showLicensesDialog,
                     )
                 }
             }
         }
+    }
+
+    private fun showLicensesDialog() {
+        val webView = LayoutInflater.from(mActivity).inflate(R.layout.dialog_licenses, null) as WebView
+        webView.loadUrl("file:///android_asset/open_source_licenses.html")
+        AlertDialog
+            .Builder(mActivity, R.style.AppTheme_AppBarOverlay_Light)
+            .setTitle(getString(R.string.action_licenses))
+            .setView(webView)
+            .setPositiveButton(android.R.string.ok, null)
+            .show()
     }
 
     override fun onResume() {

@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile.more.compose
 
-import android.os.Build
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -42,7 +41,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -52,10 +50,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.ImageLoader
 import coil.compose.AsyncImage
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import coil.request.repeatCount
 import com.pennapps.labs.pennmobile.R
@@ -73,6 +68,7 @@ fun AboutScreen(
     state: AboutUiState,
     onBack: () -> Unit,
     onLearnMoreClick: () -> Unit,
+    onLicensesClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -81,7 +77,7 @@ fun AboutScreen(
                 title = { Text(stringResource(R.string.about)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
                 colors =
@@ -96,6 +92,7 @@ fun AboutScreen(
         AboutContent(
             state = state,
             onLearnMoreClick = onLearnMoreClick,
+            onLicensesClick = onLicensesClick,
             modifier = Modifier.padding(innerPadding),
         )
     }
@@ -105,6 +102,7 @@ fun AboutScreen(
 private fun AboutContent(
     state: AboutUiState,
     onLearnMoreClick: () -> Unit,
+    onLicensesClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     CompositionLocalProvider(LocalTextStyle provides TextStyle(fontFamily = sfProFontFamily)) {
@@ -137,7 +135,8 @@ private fun AboutContent(
                 )
             }
             fullWidthItem(key = "learn_more") {
-                LearnMoreButton(
+                AboutOutlinedButton(
+                    text = stringResource(R.string.learn_more),
                     onClick = onLearnMoreClick,
                     modifier = Modifier.padding(top = 18.dp),
                 )
@@ -155,6 +154,13 @@ private fun AboutContent(
                 people = state.alumni,
                 titleTopPadding = 16.dp,
             )
+            fullWidthItem(key = "licenses") {
+                AboutOutlinedButton(
+                    text = stringResource(R.string.licenses),
+                    onClick = onLicensesClick,
+                    modifier = Modifier.padding(top = 16.dp, bottom = 32.dp),
+                )
+            }
         }
     }
 }
@@ -215,19 +221,6 @@ private fun LabsLogoHeader(modifier: Modifier = Modifier) {
 @Composable
 private fun AnimatedLabsLogo(modifier: Modifier = Modifier) {
     val context = LocalContext.current
-
-    val imageLoader =
-        remember(context) {
-            ImageLoader
-                .Builder(context)
-                .components {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        add(ImageDecoderDecoder.Factory())
-                    } else {
-                        add(GifDecoder.Factory())
-                    }
-                }.build()
-        }
     val request =
         remember(context) {
             ImageRequest
@@ -238,14 +231,14 @@ private fun AnimatedLabsLogo(modifier: Modifier = Modifier) {
         }
     AsyncImage(
         model = request,
-        imageLoader = imageLoader,
         contentDescription = null,
         modifier = modifier,
     )
 }
 
 @Composable
-private fun LearnMoreButton(
+private fun AboutOutlinedButton(
+    text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -257,7 +250,7 @@ private fun LearnMoreButton(
         contentPadding = PaddingValues(0.dp),
     ) {
         Text(
-            text = stringResource(R.string.learn_more),
+            text = text,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 12.sp,
         )
@@ -286,8 +279,6 @@ private fun TeamMemberCell(
     member: TeamMember,
     modifier: Modifier = Modifier,
 ) {
-    val nameWidth = with(LocalDensity.current) { 80.sp.toDp() }
-
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -319,7 +310,7 @@ private fun TeamMemberCell(
             modifier =
                 Modifier
                     .padding(vertical = 8.dp)
-                    .width(nameWidth),
+                    .width(TeamMemberPhotoSize),
             color = MaterialTheme.colorScheme.onSurface,
             fontSize = 12.sp,
             textAlign = TextAlign.Center,
@@ -349,6 +340,7 @@ private fun AboutScreenPreview() {
                 ),
             onBack = {},
             onLearnMoreClick = {},
+            onLicensesClick = {},
         )
     }
 }
