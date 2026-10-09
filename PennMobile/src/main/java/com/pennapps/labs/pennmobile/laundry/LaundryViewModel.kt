@@ -189,7 +189,7 @@ class LaundryViewModel : ViewModel() {
                         laundryRooms[hallName] = roomList
                     }
                 } else {
-                    Log.i("Laundry", "Failed to get laundry rooms")
+                    Log.i("Laundry", "Failed to get laundry rooms!")
                 }
 
                 _loadedRooms.postValue(true)
