@@ -29,7 +29,7 @@ android {
         release {}
     }
 
-    compileSdk = 35
+    compileSdk = 36
 
     composeOptions {
         // Matches Kotlin 1.9.24 defined in your libs.versions.toml
@@ -42,7 +42,7 @@ android {
 
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 35
+        targetSdkVersion 36
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled = true
         buildConfigField ("String", "PLATFORM_REDIRECT_URI", getPlatformRedirectUri())

@@ -20,6 +20,7 @@ import android.view.inputmethod.InputMethodManager
 import android.webkit.CookieManager
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -109,6 +110,8 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.setHomeButtonEnabled(false)
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
+
+        onBackPressedDispatcher.addCallback(this, backPressedCallback)
 
         val policy =
             StrictMode.ThreadPolicy
@@ -346,10 +349,19 @@ class MainActivity : AppCompatActivity() {
             .text = title
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        showBottomBar()
-    }
+    private val backPressedCallback =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (supportFragmentManager.backStackEntryCount > 0) {
+                    supportFragmentManager.popBackStack()
+                    showBottomBar()
+                } else {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                    isEnabled = true
+                }
+            }
+        }
 
     fun hideBottomBar() {
         binding.include.expandableBottomBar.visibility = View.GONE

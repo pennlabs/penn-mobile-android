@@ -90,7 +90,7 @@ class DiningSettingsFragment(
         toolbar.visibility = View.GONE
         when (item.itemId) {
             android.R.id.home -> {
-                mActivity.onBackPressed()
+                requireActivity().onBackPressedDispatcher.onBackPressed()
                 return true
             }
 
@@ -177,7 +177,7 @@ class DiningSettingsFragment(
 
                     if (response.isSuccessful) {
                         Log.i("Dining", "Dining preferences saved")
-                        mActivity.onBackPressed()
+                        requireActivity().onBackPressedDispatcher.onBackPressed()
                     } else {
                         val error = Exception(response.body()?.string() ?: "Unknown Error")
                         Log.e("Dining", "Error saving dining preferences: $error")
