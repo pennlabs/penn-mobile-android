@@ -22,6 +22,8 @@ import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.compose.presentation.theme.AppTheme
 import com.pennapps.labs.pennmobile.databinding.FragmentHomeBinding
+import com.pennapps.labs.pennmobile.games.compose.GamesEntryCard
+import com.pennapps.labs.pennmobile.games.fragments.GamesFragment
 import com.pennapps.labs.pennmobile.home.HomepageViewModel
 import com.pennapps.labs.pennmobile.home.adapters.HomeAdapter
 import com.pennapps.labs.pennmobile.isOnline
@@ -92,6 +94,17 @@ class HomeFragment : Fragment() {
             }
         }
 
+        binding.gamesEntry.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                AppTheme {
+                    GamesEntryCard(
+                        onClick = { openGames() },
+                    )
+                }
+            }
+        }
+
         binding.homeRefreshLayout
             .setColorSchemeResources(R.color.color_accent, R.color.color_primary)
         binding.homeRefreshLayout
@@ -129,6 +142,14 @@ class HomeFragment : Fragment() {
             StudentResourcesFragment(),
             false,
             backStackName = "student_resources",
+        )
+    }
+
+    private fun openGames() {
+        mActivity.fragmentTransact(
+            GamesFragment(),
+            false,
+            backStackName = "games",
         )
     }
 

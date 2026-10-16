@@ -122,11 +122,17 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/internetConnectionHome" />
 
+                <androidx.compose.ui.platform.ComposeView
+                    android:id="@+id/games_entry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/student_resources_entry" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/home_cells_rv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/student_resources_entry"
+                    android:layout_below="@id/games_entry"
                     android:scrollbars="none" />
 
             </RelativeLayout>
