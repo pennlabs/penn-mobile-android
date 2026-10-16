@@ -31,11 +31,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
 
-        <!--
-            WorkManager's default initializer runs before Application.onCreate and would install
-            the default WorkerFactory, so @HiltWorker workers could never be constructed. Remove
-            only its meta-data: emoji2 and ProcessLifecycle share this provider.
-        -->
+        <!-- Remove only WorkManager's initializer; PennMobile provides the HiltWorkerFactory -->
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
