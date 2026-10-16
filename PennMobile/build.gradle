@@ -29,7 +29,7 @@ android {
         release {}
     }
 
-    compileSdk = 35
+    compileSdk = 36
 
     composeOptions {
         // Matches Kotlin 1.9.24 defined in your libs.versions.toml
@@ -42,7 +42,7 @@ android {
 
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 35
+        targetSdkVersion 36
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled = true
         buildConfigField ("String", "PLATFORM_REDIRECT_URI", getPlatformRedirectUri())
@@ -80,6 +80,8 @@ dependencies {
 // If you want the foundation layout, use the bundle or the specific activity compose you have defined
     implementation libs.androidx.activity.compose
     implementation libs.androidx.material3.android
+    implementation libs.places
+    implementation libs.androidx.compose.ui.tooling.preview
 //    implementation libs.androidx.foundation.layout
 
     ktlintRuleset libs.ktlint
@@ -143,6 +145,7 @@ dependencies {
     implementation libs.bundles.ui
     implementation libs.bundles.google
     implementation libs.bundles.hilt
+    debugImplementation libs.androidx.compose.ui.tooling
 
     ksp libs.androidx.room.compiler
     ksp libs.dagger.hilt.compiler

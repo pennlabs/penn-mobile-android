@@ -6,8 +6,9 @@ import org.junit.Test
 import java.util.concurrent.TimeUnit
 
 /**
- * Asserts on the work request without a WorkManager instance, which keeps the scheduling contract
- * covered by a plain JVM test.
+ * WorkRequest construction is covered by this JVM test, and polling decisions are covered through
+ * use-case tests. Direct assisted-worker execution is not covered because the project currently
+ * lacks a Robolectric/WorkManager runtime and test WorkerFactory.
  */
 class LaundryPollRequestTest {
     @Test

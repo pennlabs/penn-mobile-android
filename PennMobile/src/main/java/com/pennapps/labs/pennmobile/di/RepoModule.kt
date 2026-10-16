@@ -36,7 +36,5 @@ abstract class RepoModule {
     abstract fun bindLaundryNotifier(androidLaundryNotifier: AndroidLaundryNotifier): LaundryNotifier
 
     @Binds
-    abstract fun bindLaundryMonitorScheduler(
-        scheduler: WorkManagerLaundryScheduler,
-    ): LaundryMonitorScheduler
+    abstract fun bindLaundryMonitorScheduler(scheduler: WorkManagerLaundryScheduler): LaundryMonitorScheduler
 }

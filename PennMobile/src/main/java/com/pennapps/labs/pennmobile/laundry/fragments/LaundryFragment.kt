@@ -66,10 +66,17 @@ class LaundryFragment : Fragment() {
 
     private val laundryMonitorViewModel: LaundryMonitorViewModel by viewModels()
 
-    // Runtime notification permission launcher
+    private var pendingMonitorMode: MonitorMode? = null
+
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-            if (!granted) {
+            val requestedMode = pendingMonitorMode
+            pendingMonitorMode = null
+
+            if (granted && requestedMode != null) {
+                laundryMonitorViewModel.onModeSelected(requestedMode)
+            } else if (!granted) {
+                laundryMonitorViewModel.onModeSelected(MonitorMode.OFF)
                 Toast.makeText(mContext, "We need notification permission to alert you", Toast.LENGTH_SHORT).show()
             }
         }
@@ -77,10 +84,19 @@ class LaundryFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        pendingMonitorMode =
+            savedInstanceState
+                ?.getString(KEY_PENDING_MONITOR_MODE)
+                ?.let(MonitorMode::fromPrefValue)
         mStudentLife = MainActivity.studentLifeInstance
         mActivity = activity as MainActivity
         mContext = mActivity
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        pendingMonitorMode?.let { outState.putString(KEY_PENDING_MONITOR_MODE, it.prefValue) }
+        super.onSaveInstanceState(outState)
     }
 
     override fun onCreateView(
@@ -103,11 +119,6 @@ class LaundryFragment : Fragment() {
         )
 
         return view
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // Resync
     }
 
     override fun onDestroyView() {
@@ -230,18 +241,26 @@ class LaundryFragment : Fragment() {
     }
 
     private fun onMonitoringModeSelected(mode: MonitorMode) {
-        if (mode != MonitorMode.OFF) {
-            requestNotificationPermission()
+        if (mode == MonitorMode.OFF) {
+            pendingMonitorMode = null
+            laundryMonitorViewModel.onModeSelected(mode)
+            return
         }
-        laundryMonitorViewModel.onModeSelected(mode)
-    }
 
-    private fun requestNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            ContextCompat.checkSelfPermission(mContext, Manifest.permission.POST_NOTIFICATIONS) !=
-            PackageManager.PERMISSION_GRANTED
-        ) {
+        if (hasNotificationPermission()) {
+            laundryMonitorViewModel.onModeSelected(mode)
+        } else {
+            pendingMonitorMode = mode
             notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
+    }
+
+    private fun hasNotificationPermission(): Boolean =
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+            ContextCompat.checkSelfPermission(mContext, Manifest.permission.POST_NOTIFICATIONS) ==
+            PackageManager.PERMISSION_GRANTED
+
+    private companion object {
+        const val KEY_PENDING_MONITOR_MODE = "pending_monitor_mode"
     }
 }

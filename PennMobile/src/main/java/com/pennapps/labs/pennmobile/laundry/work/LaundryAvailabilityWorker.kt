@@ -15,8 +15,9 @@ import dagger.assisted.AssistedInject
 /**
  * Runs one availability poll and translates the result into side effects.
  *
- * Deliberately thin: everything worth testing lives in [PollLaundryAvailabilityUseCase], which runs
- * on a plain JVM. A CoroutineWorker cannot be constructed outside an Android runtime.
+ * WorkRequest construction is covered by a JVM test, and polling decisions are covered through
+ * [PollLaundryAvailabilityUseCase] tests. Direct assisted-worker execution is not covered because
+ * the project currently lacks a Robolectric/WorkManager runtime and test WorkerFactory.
  */
 @HiltWorker
 class LaundryAvailabilityWorker
@@ -34,7 +35,7 @@ class LaundryAvailabilityWorker
             val startedAt = inputData.getLong(LaundryPollRequest.KEY_STARTED_AT, 0L)
 
             // Every path returns success: work appended to this one is marked failed otherwise.
-            return when (val outcome = pollAvailability(mode, startedAt, System.currentTimeMillis())) {
+            return when (pollAvailability(mode, startedAt, System.currentTimeMillis())) {
                 PollOutcome.Available -> {
                     notifier.notifyMonitoredMachineAvailable(mode.machineLabel)
                     stopMonitoring()

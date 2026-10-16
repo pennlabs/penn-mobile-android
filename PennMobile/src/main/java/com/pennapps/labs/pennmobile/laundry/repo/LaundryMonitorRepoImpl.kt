@@ -13,6 +13,15 @@ import java.io.IOException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
+private const val COULD_NOT_LOAD_ROOMS = "Could not load your favourite laundry rooms."
+
+internal fun summarizeRoomAvailability(roomResults: List<Result<Boolean>>): Result<Boolean> =
+    when {
+        roomResults.any { it is Result.Success && it.data } -> Result.Success(true)
+        roomResults.isEmpty() || roomResults.any { it is Result.Success } -> Result.Success(false)
+        else -> Result.Error(COULD_NOT_LOAD_ROOMS)
+    }
+
 class LaundryMonitorRepoImpl
     @Inject
     constructor(
@@ -43,11 +52,11 @@ class LaundryMonitorRepoImpl
 
                 val prefResponse = studentLife.getLaundryPref("Bearer $accessToken")
                 if (!prefResponse.isSuccessful) {
-                    return Result.Error("Could not load your favourite laundry rooms.")
+                    return Result.Error(COULD_NOT_LOAD_ROOMS)
                 }
                 val roomIds = prefResponse.body()?.rooms.orEmpty()
 
-                Result.Success(roomIds.any { hasOpenMachine(it, mode) })
+                summarizeRoomAvailability(roomIds.map { getRoomAvailability(it, mode) })
             } catch (httpException: HttpException) {
                 if (httpException.code() == 403) {
                     Result.Error(LOG_IN_TO_MONITOR)
@@ -69,22 +78,22 @@ class LaundryMonitorRepoImpl
             }
         }
 
-        /**
-         * One room failing should not hide a free machine in another, so this swallows per-room
-         * errors. A failure that affects every room surfaces from [isMachineAvailable] instead.
-         */
-        private suspend fun hasOpenMachine(
+        private suspend fun getRoomAvailability(
             roomId: Int,
             mode: MonitorMode,
-        ): Boolean =
+        ): Result<Boolean> =
             try {
                 val roomResponse = studentLife.room(roomId)
-                val machines = roomResponse.body()?.machines
-                val machineList = if (mode == MonitorMode.WASHERS) machines?.washers else machines?.dryers
-                roomResponse.isSuccessful && (machineList?.open ?: 0) > 0
+                if (roomResponse.isSuccessful) {
+                    val machines = roomResponse.body()?.machines
+                    val machineList = if (mode == MonitorMode.WASHERS) machines?.washers else machines?.dryers
+                    Result.Success((machineList?.open ?: 0) > 0)
+                } else {
+                    Result.Error(COULD_NOT_LOAD_ROOMS)
+                }
             } catch (e: Exception) {
                 Log.e(TAG, "Could not load laundry room $roomId.", e)
-                false
+                Result.Error(COULD_NOT_LOAD_ROOMS, e)
             }
 
         companion object {
