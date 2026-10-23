@@ -25,12 +25,8 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class BookGsrFragment : Fragment() {
-    // Making this public allows the _binding backing property pattern to pass ktlint
     private var _binding: GsrDetailsBookBinding? = null
     val binding get() = _binding!!
-
-    // By removing the _viewModel / viewModel pair and using a single internal
-    // variable, we avoid the ktlint naming error while keeping manual init.
     private lateinit var viewModel: BookGsrViewModel
     private lateinit var mActivity: MainActivity
 

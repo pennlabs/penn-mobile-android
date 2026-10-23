@@ -46,6 +46,7 @@ lifecycleViewmodelCompose = "2.8.7"
 loggingInterceptor = "5.0.0-alpha.11"
 lottie = "5.2.0"
 material = "1.6.1"
+mockk = "1.13.13"
 mpandroidchart = "v3.1.0"
 multidex = "2.0.1"
 okhttp = "2.7.5"
@@ -130,12 +131,14 @@ jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 junit = { module = "junit:junit", version.ref = "junitVersion" }
 kaspresso = { module = "com.kaspersky.android-components:kaspresso", version.ref = "kaspresso" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesCore" }
 ktlint = { module = "io.nlopez.compose.rules:ktlint", version.ref = "ktlintVersion" }
 leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanaryAndroid" }
 library = { module = "com.daimajia.swipelayout:library", version.ref = "library" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
 lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
 okhttp = { module = "com.squareup.okhttp:okhttp", version.ref = "okhttp" }
 picasso = { module = "com.squareup.picasso:picasso", version.ref = "picasso" }

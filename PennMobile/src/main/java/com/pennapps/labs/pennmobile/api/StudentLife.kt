@@ -120,6 +120,15 @@ interface StudentLife {
         @Query("start") date: String?,
     ): Observable<GSR?>
 
+    @GET("gsr/availability/{id}/{gid}")
+    suspend fun getGsrAvailability(
+        @Header("Authorization") bearerToken: String,
+        @Path("id") lid: String,
+        @Path("gid") gid: Int,
+        @Query("start") start: String,
+        @Query("end") end: String?,
+    ): Response<GSR>
+
     @GET("gsr/wharton")
     fun isWharton(
         @Header("Authorization") bearerToken: String?,
@@ -193,6 +202,11 @@ interface StudentLife {
     fun location(
         @Header("Authorization") bearerToken: String?,
     ): Observable<List<GSRLocation?>?>
+
+    @GET("gsr/user-locations")
+    suspend fun getGsrLocations(
+        @Header("Authorization") bearerToken: String,
+    ): Response<List<GSRLocation>>
 
     @GET("events/fling")
     fun getFlingEvents(): Observable<List<FlingEvent?>?>

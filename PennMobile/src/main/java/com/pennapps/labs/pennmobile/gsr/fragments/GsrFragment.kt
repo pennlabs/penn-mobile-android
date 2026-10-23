@@ -336,7 +336,6 @@ class GsrFragment : Fragment() {
             val bearerToken =
                 sharedPreferences.getString(getString(R.string.access_token), "").toString()
 
-            Log.i("GsrFragment", "Bearer Token: $bearerToken")
             Log.i("GsrFragment", "Wharton Status: $isWharton")
 
             try {
