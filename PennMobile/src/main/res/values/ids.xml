@@ -6,5 +6,9 @@
     <item name="icon_bookmarks" type="id" />
     <item name="icon_settings" type="id" />
     <item name="mainLayout" type="id"/>
+    <item name="nav_news" type="id" />
+    <item name="nav_fitness" type="id" />
+    <item name="nav_contacts" type="id" />
+    <item name="nav_about" type="id" />
     <item name="bottomBarLayout" type="id"/>
 </resources>

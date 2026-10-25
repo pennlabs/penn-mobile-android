@@ -194,6 +194,13 @@
     <string name="pennkey_login">LOG IN WITH PENNKEY</string>
     <string name="guest_login">CONTINUE AS GUEST</string>
 
+    <!-- Dynamic home bar -->
+    <string name="penn_contacts">Penn Contacts</string>
+    <string name="home_bar_customization">Customization</string>
+    <string name="home_bar_tabs">Home bar tabs</string>
+    <string name="home_bar_tabs_dialog">Pick any 3 tabs. Home and More are always included.</string>
+    <string name="home_bar_too_many">You can pick any 3 tabs.</string>
+
     <!-- Login -->
     <string name="login_sessionID">loginSessionID</string>
     <string name="access_token">accessToken</string>
