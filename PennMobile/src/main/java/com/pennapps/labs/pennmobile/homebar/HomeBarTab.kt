@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:kdoc")
+
 package com.pennapps.labs.pennmobile.homebar
 
 import android.os.Bundle
@@ -99,8 +101,7 @@ enum class HomeBarTab(
         R.drawable.ic_bottom_nav_more_grey,
         R.drawable.ic_bottom_nav_more_grey,
         createFragment = ::MoreFragment,
-    ),
-    ;
+    ), ;
 
     /** Home and More are fixed. */
     val isPinned: Boolean get() = this == HOME || this == MORE
@@ -116,17 +117,20 @@ enum class HomeBarTab(
 
     companion object {
         const val ARG_IS_HOME_BAR_TAB = "is_home_bar_tab"
-        const val MAX_PICKS = 3
+        const val CUSTOM_COUNT = 3
         val DEFAULT_PICKS = setOf(DINING, GSR, LAUNDRY)
 
-        /** Home, 3 user-chosen tabs, then More. */
-        fun barFor(picks: Set<HomeBarTab>): List<HomeBarTab> =
-            listOf(HOME) +
-                entries.filter { it in picks && it.canBeInBar && !it.isPinned }.take(MAX_PICKS) +
-                MORE
+        /** Home, 3 user-chosen tabs, then More (ordered). */
+        fun barFor(picks: Set<HomeBarTab>): List<HomeBarTab> {
+            val chosen = entries.filter { it in picks && it.canBeInBar && !it.isPinned }
+            val middle =
+                if (chosen.size == CUSTOM_COUNT) chosen else entries.filter { it in DEFAULT_PICKS }
+            return listOf(HOME) + middle + MORE
+        }
     }
 }
 
-/** True when this fragment is showing as a tab in the home bar. */
+/** Tabs can be opened 2 ways: via home bar or from More tab (keep back arrow & hide bar)
+ Fragment is tab in home bar. */
 val Fragment.isHomeBarTab: Boolean
     get() = arguments?.getBoolean(HomeBarTab.ARG_IS_HOME_BAR_TAB) == true

@@ -199,7 +199,7 @@
     <string name="home_bar_customization">Customization</string>
     <string name="home_bar_tabs">Home bar tabs</string>
     <string name="home_bar_tabs_dialog">Pick any 3 tabs. Home and More are always included.</string>
-    <string name="home_bar_too_many">You can pick any 3 tabs.</string>
+    <string name="home_bar_too_many">Pick exactly 3 tabs.</string>
 
     <!-- Login -->
     <string name="login_sessionID">loginSessionID</string>
