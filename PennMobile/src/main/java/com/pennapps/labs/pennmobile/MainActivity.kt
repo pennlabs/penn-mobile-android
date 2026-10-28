@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.os.StrictMode
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -57,6 +58,8 @@ import com.pennapps.labs.pennmobile.gsr.classes.GSRLocation
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
 import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import com.pennapps.labs.pennmobile.home.classes.Post
+import com.pennapps.labs.pennmobile.homebar.HomeBarTab
+import com.pennapps.labs.pennmobile.homebar.repo.HomeBarRepo
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryRoom
 import com.pennapps.labs.pennmobile.more.classes.Contact
 import com.pennapps.labs.pennmobile.more.fragments.SaveContactsFragment
@@ -83,6 +86,12 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var mNetworkManager: OAuth2NetworkManager
+
+    @Inject
+    lateinit var homeBarRepo: HomeBarRepo
+
+    private var homeBarTabs: List<HomeBarTab> = emptyList()
+    private var mainPagerAdapter: MainPagerAdapter? = null
 
     val tokenMutex = Mutex()
     private lateinit var mFirebaseAnalytics: FirebaseAnalytics
@@ -121,6 +130,7 @@ class MainActivity : AppCompatActivity() {
         StrictMode.setThreadPolicy(policy)
 
         onExpandableBottomNavigationItemSelected()
+        applyHomeBarTabs(homeBarRepo.tabs.value)
         showBottomBar()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
@@ -138,6 +148,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         setUpAuthStateListener()
+        setUpHomeBarListener()
 
         val diningWidgetBroadCast = intent?.getIntExtra("Widget_Tab_Switch", -1) ?: -1
         if (diningWidgetBroadCast != -1) {
@@ -172,6 +183,34 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /** Rebuilds the home bar whenever the user changes their tabs. */
+    private fun setUpHomeBarListener() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                homeBarRepo.tabs.collect { applyHomeBarTabs(it) }
+            }
+        }
+    }
+
+    /** Builds the bar's buttons and pages from [tabs], staying on the current tab if it's still there. */
+    private fun applyHomeBarTabs(tabs: List<HomeBarTab>) {
+        if (tabs == homeBarTabs) return
+        val currentTab = homeBarTabs.getOrNull(binding.include.mainViewPager.currentItem)
+        homeBarTabs = tabs
+
+        val menu = binding.include.expandableBottomBar.menu
+        menu.clear()
+        tabs.forEachIndexed { index, tab ->
+            menu.add(Menu.NONE, tab.menuId, index, tab.titleRes).setIcon(tab.iconRes)
+        }
+
+        // Pages don't exist yet while on the login screen
+        val adapter = mainPagerAdapter ?: return
+        adapter.tabs = tabs
+        val tabToShow = currentTab?.takeIf { it in tabs } ?: HomeBarTab.HOME
+        binding.include.expandableBottomBar.selectedItemId = tabToShow.menuId
+    }
+
     private fun onExpandableBottomNavigationItemSelected() {
         binding.include.expandableBottomBar.setOnNavigationItemSelectedListener { item ->
             // Only pop the UA fragment if it's on the back stack — leaves other
@@ -181,15 +220,8 @@ class MainActivity : AppCompatActivity() {
                 FragmentManager.POP_BACK_STACK_INCLUSIVE,
             )
 
-            val position =
-                when (item.itemId) {
-                    R.id.nav_home -> MainPagerAdapter.HOME_POSITION
-                    R.id.nav_dining -> MainPagerAdapter.DINING_POSITION
-                    R.id.nav_gsr -> MainPagerAdapter.GSR_POSITION
-                    R.id.nav_laundry -> MainPagerAdapter.LAUNDRY_POSITION
-                    R.id.nav_more -> MainPagerAdapter.MORE_POSITION
-                    else -> MainPagerAdapter.HOME_POSITION
-                }
+            val position = homeBarTabs.indexOfFirst { it.menuId == item.itemId }
+            if (position == -1) return@setOnNavigationItemSelectedListener false
             binding.include.mainViewPager.setCurrentItem(position, false)
             true
         }
@@ -228,9 +260,10 @@ class MainActivity : AppCompatActivity() {
                 fragmentManager.beginTransaction().remove(fragment).commit()
             }
         }
-        val mainPagerAdapter = MainPagerAdapter(fragmentManager, lifecycle)
+        val adapter = MainPagerAdapter(fragmentManager, lifecycle).apply { tabs = homeBarTabs }
+        mainPagerAdapter = adapter
         binding.include.mainViewPager.isSaveEnabled = false
-        binding.include.mainViewPager.adapter = mainPagerAdapter
+        binding.include.mainViewPager.adapter = adapter
         binding.include.mainViewPager.isUserInputEnabled = false
         binding.include.mainViewPager.offscreenPageLimit = 5
         binding.include.mainViewPager.visibility = View.VISIBLE
