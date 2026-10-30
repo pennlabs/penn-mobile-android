@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile.dining.composables.components
 import GilroyBold
 import GilroyLight
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -63,8 +64,11 @@ val diningGrey: ComposeColor = ComposeColor("#F5F5F5".toColorInt())
 fun DiningPredictionCard(
     cell: DiningInsightCell,
     showPranks: Boolean,
+    plannedPerWeek: Double? = null,
     modifier: Modifier = Modifier,
 ) {
+    Log.d("Budget", "${cell.type} plannedPerWeek: $plannedPerWeek")
+
     val context: Context = LocalContext.current
     var selectedInfo by remember { mutableStateOf<String?>(null) }
     var chartInstance by remember { mutableStateOf<LineChart?>(null) }
@@ -144,6 +148,15 @@ fun DiningPredictionCard(
             } else {
                 emptyList()
             }
+        } else if (plannedPerWeek != null && entries.isNotEmpty()) {
+            // User's budget plan: spend plannedPerWeek starting from today's balance
+            val last = entries.last()
+            val slope = -plannedPerWeek.toFloat() / 7f
+            val intercept = last.y - slope * last.x
+            val endX = ((endDate.time - startDate.time) / (1000 * 60 * 60 * 24)).toInt()
+            (last.x.toInt()..endX).map { day ->
+                Entry(day.toFloat(), (slope * day + intercept).coerceAtLeast(0f))
+            }
         } else if (entries.size >= 2) {
             val first = entries.first()
             val last = entries.last()
@@ -171,6 +184,12 @@ fun DiningPredictionCard(
     val predictedEndBalance: Float? =
         if (showPranks) {
             0f
+        } else if (plannedPerWeek != null && entries.isNotEmpty()) {
+            val last = entries.last()
+            val slope = -plannedPerWeek.toFloat() / 7f
+            val intercept = last.y - slope * last.x
+            val endX = ((endDate.time - startDate.time) / (1000 * 60 * 60 * 24)).toFloat()
+            slope * endX + intercept
         } else if (entries.size >= 2) {
             val first = entries.first()
             val last = entries.last()

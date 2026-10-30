@@ -15,15 +15,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.pennapps.labs.pennmobile.compose.presentation.components.error.ErrorCard
 import com.pennapps.labs.pennmobile.compose.presentation.components.error.UserDisplayErrors
+import com.pennapps.labs.pennmobile.dining.adapters.DiningInsightsCardAdapter.Companion.DAYS_IN_SEMESTER
+import com.pennapps.labs.pennmobile.dining.adapters.DiningInsightsCardAdapter.Companion.START_DAY_OF_SEMESTER
 import com.pennapps.labs.pennmobile.dining.composables.components.AprilFoolsCard
+import com.pennapps.labs.pennmobile.dining.composables.components.BudgetPlanCard
 import com.pennapps.labs.pennmobile.dining.composables.components.DiningBalancesCard
+import com.pennapps.labs.pennmobile.dining.composables.components.DiningBudgetingCard
 import com.pennapps.labs.pennmobile.dining.composables.components.DiningPredictionCard
 import com.pennapps.labs.pennmobile.dining.viewmodels.DiningInsightsViewModel
 import com.pennapps.labs.pennmobile.ui.theme.PennMobileTheme
@@ -46,7 +53,7 @@ fun DiningInsightsScreen(
     val currentOnLoginRequirement by rememberUpdatedState(onLoginRequirement)
 
     val showPranks by viewModel.showAprilPranks.collectAsState()
-
+    val budget by viewModel.budget.collectAsStateWithLifecycle()
     PennMobileTheme {
         LaunchedEffect(Unit) {
             viewModel.checkTokenAndFetch()
@@ -61,6 +68,8 @@ fun DiningInsightsScreen(
 
         val cells by viewModel.cells.collectAsState()
         val pastBalances by viewModel.pastBalances.collectAsState()
+        val plannedSwipes by viewModel.plannedSwipesPerWeek.collectAsState()
+        val plannedDollars by viewModel.plannedDollarsPerWeek.collectAsState()
 
         LazyColumn(
             modifier =
@@ -88,6 +97,8 @@ fun DiningInsightsScreen(
 
             // Dining Balance cards
             items(cells.filter { it.type == "dining_balance" }) { cell ->
+                val balances = cell.diningBalances
+
                 val diningDollars =
                     cell.diningBalances?.diningDollars?.let { dollars ->
                         "$${if (showPranks) "-" else ""}$dollars"
@@ -107,6 +118,41 @@ fun DiningInsightsScreen(
                     diningDollars = diningDollars,
                     swipes = regularVisits,
                     guestSwipes = guestVisits,
+                    modifier = Modifier.padding(bottom = 12.dp),
+                )
+
+                budget?.let {
+                    Text(
+                        text = "Dining Budgeting",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 8.dp),
+                    )
+
+                    Text(
+                        text = "Weeks Left:" + viewModel.weeksLeft,
+                        fontFamily = GilroyExtraBold,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+
+                    DiningBudgetingCard(
+                        diningDollars = "$%.2f".format(it.dollarsPerWeek),
+                        swipes = it.swipesPerWeek,
+                        modifier = Modifier.padding(bottom = 12.dp),
+                    )
+                }
+
+                Text(
+                    text = "Want to Spend",
+                    fontFamily = GilroyExtraBold,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+
+                BudgetPlanCard(
+                    maxDollars = balances?.diningDollars?.toString()?.toDoubleOrNull() ?: 0.0,
+                    maxSwipes = balances?.regularVisits ?: 0,
+                    onDollarsChange = { viewModel.setPlannedDollars(it) },
+                    onSwipesChange = { viewModel.setPlannedSwipes(it?.toInt()) },
                     modifier = Modifier.padding(bottom = 12.dp),
                 )
             }
@@ -160,6 +206,7 @@ fun DiningInsightsScreen(
                             cell = cell,
                             modifier = Modifier.padding(bottom = 12.dp),
                             showPranks = showPranks,
+                            plannedPerWeek = plannedDollars,
                         )
                     }
 
@@ -178,6 +225,7 @@ fun DiningInsightsScreen(
                         DiningPredictionCard(
                             cell = cell,
                             showPranks = showPranks,
+                            plannedPerWeek = plannedSwipes?.toDouble(),
                         )
                     }
                 }

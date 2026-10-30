@@ -75,6 +75,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 // If you want the foundation layout, use the bundle or the specific activity compose you have defined
     implementation libs.androidx.activity.compose
+    implementation libs.androidx.compose.material3
     implementation libs.androidx.material3.android
     implementation libs.places
     implementation libs.androidx.compose.ui.tooling.preview
