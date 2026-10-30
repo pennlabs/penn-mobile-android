@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile.gsr.domain
 
-import android.util.Log
 import com.pennapps.labs.pennmobile.gsr.domain.model.GsrBookingOption
 import com.pennapps.labs.pennmobile.gsr.domain.model.GsrLocation
 import com.pennapps.labs.pennmobile.gsr.domain.model.GsrRoom
@@ -12,8 +11,6 @@ import java.time.ZonedDateTime
 import javax.inject.Inject
 
 val PENN_ZONE: ZoneId = ZoneId.of("America/New_York")
-
-private const val GENERIC_FAILURE = "Couldn't load rooms. Please try again."
 
 /**
  * Finds every room that is free for the whole window starting at [from], earliest first.
@@ -50,15 +47,8 @@ class FindAvailableGsrs
                 if (options.isEmpty()) GsrSearchResult.NoneAvailable else GsrSearchResult.Found(options)
             } catch (e: CancellationException) {
                 throw e
-            } catch (e: GsrNotLoggedInException) {
-                GsrSearchResult.NotLoggedIn
-            } catch (e: GsrOfflineException) {
-                GsrSearchResult.Offline
-            } catch (e: GsrApiException) {
-                GsrSearchResult.Failed(e.message ?: GENERIC_FAILURE)
             } catch (e: Exception) {
-                Log.e("FindAvailableGsrs", "Unexpected availability failure", e)
-                GsrSearchResult.Failed(GENERIC_FAILURE)
+                e.toGsrFailure()
             }
         }
     }
