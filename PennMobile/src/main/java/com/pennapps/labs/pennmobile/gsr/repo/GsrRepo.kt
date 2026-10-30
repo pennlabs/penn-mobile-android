@@ -8,6 +8,11 @@ import java.time.LocalDate
 interface GsrRepo {
     fun getSavedUserInfo(): Triple<String, String, String>
 
+    /** `"$lid|$gid"` of the location last chosen on the search screen, or null if none yet. */
+    fun lastLocationKey(): String?
+
+    fun saveLastLocation(location: GsrLocation)
+
     /** Locations the signed-in user may book; the backend already filters Wharton/SEAS access. */
     suspend fun getLocations(): List<GsrLocation>
 

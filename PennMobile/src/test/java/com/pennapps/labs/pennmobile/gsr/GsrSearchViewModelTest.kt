@@ -1,0 +1,234 @@
+package com.pennapps.labs.pennmobile.gsr
+
+import android.util.Log
+import com.pennapps.labs.pennmobile.gsr.domain.FindAvailableGsrs
+import com.pennapps.labs.pennmobile.gsr.domain.GsrApiException
+import com.pennapps.labs.pennmobile.gsr.domain.GsrNotLoggedInException
+import com.pennapps.labs.pennmobile.gsr.domain.GsrOfflineException
+import com.pennapps.labs.pennmobile.gsr.domain.GsrSearchResult
+import com.pennapps.labs.pennmobile.gsr.domain.PENN_ZONE
+import com.pennapps.labs.pennmobile.gsr.presentation.search.GsrContent
+import com.pennapps.labs.pennmobile.gsr.presentation.search.GsrSearchViewModel
+import io.mockk.every
+import io.mockk.mockkStatic
+import io.mockk.unmockkStatic
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
+import org.junit.Before
+import org.junit.Test
+import java.time.Clock
+import java.time.LocalTime
+
+@OptIn(ExperimentalCoroutinesApi::class)
+class GsrSearchViewModelTest {
+    private val dispatcher = StandardTestDispatcher()
+    private val locations = listOf(VP_GROUND_FLOOR, HUNTSMAN, BIOTECH, AMY_GUTMANN)
+
+    @Before
+    fun setUp() {
+        Dispatchers.setMain(dispatcher)
+        mockkStatic(Log::class)
+        every { Log.e(any(), any(), any()) } returns 0
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+        unmockkStatic(Log::class)
+    }
+
+    /** 1:00 PM on [DAY] in Philadelphia. */
+    private fun TestScope.viewModel(repo: FakeGsrRepo): GsrSearchViewModel {
+        val clock = Clock.fixed(at("13:00").toInstant(), PENN_ZONE)
+        return GsrSearchViewModel(repo, FindAvailableGsrs(repo), clock).also { advanceUntilIdle() }
+    }
+
+    private fun GsrSearchViewModel.result() = (uiState.value.content as GsrContent.Loaded).result
+
+    @Test
+    fun `starts on today at the current minute and sorts by time`() =
+        runTest(dispatcher) {
+            val state = viewModel(FakeGsrRepo(locations = locations)).uiState.value
+
+            assertEquals(DAY, state.date)
+            assertEquals(LocalTime.of(13, 0), state.startTime)
+            assertTrue(state.sortByTime)
+        }
+
+    @Test
+    fun `the last chosen location is restored`() =
+        runTest(dispatcher) {
+            val repo = FakeGsrRepo(locations = locations, savedLocationKey = BIOTECH.key)
+
+            val vm = viewModel(repo)
+
+            assertEquals(BIOTECH, vm.uiState.value.selectedLocation)
+            assertEquals(BIOTECH, repo.availabilityRequests.single().first)
+        }
+
+    @Test
+    fun `a saved location the user can no longer book falls back to the first`() =
+        runTest(dispatcher) {
+            val vm = viewModel(FakeGsrRepo(locations = locations, savedLocationKey = "GONE|0"))
+
+            assertEquals(VP_GROUND_FLOOR, vm.uiState.value.selectedLocation)
+        }
+
+    @Test
+    fun `choosing a location saves it and searches there`() =
+        runTest(dispatcher) {
+            val repo = FakeGsrRepo(locations = locations)
+            val vm = viewModel(repo)
+
+            vm.selectLocation(HUNTSMAN)
+            advanceUntilIdle()
+
+            assertEquals(HUNTSMAN.key, repo.savedLocationKey)
+            assertEquals(HUNTSMAN, repo.availabilityRequests.last().first)
+        }
+
+    @Test
+    fun `switching to a location with a lower limit shortens the duration`() =
+        runTest(dispatcher) {
+            val vm = viewModel(FakeGsrRepo(locations = locations, savedLocationKey = BIOTECH.key))
+            vm.selectDuration(180)
+            advanceUntilIdle()
+
+            vm.selectLocation(HUNTSMAN)
+            advanceUntilIdle()
+
+            assertEquals(90, vm.uiState.value.durationMinutes)
+            assertEquals(listOf(30, 60, 90), vm.uiState.value.durationOptions)
+        }
+
+    @Test
+    fun `failing to load locations shows why`() =
+        runTest(dispatcher) {
+            fun resultFor(error: Exception) = viewModel(FakeGsrRepo(locationsError = error)).result()
+
+            assertEquals(GsrSearchResult.NotLoggedIn, resultFor(GsrNotLoggedInException()))
+            assertEquals(GsrSearchResult.Offline, resultFor(GsrOfflineException()))
+            assertEquals(GsrSearchResult.Failed("Wharton: down"), resultFor(GsrApiException("Wharton: down")))
+        }
+
+    @Test
+    fun `an account with no locations gets an explanation`() =
+        runTest(dispatcher) {
+            val result = viewModel(FakeGsrRepo(locations = emptyList())).result()
+
+            assertTrue(result is GsrSearchResult.Failed)
+        }
+
+    @Test
+    fun `search results and failures reach the screen`() =
+        runTest(dispatcher) {
+            val repo = FakeGsrRepo(locations = locations, rooms = listOf(room("L15", slot("14:00"))))
+            val vm = viewModel(repo)
+            assertTrue(vm.result() is GsrSearchResult.Found)
+            assertEquals(listOf("L15"), (vm.uiState.value.content as GsrContent.Loaded).rooms.map { it.roomName })
+
+            vm.selectDuration(60)
+            advanceUntilIdle()
+            assertEquals(GsrSearchResult.NoneAvailable, vm.result())
+
+            repo.availabilityError = GsrOfflineException()
+            vm.refresh()
+            advanceUntilIdle()
+            assertEquals(GsrSearchResult.Offline, vm.result())
+        }
+
+    @Test
+    fun `changing the sort reorders without another request`() =
+        runTest(dispatcher) {
+            val repo = FakeGsrRepo(locations = locations, rooms = listOf(room("103A", slot("16:00")), room("F66", slot("14:00"))))
+            val vm = viewModel(repo)
+
+            fun names() = (vm.uiState.value.content as GsrContent.Loaded).rooms.map { it.roomName }
+            assertEquals(listOf("F66", "103A"), names())
+
+            vm.setSortByTime(false)
+
+            assertEquals(listOf("103A", "F66"), names())
+            assertEquals(1, repo.availabilityRequests.size)
+        }
+
+    @Test
+    fun `refresh searches again and clears the refreshing flag`() =
+        runTest(dispatcher) {
+            val repo = FakeGsrRepo(locations = locations)
+            val vm = viewModel(repo)
+            val pending = CompletableDeferred<Unit>()
+            repo.availabilityGates.add(pending)
+
+            vm.refresh()
+            advanceUntilIdle()
+            assertTrue(vm.uiState.value.isRefreshing)
+            assertTrue("pull-to-refresh keeps old results visible", vm.uiState.value.content is GsrContent.Loaded)
+
+            pending.complete(Unit)
+            advanceUntilIdle()
+
+            assertEquals(2, repo.availabilityRequests.size)
+            assertFalse(vm.uiState.value.isRefreshing)
+        }
+
+    @Test
+    fun `refresh after locations failed reloads them`() =
+        runTest(dispatcher) {
+            val repo = FakeGsrRepo(locations = locations, locationsError = GsrOfflineException())
+            val vm = viewModel(repo)
+            assertEquals(GsrSearchResult.Offline, vm.result())
+
+            repo.locationsError = null
+            vm.refresh()
+            advanceUntilIdle()
+
+            assertEquals(2, repo.locationRequests)
+            assertEquals(VP_GROUND_FLOOR, vm.uiState.value.selectedLocation)
+        }
+
+    @Test
+    fun `a newer search wins even if the older one finishes last`() =
+        runTest(dispatcher) {
+            val older = CompletableDeferred<Unit>()
+            val newer = CompletableDeferred<Unit>()
+            // 30 minutes finds L15; 60 minutes finds nothing.
+            val repo = FakeGsrRepo(locations = locations, rooms = listOf(room("L15", slot("14:00"))))
+            repo.availabilityGates.addAll(listOf(older, newer))
+
+            val vm = viewModel(repo)
+            vm.selectDuration(60)
+            advanceUntilIdle()
+
+            newer.complete(Unit)
+            advanceUntilIdle()
+            older.complete(Unit)
+            advanceUntilIdle()
+
+            assertEquals(GsrSearchResult.NoneAvailable, vm.result())
+        }
+
+    @Test
+    fun `dates stay within the location's bookable days`() =
+        runTest(dispatcher) {
+            val vm = viewModel(FakeGsrRepo(locations = locations))
+            assertEquals(DAY.plusDays(6), vm.uiState.value.lastBookableDate)
+
+            vm.selectDate(DAY.plusDays(30))
+            assertEquals(DAY.plusDays(6), vm.uiState.value.date)
+
+            vm.selectDate(DAY.minusDays(3))
+            assertEquals(DAY, vm.uiState.value.date)
+        }
+}
