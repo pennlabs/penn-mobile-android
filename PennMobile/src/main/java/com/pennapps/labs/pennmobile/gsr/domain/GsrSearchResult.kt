@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.gsr.domain
 
+import android.util.Log
 import com.pennapps.labs.pennmobile.gsr.domain.model.GsrBookingOption
 import com.pennapps.labs.pennmobile.gsr.domain.model.GsrLocation
 
@@ -32,3 +33,18 @@ sealed interface GsrSearchResult {
         val reason: String,
     ) : GsrSearchResult
 }
+
+private const val GENERIC_FAILURE = "Couldn't load rooms. Please try again."
+
+/**
+ * Maps a GSR repository failure to the result users see, so loading locations and searching
+ * report "not logged in", "offline" and backend errors identically. Callers must rethrow
+ * [kotlinx.coroutines.CancellationException] before calling this.
+ */
+fun Throwable.toGsrFailure(): GsrSearchResult =
+    when (this) {
+        is GsrNotLoggedInException -> GsrSearchResult.NotLoggedIn
+        is GsrOfflineException -> GsrSearchResult.Offline
+        is GsrApiException -> GsrSearchResult.Failed(message ?: GENERIC_FAILURE)
+        else -> GsrSearchResult.Failed(GENERIC_FAILURE).also { Log.e("GsrSearchResult", "Unexpected GSR failure", this) }
+    }
