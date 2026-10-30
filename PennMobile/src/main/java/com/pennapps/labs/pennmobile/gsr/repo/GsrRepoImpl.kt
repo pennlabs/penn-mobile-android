@@ -21,6 +21,8 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
+private const val LAST_LOCATION_KEY = "gsr_last_location"
+
 class GsrRepoImpl
     @Inject
     constructor(
@@ -34,6 +36,12 @@ class GsrRepoImpl
             val lastName = sharedPreferences.getString(context.getString(R.string.last_name), "") ?: ""
             val email = sharedPreferences.getString(context.getString(R.string.email_address), "") ?: ""
             return Triple(firstName, lastName, email)
+        }
+
+        override fun lastLocationKey(): String? = sharedPreferences.getString(LAST_LOCATION_KEY, null)
+
+        override fun saveLastLocation(location: GsrLocation) {
+            sharedPreferences.edit().putString(LAST_LOCATION_KEY, location.key).apply()
         }
 
         override suspend fun getLocations(): List<GsrLocation> {

@@ -15,6 +15,7 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import java.time.Clock
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -52,6 +53,10 @@ object AppModule {
     @Provides
     @AppScope
     fun providesAppCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+
+    /** Lets time-dependent ViewModels be tested with a fixed clock. */
+    @Provides
+    fun providesClock(): Clock = Clock.systemDefaultZone()
 
     /**
      * Provides the app-wide Coil [ImageLoader], with GIF decoding enabled.

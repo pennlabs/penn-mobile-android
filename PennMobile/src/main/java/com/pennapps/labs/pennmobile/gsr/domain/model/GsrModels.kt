@@ -14,6 +14,9 @@ data class GsrLocation(
     val bookableDays: Int,
 ) {
     enum class Kind { WHARTON, LIBCAL, PENNGRP, UNKNOWN }
+
+    /** Stable identity for saving the user's choice; [lid] alone is shared by some buildings. */
+    val key: String get() = "$lid|$gid"
 }
 
 data class GsrRoom(
