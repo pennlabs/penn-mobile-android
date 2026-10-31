@@ -1,29 +1,20 @@
 package com.pennapps.labs.pennmobile.gsr.widget
 
 import android.appwidget.AppWidgetManager
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.registerReceiver
 import androidx.preference.PreferenceManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.GsrReservationsRequest
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
-import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget.Companion.UPDATE_GSR_WIDGET
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
-import rx.Observable
-import rx.schedulers.Schedulers
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -42,49 +33,21 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
             )
         private var dataSet: List<GSRReservation> = emptyList()
         private var sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        private val gsrReservationWidgetReceiver = GsrReservationWidgetReceiver()
-
-        inner class GsrReservationWidgetReceiver : BroadcastReceiver() {
-            override fun onReceive(
-                context: Context?,
-                intent: Intent?,
-            ) {
-                if (intent?.action == UPDATE_GSR_WIDGET) {
-                    getWidgetGsrReservations()
-                    onDataSetChanged()
-                }
-            }
-        }
 
         override fun onCreate() {
-            // Register BroadcastReceiver
-            registerReceiver(
-                context,
-                gsrReservationWidgetReceiver,
-                IntentFilter(UPDATE_GSR_WIDGET),
-                ContextCompat.RECEIVER_EXPORTED,
-            )
-
             mGsrReservationsRequest = GsrReservationWidget.gsrReservationsRequestInstance
-            getWidgetGsrReservations()
-            val appWidgetManager: AppWidgetManager =
-                AppWidgetManager.getInstance(context)
-            Handler(Looper.getMainLooper()).postDelayed({
-                appWidgetManager.notifyAppWidgetViewDataChanged(
-                    appWidgetId,
-                    R.id.gsr_reservation_widget_stack_view,
-                )
-            }, 3000)
         }
 
-        // List size is not updated in time when cancelling reser
+        /**
+         * Runs on a binder thread when the provider or [GsrReservationWidget.requestUpdate] notifies the
+         * collection, so loading synchronously here is the documented way to refresh before getViewAt.
+         */
         override fun onDataSetChanged() {
-            // Log.d("GsrReservationWidgetAdapter", "Sanity Check: List size: ${dataSet.size}")
+            dataSet = loadReservations()
+            Log.d("GsrReservationWidgetAdapter", "Loaded ${dataSet.size} reservations for widget $appWidgetId")
         }
 
-        override fun onDestroy() {
-            context.unregisterReceiver(gsrReservationWidgetReceiver)
-        }
+        override fun onDestroy() = Unit
 
         override fun getCount(): Int = dataSet.size
 
@@ -148,42 +111,21 @@ class GsrReservationWidgetAdapter : RemoteViewsService() {
 
         override fun hasStableIds(): Boolean = true
 
-        fun getWidgetGsrReservations() {
-            try {
-                val token =
-                    sharedPreferences.getString(
-                        context.getString(R.string.access_token),
-                        "",
-                    )
-                if (mGsrReservationsRequest != null && token != "") {
-                    mGsrReservationsRequest!!
-                        .getGsrReservations("Bearer $token")
-                        .subscribeOn(Schedulers.io()) // Ask Baron what this does
-                        .flatMap { reservations -> Observable.from(reservations) }
-                        .flatMap { reservation ->
-                            Observable.just(reservation)
-                        }.toList()
-                        .subscribe { reservations ->
-                            dataSet = reservations.sortedBy { it.fromDate }
-                            val appWidgetManager: AppWidgetManager =
-                                AppWidgetManager.getInstance(context)
-                            appWidgetManager.notifyAppWidgetViewDataChanged(
-                                appWidgetId,
-                                R.id.gsr_reservation_widget_stack_view,
-                            )
-                        }
-                } else if (token == "") {
-                    dataSet = mutableListOf()
-                    val appWidgetManager: AppWidgetManager =
-                        AppWidgetManager.getInstance(context)
-                    appWidgetManager.notifyAppWidgetViewDataChanged(
-                        appWidgetId,
-                        R.id.gsr_reservation_widget_stack_view,
-                    )
-                }
+        /** Logged out clears the list; a failed request keeps what's shown rather than blanking it. */
+        private fun loadReservations(): List<GSRReservation> {
+            val token = sharedPreferences.getString(context.getString(R.string.access_token), "")
+            val request = mGsrReservationsRequest
+            if (token.isNullOrEmpty() || request == null) return emptyList()
+            return try {
+                request
+                    .getGsrReservations("Bearer $token")
+                    .toBlocking()
+                    .first()
+                    .sortedBy { it.fromDate }
             } catch (e: Exception) {
                 FirebaseCrashlytics.getInstance().recordException(e)
-                e.printStackTrace()
+                Log.w("GsrReservationWidgetAdapter", "Couldn't load reservations", e)
+                dataSet
             }
         }
     }

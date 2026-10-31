@@ -181,7 +181,7 @@ class GsrReservationsFragment : Fragment() {
         val bookingId = pendingCancelBookingId ?: return
         pendingCancelBookingId = null
 
-        mActivity.sendBroadcast(Intent(GsrReservationWidget.UPDATE_GSR_WIDGET))
+        GsrReservationWidget.requestUpdate(mActivity)
 
         val adapter = binding.gsrReservationsRv.adapter as? GsrReservationsAdapter
         val index = adapter?.indexOfBookingId(bookingId) ?: return
