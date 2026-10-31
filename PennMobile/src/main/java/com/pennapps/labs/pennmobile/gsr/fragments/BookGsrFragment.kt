@@ -128,7 +128,7 @@ class BookGsrFragment : Fragment() {
                     .onEach { success ->
                         if (success) {
                             Toast.makeText(requireContext(), "GSR successfully booked", Toast.LENGTH_LONG).show()
-                            requireContext().sendBroadcast(Intent(GsrReservationWidget.UPDATE_GSR_WIDGET))
+                            GsrReservationWidget.requestUpdate(requireContext())
                             // Explicit package: the GSR tabs' receivers are not exported, so an
                             // implicit broadcast never reached them and neither tab refreshed.
                             requireContext().sendBroadcast(Intent("refresh").setPackage(requireContext().packageName))

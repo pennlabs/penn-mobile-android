@@ -254,7 +254,7 @@ class MainActivity : AppCompatActivity() {
         }
         val currentFragment = fragmentManager.findFragmentById(R.id.content_frame)
         val fragment: Fragment = LoginFragment()
-        sendBroadcast(Intent(GsrReservationWidget.UPDATE_GSR_WIDGET))
+        GsrReservationWidget.requestUpdate(this)
 
         // change the fragment only if we're not already on the login fragment
         if (currentFragment == null || currentFragment::class != fragment::class) {
