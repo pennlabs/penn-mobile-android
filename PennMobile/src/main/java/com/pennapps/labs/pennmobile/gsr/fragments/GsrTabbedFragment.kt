@@ -57,7 +57,7 @@ class GsrTabbedFragment : Fragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        val fragmentAdapter = activity?.supportFragmentManager?.let { GsrPagerAdapter(it) }
+        val fragmentAdapter = GsrPagerAdapter(childFragmentManager)
         viewPager = binding.gsrViewpager
         viewPager.adapter = fragmentAdapter
         tabLayout = binding.gsrTabLayout
