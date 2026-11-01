@@ -27,6 +27,7 @@ import com.pennapps.labs.pennmobile.fitness.adapters.FitnessAdapter
 import com.pennapps.labs.pennmobile.fitness.adapters.FitnessHeaderAdapter
 import com.pennapps.labs.pennmobile.fitness.fragments.CloseListener
 import com.pennapps.labs.pennmobile.fitness.fragments.FitnessPreferencesFragment
+import com.pennapps.labs.pennmobile.homebar.isHomeBarTab
 import com.pennapps.labs.pennmobile.isOnline
 import com.pennapps.labs.pennmobile.utils.Utils
 import rx.schedulers.Schedulers
@@ -59,7 +60,9 @@ class PottruckFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        mActivity.hideBottomBar()
+        if (!isHomeBarTab) {
+            mActivity.hideBottomBar()
+        }
         _binding = FragmentPottruckBinding.inflate(inflater, container, false)
         return binding.root
     }
