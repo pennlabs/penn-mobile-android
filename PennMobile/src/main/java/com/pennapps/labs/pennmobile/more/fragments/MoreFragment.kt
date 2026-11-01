@@ -13,6 +13,7 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentMoreBinding
+import com.pennapps.labs.pennmobile.homebar.HomeBarTab
 import com.pennapps.labs.pennmobile.utils.Utils
 
 class MoreFragment : Fragment() {
@@ -70,7 +71,7 @@ class MoreFragment : Fragment() {
                 ),
             )
         }
-        mActivity.setSelectedTab(MainActivity.MORE)
+        mActivity.setSelectedTab(HomeBarTab.MORE)
         super.onResume()
     }
 

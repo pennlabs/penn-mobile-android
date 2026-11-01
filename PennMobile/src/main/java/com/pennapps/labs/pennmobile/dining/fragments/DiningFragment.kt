@@ -68,6 +68,7 @@ import com.pennapps.labs.pennmobile.dining.classes.Venue
 import com.pennapps.labs.pennmobile.dining.fragments.components.DiningHallCard
 import com.pennapps.labs.pennmobile.dining.fragments.components.FavouriteDiningHalls
 import com.pennapps.labs.pennmobile.dining.fragments.components.SortDropdown
+import com.pennapps.labs.pennmobile.homebar.HomeBarTab
 import com.pennapps.labs.pennmobile.isOnline
 import dagger.hilt.android.AndroidEntryPoint
 import rx.schedulers.Schedulers
@@ -340,7 +341,7 @@ class DiningFragment : Fragment() {
         super.onResume()
         mActivity.removeTabs()
         mActivity.setTitle(R.string.dining)
-        mActivity.setSelectedTab(MainActivity.DINING)
+        mActivity.setSelectedTab(HomeBarTab.DINING)
     }
 
     companion object {

@@ -6,6 +6,11 @@
     <item name="icon_bookmarks" type="id" />
     <item name="icon_settings" type="id" />
     <item name="mainLayout" type="id"/>
+    <item name="nav_home" type="id" />
+    <item name="nav_dining" type="id" />
+    <item name="nav_gsr" type="id" />
+    <item name="nav_laundry" type="id" />
+    <item name="nav_more" type="id" />
     <item name="nav_news" type="id" />
     <item name="nav_fitness" type="id" />
     <item name="nav_contacts" type="id" />

@@ -218,10 +218,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun setTab(id: Int) {
-        binding.include.expandableBottomBar.selectedItemId = id
-    }
-
     /** Switches to tab if it's in the home bar, otherwise opens it on top. */
     fun openTab(tab: HomeBarTab) {
         if (tab in homeBarTabs) {
@@ -249,19 +245,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun setSelectedTab(id: Int) {
-        val menuItemId =
-            when (id) {
-                HOME -> R.id.nav_home
-                DINING -> R.id.nav_dining
-                GSR -> R.id.nav_gsr
-                LAUNDRY -> R.id.nav_laundry
-                MORE -> R.id.nav_more
-                else -> R.id.nav_home
-            }
-
-        // Set the bottom nav selected item
-        binding.include.expandableBottomBar.selectedItemId = menuItemId
+    /** Highlights [tab] in the home bar, if the user has it there. */
+    fun setSelectedTab(tab: HomeBarTab) {
+        if (tab in homeBarTabs) {
+            binding.include.expandableBottomBar.selectedItemId = tab.menuId
+        }
     }
 
     fun closeKeyboard() {
@@ -287,7 +275,7 @@ class MainActivity : AppCompatActivity() {
         binding.include.mainViewPager.visibility = View.VISIBLE
         binding.include.expandableBottomBar.visibility = View.VISIBLE
 
-        setTab(HOME_ID)
+        setSelectedTab(HomeBarTab.HOME)
     }
 
     fun startLoginFragment() {
@@ -429,17 +417,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val HOME = 1
-        const val GSR = 2
-        const val DINING = 3
-        const val LAUNDRY = 4
-        const val MORE = 5
-        const val PCA = 6
-
-        val HOME_ID = R.id.nav_home
-        val GSR_ID = R.id.nav_gsr
-        val DINING_ID = R.id.nav_dining
-
         private var mStudentLife: StudentLife? = null
         private var mPlatform: Platform? = null
         private var mCampusExpress: CampusExpress? = null

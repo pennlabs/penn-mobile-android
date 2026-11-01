@@ -17,6 +17,7 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.homebar.HomeBarTab
 
 class SettingsFragment : PreferenceFragmentCompat() {
     private var accountSettings: Preference? = null
@@ -122,6 +123,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         super.onResume()
         mActivity.removeTabs()
         mActivity.setTitle(R.string.action_settings)
-        mActivity.setSelectedTab(MainActivity.MORE)
+        mActivity.setSelectedTab(HomeBarTab.MORE)
     }
 }

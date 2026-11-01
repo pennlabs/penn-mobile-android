@@ -12,6 +12,7 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.coursealert.adapters.PennCourseAlertPagerAdapter
 import com.pennapps.labs.pennmobile.databinding.FragmentPennCourseAlertHolderBinding
+import com.pennapps.labs.pennmobile.homebar.HomeBarTab
 import com.pennapps.labs.pennmobile.utils.Utils
 
 class PennCourseAlertHolderFragment : Fragment() {
@@ -47,7 +48,7 @@ class PennCourseAlertHolderFragment : Fragment() {
     }
 
     override fun onResume() {
-        mActivity.setSelectedTab(MainActivity.PCA)
+        mActivity.setSelectedTab(HomeBarTab.HOME)
         super.onResume()
     }
 

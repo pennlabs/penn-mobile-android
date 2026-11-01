@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.ListFragment
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.homebar.HomeBarTab
 import com.pennapps.labs.pennmobile.homebar.isHomeBarTab
 import com.pennapps.labs.pennmobile.more.adapters.SupportAdapter
 import com.pennapps.labs.pennmobile.more.classes.Contact
@@ -105,7 +106,7 @@ class SupportFragment : ListFragment() {
             toolbar.setNavigationIcon(R.drawable.ic_back_navigation)
             toolbar.setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
             mActivity.hideBottomBar()
-            mActivity.setSelectedTab(MainActivity.MORE)
+            mActivity.setSelectedTab(HomeBarTab.MORE)
         }
     }
 
