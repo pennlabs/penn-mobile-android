@@ -22,6 +22,18 @@
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
+        app:title="@string/home_bar_customization">
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="pref_home_bar_tabs"
+            app:summary="@string/home_bar_tabs_dialog"
+            app:title="@string/home_bar_tabs" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
         app:title="Features">
 
         <Preference
