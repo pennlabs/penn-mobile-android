@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,11 +15,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -31,7 +31,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -51,6 +50,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -95,31 +96,52 @@ fun GsrSearchScreen(
     onLogIn: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface)) {
-        // Filters are meaningless until the user's locations load (e.g. logged out or offline).
-        if (state.locations.isNotEmpty()) {
-            GsrFilters(
-                state = state,
-                onSelectLocation = onSelectLocation,
-                onSelectDate = onSelectDate,
-                onSelectTime = onSelectTime,
-                onSelectDuration = onSelectDuration,
-                onSortByTimeChange = onSortByTimeChange,
-            )
-            HorizontalDivider()
-        }
-        PullToRefreshBox(
-            isRefreshing = state.isRefreshing,
-            onRefresh = onRefresh,
-            modifier = Modifier.fillMaxSize(),
+    PullToRefreshBox(
+        isRefreshing = state.isRefreshing,
+        onRefresh = onRefresh,
+        modifier = modifier.fillMaxSize(),
+    ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize().background(gsrListBackground()),
+            contentPadding = PaddingValues(bottom = 16.dp),
         ) {
+            // The filters scroll away with the results so the list gets the whole screen while
+            // browsing. They're hidden until locations load (e.g. logged out or offline).
+            if (state.locations.isNotEmpty()) {
+                item(key = "filters", contentType = "filters") {
+                    Surface(color = MaterialTheme.colorScheme.surface) {
+                        GsrFilters(
+                            state = state,
+                            onSelectLocation = onSelectLocation,
+                            onSelectDate = onSelectDate,
+                            onSelectTime = onSelectTime,
+                            onSelectDuration = onSelectDuration,
+                            onSortByTimeChange = onSortByTimeChange,
+                        )
+                    }
+                }
+            }
             when (val content = state.content) {
-                GsrContent.Loading -> ScrollableCentered { CircularProgressIndicator() }
-                is GsrContent.Loaded -> GsrResults(state, content, onRefresh, onSlotClick, onLogIn)
+                GsrContent.Loading -> {
+                    item(key = "loading", contentType = "loading") {
+                        Box(
+                            modifier = Modifier.fillParentMaxWidth().padding(48.dp),
+                            contentAlignment = Alignment.Center,
+                        ) { CircularProgressIndicator() }
+                    }
+                }
+
+                is GsrContent.Loaded -> {
+                    gsrResults(state, content, onRefresh, onSlotClick, onLogIn)
+                }
             }
         }
     }
 }
+
+/** The old GSR list's #F1F1F1; dark mode gets a dark gray instead of a bright slab. */
+@Composable
+private fun gsrListBackground(): Color = if (isSystemInDarkTheme()) Color(0xFF1C1C1E) else colorResource(R.color.gsr_background_gray)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -293,18 +315,35 @@ private fun GsrTimePickerDialog(
     )
 }
 
-@Composable
-private fun GsrResults(
+private fun LazyListScope.gsrResults(
     state: GsrSearchUiState,
     content: GsrContent.Loaded,
     onRetry: () -> Unit,
     onSlotClick: (GsrBookingOption) -> Unit,
     onLogIn: () -> Unit,
 ) {
-    val locationName = state.selectedLocation?.name.orEmpty()
-    when (val result = content.result) {
+    val result = content.result
+    if (result is GsrSearchResult.Found) {
+        items(content.rooms, key = { it.roomId }, contentType = { "room" }) { room ->
+            RoomRow(room, onSlotClick)
+        }
+    } else {
+        item(key = "message", contentType = "message") {
+            GsrResultMessage(state, result, onRetry, onLogIn)
+        }
+    }
+}
+
+@Composable
+private fun GsrResultMessage(
+    state: GsrSearchUiState,
+    result: GsrSearchResult,
+    onRetry: () -> Unit,
+    onLogIn: () -> Unit,
+) {
+    when (result) {
         is GsrSearchResult.Found -> {
-            RoomList(content.rooms, onSlotClick)
+            Unit
         }
 
         GsrSearchResult.NoneAvailable -> {
@@ -313,7 +352,7 @@ private fun GsrResults(
                 body =
                     stringResource(
                         R.string.gsr_none_available,
-                        locationName,
+                        state.selectedLocation?.name.orEmpty(),
                         formatDuration(state.durationMinutes),
                         state.startTime.format(TIME_FORMAT),
                     ),
@@ -362,31 +401,23 @@ private fun GsrResults(
 }
 
 @Composable
-private fun RoomList(
-    rooms: List<GsrRoomOptions>,
+private fun RoomRow(
+    room: GsrRoomOptions,
     onSlotClick: (GsrBookingOption) -> Unit,
 ) {
-    LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 16.dp)) {
-        items(rooms, key = { it.roomId }) { room ->
-            Column {
-                Text(
-                    text = room.roomName,
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
-                            .padding(horizontal = 16.dp, vertical = 10.dp),
-                )
-                LazyRow(
-                    contentPadding = PaddingValues(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    items(room.options, key = { it.start.toEpochSecond() }) { option ->
-                        SlotCard(option, onClick = { onSlotClick(option) })
-                    }
-                }
+    Column {
+        Text(
+            text = room.roomName,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
+        )
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            items(room.options, key = { it.start.toEpochSecond() }) { option ->
+                SlotCard(option, onClick = { onSlotClick(option) })
             }
         }
     }
@@ -402,7 +433,11 @@ private fun SlotCard(
         onClick = onClick,
         shape = RoundedCornerShape(8.dp),
         border = BorderStroke(2.dp, green),
-        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.gsr_inside_green)),
+        // gsr_inside_green is translucent; flatten it onto the surface so the gray list doesn't show through.
+        colors =
+            CardDefaults.cardColors(
+                containerColor = colorResource(R.color.gsr_inside_green).compositeOver(MaterialTheme.colorScheme.surface),
+            ),
         modifier = Modifier.widthIn(min = 96.dp),
     ) {
         Text(
@@ -420,7 +455,7 @@ private fun SlotCard(
     }
 }
 
-/** Title, explanation and an optional action, scrollable so pull-to-refresh still works. */
+/** Title, explanation and an optional action, shown as a list item so pull-to-refresh still works. */
 @Composable
 private fun GsrStateMessage(
     title: String,
@@ -428,7 +463,10 @@ private fun GsrStateMessage(
     actionLabel: String? = null,
     onAction: (() -> Unit)? = null,
 ) {
-    ScrollableCentered {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
@@ -446,16 +484,6 @@ private fun GsrStateMessage(
         if (actionLabel != null && onAction != null) {
             Button(onClick = onAction, modifier = Modifier.padding(top = 16.dp)) { Text(actionLabel) }
         }
-    }
-}
-
-@Composable
-private fun ScrollableCentered(content: @Composable () -> Unit) {
-    Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        content()
     }
 }
 
@@ -491,7 +519,10 @@ private fun previewFound(): GsrContent {
         val start = ZonedDateTime.of(2026, 10, 23, hour, minute, 0, 0, PENN_ZONE).toOffsetDateTime()
         return GsrBookingOption("1090", 1909, room.hashCode(), room, start, start.plusMinutes(90))
     }
-    val options = listOf(option("L15", 19, 0), option("L15", 19, 30), option("L17", 20, 0), option("L20", 18, 30))
+    val options =
+        listOf("L15", "L17", "L20", "L23", "L25", "L28", "L30").flatMapIndexed { i, room ->
+            listOf(option(room, 18 + i % 3, 0), option(room, 18 + i % 3, 30), option(room, 19 + i % 3, 0))
+        }
     return GsrContent.Loaded(GsrSearchResult.Found(options), options.groupByRoom(sortByTime = true))
 }
 
@@ -514,10 +545,11 @@ private fun PreviewScreen(content: GsrContent) {
     }
 }
 
-@Preview(name = "Found", showBackground = true)
-@Preview(name = "Found (dark)", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+/** The whole Book a Room tab: filters, then rooms sorted by earliest opening. */
+@Preview(name = "GSR search screen", showBackground = true, showSystemUi = true)
+@Preview(name = "GSR search screen (dark)", showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun FoundPreview() = PreviewScreen(previewFound())
+private fun GsrSearchScreenPreview() = PreviewScreen(previewFound())
 
 @Preview(name = "Not logged in", showBackground = true)
 @Preview(name = "Not logged in (dark)", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
