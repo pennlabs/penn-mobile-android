@@ -14,6 +14,7 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.HomeGsrBuildingBinding
 import com.pennapps.labs.pennmobile.gsr.fragments.GsrTabbedFragment
+import com.pennapps.labs.pennmobile.homebar.HomeBarTab
 
 class HomeGsrBuildingAdapter(
     private var buildings: ArrayList<String>,
@@ -66,7 +67,7 @@ class HomeGsrBuildingAdapter(
                     if (popBackStack) {
                         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                     }
-                    (activity as MainActivity).setTab(MainActivity.GSR_ID)
+                    (activity as MainActivity).openTab(HomeBarTab.GSR)
                 } catch (e: IllegalStateException) {
                     Log.e("HomeAdapter", e.toString())
                 }

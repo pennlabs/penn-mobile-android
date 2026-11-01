@@ -10,22 +10,33 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.preference.Preference
+import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.components.dialog.CustomAlertDialogue
-import com.pennapps.labs.pennmobile.gsr.fragments.PottruckFragment
-import com.pennapps.labs.pennmobile.home.fragments.NewsFragment
+import com.pennapps.labs.pennmobile.homebar.HomeBarTab
+import com.pennapps.labs.pennmobile.homebar.repo.HomeBarRepo
 import com.pennapps.labs.pennmobile.showSneakerToast
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * Created by Davies Lumumba Spring 2021
  */
+@AndroidEntryPoint
 class PreferenceFragment : PreferenceFragmentCompat() {
+    @Inject
+    lateinit var homeBarRepo: HomeBarRepo
+
     private lateinit var mContext: Context
     private lateinit var mActivity: MainActivity
     private lateinit var toolbar: Toolbar
@@ -101,48 +112,16 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                 true
             }
 
-        val newsFeaturePref: Preference? = findPreference("pref_news_feature")
-        newsFeaturePref?.setOnPreferenceClickListener {
-            mActivity.supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.content_frame, NewsFragment())
-                .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit()
+        val homeBarTabsPref: Preference? = findPreference("pref_home_bar_tabs")
+        homeBarTabsPref?.setOnPreferenceClickListener {
+            showHomeBarTabsDialog()
             return@setOnPreferenceClickListener true
         }
 
-        val contactsFeaturePref: Preference? = findPreference("pref_contacts_feature")
-        contactsFeaturePref?.setOnPreferenceClickListener {
-            mActivity.supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.content_frame, SupportFragment())
-                .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit()
-            return@setOnPreferenceClickListener true
-        }
-
-        val aboutFeaturePref: Preference? = findPreference("pref_about_feature")
-        aboutFeaturePref?.setOnPreferenceClickListener {
-            mActivity.supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.content_frame, AboutFragment())
-                .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit()
-            return@setOnPreferenceClickListener true
-        }
-
-        val fitnessFeaturePref: Preference? = findPreference("pref_fitness_feature")
-        fitnessFeaturePref?.setOnPreferenceClickListener {
-            mActivity.supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.content_frame, PottruckFragment())
-                .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit()
-            return@setOnPreferenceClickListener true
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                homeBarRepo.tabs.collect { showFeatures(it) }
+            }
         }
 
         val pennLabsPref: Preference? = findPreference("pref_labs_link")
@@ -199,6 +178,70 @@ class PreferenceFragment : PreferenceFragmentCompat() {
         val uri = Uri.parse(link)
         val intent = Intent(Intent.ACTION_VIEW, uri)
         startActivity(intent)
+    }
+
+    private fun showHomeBarTabsDialog() {
+        val options = HomeBarTab.entries.filter { it.canBeInBar && !it.isPinned }
+        val picks =
+            homeBarRepo.tabs.value
+                .filter { it in options }
+                .toMutableSet()
+        val checked = BooleanArray(options.size) { options[it] in picks }
+        val titles = options.map { getString(it.titleRes) }.toTypedArray()
+
+        val dialog =
+            AlertDialog
+                .Builder(requireContext())
+                .setTitle(R.string.home_bar_tabs)
+                .setMultiChoiceItems(titles, checked) { dialogInterface, which, isChecked ->
+                    // Capped at 3, so undo this check
+                    if (isChecked && picks.size == HomeBarTab.CUSTOM_COUNT) {
+                        checked[which] = false
+                        (dialogInterface as AlertDialog).listView.setItemChecked(which, false)
+                        Toast.makeText(requireContext(), R.string.home_bar_too_many, Toast.LENGTH_SHORT).show()
+                        return@setMultiChoiceItems
+                    }
+
+                    if (isChecked) {
+                        picks.add(options[which])
+                    } else {
+                        picks.remove(options[which])
+                    }
+                }.setPositiveButton(android.R.string.ok, null)
+                .setNegativeButton(android.R.string.cancel, null)
+                .show()
+
+        // Remains open when fewer than 3 are picked
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            if (picks.size != HomeBarTab.CUSTOM_COUNT) {
+                Toast.makeText(requireContext(), R.string.home_bar_too_many, Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            homeBarRepo.setPicks(picks)
+            dialog.dismiss()
+        }
+    }
+
+    /** Lists every screen that isn't in the home bar. */
+    private fun showFeatures(barTabs: List<HomeBarTab>) {
+        val features: PreferenceCategory = findPreference("pref_features") ?: return
+        features.removeAll()
+        HomeBarTab.entries
+            .filter { !it.isPinned && it !in barTabs }
+            .forEach { tab ->
+                features.addPreference(
+                    Preference(requireContext()).apply {
+                        key = "pref_feature_${tab.key}"
+                        title = getString(tab.titleRes)
+                        setIcon(tab.featureIconRes)
+                        isIconSpaceReserved = false
+                        setOnPreferenceClickListener {
+                            mActivity.openTab(tab)
+                            true
+                        }
+                    },
+                )
+            }
     }
 
     @SuppressLint("RestrictedApi")

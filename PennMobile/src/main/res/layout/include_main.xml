@@ -60,7 +60,6 @@
         android:layout_gravity="bottom"
         android:background="@color/white"
         android:visibility="gone"
-        app:layout_behavior=".components.floatingbottombar.behavior.ExpandableBottomBarScrollableBehavior"
-        app:menu="@menu/bottom_nav_bar" />
+        app:layout_behavior=".components.floatingbottombar.behavior.ExpandableBottomBarScrollableBehavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

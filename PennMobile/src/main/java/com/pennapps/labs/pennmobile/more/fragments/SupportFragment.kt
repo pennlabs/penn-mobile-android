@@ -12,6 +12,8 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.ListFragment
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.homebar.HomeBarTab
+import com.pennapps.labs.pennmobile.homebar.isHomeBarTab
 import com.pennapps.labs.pennmobile.more.adapters.SupportAdapter
 import com.pennapps.labs.pennmobile.more.classes.Contact
 
@@ -61,9 +63,6 @@ class SupportFragment : ListFragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
         toolbar = mActivity.findViewById(R.id.toolbar)
-        toolbar.visibility = View.VISIBLE
-        toolbar.setNavigationIcon(R.drawable.ic_back_navigation)
-        toolbar.setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
     }
 
     override fun onCreateOptionsMenu(
@@ -99,8 +98,16 @@ class SupportFragment : ListFragment() {
         super.onResume()
         mActivity.removeTabs()
         mActivity.setTitle(R.string.support)
-        mActivity.hideBottomBar()
-        mActivity.setSelectedTab(MainActivity.MORE)
+        toolbar.visibility = View.VISIBLE
+        if (isHomeBarTab) {
+            toolbar.navigationIcon = null
+            toolbar.setNavigationOnClickListener(null)
+        } else {
+            toolbar.setNavigationIcon(R.drawable.ic_back_navigation)
+            toolbar.setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
+            mActivity.hideBottomBar()
+            mActivity.setSelectedTab(HomeBarTab.MORE)
+        }
     }
 
     override fun onDestroyView() {

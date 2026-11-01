@@ -17,6 +17,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.compose.presentation.theme.AppTheme
+import com.pennapps.labs.pennmobile.homebar.HomeBarTab
 import com.pennapps.labs.pennmobile.more.compose.AboutScreen
 import com.pennapps.labs.pennmobile.more.viewmodels.AboutViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -76,6 +77,6 @@ class AboutFragment : Fragment() {
         super.onResume()
         mActivity.removeTabs()
         mActivity.setTitle(R.string.about)
-        mActivity.setSelectedTab(MainActivity.MORE)
+        mActivity.setSelectedTab(HomeBarTab.MORE)
     }
 }

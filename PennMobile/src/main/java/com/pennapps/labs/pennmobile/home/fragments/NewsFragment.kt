@@ -28,6 +28,8 @@ import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.databinding.FragmentNewsBinding
+import com.pennapps.labs.pennmobile.homebar.HomeBarTab
+import com.pennapps.labs.pennmobile.homebar.isHomeBarTab
 import com.pennapps.labs.pennmobile.isOnline
 import java.util.ArrayList
 
@@ -178,7 +180,9 @@ class NewsFragment : ListFragment() {
         savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentNewsBinding.inflate(inflater, container, false)
-        mActivity.hideBottomBar()
+        if (!isHomeBarTab) {
+            mActivity.hideBottomBar()
+        }
         return binding.root
     }
 
@@ -293,7 +297,9 @@ class NewsFragment : ListFragment() {
                     (R.drawable.ic_guest_avatar, context?.theme),
             )
         }
-        mActivity.setSelectedTab(MainActivity.MORE)
+        if (!isHomeBarTab) {
+            mActivity.setSelectedTab(HomeBarTab.MORE)
+        }
     }
 
     override fun onDestroyView() {

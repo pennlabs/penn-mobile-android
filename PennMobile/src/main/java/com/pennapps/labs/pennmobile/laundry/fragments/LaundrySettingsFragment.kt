@@ -16,6 +16,7 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.databinding.FragmentLaundrySettingsBinding
+import com.pennapps.labs.pennmobile.homebar.HomeBarTab
 import com.pennapps.labs.pennmobile.laundry.LaundryViewModel
 import com.pennapps.labs.pennmobile.laundry.adapters.LaundrySettingsAdapter
 
@@ -118,7 +119,7 @@ class LaundrySettingsFragment : Fragment() {
         super.onResume()
         mActivity.removeTabs()
         mActivity.setTitle(R.string.laundry)
-        mActivity.setSelectedTab(MainActivity.LAUNDRY)
+        mActivity.setSelectedTab(HomeBarTab.LAUNDRY)
     }
 
     override fun onDestroyView() {

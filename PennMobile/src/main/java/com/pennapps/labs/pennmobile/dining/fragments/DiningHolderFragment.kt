@@ -12,6 +12,8 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentDiningHolderBinding
 import com.pennapps.labs.pennmobile.dining.adapters.DiningPagerAdapter
+import com.pennapps.labs.pennmobile.homebar.HomeBarTab
+import com.pennapps.labs.pennmobile.homebar.isHomeBarTab
 import com.pennapps.labs.pennmobile.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -68,7 +70,10 @@ class DiningHolderFragment : Fragment() {
         super.onResume()
         mActivity.removeTabs()
         mActivity.setTitle(R.string.dining)
-        mActivity.setSelectedTab(MainActivity.DINING)
+        mActivity.setSelectedTab(HomeBarTab.DINING)
+        if (!isHomeBarTab) {
+            mActivity.hideBottomBar()
+        }
     }
 
     private fun initAppBar() {

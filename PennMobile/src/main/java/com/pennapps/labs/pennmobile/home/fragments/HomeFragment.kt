@@ -24,6 +24,7 @@ import com.pennapps.labs.pennmobile.compose.presentation.theme.AppTheme
 import com.pennapps.labs.pennmobile.databinding.FragmentHomeBinding
 import com.pennapps.labs.pennmobile.home.HomepageViewModel
 import com.pennapps.labs.pennmobile.home.adapters.HomeAdapter
+import com.pennapps.labs.pennmobile.homebar.HomeBarTab
 import com.pennapps.labs.pennmobile.isOnline
 import com.pennapps.labs.pennmobile.studentresources.StudentResourcesEntryCard
 import com.pennapps.labs.pennmobile.studentresources.StudentResourcesFragment
@@ -224,7 +225,7 @@ class HomeFragment : Fragment() {
         }
 
         // Force update the bottom nav selection since we default to that page
-        mActivity.setSelectedTab(MainActivity.HOME)
+        mActivity.setSelectedTab(HomeBarTab.HOME)
         mActivity.showBottomBar()
     }
 

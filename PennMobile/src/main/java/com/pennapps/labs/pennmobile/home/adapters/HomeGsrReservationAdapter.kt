@@ -10,6 +10,7 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.databinding.GsrListItemBinding
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
 import com.pennapps.labs.pennmobile.gsr.fragments.GsrTabbedFragment
+import com.pennapps.labs.pennmobile.homebar.HomeBarTab
 import com.squareup.picasso.Picasso
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
@@ -60,7 +61,7 @@ class HomeGsrReservationAdapter(
 
         holder.itemView.setOnClickListener {
             // Moves to GSR Booking Tab
-            mActivity.setTab(MainActivity.GSR_ID)
+            mActivity.openTab(HomeBarTab.GSR)
 
             // Changes tab to "My Reservations" tab (from "Book a Room" tab)
             for (fragment in mActivity.supportFragmentManager.fragments) {

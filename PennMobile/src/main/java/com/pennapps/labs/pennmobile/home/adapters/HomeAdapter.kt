@@ -66,6 +66,7 @@ import com.pennapps.labs.pennmobile.home.viewholders.HomeLaundryHolder
 import com.pennapps.labs.pennmobile.home.viewholders.HomeNewsCardHolder
 import com.pennapps.labs.pennmobile.home.viewholders.HomePollHolder
 import com.pennapps.labs.pennmobile.home.viewholders.HomePostHolder
+import com.pennapps.labs.pennmobile.homebar.HomeBarTab
 import com.pennapps.labs.pennmobile.laundry.adapters.LaundryRoomAdapter
 import com.pennapps.labs.pennmobile.laundry.classes.LaundryCell
 import com.pennapps.labs.pennmobile.utils.Utils
@@ -567,7 +568,7 @@ class HomeAdapter(
             )
         holder.homeGSRButton.text = "Book a Room"
         holder.homeGSRButton.setOnClickListener {
-            mActivity.setTab(MainActivity.GSR_ID)
+            mActivity.openTab(HomeBarTab.GSR)
             for (fragment in mActivity.supportFragmentManager.fragments) {
                 if (fragment is GsrTabbedFragment) {
                     fragment.viewPager.currentItem = 0
