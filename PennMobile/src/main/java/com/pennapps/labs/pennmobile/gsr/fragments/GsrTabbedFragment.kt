@@ -12,6 +12,7 @@ import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentGsrTabsBinding
+import com.pennapps.labs.pennmobile.homebar.isHomeBarTab
 import com.pennapps.labs.pennmobile.isOnline
 import com.pennapps.labs.pennmobile.utils.Utils
 
@@ -41,6 +42,13 @@ class GsrTabbedFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!isHomeBarTab) {
+            mActivity.hideBottomBar()
+        }
     }
 
     override fun onViewCreated(

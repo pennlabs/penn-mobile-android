@@ -18,6 +18,7 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.components.collapsingtoolbar.ToolbarBehavior
 import com.pennapps.labs.pennmobile.databinding.FragmentLaundryBinding
+import com.pennapps.labs.pennmobile.homebar.isHomeBarTab
 import com.pennapps.labs.pennmobile.isOnline
 import com.pennapps.labs.pennmobile.laundry.LaundryViewModel
 import com.pennapps.labs.pennmobile.laundry.adapters.LaundryRoomAdapter
@@ -80,6 +81,13 @@ class LaundryFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!isHomeBarTab) {
+            mActivity.hideBottomBar()
+        }
     }
 
     override fun onViewCreated(

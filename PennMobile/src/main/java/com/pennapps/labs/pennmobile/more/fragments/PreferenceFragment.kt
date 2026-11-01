@@ -12,19 +12,21 @@ import android.webkit.CookieManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.preference.Preference
+import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.components.dialog.CustomAlertDialogue
-import com.pennapps.labs.pennmobile.gsr.fragments.PottruckFragment
-import com.pennapps.labs.pennmobile.home.fragments.NewsFragment
 import com.pennapps.labs.pennmobile.homebar.HomeBarTab
 import com.pennapps.labs.pennmobile.homebar.repo.HomeBarRepo
 import com.pennapps.labs.pennmobile.showSneakerToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -116,48 +118,10 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             return@setOnPreferenceClickListener true
         }
 
-        val newsFeaturePref: Preference? = findPreference("pref_news_feature")
-        newsFeaturePref?.setOnPreferenceClickListener {
-            mActivity.supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.content_frame, NewsFragment())
-                .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit()
-            return@setOnPreferenceClickListener true
-        }
-
-        val contactsFeaturePref: Preference? = findPreference("pref_contacts_feature")
-        contactsFeaturePref?.setOnPreferenceClickListener {
-            mActivity.supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.content_frame, SupportFragment())
-                .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit()
-            return@setOnPreferenceClickListener true
-        }
-
-        val aboutFeaturePref: Preference? = findPreference("pref_about_feature")
-        aboutFeaturePref?.setOnPreferenceClickListener {
-            mActivity.supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.content_frame, AboutFragment())
-                .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit()
-            return@setOnPreferenceClickListener true
-        }
-
-        val fitnessFeaturePref: Preference? = findPreference("pref_fitness_feature")
-        fitnessFeaturePref?.setOnPreferenceClickListener {
-            mActivity.supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.content_frame, PottruckFragment())
-                .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit()
-            return@setOnPreferenceClickListener true
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                homeBarRepo.tabs.collect { showFeatures(it) }
+            }
         }
 
         val pennLabsPref: Preference? = findPreference("pref_labs_link")
@@ -256,6 +220,28 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             homeBarRepo.setPicks(picks)
             dialog.dismiss()
         }
+    }
+
+    /** Lists every screen that isn't in the home bar. */
+    private fun showFeatures(barTabs: List<HomeBarTab>) {
+        val features: PreferenceCategory = findPreference("pref_features") ?: return
+        features.removeAll()
+        HomeBarTab.entries
+            .filter { !it.isPinned && it !in barTabs }
+            .forEach { tab ->
+                features.addPreference(
+                    Preference(requireContext()).apply {
+                        key = "pref_feature_${tab.key}"
+                        title = getString(tab.titleRes)
+                        setIcon(tab.featureIconRes)
+                        isIconSpaceReserved = false
+                        setOnPreferenceClickListener {
+                            mActivity.openTab(tab)
+                            true
+                        }
+                    },
+                )
+            }
     }
 
     @SuppressLint("RestrictedApi")

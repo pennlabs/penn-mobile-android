@@ -144,21 +144,12 @@ class MainActivity : AppCompatActivity() {
                 startLoginFragment()
             } else {
                 startHomeFragment()
+                openWidgetTab()
             }
         }
 
         setUpAuthStateListener()
         setUpHomeBarListener()
-
-        val diningWidgetBroadCast = intent?.getIntExtra("Widget_Tab_Switch", -1) ?: -1
-        if (diningWidgetBroadCast != -1) {
-            setTab(DINING_ID)
-        }
-
-        val gsrReservationWidgetBroadCast = intent?.getIntExtra("Gsr_Tab_Switch", -1) ?: -1
-        if (gsrReservationWidgetBroadCast != -1) {
-            setTab(GSR_ID)
-        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -229,6 +220,33 @@ class MainActivity : AppCompatActivity() {
 
     fun setTab(id: Int) {
         binding.include.expandableBottomBar.selectedItemId = id
+    }
+
+    /** Switches to tab if it's in the home bar, otherwise opens it on top. */
+    fun openTab(tab: HomeBarTab) {
+        if (tab in homeBarTabs) {
+            binding.include.expandableBottomBar.selectedItemId = tab.menuId
+            return
+        }
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.content_frame, tab.newScreenFragment())
+            .addToBackStack(null)
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .commit()
+    }
+
+    /** Opens the tab a dining or GSR widget was tapped for, if any. */
+    private fun openWidgetTab() {
+        val diningWidgetBroadCast = intent?.getIntExtra("Widget_Tab_Switch", -1) ?: -1
+        if (diningWidgetBroadCast != -1) {
+            openTab(HomeBarTab.DINING)
+        }
+
+        val gsrReservationWidgetBroadCast = intent?.getIntExtra("Gsr_Tab_Switch", -1) ?: -1
+        if (gsrReservationWidgetBroadCast != -1) {
+            openTab(HomeBarTab.GSR)
+        }
     }
 
     fun setSelectedTab(id: Int) {
