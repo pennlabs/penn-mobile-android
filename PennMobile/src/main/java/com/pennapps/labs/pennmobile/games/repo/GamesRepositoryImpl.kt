@@ -4,7 +4,7 @@ import com.pennapps.labs.pennmobile.games.classes.Game
 import javax.inject.Inject
 
 /**
- * Static placeholder list until real games exist. When games come from the backend, make
+ * Local catalog. Keep games disabled until their playable destination exists. When games come from the backend, make
  * [getGames] a suspend function returning `Result<List<Game>>` (see compose/utils/Result.kt).
  */
 class GamesRepositoryImpl
@@ -16,9 +16,9 @@ class GamesRepositoryImpl
             val games =
                 listOf(
                     Game(
-                        id = "placeholder",
-                        title = "Coming soon",
-                        description = "Games are on the way.",
+                        id = "word_hunt",
+                        title = "Word Hunt",
+                        description = "Find Penn words by connecting letters",
                     ),
                 )
         }

@@ -11,6 +11,8 @@ import javax.inject.Inject
 
 data class GamesUiState(
     val games: List<Game> = emptyList(),
+    val showComingSoon: Boolean = true,
+    val showConstructionMascot: Boolean = true,
 )
 
 @HiltViewModel

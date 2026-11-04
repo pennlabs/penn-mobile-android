@@ -36,8 +36,8 @@ class GamesFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                // hiltViewModel() rather than `by viewModels()`: fragment 1.5.1 + lifecycle 2.9
-                //      crash on Hilt VMs with missing CreationExtras. Same as AboutFragment.
+                // hiltViewModel() rather than 'by viewModels()` because of fragment 1.5.1 and lifecycle 2.9 crash
+                // Same as AboutFragment.
                 val viewModel: GamesViewModel = hiltViewModel()
                 val state by viewModel.uiState.collectAsState()
 
@@ -45,7 +45,7 @@ class GamesFragment : Fragment() {
                     GamesScreen(
                         state = state,
                         onBack = { requireActivity().onBackPressedDispatcher.onBackPressed() },
-                        // TODO: open the selected game once games exist
+                        // #TODO: Handling opening games once they actually exist
                         onGameClick = {},
                     )
                 }
