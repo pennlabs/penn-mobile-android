@@ -17,6 +17,7 @@ import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.content.edit
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
@@ -212,16 +213,21 @@ class LoginWebviewFragment : Fragment() {
                     FirebaseAnalytics.getInstance(mActivity).logEvent("LoginEvent", null)
 
                     val accessToken = t?.accessToken
-                    val editor = sp.edit()
-                    editor.putString(getString(R.string.access_token), accessToken)
-                    editor.putString(getString(R.string.refresh_token), t?.refreshToken)
-                    editor.putString(getString(R.string.expires_in), t?.expiresIn)
+                    sp.edit {
+                        putString(getString(R.string.access_token), accessToken)
+                        putString(getString(R.string.refresh_token), t?.refreshToken)
+                        putString(getString(R.string.expires_in), t?.expiresIn)
 
-                    val expiresInInt = t?.expiresIn!!.toInt() * 1000
-                    Log.i("LoginWebview", "Expires In: $expiresInInt")
-                    val currentTime = Calendar.getInstance().timeInMillis
-                    editor.putLong(getString(R.string.token_expires_at), currentTime + expiresInInt)
-                    editor.apply()
+                        // if somehow a different user is already logged in for campus express, we
+                        // clear their credentials
+                        remove(getString(R.string.campus_express_token))
+                        remove(getString(R.string.campus_token_expires_in))
+
+                        val expiresInInt = t?.expiresIn!!.toInt() * 1000
+                        Log.i("LoginWebview", "Expires In: $expiresInInt")
+                        val currentTime = Calendar.getInstance().timeInMillis
+                        putLong(getString(R.string.token_expires_at), currentTime + expiresInInt)
+                    }
                     getUser(accessToken)
                 } else {
                     val error = response.errorBody()

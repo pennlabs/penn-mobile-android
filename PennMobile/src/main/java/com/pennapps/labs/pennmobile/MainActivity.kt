@@ -11,8 +11,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.os.StrictMode
 import android.util.Log
 import android.view.LayoutInflater
@@ -22,9 +20,11 @@ import android.view.inputmethod.InputMethodManager
 import android.webkit.CookieManager
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.edit
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -110,6 +110,8 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.setHomeButtonEnabled(false)
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
+
+        onBackPressedDispatcher.addCallback(this, backPressedCallback)
 
         val policy =
             StrictMode.ThreadPolicy
@@ -238,19 +240,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun startLoginFragment() {
-        CookieManager.getInstance().removeAllCookie()
-        val editor = PreferenceManager.getDefaultSharedPreferences(this).edit()
-        editor.remove(getString(R.string.penn_password))
-        editor.remove(getString(R.string.penn_user))
-        editor.remove(getString(R.string.first_name))
-        editor.remove(getString(R.string.last_name))
-        editor.remove(getString(R.string.email_address))
-        editor.remove(getString(R.string.pennkey))
-        editor.remove(getString(R.string.accountID))
-        editor.remove(getString(R.string.access_token))
-        editor.remove(getString(R.string.guest_mode))
-        editor.remove(getString(R.string.initials))
-        editor.apply()
+        CookieManager.getInstance().removeAllCookies(null)
+        PreferenceManager.getDefaultSharedPreferences(this).edit {
+            remove(getString(R.string.penn_password))
+            remove(getString(R.string.penn_user))
+            remove(getString(R.string.first_name))
+            remove(getString(R.string.last_name))
+            remove(getString(R.string.email_address))
+            remove(getString(R.string.pennkey))
+            remove(getString(R.string.accountID))
+            remove(getString(R.string.access_token))
+            remove(getString(R.string.guest_mode))
+            remove(getString(R.string.initials))
+            remove(getString(R.string.campus_express_token))
+            remove(getString(R.string.campus_token_expires_in))
+        }
         val currentFragment = fragmentManager.findFragmentById(R.id.content_frame)
         val fragment: Fragment = LoginFragment()
         sendBroadcast(Intent(GsrReservationWidget.UPDATE_GSR_WIDGET))
@@ -345,10 +349,19 @@ class MainActivity : AppCompatActivity() {
             .text = title
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        showBottomBar()
-    }
+    private val backPressedCallback =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (supportFragmentManager.backStackEntryCount > 0) {
+                    supportFragmentManager.popBackStack()
+                    showBottomBar()
+                } else {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                    isEnabled = true
+                }
+            }
+        }
 
     fun hideBottomBar() {
         binding.include.expandableBottomBar.visibility = View.GONE

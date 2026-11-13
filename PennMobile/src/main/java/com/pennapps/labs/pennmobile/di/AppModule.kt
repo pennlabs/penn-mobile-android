@@ -2,7 +2,11 @@ package com.pennapps.labs.pennmobile.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import androidx.preference.PreferenceManager
+import coil.ImageLoader
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -48,6 +52,27 @@ object AppModule {
     @Provides
     @AppScope
     fun providesAppCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+
+    /**
+     * Provides the app-wide Coil [ImageLoader], with GIF decoding enabled.
+     *
+     * [com.pennapps.labs.pennmobile.PennMobile] hands this to Coil as its singleton, so every `AsyncImage` shares one
+     * memory/disk cache instead of each screen building its own loader.
+     */
+    @Singleton
+    @Provides
+    fun providesImageLoader(
+        @ApplicationContext context: Context,
+    ): ImageLoader =
+        ImageLoader
+            .Builder(context)
+            .components {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    add(ImageDecoderDecoder.Factory())
+                } else {
+                    add(GifDecoder.Factory())
+                }
+            }.build()
 }
 
 /**

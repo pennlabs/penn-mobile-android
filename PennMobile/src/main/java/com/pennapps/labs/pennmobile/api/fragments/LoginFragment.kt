@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.preference.PreferenceManager
@@ -76,20 +77,22 @@ class LoginFragment : Fragment() {
         }
 
         binding.guestButton.setOnClickListener {
-            val editor = PreferenceManager.getDefaultSharedPreferences(activity).edit()
-            editor.remove(getString(R.string.penn_password))
-            editor.remove(getString(R.string.penn_user))
-            editor.remove(getString(R.string.first_name))
-            editor.remove(getString(R.string.last_name))
-            editor.remove(getString(R.string.email_address))
-            editor.remove(getString(R.string.pennkey))
-            editor.remove(getString(R.string.access_token))
-            editor.remove(getString(R.string.accountID))
-            editor.putString(getString(R.string.access_token), "")
-            editor.putString(getString(R.string.refresh_token), "")
-            editor.putString(getString(R.string.expires_in), "")
-            editor.putBoolean(getString(R.string.guest_mode), true)
-            editor.apply()
+            PreferenceManager.getDefaultSharedPreferences(activity).edit {
+                remove(getString(R.string.penn_password))
+                remove(getString(R.string.penn_user))
+                remove(getString(R.string.first_name))
+                remove(getString(R.string.last_name))
+                remove(getString(R.string.email_address))
+                remove(getString(R.string.pennkey))
+                remove(getString(R.string.access_token))
+                remove(getString(R.string.accountID))
+                remove(getString(R.string.campus_express_token))
+                remove(getString(R.string.campus_token_expires_in))
+                putString(getString(R.string.access_token), "")
+                putString(getString(R.string.refresh_token), "")
+                putString(getString(R.string.expires_in), "")
+                putBoolean(getString(R.string.guest_mode), true)
+            }
             mActivity.startHomeFragment()
         }
 

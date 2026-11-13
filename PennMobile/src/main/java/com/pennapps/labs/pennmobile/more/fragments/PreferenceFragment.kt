@@ -76,7 +76,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                     dialog.setTitle("Log out")
                     dialog.setMessage("Are you sure you want to log out?")
                     dialog.setButton("Logout") { dialog, _ ->
-                        CookieManager.getInstance().removeAllCookie()
+                        CookieManager.getInstance().removeAllCookies(null)
                         editor.remove(getString(R.string.penn_password))
                         editor.remove(getString(R.string.penn_user))
                         editor.remove(getString(R.string.first_name))
@@ -87,6 +87,8 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                         editor.remove(getString(R.string.access_token))
                         editor.remove(getString(R.string.guest_mode))
                         editor.remove(getString(R.string.initials))
+                        editor.remove(getString(R.string.campus_express_token))
+                        editor.remove(getString(R.string.campus_token_expires_in))
                         editor.apply()
                         dialog.cancel()
                         mActivity.startLoginFragment()

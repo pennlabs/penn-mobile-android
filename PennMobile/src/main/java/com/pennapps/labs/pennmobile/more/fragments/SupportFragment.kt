@@ -63,7 +63,7 @@ class SupportFragment : ListFragment() {
         toolbar = mActivity.findViewById(R.id.toolbar)
         toolbar.visibility = View.VISIBLE
         toolbar.setNavigationIcon(R.drawable.ic_back_navigation)
-        toolbar.setNavigationOnClickListener { mActivity.onBackPressed() }
+        toolbar.setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
     }
 
     override fun onCreateOptionsMenu(

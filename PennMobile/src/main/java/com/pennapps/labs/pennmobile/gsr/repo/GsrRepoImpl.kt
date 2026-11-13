@@ -6,6 +6,7 @@ import android.util.Log
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
+import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -94,6 +95,23 @@ class GsrRepoImpl
                 val errorBody = response.errorBody()?.string()
                 Log.e("GsrRepoImpl", "HTTP Error: $errorBody")
                 throw Exception("Error deleting your GSR reservation.")
+            }
+        }
+
+        override suspend fun getReservations(): List<GSRReservation> {
+            val accessToken =
+                oAuth2NetworkManager.getAccessToken()
+                    ?: throw Exception("Authentication failed. Please log in again.")
+
+            val bearerToken = "Bearer $accessToken"
+            val response = studentLife.getGsrReservations(bearerToken)
+
+            if (response.isSuccessful) {
+                return response.body() ?: emptyList()
+            } else {
+                val errorBody = response.errorBody()?.string()
+                Log.e("GsrRepoImpl", "HTTP Error fetching reservations: $errorBody")
+                throw Exception("Error fetching reservations.")
             }
         }
 
