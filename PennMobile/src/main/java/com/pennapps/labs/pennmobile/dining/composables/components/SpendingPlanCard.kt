@@ -3,22 +3,18 @@ package com.pennapps.labs.pennmobile.dining.composables.components
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,12 +27,10 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.pennapps.labs.pennmobile.ui.theme.DiningBlue
-import com.pennapps.labs.pennmobile.ui.theme.DiningGreen
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun BudgetPlanCard(
+fun SpendingPlanCard(
     maxDollars: Double,
     maxSwipes: Int,
     onDollarsChange: (Double?) -> Unit,
@@ -47,21 +41,21 @@ fun BudgetPlanCard(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        BudgetPlanItem("Dining Dollars", maxDollars, onDollarsChange, Modifier.weight(1f))
-        BudgetPlanItem("Swipes", maxSwipes.toDouble(), onSwipesChange, Modifier.weight(1f))
+        SpendingPlanItem("Dining Dollars", maxDollars, onDollarsChange, Modifier.weight(1f))
+        SpendingPlanItem("Swipes", maxSwipes.toDouble(), onSwipesChange, Modifier.weight(1f))
     }
 }
 
 @Composable
-private fun BudgetPlanItem(
-    suffix: String,
-    max: Double,
+private fun SpendingPlanItem(
+    unitLabel: String,
+    remainingBalance: Double,
     onValidValue: (Double?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var text by rememberSaveable { mutableStateOf("") }
 
-    fun parse(input: String): Double? = input.toDoubleOrNull()?.takeIf { it in 0.0..max }
+    fun parse(input: String): Double? = input.toDoubleOrNull()?.takeIf { it in 0.0..remainingBalance }
 
     val isError = text.isNotEmpty() && parse(text) == null
 
@@ -95,7 +89,7 @@ private fun BudgetPlanItem(
                     modifier = Modifier.weight(1f),
                 )
                 Text(
-                    text = suffix,
+                    text = unitLabel,
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.W900,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -105,7 +99,7 @@ private fun BudgetPlanItem(
 
         if (isError) {
             Text(
-                text = "Enter 0 to ${"%.2f".format(max)}",
+                text = "Enter 0 to ${"%.2f".format(remainingBalance)}",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier.padding(start = 8.dp, top = 4.dp),

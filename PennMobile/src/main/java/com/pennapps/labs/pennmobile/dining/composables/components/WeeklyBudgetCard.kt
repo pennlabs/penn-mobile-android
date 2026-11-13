@@ -4,20 +4,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.CreditCard
-import androidx.compose.material.icons.filled.Group
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,7 +24,7 @@ import com.pennapps.labs.pennmobile.ui.theme.DiningGreen
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun DiningBudgetingCard(
+fun WeeklyBudgetCard(
     diningDollars: String,
     swipes: Int,
     modifier: Modifier = Modifier,
@@ -41,14 +34,14 @@ fun DiningBudgetingCard(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        BudgetItem(
+        WeeklyBudgetItem(
             "Dining Dollars",
-            diningDollars.toString(),
+            diningDollars,
             DiningGreen,
             modifier = Modifier.weight(1f),
         )
 
-        BudgetItem(
+        WeeklyBudgetItem(
             "Swipes",
             swipes.toString(),
             DiningBlue,
@@ -59,7 +52,7 @@ fun DiningBudgetingCard(
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
-private fun BudgetItem(
+private fun WeeklyBudgetItem(
     label: String,
     amount: String,
     indicatorColor: Color,

@@ -86,6 +86,8 @@ fun DiningPredictionCard(
                 add(Calendar.DAY_OF_YEAR, DAYS_IN_SEMESTER.toInt())
             }.time
 
+    val endX = ((endDate.time - startDate.time) / (1000 * 60 * 60 * 24)).toInt()
+
     val rawValues =
         cell.diningBalancesList?.diningBalancesList?.mapNotNull { balance ->
             when (cell.type) {
@@ -151,9 +153,7 @@ fun DiningPredictionCard(
         } else if (plannedPerWeek != null && entries.isNotEmpty()) {
             // User's budget plan: spend plannedPerWeek starting from today's balance
             val last = entries.last()
-            val slope = -plannedPerWeek.toFloat() / 7f
-            val intercept = last.y - slope * last.x
-            val endX = ((endDate.time - startDate.time) / (1000 * 60 * 60 * 24)).toInt()
+            val (slope, intercept) = plannedLine(plannedPerWeek, last)
             (last.x.toInt()..endX).map { day ->
                 Entry(day.toFloat(), (slope * day + intercept).coerceAtLeast(0f))
             }
@@ -162,7 +162,6 @@ fun DiningPredictionCard(
             val last = entries.last()
             val slope = (last.y - first.y) / (last.x - first.x)
             val intercept = first.y - slope * first.x
-            val endX = ((endDate.time - startDate.time) / (1000 * 60 * 60 * 24)).toInt()
             (last.x.toInt()..endX).map { day ->
                 Entry(day.toFloat(), slope * day + intercept)
             }
@@ -185,11 +184,8 @@ fun DiningPredictionCard(
         if (showPranks) {
             0f
         } else if (plannedPerWeek != null && entries.isNotEmpty()) {
-            val last = entries.last()
-            val slope = -plannedPerWeek.toFloat() / 7f
-            val intercept = last.y - slope * last.x
-            val endX = ((endDate.time - startDate.time) / (1000 * 60 * 60 * 24)).toFloat()
-            slope * endX + intercept
+            val (slope, intercept) = plannedLine(plannedPerWeek, entries.last())
+            slope * endX.toFloat() + intercept
         } else if (entries.size >= 2) {
             val first = entries.first()
             val last = entries.last()
@@ -403,4 +399,14 @@ fun DiningPredictionCard(
             }
         }
     }
+}
+
+// helper funtion but can be made into lambda function too
+private fun plannedLine(
+    plannedPerWeek: Double,
+    latest: Entry,
+): Pair<Float, Float> {
+    val slope = -plannedPerWeek.toFloat() / 7f
+    val intercept = latest.y - slope * latest.x
+    return slope to intercept
 }

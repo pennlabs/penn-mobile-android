@@ -28,10 +28,10 @@ import com.pennapps.labs.pennmobile.compose.presentation.components.error.UserDi
 import com.pennapps.labs.pennmobile.dining.adapters.DiningInsightsCardAdapter.Companion.DAYS_IN_SEMESTER
 import com.pennapps.labs.pennmobile.dining.adapters.DiningInsightsCardAdapter.Companion.START_DAY_OF_SEMESTER
 import com.pennapps.labs.pennmobile.dining.composables.components.AprilFoolsCard
-import com.pennapps.labs.pennmobile.dining.composables.components.BudgetPlanCard
 import com.pennapps.labs.pennmobile.dining.composables.components.DiningBalancesCard
-import com.pennapps.labs.pennmobile.dining.composables.components.DiningBudgetingCard
 import com.pennapps.labs.pennmobile.dining.composables.components.DiningPredictionCard
+import com.pennapps.labs.pennmobile.dining.composables.components.SpendingPlanCard
+import com.pennapps.labs.pennmobile.dining.composables.components.WeeklyBudgetCard
 import com.pennapps.labs.pennmobile.dining.viewmodels.DiningInsightsViewModel
 import com.pennapps.labs.pennmobile.ui.theme.PennMobileTheme
 
@@ -135,7 +135,7 @@ fun DiningInsightsScreen(
                         color = MaterialTheme.colorScheme.onBackground,
                     )
 
-                    DiningBudgetingCard(
+                    WeeklyBudgetCard(
                         diningDollars = "$%.2f".format(it.dollarsPerWeek),
                         swipes = it.swipesPerWeek,
                         modifier = Modifier.padding(bottom = 12.dp),
@@ -148,7 +148,7 @@ fun DiningInsightsScreen(
                     color = MaterialTheme.colorScheme.onBackground,
                 )
 
-                BudgetPlanCard(
+                SpendingPlanCard(
                     maxDollars = balances?.diningDollars?.toString()?.toDoubleOrNull() ?: 0.0,
                     maxSwipes = balances?.regularVisits ?: 0,
                     onDollarsChange = { viewModel.setPlannedDollars(it) },
