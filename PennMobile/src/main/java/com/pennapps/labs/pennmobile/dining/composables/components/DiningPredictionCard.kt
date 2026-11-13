@@ -64,8 +64,8 @@ val diningGrey: ComposeColor = ComposeColor("#F5F5F5".toColorInt())
 fun DiningPredictionCard(
     cell: DiningInsightCell,
     showPranks: Boolean,
-    plannedPerWeek: Double? = null,
     modifier: Modifier = Modifier,
+    plannedPerWeek: Double? = null,
 ) {
     Log.d("Budget", "${cell.type} plannedPerWeek: $plannedPerWeek")
 
