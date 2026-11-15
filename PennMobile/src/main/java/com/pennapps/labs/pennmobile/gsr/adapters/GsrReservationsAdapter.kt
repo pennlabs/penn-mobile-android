@@ -67,6 +67,38 @@ class GsrReservationsAdapter(
                 }.setNegativeButton("Cancel", null)
                 .show()
         }
+
+        holder.gsrReservationShareButton.setOnClickListener {
+            val bearerToken =
+                "Bearer " +
+                    PreferenceManager
+                        .getDefaultSharedPreferences(mContext)
+                        .getString(mContext.getString(R.string.access_token), "")
+
+            MainActivity.studentLifeInstance
+                .getGsrShareCode(bearerToken, ShareCodeRequest(reservation.bookingId ?: return@setOnClickListener))
+                .subscribeOn(rx.schedulers.Schedulers.io())
+                .observeOn(
+                    rx.android.schedulers.AndroidSchedulers
+                        .mainThread(),
+                ).subscribe({ response ->
+                    val deepLink = "https://pennmobile.org/gsr/share?data=${response.code}"
+
+                    val shareIntent =
+                        Intent(Intent.ACTION_SEND).apply {
+                            type = "text/plain"
+                            putExtra(Intent.EXTRA_SUBJECT, "GSR Booking: $roomName")
+                            putExtra(
+                                Intent.EXTRA_TEXT,
+                                "Join my GSR booking!\n$roomName\n$day, $fromHour - $toHour\n\n$deepLink",
+                            )
+                        }
+                    mContext.startActivity(Intent.createChooser(shareIntent, "Share Reservation"))
+                }, { error ->
+                    error.printStackTrace()
+                    Toast.makeText(mContext, "Failed to generate share link.", Toast.LENGTH_SHORT).show()
+                })
+        }
     }
 
     override fun getItemCount(): Int = reservations.size
@@ -88,6 +120,7 @@ class GsrReservationsAdapter(
         itemBinding: GsrReservationBinding,
     ) : RecyclerView.ViewHolder(itemBinding.root) {
         val gsrReservationCancelButton = itemBinding.gsrReservationCancelBtn
+        val gsrReservationShareButton = itemBinding.gsrReservationShareBtn
         val gsrReservationLocationTv = itemBinding.gsrReservationLocationTv
         val gsrReservationDateTv = itemBinding.gsrReservationDateTv
         val gsrReservationIv = itemBinding.gsrReservationIv
