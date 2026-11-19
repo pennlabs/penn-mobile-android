@@ -14,9 +14,16 @@ class FakeGsrRepo(
     var availabilityError: Exception? = null,
     var locationsError: Exception? = null,
     var savedLocationKey: String? = null,
+    var userInfo: Triple<String, String, String> = Triple("", "", ""),
+    var pennKey: String? = null,
+    var bookingError: Exception? = null,
 ) : GsrRepo {
     val availabilityRequests = mutableListOf<Triple<GsrLocation, LocalDate, LocalDate>>()
     var locationRequests = 0
+    val bookings = mutableListOf<Triple<String?, String?, Int>>()
+
+    /** Each booking call waits on the next gate, if any, so tests can see the in-flight state. */
+    val bookingGates = ArrayDeque<CompletableDeferred<Unit>>()
 
     /** Each availability call waits on the next gate, if any, so tests can finish searches out of order. */
     val availabilityGates = ArrayDeque<CompletableDeferred<Unit>>()
@@ -44,7 +51,9 @@ class FakeGsrRepo(
         savedLocationKey = location.key
     }
 
-    override fun getSavedUserInfo() = Triple("", "", "")
+    override fun getSavedUserInfo() = userInfo
+
+    override fun getSavedPennKey() = pennKey
 
     override suspend fun bookGsr(
         startTime: String?,
@@ -55,7 +64,11 @@ class FakeGsrRepo(
         firstName: String,
         lastName: String,
         email: String,
-    ) = Unit
+    ) {
+        bookingGates.removeFirstOrNull()?.await()
+        bookingError?.let { throw it }
+        bookings += Triple(startTime, endTime, roomId)
+    }
 
     override suspend fun cancelGsr(
         bookingId: String?,

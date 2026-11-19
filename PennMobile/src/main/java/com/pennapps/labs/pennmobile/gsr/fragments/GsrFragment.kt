@@ -1,61 +1,41 @@
 package com.pennapps.labs.pennmobile.gsr.fragments
 
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.viewpager.widget.ViewPager
 import com.pennapps.labs.pennmobile.MainActivity
 import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.compose.presentation.theme.AppTheme
-import com.pennapps.labs.pennmobile.gsr.domain.model.GsrBookingOption
+import com.pennapps.labs.pennmobile.gsr.presentation.search.GsrBooked
 import com.pennapps.labs.pennmobile.gsr.presentation.search.GsrSearchScreen
 import com.pennapps.labs.pennmobile.gsr.presentation.search.GsrSearchViewModel
-import com.pennapps.labs.pennmobile.gsr.repo.endTimeParam
-import com.pennapps.labs.pennmobile.gsr.repo.startTimeParam
+import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+
+private const val MY_RESERVATIONS_TAB = 1
 
 /** "Book a Room" tab: hosts [GsrSearchScreen] inside the existing GSR tab pager. */
 @AndroidEntryPoint
 class GsrFragment : Fragment() {
     private val viewModel by lazy { ViewModelProvider(this)[GsrSearchViewModel::class.java] }
 
-    // BookGsrFragment broadcasts "refresh" after a successful booking.
-    private val refreshReceiver =
-        object : BroadcastReceiver() {
-            override fun onReceive(
-                context: Context,
-                intent: Intent,
-            ) {
-                viewModel.refresh()
-            }
-        }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (activity as? MainActivity)?.closeKeyboard()
-        ContextCompat.registerReceiver(
-            requireContext(),
-            refreshReceiver,
-            IntentFilter("refresh"),
-            ContextCompat.RECEIVER_NOT_EXPORTED,
-        )
-    }
-
-    override fun onDestroy() {
-        requireContext().unregisterReceiver(refreshReceiver)
-        super.onDestroy()
     }
 
     override fun onCreateView(
@@ -76,30 +56,35 @@ class GsrFragment : Fragment() {
                         onSelectDuration = viewModel::selectDuration,
                         onSortByTimeChange = viewModel::setSortByTime,
                         onRefresh = viewModel::refresh,
-                        onSlotClick = ::openBooking,
+                        onSlotClick = viewModel::openBooking,
+                        onConfirmBooking = viewModel::confirmBooking,
+                        onDismissBooking = viewModel::dismissBooking,
                         onLogIn = { (activity as? MainActivity)?.startLoginFragment() },
                     )
                 }
             }
         }
 
-    private fun openBooking(option: GsrBookingOption) {
-        val bookGsrFragment =
-            BookGsrFragment.newInstance(
-                gsrID = option.roomId.toString(),
-                gsrLocationCode = option.lid,
-                startTime = option.startTimeParam(),
-                endTime = option.endTimeParam(),
-                gid = option.gid,
-                roomId = option.roomId,
-                roomName = option.roomName,
-            )
-        requireActivity()
-            .supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.content_frame, bookGsrFragment)
-            .addToBackStack("GSR Fragment")
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            .commit()
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
+        super.onViewCreated(view, savedInstanceState)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.bookingEvents.collect(::onBooked)
+            }
+        }
+    }
+
+    private fun onBooked(booked: GsrBooked) {
+        val context = requireContext()
+        Toast.makeText(context, getString(R.string.gsr_booked, booked.roomName), Toast.LENGTH_LONG).show()
+        GsrReservationWidget.requestUpdate(context)
+        // GsrReservationsFragment listens for this; the receivers aren't exported, so it must be explicit.
+        context.sendBroadcast(Intent("refresh").setPackage(context.packageName))
+        // GsrPagerAdapter is built on the activity's fragment manager, so there's no parent fragment to
+        // ask; the pager is this page's direct parent view.
+        (view?.parent as? ViewPager)?.currentItem = MY_RESERVATIONS_TAB
     }
 }

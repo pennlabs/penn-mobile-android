@@ -1,5 +1,6 @@
 package com.pennapps.labs.pennmobile.gsr.presentation.search
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pennapps.labs.pennmobile.gsr.domain.FindAvailableGsrs
@@ -10,15 +11,21 @@ import com.pennapps.labs.pennmobile.gsr.domain.PENN_ZONE
 import com.pennapps.labs.pennmobile.gsr.domain.durationOptions
 import com.pennapps.labs.pennmobile.gsr.domain.groupByRoom
 import com.pennapps.labs.pennmobile.gsr.domain.maxDurationMinutes
+import com.pennapps.labs.pennmobile.gsr.domain.model.GsrBookingOption
 import com.pennapps.labs.pennmobile.gsr.domain.model.GsrLocation
 import com.pennapps.labs.pennmobile.gsr.domain.toGsrFailure
 import com.pennapps.labs.pennmobile.gsr.repo.GsrRepo
+import com.pennapps.labs.pennmobile.gsr.repo.endTimeParam
+import com.pennapps.labs.pennmobile.gsr.repo.startTimeParam
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Clock
@@ -29,6 +36,12 @@ import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
 private const val NO_LOCATIONS = "No GSR locations are available to your account."
+private const val BOOKING_FAILED = "Couldn't book this room. Try again."
+
+/** Sent once per successful booking so the host can toast, update the widget and switch tabs. */
+data class GsrBooked(
+    val roomName: String,
+)
 
 sealed interface GsrContent {
     data object Loading : GsrContent
@@ -50,6 +63,12 @@ data class GsrSearchUiState(
     val sortByTime: Boolean = true,
     val content: GsrContent = GsrContent.Loading,
     val isRefreshing: Boolean = false,
+    /** Slot shown in the confirm sheet; null while the sheet is closed. */
+    val pendingBooking: GsrBookingOption? = null,
+    /** Who the sheet says is booking: full name, else PennKey, else null to hide the row. */
+    val bookerName: String? = null,
+    val isBooking: Boolean = false,
+    val bookingError: String? = null,
 ) {
     val durationOptions: List<Int> get() = selectedLocation?.durationOptions().orEmpty()
 
@@ -80,6 +99,9 @@ class GsrSearchViewModel
         val uiState: StateFlow<GsrSearchUiState> = _uiState.asStateFlow()
 
         private var searchJob: Job? = null
+
+        private val _bookingEvents = Channel<GsrBooked>(Channel.BUFFERED)
+        val bookingEvents: Flow<GsrBooked> = _bookingEvents.receiveAsFlow()
 
         init {
             loadLocations()
@@ -121,6 +143,55 @@ class GsrSearchViewModel
                     content = if (content is GsrContent.Loaded) content.copy(rooms = content.result.rooms(sortByTime)) else content,
                 )
             }
+        }
+
+        fun openBooking(option: GsrBookingOption) {
+            if (_uiState.value.isBooking) return
+            _uiState.update { it.copy(pendingBooking = option, bookingError = null, bookerName = savedBookerName()) }
+        }
+
+        /** Ignored mid-request so the result always lands on the sheet that started it. */
+        fun dismissBooking() {
+            if (_uiState.value.isBooking) return
+            _uiState.update { it.copy(pendingBooking = null, bookingError = null) }
+        }
+
+        fun confirmBooking() {
+            val state = _uiState.value
+            val option = state.pendingBooking ?: return
+            if (state.isBooking) return
+            _uiState.update { it.copy(isBooking = true, bookingError = null) }
+            viewModelScope.launch {
+                // The backend ignores these, but the repo still takes them and saves them back.
+                val (first, last, email) = repo.getSavedUserInfo()
+                try {
+                    repo.bookGsr(
+                        option.startTimeParam(),
+                        option.endTimeParam(),
+                        option.gid,
+                        option.roomId,
+                        option.roomName,
+                        first,
+                        last,
+                        email,
+                    )
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    Log.e("GsrSearchViewModel", "Booking failed", e)
+                    val reason = e.message?.takeIf { it.isNotBlank() } ?: BOOKING_FAILED
+                    _uiState.update { it.copy(isBooking = false, bookingError = reason) }
+                    return@launch
+                }
+                _uiState.update { it.copy(isBooking = false, pendingBooking = null) }
+                _bookingEvents.send(GsrBooked(option.roomName))
+                refresh()
+            }
+        }
+
+        private fun savedBookerName(): String? {
+            val (first, last, _) = repo.getSavedUserInfo()
+            return "$first $last".trim().ifBlank { repo.getSavedPennKey() }
         }
 
         /** Pull-to-refresh, retry, and "a booking just changed availability". */

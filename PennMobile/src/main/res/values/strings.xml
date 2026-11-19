@@ -196,7 +196,12 @@
     <string name="gsr_offline_body">Check your connection and try again.</string>
     <string name="gsr_failed_title">Couldn\'t load rooms</string>
     <string name="gsr_retry">Retry</string>
-    <string name="gsr_slot_time">%1$s – %2$s</string>
+    <string name="gsr_slot_time">%1$s\n–%2$s</string>
+    <string name="gsr_time_range">%1$s – %2$s</string>
+    <string name="gsr_book_room_title">Book %1$s?</string>
+    <string name="gsr_book_room">Book room</string>
+    <string name="gsr_try_again">Try again</string>
+    <string name="gsr_booked">%1$s booked</string>
     <string name="spring_fling">Spring Fling</string>
     <string name="fling_event_time">%1$s - %2$s</string>
     <string name="spec_spring_fling_2019_raffle">SPEC Spring Fling 2019 Raffle</string>

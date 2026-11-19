@@ -50,6 +50,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.res.colorResource
@@ -62,6 +63,8 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.compose.presentation.theme.AppColors
 import com.pennapps.labs.pennmobile.compose.presentation.theme.AppTheme
 import com.pennapps.labs.pennmobile.compose.presentation.theme.GilroyFontFamily
+import com.pennapps.labs.pennmobile.compose.presentation.theme.sfProFontFamily
+import com.pennapps.labs.pennmobile.compose.presentation.theme.withFontFamily
 import com.pennapps.labs.pennmobile.gsr.domain.GsrRoomOptions
 import com.pennapps.labs.pennmobile.gsr.domain.GsrSearchResult
 import com.pennapps.labs.pennmobile.gsr.domain.PENN_ZONE
@@ -76,7 +79,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-private val TIME_FORMAT = DateTimeFormatter.ofPattern("h:mm a", Locale.US)
+internal val TIME_FORMAT = DateTimeFormatter.ofPattern("h:mm a", Locale.US)
 private val DATE_FORMAT = DateTimeFormatter.ofPattern("EEE, MMM d", Locale.US)
 
 /** The theme doesn't define secondaryContainer, so M3's purple default would leak through. */
@@ -93,55 +96,84 @@ fun GsrSearchScreen(
     onSortByTimeChange: (Boolean) -> Unit,
     onRefresh: () -> Unit,
     onSlotClick: (GsrBookingOption) -> Unit,
+    onConfirmBooking: () -> Unit,
+    onDismissBooking: () -> Unit,
     onLogIn: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    PullToRefreshBox(
-        isRefreshing = state.isRefreshing,
-        onRefresh = onRefresh,
-        modifier = modifier.fillMaxSize(),
-    ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize().background(gsrListBackground()),
-            contentPadding = PaddingValues(bottom = 16.dp),
+    // Compose falls back to Roboto; the rest of the app (XML theme, old GSR screen) uses SF Pro.
+    MaterialTheme(typography = MaterialTheme.typography.withFontFamily(sfProFontFamily)) {
+        PullToRefreshBox(
+            isRefreshing = state.isRefreshing,
+            onRefresh = onRefresh,
+            modifier = modifier.fillMaxSize(),
         ) {
-            // The filters scroll away with the results so the list gets the whole screen while
-            // browsing. They're hidden until locations load (e.g. logged out or offline).
-            if (state.locations.isNotEmpty()) {
-                item(key = "filters", contentType = "filters") {
-                    Surface(color = MaterialTheme.colorScheme.surface) {
-                        GsrFilters(
-                            state = state,
-                            onSelectLocation = onSelectLocation,
-                            onSelectDate = onSelectDate,
-                            onSelectTime = onSelectTime,
-                            onSelectDuration = onSelectDuration,
-                            onSortByTimeChange = onSortByTimeChange,
-                        )
+            LazyColumn(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(gsrListBackground())
+                        .padding(horizontal = 8.dp),
+                contentPadding = PaddingValues(bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                // The filters scroll away with the results so the list gets the whole screen while
+                // browsing. They're hidden until locations load (e.g. logged out or offline).
+                if (state.locations.isNotEmpty()) {
+                    item(key = "filters", contentType = "filters") {
+                        Surface(color = MaterialTheme.colorScheme.surface) {
+                            GsrFilters(
+                                state = state,
+                                onSelectLocation = onSelectLocation,
+                                onSelectDate = onSelectDate,
+                                onSelectTime = onSelectTime,
+                                onSelectDuration = onSelectDuration,
+                                onSortByTimeChange = onSortByTimeChange,
+                            )
+                        }
                     }
                 }
-            }
-            when (val content = state.content) {
-                GsrContent.Loading -> {
-                    item(key = "loading", contentType = "loading") {
-                        Box(
-                            modifier = Modifier.fillParentMaxWidth().padding(48.dp),
-                            contentAlignment = Alignment.Center,
-                        ) { CircularProgressIndicator() }
+                when (val content = state.content) {
+                    GsrContent.Loading -> {
+                        item(key = "loading", contentType = "loading") {
+                            Box(
+                                modifier =
+                                    Modifier
+                                        .fillParentMaxWidth()
+                                        .padding(48.dp),
+                                contentAlignment = Alignment.Center,
+                            ) { CircularProgressIndicator() }
+                        }
                     }
-                }
 
-                is GsrContent.Loaded -> {
-                    gsrResults(state, content, onRefresh, onSlotClick, onLogIn)
+                    is GsrContent.Loaded -> {
+                        gsrResults(state, content, onRefresh, onSlotClick, onLogIn)
+                    }
                 }
             }
+        }
+        state.pendingBooking?.let { option ->
+            GsrBookingSheet(
+                option = option,
+                buildingName = state.selectedLocation?.name,
+                bookerName = state.bookerName,
+                isBooking = state.isBooking,
+                error = state.bookingError,
+                onConfirm = onConfirmBooking,
+                onDismiss = onDismissBooking,
+            )
         }
     }
 }
 
 /** The old GSR list's #F1F1F1; dark mode gets a dark gray instead of a bright slab. */
 @Composable
-private fun gsrListBackground(): Color = if (isSystemInDarkTheme()) Color(0xFF1C1C1E) else colorResource(R.color.gsr_background_gray)
+private fun gsrListBackground(): Color =
+    if (isSystemInDarkTheme()) {
+        Color(0xFF1C1C1E)
+    } else {
+        colorResource(R.color.gsr_background_gray)
+    }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -158,17 +190,32 @@ private fun GsrFilters(
     var showLocations by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            FilterField(stringResource(R.string.date), state.date.format(DATE_FORMAT)) { showDatePicker = true }
-            FilterField(stringResource(R.string.time), state.startTime.format(TIME_FORMAT)) { showTimePicker = true }
+            FilterField(
+                stringResource(R.string.date),
+                state.date.format(DATE_FORMAT),
+            ) { showDatePicker = true }
+            FilterField(
+                stringResource(R.string.time),
+                state.startTime.format(TIME_FORMAT),
+            ) { showTimePicker = true }
             Box(modifier = Modifier.weight(1f)) {
-                FilterField(stringResource(R.string.gsr_location), state.selectedLocation?.name ?: "—") {
+                FilterField(
+                    stringResource(R.string.gsr_location),
+                    state.selectedLocation?.name ?: "—",
+                ) {
                     if (state.locations.isNotEmpty()) showLocations = true
                 }
-                DropdownMenu(expanded = showLocations, onDismissRequest = { showLocations = false }) {
+                DropdownMenu(
+                    expanded = showLocations,
+                    onDismissRequest = { showLocations = false },
+                ) {
                     state.locations.forEach { location ->
                         DropdownMenuItem(
                             text = { Text(location.name) },
@@ -202,10 +249,14 @@ private fun GsrFilters(
             }
         }
 
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
             FieldLabel(stringResource(R.string.sort_by))
             SingleChoiceSegmentedButtonRow {
-                val options = listOf(true to R.string.gsr_sort_time, false to R.string.gsr_sort_room)
+                val options =
+                    listOf(true to R.string.gsr_sort_time, false to R.string.gsr_sort_room)
                 options.forEachIndexed { index, (byTime, label) ->
                     SegmentedButton(
                         selected = state.sortByTime == byTime,
@@ -223,10 +274,18 @@ private fun GsrFilters(
     }
 
     if (showDatePicker) {
-        GsrDatePickerDialog(state, onDismiss = { showDatePicker = false }, onSelectDate = onSelectDate)
+        GsrDatePickerDialog(
+            state,
+            onDismiss = { showDatePicker = false },
+            onSelectDate = onSelectDate,
+        )
     }
     if (showTimePicker) {
-        GsrTimePickerDialog(state.startTime, onDismiss = { showTimePicker = false }, onSelectTime = onSelectTime)
+        GsrTimePickerDialog(
+            state.startTime,
+            onDismiss = { showTimePicker = false },
+            onSelectTime = onSelectTime,
+        )
     }
 }
 
@@ -237,14 +296,16 @@ private fun FilterField(
     onClick: () -> Unit,
 ) {
     Column(
-        modifier = Modifier.clickable(onClick = onClick).padding(vertical = 4.dp),
+        modifier =
+            Modifier
+                .clickable(onClick = onClick)
+                .padding(vertical = 4.dp),
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         FieldLabel(label)
         Text(
             text = value,
             style = MaterialTheme.typography.titleMedium,
-            fontFamily = GilroyFontFamily,
             color = MaterialTheme.colorScheme.onSurface,
         )
     }
@@ -252,7 +313,11 @@ private fun FilterField(
 
 @Composable
 private fun FieldLabel(text: String) {
-    Text(text = text, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    Text(
+        text = text,
+        style = MaterialTheme.typography.labelMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -271,7 +336,8 @@ private fun GsrDatePickerDialog(
             selectableDates =
                 object : SelectableDates {
                     override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                        val day = Instant.ofEpochMilli(utcTimeMillis).atZone(ZoneOffset.UTC).toLocalDate()
+                        val day =
+                            Instant.ofEpochMilli(utcTimeMillis).atZone(ZoneOffset.UTC).toLocalDate()
                         return !day.isBefore(state.today) && !day.isAfter(state.lastBookableDate)
                     }
 
@@ -301,7 +367,12 @@ private fun GsrTimePickerDialog(
     onDismiss: () -> Unit,
     onSelectTime: (LocalTime) -> Unit,
 ) {
-    val pickerState = rememberTimePickerState(initialHour = initial.hour, initialMinute = initial.minute, is24Hour = false)
+    val pickerState =
+        rememberTimePickerState(
+            initialHour = initial.hour,
+            initialMinute = initial.minute,
+            is24Hour = false,
+        )
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
@@ -405,16 +476,24 @@ private fun RoomRow(
     room: GsrRoomOptions,
     onSlotClick: (GsrBookingOption) -> Unit,
 ) {
-    Column {
+    Column(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(6.dp))
+                .background(if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.surface)
+                .padding(vertical = 16.dp),
+    ) {
         Text(
             text = room.roomName,
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
         )
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.fillMaxWidth(),
         ) {
             items(room.options, key = { it.start.toEpochSecond() }) { option ->
                 SlotCard(option, onClick = { onSlotClick(option) })
@@ -432,7 +511,7 @@ private fun SlotCard(
     Card(
         onClick = onClick,
         shape = RoundedCornerShape(8.dp),
-        border = BorderStroke(2.dp, green),
+//        border = BorderStroke(2.dp, green),
         // gsr_inside_green is translucent; flatten it onto the surface so the gray list doesn't show through.
         colors =
             CardDefaults.cardColors(
@@ -464,7 +543,10 @@ private fun GsrStateMessage(
     onAction: (() -> Unit)? = null,
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(32.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
@@ -482,12 +564,15 @@ private fun GsrStateMessage(
             modifier = Modifier.padding(top = 8.dp),
         )
         if (actionLabel != null && onAction != null) {
-            Button(onClick = onAction, modifier = Modifier.padding(top = 16.dp)) { Text(actionLabel) }
+            Button(
+                onClick = onAction,
+                modifier = Modifier.padding(top = 16.dp),
+            ) { Text(actionLabel) }
         }
     }
 }
 
-private fun formatDuration(minutes: Int): String {
+internal fun formatDuration(minutes: Int): String {
     val hours = minutes / 60
     val rest = minutes % 60
     return when {
@@ -497,7 +582,8 @@ private fun formatDuration(minutes: Int): String {
     }
 }
 
-private val PREVIEW_LOCATION = GsrLocation("1090", 1909, "Levin Building", GsrLocation.Kind.LIBCAL, 7)
+private val PREVIEW_LOCATION =
+    GsrLocation("1090", 1909, "Levin Building", GsrLocation.Kind.LIBCAL, 7)
 
 private fun previewState(content: GsrContent) =
     GsrSearchUiState(
@@ -519,9 +605,14 @@ private fun previewFound(): GsrContent {
         val start = ZonedDateTime.of(2026, 10, 23, hour, minute, 0, 0, PENN_ZONE).toOffsetDateTime()
         return GsrBookingOption("1090", 1909, room.hashCode(), room, start, start.plusMinutes(90))
     }
+
     val options =
         listOf("L15", "L17", "L20", "L23", "L25", "L28", "L30").flatMapIndexed { i, room ->
-            listOf(option(room, 18 + i % 3, 0), option(room, 18 + i % 3, 30), option(room, 19 + i % 3, 0))
+            listOf(
+                option(room, 18 + i % 3, 0),
+                option(room, 18 + i % 3, 30),
+                option(room, 19 + i % 3, 0),
+            )
         }
     return GsrContent.Loaded(GsrSearchResult.Found(options), options.groupByRoom(sortByTime = true))
 }
@@ -539,6 +630,8 @@ private fun PreviewScreen(content: GsrContent) {
                 onSortByTimeChange = {},
                 onRefresh = {},
                 onSlotClick = {},
+                onConfirmBooking = {},
+                onDismissBooking = {},
                 onLogIn = {},
             )
         }
@@ -547,32 +640,54 @@ private fun PreviewScreen(content: GsrContent) {
 
 /** The whole Book a Room tab: filters, then rooms sorted by earliest opening. */
 @Preview(name = "GSR search screen", showBackground = true, showSystemUi = true)
-@Preview(name = "GSR search screen (dark)", showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(
+    name = "GSR search screen (dark)",
+    showBackground = true,
+    showSystemUi = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+)
 @Composable
 private fun GsrSearchScreenPreview() = PreviewScreen(previewFound())
 
-@Preview(name = "Not logged in", showBackground = true)
-@Preview(name = "Not logged in (dark)", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun NotLoggedInPreview() = PreviewScreen(GsrContent.Loaded(GsrSearchResult.NotLoggedIn, emptyList()))
-
-@Preview(name = "Offline", showBackground = true)
-@Composable
-private fun OfflinePreview() = PreviewScreen(GsrContent.Loaded(GsrSearchResult.Offline, emptyList()))
-
-@Preview(name = "None available", showBackground = true)
-@Composable
-private fun NoneAvailablePreview() = PreviewScreen(GsrContent.Loaded(GsrSearchResult.NoneAvailable, emptyList()))
-
-@Preview(name = "Failed", showBackground = true)
-@Composable
-private fun FailedPreview() = PreviewScreen(GsrContent.Loaded(GsrSearchResult.Failed("Error: Not enough credits"), emptyList()))
-
-@Preview(name = "Duration too long", showBackground = true)
-@Composable
-private fun DurationTooLongPreview() =
-    PreviewScreen(GsrContent.Loaded(GsrSearchResult.DurationTooLong(180, 120, PREVIEW_LOCATION), emptyList()))
-
-@Preview(name = "Loading", showBackground = true)
-@Composable
-private fun LoadingPreview() = PreviewScreen(GsrContent.Loading)
+// @Preview(name = "Not logged in", showBackground = true)
+// @Preview(
+//    name = "Not logged in (dark)",
+//    showBackground = true,
+//    uiMode = Configuration.UI_MODE_NIGHT_YES
+// )
+// @Composable
+// private fun NotLoggedInPreview() =
+//    PreviewScreen(GsrContent.Loaded(GsrSearchResult.NotLoggedIn, emptyList()))
+//
+// @Preview(name = "Offline", showBackground = true)
+// @Composable
+// private fun OfflinePreview() =
+//    PreviewScreen(GsrContent.Loaded(GsrSearchResult.Offline, emptyList()))
+//
+// @Preview(name = "None available", showBackground = true)
+// @Composable
+// private fun NoneAvailablePreview() =
+//    PreviewScreen(GsrContent.Loaded(GsrSearchResult.NoneAvailable, emptyList()))
+//
+// @Preview(name = "Failed", showBackground = true)
+// @Composable
+// private fun FailedPreview() = PreviewScreen(
+//    GsrContent.Loaded(
+//        GsrSearchResult.Failed("Error: Not enough credits"),
+//        emptyList()
+//    )
+// )
+//
+// @Preview(name = "Duration too long", showBackground = true)
+// @Composable
+// private fun DurationTooLongPreview() =
+//    PreviewScreen(
+//        GsrContent.Loaded(
+//            GsrSearchResult.DurationTooLong(180, 120, PREVIEW_LOCATION),
+//            emptyList()
+//        )
+//    )
+//
+// @Preview(name = "Loading", showBackground = true)
+// @Composable
+// private fun LoadingPreview() = PreviewScreen(GsrContent.Loading)
