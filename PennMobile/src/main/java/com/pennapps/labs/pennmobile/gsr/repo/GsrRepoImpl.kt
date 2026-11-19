@@ -38,6 +38,9 @@ class GsrRepoImpl
             return Triple(firstName, lastName, email)
         }
 
+        override fun getSavedPennKey(): String? =
+            sharedPreferences.getString(context.getString(R.string.pennkey), null)?.takeIf { it.isNotBlank() }
+
         override fun lastLocationKey(): String? = sharedPreferences.getString(LAST_LOCATION_KEY, null)
 
         override fun saveLastLocation(location: GsrLocation) {

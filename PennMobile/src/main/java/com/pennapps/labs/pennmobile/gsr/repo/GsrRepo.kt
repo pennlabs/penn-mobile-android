@@ -8,6 +8,9 @@ import java.time.LocalDate
 interface GsrRepo {
     fun getSavedUserInfo(): Triple<String, String, String>
 
+    /** PennKey username saved at login, or null for accounts that logged in before it was stored. */
+    fun getSavedPennKey(): String?
+
     /** `"$lid|$gid"` of the location last chosen on the search screen, or null if none yet. */
     fun lastLocationKey(): String?
 

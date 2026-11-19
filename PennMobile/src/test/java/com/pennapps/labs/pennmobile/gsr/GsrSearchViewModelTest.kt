@@ -7,14 +7,21 @@ import com.pennapps.labs.pennmobile.gsr.domain.GsrNotLoggedInException
 import com.pennapps.labs.pennmobile.gsr.domain.GsrOfflineException
 import com.pennapps.labs.pennmobile.gsr.domain.GsrSearchResult
 import com.pennapps.labs.pennmobile.gsr.domain.PENN_ZONE
+import com.pennapps.labs.pennmobile.gsr.domain.model.GsrBookingOption
+import com.pennapps.labs.pennmobile.gsr.presentation.search.GsrBooked
 import com.pennapps.labs.pennmobile.gsr.presentation.search.GsrContent
 import com.pennapps.labs.pennmobile.gsr.presentation.search.GsrSearchViewModel
+import com.pennapps.labs.pennmobile.gsr.repo.endTimeParam
+import com.pennapps.labs.pennmobile.gsr.repo.startTimeParam
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -24,6 +31,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -230,5 +238,102 @@ class GsrSearchViewModelTest {
 
             vm.selectDate(DAY.minusDays(3))
             assertEquals(DAY, vm.uiState.value.date)
+        }
+
+    private val l15 = GsrBookingOption("1086", 4660, 15, "L15", offsetAt("14:00"), offsetAt("15:30"))
+
+    @Test
+    fun `tapping a slot opens the sheet with the saved name`() =
+        runTest(dispatcher) {
+            val repo = FakeGsrRepo(locations = locations, userInfo = Triple("Ben", "Franklin", "ben@upenn.edu"))
+            val vm = viewModel(repo)
+
+            vm.openBooking(l15)
+
+            assertEquals(l15, vm.uiState.value.pendingBooking)
+            assertEquals("Ben Franklin", vm.uiState.value.bookerName)
+            assertTrue("opening the sheet doesn't book anything", repo.bookings.isEmpty())
+        }
+
+    @Test
+    fun `with no saved name the sheet shows the PennKey, and with neither it hides the row`() =
+        runTest(dispatcher) {
+            val repo = FakeGsrRepo(locations = locations, pennKey = "bfranklin")
+            val vm = viewModel(repo)
+
+            vm.openBooking(l15)
+            assertEquals("bfranklin", vm.uiState.value.bookerName)
+
+            repo.pennKey = null
+            vm.openBooking(l15)
+            assertNull(vm.uiState.value.bookerName)
+        }
+
+    @Test
+    fun `cancel closes the sheet without booking`() =
+        runTest(dispatcher) {
+            val repo = FakeGsrRepo(locations = locations)
+            val vm = viewModel(repo)
+            vm.openBooking(l15)
+
+            vm.dismissBooking()
+
+            assertNull(vm.uiState.value.pendingBooking)
+            assertTrue(repo.bookings.isEmpty())
+        }
+
+    @Test
+    fun `a successful booking closes the sheet, reports it once and refreshes the list`() =
+        runTest(dispatcher) {
+            val repo = FakeGsrRepo(locations = locations)
+            val vm = viewModel(repo)
+            val gate = CompletableDeferred<Unit>()
+            repo.bookingGates.add(gate)
+            val events = mutableListOf<GsrBooked>()
+            val collector = backgroundScope.launch { vm.bookingEvents.toList(events) }
+            vm.openBooking(l15)
+
+            vm.confirmBooking()
+            advanceUntilIdle()
+            assertTrue(vm.uiState.value.isBooking)
+            vm.dismissBooking()
+            assertEquals("the sheet can't be dismissed mid-request", l15, vm.uiState.value.pendingBooking)
+            vm.confirmBooking()
+
+            gate.complete(Unit)
+            advanceUntilIdle()
+
+            val state = vm.uiState.value
+            assertNull(state.pendingBooking)
+            assertFalse(state.isBooking)
+            assertEquals(listOf(GsrBooked("L15")), events)
+            assertEquals("a repeat tap mid-request doesn't book twice", 1, repo.bookings.size)
+            assertEquals(Triple(l15.startTimeParam(), l15.endTimeParam(), 15), repo.bookings.single())
+            assertEquals(2, repo.availabilityRequests.size)
+            collector.cancel()
+        }
+
+    @Test
+    fun `a failed booking keeps the sheet open with the reason`() =
+        runTest(dispatcher) {
+            val repo = FakeGsrRepo(locations = locations, bookingError = Exception("Error: Not enough credits"))
+            val vm = viewModel(repo)
+            vm.openBooking(l15)
+
+            vm.confirmBooking()
+            advanceUntilIdle()
+
+            val state = vm.uiState.value
+            assertEquals(l15, state.pendingBooking)
+            assertFalse(state.isBooking)
+            assertEquals("Error: Not enough credits", state.bookingError)
+            assertEquals("no refresh after a failure", 1, repo.availabilityRequests.size)
+
+            repo.bookingError = null
+            vm.confirmBooking()
+            advanceUntilIdle()
+            assertNull(vm.uiState.value.bookingError)
+            assertNull(vm.uiState.value.pendingBooking)
+            assertEquals(GsrBooked("L15"), vm.bookingEvents.first())
         }
 }
