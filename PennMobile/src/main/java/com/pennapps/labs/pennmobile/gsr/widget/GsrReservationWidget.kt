@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile.gsr.widget
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -74,7 +75,6 @@ class GsrReservationWidget : AppWidgetProvider() {
             appWidgetManager.updateAppWidget(appWidgetId, views)
             Log.d("GsrReservationWidget", "onUpdate is called")
         }
-        context.sendBroadcast(Intent(UPDATE_GSR_WIDGET))
     }
 
     override fun onDeleted(
@@ -86,7 +86,22 @@ class GsrReservationWidget : AppWidgetProvider() {
 
     companion object {
         private var mGSRReservationsRequest: GsrReservationsRequest? = null
-        const val UPDATE_GSR_WIDGET = "com.pennapps.labs.pennmobile.UPDATE_GSR_WIDGET"
+
+        /**
+         * Asks every placed GSR widget to reload reservations, e.g. after booking, cancelling or logging in/out.
+         *
+         * notifyAppWidgetViewDataChanged makes the system call the factory's onDataSetChanged and
+         * restarts its RemoteViewsService if Android already stopped it. The previous broadcast only
+         * reached a receiver living inside that service, so it was lost whenever the service was idle.
+         */
+        @JvmStatic
+        fun requestUpdate(context: Context) {
+            val manager = AppWidgetManager.getInstance(context)
+            val ids = manager.getAppWidgetIds(ComponentName(context, GsrReservationWidget::class.java))
+            if (ids.isNotEmpty()) {
+                manager.notifyAppWidgetViewDataChanged(ids, R.id.gsr_reservation_widget_stack_view)
+            }
+        }
 
         @JvmStatic
         val gsrReservationsRequestInstance: GsrReservationsRequest

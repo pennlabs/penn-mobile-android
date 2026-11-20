@@ -14,7 +14,6 @@ import com.pennapps.labs.pennmobile.gsr.classes.GSR
 import com.pennapps.labs.pennmobile.gsr.classes.GSRBookingResult
 import com.pennapps.labs.pennmobile.gsr.classes.GSRLocation
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
-import com.pennapps.labs.pennmobile.gsr.classes.WhartonStatus
 import com.pennapps.labs.pennmobile.home.classes.Article
 import com.pennapps.labs.pennmobile.home.classes.CalendarEvent
 import com.pennapps.labs.pennmobile.home.classes.Poll
@@ -113,17 +112,13 @@ interface StudentLife {
     ): Observable<DiningPreferences?>
 
     @GET("gsr/availability/{id}/{gid}")
-    fun gsrRoom(
-        @Header("Authorization") bearerToken: String?,
-        @Path("id") id: String?,
+    suspend fun getGsrAvailability(
+        @Header("Authorization") bearerToken: String,
+        @Path("id") lid: String,
         @Path("gid") gid: Int,
-        @Query("start") date: String?,
-    ): Observable<GSR?>
-
-    @GET("gsr/wharton")
-    fun isWharton(
-        @Header("Authorization") bearerToken: String?,
-    ): Observable<WhartonStatus?>
+        @Query("start") start: String,
+        @Query("end") end: String?,
+    ): Response<GSR>
 
     @GET("penndata/news")
     fun getNews(): Observable<Article?>
@@ -190,9 +185,9 @@ interface StudentLife {
     fun locationUnfiltered(): Observable<List<GSRLocation?>?>
 
     @GET("gsr/user-locations")
-    fun location(
-        @Header("Authorization") bearerToken: String?,
-    ): Observable<List<GSRLocation?>?>
+    suspend fun getGsrLocations(
+        @Header("Authorization") bearerToken: String,
+    ): Response<List<GSRLocation>>
 
     @GET("events/fling")
     fun getFlingEvents(): Observable<List<FlingEvent?>?>

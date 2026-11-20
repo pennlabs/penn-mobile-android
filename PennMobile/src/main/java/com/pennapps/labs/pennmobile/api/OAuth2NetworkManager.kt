@@ -7,6 +7,7 @@ import android.util.Log
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pennapps.labs.pennmobile.BuildConfig
 import com.pennapps.labs.pennmobile.R
+import com.pennapps.labs.pennmobile.api.classes.AccessToken
 import com.pennapps.labs.pennmobile.api.classes.AuthEvent
 import com.pennapps.labs.pennmobile.di.AppScope
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -15,9 +16,19 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
+import java.io.IOException
 import java.util.Calendar
 import javax.inject.Inject
+import javax.inject.Singleton
 
+/**
+ * Hands out access tokens and refreshes them when they expire.
+ *
+ * Must stay a singleton: each refresh returns a new refresh token, so two instances refreshing in
+ * parallel send the same old token, the second gets a 400, and the user is logged out. One instance means
+ * one [tokenMutex], so the second caller waits and reuses the first caller's new token.
+ */
+@Singleton
 class OAuth2NetworkManager
     @Inject
     constructor(
@@ -81,11 +92,18 @@ class OAuth2NetworkManager
          * @return The valid access token as a String, or `null` if the user is in guest mode
          * or if authentication fails.
          */
-        suspend fun getAccessToken(): String? {
+        suspend fun getAccessToken(): String? = (getAccessTokenResult() as? AccessToken.Valid)?.token
+
+        /**
+         * Like [getAccessToken], but says why no token is available.
+         *
+         * A refresh that fails because the device is offline returns [AccessToken.NetworkUnavailable]
+         * and does not emit [AuthEvent.RequiresLogin], so offline users aren't sent to the login screen.
+         */
+        suspend fun getAccessTokenResult(): AccessToken {
             val guestMode = sp.getBoolean(context.getString(R.string.guest_mode), false)
             if (guestMode) {
-                // It's better to explicitly return null than to proceed insecurely.
-                return null
+                return AccessToken.Guest
             }
 
             // Use a mutex to ensure only one thread/coroutine can check/refresh the token at a time.
@@ -96,17 +114,17 @@ class OAuth2NetworkManager
 
                 if (tokenIsExpired) {
                     Log.i("Accounts", "Token is expired or missing. Refreshing...")
-                    val refreshSucceeded = refreshAccessToken()
-                    if (!refreshSucceeded) {
-                        // If the refresh failed, we cannot provide a token.
-                        return null
+                    when (refreshAccessToken()) {
+                        RefreshResult.Success -> Unit
+                        RefreshResult.Rejected -> return AccessToken.LoggedOut
+                        RefreshResult.NetworkError -> return AccessToken.NetworkUnavailable
                     }
                 } else {
                     Log.i("Accounts", "Token is still valid.")
                 }
 
-                // At this point, the token in SharedPreferences is guaranteed to be valid.
-                return sp.getString(context.getString(R.string.access_token), null)
+                val token = sp.getString(context.getString(R.string.access_token), null)
+                return if (token.isNullOrBlank()) AccessToken.LoggedOut else AccessToken.Valid(token)
             } finally {
                 // Crucial: Always unlock the mutex in a finally block to prevent deadlocks.
                 tokenMutex.unlock()
@@ -119,6 +137,15 @@ class OAuth2NetworkManager
         ) {
             val refreshToken = sp.getString(context.getString(R.string.refresh_token), "") ?: ""
             val clientID = BuildConfig.PLATFORM_CLIENT_ID
+
+            // Every exit must release the mutex, or all later getAccessToken calls wait forever.
+            var released = false
+            val release = {
+                if (!released) {
+                    released = true
+                    unlockMutex.invoke()
+                }
+            }
 
             try {
                 val response =
@@ -144,7 +171,7 @@ class OAuth2NetworkManager
                     )
                     editor.apply()
 
-                    unlockMutex.invoke()
+                    release()
                     function.invoke()
                 } else {
                     val error = response.errorBody()!!
@@ -153,12 +180,13 @@ class OAuth2NetworkManager
 
                     if (response.code() == 400) {
                         _authEvents.emit(AuthEvent.RequiresLogin)
-                        unlockMutex.invoke()
                     }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
                 FirebaseCrashlytics.getInstance().recordException(e)
+            } finally {
+                release()
             }
         }
 
@@ -166,16 +194,17 @@ class OAuth2NetworkManager
          * Refreshes the access token using the stored refresh token. This is a suspend function
          * that performs the network call.
          *
-         * @return `true` if the token was refreshed successfully, `false` otherwise.
+         * Only a rejected refresh emits [AuthEvent.RequiresLogin]; a network failure doesn't, because
+         * the stored refresh token may still be valid once the device is back online.
          */
-        private suspend fun refreshAccessToken(): Boolean {
+        private suspend fun refreshAccessToken(): RefreshResult {
             val refreshToken = sp.getString(context.getString(R.string.refresh_token), "")
             val clientID = BuildConfig.PLATFORM_CLIENT_ID
 
             // If there's no refresh token, we can't do anything.
             if (refreshToken.isNullOrEmpty()) {
                 _authEvents.emit(AuthEvent.RequiresLogin)
-                return false
+                return RefreshResult.Rejected
             }
 
             return try {
@@ -204,23 +233,27 @@ class OAuth2NetworkManager
                     )
                     editor.apply()
                     Log.i("Accounts", "Access token refreshed successfully.")
-                    true // Return true on success
+                    RefreshResult.Success
                 } else {
                     // If refresh fails (e.g., 400 Bad Request), the user needs to log in again.
                     val errorBody = response.errorBody()?.string() ?: "Unknown error"
                     FirebaseCrashlytics.getInstance().recordException(Exception("Token refresh failed: $errorBody"))
                     _authEvents.emit(AuthEvent.RequiresLogin)
-                    false // Return false on failure
+                    RefreshResult.Rejected
                 }
+            } catch (e: IOException) {
+                Log.w("Accounts", "Token refresh failed: network unavailable", e)
+                RefreshResult.NetworkError
             } catch (e: Exception) {
-                // Handle network exceptions during token refresh
                 e.printStackTrace()
                 FirebaseCrashlytics.getInstance().recordException(e)
-                // It's safer to assume login is required on any refresh exception
+                // It's safer to assume login is required on any other refresh exception
                 _authEvents.emit(AuthEvent.RequiresLogin)
-                false // Return false on failure
+                RefreshResult.Rejected
             }
         }
+
+        private enum class RefreshResult { Success, Rejected, NetworkError }
 
         /**
          * Utils function that removes the need of writing the Bearer Token code over and over again

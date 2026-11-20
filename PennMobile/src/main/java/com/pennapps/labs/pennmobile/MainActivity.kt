@@ -64,7 +64,6 @@ import com.pennapps.labs.pennmobile.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
 import eightbitlab.com.blurview.BlurView
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -84,7 +83,6 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var mNetworkManager: OAuth2NetworkManager
 
-    val tokenMutex = Mutex()
     private lateinit var mFirebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -257,7 +255,7 @@ class MainActivity : AppCompatActivity() {
         }
         val currentFragment = fragmentManager.findFragmentById(R.id.content_frame)
         val fragment: Fragment = LoginFragment()
-        sendBroadcast(Intent(GsrReservationWidget.UPDATE_GSR_WIDGET))
+        GsrReservationWidget.requestUpdate(this)
 
         // change the fragment only if we're not already on the login fragment
         if (currentFragment == null || currentFragment::class != fragment::class) {

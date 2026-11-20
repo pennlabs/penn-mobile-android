@@ -128,6 +128,8 @@ dependencies {
     implementation libs.jsoup
     implementation platform(libs.androidx.compose.bom)
     testImplementation platform(libs.androidx.compose.bom)
+    testImplementation libs.mockk
+    testImplementation libs.kotlinx.coroutines.test
     androidTestImplementation platform(libs.androidx.compose.bom)
     implementation platform(libs.firebase.bom)
 

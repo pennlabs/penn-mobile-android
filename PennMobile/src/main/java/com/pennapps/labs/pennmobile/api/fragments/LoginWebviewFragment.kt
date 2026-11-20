@@ -275,7 +275,7 @@ class LoginWebviewFragment : Fragment() {
                         editor.putString(getString(R.string.email_address), user?.email)
                         editor.putString(getString(R.string.pennkey), user?.username)
                         editor.apply()
-                        context?.sendBroadcast(Intent(GsrReservationWidget.UPDATE_GSR_WIDGET))
+                        context?.let { GsrReservationWidget.requestUpdate(it) }
                         mActivity.startHomeFragment()
                     } else {
                         val error = Exception(response.errorBody()?.string() ?: "Unknown Error")
