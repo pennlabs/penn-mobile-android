@@ -40,7 +40,6 @@ import javax.inject.Inject
 private const val NO_LOCATIONS = "No GSR locations are available to your account."
 private const val BOOKING_FAILED = "Couldn't book this room. Try again."
 
-/** Sent once per successful booking so the host can toast, update the widget and switch tabs. */
 data class GsrBooked(
     val roomName: String,
 )
@@ -67,7 +66,6 @@ data class GsrSearchUiState(
     val sortByTime: Boolean = true,
     val content: GsrContent = GsrContent.Loading,
     val isRefreshing: Boolean = false,
-    /** Slot shown in the confirm sheet; null while the sheet is closed. */
     val pendingBooking: GsrBookingOption? = null,
     /** Who the sheet says is booking: full name, else PennKey, else null to hide the row. */
     val bookerName: String? = null,
@@ -93,7 +91,6 @@ private fun initialState(now: ZonedDateTime) =
         startTime = now.toLocalTime().floorToHalfHour(),
     ).withStartTimes(now)
 
-/** Recomputes the time choices and moves a start time that has passed up to the current half-hour. */
 private fun GsrSearchUiState.withStartTimes(now: ZonedDateTime): GsrSearchUiState {
     val earliest = if (date == now.toLocalDate()) now.toLocalTime().floorToHalfHour() else LocalTime.MIDNIGHT
     return copy(startTimeChoices = halfHourStartTimes(earliest), startTime = startTime.coerceAtLeast(earliest))
@@ -119,11 +116,6 @@ class GsrSearchViewModel
             loadLocations()
         }
 
-        /**
-         * Called whenever the GSR tab is opened: date and time go back to today at the current
-         * half-hour, while the location (saved in prefs) stays. Skipped when nothing changed so
-         * flipping tabs doesn't reload the list.
-         */
         fun resetToNow() {
             val now = now()
             val state = _uiState.value

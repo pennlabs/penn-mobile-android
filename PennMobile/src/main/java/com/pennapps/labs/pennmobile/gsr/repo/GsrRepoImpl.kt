@@ -28,7 +28,6 @@ import javax.inject.Inject
 
 private const val LAST_LOCATION_KEY = "gsr_last_location"
 
-/** Action GsrReservationsFragment listens on to reload its list. */
 private const val RESERVATIONS_REFRESH_ACTION = "refresh"
 
 class GsrRepoImpl

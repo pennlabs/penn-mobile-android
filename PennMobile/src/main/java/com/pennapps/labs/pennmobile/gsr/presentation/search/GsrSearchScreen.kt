@@ -384,11 +384,6 @@ private fun GsrDatePickerDialog(
     }
 }
 
-/**
- * Matches the GSR sheets: plain surface instead of M3's tinted container, ink text, and the
- * primary fill only on the selected day. Primary is navy in both themes, so anything drawn
- * *in* primary (today's ring, the buttons' text) disappears on the dark surface.
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun gsrDatePickerColors(): DatePickerColors {

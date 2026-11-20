@@ -59,7 +59,6 @@ class GsrSearchViewModelTest {
         unmockkStatic(Log::class)
     }
 
-    /** [now] (default 1:00 PM) on [DAY] in Philadelphia. */
     private fun TestScope.viewModel(
         repo: FakeGsrRepo,
         now: String = "13:00",
@@ -122,7 +121,6 @@ class GsrSearchViewModelTest {
             assertEquals(LocalTime.of(13, 0), vm.uiState.value.startTime)
         }
 
-    /** A clock the test can move forward, e.g. to reopen the tab later in the day. */
     private class MovableClock(
         var now: ZonedDateTime,
     ) : Clock() {

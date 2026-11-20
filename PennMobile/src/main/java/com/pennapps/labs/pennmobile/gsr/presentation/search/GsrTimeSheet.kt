@@ -45,12 +45,10 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-/** The section headings already say AM/PM, so the buttons drop it to fit four across. */
 private val GRID_TIME_FORMAT = DateTimeFormatter.ofPattern("h:mm", Locale.US)
 
 private const val COLUMNS = 4
 
-/** Half-hour grid for picking the search start time; nothing changes until the user confirms. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GsrTimeSheet(
@@ -104,7 +102,6 @@ private fun GsrTimeSheetContent(
         mutableStateOf(choices.firstOrNull { it >= initial } ?: choices.lastOrNull() ?: initial)
     }
     val items = remember(choices) { gridItems(choices) }
-    // Opens on the selected time's section so a future day doesn't start scrolled to midnight.
     val gridState =
         rememberLazyGridState(
             initialFirstVisibleItemIndex =
@@ -128,7 +125,6 @@ private fun GsrTimeSheetContent(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
-            // Capped so a whole day scrolls inside a bottom sheet instead of filling the screen.
             modifier = Modifier.heightIn(max = 420.dp),
         ) {
             items.forEach { item ->

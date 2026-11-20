@@ -54,7 +54,6 @@ import java.util.Locale
 
 private val SHEET_DATE_FORMAT = DateTimeFormatter.ofPattern("EEEE, MMMM d", Locale.US)
 
-/** Confirm step for [GsrBookingOption]; it can't be swiped away while the request is in flight. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GsrBookingSheet(
@@ -250,7 +249,6 @@ private fun DetailText(text: String) {
     Text(text = text, fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
 }
 
-/** Same greens as the slot cards, so the chip reads as "the slot you tapped". */
 @Composable
 private fun DurationChip(minutes: Int) {
     Text(

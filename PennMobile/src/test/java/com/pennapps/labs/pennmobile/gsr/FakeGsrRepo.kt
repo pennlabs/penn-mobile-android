@@ -22,7 +22,6 @@ class FakeGsrRepo(
     var locationRequests = 0
     val bookings = mutableListOf<Triple<String?, String?, Int>>()
 
-    /** Each booking call waits on the next gate, if any, so tests can see the in-flight state. */
     val bookingGates = ArrayDeque<CompletableDeferred<Unit>>()
 
     /** Each availability call waits on the next gate, if any, so tests can finish searches out of order. */
