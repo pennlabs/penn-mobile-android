@@ -1,6 +1,5 @@
 package com.pennapps.labs.pennmobile.gsr.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +21,6 @@ import com.pennapps.labs.pennmobile.compose.presentation.theme.AppTheme
 import com.pennapps.labs.pennmobile.gsr.presentation.search.GsrBooked
 import com.pennapps.labs.pennmobile.gsr.presentation.search.GsrSearchScreen
 import com.pennapps.labs.pennmobile.gsr.presentation.search.GsrSearchViewModel
-import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -78,13 +76,7 @@ class GsrFragment : Fragment() {
     }
 
     private fun onBooked(booked: GsrBooked) {
-        val context = requireContext()
-        Toast.makeText(context, getString(R.string.gsr_booked, booked.roomName), Toast.LENGTH_LONG).show()
-        GsrReservationWidget.requestUpdate(context)
-        // GsrReservationsFragment listens for this; the receivers aren't exported, so it must be explicit.
-        context.sendBroadcast(Intent("refresh").setPackage(context.packageName))
-        // GsrPagerAdapter is built on the activity's fragment manager, so there's no parent fragment to
-        // ask; the pager is this page's direct parent view.
+        Toast.makeText(requireContext(), getString(R.string.gsr_booked, booked.roomName), Toast.LENGTH_LONG).show()
         (view?.parent as? ViewPager)?.currentItem = MY_RESERVATIONS_TAB
     }
 }

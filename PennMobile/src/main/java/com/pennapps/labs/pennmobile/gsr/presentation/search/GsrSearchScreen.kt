@@ -44,6 +44,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -152,14 +153,24 @@ fun GsrSearchScreen(
                 }
             }
         }
-        state.pendingBooking?.let { option ->
+        // Outlives pendingBooking so the sheet can slide out after a booking instead of vanishing.
+        var sheetOption by remember { mutableStateOf<GsrBookingOption?>(null) }
+        LaunchedEffect(state.pendingBooking) { state.pendingBooking?.let { sheetOption = it } }
+        sheetOption?.let { option ->
             GsrBookingSheet(
                 option = option,
+                show = state.pendingBooking != null,
+                onHide = { sheetOption = null },
                 buildingName = state.selectedLocation?.name,
                 bookerName = state.bookerName,
                 isBooking = state.isBooking,
                 error = state.bookingError,
+                needsLogin = state.bookingNeedsLogin,
                 onConfirm = onConfirmBooking,
+                onLogIn = {
+                    onDismissBooking()
+                    onLogIn()
+                },
                 onDismiss = onDismissBooking,
             )
         }

@@ -32,9 +32,6 @@ interface GsrRepo {
         gid: Int,
         roomId: Int,
         roomName: String,
-        firstName: String,
-        lastName: String,
-        email: String,
     )
 
     suspend fun cancelGsr(

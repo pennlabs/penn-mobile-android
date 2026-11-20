@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
@@ -58,11 +59,15 @@ private val SHEET_DATE_FORMAT = DateTimeFormatter.ofPattern("EEEE, MMMM d", Loca
 @Composable
 fun GsrBookingSheet(
     option: GsrBookingOption,
+    show: Boolean,
+    onHide: () -> Unit,
     buildingName: String?,
     bookerName: String?,
     isBooking: Boolean,
     error: String?,
+    needsLogin: Boolean,
     onConfirm: () -> Unit,
+    onLogIn: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     val currentIsBooking by rememberUpdatedState(isBooking)
@@ -72,6 +77,14 @@ fun GsrBookingSheet(
             confirmValueChange = { it != SheetValue.Hidden || !currentIsBooking },
         )
     val scope = rememberCoroutineScope()
+
+    val currentOnHide by rememberUpdatedState(onHide)
+    LaunchedEffect(show) {
+        if (!show) {
+            sheetState.hide()
+            currentOnHide()
+        }
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -84,7 +97,9 @@ fun GsrBookingSheet(
             bookerName = bookerName,
             isBooking = isBooking,
             error = error,
+            needsLogin = needsLogin,
             onConfirm = onConfirm,
+            onLogIn = onLogIn,
             onCancel = {
                 scope.launch { sheetState.hide() }.invokeOnCompletion {
                     if (!sheetState.isVisible) onDismiss()
@@ -101,7 +116,9 @@ private fun GsrBookingSheetContent(
     bookerName: String?,
     isBooking: Boolean,
     error: String?,
+    needsLogin: Boolean,
     onConfirm: () -> Unit,
+    onLogIn: () -> Unit,
     onCancel: () -> Unit,
 ) {
     val start = option.start.atZoneSameInstant(PENN_ZONE)
@@ -162,7 +179,7 @@ private fun GsrBookingSheetContent(
         Column {
             Button(
                 // Kept enabled while booking so it doesn't flash gray; the ViewModel ignores repeat taps.
-                onClick = onConfirm,
+                onClick = if (needsLogin) onLogIn else onConfirm,
                 shape = RoundedCornerShape(26.dp),
                 colors =
                     ButtonDefaults.buttonColors(
@@ -182,7 +199,14 @@ private fun GsrBookingSheetContent(
                     )
                 } else {
                     Text(
-                        text = stringResource(if (error != null) R.string.gsr_try_again else R.string.gsr_book_room),
+                        text =
+                            stringResource(
+                                when {
+                                    needsLogin -> R.string.log_in
+                                    error != null -> R.string.gsr_try_again
+                                    else -> R.string.gsr_book_room
+                                },
+                            ),
                         fontSize = 17.sp,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -261,7 +285,9 @@ private fun SheetPreview(
                 bookerName = "Ben Franklin",
                 isBooking = isBooking,
                 error = error,
+                needsLogin = false,
                 onConfirm = {},
+                onLogIn = {},
                 onCancel = {},
             )
         }

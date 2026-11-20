@@ -61,9 +61,6 @@ class FakeGsrRepo(
         gid: Int,
         roomId: Int,
         roomName: String,
-        firstName: String,
-        lastName: String,
-        email: String,
     ) {
         bookingGates.removeFirstOrNull()?.await()
         bookingError?.let { throw it }
