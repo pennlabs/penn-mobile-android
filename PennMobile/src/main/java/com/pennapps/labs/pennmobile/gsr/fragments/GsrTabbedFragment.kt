@@ -49,7 +49,11 @@ class GsrTabbedFragment : Fragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        val fragmentAdapter = activity?.supportFragmentManager?.let { GsrPagerAdapter(it) }
+        // Child manager so each GsrTabbedFragment owns its pages. On the activity's manager the
+        // pages were found again by tag ("android:switcher:<pager id>:N"), so a second instance
+        // (e.g. opened from Home) re-attached a fragment whose view lived in the first pager and
+        // showed a blank page.
+        val fragmentAdapter = GsrPagerAdapter(childFragmentManager)
         viewPager = binding.gsrViewpager
         viewPager.adapter = fragmentAdapter
         tabLayout = binding.gsrTabLayout

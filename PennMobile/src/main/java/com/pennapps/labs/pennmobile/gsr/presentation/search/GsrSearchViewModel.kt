@@ -10,7 +10,9 @@ import com.pennapps.labs.pennmobile.gsr.domain.GsrRoomOptions
 import com.pennapps.labs.pennmobile.gsr.domain.GsrSearchResult
 import com.pennapps.labs.pennmobile.gsr.domain.PENN_ZONE
 import com.pennapps.labs.pennmobile.gsr.domain.durationOptions
+import com.pennapps.labs.pennmobile.gsr.domain.floorToHalfHour
 import com.pennapps.labs.pennmobile.gsr.domain.groupByRoom
+import com.pennapps.labs.pennmobile.gsr.domain.halfHourStartTimes
 import com.pennapps.labs.pennmobile.gsr.domain.maxDurationMinutes
 import com.pennapps.labs.pennmobile.gsr.domain.model.GsrBookingOption
 import com.pennapps.labs.pennmobile.gsr.domain.model.GsrLocation
@@ -33,7 +35,6 @@ import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
-import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
 private const val NO_LOCATIONS = "No GSR locations are available to your account."
@@ -58,6 +59,8 @@ data class GsrSearchUiState(
     val today: LocalDate,
     val date: LocalDate,
     val startTime: LocalTime,
+    /** Half-hours the time sheet offers: from the current one today, the whole day otherwise. */
+    val startTimeChoices: List<LocalTime> = emptyList(),
     val locations: List<GsrLocation> = emptyList(),
     val selectedLocation: GsrLocation? = null,
     val durationMinutes: Int = GSR_SLOT_MINUTES,
@@ -87,8 +90,14 @@ private fun initialState(now: ZonedDateTime) =
     GsrSearchUiState(
         today = now.toLocalDate(),
         date = now.toLocalDate(),
-        startTime = now.toLocalTime().truncatedTo(ChronoUnit.MINUTES),
-    )
+        startTime = now.toLocalTime().floorToHalfHour(),
+    ).withStartTimes(now)
+
+/** Recomputes the time choices and moves a start time that has passed up to the current half-hour. */
+private fun GsrSearchUiState.withStartTimes(now: ZonedDateTime): GsrSearchUiState {
+    val earliest = if (date == now.toLocalDate()) now.toLocalTime().floorToHalfHour() else LocalTime.MIDNIGHT
+    return copy(startTimeChoices = halfHourStartTimes(earliest), startTime = startTime.coerceAtLeast(earliest))
+}
 
 @HiltViewModel
 class GsrSearchViewModel
@@ -98,7 +107,7 @@ class GsrSearchViewModel
         private val findAvailableGsrs: FindAvailableGsrs,
         private val clock: Clock,
     ) : ViewModel() {
-        private val _uiState = MutableStateFlow(initialState(ZonedDateTime.now(clock).withZoneSameInstant(PENN_ZONE)))
+        private val _uiState = MutableStateFlow(initialState(now()))
         val uiState: StateFlow<GsrSearchUiState> = _uiState.asStateFlow()
 
         private var searchJob: Job? = null
@@ -110,25 +119,45 @@ class GsrSearchViewModel
             loadLocations()
         }
 
+        /**
+         * Called whenever the GSR tab is opened: date and time go back to today at the current
+         * half-hour, while the location (saved in prefs) stays. Skipped when nothing changed so
+         * flipping tabs doesn't reload the list.
+         */
+        fun resetToNow() {
+            val now = now()
+            val state = _uiState.value
+            if (state.today == now.toLocalDate() && state.date == state.today && state.startTime == now.toLocalTime().floorToHalfHour()) {
+                return
+            }
+            _uiState.update {
+                it
+                    .copy(today = now.toLocalDate(), date = now.toLocalDate(), startTime = now.toLocalTime().floorToHalfHour())
+                    .withStartTimes(now)
+            }
+            search()
+        }
+
         fun selectLocation(location: GsrLocation) {
             repo.saveLastLocation(location)
             _uiState.update {
-                it.copy(
-                    selectedLocation = location,
-                    durationMinutes = it.durationMinutes.coerceAtMost(location.maxDurationMinutes()),
-                    date = it.date.coerceIn(it.today, it.copy(selectedLocation = location).lastBookableDate),
-                )
+                it
+                    .copy(
+                        selectedLocation = location,
+                        durationMinutes = it.durationMinutes.coerceAtMost(location.maxDurationMinutes()),
+                        date = it.date.coerceIn(it.today, it.copy(selectedLocation = location).lastBookableDate),
+                    ).withStartTimes(now())
             }
             search()
         }
 
         fun selectDate(date: LocalDate) {
-            _uiState.update { it.copy(date = date.coerceIn(it.today, it.lastBookableDate)) }
+            _uiState.update { it.copy(date = date.coerceIn(it.today, it.lastBookableDate)).withStartTimes(now()) }
             search()
         }
 
         fun selectTime(time: LocalTime) {
-            _uiState.update { it.copy(startTime = time) }
+            _uiState.update { it.copy(startTime = time).withStartTimes(now()) }
             search()
         }
 
@@ -198,6 +227,7 @@ class GsrSearchViewModel
 
         /** Pull-to-refresh, retry, and "a booking just changed availability". */
         fun refresh() {
+            _uiState.update { it.withStartTimes(now()) }
             if (_uiState.value.locations.isEmpty()) loadLocations() else search(isRefresh = true)
         }
 
@@ -255,6 +285,8 @@ class GsrSearchViewModel
                 it.copy(content = GsrContent.Loaded(result, result.rooms(it.sortByTime)), isRefreshing = false)
             }
         }
+
+        private fun now(): ZonedDateTime = ZonedDateTime.now(clock).withZoneSameInstant(PENN_ZONE)
 
         private fun GsrSearchResult.rooms(sortByTime: Boolean): List<GsrRoomOptions> =
             if (this is GsrSearchResult.Found) options.groupByRoom(sortByTime) else emptyList()

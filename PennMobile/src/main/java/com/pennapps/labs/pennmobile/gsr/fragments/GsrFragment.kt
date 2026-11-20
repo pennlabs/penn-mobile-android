@@ -36,6 +36,12 @@ class GsrFragment : Fragment() {
         (activity as? MainActivity)?.closeKeyboard()
     }
 
+    /** Resumed each time the GSR tab is opened (its pager caps us at STARTED otherwise). */
+    override fun onResume() {
+        super.onResume()
+        viewModel.resetToNow()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

@@ -36,7 +36,10 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import java.time.Clock
+import java.time.Instant
 import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GsrSearchViewModelTest {
@@ -56,22 +59,115 @@ class GsrSearchViewModelTest {
         unmockkStatic(Log::class)
     }
 
-    /** 1:00 PM on [DAY] in Philadelphia. */
-    private fun TestScope.viewModel(repo: FakeGsrRepo): GsrSearchViewModel {
-        val clock = Clock.fixed(at("13:00").toInstant(), PENN_ZONE)
-        return GsrSearchViewModel(repo, FindAvailableGsrs(repo), clock).also { advanceUntilIdle() }
-    }
+    /** [now] (default 1:00 PM) on [DAY] in Philadelphia. */
+    private fun TestScope.viewModel(
+        repo: FakeGsrRepo,
+        now: String = "13:00",
+        clock: Clock = Clock.fixed(at(now).toInstant(), PENN_ZONE),
+    ): GsrSearchViewModel = GsrSearchViewModel(repo, FindAvailableGsrs(repo), clock).also { advanceUntilIdle() }
 
     private fun GsrSearchViewModel.result() = (uiState.value.content as GsrContent.Loaded).result
 
     @Test
-    fun `starts on today at the current minute and sorts by time`() =
+    fun `starts on today at the current half-hour and sorts by time`() =
         runTest(dispatcher) {
             val state = viewModel(FakeGsrRepo(locations = locations)).uiState.value
 
             assertEquals(DAY, state.date)
             assertEquals(LocalTime.of(13, 0), state.startTime)
             assertTrue(state.sortByTime)
+        }
+
+    @Test
+    fun `the default start time rounds down and today offers only times from now on`() =
+        runTest(dispatcher) {
+            val state = viewModel(FakeGsrRepo(locations = locations), now = "13:20").uiState.value
+
+            assertEquals(LocalTime.of(13, 0), state.startTime)
+            assertEquals(LocalTime.of(13, 0), state.startTimeChoices.first())
+            assertEquals(LocalTime.of(23, 30), state.startTimeChoices.last())
+        }
+
+    @Test
+    fun `a later day offers the whole day and keeps an early time until switching back to today`() =
+        runTest(dispatcher) {
+            val vm = viewModel(FakeGsrRepo(locations = locations), now = "13:20")
+
+            vm.selectDate(DAY.plusDays(1))
+            vm.selectTime(LocalTime.of(9, 0))
+            assertEquals(
+                LocalTime.MIDNIGHT,
+                vm.uiState.value.startTimeChoices
+                    .first(),
+            )
+            assertEquals(48, vm.uiState.value.startTimeChoices.size)
+            assertEquals(LocalTime.of(9, 0), vm.uiState.value.startTime)
+
+            vm.selectDate(DAY)
+            assertEquals(LocalTime.of(13, 0), vm.uiState.value.startTime)
+            assertEquals(
+                LocalTime.of(13, 0),
+                vm.uiState.value.startTimeChoices
+                    .first(),
+            )
+        }
+
+    @Test
+    fun `a past time today moves up to the current half-hour`() =
+        runTest(dispatcher) {
+            val vm = viewModel(FakeGsrRepo(locations = locations), now = "13:20")
+
+            vm.selectTime(LocalTime.of(9, 0))
+
+            assertEquals(LocalTime.of(13, 0), vm.uiState.value.startTime)
+        }
+
+    /** A clock the test can move forward, e.g. to reopen the tab later in the day. */
+    private class MovableClock(
+        var now: ZonedDateTime,
+    ) : Clock() {
+        override fun getZone(): ZoneId = PENN_ZONE
+
+        override fun withZone(zone: ZoneId): Clock = this
+
+        override fun instant(): Instant = now.toInstant()
+    }
+
+    @Test
+    fun `reopening the tab goes back to now but keeps the location`() =
+        runTest(dispatcher) {
+            val clock = MovableClock(at("13:00"))
+            val repo = FakeGsrRepo(locations = locations)
+            val vm = viewModel(repo, clock = clock)
+            vm.selectLocation(BIOTECH)
+            vm.selectDate(DAY.plusDays(1))
+            vm.selectTime(LocalTime.of(9, 0))
+            advanceUntilIdle()
+
+            clock.now = at("15:10")
+            vm.resetToNow()
+            advanceUntilIdle()
+
+            val state = vm.uiState.value
+            assertEquals(DAY, state.date)
+            assertEquals(LocalTime.of(15, 0), state.startTime)
+            assertEquals(LocalTime.of(15, 0), state.startTimeChoices.first())
+            assertEquals(BIOTECH, state.selectedLocation)
+            val (searched, from, _) = repo.availabilityRequests.last()
+            assertEquals(BIOTECH to DAY, searched to from)
+        }
+
+    @Test
+    fun `reopening the tab with nothing changed does not reload`() =
+        runTest(dispatcher) {
+            val repo = FakeGsrRepo(locations = locations)
+            val vm = viewModel(repo)
+            val requests = repo.availabilityRequests.size
+
+            vm.resetToNow()
+            advanceUntilIdle()
+
+            assertEquals(requests, repo.availabilityRequests.size)
         }
 
     @Test
