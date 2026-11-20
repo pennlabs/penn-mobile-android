@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.pennapps.labs.pennmobile.api.CampusExpress
 import com.pennapps.labs.pennmobile.api.CampusExpressNetworkManager
 import com.pennapps.labs.pennmobile.dining.adapters.DiningInsightsCardAdapter
+import com.pennapps.labs.pennmobile.dining.adapters.DiningInsightsCardAdapter.Companion.DAYS_IN_SEMESTER
 import com.pennapps.labs.pennmobile.dining.classes.DiningBalances
 import com.pennapps.labs.pennmobile.dining.classes.DiningBalancesList
 import com.pennapps.labs.pennmobile.dining.classes.DiningInsightCell
@@ -18,8 +19,12 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 import javax.inject.Inject
 
 @HiltViewModel
@@ -140,4 +145,55 @@ class DiningInsightsViewModel
         fun setAprilPranks(show: Boolean) {
             _showAprilPranks.value = show
         }
+
+        val weeksLeft: Int =
+            run {
+                val sdf =
+                    SimpleDateFormat("yyyy-MM-dd", Locale.US).apply {
+                        timeZone = TimeZone.getTimeZone("UTC")
+                    }
+                val startDate = sdf.parse(DiningInsightsCardAdapter.START_DAY_OF_SEMESTER)!!
+                val endDate =
+                    Calendar
+                        .getInstance()
+                        .apply {
+                            time = startDate
+                            add(Calendar.DAY_OF_YEAR, DAYS_IN_SEMESTER.toInt())
+                        }.time
+                val daysLeft = ((endDate.time - System.currentTimeMillis()) / (1000 * 60 * 60 * 24)).toInt()
+                (daysLeft / 7).coerceAtLeast(1)
+            }
+
+        val budget: StateFlow<DiningBudget?> =
+            currentBalances
+                .map { balances ->
+                    balances?.let {
+                        val dollars = it.diningDollars?.toString()?.toDoubleOrNull() ?: 0.0
+                        val swipes = it.regularVisits ?: 0
+                        DiningBudget(
+                            dollarsPerWeek = dollars / weeksLeft,
+                            swipesPerWeek = swipes / weeksLeft,
+                        )
+                    }
+                }.stateIn(viewModelScope, SharingStarted.Lazily, null)
+        private val _plannedSwipesPerWeek = MutableStateFlow<Int?>(null)
+        val plannedSwipesPerWeek: StateFlow<Int?> = _plannedSwipesPerWeek.asStateFlow()
+
+        private val _plannedDollarsPerWeek = MutableStateFlow<Double?>(null)
+        val plannedDollarsPerWeek: StateFlow<Double?> = _plannedDollarsPerWeek.asStateFlow()
+
+        fun setPlannedSwipes(value: Int?) {
+            _plannedSwipesPerWeek.value = value
+            Log.d("Budget", "VM swipes set to: $value")
+        }
+
+        fun setPlannedDollars(value: Double?) {
+            _plannedDollarsPerWeek.value = value
+            Log.d("Budget", "VM dollars set to: $value")
+        }
     }
+
+data class DiningBudget(
+    val dollarsPerWeek: Double,
+    val swipesPerWeek: Int,
+)

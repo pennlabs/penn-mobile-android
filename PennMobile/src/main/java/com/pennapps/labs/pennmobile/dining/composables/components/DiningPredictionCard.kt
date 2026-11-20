@@ -3,6 +3,7 @@ package com.pennapps.labs.pennmobile.dining.composables.components
 import GilroyBold
 import GilroyLight
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -64,7 +65,10 @@ fun DiningPredictionCard(
     cell: DiningInsightCell,
     showPranks: Boolean,
     modifier: Modifier = Modifier,
+    plannedPerWeek: Double? = null,
 ) {
+    Log.d("Budget", "${cell.type} plannedPerWeek: $plannedPerWeek")
+
     val context: Context = LocalContext.current
     var selectedInfo by remember { mutableStateOf<String?>(null) }
     var chartInstance by remember { mutableStateOf<LineChart?>(null) }
@@ -81,6 +85,8 @@ fun DiningPredictionCard(
                 time = startDate
                 add(Calendar.DAY_OF_YEAR, DAYS_IN_SEMESTER.toInt())
             }.time
+
+    val endX = ((endDate.time - startDate.time) / (1000 * 60 * 60 * 24)).toInt()
 
     val rawValues =
         cell.diningBalancesList?.diningBalancesList?.mapNotNull { balance ->
@@ -144,12 +150,18 @@ fun DiningPredictionCard(
             } else {
                 emptyList()
             }
+        } else if (plannedPerWeek != null && entries.isNotEmpty()) {
+            // User's budget plan: spend plannedPerWeek starting from today's balance
+            val last = entries.last()
+            val (slope, intercept) = plannedLine(plannedPerWeek, last)
+            (last.x.toInt()..endX).map { day ->
+                Entry(day.toFloat(), (slope * day + intercept).coerceAtLeast(0f))
+            }
         } else if (entries.size >= 2) {
             val first = entries.first()
             val last = entries.last()
             val slope = (last.y - first.y) / (last.x - first.x)
             val intercept = first.y - slope * first.x
-            val endX = ((endDate.time - startDate.time) / (1000 * 60 * 60 * 24)).toInt()
             (last.x.toInt()..endX).map { day ->
                 Entry(day.toFloat(), slope * day + intercept)
             }
@@ -171,6 +183,9 @@ fun DiningPredictionCard(
     val predictedEndBalance: Float? =
         if (showPranks) {
             0f
+        } else if (plannedPerWeek != null && entries.isNotEmpty()) {
+            val (slope, intercept) = plannedLine(plannedPerWeek, entries.last())
+            slope * endX.toFloat() + intercept
         } else if (entries.size >= 2) {
             val first = entries.first()
             val last = entries.last()
@@ -384,4 +399,13 @@ fun DiningPredictionCard(
             }
         }
     }
+}
+
+private fun plannedLine(
+    plannedPerWeek: Double,
+    latest: Entry,
+): Pair<Float, Float> {
+    val slope = -plannedPerWeek.toFloat() / 7f
+    val intercept = latest.y - slope * latest.x
+    return slope to intercept
 }
