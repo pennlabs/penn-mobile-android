@@ -401,7 +401,6 @@ fun DiningPredictionCard(
     }
 }
 
-// helper funtion but can be made into lambda function too
 private fun plannedLine(
     plannedPerWeek: Double,
     latest: Entry,
