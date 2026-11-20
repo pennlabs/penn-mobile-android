@@ -97,10 +97,19 @@ class FindAvailableGsrsTest {
         }
 
     @Test
-    fun `a window ending exactly at midnight stays on one day`() =
+    fun `a window ending exactly at midnight also asks for the next day`() =
         runTest {
             val repo = FakeGsrRepo()
-            FindAvailableGsrs(repo)(VP_GROUND_FLOOR, at("23:00"), 60)
+            FindAvailableGsrs(repo)(VP_GROUND_FLOOR, at("23:30"), 30)
+
+            assertEquals(Triple(VP_GROUND_FLOOR, DAY, DAY.plusDays(1)), repo.availabilityRequests.single())
+        }
+
+    @Test
+    fun `a window ending before midnight stays on one day`() =
+        runTest {
+            val repo = FakeGsrRepo()
+            FindAvailableGsrs(repo)(VP_GROUND_FLOOR, at("23:00"), 30)
 
             assertEquals(Triple(VP_GROUND_FLOOR, DAY, DAY), repo.availabilityRequests.single())
         }
