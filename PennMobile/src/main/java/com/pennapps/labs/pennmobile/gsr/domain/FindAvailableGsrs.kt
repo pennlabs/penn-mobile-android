@@ -37,9 +37,10 @@ class FindAvailableGsrs
             }
 
             val start = from.withZoneSameInstant(PENN_ZONE)
-            // A window ending exactly at midnight doesn't need the next day's availability.
-            // How: It pushes it back to 11:59:59 of the same day, hence we only get same day availability
-            val lastDay = start.plusMinutes(durationMinutes.toLong()).minusSeconds(1).toLocalDate()
+            // A window ending exactly at midnight still needs the next day: a one-day LibCal query
+            // leaves out the slot ending at midnight (e.g. 11:30 PM–12:00 AM), so 30-minute searches
+            // at 11:30 PM found nothing while 60-minute ones found that same slot.
+            val lastDay = start.plusMinutes(durationMinutes.toLong()).toLocalDate()
 
             return try {
                 val rooms = repo.getAvailability(location, start.toLocalDate(), lastDay)
