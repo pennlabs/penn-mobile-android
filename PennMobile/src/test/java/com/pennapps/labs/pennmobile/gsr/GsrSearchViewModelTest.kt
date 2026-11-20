@@ -336,4 +336,19 @@ class GsrSearchViewModelTest {
             assertNull(vm.uiState.value.pendingBooking)
             assertEquals(GsrBooked("L15"), vm.bookingEvents.first())
         }
+
+    @Test
+    fun `an expired login during booking asks the user to log in`() =
+        runTest(dispatcher) {
+            val repo = FakeGsrRepo(locations = locations, bookingError = GsrNotLoggedInException())
+            val vm = viewModel(repo)
+            vm.openBooking(l15)
+
+            vm.confirmBooking()
+            advanceUntilIdle()
+            assertTrue(vm.uiState.value.bookingNeedsLogin)
+
+            vm.dismissBooking()
+            assertFalse(vm.uiState.value.bookingNeedsLogin)
+        }
 }

@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile.gsr
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Log
 import com.google.gson.Gson
@@ -14,12 +15,24 @@ import com.pennapps.labs.pennmobile.gsr.domain.GsrApiException
 import com.pennapps.labs.pennmobile.gsr.domain.GsrNotLoggedInException
 import com.pennapps.labs.pennmobile.gsr.domain.GsrOfflineException
 import com.pennapps.labs.pennmobile.gsr.repo.GsrRepoImpl
+import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkConstructor
+import io.mockk.mockkObject
 import io.mockk.mockkStatic
-import io.mockk.unmockkStatic
+import io.mockk.unmockkAll
+import io.mockk.verify
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -32,15 +45,18 @@ import org.junit.Test
 import retrofit2.Response
 import java.net.UnknownHostException
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class GsrRepoImplTest {
     private val studentLife = mockk<StudentLife>()
     private val oAuth = mockk<OAuth2NetworkManager>()
+    private val context = mockk<Context>(relaxed = true)
     private val repo =
         GsrRepoImpl(
             sharedPreferences = mockk<SharedPreferences>(relaxed = true),
-            context = mockk<Context>(relaxed = true),
+            context = context,
             studentLife = studentLife,
             oAuth2NetworkManager = oAuth,
+            appScope = CoroutineScope(SupervisorJob() + UnconfinedTestDispatcher()),
         )
 
     private val roomsJson =
@@ -56,10 +72,14 @@ class GsrRepoImplTest {
         every { Log.e(any(), any()) } returns 0
         every { Log.w(any(), any<String>()) } returns 0
         coEvery { oAuth.getAccessTokenResult() } returns AccessToken.Valid("tok")
+        mockkObject(GsrReservationWidget.Companion)
+        every { GsrReservationWidget.requestUpdate(any()) } just Runs
+        mockkConstructor(Intent::class)
+        every { anyConstructed<Intent>().setPackage(any()) } answers { self as Intent }
     }
 
     @After
-    fun tearDown() = unmockkStatic(Log::class)
+    fun tearDown() = unmockkAll()
 
     private fun <T> errorBody(
         code: Int,
@@ -198,6 +218,40 @@ class GsrRepoImplTest {
             coEvery { studentLife.bookGSR("Bearer tok", "s", "e", 4660, 5, "Room 101") } returns Response.success(success)
 
             book()
+
+            verify { GsrReservationWidget.requestUpdate(context) }
+            verify { context.sendBroadcast(any<Intent>()) }
+        }
+
+    @Test
+    fun `a failed booking leaves the widget and reservations alone`() =
+        runTest {
+            coEvery { studentLife.bookGSR(any(), any(), any(), any(), any(), any()) } returns
+                errorBody(400, """{"error": "Error: Not enough credits"}""")
+
+            assertThrows<GsrApiException> { book() }
+
+            verify(exactly = 0) { GsrReservationWidget.requestUpdate(any()) }
+            verify(exactly = 0) { context.sendBroadcast(any<Intent>()) }
+        }
+
+    @Test
+    fun `leaving the screen mid-request does not cancel the booking`() =
+        runTest {
+            val serverReplied = CompletableDeferred<Unit>()
+            val success = Gson().fromJson("""{"detail": "success"}""", GSRBookingResult::class.java)
+            coEvery { studentLife.bookGSR(any(), any(), any(), any(), any(), any()) } coAnswers {
+                serverReplied.await()
+                Response.success(success)
+            }
+
+            val screen = launch { book() }
+            testScheduler.runCurrent()
+            screen.cancel()
+            serverReplied.complete(Unit)
+
+            verify { GsrReservationWidget.requestUpdate(context) }
+            verify { context.sendBroadcast(any<Intent>()) }
         }
 
     private suspend fun book() =
@@ -207,8 +261,5 @@ class GsrRepoImplTest {
             gid = 4660,
             roomId = 5,
             roomName = "Room 101",
-            firstName = "A",
-            lastName = "B",
-            email = "a@b.c",
         )
 }

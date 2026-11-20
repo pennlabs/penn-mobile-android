@@ -1,6 +1,7 @@
 package com.pennapps.labs.pennmobile.gsr.repo
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Log
 import com.google.gson.JsonParser
@@ -8,13 +9,17 @@ import com.pennapps.labs.pennmobile.R
 import com.pennapps.labs.pennmobile.api.OAuth2NetworkManager
 import com.pennapps.labs.pennmobile.api.StudentLife
 import com.pennapps.labs.pennmobile.api.classes.AccessToken
+import com.pennapps.labs.pennmobile.di.AppScope
 import com.pennapps.labs.pennmobile.gsr.classes.GSRReservation
 import com.pennapps.labs.pennmobile.gsr.domain.GsrApiException
 import com.pennapps.labs.pennmobile.gsr.domain.GsrNotLoggedInException
 import com.pennapps.labs.pennmobile.gsr.domain.GsrOfflineException
 import com.pennapps.labs.pennmobile.gsr.domain.model.GsrLocation
 import com.pennapps.labs.pennmobile.gsr.domain.model.GsrRoom
+import com.pennapps.labs.pennmobile.gsr.widget.GsrReservationWidget
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 import retrofit2.Response
 import java.io.IOException
 import java.time.LocalDate
@@ -23,6 +28,9 @@ import javax.inject.Inject
 
 private const val LAST_LOCATION_KEY = "gsr_last_location"
 
+/** Action GsrReservationsFragment listens on to reload its list. */
+private const val RESERVATIONS_REFRESH_ACTION = "refresh"
+
 class GsrRepoImpl
     @Inject
     constructor(
@@ -30,6 +38,7 @@ class GsrRepoImpl
         @ApplicationContext private val context: Context,
         private val studentLife: StudentLife,
         private val oAuth2NetworkManager: OAuth2NetworkManager,
+        @AppScope private val appScope: CoroutineScope,
     ) : GsrRepo {
         override fun getSavedUserInfo(): Triple<String, String, String> {
             val firstName = sharedPreferences.getString(context.getString(R.string.first_name), "") ?: ""
@@ -84,35 +93,38 @@ class GsrRepoImpl
             gid: Int,
             roomId: Int,
             roomName: String,
-            firstName: String,
-            lastName: String,
-            email: String,
         ) {
-            val bearerToken = bearerToken()
+            // Runs in the app scope so leaving the screen mid-request can't strand a booking the
+            // server already made; async (not launch) so failures still reach the caller via await.
+            appScope
+                .async {
+                    val bearerToken = bearerToken()
 
-            val response =
-                call {
-                    studentLife.bookGSR(
-                        bearerToken,
-                        startTime,
-                        endTime,
-                        gid,
-                        roomId,
-                        roomName,
-                    )
-                }
+                    val response =
+                        call {
+                            studentLife.bookGSR(
+                                bearerToken,
+                                startTime,
+                                endTime,
+                                gid,
+                                roomId,
+                                roomName,
+                            )
+                        }
 
-            if (response.isSuccessful) {
-                val result = response.body()
-                if (result?.getDetail() == "success") {
-                    saveUserInfo(firstName, lastName, email)
-                } else {
-                    val errorMsg = result?.getError() ?: "GSR booking failed."
-                    throw Exception(errorMsg)
-                }
-            } else {
-                throw response.apiError("Server returned an error. Please try again.")
-            }
+                    if (response.isSuccessful) {
+                        val result = response.body()
+                        if (result?.getDetail() != "success") {
+                            val errorMsg = result?.getError() ?: "GSR booking failed."
+                            throw Exception(errorMsg)
+                        }
+                    } else {
+                        throw response.apiError("Server returned an error. Please try again.")
+                    }
+
+                    GsrReservationWidget.requestUpdate(context)
+                    context.sendBroadcast(Intent(RESERVATIONS_REFRESH_ACTION).setPackage(context.packageName))
+                }.await()
         }
 
         override suspend fun cancelGsr(
@@ -192,18 +204,5 @@ class GsrRepoImpl
                     null
                 }
             return if (reason.isNullOrBlank()) Exception(fallback) else GsrApiException(reason)
-        }
-
-        private fun saveUserInfo(
-            firstName: String,
-            lastName: String,
-            email: String,
-        ) {
-            sharedPreferences.edit().apply {
-                putString(context.getString(R.string.first_name), firstName)
-                putString(context.getString(R.string.last_name), lastName)
-                putString(context.getString(R.string.email_address), email)
-                apply()
-            }
         }
     }

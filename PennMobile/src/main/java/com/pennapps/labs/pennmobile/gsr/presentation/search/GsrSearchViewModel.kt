@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pennapps.labs.pennmobile.gsr.domain.FindAvailableGsrs
 import com.pennapps.labs.pennmobile.gsr.domain.GSR_SLOT_MINUTES
+import com.pennapps.labs.pennmobile.gsr.domain.GsrNotLoggedInException
 import com.pennapps.labs.pennmobile.gsr.domain.GsrRoomOptions
 import com.pennapps.labs.pennmobile.gsr.domain.GsrSearchResult
 import com.pennapps.labs.pennmobile.gsr.domain.PENN_ZONE
@@ -69,6 +70,8 @@ data class GsrSearchUiState(
     val bookerName: String? = null,
     val isBooking: Boolean = false,
     val bookingError: String? = null,
+    /** The token expired mid-booking, so the sheet offers Log in instead of Try again. */
+    val bookingNeedsLogin: Boolean = false,
 ) {
     val durationOptions: List<Int> get() = selectedLocation?.durationOptions().orEmpty()
 
@@ -147,23 +150,23 @@ class GsrSearchViewModel
 
         fun openBooking(option: GsrBookingOption) {
             if (_uiState.value.isBooking) return
-            _uiState.update { it.copy(pendingBooking = option, bookingError = null, bookerName = savedBookerName()) }
+            _uiState.update {
+                it.copy(pendingBooking = option, bookingError = null, bookingNeedsLogin = false, bookerName = savedBookerName())
+            }
         }
 
         /** Ignored mid-request so the result always lands on the sheet that started it. */
         fun dismissBooking() {
             if (_uiState.value.isBooking) return
-            _uiState.update { it.copy(pendingBooking = null, bookingError = null) }
+            _uiState.update { it.copy(pendingBooking = null, bookingError = null, bookingNeedsLogin = false) }
         }
 
         fun confirmBooking() {
             val state = _uiState.value
             val option = state.pendingBooking ?: return
             if (state.isBooking) return
-            _uiState.update { it.copy(isBooking = true, bookingError = null) }
+            _uiState.update { it.copy(isBooking = true, bookingError = null, bookingNeedsLogin = false) }
             viewModelScope.launch {
-                // The backend ignores these, but the repo still takes them and saves them back.
-                val (first, last, email) = repo.getSavedUserInfo()
                 try {
                     repo.bookGsr(
                         option.startTimeParam(),
@@ -171,16 +174,15 @@ class GsrSearchViewModel
                         option.gid,
                         option.roomId,
                         option.roomName,
-                        first,
-                        last,
-                        email,
                     )
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: Exception) {
                     Log.e("GsrSearchViewModel", "Booking failed", e)
                     val reason = e.message?.takeIf { it.isNotBlank() } ?: BOOKING_FAILED
-                    _uiState.update { it.copy(isBooking = false, bookingError = reason) }
+                    _uiState.update {
+                        it.copy(isBooking = false, bookingError = reason, bookingNeedsLogin = e is GsrNotLoggedInException)
+                    }
                     return@launch
                 }
                 _uiState.update { it.copy(isBooking = false, pendingBooking = null) }
