@@ -19,7 +19,16 @@ import kotlinx.coroutines.sync.Mutex
 import java.io.IOException
 import java.util.Calendar
 import javax.inject.Inject
+import javax.inject.Singleton
 
+/**
+ * Hands out access tokens and refreshes them when they expire.
+ *
+ * Must stay a singleton: each refresh returns a new refresh token, so two instances refreshing in
+ * parallel send the same old token, the second gets a 400, and the user is logged out. One instance means
+ * one [tokenMutex], so the second caller waits and reuses the first caller's new token.
+ */
+@Singleton
 class OAuth2NetworkManager
     @Inject
     constructor(

@@ -63,7 +63,6 @@ import com.pennapps.labs.pennmobile.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
 import eightbitlab.com.blurview.BlurView
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -83,7 +82,6 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var mNetworkManager: OAuth2NetworkManager
 
-    val tokenMutex = Mutex()
     private lateinit var mFirebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {

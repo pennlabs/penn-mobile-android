@@ -14,6 +14,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -169,6 +170,47 @@ class OAuth2NetworkManagerTest {
 
             assertEquals(false, firstRan)
             assertTrue(secondRan)
+        }
+
+    @Test
+    fun `overlapping callers share one refresh instead of reusing the old refresh token`() =
+        runTest {
+            signedIn(expiresAt = 0)
+            val gate = CompletableDeferred<Unit>()
+            val refreshed =
+                AccessTokenResponse().apply {
+                    accessToken = "new-token"
+                    refreshToken = "new-refresh"
+                    expiresIn = "3600"
+                }
+            // Like the server: the old refresh token works once, then is rejected.
+            var used = false
+            coEvery { studentLife.refreshAccessToken(any(), any(), any()) } coAnswers {
+                gate.await()
+                if (used) {
+                    Response.error(400, """{"error":"invalid_grant"}""".toResponseBody("application/json".toMediaType()))
+                } else {
+                    used = true
+                    Response.success(refreshed)
+                }
+            }
+            val manager = manager()
+            var suspendResult: AccessToken? = null
+            var callbackRan = false
+
+            val events =
+                eventsDuring(manager) {
+                    val first = launch(UnconfinedTestDispatcher(testScheduler)) { suspendResult = manager.getAccessTokenResult() }
+                    manager.getAccessToken { callbackRan = true }
+                    gate.complete(Unit)
+                    first.join()
+                    testScheduler.advanceUntilIdle()
+                }
+
+            assertEquals(AccessToken.Valid("new-token"), suspendResult)
+            assertTrue(callbackRan)
+            assertTrue("no caller should be sent to login", events.isEmpty())
+            coVerify(exactly = 1) { studentLife.refreshAccessToken(any(), any(), any()) }
         }
 }
 
