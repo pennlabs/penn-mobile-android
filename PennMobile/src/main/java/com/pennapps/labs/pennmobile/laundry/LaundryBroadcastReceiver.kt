@@ -61,7 +61,8 @@ class LaundryBroadcastReceiver : BroadcastReceiver() {
         // intent to go to main activity
         val laundryIntent = Intent(context, MainActivity::class.java)
         laundryIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-        val notifyIntent = PendingIntent.getActivity(context, notificationID, laundryIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        val notifyIntent = PendingIntent.getActivity(context, notificationID, laundryIntent, flags)
         mBuilder.setContentIntent(notifyIntent)
         notificationManager.notify(notificationID, mBuilder.build())
 

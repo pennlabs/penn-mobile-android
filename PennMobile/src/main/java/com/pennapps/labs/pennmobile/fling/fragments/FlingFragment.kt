@@ -43,7 +43,7 @@ class FlingFragment : Fragment() {
         // Handle presses on the action bar items
         when (item.itemId) {
             android.R.id.home -> {
-                mActivity.onBackPressed()
+                requireActivity().onBackPressedDispatcher.onBackPressed()
                 return true
             }
 
