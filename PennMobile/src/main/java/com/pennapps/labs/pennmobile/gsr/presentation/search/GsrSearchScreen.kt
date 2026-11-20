@@ -10,8 +10,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,12 +22,13 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerColors
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -39,10 +43,8 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TimePicker
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberDatePickerState
-import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -55,6 +57,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -115,7 +118,14 @@ fun GsrSearchScreen(
                         .fillMaxSize()
                         .background(gsrListBackground())
                         .padding(horizontal = 8.dp),
-                contentPadding = PaddingValues(bottom = 16.dp),
+                // MainActivity's bottom nav floats over this screen, so the last rooms need room to
+                // scroll out from under it (and the system nav bar below it).
+                contentPadding =
+                    PaddingValues(
+                        bottom =
+                            dimensionResource(R.dimen.nav_bar_height) + 16.dp +
+                                WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding(),
+                    ),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 // The filters scroll away with the results so the list gets the whole screen while
@@ -292,10 +302,11 @@ private fun GsrFilters(
         )
     }
     if (showTimePicker) {
-        GsrTimePickerDialog(
-            state.startTime,
-            onDismiss = { showTimePicker = false },
+        GsrTimeSheet(
+            choices = state.startTimeChoices,
+            initial = state.startTime,
             onSelectTime = onSelectTime,
+            onDismiss = { showTimePicker = false },
         )
     }
 }
@@ -355,46 +366,65 @@ private fun GsrDatePickerDialog(
                     override fun isSelectableYear(year: Int) = year in state.today.year..state.lastBookableDate.year
                 },
         )
+    val colors = gsrDatePickerColors()
     DatePickerDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(onClick = {
+            DialogTextButton(android.R.string.ok) {
                 pickerState.selectedDateMillis?.let {
                     onSelectDate(Instant.ofEpochMilli(it).atZone(ZoneOffset.UTC).toLocalDate())
                 }
                 onDismiss()
-            }) { Text(stringResource(android.R.string.ok)) }
+            }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(android.R.string.cancel)) } },
+        dismissButton = { DialogTextButton(android.R.string.cancel, onDismiss) },
+        colors = colors,
     ) {
-        DatePicker(state = pickerState)
+        DatePicker(state = pickerState, colors = colors)
     }
 }
 
+/**
+ * Matches the GSR sheets: plain surface instead of M3's tinted container, ink text, and the
+ * primary fill only on the selected day. Primary is navy in both themes, so anything drawn
+ * *in* primary (today's ring, the buttons' text) disappears on the dark surface.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun GsrTimePickerDialog(
-    initial: LocalTime,
-    onDismiss: () -> Unit,
-    onSelectTime: (LocalTime) -> Unit,
-) {
-    val pickerState =
-        rememberTimePickerState(
-            initialHour = initial.hour,
-            initialMinute = initial.minute,
-            is24Hour = false,
-        )
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(onClick = {
-                onSelectTime(LocalTime.of(pickerState.hour, pickerState.minute))
-                onDismiss()
-            }) { Text(stringResource(android.R.string.ok)) }
-        },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(android.R.string.cancel)) } },
-        text = { TimePicker(state = pickerState) },
+private fun gsrDatePickerColors(): DatePickerColors {
+    val ink = MaterialTheme.colorScheme.onSurfaceVariant
+    return DatePickerDefaults.colors(
+        containerColor = MaterialTheme.colorScheme.surface,
+        titleContentColor = ink,
+        headlineContentColor = ink,
+        weekdayContentColor = ink,
+        subheadContentColor = ink,
+        navigationContentColor = ink,
+        yearContentColor = ink,
+        currentYearContentColor = ink,
+        selectedYearContainerColor = MaterialTheme.colorScheme.primary,
+        selectedYearContentColor = MaterialTheme.colorScheme.onPrimary,
+        dayContentColor = ink,
+        selectedDayContainerColor = MaterialTheme.colorScheme.primary,
+        selectedDayContentColor = MaterialTheme.colorScheme.onPrimary,
+        todayContentColor = ink,
+        todayDateBorderColor = ink,
+        dividerColor = MaterialTheme.colorScheme.outlineVariant,
     )
+}
+
+@Composable
+private fun DialogTextButton(
+    label: Int,
+    onClick: () -> Unit,
+) {
+    TextButton(onClick = onClick) {
+        Text(
+            text = stringResource(label),
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
 }
 
 private fun LazyListScope.gsrResults(
@@ -600,7 +630,7 @@ private fun previewState(content: GsrContent) =
     GsrSearchUiState(
         today = LocalDate.of(2026, 10, 23),
         date = LocalDate.of(2026, 10, 23),
-        startTime = LocalTime.of(18, 21),
+        startTime = LocalTime.of(18, 0),
         locations = listOf(PREVIEW_LOCATION),
         selectedLocation = PREVIEW_LOCATION,
         durationMinutes = 90,
